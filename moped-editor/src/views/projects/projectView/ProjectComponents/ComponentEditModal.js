@@ -16,6 +16,7 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
+  ComponentOptionWithIcon,
   makeRandomComponentId,
   renderComponentOptionWithIcon,
   useComponentOptions,
@@ -158,7 +159,9 @@ const ComponentEditModal = ({
                 id="component"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
-                renderOption={renderComponentOptionWithIcon}
+                renderOption={(option) => (
+                  <ComponentOptionWithIcon option={option} />
+                )}
                 name="component"
                 control={control}
                 autoFocus

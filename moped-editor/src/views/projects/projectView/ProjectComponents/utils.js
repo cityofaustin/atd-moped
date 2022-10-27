@@ -1,8 +1,10 @@
 import { useMemo } from "react";
-import { useMediaQuery, useTheme } from "@material-ui/core";
+import { makeStyles, useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 import { v4 as uuidv4 } from "uuid";
+import { Icon } from "@material-ui/core";
+import { Room as RoomIcon, Timeline as TimelineIcon } from "@material-ui/icons";
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
@@ -36,13 +38,27 @@ export const getIntersectionLabel = (point, lines) => {
   return uniqueStreets.join(" / ");
 };
 
-export const renderComponentOptionWithIcon = (option) => {
+const useStyles = makeStyles((theme) => ({
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: theme.spacing(1),
+  },
+}));
+
+export const ComponentOptionWithIcon = ({ option }) => {
+  const classes = useStyles();
   const { line_representation = null } = option.data;
 
   return (
     <>
+      <span className={classes.iconContainer}>
+        {line_representation === true && <TimelineIcon />}
+        {line_representation === false && <RoomIcon />}
+        {line_representation === null && <Icon />}
+      </span>{" "}
       {option.label}
-      <span>{line_representation ? "line" : "point"}</span>
     </>
   );
 };
