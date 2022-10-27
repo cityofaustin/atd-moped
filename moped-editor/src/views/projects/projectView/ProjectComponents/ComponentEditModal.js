@@ -17,6 +17,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
   makeRandomComponentId,
+  renderComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
 } from "./utils";
@@ -41,6 +42,7 @@ const ControlledAutocomplete = ({
   id,
   disabled = false,
   options,
+  renderOption,
   name,
   control,
   label,
@@ -58,6 +60,7 @@ const ControlledAutocomplete = ({
         disabled={disabled}
         getOptionLabel={(option) => option?.label || ""}
         getOptionSelected={(option, value) => option?.value === value?.value}
+        renderOption={renderOption}
         value={value}
         renderInput={(params) => (
           <TextField
@@ -155,6 +158,7 @@ const ComponentEditModal = ({
                 id="component"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
+                renderOption={renderComponentOptionWithIcon}
                 name="component"
                 control={control}
                 autoFocus

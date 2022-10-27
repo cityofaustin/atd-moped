@@ -36,6 +36,10 @@ export const getIntersectionLabel = (point, lines) => {
   return uniqueStreets.join(" / ");
 };
 
+export const renderComponentOptionWithIcon = (option) => {
+  console.log(option);
+};
+
 /*
  * Components need a unique id generated on creation to avoid collisions
  */
