@@ -104,6 +104,9 @@ const useStyles = makeStyles((theme) => ({
     width: "calc(100% - 2rem)",
     paddingLeft: theme.spacing(0.5),
   },
+  tooltipIcon: {
+    fontSize: "20px",
+  },
 }));
 
 /**
