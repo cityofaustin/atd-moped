@@ -59,7 +59,7 @@ export const basemaps = {
     mapStyle: "mapbox://styles/mapbox/satellite-streets-v11",
     sources: {
       aerials: {
-        id: "raster-tiles",
+        id: "aerial-tiles",
         type: "raster",
         tiles: [
           `https://api.nearmap.com/tiles/v3/Vert/{z}/{x}/{y}.jpg?apikey=${NEARMAP_KEY}`,
@@ -69,13 +69,14 @@ export const basemaps = {
     },
     layers: {
       aerials: {
-        id: "simple-tiles",
+        id: "aerial-tiles",
         type: "raster",
-        source: "raster-tiles",
+        source: "aerial-tiles",
         minzoom: 0,
         maxzoom: 22,
       },
       streetLabels: {
+        id: "street-labels",
         // borrowed from mapbox mapbox streets v11 style
         type: "symbol",
         metadata: {
