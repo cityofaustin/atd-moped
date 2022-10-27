@@ -73,15 +73,6 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
-  fieldLabelText: {
-    width: "calc(100% - 2rem)",
-    paddingLeft: theme.spacing(0.5),
-    "&:hover": {
-      backgroundColor: "#f2f2f2",
-      borderRadius: theme.spacing(0.5),
-      cursor: "pointer",
-    },
-  },
   dialogTitle: {
     fontFamily: theme.typography.fontFamily,
     display: "flex",

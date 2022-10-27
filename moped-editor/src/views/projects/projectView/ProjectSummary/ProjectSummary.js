@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
     width: "calc(100% - 2rem)",
     paddingLeft: theme.spacing(0.5),
     "&:hover": {
-      backgroundColor: "#f2f2f2",
+      backgroundColor: theme.palette.background.summaryHover,
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },

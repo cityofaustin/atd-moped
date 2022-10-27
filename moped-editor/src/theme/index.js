@@ -9,6 +9,7 @@ const theme = createTheme({
       paper: "#ffffff",
       mapControls: "#FFFFFF",
       mapControlsHover: "#e6e6e6",
+      summaryHover: "#f2f2f2"
     },
     primary: {
       main: "#1276D1",
