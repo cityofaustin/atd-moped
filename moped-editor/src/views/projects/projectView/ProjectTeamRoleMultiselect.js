@@ -50,11 +50,11 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
                 Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
         */
         MenuProps={{
-          getContentAnchorEl: () => null,
+          getContentAnchorEl: null,
           style: {
             maxHeight: 500,
           },
-          PaperProps: { style: {width: "50%"}},
+          PaperProps: { style: { width: "50%" } },
           anchorOrigin: { vertical: "bottom", horizontal: "center" },
           transformOrigin: { vertical: "top", horizontal: "center" },
         }}
