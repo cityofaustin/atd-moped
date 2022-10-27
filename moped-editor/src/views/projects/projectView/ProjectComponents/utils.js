@@ -37,7 +37,14 @@ export const getIntersectionLabel = (point, lines) => {
 };
 
 export const renderComponentOptionWithIcon = (option) => {
-  console.log(option);
+  const { line_representation = null } = option.data;
+
+  return (
+    <>
+      {option.label}
+      <span>{line_representation ? "line" : "point"}</span>
+    </>
+  );
 };
 
 /*
