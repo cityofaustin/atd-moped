@@ -18,7 +18,7 @@ export const useFeatureTypes = (featureCollection, geomType) =>
 
 /*
 Bit of a hack to generate intersection labels from nearby streets. 
-this relies on nearby lines being avaialble in-memory, which 
+this relies on nearby lines being available in-memory, which 
 is not guaranteed. a reliable solution would be query the AGOL streets
 layer on-the-fly to grab street names - not sure if this is worth it TBH 
 */
