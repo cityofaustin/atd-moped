@@ -26,6 +26,12 @@ def remove_leading_underscore(arg):
     else:
         return arg
 
+def check_keys(obj, keys):
+    target_keys = set(keys)
+    provided_keys = set(obj.keys())
+    if (target_keys == provided_keys):
+        return True
+    return False
 
 def execute(sql, values, get_result=False):
     try:
