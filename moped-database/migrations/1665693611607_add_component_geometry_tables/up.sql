@@ -125,14 +125,14 @@ create table feature_street_segments (
 
 create table feature_drawn_points (
     project_extent_id character varying,
-    renderType character varying,
+    render_type character varying,
     source_layer character varying,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
 
 create table feature_drawn_lines (
     project_extent_id character varying,
-    renderType character varying,
+    render_type character varying,
     source_layer character varying,
     geography geography('MULTILINESTRING') default null
     ) inherits (features);
