@@ -15,6 +15,7 @@ import {
   ProjectComponentsSourcesAndLayers,
 } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { isDrawnFeature } from "./featureUtils";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -60,6 +61,7 @@ export default function TheMap({
   setIsFetchingFeatures,
 }) {
   const [cursor, setCursor] = useState("grab");
+
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const [isDrawing, setIsDrawing] = useState(false);
@@ -131,7 +133,10 @@ export default function TheMap({
       (feature) => feature.layer.id === draftLayerId
     );
 
-    if (clickedDraftComponentFeature) {
+    if (
+      clickedDraftComponentFeature &&
+      !isDrawnFeature(clickedDraftComponentFeature)
+    ) {
       // remove project feature, ignore underlying CTN features
       const filteredFeatures = draftComponent.features.filter((compFeature) => {
         return !(

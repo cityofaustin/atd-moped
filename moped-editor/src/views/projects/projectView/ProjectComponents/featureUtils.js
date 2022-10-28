@@ -23,3 +23,6 @@ export const makeDrawnFeature = (feature, linkMode) => {
     feature.properties["_layerId"] = "drawnByUserPoint";
   }
 };
+
+export const isDrawnFeature = (feature) =>
+  feature.properties?.DRAW_ID ? true : false;

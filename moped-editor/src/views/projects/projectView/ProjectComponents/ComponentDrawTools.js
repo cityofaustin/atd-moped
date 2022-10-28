@@ -28,7 +28,7 @@ const ComponentDrawTools = ({
       });
 
       // We must override the features in the draw control's internal state with ones
-      // that have our added properties so that we can find them later in onDelete
+      // that have our properties so that we can find them later in onDelete
       drawControlsRef.current.set({
         type: "FeatureCollection",
         features: [...previouslyDrawnFeatures, ...drawnFeatures],
@@ -70,16 +70,11 @@ const ComponentDrawTools = ({
         features: [...draftFeaturesToKeep],
       };
     });
-
-    // TODO: iterate deletedFeaturesArray and remove those from the draft feature
   };
 
   const onModeChange = (e) => {
-    // If we are not drawing, set isDrawing to false so we can select layer features as components
     const { mode } = e;
 
-    // TODO: Move this back to isDrawing state toggle and control cursor in the map component
-    // Handle isHovering the same way so that one isn't overriding the other
     if (mode === "draw_point" || mode === "draw_line_string") {
       setCursor("crosshair");
       setIsDrawing(true);
