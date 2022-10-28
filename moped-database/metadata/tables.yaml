@@ -8,7 +8,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -19,7 +19,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -30,7 +30,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -42,7 +42,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -54,7 +54,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -67,7 +67,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -79,7 +79,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -105,7 +105,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -116,7 +116,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -127,7 +127,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -139,7 +139,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -151,7 +151,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -164,7 +164,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
@@ -176,7 +176,7 @@
         columns:
           - name
           - project_extent_id
-          - rendertype
+          - render_type
           - source_layer
           - component_id
           - id
