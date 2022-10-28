@@ -193,6 +193,7 @@ const GridTableSearchBar = ({
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
                   [classes.advancedSearchActive]: filterStateActive,
                 })}
+                data-testid="advanced-filter-button"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
               </IconButton>

@@ -108,6 +108,7 @@ const ProjectSummaryInterimID = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-interimID"
               label={null}
@@ -130,7 +131,7 @@ const ProjectSummaryInterimID = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={interimId ?? "None"}
+            text={interimId ?? ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

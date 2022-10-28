@@ -10,7 +10,7 @@ export const ProjectsListViewFiltersConf = {
   fields: [
     {
       name: "project_name",
-      label: "Project name",
+      label: "Name",
       placeholder: "Enter project name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
@@ -24,7 +24,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_description",
-      label: "Project description",
+      label: "Description",
       placeholder: "Enter project description",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
@@ -38,7 +38,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_id",
-      label: "Project ID",
+      label: "ID",
       placeholder: "Type Project ID number",
       type: "number",
       defaultOperator: "number_equals",
@@ -48,7 +48,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "type_name",
-      label: "Project type",
+      label: "Type",
       placeholder: "Enter Project type",
       type: "string",
       defaultOperator: "string_equals_case_sensitive",
@@ -68,7 +68,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "updated_at",
-      label: "Last modified",
+      label: "Modified",
       placeholder: "Last modified",
       type: "date",
       operators: [
@@ -96,7 +96,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_team_members",
-      label: "Team member",
+      label: "Team",
       placeholder: "Team member",
       type: "string",
       operators: [
@@ -111,7 +111,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_sponsor",
-      label: "Project sponsor",
+      label: "Sponsor",
       placeholder: "Project sponsor",
       type: "string",
       lookup: {
@@ -130,7 +130,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_partner",
-      label: "Project partners",
+      label: "Partners",
       placeholder: "Project partners",
       type: "string",
       lookup: {
@@ -211,8 +211,8 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "completion_end_date",
-      label: "Project completion",
-      placeholder: "Project completion",
+      label: "Completion date",
+      placeholder: "Completion date",
       type: "date",
       operators: [
         "date_equals",
@@ -284,7 +284,7 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "project_tags",
-      label: "Project tags",
+      label: "Tags",
       placeholder: "Tags",
       type: "string",
       lookup: {

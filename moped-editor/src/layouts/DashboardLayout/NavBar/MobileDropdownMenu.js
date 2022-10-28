@@ -10,11 +10,11 @@ import {
 import MenuIcon from "@material-ui/icons/Menu";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { helpItems } from "./SupportMenu";
+import { helpItems } from "./DropdownMenu";
 import { navigationItems } from "../TopBar";
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
   },
@@ -41,7 +41,7 @@ const MobileDropdownMenu = () => {
   // Boolean if Support Help menu should be visible or not
   const [subMenu, showSubMenu] = useState(false);
 
-  const handleMobileClick = event => {
+  const handleMobileClick = (event) => {
     setMobileAnchorEl(event.currentTarget);
   };
 
@@ -50,7 +50,7 @@ const MobileDropdownMenu = () => {
     showSubMenu(false);
   };
 
-  const setShowSubMenu = () => showSubMenu(subMenu => !subMenu);
+  const setShowSubMenu = () => showSubMenu((subMenu) => !subMenu);
 
   return (
     <>
@@ -67,7 +67,7 @@ const MobileDropdownMenu = () => {
         // getContentAnchorEl needs to be null for the positioning to work
         getContentAnchorEl={null}
       >
-        {navigationItems.map(item => (
+        {navigationItems.map((item) => (
           <MenuItem
             key={item.href}
             onClick={() => {
@@ -84,7 +84,7 @@ const MobileDropdownMenu = () => {
         </MenuItem>
         {subMenu && (
           <div className={classes.subMenu}>
-            {helpItems.map(item => (
+            {helpItems.map((item) => (
               <MenuItem key={item.href} onClick={handleMobileClose}>
                 <Link
                   href={item.href}
@@ -99,6 +99,15 @@ const MobileDropdownMenu = () => {
             ))}
           </div>
         )}
+        <MenuItem
+          onClick={() => {
+            handleMobileClose();
+            navigate("/moped/account");
+          }}
+        >
+          Account
+        </MenuItem>
+        <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
         <MenuItem>
           <CanAddProjectButton />
         </MenuItem>

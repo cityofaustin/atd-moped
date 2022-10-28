@@ -43,13 +43,13 @@ const SubprojectsTable = ({ projectId = null }) => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project_id",
       editable: "never",
       width: "15%",
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project_name",
       width: "45%",
       validate: (entry) => !!entry.project_name,

@@ -2689,6 +2689,14 @@
     - name: project
       using:
         foreign_key_constraint_on: project_id
+  array_relationships:
+    - name: moped_proj_personnel_roles
+      using:
+        foreign_key_constraint_on:
+          column: project_personnel_id
+          table:
+            name: moped_proj_personnel_roles
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2806,6 +2814,73 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
+- table:
+    name: moped_proj_personnel_roles
+    schema: public
+  object_relationships:
+    - name: moped_proj_personnel
+      using:
+        foreign_key_constraint_on: project_personnel_id
+    - name: moped_project_role
+      using:
+        foreign_key_constraint_on: project_role_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - project_personnel_id
+          - project_role_id
+        filter: {}
+        check: null
 - table:
     name: moped_proj_phases
     schema: public

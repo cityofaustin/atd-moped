@@ -7,10 +7,8 @@ AS WITH project_person_list_lookup AS (
       string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
     FROM moped_proj_personnel mpp
       JOIN moped_users mu ON mpp.user_id = mu.user_id
-      JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
-      JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+      JOIN moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
     WHERE mpp.is_deleted = false
-      AND mppr.is_deleted = false
     GROUP BY mpp.project_id
   ), funding_sources_lookup AS (
     SELECT 
@@ -97,28 +95,24 @@ AS WITH project_person_list_lookup AS (
       LIMIT 1) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-      FROM moped_proj_personnel mpp
-        JOIN moped_users users ON mpp.user_id = users.user_id
-        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
-        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+      FROM moped_proj_personnel personnel
+        JOIN moped_users users ON personnel.user_id = users.user_id
+        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
       WHERE 1 = 1
-        AND mpr.project_role_name = 'Inspector'::text
-        AND mpp.is_deleted = false
-        AND mppr.is_deleted = false
-        AND mpp.project_id = mp.project_id
-      GROUP BY mpp.project_id) AS project_inspector,
+        AND roles.project_role_name = 'Inspector'::text
+        AND personnel.is_deleted = false
+        AND personnel.project_id = mp.project_id
+      GROUP BY personnel.project_id) AS project_inspector,
     ( -- get me a list of the designers for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-      FROM moped_proj_personnel mpp
-        JOIN moped_users users ON mpp.user_id = users.user_id
-        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
-        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
+      FROM moped_proj_personnel personnel
+        JOIN moped_users users ON personnel.user_id = users.user_id
+        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
       WHERE 1 = 1
-        AND mpr.project_role_name = 'Designer'::text
-        AND mpp.is_deleted = false
-        AND mppr.is_deleted = false
-        AND mpp.project_id = mp.project_id
-      GROUP BY mpp.project_id) AS project_designer,
+        AND roles.project_role_name = 'Designer'::text
+        AND personnel.is_deleted = false
+        AND personnel.project_id = mp.project_id
+      GROUP BY personnel.project_id) AS project_designer,
     ( -- get me all of the tags added to a project
     SELECT string_agg(tags.name, ', '::text) AS string_agg
       FROM moped_proj_tags ptags

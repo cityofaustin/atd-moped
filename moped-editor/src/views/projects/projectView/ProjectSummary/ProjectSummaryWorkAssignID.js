@@ -115,6 +115,7 @@ const ProjectSummaryWorkAssignmentID = ({
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               id="moped-project-work-assignment"
               label={null}
@@ -140,7 +141,7 @@ const ProjectSummaryWorkAssignmentID = ({
             text={
               projectWorkAssignmentID.length > 0
                 ? projectWorkAssignmentID
-                : "None"
+                : ""
             }
             classes={classes}
             onClickEdit={() => setEditMode(true)}
