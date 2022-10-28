@@ -117,12 +117,11 @@ def moped_proj_features():
 
         feature_id = None
 
-
-
         if (check_keys(
             feature["properties"],
             ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"])
             and feature["properties"]["renderType"] == "Point"):
+
             print("Found a drawn point layer!")
             pp.pprint(feature["properties"])
 
@@ -155,6 +154,45 @@ def moped_proj_features():
 
             print(sql, values)
             execute(sql, values, get_result=False)
+
+        elif (check_keys(
+            feature["properties"],
+            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"])
+            and feature["properties"]["renderType"] == "LineString"):
+
+            print("Found a drawn line layer!")
+            pp.pprint(feature["properties"])
+
+            sql = f"""
+            insert into feature_drawn_lines
+            """
+
+            fields = ["component_id", "project_extent_id", "render_type", "source_layer"]
+            values = [
+                record["project_component_id"],
+                feature["properties"]["PROJECT_EXTENT_ID"],
+                feature["properties"]["renderType"],
+                feature["properties"]["sourceLayer"],
+            ]
+
+            sql += "(" + ",\n".join(fields) + ") values ("
+            sql += ",\n".join(["%s"] * len(values)) + ")"
+            sql += "\nreturning id"
+
+            print(sql, values)
+            result = execute(sql, values, get_result=True)
+            feature_id = result["id"]
+
+            sql = f"""
+            update feature_drawn_lines
+            set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+            where id = %s
+            """
+            values = [str(feature["geometry"]), feature_id]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
+
 
         elif (
             record["component_name"] == "Project Extent - Generic"
