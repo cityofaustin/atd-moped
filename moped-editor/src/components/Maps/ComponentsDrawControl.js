@@ -85,7 +85,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
  * @param {function} onCreate - fires after drawing is complete and a feature is created
  * @param {function} onUpdate - fires after a feature is updated (used to update on feature drag)
  * @param {function} onDelete - fires after a feature is selected and deleted with the trash icon
- * @param {boolean} drawLines - tells us if we are drawing lines or not
+ * @param {string} linkMode - tracks if we are editing "lines" or "points"
  * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
  * @param {function} onSelectionChange - fires when a feature is selected
  * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
