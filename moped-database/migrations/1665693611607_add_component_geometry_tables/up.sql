@@ -81,6 +81,9 @@ update moped_components set feature_layer_id = (select id from feature_layers wh
 update moped_components set feature_layer_id = (select id from feature_layers where internal_table = 'feature_intersections'  ) where component_name = 'Signage' and component_subtype = 'RRFB';
 update moped_components set feature_layer_id = (select id from feature_layers where internal_table = 'feature_intersections'  ) where component_name = 'Intersection' and component_subtype = 'Roundabout';
 
+update moped_components set feature_layer_id = (select id from feature_layers where internal_table = 'feature_street_segments') where component_name = 'Intersection' and component_subtype = 'Improvement (linear)';
+update moped_components set feature_layer_id = (select id from feature_layers where internal_table = 'feature_intersections') where component_name = 'Intersection' and component_subtype = 'Improvement';
+
 alter table moped_components alter column feature_layer_id set not null;
 
 create table features (
