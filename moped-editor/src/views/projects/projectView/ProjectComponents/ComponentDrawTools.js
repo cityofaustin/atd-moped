@@ -14,7 +14,6 @@ const ComponentDrawTools = ({
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    // TODO: Refactor this to not pass a function
     setDraftComponent((prevDraftComponent) => {
       const drawnFeatures = cloneDeep(createdFeaturesArray);
 
@@ -42,10 +41,15 @@ const ComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    console.log({ updatedFeaturesArray, action, draftComponent });
+    const wasComponentDragged = action === "move";
 
-    // TODO: look at action type, iterate updatedFeaturesArray, update IDs with uuids and add to draftComponent.features
-    // probably most concerned with drag updates (action === "move")
+    if (wasComponentDragged) {
+      const featureIdsToUpdate = updatedFeaturesArray.map(
+        (feature) => feature.properties["DRAW_ID"]
+      );
+
+      console.log({ featureIdsToUpdate, draftComponent });
+    }
   };
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
@@ -64,7 +68,6 @@ const ComponentDrawTools = ({
         }
       );
 
-      console.log(draftFeaturesToKeep);
       return {
         ...prevDraftComponent,
         features: [...draftFeaturesToKeep],
@@ -85,6 +88,7 @@ const ComponentDrawTools = ({
 
   const initializeExistingDrawFeatures = () => {
     console.log("initializeExistingDrawFeatures");
+    // TODO: This may be needed when we implement editing existing components
   };
 
   return (
