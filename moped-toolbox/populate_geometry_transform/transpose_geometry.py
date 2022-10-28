@@ -113,12 +113,7 @@ def moped_proj_features():
             pp.pprint(feature["geometry"])
         feature_attributes.append(feature["properties"])
 
-        # function to see if certain keys are defined in an object and no others
-        def check_keys(obj, keys):
-            for key in obj.keys():
-                if key not in keys:
-                    return False
-            return True
+        print(feature["properties"])
 
         feature_id = None
         if check_keys(
