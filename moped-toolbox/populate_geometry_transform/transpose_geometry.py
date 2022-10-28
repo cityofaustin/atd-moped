@@ -116,33 +116,27 @@ def moped_proj_features():
         print(feature["properties"])
 
         feature_id = None
-        if check_keys(
+
+
+
+        if (check_keys(
             feature["properties"],
-            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"]
-            and feature["properties"]["renderType"] == "Point",
-        ):
-            print("Found a drawn layer!")
+            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"])
+            and feature["properties"]["renderType"] == "Point"):
+            print("Found a drawn point layer!")
             pp.pprint(feature["properties"])
 
             sql = f"""
-            insert into feature_intersections
+            insert into feature_drawn_points
             """
 
-            fields = ["component_id"]
-            values = [record["project_component_id"]]
-
-            for key, value in feature["properties"].items():
-
-                # key transformation rules
-                key = remove_leading_underscore(key)
-                key = key.lower()
-                key = "render_type" if key == "rendertype" else key
-                key = "knack_id" if key == "id" else key
-                key = "source_layer" if key == "sourcelayer" else key
-                key = "intersection_id" if key == "intersectionid" else key
-
-                fields.append(key)
-                values.append(value)
+            fields = ["component_id", "project_extent_id", "render_type", "source_layer"]
+            values = [
+                record["project_component_id"],
+                feature["properties"]["PROJECT_EXTENT_ID"],
+                feature["properties"]["renderType"],
+                feature["properties"]["sourceLayer"],
+            ]
 
             sql += "(" + ",\n".join(fields) + ") values ("
             sql += ",\n".join(["%s"] * len(values)) + ")"
@@ -153,7 +147,7 @@ def moped_proj_features():
             feature_id = result["id"]
 
             sql = f"""
-            update feature_intersections
+            update feature_drawn_points
             set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
             where id = %s
             """
