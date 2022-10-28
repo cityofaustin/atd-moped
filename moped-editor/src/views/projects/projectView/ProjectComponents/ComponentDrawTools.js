@@ -9,7 +9,7 @@ import { cloneDeep } from "lodash";
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setCursor - function to update the cursor type
  * @param {Function} setIsDrawing - function to update if we are drawing or not
- * @returns
+ * @returns {JSX.Element}
  */
 const ComponentDrawTools = ({
   setDraftComponent,

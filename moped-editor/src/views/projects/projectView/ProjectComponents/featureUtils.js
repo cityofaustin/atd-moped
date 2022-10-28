@@ -24,6 +24,13 @@ import { getIntersectionLabel } from "./utils";
  * }
  */
 
+/**
+ * Make a feature object from a clicked CTN feature and AGOL returned data about it
+ * @param {Object} featureFromAgolGeojson - a feature object from AGOL
+ * @param {Object} clickedFeature - a feature object from a Mapbox click event
+ * @param {Object} ctnLinesGeojson - a feature collection of CTN lines currently in map view
+ * @returns {Object} - a feature object
+ */
 export const makeCapturedFromLayerFeature = (
   featureFromAgolGeojson,
   clickedFeature,
@@ -67,6 +74,7 @@ export const makeCapturedFromLayerFeature = (
  * Make a drawn feature object from GeoJSON output of Mapbox GL Draw
  * @param {Object} feature - GeoJSON feature object from Mapbox GL Draw onCreate
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
+ * @returns {Object} - a feature object
  */
 export const makeDrawnFeature = (feature, linkMode) => {
   feature.properties["DRAW_ID"] = uuidv4();
