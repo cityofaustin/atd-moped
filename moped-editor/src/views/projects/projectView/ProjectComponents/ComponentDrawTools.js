@@ -44,11 +44,28 @@ const ComponentDrawTools = ({
     const wasComponentDragged = action === "move";
 
     if (wasComponentDragged) {
-      const featureIdsToUpdate = updatedFeaturesArray.map(
-        (feature) => feature.properties["DRAW_ID"]
-      );
+      setDraftComponent((prevDraftComponent) => {
+        const featureIdsToUpdate = updatedFeaturesArray.map(
+          (feature) => feature.properties["DRAW_ID"]
+        );
 
-      console.log({ featureIdsToUpdate, draftComponent });
+        const draftFeaturesToKeep = prevDraftComponent.features.filter(
+          (feature) => {
+            if (feature.properties["DRAW_ID"]) {
+              return !featureIdsToUpdate.includes(
+                feature.properties["DRAW_ID"]
+              );
+            } else {
+              return true;
+            }
+          }
+        );
+
+        return {
+          ...prevDraftComponent,
+          features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
+        };
+      });
     }
   };
 
