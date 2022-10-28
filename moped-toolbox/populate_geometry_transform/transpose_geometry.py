@@ -26,11 +26,13 @@ def remove_leading_underscore(arg):
     else:
         return arg
 
+
 def execute(sql, values, get_result=False):
     try:
         update = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
         update.execute(
-            sql, values,
+            sql,
+            values,
         )
         if get_result:
             result = update.fetchone()
@@ -57,7 +59,6 @@ def moped_proj_features():
     truncate features;
     """
     execute(sql, [], get_result=False)
-
 
     feature_attributes = []
 
@@ -106,7 +107,6 @@ def moped_proj_features():
             pp.pprint(feature["geometry"])
         feature_attributes.append(feature["properties"])
 
-        
         # function to see if certain keys are defined in an object and no others
         def check_keys(obj, keys):
             for key in obj.keys():
@@ -115,7 +115,11 @@ def moped_proj_features():
             return True
 
         feature_id = None
-        if check_keys(feature["properties"], ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"] and feature["properties"]["renderType"] == "Point"):
+        if check_keys(
+            feature["properties"],
+            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"]
+            and feature["properties"]["renderType"] == "Point",
+        ):
             print("Found a drawn layer!")
             pp.pprint(feature["properties"])
 
@@ -123,7 +127,7 @@ def moped_proj_features():
             insert into feature_intersections
             """
 
-            fields = ['component_id']
+            fields = ["component_id"]
             values = [record["project_component_id"]]
 
             for key, value in feature["properties"].items():
@@ -131,16 +135,16 @@ def moped_proj_features():
                 # key transformation rules
                 key = remove_leading_underscore(key)
                 key = key.lower()
-                key = 'render_type' if key == 'rendertype' else key
-                key = 'knack_id' if key == 'id' else key
-                key = 'source_layer' if key == 'sourcelayer' else key
-                key = 'intersection_id' if key == 'intersectionid' else key
+                key = "render_type" if key == "rendertype" else key
+                key = "knack_id" if key == "id" else key
+                key = "source_layer" if key == "sourcelayer" else key
+                key = "intersection_id" if key == "intersectionid" else key
 
                 fields.append(key)
                 values.append(value)
-            
+
             sql += "(" + ",\n".join(fields) + ") values ("
-            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += ",\n".join(["%s"] * len(values)) + ")"
             sql += "\nreturning id"
 
             print(sql, values)
@@ -157,9 +161,10 @@ def moped_proj_features():
             print(sql, values)
             execute(sql, values, get_result=False)
 
-
-        elif (record["component_name"] == "Project Extent - Generic" and
-                str(feature["geometry"]["type"]) == "Point"):
+        elif (
+            record["component_name"] == "Project Extent - Generic"
+            and str(feature["geometry"]["type"]) == "Point"
+        ):
             # i think this code which is so similar to the blocks around it could be DRYed up
             # but i don't think it's worth the effort here. see comment below.
 
@@ -167,7 +172,7 @@ def moped_proj_features():
             insert into feature_intersections
             """
 
-            fields = ['component_id']
+            fields = ["component_id"]
             values = [record["project_component_id"]]
 
             for key, value in feature["properties"].items():
@@ -175,16 +180,16 @@ def moped_proj_features():
                 # key transformation rules
                 key = remove_leading_underscore(key)
                 key = key.lower()
-                key = 'render_type' if key == 'rendertype' else key
-                key = 'knack_id' if key == 'id' else key
-                key = 'source_layer' if key == 'sourcelayer' else key
-                key = 'intersection_id' if key == 'intersectionid' else key
+                key = "render_type" if key == "rendertype" else key
+                key = "knack_id" if key == "id" else key
+                key = "source_layer" if key == "sourcelayer" else key
+                key = "intersection_id" if key == "intersectionid" else key
 
                 fields.append(key)
                 values.append(value)
-            
+
             sql += "(" + ",\n".join(fields) + ") values ("
-            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += ",\n".join(["%s"] * len(values)) + ")"
             sql += "\nreturning id"
 
             print(sql, values)
@@ -201,15 +206,21 @@ def moped_proj_features():
             print(sql, values)
             execute(sql, values, get_result=False)
 
-        elif ((record["component_name"] == "Sidewalk" and
-                record["component_subtype"] == 'With Curb and Gutter' and 
-                str(feature["geometry"]["type"]) == 'Point')
-                or
-                # the next three line are just being explicit about how i found record 297
-                (record["component_name"] == "Transit" and 
-                record["component_subtype"] == 'Transit/Bike Lane' and 
-                str(feature["geometry"]["type"]) == 'Point' and
-                record["feature_id"] == 297)):
+        elif (
+            (
+                record["component_name"] == "Sidewalk"
+                and record["component_subtype"] == "With Curb and Gutter"
+                and str(feature["geometry"]["type"]) == "Point"
+            )
+            or
+            # the next three line are just being explicit about how i found record 297
+            (
+                record["component_name"] == "Transit"
+                and record["component_subtype"] == "Transit/Bike Lane"
+                and str(feature["geometry"]["type"]) == "Point"
+                and record["feature_id"] == 297
+            )
+        ):
 
             # i think this code which is so similar to the blocks around it could be DRYed up
             # but i don't think it's worth the effort here
@@ -218,23 +229,23 @@ def moped_proj_features():
             insert into feature_signals
             """
 
-            fields = ['component_id']
+            fields = ["component_id"]
             values = [record["project_component_id"]]
             for key, value in feature["properties"].items():
 
                 # key transformation rules
                 key = remove_leading_underscore(key)
                 key = key.lower()
-                key = 'render_type' if key == 'rendertype' else key
-                key = 'knack_id' if key == 'id' else key
-                key = 'source_layer' if key == 'sourcelayer' else key
-                key = 'intersection_id' if key == 'intersectionid' else key
+                key = "render_type" if key == "rendertype" else key
+                key = "knack_id" if key == "id" else key
+                key = "source_layer" if key == "sourcelayer" else key
+                key = "intersection_id" if key == "intersectionid" else key
 
                 fields.append(key)
                 values.append(value)
-            
+
             sql += "(" + ",\n".join(fields) + ") values ("
-            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += ",\n".join(["%s"] * len(values)) + ")"
             sql += "\nreturning id"
 
             print(sql, values)
@@ -250,7 +261,7 @@ def moped_proj_features():
 
             print(sql, values)
             execute(sql, values, get_result=False)
-        
+
         else:
             # This is the branch which handles records which require no special handling.
             # It handles the vast majority of records.
@@ -259,23 +270,23 @@ def moped_proj_features():
             insert into {record["internal_table"]}
             """
 
-            fields = ['component_id']
+            fields = ["component_id"]
             values = [record["project_component_id"]]
             for key, value in feature["properties"].items():
 
                 # key transformation rules
                 key = remove_leading_underscore(key)
                 key = key.lower()
-                key = 'render_type' if key == 'rendertype' else key
-                key = 'knack_id' if key == 'id' else key
-                key = 'source_layer' if key == 'sourcelayer' else key
-                key = 'intersection_id' if key == 'intersectionid' else key
+                key = "render_type" if key == "rendertype" else key
+                key = "knack_id" if key == "id" else key
+                key = "source_layer" if key == "sourcelayer" else key
+                key = "intersection_id" if key == "intersectionid" else key
 
                 fields.append(key)
                 values.append(value)
-            
+
             sql += "(" + ",\n".join(fields) + ") values ("
-            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += ",\n".join(["%s"] * len(values)) + ")"
             sql += "\nreturning id"
 
             print(sql, values)
