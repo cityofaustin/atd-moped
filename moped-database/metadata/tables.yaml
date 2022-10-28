@@ -6,14 +6,22 @@
       permission:
         check: {}
         columns:
-          - id
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
+          - id
           - geography
     - role: moped-editor
       permission:
         check: {}
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
   select_permissions:
@@ -21,6 +29,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -29,6 +41,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -37,6 +53,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -46,6 +66,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -54,6 +78,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -75,14 +103,22 @@
       permission:
         check: {}
         columns:
-          - id
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
+          - id
           - geography
     - role: moped-editor
       permission:
         check: {}
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
   select_permissions:
@@ -90,6 +126,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -98,6 +138,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -106,6 +150,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -115,6 +163,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -123,6 +175,10 @@
       permission:
         columns:
           - name
+          - project_extent_id
+          - rendertype
+          - source_layer
+          - component_id
           - id
           - geography
         filter: {}
@@ -144,13 +200,14 @@
       permission:
         check: {}
         columns:
-          - id
           - name
-          - intersection_id
-          - project_extent_id
-          - source_layer
           - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
           - geography
+          - project_extent_id
     - role: moped-editor
       permission:
         check: {}
@@ -158,6 +215,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -169,6 +227,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -181,6 +240,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -193,6 +253,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -206,6 +267,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -218,6 +280,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - id
           - intersection_id
           - geography
@@ -269,16 +332,17 @@
       permission:
         check: {}
         columns:
-          - id
-          - name
-          - signal_id
           - knack_id
-          - project_extent_id
           - location_name
+          - name
           - render_type
           - signal_type
           - source_layer
+          - component_id
+          - id
+          - signal_id
           - geography
+          - project_extent_id
     - role: moped-editor
       permission:
         check: {}
@@ -289,6 +353,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -303,6 +368,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -318,6 +384,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -333,6 +400,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -349,6 +417,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -364,6 +433,7 @@
           - render_type
           - signal_type
           - source_layer
+          - component_id
           - id
           - signal_id
           - geography
@@ -387,19 +457,20 @@
       permission:
         check: {}
         columns:
-          - id
-          - name
-          - knack_id
-          - ctn_segment_id
-          - project_extent_id
-          - from_address_min
-          - render_type
-          - to_address_max
           - full_street_name
+          - knack_id
           - line_type
-          - symbol
+          - name
+          - render_type
           - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
           - geography
+          - project_extent_id
     - role: moped-editor
       permission:
         check: {}
@@ -410,6 +481,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
@@ -427,6 +499,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
@@ -445,6 +518,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
@@ -463,6 +537,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
@@ -482,6 +557,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
@@ -500,6 +576,7 @@
           - name
           - render_type
           - source_layer
+          - component_id
           - ctn_segment_id
           - from_address_min
           - id
