@@ -127,7 +127,7 @@ create table feature_drawn_points (
     project_extent_id character varying,
     render_type character varying,
     source_layer character varying,
-    geography geography('MULTILINESTRING') default null
+    geography geography('MULTIPOINT') default null
     ) inherits (features);
 
 create table feature_drawn_lines (
