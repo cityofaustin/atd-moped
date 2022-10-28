@@ -83,9 +83,6 @@ update moped_components set feature_layer_id = (select id from feature_layers wh
 
 alter table moped_components alter column feature_layer_id set not null;
 
-alter table moped_proj_components
-  add column feature_layer_id_override integer references feature_layers(id);
-
 create table features (
     id serial primary key, 
     component_id integer references moped_proj_components(project_component_id),
@@ -190,7 +187,7 @@ create view project_geography as (
     from moped_project
     join moped_proj_components on (moped_proj_components.project_id = moped_project.project_id)
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
-    join feature_layers on (coalesce(moped_proj_components.feature_layer_id_override, moped_components.feature_layer_id) = feature_layers.id)
+    join feature_layers on (moped_components.feature_layer_id = feature_layers.id)
     join uniform_features on (moped_proj_components.project_component_id = uniform_features.component_id)
     --join component_feature_map on (moped_proj_components.project_component_id = component_feature_map.component_id)
     --join uniform_features on (component_feature_map.feature_id = uniform_features.id)
