@@ -1,10 +1,12 @@
 #!/usr/bin/python3
 
+from operator import truediv
 import os
 
 import psycopg2
 import psycopg2.extras
 import geojson
+import time
 
 import pprint
 
@@ -57,6 +59,8 @@ def moped_proj_features():
     execute(sql, [], get_result=False)
 
 
+    feature_attributes = []
+
     sql = """
     select
       moped_proj_components.project_id,
@@ -100,9 +104,23 @@ def moped_proj_features():
             print(str(record["feature_id"]) + ": " + str(feature["geometry"]["type"]))
             pp.pprint(feature["properties"])
             pp.pprint(feature["geometry"])
+        feature_attributes.append(feature["properties"])
+
+        
+        # function to see if certain keys are defined in an object and no others
+        def check_keys(obj, keys):
+            for key in obj.keys():
+                if key not in keys:
+                    return False
+            return True
 
         feature_id = None
-        if (record["component_name"] == "Project Extent - Generic" and
+        if check_keys(feature["properties"], ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"]):
+            print("Found a drawn layer!")
+            pp.pprint(feature["properties"])
+            time.sleep(10)
+
+        elif (record["component_name"] == "Project Extent - Generic" and
                 str(feature["geometry"]["type"]) == "Point"):
             # i think this code which is so similar to the blocks around it could be DRYed up
             # but i don't think it's worth the effort here. see comment below.
@@ -236,6 +254,8 @@ def moped_proj_features():
             print(sql, values)
             execute(sql, values, get_result=False)
         print("\n\n\n")
+
+    pp.pprint(feature_attributes)
 
 
 def main():
