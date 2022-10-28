@@ -1,4 +1,55 @@
 import { v4 as uuidv4 } from "uuid";
+import { getIntersectionLabel } from "./utils";
+
+/**
+ * Captured from feature object example
+ * {
+ *    "geometry": {
+ *        "type": "LineString",
+ *        "coordinates": [],
+ *    },
+ *    "properties": {
+ *        "OBJECTID": 20041,
+ *        "CTN_SEGMENT_ID": 153083,
+ *        "FULL_STREET_NAME": "W MARTIN LUTHER KING JR BLVD",
+ *        "FROM_ADDRESS_MIN": 300,
+ *        "TO_ADDRESS_MAX": 303,
+ *        "LINE_TYPE": "On-Street",
+ *        "GLOBALID": "cb89d800-d6a3-491f-91e6-61cab17ac738",
+ *        "Shape__Length": 60.3716805891339,
+ *        "id": 20041,
+ *        "_layerId": "ctn-lines-underlay",
+ *        "_label": "300 BLK W MARTIN LUTHER KING JR BLVD"
+ *    }
+ * }
+ */
+
+export const makeCapturedFromLayerFeature = (
+  featureFromAgolGeojson,
+  clickedFeature,
+  ctnLinesGeojson
+) => {
+  const newFeature = {
+    geometry: featureFromAgolGeojson.geometry,
+    properties: {
+      ...featureFromAgolGeojson.properties,
+      id: featureFromAgolGeojson.id,
+      // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
+      _layerId: clickedFeature.layer.id,
+    },
+  };
+
+  if (newFeature.properties._layerId.includes("point")) {
+    newFeature.properties._label = getIntersectionLabel(
+      newFeature,
+      ctnLinesGeojson
+    );
+  } else {
+    newFeature.properties._label = `${newFeature.properties.FROM_ADDRESS_MIN} BLK ${newFeature.properties.FULL_STREET_NAME}`;
+  }
+
+  return newFeature;
+};
 
 /**
  * Drawn feature object example

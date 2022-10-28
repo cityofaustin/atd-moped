@@ -6,7 +6,7 @@ import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { getIntersectionLabel, useFeatureTypes } from "./utils";
+import { useFeatureTypes } from "./utils";
 import { useAgolFeatures } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
@@ -15,7 +15,7 @@ import {
   ProjectComponentsSourcesAndLayers,
 } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { isDrawnFeature } from "./featureUtils";
+import { isDrawnFeature, makeCapturedFromLayerFeature } from "./featureUtils";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -153,27 +153,14 @@ export default function TheMap({
 
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
-    const clickedFeatureFromAgolGeojson =
+    const featureFromAgolGeojson =
       findFeatureInAgolGeojsonFeatures(clickedFeature);
 
-    const newFeature = {
-      geometry: clickedFeatureFromAgolGeojson.geometry,
-      properties: {
-        ...clickedFeatureFromAgolGeojson.properties,
-        id: clickedFeatureFromAgolGeojson.id,
-        // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
-        _layerId: clickedFeature.layer.id,
-      },
-    };
-
-    if (newFeature.properties._layerId.includes("point")) {
-      newFeature.properties._label = getIntersectionLabel(
-        newFeature,
-        ctnLinesGeojson
-      );
-    } else {
-      newFeature.properties._label = `${newFeature.properties.FROM_ADDRESS_MIN} BLK ${newFeature.properties.FULL_STREET_NAME}`;
-    }
+    const newFeature = makeCapturedFromLayerFeature(
+      featureFromAgolGeojson,
+      clickedFeature,
+      ctnLinesGeojson
+    );
 
     newDraftComponent.features.push(newFeature);
     setDraftComponent(newDraftComponent);
