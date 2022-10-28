@@ -145,15 +145,6 @@ def moped_proj_features():
             print(sql, values)
             execute(sql, values, get_result=False)
 
-            # set the override field for this row
-            sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
-
-            ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS = 5
-            values = [ID_OF_INTERSECTION_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
-
-            print(sql, values)
-            execute(sql, values, get_result=False)
-
         elif ((record["component_name"] == "Sidewalk" and
                 record["component_subtype"] == 'With Curb and Gutter' and 
                 str(feature["geometry"]["type"]) == 'Point')
@@ -200,15 +191,6 @@ def moped_proj_features():
             where id = %s
             """
             values = [str(feature["geometry"]), feature_id]
-
-            print(sql, values)
-            execute(sql, values, get_result=False)
-
-            # set the override field for this row
-            sql = "update moped_proj_components set feature_layer_id_override = %s where project_component_id = %s"
-
-            ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS = 3
-            values = [ID_OF_SIGNALS_TABLE_IN_FEATURE_LAYERS, record["project_component_id"]]
 
             print(sql, values)
             execute(sql, values, get_result=False)
