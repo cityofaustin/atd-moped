@@ -115,10 +115,48 @@ def moped_proj_features():
             return True
 
         feature_id = None
-        if check_keys(feature["properties"], ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"]):
+        if check_keys(feature["properties"], ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"] and feature["properties"]["renderType"] == "Point"):
             print("Found a drawn layer!")
             pp.pprint(feature["properties"])
-            time.sleep(10)
+
+            sql = f"""
+            insert into feature_intersections
+            """
+
+            fields = ['component_id']
+            values = [record["project_component_id"]]
+
+            for key, value in feature["properties"].items():
+
+                # key transformation rules
+                key = remove_leading_underscore(key)
+                key = key.lower()
+                key = 'render_type' if key == 'rendertype' else key
+                key = 'knack_id' if key == 'id' else key
+                key = 'source_layer' if key == 'sourcelayer' else key
+                key = 'intersection_id' if key == 'intersectionid' else key
+
+                fields.append(key)
+                values.append(value)
+            
+            sql += "(" + ",\n".join(fields) + ") values ("
+            sql += ",\n".join(["%s"] * len(values)) + ')'
+            sql += "\nreturning id"
+
+            print(sql, values)
+            result = execute(sql, values, get_result=True)
+            feature_id = result["id"]
+
+            sql = f"""
+            update feature_intersections
+            set geography = ST_Multi(ST_SetSRID(ST_GeomFromGeoJSON(%s), 4326))::geography
+            where id = %s
+            """
+            values = [str(feature["geometry"]), feature_id]
+
+            print(sql, values)
+            execute(sql, values, get_result=False)
+
 
         elif (record["component_name"] == "Project Extent - Generic" and
                 str(feature["geometry"]["type"]) == "Point"):
