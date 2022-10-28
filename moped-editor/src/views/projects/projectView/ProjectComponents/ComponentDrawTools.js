@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+import { makeDrawnFeature } from "./featureUtils";
 import { cloneDeep } from "lodash";
-import { v4 as uuidv4 } from "uuid";
 
 const ComponentDrawTools = ({
   draftComponent,
@@ -22,13 +22,13 @@ const ComponentDrawTools = ({
         prevDraftComponent.features
       ).filter((feature) => !!feature.properties?.["DRAW_ID"]);
 
-      // Add a unique id to each drawn feature's properties
-      drawnFeatures.forEach(
-        (feature) => (feature.properties["DRAW_ID"] = uuidv4())
-      );
+      // Add properties needed to distinguish drawn features from other features
+      drawnFeatures.forEach((feature) => {
+        makeDrawnFeature(feature, linkMode);
+      });
 
       // We must override the features in the draw control's internal state with ones
-      // that have "DRAW_ID" properties so that we can find them later in onDelete
+      // that have our added properties so that we can find them later in onDelete
       drawControlsRef.current.set({
         type: "FeatureCollection",
         features: [...previouslyDrawnFeatures, ...drawnFeatures],
@@ -84,7 +84,6 @@ const ComponentDrawTools = ({
       setCursor("crosshair");
       setIsDrawing(true);
     } else {
-      setCursor("grab");
       setIsDrawing(false);
     }
   };
