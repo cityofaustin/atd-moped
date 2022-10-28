@@ -61,12 +61,12 @@ export const makeCapturedFromLayerFeature = (
 /**
  * Drawn feature object example
  * {
- *   id: "9e0c688733283be4991cb9df39ae284d",
- *   type: "Feature",
- *   properties: {
- *     DRAW_ID: "88230580-099f-4c93-b8e5-ad3086caf0e6",
- *     _layerId: "drawnByUserLine",
- *     geometry: { coordinates: [], type: "LineString" },
+ *   "id": "9e0c688733283be4991cb9df39ae284d",
+ *   "geometry": { coordinates: [], type: "LineString" },
+ *   "type": "Feature",
+ *   "properties": {
+ *     "DRAW_ID": "88230580-099f-4c93-b8e5-ad3086caf0e6",
+ *     "_layerId": "drawnByUserLine",
  * }
  */
 
