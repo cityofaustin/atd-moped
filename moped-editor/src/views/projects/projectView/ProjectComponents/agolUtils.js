@@ -32,7 +32,7 @@ const getQuerySring = (bounds) => {
     .join("&");
 };
 
-const deDeupeFeatures = (features, featureIdProp) => {
+const deDedupeFeatures = (features, featureIdProp) => {
   // courtesy of: https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
   return features.filter(
     (value, index, self) =>
@@ -48,7 +48,7 @@ on a previous state is a great use case for useReducer, because
 it allows us to work around an infinite recursion scenario in useEffect  */
 const featureReducer = (geojson, { features, featureIdProp }) => {
   const allFeatures = [...geojson.features, ...features];
-  const uniqueFeatures = deDeupeFeatures(allFeatures, featureIdProp);
+  const uniqueFeatures = deDedupeFeatures(allFeatures, featureIdProp);
   return { type: "FeatureCollection", features: uniqueFeatures };
 };
 

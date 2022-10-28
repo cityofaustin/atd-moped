@@ -12,7 +12,6 @@ const ComponentDrawTools = ({
   const drawControlsRef = useRef();
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
-  //   console.log({ draftComponent });
   const onCreate = ({ features: createdFeaturesArray }) => {
     // TODO: Refactor this to not pass a function
     setDraftComponent((prevDraftComponent) => {
@@ -27,8 +26,8 @@ const ComponentDrawTools = ({
         (feature) => (feature.properties["DRAW_ID"] = uuidv4())
       );
 
-      // We must override the draw control's features with ones that have "DRAW_ID" properties
-      // so that we can access them when we want to delete them by UUID before saving
+      // We must override the features in the draw control's internal state with ones
+      // that have "DRAW_ID" properties so that we can find them later in onDelete
       drawControlsRef.current.set({
         type: "FeatureCollection",
         features: [...previouslyDrawnFeatures, ...drawnFeatures],

@@ -22,28 +22,17 @@ mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-const deDeupeProjectFeatures = (features) => {
-  return features.filter(
-    (value, index, self) =>
-      index ===
-      self.findIndex(
-        (f) =>
-          f.properties.id === value.properties.id &&
-          f.properties._layerId === value.properties._layerId
-      )
-  );
-};
-
-// returns geojson of **unique** features across all components
+// returns geojson of features across all components
 const useProjectFeatures = (components) =>
   useMemo(() => {
     const allComponentfeatures = [];
     components.forEach((component) =>
       allComponentfeatures.push(component.features)
     );
+
     return {
       type: "FeatureCollection",
-      features: deDeupeProjectFeatures(allComponentfeatures.flat()),
+      features: allComponentfeatures.flat(),
     };
   }, [components]);
 
