@@ -62,6 +62,7 @@ export default function TheMap({
   const [cursor, setCursor] = useState("grap");
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
+  const [isDrawing, setIsDrawing] = useState(false);
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
@@ -209,11 +210,13 @@ export default function TheMap({
         setDraftComponent={setDraftComponent}
         linkMode={linkMode}
         setCursor={setCursor}
+        setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers
         data={data}
         isEditingComponent={isEditingComponent}
+        isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}
         clickedComponent={clickedComponent}

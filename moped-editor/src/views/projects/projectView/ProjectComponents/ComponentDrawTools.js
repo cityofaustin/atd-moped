@@ -8,6 +8,7 @@ const ComponentDrawTools = ({
   setDraftComponent,
   linkMode,
   setCursor,
+  setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
@@ -81,8 +82,10 @@ const ComponentDrawTools = ({
     // Handle isHovering the same way so that one isn't overriding the other
     if (mode === "draw_point" || mode === "draw_line_string") {
       setCursor("crosshair");
+      setIsDrawing(true);
     } else {
       setCursor("grab");
+      setIsDrawing(false);
     }
   };
 

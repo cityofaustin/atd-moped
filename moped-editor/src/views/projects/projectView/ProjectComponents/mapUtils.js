@@ -68,6 +68,7 @@ export const ProjectComponentsSourcesAndLayers = ({
   linkMode,
   clickedComponent,
   componentFeatureCollection,
+  isDrawing,
 }) => {
   // This is a temporary to get data into the map sources
   const {
@@ -79,8 +80,10 @@ export const ProjectComponentsSourcesAndLayers = ({
   } = data;
 
   const isViewingComponents = !isEditingComponent && !clickedComponent;
-  const isEditingLines = isEditingComponent && linkMode === "lines";
-  const isEditingPoints = isEditingComponent && linkMode === "points";
+  const isEditingLines =
+    isEditingComponent && linkMode === "lines" && !isDrawing;
+  const isEditingPoints =
+    isEditingComponent && linkMode === "points" && !isDrawing;
   const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
 
   return (
