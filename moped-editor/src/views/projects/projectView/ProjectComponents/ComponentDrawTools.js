@@ -4,7 +4,6 @@ import { makeDrawnFeature } from "./featureUtils";
 import { cloneDeep } from "lodash";
 
 const ComponentDrawTools = ({
-  draftComponent,
   setDraftComponent,
   linkMode,
   setCursor,
@@ -92,11 +91,19 @@ const ComponentDrawTools = ({
     });
   };
 
-  const onModeChange = (e) => {
-    const { mode } = e;
-
+  const onModeChange = ({ mode }) => {
     if (mode === "draw_point" || mode === "draw_line_string") {
       setCursor("crosshair");
+      setIsDrawing(true);
+    } else {
+      setIsDrawing(false);
+    }
+  };
+
+  const onSelectionChange = ({ features: selectedFeaturesArray }) => {
+    const areFeaturesSelected = selectedFeaturesArray.length > 0;
+
+    if (areFeaturesSelected) {
       setIsDrawing(true);
     } else {
       setIsDrawing(false);
@@ -117,6 +124,7 @@ const ComponentDrawTools = ({
         onUpdate={onUpdate}
         linkMode={linkMode}
         onModeChange={onModeChange}
+        onSelectionChange={onSelectionChange}
         initializeExistingDrawFeatures={initializeExistingDrawFeatures}
       />
     )

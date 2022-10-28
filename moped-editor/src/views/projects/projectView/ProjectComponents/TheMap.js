@@ -133,10 +133,10 @@ export default function TheMap({
       (feature) => feature.layer.id === draftLayerId
     );
 
-    if (
-      clickedDraftComponentFeature &&
-      !isDrawnFeature(clickedDraftComponentFeature)
-    ) {
+    // If we clicked a drawn feature, we don't need to capture from the CTN layers
+    if (isDrawnFeature(clickedDraftComponentFeature)) return;
+
+    if (clickedDraftComponentFeature) {
       // remove project feature, ignore underlying CTN features
       const filteredFeatures = draftComponent.features.filter((compFeature) => {
         return !(
@@ -211,7 +211,6 @@ export default function TheMap({
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
       <ComponentDrawTools
-        draftComponent={draftComponent}
         setDraftComponent={setDraftComponent}
         linkMode={linkMode}
         setCursor={setCursor}

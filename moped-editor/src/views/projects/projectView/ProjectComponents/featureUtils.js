@@ -25,4 +25,4 @@ export const makeDrawnFeature = (feature, linkMode) => {
 };
 
 export const isDrawnFeature = (feature) =>
-  feature.properties?.DRAW_ID ? true : false;
+  feature?.properties?.DRAW_ID ? true : false;

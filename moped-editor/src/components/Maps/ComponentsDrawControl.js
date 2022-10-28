@@ -1,7 +1,9 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
-import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
+import mapboxDrawStylesOverrides, {
+  activeLineWidth,
+} from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here
@@ -18,6 +20,7 @@ export const DrawControl = React.forwardRef((props, ref) => {
         // This override prevents the introduction of line midpoints and vertices into line string geometries
         props.overrideDirectSelect();
       });
+      map.on("draw.selectionchange", props.onSelectionChange);
       map.on("load", props.initializeExistingDrawFeatures);
 
       return new MapboxDraw(props);
@@ -80,9 +83,11 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned
  * @param {function} onCreate - fires after drawing is complete and a feature is created
+ * @param {function} onUpdate - fires after a feature is updated (used to update on feature drag)
  * @param {function} onDelete - fires after a feature is selected and deleted with the trash icon
  * @param {boolean} drawLines - tells us if we are drawing lines or not
  * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
+ * @param {function} onSelectionChange - fires when a feature is selected
  * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
  * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads
  * @return {JSX.Element} The whole map draw UI
@@ -96,6 +101,7 @@ const ComponentsDrawControl = React.forwardRef(
       onDelete,
       linkMode,
       onModeChange,
+      onSelectionChange,
       initializeExistingDrawFeatures,
     },
     ref
@@ -117,11 +123,12 @@ const ComponentsDrawControl = React.forwardRef(
       position: "top-right",
       displayControlsDefault: false, // Disable to allow us to set which controls to show
       default_mode: "simple_select",
-      clickBuffer: 12,
+      clickBuffer: activeLineWidth,
       onCreate,
       onUpdate,
       onDelete,
       onModeChange,
+      onSelectionChange,
       initializeExistingDrawFeatures,
       overrideDirectSelect,
       styles: mapboxDrawStylesOverrides,
