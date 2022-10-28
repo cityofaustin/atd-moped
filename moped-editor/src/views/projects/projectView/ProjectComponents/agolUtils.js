@@ -54,7 +54,7 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
 
 /**
  * Fetch CTN lines and points and a helper to find a feature record that matches a clicked layer feature by ID
- * @param {String} linkMode - the current link mode ("lines" or "points")
+ * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
  * @param {Number} currentZoom - current level of zoom in the map
  * @param {Array} bounds - the current map bounds

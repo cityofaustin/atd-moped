@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 /**
- * Drawn feature properties
+ * Drawn feature object example
  * {
  *   id: "9e0c688733283be4991cb9df39ae284d",
  *   type: "Feature",
@@ -10,6 +10,12 @@ import { v4 as uuidv4 } from "uuid";
  *     _layerId: "drawnByUserLine",
  *     geometry: { coordinates: [], type: "LineString" },
  * }
+ */
+
+/**
+ * Make a drawn feature object from GeoJSON output of Mapbox GL Draw
+ * @param {Object} feature - GeoJSON feature object from Mapbox GL Draw onCreate
+ * @param {String} linkMode - tracks if we are editing "lines" or "points"
  */
 export const makeDrawnFeature = (feature, linkMode) => {
   feature.properties["DRAW_ID"] = uuidv4();
@@ -24,5 +30,10 @@ export const makeDrawnFeature = (feature, linkMode) => {
   }
 };
 
+/**
+ * Determine if a feature is drawn by the user
+ * @param {Object} feature
+ * @returns {Boolean} - true if feature is drawn by user
+ */
 export const isDrawnFeature = (feature) =>
   feature?.properties?.DRAW_ID ? true : false;
