@@ -17,6 +17,7 @@ import makeStyles from "@material-ui/core/styles/makeStyles";
 import AddCircle from "@material-ui/icons/AddCircle";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 import {
   TAGS_QUERY,
@@ -64,6 +65,8 @@ const useStyles = makeStyles((theme) => ({
 const TagsSection = ({ projectId }) => {
   const [addTagMode, setAddTagMode] = useState(false);
   const [newTagList, setNewTagList] = useState([]);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(TAGS_QUERY, {
     variables: { projectId: projectId },
@@ -130,6 +133,11 @@ const TagsSection = ({ projectId }) => {
       .then(() => handleNewTagCancel());
   };
 
+  const handleDeleteOpen = (id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <Paper elevation={2} className={classes.paperTags}>
@@ -150,11 +158,18 @@ const TagsSection = ({ projectId }) => {
         <Box component={"ul"} className={classes.chipContainer}>
           {data.moped_proj_tags.map((tag) => (
             <li key={tag.id}>
-              <Chip
-                label={tag.moped_tag.name}
-                onDelete={() => handleTagDelete(tag)}
-                className={classes.chip}
-              />
+              <DeleteConfirmationModal
+                type="tag"
+                submitDelete={() => handleTagDelete(deleteConfirmationId)}
+                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+              >
+                <Chip
+                  label={tag.moped_tag.name}
+                  onDelete={() => handleDeleteOpen(tag)}
+                  className={classes.chip}
+                />
+              </DeleteConfirmationModal>
             </li>
           ))}
           {addTagMode && (
