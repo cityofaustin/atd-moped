@@ -81,7 +81,6 @@ const ComponentEditModal = ({
   setDraftComponent,
   setLinkMode,
   setIsEditingComponent,
-  linkMode,
 }) => {
   const classes = useStyles();
 

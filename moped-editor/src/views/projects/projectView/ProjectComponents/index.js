@@ -226,7 +226,6 @@ export default function MapView({ projectName, projectStatuses }) {
           <ComponentEditModal
             showDialog={showComponentEditDialog}
             setShowDialog={setShowComponentEditDialog}
-            draftComponent={draftComponent}
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
             setIsEditingComponent={setIsEditingComponent}
