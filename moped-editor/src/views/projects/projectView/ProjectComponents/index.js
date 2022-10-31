@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { useMutation } from "@apollo/client";
 import { makeStyles } from "@material-ui/core/styles";
 import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -18,6 +19,7 @@ import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight } from "./utils";
+import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 
 const drawerWidth = 350;
 
@@ -85,6 +87,8 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
+  const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
+
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
     const featureCollection = {
@@ -109,6 +113,9 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const onSaveComponent = () => {
     const newComponents = [...components, draftComponent];
+
+    console.log(draftComponent);
+
     setComponents(newComponents);
     setIsEditingComponent(false);
     setDraftComponent(null);

@@ -18,3 +18,17 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
     }
   }
 `;
+
+export const ADD_PROJECT_COMPONENT = gql`
+  mutation AddProjectComonent($object: moped_proj_components_insert_input!) {
+    insert_moped_proj_components_one(object: $object) {
+      component_id
+      description
+      interim_project_component_id
+      is_deleted
+      name
+      project_component_id
+      project_id
+    }
+  }
+`;
