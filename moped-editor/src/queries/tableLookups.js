@@ -39,5 +39,10 @@ export const TABLE_LOOKUPS_QUERY = gql`
       slug
       type
     }
+    moped_entity(order_by: { entity_name: asc }) {
+      entity_id
+      entity_name
+     
+    }
   }
 `;
