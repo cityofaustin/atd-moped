@@ -4,7 +4,10 @@ import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 import { v4 as uuidv4 } from "uuid";
 import { Icon } from "@material-ui/core";
-import { Room as RoomIcon, Timeline as TimelineIcon } from "@material-ui/icons";
+import {
+  RoomOutlined as RoomOutlinedIcon,
+  Timeline as TimelineIcon,
+} from "@material-ui/icons";
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
@@ -44,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     marginRight: theme.spacing(1),
+    color: theme.palette.primary.main,
   },
 }));
 
@@ -60,7 +64,7 @@ export const ComponentOptionWithIcon = ({ option }) => {
     <>
       <span className={classes.iconContainer}>
         {line_representation === true && <TimelineIcon />}
-        {line_representation === false && <RoomIcon />}
+        {line_representation === false && <RoomOutlinedIcon />}
         {/* Fall back to a blank icon to keep labels lined up */}
         {line_representation === null && <Icon />}
       </span>{" "}
