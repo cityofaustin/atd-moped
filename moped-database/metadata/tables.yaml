@@ -749,6 +749,10 @@
 - table:
     name: moped_components
     schema: public
+  object_relationships:
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
     - name: moped_subcomponents
       using:
