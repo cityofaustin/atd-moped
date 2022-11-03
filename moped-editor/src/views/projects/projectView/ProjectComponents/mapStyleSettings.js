@@ -24,7 +24,7 @@ export const COLORS = {
  */
 export const MAP_STYLES = {
   "project-points": {
-    isInteractive: false,
+    isInteractive: true,
     layerProps: {
       id: "project-points",
       _featureIdProp: "INTERSECTION_ID",
@@ -45,7 +45,7 @@ export const MAP_STYLES = {
     },
   },
   "project-lines": {
-    isInteractive: false,
+    isInteractive: true,
     layerProps: {
       id: "project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
@@ -72,7 +72,7 @@ export const MAP_STYLES = {
   "project-points-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-points",
+      id: "project-points-muted",
       _featureIdProp: "INTERSECTION_ID",
       type: "circle",
       paint: {
@@ -93,7 +93,7 @@ export const MAP_STYLES = {
   "project-lines-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-lines",
+      id: "project-lines-muted",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {

@@ -78,6 +78,11 @@ export const ProjectComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
+  const isViewingComponents = !isEditingComponent && !clickedComponent;
+  const isEditingLines = isEditingComponent && linkMode === "lines";
+  const isEditingPoints = isEditingComponent && linkMode === "points";
+  const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
+
   return (
     <>
       <Source
@@ -92,8 +97,7 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["ctn-lines-underlay"].layerProps,
             layout: {
               ...mapStyles["ctn-lines-underlay"].layerProps.layout,
-              visibility:
-                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+              visibility: isEditingLines ? "visible" : "none",
             },
           }}
         />
@@ -104,8 +108,45 @@ export const ProjectComponentsSourcesAndLayers = ({
             ...mapStyles["ctn-lines"].layerProps,
             layout: {
               ...mapStyles["ctn-lines"].layerProps.layout,
-              visibility:
-                isEditingComponent && linkMode === "lines" ? "visible" : "none",
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+      </Source>
+
+      <Source
+        id="project-lines"
+        type="geojson"
+        data={projectLines}
+        promoteId="id"
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-lines-underlay"].layerProps,
+            layout: {
+              ...mapStyles["project-lines-underlay"].layerProps.layout,
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-lines"].layerProps,
+            layout: {
+              ...mapStyles["project-lines"].layerProps.layout,
+              visibility: isViewingComponents ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-lines-muted"].layerProps,
+            layout: {
+              ...mapStyles["project-lines-muted"].layerProps.layout,
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
         />
@@ -122,10 +163,7 @@ export const ProjectComponentsSourcesAndLayers = ({
           {...{
             ...mapStyles["ctn-points-underlay"].layerProps,
             layout: {
-              visibility:
-                isEditingComponent && linkMode === "points"
-                  ? "visible"
-                  : "none",
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -134,32 +172,9 @@ export const ProjectComponentsSourcesAndLayers = ({
           {...{
             ...mapStyles["ctn-points"].layerProps,
             layout: {
-              visibility:
-                isEditingComponent && linkMode === "points"
-                  ? "visible"
-                  : "none",
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
-        />
-      </Source>
-
-      <Source
-        id="project-lines"
-        type="geojson"
-        data={projectLines}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...mapStyles["project-lines-underlay"].layerProps}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-lines-muted"
-              : "project-lines"
-          ].layerProps}
         />
       </Source>
 
@@ -171,11 +186,22 @@ export const ProjectComponentsSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          {...mapStyles[
-            clickedComponent || isEditingComponent
-              ? "project-points-muted"
-              : "project-points"
-          ].layerProps}
+          {...{
+            ...mapStyles["project-points"].layerProps,
+            layout: {
+              ...mapStyles["project-points"].layerProps.layout,
+              visibility: isViewingComponents ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["project-points-muted"].layerProps,
+            layout: {
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
+            },
+          }}
         />
       </Source>
 

@@ -16,6 +16,7 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
+  ComponentOptionWithIcon,
   makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
@@ -40,6 +41,7 @@ const initialFormValues = {
 const ControlledAutocomplete = ({
   id,
   options,
+  renderOption,
   name,
   control,
   label,
@@ -56,6 +58,7 @@ const ControlledAutocomplete = ({
         multiple={multiple}
         getOptionLabel={(option) => option?.label || ""}
         getOptionSelected={(option, value) => option?.value === value?.value}
+        renderOption={renderOption}
         value={value}
         renderInput={(params) => (
           <TextField
@@ -153,6 +156,9 @@ const ComponentEditModal = ({
                 id="component"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
+                renderOption={(option) => (
+                  <ComponentOptionWithIcon option={option} />
+                )}
                 name="component"
                 control={control}
                 autoFocus

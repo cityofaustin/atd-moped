@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef } from "react";
+import { SOURCES, MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
 
 /**
  * Provides a hook and supporting functions to query an AGOL feature service
@@ -49,6 +50,80 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
   const allFeatures = [...geojson.features, ...features];
   const uniqueFeatures = deDeupeFeatures(allFeatures, featureIdProp);
   return { type: "FeatureCollection", features: uniqueFeatures };
+};
+
+/**
+ * Find a fetched AGOL feature record by unique ID
+ * @param {Object} clickedFeature - the feature clicked on the map
+ * @param {String} linkMode - the current link mode ("lines" or "points")
+ * @param {Object} ctnLinesGeojson - Feature collection containing query results for CTN lines
+ * @param {Object} ctnPointsGeojson - Feature collection containing query results for CTN points
+ * @returns {Object} - a feature object from AGOL data
+ */
+export const findFeatureInAgolGeojsonFeatures = (
+  clickedFeature,
+  linkMode,
+  ctnLinesGeojson,
+  ctnPointsGeojson
+) => {
+  if (linkMode === "lines") {
+    const linesIdProperty = SOURCES["ctn-lines"]._featureIdProp;
+    const clickedFeatureId = clickedFeature.properties[linesIdProperty];
+
+    return ctnLinesGeojson.features.find(
+      (feature) => feature.properties[linesIdProperty] === clickedFeatureId
+    );
+  } else if (linkMode === "points") {
+    const pointsIdProperty = SOURCES["ctn-points"]._featureIdProp;
+    const clickedFeatureId = clickedFeature.properties[pointsIdProperty];
+
+    return ctnPointsGeojson.features.find(
+      (feature) => feature.properties[pointsIdProperty] === clickedFeatureId
+    );
+  }
+};
+
+/**
+ * Fetch CTN lines and points and a helper to find a feature record that matches a clicked layer feature by ID
+ * @param {String} linkMode - the current link mode ("lines" or "points")
+ * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
+ * @param {Number} currentZoom - current level of zoom in the map
+ * @param {Array} bounds - the current map bounds
+ * @returns {AgolFeaturesObject}
+ */
+/**
+ * @typedef {Object} AgolFeaturesObject
+ * @property {Object} ctnLinesGeojson - Feature collection containing query results for CTN lines
+ * @property {Object} ctnPointsGeojson - Feature collection containing query results for CTN points
+ */
+export const useAgolFeatures = (
+  linkMode,
+  setIsFetchingFeatures,
+  currentZoom,
+  bounds
+) => {
+  const ctnLinesGeojson = useFeatureService({
+    layerId: SOURCES["ctn-lines"].featureService.layerId,
+    name: SOURCES["ctn-lines"].featureService.name,
+    bounds,
+    isVisible: linkMode === "lines" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
+    featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
+    setIsFetchingFeatures,
+  });
+
+  const ctnPointsGeojson = useFeatureService({
+    layerId: SOURCES["ctn-points"].featureService.layerId,
+    name: SOURCES["ctn-points"].featureService.name,
+    bounds,
+    isVisible: linkMode === "points" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
+    featureIdProp: SOURCES["ctn-points"]._featureIdProp,
+    setIsFetchingFeatures,
+  });
+
+  return {
+    ctnLinesGeojson,
+    ctnPointsGeojson,
+  };
 };
 
 /* Hook which AGOL rest service for features within a bbox, and continuously
