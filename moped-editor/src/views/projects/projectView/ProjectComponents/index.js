@@ -114,7 +114,18 @@ export default function MapView({ projectName, projectStatuses }) {
   const onSaveComponent = () => {
     const newComponents = [...components, draftComponent];
 
+    const { component_id, description, moped_subcomponents } = draftComponent;
+
     console.log(draftComponent);
+    console.log(draftComponent.features);
+    const newComponentData = {
+      description,
+      component_id,
+      project_id: 156,
+      moped_proj_components_subcomponents: {
+        data: moped_subcomponents,
+      },
+    };
 
     setComponents(newComponents);
     setIsEditingComponent(false);

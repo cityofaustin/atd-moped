@@ -29,6 +29,19 @@ export const ADD_PROJECT_COMPONENT = gql`
       name
       project_component_id
       project_id
+      moped_proj_components_subcomponents
     }
   }
 `;
+
+const object = {
+  description: "",
+  is_deleted: false,
+  component_id: 10,
+  project_id: 10,
+  moped_proj_components_subcomponents: {
+    data: {
+      subcomponent_id: 10,
+    },
+  },
+};
