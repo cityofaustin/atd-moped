@@ -28,3 +28,10 @@ export const ADD_PROJECT_COMPONENT = gql`
     }
   }
 `;
+
+// Probably can't reuse existing mutation
+// Need to come up with how to handle conflicts
+export const UPDATE_PROJECT_COMPONENT = gql``;
+
+// probably can use similar mutation to DELETE_MOPED_COMPONENT
+export const DELETE_PROJECT_COMPONENT = gql``;
