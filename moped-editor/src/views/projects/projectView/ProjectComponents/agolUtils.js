@@ -54,11 +54,11 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
 
 /**
  * Find a fetched AGOL feature record by unique ID
- * @param {*} clickedFeature
- * @param {*} linkMode
- * @param {*} ctnLinesGeojson
- * @param {*} ctnPointsGeojson
- * @returns
+ * @param {Object} clickedFeature - the feature clicked on the map
+ * @param {String} linkMode - the current link mode ("lines" or "points")
+ * @param {Object} ctnLinesGeojson - Feature collection containing query results for CTN lines
+ * @param {Object} ctnPointsGeojson - Feature collection containing query results for CTN points
+ * @returns {Object} - a feature object from AGOL data
  */
 export const findFeatureInAgolGeojsonFeatures = (
   clickedFeature,
@@ -67,16 +67,18 @@ export const findFeatureInAgolGeojsonFeatures = (
   ctnPointsGeojson
 ) => {
   if (linkMode === "lines") {
-    const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
+    const linesIdProperty = SOURCES["ctn-lines"]._featureIdProp;
+    const clickedFeatureId = clickedFeature.properties[linesIdProperty];
 
     return ctnLinesGeojson.features.find(
-      (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
+      (feature) => feature.properties[linesIdProperty] === clickedFeatureId
     );
   } else if (linkMode === "points") {
-    const clickedFeatureId = clickedFeature.properties.INTERSECTION_ID;
+    const pointsIdProperty = SOURCES["ctn-points"]._featureIdProp;
+    const clickedFeatureId = clickedFeature.properties[pointsIdProperty];
 
     return ctnPointsGeojson.features.find(
-      (feature) => feature.properties.INTERSECTION_ID === clickedFeatureId
+      (feature) => feature.properties[pointsIdProperty] === clickedFeatureId
     );
   }
 };
