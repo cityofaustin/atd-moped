@@ -53,6 +53,35 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
 };
 
 /**
+ * Find a fetched AGOL feature record by unique ID
+ * @param {*} clickedFeature
+ * @param {*} linkMode
+ * @param {*} ctnLinesGeojson
+ * @param {*} ctnPointsGeojson
+ * @returns
+ */
+export const findFeatureInAgolGeojsonFeatures = (
+  clickedFeature,
+  linkMode,
+  ctnLinesGeojson,
+  ctnPointsGeojson
+) => {
+  if (linkMode === "lines") {
+    const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
+
+    return ctnLinesGeojson.features.find(
+      (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
+    );
+  } else if (linkMode === "points") {
+    const clickedFeatureId = clickedFeature.properties.INTERSECTION_ID;
+
+    return ctnPointsGeojson.features.find(
+      (feature) => feature.properties.INTERSECTION_ID === clickedFeatureId
+    );
+  }
+};
+
+/**
  * Fetch CTN lines and points and a helper to find a feature record that matches a clicked layer feature by ID
  * @param {String} linkMode - the current link mode ("lines" or "points")
  * @param {Function} setIsFetchingFeatures - toggle loading state of the header spinner
@@ -64,7 +93,6 @@ const featureReducer = (geojson, { features, featureIdProp }) => {
  * @typedef {Object} AgolFeaturesObject
  * @property {Object} ctnLinesGeojson - Feature collection containing query results for CTN lines
  * @property {Object} ctnPointsGeojson - Feature collection containing query results for CTN points
- * @property {Function} findFeatureInAgolGeojsonFeatures - find a fetched AGOL feature record by unique ID
  */
 export const useAgolFeatures = (
   linkMode,
@@ -90,26 +118,9 @@ export const useAgolFeatures = (
     setIsFetchingFeatures,
   });
 
-  const findFeatureInAgolGeojsonFeatures = (clickedFeature) => {
-    if (linkMode === "lines") {
-      const clickedFeatureId = clickedFeature.properties.CTN_SEGMENT_ID;
-
-      return ctnLinesGeojson.features.find(
-        (feature) => feature.properties.CTN_SEGMENT_ID === clickedFeatureId
-      );
-    } else if (linkMode === "points") {
-      const clickedFeatureId = clickedFeature.properties.INTERSECTION_ID;
-
-      return ctnPointsGeojson.features.find(
-        (feature) => feature.properties.INTERSECTION_ID === clickedFeatureId
-      );
-    }
-  };
-
   return {
     ctnLinesGeojson,
     ctnPointsGeojson,
-    findFeatureInAgolGeojsonFeatures,
   };
 };
 
