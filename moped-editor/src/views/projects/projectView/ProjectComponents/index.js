@@ -112,22 +112,31 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onSaveComponent = () => {
-    const newComponents = [...components, draftComponent];
+    const { component_id, description, moped_subcomponents, component_name } =
+      draftComponent;
 
-    const { component_id, description, moped_subcomponents } = draftComponent;
+    // Translate value key from field option to subcomponent_id that it represents
+    const subcomponentsArray = moped_subcomponents.map((subcomponent) => ({
+      subcomponent_id: subcomponent.value,
+    }));
 
     console.log(draftComponent);
     console.log(draftComponent.features);
     const newComponentData = {
       description,
       component_id,
+      name: component_name,
       project_id: 156,
       moped_proj_components_subcomponents: {
-        data: moped_subcomponents,
+        data: subcomponentsArray,
       },
     };
 
+    addProjectComponent({ variables: { object: newComponentData } });
+
+    const newComponents = [...components, draftComponent];
     setComponents(newComponents);
+
     setIsEditingComponent(false);
     setDraftComponent(null);
     setLinkMode(null);
