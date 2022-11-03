@@ -10,7 +10,9 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       component_name
       component_subtype
       line_representation
-      feature_layer_id
+      feature_layer {
+        internal_table
+      }
       moped_subcomponents(order_by: { subcomponent_name: asc }) {
         subcomponent_id
         subcomponent_name
