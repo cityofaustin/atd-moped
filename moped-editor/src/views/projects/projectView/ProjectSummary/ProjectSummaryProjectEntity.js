@@ -11,6 +11,15 @@ import {
   PROJECT_UPDATE_LEAD,
 } from "../../../../queries/project";
 
+const getUpdateMutation = (entityName) => {
+  if (entityName === "Sponsor") {
+    return PROJECT_UPDATE_SPONSOR;
+  }
+  if (entityName === "Lead") {
+    return PROJECT_UPDATE_LEAD;
+  }
+};
+
 /**
  * ProjectSummaryStatusUpdate Component
  * @param {Number} projectId - The id of the current project being viewed
@@ -41,21 +50,12 @@ const ProjectSummaryProjectEntity = ({
     }
   };
 
-  const getUpdateMutation = () => {
-    if (entityName === "Sponsor") {
-      return PROJECT_UPDATE_SPONSOR;
-    }
-    if (entityName === "Lead") {
-      return PROJECT_UPDATE_LEAD;
-    }
-  };
-
   const [editMode, setEditMode] = useState(false);
 
   const [sponsor, setSponsor] = useState(getOriginalSponsor() ?? noneSponsor);
 
   // The mutation and mutation function
-  const [updateProjectEntity] = useMutation(getUpdateMutation());
+  const [updateProjectEntity] = useMutation(getUpdateMutation(entityName));
 
   /**
    * Resets the sponsor back to its original state, closes edit mode
