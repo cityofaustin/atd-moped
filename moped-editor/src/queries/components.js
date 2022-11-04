@@ -29,6 +29,18 @@ export const ADD_PROJECT_COMPONENT = gql`
   }
 `;
 
+export const GET_PROJECT_COMPONENTS = gql`
+query GetProjectComponents($project_id: Int!) {
+  moped_proj_components(where: { project_id: { _eq: $project_id } }) {
+    component_id
+    description
+    internal_table
+    component_name
+    moped_subcomponents {
+      subcomponent_id  
+  }
+}`;
+
 // Probably can't reuse existing mutation
 // Need to come up with how to handle conflicts
 export const UPDATE_PROJECT_COMPONENT = gql``;

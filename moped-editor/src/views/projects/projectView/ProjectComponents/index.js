@@ -112,13 +112,26 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onSaveComponent = () => {
-    const { component_id, description, moped_subcomponents, component_name } =
-      draftComponent;
+    // Start data preparation
+    const {
+      component_id,
+      description,
+      moped_subcomponents,
+      component_name,
+      internal_table,
+    } = draftComponent;
 
+    // Subcomponents
     // Translate value key from field option to subcomponent_id that it represents
     const subcomponentsArray = moped_subcomponents.map((subcomponent) => ({
       subcomponent_id: subcomponent.value,
     }));
+
+    // Features
+    // Try a feature_street_segments feature first (Access Control)
+    const featureTable = internal_table;
+
+    // Query for fields and create map to translate layer fields to DB fields
 
     console.log(draftComponent);
     console.log(draftComponent.features);
@@ -131,6 +144,8 @@ export default function MapView({ projectName, projectStatuses }) {
         data: subcomponentsArray,
       },
     };
+
+    // End data preparation
 
     addProjectComponent({ variables: { object: newComponentData } });
 
