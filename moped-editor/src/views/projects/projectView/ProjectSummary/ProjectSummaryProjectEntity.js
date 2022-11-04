@@ -45,7 +45,7 @@ const ProjectSummaryProjectEntity = ({
     }
   };
 
-  const getMutation = () => {
+  const getUpdateMutation = () => {
     if (entityName === "Sponsor") {
       return PROJECT_UPDATE_SPONSOR;
     }
@@ -59,7 +59,7 @@ const ProjectSummaryProjectEntity = ({
   const [sponsor, setSponsor] = useState(getOriginalSponsor() ?? noneSponsor);
 
   // The mutation and mutation function
-  const [updateProjectEntity] = useMutation(getMutation());
+  const [updateProjectEntity] = useMutation(getUpdateMutation());
 
   /**
    * Resets the sponsor back to its original state, closes edit mode
