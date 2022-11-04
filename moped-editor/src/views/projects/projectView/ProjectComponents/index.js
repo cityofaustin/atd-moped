@@ -131,7 +131,19 @@ export default function MapView({ projectName, projectStatuses }) {
     // Try a feature_street_segments feature first (Access Control)
     const featureTable = internal_table;
 
+    const featuresToInsert = [];
+
+    if (featureTable === "feature_street_segments") {
+      draftComponent.features.forEach((feature) => {
+        featuresToInsert.push({
+          feature_id: feature.properties.feature_id,
+          feature_table: featureTable,
+        });
+      });
+    }
+
     // Query for fields and create map to translate layer fields to DB fields
+    // Create a fragment and then pass it to the mutation?
 
     console.log(draftComponent);
     console.log(draftComponent.features);
