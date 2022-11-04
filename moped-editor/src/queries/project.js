@@ -78,6 +78,12 @@ export const SUMMARY_QUERY = gql`
           type_id
         }
       }
+      moped_entity {
+        entity_name
+      }
+      moped_project_lead {
+        entity_name
+      }
     }
     moped_proj_partners(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }

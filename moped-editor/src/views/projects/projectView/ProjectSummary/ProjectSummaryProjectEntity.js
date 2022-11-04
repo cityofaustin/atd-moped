@@ -34,14 +34,10 @@ const ProjectSummaryProjectEntity = ({
 
   const getOriginalSponsor = () => {
     if (entityName === "Lead") {
-      return entityList.find(
-        (e) => e.entity_id === data?.moped_project?.[0]?.project_lead_id
-      );
+      return data?.moped_project?.[0]?.moped_project_lead;
     }
     if (entityName === "Sponsor") {
-      return entityList.find(
-        (e) => e.entity_id === data?.moped_project?.[0]?.project_sponsor
-      );
+      return data?.moped_project?.[0]?.moped_entity;
     }
   };
 
