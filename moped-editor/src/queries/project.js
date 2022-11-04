@@ -45,6 +45,7 @@ export const SUMMARY_QUERY = gql`
       project_priority
       knack_project_id
       project_sponsor
+      project_lead_id
       project_website
       status_id
       work_assignment_id
@@ -735,6 +736,17 @@ export const PROJECT_UPDATE_SPONSOR = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { project_sponsor: $entityId }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_LEAD = gql`
+  mutation ProjectUpdateLead($projectId: Int!, $entityId: Int!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { project_lead_id: $entityId }
     ) {
       affected_rows
     }

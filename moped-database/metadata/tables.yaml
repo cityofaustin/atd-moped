@@ -3174,6 +3174,9 @@
     - name: moped_project
       using:
         foreign_key_constraint_on: parent_project_id
+    - name: moped_project_lead
+      using:
+        foreign_key_constraint_on: project_lead_id
     - name: moped_status
       using:
         foreign_key_constraint_on: status_id
@@ -3281,6 +3284,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3315,6 +3319,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3349,6 +3354,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3383,6 +3389,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3417,6 +3424,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3452,6 +3460,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3487,6 +3496,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
