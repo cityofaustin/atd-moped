@@ -98,11 +98,13 @@ const ProjectSummaryProjectEntity = ({
           <>
             <Autocomplete
               value={sponsor}
-              defaultValue={"None"}
               className={classes.fieldSelectItem}
               id={`moped-project-summary-autocomplete-${projectId}`}
               options={entityList}
               getOptionLabel={(e) => e.entity_name}
+              getOptionSelected={(option, value) =>
+                option.entity_name === value.entity_name
+              }
               onChange={(event, newValue) => {
                 setSponsor(newValue);
               }}
@@ -131,7 +133,7 @@ const ProjectSummaryProjectEntity = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={sponsor?.entity_name || "n/a"}
+            text={sponsor?.entity_name}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

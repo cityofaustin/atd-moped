@@ -80,9 +80,11 @@ export const SUMMARY_QUERY = gql`
       }
       moped_entity {
         entity_name
+        entity_id
       }
       moped_project_lead {
         entity_name
+        entity_id
       }
     }
     moped_proj_partners(
@@ -739,22 +741,22 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
 
 export const PROJECT_UPDATE_SPONSOR = gql`
   mutation ProjectUpdateSponsor($projectId: Int!, $entityId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
       _set: { project_sponsor: $entityId }
     ) {
-      affected_rows
+      project_sponsor
     }
   }
 `;
 
 export const PROJECT_UPDATE_LEAD = gql`
   mutation ProjectUpdateLead($projectId: Int!, $entityId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
       _set: { project_lead_id: $entityId }
     ) {
-      affected_rows
+      project_lead_id
     }
   }
 `;

@@ -859,6 +859,27 @@
           remote_table:
             name: moped_workgroup
             schema: public
+    - name: mopedProjectsByProjectSponsor
+      using:
+        foreign_key_constraint_on:
+          column: project_sponsor
+          table:
+            name: moped_project
+            schema: public
+    - name: moped_proj_partners
+      using:
+        foreign_key_constraint_on:
+          column: entity_id
+          table:
+            name: moped_proj_partners
+            schema: public
+    - name: moped_projects
+      using:
+        foreign_key_constraint_on:
+          column: project_lead_id
+          table:
+            name: moped_project
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
