@@ -11,7 +11,6 @@ import ListItem from "@material-ui/core/ListItem";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
-import { multiLineString, MultiLineString } from "@turf/helpers";
 import TheMap from "./TheMap";
 import ComponentEditModal from "./ComponentEditModal";
 import DeleteComponentModal from "./DeleteComponentModal";
@@ -21,7 +20,7 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight } from "./utils";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
-import { featureTableFieldMap } from "./utils/features";
+import { makeLineStringFeatureInsertionData } from "./utils/features";
 
 const drawerWidth = 350;
 
@@ -136,36 +135,16 @@ export default function MapView({ projectName, projectStatuses }) {
     const featuresToInsert = [];
 
     if (featureTable === "feature_street_segments") {
-      draftComponent.features.forEach((feature) => {
-        const featureToInsert = {};
-        const translationMap = featureTableFieldMap[featureTable];
-
-        Object.keys(translationMap).forEach((key) => {
-          const translatedKey = translationMap[key];
-
-          featureToInsert[key] = feature.properties[translatedKey];
-        });
-
-        // Add source_layer
-        featureToInsert["source_layer"] = feature.properties._layerId;
-
-        // Convert from LineString to  a MultiLineString
-        const coordinatesArray = feature.geometry.coordinates;
-
-        featureToInsert["geography"] = {
-          type: "MultiLineString",
-          coordinates: [coordinatesArray],
-        };
-
-        featuresToInsert.push(featureToInsert);
-      });
+      makeLineStringFeatureInsertionData(
+        featureTable,
+        draftComponent,
+        featuresToInsert
+      );
     }
 
-    console.log(featuresToInsert);
     // Query for fields and create map to translate layer fields to DB fields
     // Create a fragment and then pass it to the mutation?
 
-    console.log(draftComponent);
     const newComponentData = {
       description,
       component_id,

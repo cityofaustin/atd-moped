@@ -16,3 +16,35 @@ export const featureTableFieldMap = {
     // render_type: undefined,
   },
 };
+
+export const makeLineStringFeatureInsertionData = (
+  featureTable,
+  draftComponent,
+  featuresToInsert
+) => {
+  draftComponent.features.forEach((feature) => {
+    const featureToInsert = {};
+    const translationMap = featureTableFieldMap[featureTable];
+
+    Object.keys(translationMap).forEach((key) => {
+      const translatedKey = translationMap[key];
+
+      featureToInsert[key] = feature.properties[translatedKey];
+    });
+
+    // Add source_layer
+    featureToInsert["source_layer"] = feature.properties._layerId;
+
+    // Convert from LineString to  a MultiLineString
+    const coordinatesArray = feature.geometry.coordinates;
+
+    featureToInsert["geography"] = {
+      type: "MultiLineString",
+      coordinates: [coordinatesArray],
+    };
+
+    featuresToInsert.push(featureToInsert);
+  });
+
+  return featuresToInsert;
+};
