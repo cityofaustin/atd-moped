@@ -301,8 +301,8 @@ export const ProjectsListViewFiltersConf = {
     },
     {
       name: "added_by",
-      label: "Added by",
-      placeholder: "Added by",
+      label: "Created by",
+      placeholder: "Created by",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
