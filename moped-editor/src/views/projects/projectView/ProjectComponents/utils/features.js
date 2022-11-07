@@ -1,7 +1,7 @@
 // Columns to add to object
-// component_id
-// source_layer (from _layerId in map) Ex. "ctn-lines"
-// geography from geometry
+// component_id ✅
+// source_layer (from _layerId in map) Ex. "ctn-lines" ✅
+// geography from geometry ✅
 
 export const featureTableFieldMap = {
   feature_street_segments: {
@@ -10,7 +10,7 @@ export const featureTableFieldMap = {
     from_address_min: "FROM_ADDRESS_MIN",
     to_address_max: "TO_ADDRESS_MAX",
     line_type: "LINE_TYPE",
-    project_extent_id: "OBJECTID",
+    // project_extent_id: undefined,
     // knack_id: undefined,
     // symbol: undefined,
     // render_type: undefined,

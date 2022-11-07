@@ -11,6 +11,7 @@ import ListItem from "@material-ui/core/ListItem";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
+import { multiLineString, MultiLineString } from "@turf/helpers";
 import TheMap from "./TheMap";
 import ComponentEditModal from "./ComponentEditModal";
 import DeleteComponentModal from "./DeleteComponentModal";
@@ -147,7 +148,14 @@ export default function MapView({ projectName, projectStatuses }) {
 
         // Add source_layer
         featureToInsert["source_layer"] = feature.properties._layerId;
-        featureToInsert["geography"] = feature.geometry;
+
+        // Convert from LineString to  a MultiLineString
+        const coordinatesArray = feature.geometry.coordinates;
+
+        featureToInsert["geography"] = {
+          type: "MultiLineString",
+          coordinates: [coordinatesArray],
+        };
 
         featuresToInsert.push(featureToInsert);
       });
