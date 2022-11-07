@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
-import { useMutation } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
+import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -19,7 +20,10 @@ import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight } from "./utils";
-import { ADD_PROJECT_COMPONENT } from "src/queries/components";
+import {
+  ADD_PROJECT_COMPONENT,
+  GET_PROJECT_COMPONENTS,
+} from "src/queries/components";
 import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
@@ -58,6 +62,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
+  const { projectId } = useParams();
 
   /* holds this project's components */
   const [components, setComponents] = useState([]);
@@ -92,6 +97,19 @@ export default function MapView({ projectName, projectStatuses }) {
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
+  const {
+    loading,
+    error,
+    data,
+    refetch: refetchProjectComponents,
+  } = useQuery(GET_PROJECT_COMPONENTS, {
+    variables: { projectId },
+    fetchPolicy: "no-cache",
+    onCompleted: () => {
+      console.log(data.moped_proj_components);
+      // setComponents(data.moped_proj_components);
+    },
+  });
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
@@ -172,10 +190,15 @@ export default function MapView({ projectName, projectStatuses }) {
 
     // End data preparation
 
-    addProjectComponent({ variables: { object: newComponentData } });
+    addProjectComponent({ variables: { object: newComponentData } }).then(
+      () => {
+        refetchProjectComponents();
+      }
+    );
 
-    const newComponents = [...components, draftComponent];
-    setComponents(newComponents);
+    // TODO: Remove this since we are populating state from returned data only
+    // const newComponents = [...components, draftComponent];
+    // setComponents(newComponents);
 
     setIsEditingComponent(false);
     setDraftComponent(null);

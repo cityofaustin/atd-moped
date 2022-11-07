@@ -69,14 +69,33 @@ export const ADD_PROJECT_COMPONENT = gql`
 // }
 
 export const GET_PROJECT_COMPONENTS = gql`
-  query GetProjectComponents($project_id: Int!) {
-    moped_proj_components(where: { project_id: { _eq: $project_id } }) {
+  query GetProjectComponents($projectId: Int!) {
+    moped_proj_components(where: { project_id: { _eq: $projectId } }) {
       component_id
       description
-      internal_table
-      component_name
-      moped_subcomponents {
+      moped_components {
+        component_name
+        feature_layer {
+          internal_table
+        }
+      }
+      moped_proj_components_subcomponents {
         subcomponent_id
+      }
+      feature_street_segments {
+        id
+        geography
+        source_layer
+      }
+      feature_intersections {
+        id
+        geography
+        source_layer
+      }
+      feature_signals {
+        id
+        geography
+        source_layer
       }
     }
   }
