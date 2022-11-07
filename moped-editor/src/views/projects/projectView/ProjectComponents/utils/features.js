@@ -1,8 +1,7 @@
-// Columns to add to object
-// component_id ✅
-// source_layer (from _layerId in map) Ex. "ctn-lines" ✅
-// geography from geometry ✅
-
+/*
+ * When we insert in the DB we need to translate the property names that either come from a CTN layer
+ * or the draw tools into columns names in the database
+ */
 export const featureTableFieldMap = {
   feature_street_segments: {
     full_street_name: "FULL_STREET_NAME",
@@ -22,6 +21,16 @@ export const featureTableFieldMap = {
     // render_type: undefined,
     // name: undefined
   },
+  feature_signals: {
+    // location_name: undefined,
+    // knack_id: undefined,
+    // project_extent_id: undefined,
+    // render_type: undefined,
+    // name: undefined
+    // signal_type: undefined
+  },
+  feature_drawn_lines: {},
+  feature_drawn_points: {},
 };
 
 export const makeLineStringFeatureInsertionData = (

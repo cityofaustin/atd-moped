@@ -1387,6 +1387,15 @@
           remote_table:
             name: feature_intersections
             schema: public
+    - name: feature_signals
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_signals
+            schema: public
     - name: feature_street_segments
       using:
         manual_configuration:

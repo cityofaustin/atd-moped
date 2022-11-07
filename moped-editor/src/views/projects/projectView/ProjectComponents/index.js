@@ -143,7 +143,10 @@ export default function MapView({ projectName, projectStatuses }) {
         draftComponent,
         featuresToInsert
       );
-    } else if (featureTable === "feature_intersections") {
+    } else if (
+      featureTable === "feature_intersections" ||
+      featureTable === "feature_signals"
+    ) {
       makePointFeatureInsertionData(
         featureTable,
         draftComponent,
