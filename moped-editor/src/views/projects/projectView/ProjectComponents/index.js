@@ -277,10 +277,13 @@ export default function MapView({ projectName, projectStatuses }) {
                 />
               )}
               {components.map((component) => {
-                const isExpanded = clickedComponent?._id === component._id;
+                console.log(component);
+                const isExpanded =
+                  clickedComponent?.project_component_id ===
+                  component.project_component_id;
                 return (
                   <ComponentListItem
-                    key={component._id}
+                    key={component.project_component_id}
                     component={component}
                     isExpanded={isExpanded}
                     setClickedComponent={setClickedComponent}

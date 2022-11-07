@@ -37,6 +37,7 @@ export const GET_PROJECT_COMPONENTS = gql`
       description
       moped_components {
         component_name
+        component_subtype
         feature_layer {
           internal_table
         }
