@@ -178,7 +178,7 @@ export default function MapView({ projectName, projectStatuses }) {
       description,
       component_id,
       name: component_name,
-      project_id: 156,
+      project_id: projectId,
       moped_proj_components_subcomponents: {
         data: subcomponentsArray,
       },
