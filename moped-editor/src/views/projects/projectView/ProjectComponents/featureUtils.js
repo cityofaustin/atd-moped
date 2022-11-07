@@ -41,8 +41,8 @@ export const makeCapturedFromLayerFeature = (
     properties: {
       ...featureFromAgolGeojson.properties,
       id: featureFromAgolGeojson.id,
-      // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
-      _layerId: clickedFeature.layer.id,
+      // AGOL data doesn't include source layer ID so we grab it from the clicked Mapbox feature
+      _layerId: clickedFeature.layer.source,
     },
   };
 

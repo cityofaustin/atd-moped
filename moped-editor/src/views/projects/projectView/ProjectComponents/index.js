@@ -133,16 +133,8 @@ export default function MapView({ projectName, projectStatuses }) {
     const featureTable = internal_table;
 
     const featuresToInsert = [];
-    // const featuresToTranslateFields = [];
 
     if (featureTable === "feature_street_segments") {
-      // draftComponent.features.forEach((feature) => {
-      //   featuresToTranslateFields.push({
-      //     feature_id: feature.properties.feature_id,
-      //     feature_table: featureTable,
-      //   });
-      // });
-
       draftComponent.features.forEach((feature) => {
         const featureToInsert = {};
         const translationMap = featureTableFieldMap[featureTable];
@@ -153,6 +145,10 @@ export default function MapView({ projectName, projectStatuses }) {
           featureToInsert[key] = feature.properties[translatedKey];
         });
 
+        // Add source_layer
+        featureToInsert["source_layer"] = feature.properties._layerId;
+        featureToInsert["geography"] = feature.geometry;
+
         featuresToInsert.push(featureToInsert);
       });
     }
@@ -162,7 +158,6 @@ export default function MapView({ projectName, projectStatuses }) {
     // Create a fragment and then pass it to the mutation?
 
     console.log(draftComponent);
-    // console.log(draftComponent.features);
     const newComponentData = {
       description,
       component_id,

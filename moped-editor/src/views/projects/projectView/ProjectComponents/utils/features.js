@@ -10,7 +10,7 @@ export const featureTableFieldMap = {
     from_address_min: "FROM_ADDRESS_MIN",
     to_address_max: "TO_ADDRESS_MAX",
     line_type: "LINE_TYPE",
-    // project_extent_id: undefined,
+    project_extent_id: "OBJECTID",
     // knack_id: undefined,
     // symbol: undefined,
     // render_type: undefined,
