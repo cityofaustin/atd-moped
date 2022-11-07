@@ -299,6 +299,19 @@ export const ProjectsListViewFiltersConf = {
         "string_does_not_equal_case_sensitive",
       ],
     },
+    {
+      name: "added_by",
+      label: "Added by",
+      placeholder: "Added by",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_equals_case_sensitive",
+        "string_does_not_equal_case_sensitive",
+      ],
+    },
   ],
 
   operators: {

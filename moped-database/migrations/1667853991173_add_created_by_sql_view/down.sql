@@ -27,14 +27,7 @@ AS WITH project_person_list_lookup AS (
       FROM moped_project_types mpt
         LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
     GROUP BY mpt.project_id
-  ),
-   added_by_lookup AS (
-    SELECT
-      concat(users.first_name, ' ', users.last_name) AS added_by,
-      project_id
-      FROM moped_project
-        LEFT JOIN moped_users users ON users.user_id = added_by
-    )
+  )
  SELECT
     mp.project_uuid,
     mp.project_id,
@@ -51,6 +44,7 @@ AS WITH project_person_list_lookup AS (
     mp.fiscal_year,
     mp.capitally_funded,
     mp.date_added,
+    mp.added_by,
     mp.is_deleted,
     mp.milestone_id,
     mp.task_order,
@@ -150,8 +144,7 @@ AS WITH project_person_list_lookup AS (
       WHERE 1 = 1
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
-      GROUP BY contract.project_id) AS contract_numbers,
-    added_by_lookup.added_by
+      GROUP BY contract.project_id) AS contract_numbers
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -161,7 +154,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
-     LEFT JOIN added_by_lookup ON mp.project_id = added_by_lookup.project_id
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
@@ -176,7 +168,8 @@ AS WITH project_person_list_lookup AS (
     mp.end_date, 
     mp.fiscal_year, 
     mp.capitally_funded, 
-    mp.date_added,
+    mp.date_added, 
+    mp.added_by, 
     mp.is_deleted, 
     mp.milestone_id, 
     mp.status_id, 
@@ -184,5 +177,4 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at, 
     mp.task_order,
     ptl.type_name, 
-    fsl.funding_source_name,
-    added_by_lookup.added_by;
+    fsl.funding_source_name;

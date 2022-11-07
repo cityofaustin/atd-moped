@@ -33,7 +33,7 @@ AS WITH project_person_list_lookup AS (
       concat(users.first_name, ' ', users.last_name) AS added_by,
       project_id
       FROM moped_project
-        LEFT JOIN moped_users users ON users.user_id = added_by
+        LEFT JOIN moped_users users ON users.user_id = moped_project.added_by
     )
  SELECT
     mp.project_uuid,
@@ -163,7 +163,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN added_by_lookup ON mp.project_id = added_by_lookup.project_id
   GROUP BY mp.project_uuid, 
-    mp.project_id, 
+    mp.project_id,
     mp.project_name, 
     mp.project_description, 
     ppll.project_team_members, 
