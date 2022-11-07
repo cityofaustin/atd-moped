@@ -106,8 +106,7 @@ export default function MapView({ projectName, projectStatuses }) {
     variables: { projectId },
     fetchPolicy: "no-cache",
     onCompleted: () => {
-      console.log(data.moped_proj_components);
-      // setComponents(data.moped_proj_components);
+      setComponents(data.moped_proj_components);
     },
   });
 

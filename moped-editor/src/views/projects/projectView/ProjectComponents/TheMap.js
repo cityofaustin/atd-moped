@@ -16,6 +16,7 @@ import {
 } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { isDrawnFeature, makeCapturedFromLayerFeature } from "./featureUtils";
+import { featureTableFieldMap } from "./utils/features";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -26,14 +27,31 @@ mapboxgl.workerClass =
 // returns geojson of features across all components
 const useProjectFeatures = (components) =>
   useMemo(() => {
+    if (components.length === 0)
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
+
     const allComponentfeatures = [];
-    components.forEach((component) =>
-      allComponentfeatures.push(component.features)
-    );
+
+    components.forEach((component) => {
+      Object.keys(featureTableFieldMap).forEach((key) => {
+        if (component.hasOwnProperty(key))
+          allComponentfeatures.push(component[key]);
+      });
+    });
+
+    // Make features valid GeoJSON by adding type and properties attributes
+    const geoJsonFeatures = allComponentfeatures.flat().map((component) => ({
+      ...component,
+      type: "Feature",
+      properties: {},
+    }));
 
     return {
       type: "FeatureCollection",
-      features: allComponentfeatures.flat(),
+      features: geoJsonFeatures,
     };
   }, [components]);
 
@@ -82,6 +100,8 @@ export default function TheMap({
 
   const projectLines = useFeatureTypes(projectFeatures, "line");
   const projectPoints = useFeatureTypes(projectFeatures, "point");
+
+  console.log({ projectLines, projectPoints });
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins

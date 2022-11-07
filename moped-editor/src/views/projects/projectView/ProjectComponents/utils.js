@@ -7,11 +7,18 @@ import { v4 as uuidv4 } from "uuid";
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
   useMemo(() => {
+    if (!featureCollection)
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
+
     const features = featureCollection.features.filter((feature) => {
       const thisGeom = feature.geometry.type.toLowerCase();
       return thisGeom.includes(geomType);
     });
-    return { type: "FeatureCollection", features };
+
+    return { type: "FeatureCollection", features: features };
   }, [featureCollection, geomType]);
 
 /*

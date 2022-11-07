@@ -29,48 +29,10 @@ export const ADD_PROJECT_COMPONENT = gql`
   }
 `;
 
-// mutation AddProjectComponent($object: moped_proj_components_insert_input!) {
-//   insert_moped_proj_components_one(object: $object) {
-//     component_id
-//     description
-//     interim_project_component_id
-//     is_deleted
-//     name
-//     project_component_id
-//     project_id
-//     moped_proj_components_subcomponents {
-//       subcomponent_id
-//     },
-//     feature_street_signals {
-//       id
-//     }
-//   }
-// }
-
-// {
-//   "object":{
-//   	"description": "test",
-//   	"name": "test",
-//   	"component_id": 10,
-//   	"project_id": 156,
-//   	"moped_proj_components_subcomponents": {
-//     	"data": {
-//       	"subcomponent_id": 10
-//     	}
-//     },
-//     "feature_street_signals": {
-//       "data": [
-//         {
-//           "ctn_segment_id": null
-//         }
-//       ]
-//     }
-// 	}
-// }
-
 export const GET_PROJECT_COMPONENTS = gql`
   query GetProjectComponents($projectId: Int!) {
     moped_proj_components(where: { project_id: { _eq: $projectId } }) {
+      project_component_id
       component_id
       description
       moped_components {
@@ -84,17 +46,17 @@ export const GET_PROJECT_COMPONENTS = gql`
       }
       feature_street_segments {
         id
-        geography
+        geometry: geography
         source_layer
       }
       feature_intersections {
         id
-        geography
+        geometry: geography
         source_layer
       }
       feature_signals {
         id
-        geography
+        geometry: geography
         source_layer
       }
     }
