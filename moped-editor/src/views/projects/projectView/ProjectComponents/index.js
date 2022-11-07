@@ -20,7 +20,10 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight } from "./utils";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
-import { makeLineStringFeatureInsertionData } from "./utils/features";
+import {
+  makeLineStringFeatureInsertionData,
+  makePointFeatureInsertionData,
+} from "./utils/features";
 
 const drawerWidth = 350;
 
@@ -136,6 +139,12 @@ export default function MapView({ projectName, projectStatuses }) {
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
+        featureTable,
+        draftComponent,
+        featuresToInsert
+      );
+    } else if (featureTable === "feature_intersections") {
+      makePointFeatureInsertionData(
         featureTable,
         draftComponent,
         featuresToInsert

@@ -14,6 +14,13 @@ export const featureTableFieldMap = {
     // knack_id: undefined,
     // symbol: undefined,
     // render_type: undefined,
+    // name: undefined
+  },
+  feature_intersections: {
+    intersection_id: "COA_INTERSECTION_POINTS_ID",
+    // project_extent_id: undefined,
+    // render_type: undefined,
+    // name: undefined
   },
 };
 
@@ -35,11 +42,43 @@ export const makeLineStringFeatureInsertionData = (
     // Add source_layer
     featureToInsert["source_layer"] = feature.properties._layerId;
 
-    // Convert from LineString to  a MultiLineString
+    // Convert from LineString to a MultiLineString
     const coordinatesArray = feature.geometry.coordinates;
 
     featureToInsert["geography"] = {
       type: "MultiLineString",
+      coordinates: [coordinatesArray],
+    };
+
+    featuresToInsert.push(featureToInsert);
+  });
+
+  return featuresToInsert;
+};
+
+export const makePointFeatureInsertionData = (
+  featureTable,
+  draftComponent,
+  featuresToInsert
+) => {
+  draftComponent.features.forEach((feature) => {
+    const featureToInsert = {};
+    const translationMap = featureTableFieldMap[featureTable];
+
+    Object.keys(translationMap).forEach((key) => {
+      const translatedKey = translationMap[key];
+
+      featureToInsert[key] = feature.properties[translatedKey];
+    });
+
+    // Add source_layer
+    featureToInsert["source_layer"] = feature.properties._layerId;
+
+    // Convert from Point to a MultiPoint
+    const coordinatesArray = feature.geometry.coordinates;
+
+    featureToInsert["geography"] = {
+      type: "MultiPoint",
       coordinates: [coordinatesArray],
     };
 
