@@ -1378,11 +1378,11 @@
       using:
         foreign_key_constraint_on: component_id
   array_relationships:
-    - name: feature_street_signals
+    - name: feature_street_segments
       using:
         manual_configuration:
           column_mapping:
-            component_id: component_id
+            project_component_id: component_id
           insertion_order: null
           remote_table:
             name: feature_street_segments

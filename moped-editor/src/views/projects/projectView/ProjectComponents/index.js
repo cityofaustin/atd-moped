@@ -20,6 +20,7 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight } from "./utils";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
+import { featureTableFieldMap } from "./utils/features";
 
 const drawerWidth = 350;
 
@@ -132,21 +133,36 @@ export default function MapView({ projectName, projectStatuses }) {
     const featureTable = internal_table;
 
     const featuresToInsert = [];
+    // const featuresToTranslateFields = [];
 
     if (featureTable === "feature_street_segments") {
+      // draftComponent.features.forEach((feature) => {
+      //   featuresToTranslateFields.push({
+      //     feature_id: feature.properties.feature_id,
+      //     feature_table: featureTable,
+      //   });
+      // });
+
       draftComponent.features.forEach((feature) => {
-        featuresToInsert.push({
-          feature_id: feature.properties.feature_id,
-          feature_table: featureTable,
+        const featureToInsert = {};
+        const translationMap = featureTableFieldMap[featureTable];
+
+        Object.keys(translationMap).forEach((key) => {
+          const translatedKey = translationMap[key];
+
+          featureToInsert[key] = feature.properties[translatedKey];
         });
+
+        featuresToInsert.push(featureToInsert);
       });
     }
 
+    console.log(featuresToInsert);
     // Query for fields and create map to translate layer fields to DB fields
     // Create a fragment and then pass it to the mutation?
 
     console.log(draftComponent);
-    console.log(draftComponent.features);
+    // console.log(draftComponent.features);
     const newComponentData = {
       description,
       component_id,
@@ -154,6 +170,9 @@ export default function MapView({ projectName, projectStatuses }) {
       project_id: 156,
       moped_proj_components_subcomponents: {
         data: subcomponentsArray,
+      },
+      [featureTable]: {
+        data: featuresToInsert,
       },
     };
 
