@@ -6,7 +6,7 @@ import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { getIntersectionLabel, useFeatureTypes } from "./utils";
+import { useFeatureTypes } from "./utils";
 import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
