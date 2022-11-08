@@ -1,3 +1,6 @@
+import { colors } from "@material-ui/core";
+import { COLORS } from "./mapStyleSettings";
+
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
 // This API key is managed by CTM. Contact help desk for maintenance and troubleshooting.
 const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
@@ -137,8 +140,8 @@ export const basemaps = {
           "text-letter-spacing": 0.01,
         },
         paint: {
-          "text-color": "#fff",
-          "text-halo-color": "#000",
+          "text-color": COLORS.white,
+          "text-halo-color": COLORS.black,
           "text-halo-width": 1,
         },
       },
