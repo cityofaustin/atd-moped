@@ -66,6 +66,8 @@ export default function MapView({ projectName, projectStatuses }) {
 
   /* holds this project's components */
   const [components, setComponents] = useState([]);
+  const [componentFeatureCollections, setComponentFeatureCollections] =
+    useState({});
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
@@ -107,15 +109,42 @@ export default function MapView({ projectName, projectStatuses }) {
     fetchPolicy: "no-cache",
     onCompleted: () => {
       setComponents(data.moped_proj_components);
+
+      // TODO: Extract this into a helper
+      const componentGeographyMap = {};
+      data.project_geography.forEach((component) => {
+        const currentComponentId = component.component_id;
+        const currentFeature = {
+          type: "Feature",
+          properties: {},
+          geometry: component.geometry,
+        };
+
+        if (!componentGeographyMap[currentComponentId]) {
+          componentGeographyMap[currentComponentId] = {
+            type: "FeatureCollection",
+            features: [currentFeature],
+          };
+        } else {
+          componentGeographyMap[currentComponentId] = {
+            type: "FeatureCollection",
+            features: [
+              ...componentGeographyMap[currentComponentId].features,
+              currentFeature,
+            ],
+          };
+        }
+      });
+
+      setComponentFeatureCollections(componentGeographyMap);
     },
   });
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: component.features,
-    };
+    const featureCollection =
+      componentFeatureCollections[component.project_component_id];
+
     setClickedComponent(component);
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
@@ -144,9 +173,11 @@ export default function MapView({ projectName, projectStatuses }) {
 
     // Subcomponents
     // Translate value key from field option to subcomponent_id that it represents
-    const subcomponentsArray = moped_subcomponents.map((subcomponent) => ({
-      subcomponent_id: subcomponent.value,
-    }));
+    const subcomponentsArray = moped_subcomponents
+      ? moped_subcomponents.map((subcomponent) => ({
+          subcomponent_id: subcomponent.value,
+        }))
+      : [];
 
     // Features
     // Try a feature_street_segments feature first (Access Control)
@@ -277,7 +308,6 @@ export default function MapView({ projectName, projectStatuses }) {
                 />
               )}
               {components.map((component) => {
-                console.log(component);
                 const isExpanded =
                   clickedComponent?.project_component_id ===
                   component.project_component_id;

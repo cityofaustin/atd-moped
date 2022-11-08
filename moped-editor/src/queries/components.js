@@ -61,6 +61,10 @@ export const GET_PROJECT_COMPONENTS = gql`
         source_layer
       }
     }
+    project_geography(where: { project_id: { _eq: $projectId } }) {
+      geometry: geography
+      component_id
+    }
   }
 `;
 

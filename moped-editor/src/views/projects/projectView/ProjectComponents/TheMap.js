@@ -102,8 +102,6 @@ export default function TheMap({
   const projectLines = useFeatureTypes(projectFeatures, "line");
   const projectPoints = useFeatureTypes(projectFeatures, "point");
 
-  console.log({ projectLines, projectPoints });
-
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
     // so set point radii and line widths accordingly
