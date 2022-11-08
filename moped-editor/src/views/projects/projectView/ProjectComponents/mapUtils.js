@@ -85,6 +85,7 @@ export const ProjectComponentsSourcesAndLayers = ({
   const isEditingPoints =
     isEditingComponent && linkMode === "points" && !isDrawing;
   const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
+  console.log(clickedComponent);
 
   return (
     <>
