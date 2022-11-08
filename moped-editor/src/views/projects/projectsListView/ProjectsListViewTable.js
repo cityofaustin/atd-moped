@@ -157,6 +157,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     contractors: false,
     contract_numbers: false,
     project_tags: false,
+    added_by: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -439,6 +440,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
+      emptyValue: "-",
+    },
+    {
+      title: "Created by",
+      field: "added_by",
+      hidden: hiddenColumns["added_by"],
       emptyValue: "-",
     },
   ];
