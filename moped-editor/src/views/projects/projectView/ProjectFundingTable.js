@@ -73,11 +73,19 @@ const useStyles = makeStyles((theme) => ({
     margin: "8px 0",
     padding: "8px",
   },
+  editIconConfirm: {
+    cursor: "pointer",
+    margin: ".25rem 0",
+    fontSize: "24px",
+  },
   fieldLabel: {
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
     margin: "8px 0",
+  },
+  fieldBox: {
+    maxWidth: "10rem",
   },
   fundingButton: {
     position: "absolute",
@@ -113,6 +121,15 @@ const useStyles = makeStyles((theme) => ({
   },
   fundSelectStyle: {
     width: "10em",
+  },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
+    "&:hover": {
+      backgroundColor: theme.palette.background.summaryHover,
+      borderRadius: theme.spacing(0.5),
+      cursor: "pointer",
+    },
   },
 }));
 

@@ -14,8 +14,8 @@ const ProjectSummaryLabel = ({
   text,
   classes,
   onClickEdit,
-  className = null,
-  spanClassName = null,
+  className,
+  spanClassName,
 }) => {
   return (
     <>
@@ -23,7 +23,17 @@ const ProjectSummaryLabel = ({
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
       >
-        <span className={spanClassName ?? classes.fieldLabelTextSpan}>{text}</span>
+        {/* If there is no input, render a "-" */}
+        {text.length === 0 && <span>-</span>}
+        {/* If the input is an array, render one item per line */}
+        {Array.isArray(text) &&
+          text.map((element, i) => (
+            <span key={i} className={spanClassName}>
+              {element} <br />
+            </span>
+          ))}
+        {/* Otherwise, render the input on one line */}
+        {!Array.isArray(text) && <span className={spanClassName}>{text}</span>}
       </Typography>
     </>
   );

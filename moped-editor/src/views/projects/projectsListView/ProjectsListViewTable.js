@@ -157,6 +157,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     contractors: false,
     contract_numbers: false,
     project_tags: false,
+    added_by: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -268,12 +269,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project_id",
       hidden: hiddenColumns["project_id"],
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
       render: (entry) => (
@@ -297,14 +298,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
     },
     {
-      title: "Team members",
+      title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap" },
+      cellStyle: { whiteSpace: "pre-wrap", minWidth: "250px" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
-      title: "Project sponsor",
+      title: "Sponsor",
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
@@ -312,7 +313,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
     {
-      title: "Project partners",
+      title: "Partners",
       field: "project_partner",
       hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
@@ -329,7 +330,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
       render: (entry) => formatTimeStampTZType(entry.updated_at),
@@ -379,13 +380,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       },
     },
     {
-      title: "Project type",
+      title: "Type",
       field: "type_name",
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
     },
     {
-      title: "Funding source",
+      title: "Funding",
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
       emptyValue: "-",
@@ -405,7 +406,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => formatDateType(entry.construction_start_date),
     },
     {
-      title: "Project completion",
+      title: "Completion date",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
@@ -436,9 +437,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       emptyValue: "-",
     },
     {
-      title: "Project tags",
+      title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
+      emptyValue: "-",
+    },
+    {
+      title: "Created by",
+      field: "added_by",
+      hidden: hiddenColumns["added_by"],
       emptyValue: "-",
     },
   ];
@@ -532,6 +539,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
+                      whiteSpace: "nowrap",
                     },
                     columnsButton: true,
                   }}

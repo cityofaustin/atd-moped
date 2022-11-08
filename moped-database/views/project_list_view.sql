@@ -7,8 +7,10 @@ AS WITH project_person_list_lookup AS (
       string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
     FROM moped_proj_personnel mpp
       JOIN moped_users mu ON mpp.user_id = mu.user_id
-      JOIN moped_project_roles mpr ON mpp.role_id = mpr.project_role_id
+      JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+      JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
     WHERE mpp.is_deleted = false
+      AND mppr.is_deleted = false
     GROUP BY mpp.project_id
   ), funding_sources_lookup AS (
     SELECT 
@@ -42,7 +44,6 @@ AS WITH project_person_list_lookup AS (
     mp.fiscal_year,
     mp.capitally_funded,
     mp.date_added,
-    mp.added_by,
     mp.is_deleted,
     mp.milestone_id,
     mp.task_order,
@@ -95,24 +96,28 @@ AS WITH project_person_list_lookup AS (
       LIMIT 1) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-      FROM moped_proj_personnel personnel
-        JOIN moped_users users ON personnel.user_id = users.user_id
-        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
+      FROM moped_proj_personnel mpp
+        JOIN moped_users users ON mpp.user_id = users.user_id
+        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
       WHERE 1 = 1
-        AND roles.project_role_name = 'Inspector'::text
-        AND personnel.is_deleted = false
-        AND personnel.project_id = mp.project_id
-      GROUP BY personnel.project_id) AS project_inspector,
+        AND mpr.project_role_name = 'Inspector'::text
+        AND mpp.is_deleted = false
+        AND mppr.is_deleted = false
+        AND mpp.project_id = mp.project_id
+      GROUP BY mpp.project_id) AS project_inspector,
     ( -- get me a list of the designers for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
-      FROM moped_proj_personnel personnel
-        JOIN moped_users users ON personnel.user_id = users.user_id
-        JOIN moped_project_roles roles ON personnel.role_id = roles.project_role_id
+      FROM moped_proj_personnel mpp
+        JOIN moped_users users ON mpp.user_id = users.user_id
+        JOIN moped_proj_personnel_roles mppr ON mpp.project_personnel_id = mppr.project_personnel_id
+        JOIN moped_project_roles mpr ON mppr.project_role_id = mpr.project_role_id
       WHERE 1 = 1
-        AND roles.project_role_name = 'Designer'::text
-        AND personnel.is_deleted = false
-        AND personnel.project_id = mp.project_id
-      GROUP BY personnel.project_id) AS project_designer,
+        AND mpr.project_role_name = 'Designer'::text
+        AND mpp.is_deleted = false
+        AND mppr.is_deleted = false
+        AND mpp.project_id = mp.project_id
+      GROUP BY mpp.project_id) AS project_designer,
     ( -- get me all of the tags added to a project
     SELECT string_agg(tags.name, ', '::text) AS string_agg
       FROM moped_proj_tags ptags
@@ -121,8 +126,25 @@ AS WITH project_person_list_lookup AS (
         AND ptags.is_deleted = false
         AND ptags.project_id = mp.project_id
       GROUP BY ptags.project_id) AS project_tags,
-    string_agg(contracts.contractor, ', ') AS contractors,
-    string_agg(contracts.contract_number, ', ') AS contract_numbers
+    ( -- get me all of the contractors added to a project
+      SELECT string_agg(contract.contractor, ', ' :: text) AS string_agg
+      FROM moped_proj_contract contract
+      WHERE 1 = 1
+      AND contract.is_deleted = FALSE
+      AND contract.project_id = mp.project_id
+      GROUP BY
+      contract.project_id) AS contractors,
+    ( -- get me all of the contract numbers added to a project
+      SELECT
+        string_agg(
+            contract.contract_number, ', ' :: text
+        ) AS string_agg
+      FROM moped_proj_contract contract
+      WHERE 1 = 1
+        AND contract.is_deleted = FALSE
+        AND contract.project_id = mp.project_id
+      GROUP BY contract.project_id) AS contract_numbers,
+    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -132,6 +154,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
+     LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
@@ -146,8 +169,7 @@ AS WITH project_person_list_lookup AS (
     mp.end_date, 
     mp.fiscal_year, 
     mp.capitally_funded, 
-    mp.date_added, 
-    mp.added_by, 
+    mp.date_added,
     mp.is_deleted, 
     mp.milestone_id, 
     mp.status_id, 
@@ -155,4 +177,6 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at, 
     mp.task_order,
     ptl.type_name, 
-    fsl.funding_source_name;
+    fsl.funding_source_name,
+    added_by_user.first_name,
+    added_by_user.last_name;

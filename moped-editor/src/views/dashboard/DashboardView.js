@@ -73,6 +73,18 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
+  dialogTitle: {
+    fontFamily: theme.typography.fontFamily,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
+  tooltipIcon: {
+    fontSize: "20px",
+  },
 }));
 
 function a11yProps(index) {
@@ -171,14 +183,14 @@ const DashboardView = () => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project.project_id",
       editable: "never",
       cellStyle: { ...typographyStyle },
       width: "10%",
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project.project_name",
       editable: "never",
       cellStyle: { ...typographyStyle },
@@ -223,6 +235,7 @@ const DashboardView = () => {
           modalParent="dashboard"
           statusUpdate={entry.status_update}
           queryRefetch={refetch}
+          classes={classes}
         >
           {parse(String(entry.status_update))}
         </DashboardStatusModal>
