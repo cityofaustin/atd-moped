@@ -6,7 +6,19 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { Autocomplete } from "@material-ui/lab";
 
 import { useMutation } from "@apollo/client";
-import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
+import {
+  PROJECT_UPDATE_SPONSOR,
+  PROJECT_UPDATE_LEAD,
+} from "../../../../queries/project";
+
+const getUpdateMutation = (entityName) => {
+  if (entityName === "Sponsor") {
+    return PROJECT_UPDATE_SPONSOR;
+  }
+  if (entityName === "Lead") {
+    return PROJECT_UPDATE_LEAD;
+  }
+};
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -18,30 +30,38 @@ import { PROJECT_UPDATE_SPONSOR } from "../../../../queries/project";
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryProjectSponsor = ({
+const ProjectSummaryProjectEntity = ({
   projectId,
   data,
   refetch,
   classes,
   snackbarHandle,
+  entityName,
 }) => {
   const entityList = data?.moped_entity ?? [];
-  const noneSponsor = entityList.find(e => e.entity_id === 0);
-  const originalSponsor = entityList.find(
-    e => e.entity_id === data?.moped_project?.[0]?.project_sponsor
-  );
+  const noneSponsor = entityList.find((e) => e.entity_id === 0);
+
+  const getOriginalSponsor = () => {
+    if (entityName === "Lead") {
+      return data?.moped_project?.[0]?.moped_project_lead;
+    }
+    if (entityName === "Sponsor") {
+      return data?.moped_project?.[0]?.moped_entity;
+    }
+  };
+
   const [editMode, setEditMode] = useState(false);
 
-  const [sponsor, setSponsor] = useState(originalSponsor ?? noneSponsor);
+  const [sponsor, setSponsor] = useState(getOriginalSponsor() ?? noneSponsor);
 
   // The mutation and mutation function
-  const [updateProjectSponsor] = useMutation(PROJECT_UPDATE_SPONSOR);
+  const [updateProjectEntity] = useMutation(getUpdateMutation(entityName));
 
   /**
    * Resets the sponsor back to its original state, closes edit mode
    */
   const handleProjectSponsorClose = () => {
-    setSponsor(originalSponsor);
+    setSponsor(getOriginalSponsor());
     setEditMode(false);
   };
 
@@ -49,7 +69,7 @@ const ProjectSummaryProjectSponsor = ({
    * Saves the new project sponsor
    */
   const handleProjectSponsorSave = () => {
-    updateProjectSponsor({
+    updateProjectEntity({
       variables: {
         projectId: projectId,
         entityId: sponsor.entity_id,
@@ -60,7 +80,7 @@ const ProjectSummaryProjectSponsor = ({
         refetch();
         snackbarHandle(true, "Sponsor updated!", "success");
       })
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(true, "Failed to update: " + String(err), "error");
         handleProjectSponsorClose();
       });
@@ -68,7 +88,7 @@ const ProjectSummaryProjectSponsor = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Sponsor</Typography>
+      <Typography className={classes.fieldLabel}>{entityName}</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -78,16 +98,23 @@ const ProjectSummaryProjectSponsor = ({
           <>
             <Autocomplete
               value={sponsor}
-              defaultValue={"None"}
               className={classes.fieldSelectItem}
               id={`moped-project-summary-autocomplete-${projectId}`}
               options={entityList}
-              getOptionLabel={e => e.entity_name}
+              getOptionLabel={(e) => e.entity_name}
+              getOptionSelected={(option, value) =>
+                option.entity_name === value.entity_name
+              }
               onChange={(event, newValue) => {
                 setSponsor(newValue);
               }}
-              renderInput={params => (
-                <TextField {...params} variant="standard" label={null} autoFocus />
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant="standard"
+                  label={null}
+                  autoFocus
+                />
               )}
             />
             <Icon
@@ -106,7 +133,7 @@ const ProjectSummaryProjectSponsor = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={sponsor?.entity_name || "n/a"}
+            text={sponsor?.entity_name || ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
@@ -116,4 +143,4 @@ const ProjectSummaryProjectSponsor = ({
   );
 };
 
-export default ProjectSummaryProjectSponsor;
+export default ProjectSummaryProjectEntity;

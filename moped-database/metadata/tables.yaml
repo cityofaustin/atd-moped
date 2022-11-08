@@ -859,6 +859,27 @@
           remote_table:
             name: moped_workgroup
             schema: public
+    - name: mopedProjectsByProjectSponsor
+      using:
+        foreign_key_constraint_on:
+          column: project_sponsor
+          table:
+            name: moped_project
+            schema: public
+    - name: moped_proj_partners
+      using:
+        foreign_key_constraint_on:
+          column: entity_id
+          table:
+            name: moped_proj_partners
+            schema: public
+    - name: moped_projects
+      using:
+        foreign_key_constraint_on:
+          column: project_lead_id
+          table:
+            name: moped_project
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -3174,6 +3195,9 @@
     - name: moped_project
       using:
         foreign_key_constraint_on: parent_project_id
+    - name: moped_project_lead
+      using:
+        foreign_key_constraint_on: project_lead_id
     - name: moped_status
       using:
         foreign_key_constraint_on: status_id
@@ -3281,6 +3305,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3315,6 +3340,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3349,6 +3375,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3383,6 +3410,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3417,6 +3445,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3452,6 +3481,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3487,6 +3517,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
