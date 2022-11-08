@@ -1,5 +1,7 @@
 import theme from "src/theme/index";
-import { mapStyles } from "src/utils/mapHelpers";
+import { pointsCircleRadiusStops } from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
+
+export const activeLineWidth = 8;
 
 // Default Mapbox GL Draw styles with overrides from MUI theme
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -97,7 +99,7 @@ const mapboxDrawStylesOverrides = [
     },
     paint: {
       "line-color": theme.palette.primary.main,
-      "line-width": 8,
+      "line-width": activeLineWidth,
     },
   },
   {
@@ -156,7 +158,7 @@ const mapboxDrawStylesOverrides = [
       ["!=", "mode", "static"],
     ],
     paint: {
-      "circle-radius": mapStyles.circleRadiusStops,
+      "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 4,
       "circle-stroke-color": theme.palette.primary.main,
       "circle-color": theme.palette.secondary.main,
@@ -187,7 +189,7 @@ const mapboxDrawStylesOverrides = [
       ["!=", "meta", "vertex"],
     ],
     paint: {
-      "circle-radius": mapStyles.circleRadiusStops,
+      "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 8,
       "circle-stroke-color": theme.palette.primary.main,
       "circle-color": theme.palette.secondary.main,

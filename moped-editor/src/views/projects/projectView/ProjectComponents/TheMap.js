@@ -4,8 +4,9 @@ import { cloneDeep } from "lodash";
 import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
+import ComponentDrawTools from "./ComponentDrawTools";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { getIntersectionLabel, useFeatureTypes } from "./utils";
+import { useFeatureTypes } from "./utils";
 import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
@@ -14,6 +15,7 @@ import {
   ProjectComponentsSourcesAndLayers,
 } from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
+import { isDrawnFeature, makeCapturedFromLayerFeature } from "./featureUtils";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -21,28 +23,17 @@ mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-const deDeupeProjectFeatures = (features) => {
-  return features.filter(
-    (value, index, self) =>
-      index ===
-      self.findIndex(
-        (f) =>
-          f.properties.id === value.properties.id &&
-          f.properties._layerId === value.properties._layerId
-      )
-  );
-};
-
-// returns geojson of **unique** features across all components
+// returns geojson of features across all components
 const useProjectFeatures = (components) =>
   useMemo(() => {
     const allComponentfeatures = [];
     components.forEach((component) =>
       allComponentfeatures.push(component.features)
     );
+
     return {
       type: "FeatureCollection",
-      features: deDeupeProjectFeatures(allComponentfeatures.flat()),
+      features: allComponentfeatures.flat(),
     };
   }, [components]);
 
@@ -69,9 +60,11 @@ export default function TheMap({
   linkMode,
   setIsFetchingFeatures,
 }) {
-  const [cursor, setCursor] = useState("grap");
+  const [cursor, setCursor] = useState("grab");
+
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
+  const [isDrawing, setIsDrawing] = useState(false);
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
@@ -141,6 +134,9 @@ export default function TheMap({
       (feature) => feature.layer.id === draftLayerId
     );
 
+    // If we clicked a drawn feature, we don't need to capture from the CTN layers
+    if (isDrawnFeature(clickedDraftComponentFeature)) return;
+
     if (clickedDraftComponentFeature) {
       // remove project feature, ignore underlying CTN features
       const filteredFeatures = draftComponent.features.filter((compFeature) => {
@@ -158,31 +154,18 @@ export default function TheMap({
 
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
-    const clickedFeatureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
+    const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
       clickedFeature,
       linkMode,
       ctnLinesGeojson,
       ctnPointsGeojson
     );
 
-    const newFeature = {
-      geometry: clickedFeatureFromAgolGeojson.geometry,
-      properties: {
-        ...clickedFeatureFromAgolGeojson.properties,
-        id: clickedFeatureFromAgolGeojson.id,
-        // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
-        _layerId: clickedFeature.layer.id,
-      },
-    };
-
-    if (newFeature.properties._layerId.includes("point")) {
-      newFeature.properties._label = getIntersectionLabel(
-        newFeature,
-        ctnLinesGeojson
-      );
-    } else {
-      newFeature.properties._label = `${newFeature.properties.FROM_ADDRESS_MIN} BLK ${newFeature.properties.FULL_STREET_NAME}`;
-    }
+    const newFeature = makeCapturedFromLayerFeature(
+      featureFromAgolGeojson,
+      clickedFeature,
+      ctnLinesGeojson
+    );
 
     newDraftComponent.features.push(newFeature);
     setDraftComponent(newDraftComponent);
@@ -219,10 +202,17 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
+      <ComponentDrawTools
+        setDraftComponent={setDraftComponent}
+        linkMode={linkMode}
+        setCursor={setCursor}
+        setIsDrawing={setIsDrawing}
+      />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectComponentsSourcesAndLayers
         data={data}
         isEditingComponent={isEditingComponent}
+        isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}
         clickedComponent={clickedComponent}

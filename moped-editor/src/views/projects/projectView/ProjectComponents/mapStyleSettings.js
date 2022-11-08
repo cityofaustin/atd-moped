@@ -16,6 +16,13 @@ export const COLORS = {
   white: "#fff",
 };
 
+export const pointsCircleRadiusStops = {
+  stops: [
+    [10, 1],
+    [20, 12],
+  ],
+};
+
 /**
  * Sets the interactivity and styles of the map layers
  * isInteractive - whether the layer is included in the map's interactiveLayerIds array
@@ -30,12 +37,7 @@ export const MAP_STYLES = {
       _featureIdProp: "INTERSECTION_ID",
       type: "circle",
       paint: {
-        "circle-radius": {
-          stops: [
-            [10, 1],
-            [20, 12],
-          ],
-        },
+        "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-color": COLORS.pinkBright,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
@@ -76,12 +78,7 @@ export const MAP_STYLES = {
       _featureIdProp: "INTERSECTION_ID",
       type: "circle",
       paint: {
-        "circle-radius": {
-          stops: [
-            [10, 1],
-            [20, 12],
-          ],
-        },
+        "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-color": COLORS.mutedGray,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
@@ -153,12 +150,7 @@ export const MAP_STYLES = {
       _featureIdProp: "id",
       type: "circle",
       paint: {
-        "circle-radius": {
-          stops: [
-            [10, 1],
-            [20, 12],
-          ],
-        },
+        "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-color": COLORS.blueDark,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
@@ -244,12 +236,7 @@ export const MAP_STYLES = {
       type: "circle",
       _featureIdProp: "INTERSECTION_ID",
       paint: {
-        "circle-radius": {
-          stops: [
-            [10, 1],
-            [20, 12],
-          ],
-        },
+        "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-opacity": 0,
         "circle-color": COLORS.black,
         "circle-opacity": 0,
@@ -284,12 +271,7 @@ export const MAP_STYLES = {
       featureIdProp: "id",
       type: "circle",
       paint: {
-        "circle-radius": {
-          stops: [
-            [10, 1],
-            [20, 12],
-          ],
-        },
+        "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-color": COLORS.blueDark,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
