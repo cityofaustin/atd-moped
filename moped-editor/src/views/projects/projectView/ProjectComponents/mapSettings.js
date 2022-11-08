@@ -1,4 +1,3 @@
-import { colors } from "@material-ui/core";
 import { COLORS } from "./mapStyleSettings";
 
 const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN;
@@ -78,8 +77,8 @@ export const basemaps = {
         minzoom: 0,
         maxzoom: 22,
       },
-      streetLabels: {
-        id: "street-labels",
+      aerialStreetLabels: {
+        id: "aerial-street-labels",
         // borrowed from mapbox mapbox streets v11 style
         type: "symbol",
         metadata: {
@@ -143,6 +142,75 @@ export const basemaps = {
           "text-color": COLORS.white,
           "text-halo-color": COLORS.black,
           "text-halo-width": 1,
+        },
+      },
+    },
+  },
+  street: {
+    layers: {
+      streetLabels: {
+        id: "street-labels",
+        // borrowed from mapbox mapbox streets v11 style
+        type: "symbol",
+        metadata: {
+          "mapbox:featureComponent": "road-network",
+          "mapbox:group": "Road network, road-labels",
+        },
+        source: "composite",
+        "source-layer": "road",
+        minzoom: 12,
+        filter: [
+          "all",
+          ["has", "name"],
+          [
+            "match",
+            ["get", "class"],
+            [
+              "motorway",
+              "trunk",
+              "primary",
+              "secondary",
+              "tertiary",
+              "street",
+              "street_limited",
+            ],
+            true,
+            false,
+          ],
+        ],
+        layout: {
+          "text-size": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            10,
+            [
+              "match",
+              ["get", "class"],
+              ["motorway", "trunk", "primary", "secondary", "tertiary"],
+              10,
+              9,
+            ],
+            18,
+            [
+              "match",
+              ["get", "class"],
+              ["motorway", "trunk", "primary", "secondary", "tertiary"],
+              16,
+              14,
+            ],
+          ],
+          "text-max-angle": 30,
+          "text-font": ["DIN Pro Regular", "Arial Unicode MS Regular"],
+          "symbol-placement": "line",
+          "text-padding": 1,
+          "text-rotation-alignment": "map",
+          "text-pitch-alignment": "viewport",
+          "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
+          "text-letter-spacing": 0.01,
+        },
+        paint: {
+          "text-color": COLORS.black,
         },
       },
     },
