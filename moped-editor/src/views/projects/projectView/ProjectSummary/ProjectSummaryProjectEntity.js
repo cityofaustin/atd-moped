@@ -133,7 +133,7 @@ const ProjectSummaryProjectEntity = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={sponsor?.entity_name}
+            text={sponsor?.entity_name || ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
