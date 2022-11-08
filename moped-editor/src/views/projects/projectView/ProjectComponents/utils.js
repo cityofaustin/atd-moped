@@ -1,8 +1,13 @@
 import { useMemo } from "react";
-import { useMediaQuery, useTheme } from "@material-ui/core";
+import { makeStyles, useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 import { v4 as uuidv4 } from "uuid";
+import { Icon } from "@material-ui/core";
+import {
+  RoomOutlined as RoomOutlinedIcon,
+  Timeline as TimelineIcon,
+} from "@material-ui/icons";
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
@@ -23,7 +28,7 @@ export const useFeatureTypes = (featureCollection, geomType) =>
 
 /*
 Bit of a hack to generate intersection labels from nearby streets. 
-this relies on nearby lines being avaialble in-memory, which 
+this relies on nearby lines being available in-memory, which 
 is not guaranteed. a reliable solution would be query the AGOL streets
 layer on-the-fly to grab street names - not sure if this is worth it TBH 
 */
@@ -41,6 +46,38 @@ export const getIntersectionLabel = (point, lines) => {
     .map((street) => street.properties.FULL_STREET_NAME);
   const uniqueStreets = [...new Set(streets)].sort();
   return uniqueStreets.join(" / ");
+};
+
+const useStyles = makeStyles((theme) => ({
+  iconContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: theme.spacing(1),
+    color: theme.palette.primary.main,
+  },
+}));
+
+/**
+ * Renders an option with icon based on the type of geometry (if it exists) and component type label
+ * @param {Object} option - Autocomplete option object with label, value, and data about component type
+ * @return {JSX.Element}
+ */
+export const ComponentOptionWithIcon = ({ option }) => {
+  const classes = useStyles();
+  const { data: { line_representation = null } = {} } = option;
+
+  return (
+    <>
+      <span className={classes.iconContainer}>
+        {line_representation === true && <TimelineIcon />}
+        {line_representation === false && <RoomOutlinedIcon />}
+        {/* Fall back to a blank icon to keep labels lined up */}
+        {line_representation === null && <Icon />}
+      </span>{" "}
+      {option.label}
+    </>
+  );
 };
 
 /*

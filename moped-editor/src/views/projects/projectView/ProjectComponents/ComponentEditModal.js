@@ -16,6 +16,7 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
+  ComponentOptionWithIcon,
   makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
@@ -39,8 +40,8 @@ const initialFormValues = {
 
 const ControlledAutocomplete = ({
   id,
-  disabled = false,
   options,
+  renderOption,
   name,
   control,
   label,
@@ -55,9 +56,9 @@ const ControlledAutocomplete = ({
       <Autocomplete
         options={options}
         multiple={multiple}
-        disabled={disabled}
         getOptionLabel={(option) => option?.label || ""}
         getOptionSelected={(option, value) => option?.value === value?.value}
+        renderOption={renderOption}
         value={value}
         renderInput={(params) => (
           <TextField
@@ -145,14 +146,14 @@ const ComponentEditModal = ({
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth>
+    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers={true}>
         <form onSubmit={handleSubmit(onSave)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -160,23 +161,27 @@ const ComponentEditModal = ({
                 id="component"
                 label="Component Type"
                 options={areOptionsLoading ? [] : componentOptions}
+                renderOption={(option) => (
+                  <ComponentOptionWithIcon option={option} />
+                )}
                 name="component"
                 control={control}
                 autoFocus
               />
             </Grid>
-            <Grid item xs={12}>
-              {/* Disabled unless there are subcomponents for the chosen component */}
-              <ControlledAutocomplete
-                id="subcomponents"
-                label="Subcomponents"
-                multiple
-                disabled={subcomponentOptions.length === 0}
-                options={subcomponentOptions}
-                name="subcomponents"
-                control={control}
-              />
-            </Grid>
+            {/* Hide unless there are subcomponents for the chosen component */}
+            {subcomponentOptions.length !== 0 && (
+              <Grid item xs={12}>
+                <ControlledAutocomplete
+                  id="subcomponents"
+                  label="Subcomponents"
+                  multiple
+                  options={subcomponentOptions}
+                  name="subcomponents"
+                  control={control}
+                />
+              </Grid>
+            )}
             <Grid item xs={12}>
               <TextField
                 inputRef={register}

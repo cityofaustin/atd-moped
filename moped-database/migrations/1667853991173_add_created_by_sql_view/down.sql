@@ -44,6 +44,7 @@ AS WITH project_person_list_lookup AS (
     mp.fiscal_year,
     mp.capitally_funded,
     mp.date_added,
+    mp.added_by,
     mp.is_deleted,
     mp.milestone_id,
     mp.task_order,
@@ -143,8 +144,7 @@ AS WITH project_person_list_lookup AS (
       WHERE 1 = 1
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
-      GROUP BY contract.project_id) AS contract_numbers,
-    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
+      GROUP BY contract.project_id) AS contract_numbers
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -154,7 +154,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
-     LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
@@ -169,7 +168,8 @@ AS WITH project_person_list_lookup AS (
     mp.end_date, 
     mp.fiscal_year, 
     mp.capitally_funded, 
-    mp.date_added,
+    mp.date_added, 
+    mp.added_by, 
     mp.is_deleted, 
     mp.milestone_id, 
     mp.status_id, 
@@ -177,6 +177,4 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at, 
     mp.task_order,
     ptl.type_name, 
-    fsl.funding_source_name,
-    added_by_user.first_name,
-    added_by_user.last_name;
+    fsl.funding_source_name;

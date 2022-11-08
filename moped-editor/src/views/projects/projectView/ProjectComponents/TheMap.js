@@ -7,7 +7,7 @@ import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { useFeatureTypes } from "./utils";
-import { useAgolFeatures } from "./agolUtils";
+import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
 import {
   BaseMapSourceAndLayers,
   interactiveLayerIds,
@@ -92,11 +92,12 @@ export default function TheMap({
     useComponentFeatureCollection(clickedComponent);
 
   const currentZoom = mapRef?.current?.getZoom();
-  const {
-    ctnLinesGeojson,
-    ctnPointsGeojson,
-    findFeatureInAgolGeojsonFeatures,
-  } = useAgolFeatures(linkMode, setIsFetchingFeatures, currentZoom, bounds);
+  const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
+    linkMode,
+    setIsFetchingFeatures,
+    currentZoom,
+    bounds
+  );
 
   const projectLines = useFeatureTypes(projectFeatures, "line");
   const projectPoints = useFeatureTypes(projectFeatures, "point");
@@ -173,8 +174,12 @@ export default function TheMap({
 
     // if multiple features are clicked, we ignore all but one
     const clickedFeature = e.features[0];
-    const featureFromAgolGeojson =
-      findFeatureInAgolGeojsonFeatures(clickedFeature);
+    const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
+      clickedFeature,
+      linkMode,
+      ctnLinesGeojson,
+      ctnPointsGeojson
+    );
 
     const newFeature = makeCapturedFromLayerFeature(
       featureFromAgolGeojson,

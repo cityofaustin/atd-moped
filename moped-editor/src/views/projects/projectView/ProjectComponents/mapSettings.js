@@ -34,7 +34,7 @@ export const initialViewState = {
 };
 
 /**
- * See: https://docs.mapbox.com/mapbox-gl-js/api/map/#map-parameters
+ * @see https://docs.mapbox.com/mapbox-gl-js/api/map/#map-parameters
  */
 export const mapParameters = {
   touchPitch: false,
@@ -46,10 +46,10 @@ export const mapParameters = {
   mapboxAccessToken: MAPBOX_TOKEN,
 };
 
-/*
- * This configuration sets the mapStyle, sources, and layers associated with basemaps
- * mapStyle becomes the value of the mapStyle prop of the react-map-gl map
- * https://visgl.github.io/react-map-gl/docs/api-reference/map#mapstyle
+/**
+ * This configuration sets the mapStyle, sources, and layers for streets and aerial basemaps.
+ * The react-map-gl map's mapStyle prop is passed the value of the mapStyle key in this config.
+ * @see https://visgl.github.io/react-map-gl/docs/api-reference/map#mapstyle
  */
 export const basemaps = {
   streets: { mapStyle: "mapbox://styles/mapbox/light-v10" },
