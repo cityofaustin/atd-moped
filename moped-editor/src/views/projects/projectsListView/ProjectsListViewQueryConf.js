@@ -134,6 +134,18 @@ export const ProjectsListViewQueryConf = {
       width: "20%",
       filter: filterProjectTeamMembers,
     },
+    project_lead: {
+      label: "Project lead",
+      searchable: true,
+      search: {
+        label: "Search by project lead",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+      filter: (value) => (value === "None" ? "-" : value),
+    },
     project_sponsor: {
       label: "Project sponsor",
       searchable: true,

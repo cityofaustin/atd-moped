@@ -141,6 +141,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     project_name: false,
     current_phase: false,
     project_team_members: false,
+    project_lead: false,
     project_sponsor: false,
     project_partner: false,
     ecapris_subproject_id: false,
@@ -303,6 +304,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "pre-wrap", minWidth: "250px" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
+    },
+    {
+      title: "Lead",
+      field: "project_lead",
+      hidden: hiddenColumns["project_lead"],
+      editable: "never",
+      render: (entry) =>
+        entry.project_lead === null ? "-" : entry.project_lead,
     },
     {
       title: "Sponsor",
