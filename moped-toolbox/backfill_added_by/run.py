@@ -164,7 +164,7 @@ def main(env):
     print("Writing inoperable projects to 'log.json'")
 
     with open("log.json", "w") as fout:
-        json.dump(unable_to_process, fout)
+        json.dump(unable_to_process, fout, indent=2)
 
 
 if __name__ == "__main__":
