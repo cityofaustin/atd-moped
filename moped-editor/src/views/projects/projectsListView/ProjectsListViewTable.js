@@ -301,7 +301,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap", minWidth: "250px" },
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
@@ -363,6 +363,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Task order",
       field: "task_order",
       hidden: hiddenColumns["task_order"],
+      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
       render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
@@ -370,13 +371,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           return "-";
         }
         // Render values as a comma seperated string
-        let content = entry.task_order
-          .map((taskOrder) => {
-            return taskOrder.display_name;
-          })
-          .join(", ");
-
-        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+        return entry.task_order.map((taskOrder) => (
+          <div>{taskOrder.display_name}</div>
+        ));
       },
     },
     {
