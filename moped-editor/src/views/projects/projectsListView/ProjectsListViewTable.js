@@ -35,6 +35,10 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+      "& .MuiTableCell-head:nth-of-type(2)": {
+        left: "0px",
+        position: "sticky"
+      },
   },
   paper: {
     width: "100%",
@@ -278,7 +282,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
-      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
@@ -292,6 +295,13 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           {entry.project_name}
         </RouterLink>
       ),
+      cellStyle: {
+        position: "sticky",
+        left: 0,
+        backgroundColor: "white",
+        whiteSpace: "noWrap",
+        zIndex: 1,
+      }
     },
     {
       title: "Status",
