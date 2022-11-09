@@ -87,16 +87,15 @@ def make_hasura_request(*, query, variables, env):
 
 
 def main(env):
-    counts = {"updated": 0, "todo": 0, "unable_to_process": 0}
     projects = make_hasura_request(query=PROJECTS_TODO_QUERY, env=env, variables=None)[
         "moped_project"
     ]
     activities = make_hasura_request(
         query=ACTIVITY_LOG_LOOKUP_QUERY, env=env, variables=None
     )["moped_activity_log"]
-    users = make_hasura_request(
-        query=MOPED_USERS_QUERY, env=env, variables=None
-    )["moped_users"]
+    users = make_hasura_request(query=MOPED_USERS_QUERY, env=env, variables=None)[
+        "moped_users"
+    ]
 
     # we will attribute AMD projects to ivonne if no user info is available
     amd_user_id = next(user for user in users if user["first_name"].lower() == "ivonne")
@@ -144,8 +143,11 @@ def main(env):
         user_id = user["user_id"]
         ready.append({"project_id": proj_id, "added_by": user_id})
 
-    counts["unable_to_process"] = len(unable_to_process)
-    counts["todo"] = len(ready)
+    counts = {
+        "updated": 0,
+        "todo": len(ready),
+        "unable_to_process": len(unable_to_process),
+    }
 
     print(counts)
 
@@ -159,7 +161,7 @@ def main(env):
         counts["todo"] -= 1
         print(counts)
 
-    print("Writing failed projects to 'log.json'")
+    print("Writing inoperable projects to 'log.json'")
 
     with open("log.json", "w") as fout:
         json.dump(unable_to_process, fout)
