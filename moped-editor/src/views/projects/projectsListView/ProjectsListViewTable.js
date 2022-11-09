@@ -299,7 +299,8 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         position: "sticky",
         left: 0,
         backgroundColor: "white",
-        whiteSpace: "noWrap"
+        whiteSpace: "noWrap",
+        zIndex: 1,
       }
     },
     {
