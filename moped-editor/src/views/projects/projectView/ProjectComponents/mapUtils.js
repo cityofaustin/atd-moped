@@ -42,20 +42,20 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
       and always appear on top of everything else */}
       <Layer
         {...{
-          ...basemaps.aerial.layers.aerialStreetLabels,
+          ...basemaps.aerial.layers.streetLabels,
           layout: {
-            ...basemaps.aerial.layers.aerialStreetLabels.layout,
-            visibility: basemapKey === "aerial" ? "visible" : "none",
+            ...basemaps.aerial.layers.streetLabels.layout,
           },
-        }}
-      />
-      <Layer
-        {...{
-          ...basemaps.street.layers.streetLabels,
-          layout: {
-            ...basemaps.street.layers.streetLabels.layout,
-            visibility: basemapKey === "streets" ? "visible" : "none",
-          },
+          paint:
+            basemapKey === "aerial"
+              ? {
+                  "text-color": "#fff",
+                  "text-halo-color": "#000",
+                  "text-halo-width": 1,
+                }
+              : {
+                  "text-color": "#000",
+                },
         }}
       />
     </>
