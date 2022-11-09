@@ -98,9 +98,10 @@ def main(env):
     ]
 
     # we will attribute AMD projects to ivonne if no user info is available
-    amd_user_id = next(user for user in users if user["first_name"].lower() == "ivonne")
-    if not amd_user_id:
+    amd_user = next(user for user in users if user["first_name"].lower() == "ivonne")
+    if not amd_user:
         raise Exception("Unable to find default AMD user")
+    amd_user_id = amd_user["user_id"]
 
     ready = []
     unable_to_process = []
