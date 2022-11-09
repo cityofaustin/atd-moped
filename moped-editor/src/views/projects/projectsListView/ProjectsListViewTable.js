@@ -266,7 +266,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.gql,
     query.config.options.useQuery
   );
-
+  console.log("data", data);
   const columns = [
     {
       title: "ID",
@@ -372,7 +372,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         }
         // Render values as a comma seperated string
         return entry.task_order.map((taskOrder) => (
-          <div>{taskOrder.display_name}</div>
+          <span key={taskOrder.task_order} style={{ display: "block" }}>
+            {taskOrder.display_name}
+          </span>
         ));
       },
     },

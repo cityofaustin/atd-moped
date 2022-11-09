@@ -13,8 +13,8 @@ export const filterProjectTeamMembers = (value) => {
     }
   });
   return Object.keys(uniqueNames).map((key) => (
-    <div>
+    <span key={key} style={{display: "block"}}>
       {`${key} - ${uniqueNames[key]}`}
-    </div>
+    </span>
   ));
 };
