@@ -35,12 +35,8 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-      "& .MuiTableCell-head:first-of-type": {
-        left: "0px",
-        position: "sticky"
-      },
       "& .MuiTableCell-head:nth-of-type(2)": {
-        left: "71px", // accounts for the width of the ID column, so it wont cover it
+        left: "0px",
         position: "sticky"
       },
   },
@@ -280,11 +276,6 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "ID",
       field: "project_id",
       hidden: hiddenColumns["project_id"],
-      cellStyle: {
-        position: "sticky",
-        left: 0,
-        backgroundColor: "white",
-      }
     },
     {
       title: "Name",
@@ -305,7 +296,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       ),
       cellStyle: {
         position: "sticky",
-        left: "71px",
+        left: 0,
         backgroundColor: "white",
       }
     },
