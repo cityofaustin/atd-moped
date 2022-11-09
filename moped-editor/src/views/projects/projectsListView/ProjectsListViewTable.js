@@ -310,6 +310,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) =>
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
@@ -392,6 +393,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "type_name",
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.type_name.split(",").map((type_name) => (
+          <span key={type_name} style={{ display: "block" }}>
+            {type_name}
+          </span>
+        ));
+      },
     },
     {
       title: "Funding",
@@ -414,6 +423,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+      cellStyle: { minWidth: 300 },
       render: (entry) => parse(String(entry.project_note)),
     },
     {
