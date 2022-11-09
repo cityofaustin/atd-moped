@@ -92,7 +92,7 @@ def main(env):
         query=ACTIVITY_LOG_LOOKUP_QUERY, env=env, variables=None
     )["moped_activity_log"]
     users = make_hasura_request(
-        query=ACTIVE_MOPED_USERS_QUERY, env=env, variables=None
+        query=MOPED_USERS_QUERY, env=env, variables=None
     )["moped_users"]
 
     # we will attribute AMD projects to ivonne if no user info is available
