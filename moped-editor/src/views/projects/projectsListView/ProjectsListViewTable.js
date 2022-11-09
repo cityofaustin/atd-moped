@@ -266,7 +266,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.gql,
     query.config.options.useQuery
   );
-  console.log("data", data);
+
   const columns = [
     {
       title: "ID",
