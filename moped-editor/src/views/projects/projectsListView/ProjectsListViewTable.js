@@ -318,6 +318,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_partner",
       hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.project_partner.split(",").map((partner) => (
+          <span key={partner} style={{ display: "block" }}>
+            {partner}
+          </span>
+        ));
+      },
     },
     {
       title: "eCAPRIS ID",
