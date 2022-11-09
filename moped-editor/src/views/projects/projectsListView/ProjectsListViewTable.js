@@ -145,6 +145,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     project_name: false,
     current_phase: false,
     project_team_members: false,
+    project_lead: false,
     project_sponsor: false,
     project_partner: false,
     ecapris_subproject_id: false,
@@ -281,6 +282,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
@@ -310,14 +312,24 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap", minWidth: "250px" },
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
+    },
+    {
+      title: "Lead",
+      field: "project_lead",
+      hidden: hiddenColumns["project_lead"],
+      editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) =>
+        entry.project_lead === null ? "-" : entry.project_lead,
     },
     {
       title: "Sponsor",
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) =>
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
@@ -326,6 +338,14 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_partner",
       hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.project_partner.split(",").map((partner) => (
+          <span key={partner} style={{ display: "block" }}>
+            {partner}
+          </span>
+        ));
+      },
     },
     {
       title: "eCAPRIS ID",
@@ -372,6 +392,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Task order",
       field: "task_order",
       hidden: hiddenColumns["task_order"],
+      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
       render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
@@ -379,13 +400,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           return "-";
         }
         // Render values as a comma seperated string
-        let content = entry.task_order
-          .map((taskOrder) => {
-            return taskOrder.display_name;
-          })
-          .join(", ");
-
-        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+        return entry.task_order.map((taskOrder) => (
+          <span key={taskOrder.task_order} style={{ display: "block" }}>
+            {taskOrder.display_name}
+          </span>
+        ));
       },
     },
     {
@@ -393,18 +412,37 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "type_name",
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.type_name.split(",").map((type_name) => (
+          <span key={type_name} style={{ display: "block" }}>
+            {type_name}
+          </span>
+        ));
+      },
     },
     {
       title: "Funding",
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.funding_source_name
+          .split(",")
+          .map((funding_source_name, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {funding_source_name}
+            </span>
+          ));
+      },
     },
     {
       title: "Status update",
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+      cellStyle: { minWidth: 300 },
       render: (entry) => parse(String(entry.project_note)),
     },
     {
@@ -438,18 +476,42 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "contractors",
       hidden: hiddenColumns["contractors"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contractors.split(",").map((contractor, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractor}
+          </span>
+        ));
+      },
     },
     {
       title: "Contract numbers",
       field: "contract_numbers",
       hidden: hiddenColumns["contract_numbers"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contract_numbers.split(",").map((contractNumber, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractNumber}
+          </span>
+        ));
+      },
     },
     {
       title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
+      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
+      render: (entry) => {
+        return entry.project_tags.split(",").map((tag) => (
+          <span key={tag} style={{ display: "block" }}>
+            {tag}
+          </span>
+        ));
+      },
     },
     {
       title: "Created by",

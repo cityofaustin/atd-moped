@@ -37,7 +37,7 @@ export const ProjectsListViewQueryConf = {
   export: ProjectsListViewExportConf,
   search: {
     placeholder:
-      "Search by project ID, name, description, phase, or eCAPRIS subproject ID.",
+      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -133,6 +133,18 @@ export const ProjectsListViewQueryConf = {
       label: "Team members",
       width: "20%",
       filter: filterProjectTeamMembers,
+    },
+    project_lead: {
+      label: "Project lead",
+      searchable: true,
+      search: {
+        label: "Search by project lead",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+      filter: (value) => (value === "None" ? "-" : value),
     },
     project_sponsor: {
       label: "Project sponsor",
