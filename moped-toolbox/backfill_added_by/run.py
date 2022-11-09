@@ -1,3 +1,6 @@
+"""Updates the `added_by` column of moped_project records based on the `moped_activity_log`.
+This script can safely be run repeatedly as needed."""
+
 import argparse
 import json
 import requests
