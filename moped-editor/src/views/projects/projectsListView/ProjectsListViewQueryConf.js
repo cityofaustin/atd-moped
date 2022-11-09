@@ -37,7 +37,7 @@ export const ProjectsListViewQueryConf = {
   export: ProjectsListViewExportConf,
   search: {
     placeholder:
-      "Search by project ID, name, description, phase, or eCAPRIS subproject ID.",
+      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
