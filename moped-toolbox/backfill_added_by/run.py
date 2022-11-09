@@ -34,7 +34,7 @@ query ProjectInsertActivities {
 }
 """
 
-ACTIVE_MOPED_USERS_QUERY = """
+MOPED_USERS_QUERY = """
 query AllMopedUsers {
   moped_users {
     first_name
@@ -108,7 +108,6 @@ def main(env):
         logs = [l for l in activities if l["record_project_id"] == proj["project_id"]]
         if not logs:
             # some projects are missing logs - presumably to due SQS/event handler failures
-            # print(f"WARNING: No logs found for project #{proj_id}")
             if proj["date_added"].startswith("2022-02-10"):
                 # this is an AMD project migrated on 2 Feb 2022
                 ready.append({"project_id": proj_id, "added_by": amd_user_id})
@@ -128,6 +127,7 @@ def main(env):
                 ready.append({"project_id": proj_id, "added_by": amd_user_id})
                 continue
             elif log["updated_by"]:
+                # we logged a cognito user ID but it is no longer associated with a user in the DB
                 unable_to_process.append(
                     {"project_id": proj_id, "reason": "unknown cognito user ID"}
                 )
