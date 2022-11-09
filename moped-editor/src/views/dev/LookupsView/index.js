@@ -160,21 +160,6 @@ const LookupsView = () => {
                     >
                       <ArrowUpwardIcon fontSize="small" />
                     </IconButton>
-                    {/* <Button
-                      size="small"
-                      color="primary"
-                      // variant="outlined"
-                      component={Link}
-                      startIcon={<ArrowUpwardIcon />}
-                      to={createRecordKeyHash(recordType.key)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToTable("_scroll_to_top", refs);
-                        // history.replace(createRecordKeyHash(recordType.key));
-                      }}
-                    >
-                      Back to top
-                    </Button> */}
                   </Grid>
                   <Grid item xs={12}>
                     <RecordTable
