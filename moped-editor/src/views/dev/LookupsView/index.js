@@ -6,6 +6,7 @@ import { createBrowserHistory } from "history";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
@@ -136,30 +137,34 @@ const LookupsView = () => {
                   </Grid>
 
                   <Grid item>
-                    <IconButton
-                      component={Link}
-                      to={createRecordKeyHash(recordType.key)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToTable(recordType.key, refs);
-                        history.replace(createRecordKeyHash(recordType.key));
-                      }}
-                    >
-                      <LinkIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Link to this table">
+                      <IconButton
+                        component={Link}
+                        to={createRecordKeyHash(recordType.key)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToTable(recordType.key, refs);
+                          history.replace(createRecordKeyHash(recordType.key));
+                        }}
+                      >
+                        <LinkIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
                   <Grid item>
-                    <IconButton
-                      component={Link}
-                      to={"#"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToTable("_scroll_to_top", refs);
-                        history.replace("");
-                      }}
-                    >
-                      <ArrowUpwardIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Return to top of page">
+                      <IconButton
+                        component={Link}
+                        to={"#"}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToTable("_scroll_to_top", refs);
+                          history.replace("");
+                        }}
+                      >
+                        <ArrowUpwardIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
                   <Grid item xs={12}>
                     <RecordTable
