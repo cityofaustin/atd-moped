@@ -429,18 +429,42 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "contractors",
       hidden: hiddenColumns["contractors"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contractors.split(",").map((contractor, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractor}
+          </span>
+        ));
+      },
     },
     {
       title: "Contract numbers",
       field: "contract_numbers",
       hidden: hiddenColumns["contract_numbers"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contract_numbers.split(",").map((contractNumber, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractNumber}
+          </span>
+        ));
+      },
     },
     {
       title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
+      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
+      render: (entry) => {
+        return entry.project_tags.split(",").map((tag) => (
+          <span key={tag} style={{ display: "block" }}>
+            {tag}
+          </span>
+        ));
+      },
     },
     {
       title: "Created by",
