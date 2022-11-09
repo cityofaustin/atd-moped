@@ -311,6 +311,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "project_lead",
       hidden: hiddenColumns["project_lead"],
       editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) =>
         entry.project_lead === null ? "-" : entry.project_lead,
     },
