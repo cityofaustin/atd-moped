@@ -398,6 +398,16 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.funding_source_name
+          .split(",")
+          .map((funding_source_name, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {funding_source_name}
+            </span>
+          ));
+      },
     },
     {
       title: "Status update",
