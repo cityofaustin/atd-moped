@@ -4702,6 +4702,7 @@
           - status_id
           - project_team_members
           - updated_at
+          - project_lead
           - project_sponsor
           - project_partner
           - status_name
@@ -4740,6 +4741,7 @@
           - project_description_public
           - project_name
           - project_partner
+          - project_lead
           - project_sponsor
           - project_team_members
           - status_name
@@ -4781,6 +4783,7 @@
           - project_description_public
           - project_name
           - project_partner
+          - project_lead
           - project_sponsor
           - project_team_members
           - status_name
