@@ -35,6 +35,11 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+        "& .MuiTableCell-head:first-of-type": {
+      left: "0px",
+      zIndex: 11, // the header has a zIndex of 10
+      position: "sticky"
+    },
   },
   paper: {
     width: "100%",
@@ -272,6 +277,11 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "ID",
       field: "project_id",
       hidden: hiddenColumns["project_id"],
+      cellStyle: {
+        position: "sticky",
+        left: 0,
+        backgroundColor: "white",
+      }
     },
     {
       title: "Name",
