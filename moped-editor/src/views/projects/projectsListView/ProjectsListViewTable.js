@@ -277,6 +277,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
