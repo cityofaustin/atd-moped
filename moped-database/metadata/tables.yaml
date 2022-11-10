@@ -2701,9 +2701,6 @@
     name: moped_proj_personnel
     schema: public
   object_relationships:
-    - name: moped_project_role
-      using:
-        foreign_key_constraint_on: role_id
     - name: moped_user
       using:
         foreign_key_constraint_on: user_id
@@ -2723,88 +2720,81 @@
       permission:
         check: {}
         columns:
+          - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - date_added
-          - added_by
-          - notes
           - user_id
-          - role_id
-          - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
         filter: {}
         check: null
     - role: moped-editor
       permission:
         columns:
           - added_by
+          - date_added
+          - is_deleted
+          - notes
           - project_id
           - project_personnel_id
-          - role_id
-          - is_deleted
           - user_id
-          - notes
-          - date_added
         filter: {}
         check: null
   event_triggers:
@@ -2817,14 +2807,13 @@
           columns: '*'
         update:
           columns:
-            - added_by
+            - is_deleted
+            - notes
             - project_id
             - project_personnel_id
-            - role_id
-            - is_deleted
-            - user_id
-            - notes
             - date_added
+            - added_by
+            - user_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3761,6 +3750,14 @@
 - table:
     name: moped_project_roles
     schema: public
+  array_relationships:
+    - name: moped_proj_personnel_roles
+      using:
+        foreign_key_constraint_on:
+          column: project_role_id
+          table:
+            name: moped_proj_personnel_roles
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
