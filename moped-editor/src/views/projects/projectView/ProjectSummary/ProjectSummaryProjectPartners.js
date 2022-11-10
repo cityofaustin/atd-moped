@@ -31,6 +31,7 @@ const ProjectSummaryProjectPartners = ({
   refetch,
   classes,
   snackbarHandle,
+  tooltipText,
 }) => {
   /**
    * Helper initial state lists
@@ -184,6 +185,7 @@ const ProjectSummaryProjectPartners = ({
             text={selectedEntities.map((e) => entityDict[e])}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
+            tooltipText={tooltipText}
           />
         )}
       </Box>

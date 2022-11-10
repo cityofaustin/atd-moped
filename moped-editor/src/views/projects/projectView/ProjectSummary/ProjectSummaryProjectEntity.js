@@ -37,6 +37,7 @@ const ProjectSummaryProjectEntity = ({
   classes,
   snackbarHandle,
   entityName,
+  tooltipText,
 }) => {
   const entityList = data?.moped_entity ?? [];
   const noneSponsor = entityList.find((e) => e.entity_id === 0);
@@ -136,6 +137,7 @@ const ProjectSummaryProjectEntity = ({
             text={sponsor?.entity_name || ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
+            tooltipText={tooltipText}
           />
         )}
       </Box>
