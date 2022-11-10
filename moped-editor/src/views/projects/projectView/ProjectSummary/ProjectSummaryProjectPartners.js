@@ -124,74 +124,72 @@ const ProjectSummaryProjectPartners = ({
   };
 
   return (
-    <>
-      <Grid item xs={12} className={classes.fieldGridItem}>
-        <Typography className={classes.fieldLabel}>Partners</Typography>
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          className={classes.fieldBox}
-        >
-          {editMode && (
-            <>
-              <Select
-                id={`moped-project-summary-partner-select-${projectId}`}
-                multiple
-                value={selectedEntities}
-                onChange={handleChange}
-                input={<Input autoFocus />}
-                renderValue={(entity_ids) =>
-                  entity_ids.map((e) => entityDict[e]).join(", ")
-                }
-                /*
+    <Grid item xs={12} className={classes.fieldGridItem}>
+      <Typography className={classes.fieldLabel}>Partners</Typography>
+      <Box
+        display="flex"
+        justifyContent="flex-start"
+        className={classes.fieldBox}
+      >
+        {editMode && (
+          <>
+            <Select
+              id={`moped-project-summary-partner-select-${projectId}`}
+              multiple
+              value={selectedEntities}
+              onChange={handleChange}
+              input={<Input autoFocus />}
+              renderValue={(entity_ids) =>
+                entity_ids.map((e) => entityDict[e]).join(", ")
+              }
+              /*
                 There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
                 this is fixed by overriding the function "getContentAnchorEl".
                     Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
               */
-                MenuProps={{
-                  getContentAnchorEl: () => null,
-                  style: {
-                    maxHeight: 500,
-                    width: 450,
-                  },
-                }}
-                className={classes.fieldSelectItem}
-              >
-                {entityList.map((entity) => (
-                  <MenuItem key={entity.entity_id} value={entity.entity_id}>
-                    <Checkbox
-                      checked={selectedEntities.includes(entity.entity_id)}
-                      color={"primary"}
-                    />
-                    <ListItemText primary={entity.entity_name} />
-                  </MenuItem>
-                ))}
-              </Select>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={handleProjectPartnersSave}
-              >
-                check
-              </Icon>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={handleProjectPartnersClose}
-              >
-                close
-              </Icon>
-            </>
-          )}
-          {!editMode && (
-            <ProjectSummaryLabel
-              text={selectedEntities.map((e) => entityDict[e])}
-              classes={classes}
-              onClickEdit={() => setEditMode(true)}
-              tooltipText={tooltipText}
-            />
-          )}
-        </Box>
-      </Grid>
-    </>
+              MenuProps={{
+                getContentAnchorEl: () => null,
+                style: {
+                  maxHeight: 500,
+                  width: 450,
+                },
+              }}
+              className={classes.fieldSelectItem}
+            >
+              {entityList.map((entity) => (
+                <MenuItem key={entity.entity_id} value={entity.entity_id}>
+                  <Checkbox
+                    checked={selectedEntities.includes(entity.entity_id)}
+                    color={"primary"}
+                  />
+                  <ListItemText primary={entity.entity_name} />
+                </MenuItem>
+              ))}
+            </Select>
+            <Icon
+              className={classes.editIconConfirm}
+              onClick={handleProjectPartnersSave}
+            >
+              check
+            </Icon>
+            <Icon
+              className={classes.editIconConfirm}
+              onClick={handleProjectPartnersClose}
+            >
+              close
+            </Icon>
+          </>
+        )}
+        {!editMode && (
+          <ProjectSummaryLabel
+            text={selectedEntities.map((e) => entityDict[e])}
+            classes={classes}
+            onClickEdit={() => setEditMode(true)}
+            tooltipText={tooltipText}
+          />
+        )}
+      </Box>
+    </Grid>
   );
 };
 
