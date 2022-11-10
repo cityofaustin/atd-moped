@@ -113,7 +113,6 @@ export default function MapView({ projectName, projectStatuses }) {
       // TODO: Extract this into a helper
       const componentGeographyMap = {};
       data.project_geography.forEach((component) => {
-        console.log(component);
         const currentComponentId = component.component_id;
         const currentFeature = {
           type: "Feature",

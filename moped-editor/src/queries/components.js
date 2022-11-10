@@ -32,6 +32,7 @@ export const ADD_PROJECT_COMPONENT = gql`
 export const GET_PROJECT_COMPONENTS = gql`
   query GetProjectComponents($projectId: Int!) {
     moped_proj_components(where: { project_id: { _eq: $projectId } }) {
+      moped_proj_components(where: {project_id: {_eq: 156}, is_deleted: {_eq: false}}) {
       project_component_id
       component_id
       description
@@ -61,7 +62,7 @@ export const GET_PROJECT_COMPONENTS = gql`
         source_layer
       }
     }
-    project_geography(where: { project_id: { _eq: $projectId } }) {
+    project_geography(where: {project_id: {_eq: 156}, is_deleted: {_eq: false}}) {
       geometry: geography
       component_id
     }
