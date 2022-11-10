@@ -19,6 +19,7 @@ const ProjectSummaryLabel = ({
   tooltipText,
 }) => {
   return (
+    // the tooltip will not appear if the `title` is empty
     <Tooltip placement="bottom-start" title={tooltipText || ""}>
       <Typography
         className={className ?? classes.fieldLabelText}
