@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Source, Layer } from "react-map-gl";
 import { basemaps, SOURCES } from "./mapSettings";
-import { MAP_STYLES } from "./mapStyleSettings";
+import { MAP_STYLES, COLORS } from "./mapStyleSettings";
 
 const mapStyles = MAP_STYLES;
 
@@ -46,6 +46,17 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
           layout: {
             ...basemaps.aerial.layers.streetLabels.layout,
           },
+          // Update street label text color to be readable on either basemap type
+          paint:
+            basemapKey === "aerial"
+              ? {
+                  "text-color": COLORS.white,
+                  "text-halo-color": COLORS.black,
+                  "text-halo-width": 1,
+                }
+              : {
+                  "text-color": COLORS.black,
+                },
         }}
       />
     </>
