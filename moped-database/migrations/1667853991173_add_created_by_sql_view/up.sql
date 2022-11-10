@@ -51,7 +51,6 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at,
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
-    mel.entity_name AS project_lead,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     CASE
         WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL::text
@@ -151,14 +150,13 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
      LEFT JOIN project_type_lookup ptl ON ptl.project_id = mp.project_id
      LEFT JOIN moped_entity me ON me.entity_id = mp.project_sponsor
-     LEFT JOIN moped_entity mel ON mel.entity_id = mp.project_lead_id
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
   GROUP BY mp.project_uuid, 
-    mp.project_id, 
+    mp.project_id,
     mp.project_name, 
     mp.project_description, 
     ppll.project_team_members, 
@@ -176,7 +174,6 @@ AS WITH project_person_list_lookup AS (
     mp.milestone_id, 
     mp.status_id, 
     me.entity_name, 
-    mel.entity_name, 
     mp.updated_at, 
     mp.task_order,
     ptl.type_name, 

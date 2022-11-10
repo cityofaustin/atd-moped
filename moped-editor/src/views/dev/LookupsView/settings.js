@@ -43,7 +43,7 @@ export const SETTINGS = [
    */
   {
     key: "moped_phases",
-    label: "Moped phases",
+    label: "Phases",
     columns: [
       /**
        * @type { Object } Column definition
@@ -78,7 +78,7 @@ export const SETTINGS = [
   },
   {
     key: "moped_milestones",
-    label: "Moped milestones",
+    label: "Milestones",
     columns: [
       {
         key: "milestone_id",
@@ -105,7 +105,7 @@ export const SETTINGS = [
   },
   {
     key: "moped_components",
-    label: "Moped components",
+    label: "Components",
     columns: [
       /**
        * @type { Object } Column definition
@@ -142,7 +142,7 @@ export const SETTINGS = [
   },
   {
     key: "moped_tags",
-    label: "Project Tags",
+    label: "Tags",
     columns: [
       {
         key: "id",
@@ -159,6 +159,20 @@ export const SETTINGS = [
       {
         key: "slug",
         label: "Slug",
+      },
+    ],
+  },
+  {
+    key: "moped_entity",
+    label: "Entities",
+    columns: [
+      {
+        key: "entity_id",
+        label: "ID",
+      },
+      {
+        key: "entity_name",
+        label: "Name",
       },
     ],
   },

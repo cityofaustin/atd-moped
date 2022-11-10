@@ -13,7 +13,7 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 */
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
-import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
+import ProjectSummaryProjectEntity from "./ProjectSummaryProjectEntity";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -197,12 +197,23 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 classes={classes}
               />
               <Grid item xs={12}>
-                <ProjectSummaryProjectSponsor
+                <ProjectSummaryProjectEntity
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
+                  entityName="Lead"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ProjectSummaryProjectEntity
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                  entityName="Sponsor"
                 />
               </Grid>
               <Grid item xs={12}>

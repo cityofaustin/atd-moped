@@ -1,4 +1,629 @@
 - table:
+    name: feature_drawn_lines
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        check: {}
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        backend_only: false
+        filter: {}
+    - role: moped-editor
+      permission:
+        backend_only: false
+        filter: {}
+- table:
+    name: feature_drawn_points
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - project_extent_id
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - geography
+        filter: {}
+        check: {}
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        backend_only: false
+        filter: {}
+    - role: moped-editor
+      permission:
+        backend_only: false
+        filter: {}
+- table:
+    name: feature_intersections
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - id
+          - intersection_id
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        backend_only: false
+        filter: {}
+    - role: moped-editor
+      permission:
+        backend_only: false
+        filter: {}
+- table:
+    name: feature_layers
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - internal_table
+          - reference_layer_primary_key_column
+          - id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - internal_table
+          - reference_layer_primary_key_column
+          - id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - internal_table
+          - reference_layer_primary_key_column
+          - id
+        filter: {}
+        allow_aggregations: true
+- table:
+    name: feature_signals
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - knack_id
+          - location_name
+          - name
+          - render_type
+          - signal_type
+          - source_layer
+          - component_id
+          - id
+          - signal_id
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        backend_only: false
+        filter: {}
+    - role: moped-editor
+      permission:
+        backend_only: false
+        filter: {}
+- table:
+    name: feature_street_segments
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+        filter: {}
+        allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - full_street_name
+          - knack_id
+          - line_type
+          - name
+          - render_type
+          - source_layer
+          - component_id
+          - ctn_segment_id
+          - from_address_min
+          - id
+          - symbol
+          - to_address_max
+          - geography
+          - project_extent_id
+        filter: {}
+        check: {}
+  delete_permissions:
+    - role: moped-admin
+      permission:
+        backend_only: false
+        filter: {}
+    - role: moped-editor
+      permission:
+        backend_only: false
+        filter: {}
+- table:
+    name: features
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - name
+          - component_id
+          - id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - name
+          - component_id
+          - id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - name
+          - component_id
+          - id
+        filter: {}
+        allow_aggregations: true
+- table:
     name: moped_activity_log
     schema: public
   object_relationships:
@@ -233,6 +858,27 @@
           insertion_order: null
           remote_table:
             name: moped_workgroup
+            schema: public
+    - name: mopedProjectsByProjectSponsor
+      using:
+        foreign_key_constraint_on:
+          column: project_sponsor
+          table:
+            name: moped_project
+            schema: public
+    - name: moped_proj_partners
+      using:
+        foreign_key_constraint_on:
+          column: entity_id
+          table:
+            name: moped_proj_partners
+            schema: public
+    - name: moped_projects
+      using:
+        foreign_key_constraint_on:
+          column: project_lead_id
+          table:
+            name: moped_project
             schema: public
   insert_permissions:
     - role: moped-admin
@@ -2538,6 +3184,9 @@
     - name: moped_project
       using:
         foreign_key_constraint_on: parent_project_id
+    - name: moped_project_lead
+      using:
+        foreign_key_constraint_on: project_lead_id
     - name: moped_status
       using:
         foreign_key_constraint_on: status_id
@@ -2545,6 +3194,15 @@
       using:
         foreign_key_constraint_on: added_by
   array_relationships:
+    - name: geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
+            schema: public
     - name: moped_proj_components
       using:
         foreign_key_constraint_on:
@@ -2636,6 +3294,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2670,6 +3329,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2704,6 +3364,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2738,6 +3399,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2772,6 +3434,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2807,6 +3470,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -2842,6 +3506,7 @@
           - project_description_public
           - project_id
           - project_importance
+          - project_lead_id
           - project_length
           - project_name
           - project_order
@@ -3953,6 +4618,61 @@
         filter: {}
         check: null
 - table:
+    name: project_geography
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - feature_name
+          - original_fk
+          - table
+          - component_archtype_id
+          - component_id
+          - feature_id
+          - project_id
+          - attributes
+          - component_name
+          - project_name
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - project_id
+          - feature_id
+          - component_archtype_id
+          - component_id
+          - is_deleted
+          - project_name
+          - table
+          - original_fk
+          - component_name
+          - feature_name
+          - attributes
+          - geography
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - feature_name
+          - original_fk
+          - table
+          - component_archtype_id
+          - component_id
+          - feature_id
+          - project_id
+          - attributes
+          - component_name
+          - project_name
+          - geography
+        filter: {}
+        allow_aggregations: true
+- table:
     name: project_list_view
     schema: public
   select_permissions:
@@ -3979,6 +4699,7 @@
           - status_id
           - project_team_members
           - updated_at
+          - project_lead
           - project_sponsor
           - project_partner
           - status_name
@@ -4017,6 +4738,7 @@
           - project_description_public
           - project_name
           - project_partner
+          - project_lead
           - project_sponsor
           - project_team_members
           - status_name
@@ -4058,6 +4780,7 @@
           - project_description_public
           - project_name
           - project_partner
+          - project_lead
           - project_sponsor
           - project_team_members
           - status_name
@@ -4079,3 +4802,6 @@
           - project_tags
         filter: {}
         allow_aggregations: true
+- table:
+    name: uniform_features
+    schema: public
