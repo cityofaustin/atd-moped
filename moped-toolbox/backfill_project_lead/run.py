@@ -45,6 +45,7 @@ mutation UpdateProjectAddedBy($project_id: Int!, $project_lead_id: Int!) {
 }
 """
 
+# these are the four workgroups accountable for all projects created in production at the time of writing
 WORKGROUP_ENTITY_MAP = {
     "Arterial Management": "COA ATD Arterial Management",
     "Project Delivery": "COA ATD Project Delivery",
