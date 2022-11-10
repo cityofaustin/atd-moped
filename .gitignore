@@ -41,7 +41,7 @@ hasura_cluster.json
 hasura_cluster_template.json
 
 # Secrets used in moped toolbox scripts
-moped-toolbox/*secrets.py
+secrets.py
 
 # Logs
 logs

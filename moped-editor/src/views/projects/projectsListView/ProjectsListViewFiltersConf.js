@@ -110,6 +110,25 @@ export const ProjectsListViewFiltersConf = {
       ],
     },
     {
+      name: "project_lead",
+      label: "Lead",
+      placeholder: "Project lead",
+      type: "string",
+      lookup: {
+        table_name: "moped_entity",
+        field_name: "entity_name",
+      },
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_equals_case_sensitive",
+        "string_does_not_equal_case_sensitive",
+        "string_is_null_special_case",
+        "string_is_not_null_special_case",
+      ],
+    },
+    {
       name: "project_sponsor",
       label: "Sponsor",
       placeholder: "Project sponsor",
@@ -291,6 +310,19 @@ export const ProjectsListViewFiltersConf = {
         table_name: "moped_tags",
         field_name: "name",
       },
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_equals_case_sensitive",
+        "string_does_not_equal_case_sensitive",
+      ],
+    },
+    {
+      name: "added_by",
+      label: "Created by",
+      placeholder: "Created by",
+      type: "string",
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
