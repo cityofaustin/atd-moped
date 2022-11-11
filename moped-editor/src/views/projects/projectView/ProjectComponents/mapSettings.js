@@ -136,11 +136,6 @@ export const basemaps = {
           "text-field": ["coalesce", ["get", "name_en"], ["get", "name"]],
           "text-letter-spacing": 0.01,
         },
-        paint: {
-          "text-color": "#fff",
-          "text-halo-color": "#000",
-          "text-halo-width": 1,
-        },
       },
     },
   },
