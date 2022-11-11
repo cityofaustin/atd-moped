@@ -1,4 +1,32 @@
 - table:
+    name: current_phase_view
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - phase_id
+          - project_id
+          - project_phase_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - phase_id
+          - project_id
+          - project_phase_id
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - phase_id
+          - project_id
+          - project_phase_id
+        filter: {}
+        allow_aggregations: true
+- table:
     name: feature_drawn_lines
     schema: public
   insert_permissions:
