@@ -152,7 +152,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
-     LEFT JOIN moped_status mps on mps.status_id = COALESCE(mp.status_id, 0)
+     LEFT JOIN moped_status mps on mps.status_id = mp.status_id
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
