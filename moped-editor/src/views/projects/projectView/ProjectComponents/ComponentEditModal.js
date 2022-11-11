@@ -20,7 +20,7 @@ import {
   makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
-} from "./utils";
+} from "./utils/utils";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {

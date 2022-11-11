@@ -8,15 +8,18 @@ import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { useFeatureTypes, interactiveLayerIds } from "./utils";
-import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
+import { useFeatureTypes, interactiveLayerIds } from "./utils/utils";
+import {
+  useAgolFeatures,
+  findFeatureInAgolGeojsonFeatures,
+} from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   isDrawnFeature,
   makeCapturedFromLayerFeature,
   useComponentFeatureCollection,
-} from "./featureUtils";
-import { featureTableFieldMap } from "./utils/features";
+} from "./utils/features";
+import { featureTableFieldMap } from "./utils/makeFeatures";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";

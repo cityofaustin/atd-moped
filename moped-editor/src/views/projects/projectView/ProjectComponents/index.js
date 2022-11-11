@@ -19,7 +19,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight } from "./utils";
+import { useAppBarHeight } from "./utils/utils";
 import {
   ADD_PROJECT_COMPONENT,
   GET_PROJECT_COMPONENTS,
@@ -27,7 +27,7 @@ import {
 import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
-} from "./utils/features";
+} from "./utils/makeFeatures";
 
 const drawerWidth = 350;
 

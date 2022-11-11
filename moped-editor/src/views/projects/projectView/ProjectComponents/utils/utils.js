@@ -8,7 +8,7 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
-import { MAP_STYLES } from "./mapStyleSettings";
+import { MAP_STYLES } from "../mapStyleSettings";
 
 /**
  * Iterate through the map styles config to create an array of interactive layers

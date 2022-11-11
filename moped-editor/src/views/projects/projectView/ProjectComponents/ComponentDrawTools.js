@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
-import { makeDrawnFeature } from "./featureUtils";
+import { makeDrawnFeature } from "./utils/features";
 import { cloneDeep } from "lodash";
 
 /**
