@@ -101,14 +101,6 @@ export const ProjectsListViewQueryConf = {
       width: "50%",
       type: "String",
     },
-    current_status: {
-      searchable: false,
-      sortable: false,
-      hidden: true,
-      label: "Status",
-      type: "String",
-      width: "5%",
-    },
     status_id: {
       hidden: true,
       searchable: false,
@@ -244,6 +236,7 @@ export const ProjectsListViewQueryConf = {
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
+  // status_id 3 = canceled
   where: {
     is_deleted: "_eq: false",
     status_id: "_neq: 3",
