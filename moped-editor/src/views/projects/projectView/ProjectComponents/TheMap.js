@@ -80,6 +80,7 @@ export default function TheMap({
   setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
+  featureCollectionsByComponentId,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -91,8 +92,12 @@ export default function TheMap({
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
+  // TODO: Refactor this hook to use the map of feature collections
+  // return a valid feature collection if there is no component clicked (to avoid Mapbox errors)
+  // const componentFeatureCollection =
+  //   useComponentFeatureCollection(clickedComponent);
   const componentFeatureCollection =
-    useComponentFeatureCollection(clickedComponent);
+    featureCollectionsByComponentId[clickedComponent?.project_component_id];
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
@@ -236,8 +241,8 @@ export default function TheMap({
         isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}
-        clickedComponent={clickedComponent}
         componentFeatureCollection={componentFeatureCollection}
+        clickedComponent={clickedComponent}
       />
       <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}

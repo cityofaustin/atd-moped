@@ -26,11 +26,8 @@ export default function ComponentListItem({
   setIsDeletingComponent,
   onStartEditingComponent,
   onClickZoomToComponent,
-  featureCollectionsByComponentId,
 }) {
   const classes = useStyles();
-  const componentId = component.project_component_id;
-  const clickedComponent = featureCollectionsByComponentId[componentId];
 
   return (
     <Box
@@ -46,7 +43,7 @@ export default function ComponentListItem({
           if (isExpanded) {
             setClickedComponent(null);
           } else {
-            setClickedComponent(clickedComponent);
+            setClickedComponent(component);
           }
         }}
       >

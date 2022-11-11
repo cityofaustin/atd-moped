@@ -12,7 +12,7 @@ export const makeComponentFeatureCollectionsMap = (components) => {
 
     const currentFeature = {
       type: "Feature",
-      properties: {},
+      properties: { ...component.attributes },
       geometry: component.geometry,
     };
 

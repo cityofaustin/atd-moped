@@ -35,7 +35,6 @@ const ComponentsSourcesAndLayers = ({
   const isEditingPoints =
     isEditingComponent && linkMode === "points" && !isDrawing;
   const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
-  console.log(clickedComponent);
 
   return (
     <>
@@ -197,18 +196,16 @@ const ComponentsSourcesAndLayers = ({
         data={componentFeatureCollection}
         promoteId="id"
       >
+        {/* render type as property to switch this on and off */}
         <Layer
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-lines"].layerProps,
+            filter: ["==", ["get", "render_type"], "line"],
             layout: {
               ...MAP_STYLES["clicked-component-features-lines"].layerProps
                 .layout,
-              visibility:
-                componentFeatureCollection &&
-                clickedComponent.line_representation
-                  ? "visible"
-                  : "none",
+              visibility: componentFeatureCollection ? "visible" : "none",
             },
           }}
         />
@@ -216,12 +213,9 @@ const ComponentsSourcesAndLayers = ({
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-points"].layerProps,
+            filter: ["==", ["get", "render_type"], "point"],
             layout: {
-              visibility:
-                componentFeatureCollection &&
-                !clickedComponent.line_representation
-                  ? "visible"
-                  : "none",
+              visibility: componentFeatureCollection ? "visible" : "none",
             },
           }}
         />

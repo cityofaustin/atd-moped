@@ -126,7 +126,7 @@ export default function MapView({ projectName, projectStatuses }) {
     const componentId = component.project_component_id;
     const featureCollection = featureCollectionsByComponentId[componentId];
 
-    setClickedComponent(featureCollection);
+    setClickedComponent(component);
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
@@ -301,9 +301,6 @@ export default function MapView({ projectName, projectStatuses }) {
                     setIsDeletingComponent={setIsDeletingComponent}
                     onStartEditingComponent={onStartEditingComponent}
                     onClickZoomToComponent={onClickZoomToComponent}
-                    featureCollectionsByComponentId={
-                      featureCollectionsByComponentId
-                    }
                   />
                 );
               })}
@@ -327,6 +324,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
+              featureCollectionsByComponentId={featureCollectionsByComponentId}
             />
           </div>
           <ComponentEditModal
