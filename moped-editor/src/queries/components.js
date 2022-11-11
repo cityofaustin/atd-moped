@@ -68,6 +68,11 @@ export const GET_PROJECT_COMPONENTS = gql`
         geometry: geography
         source_layer
       }
+      feature_drawn_points {
+        id
+        geometry: geography
+        source_layer
+      }
     }
     project_geography(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
