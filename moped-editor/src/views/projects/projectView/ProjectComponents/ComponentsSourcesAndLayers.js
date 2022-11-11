@@ -30,11 +30,16 @@ const ComponentsSourcesAndLayers = ({
   } = data;
 
   const isViewingComponents = !isEditingComponent && !clickedComponent;
+
   const isEditingLines =
     isEditingComponent && linkMode === "lines" && !isDrawing;
   const isEditingPoints =
     isEditingComponent && linkMode === "points" && !isDrawing;
+
   const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
+
+  const isClickedComponentLineRepresentation =
+    clickedComponent?.moped_components?.line_representation;
 
   return (
     <>
@@ -200,12 +205,14 @@ const ComponentsSourcesAndLayers = ({
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-lines"].layerProps,
-            // Filter down to line render type since visibility doesn't support expressions
-            filter: ["==", ["get", "render_type"], "line"],
             layout: {
               ...MAP_STYLES["clicked-component-features-lines"].layerProps
                 .layout,
-              visibility: componentFeatureCollection ? "visible" : "none",
+              visibility:
+                componentFeatureCollection &&
+                isClickedComponentLineRepresentation
+                  ? "visible"
+                  : "none",
             },
           }}
         />
@@ -213,10 +220,12 @@ const ComponentsSourcesAndLayers = ({
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-points"].layerProps,
-            // Filter down to point render type since visibility doesn't support expressions
-            filter: ["==", ["get", "render_type"], "point"],
             layout: {
-              visibility: componentFeatureCollection ? "visible" : "none",
+              visibility:
+                componentFeatureCollection &&
+                !isClickedComponentLineRepresentation
+                  ? "visible"
+                  : "none",
             },
           }}
         />

@@ -43,6 +43,7 @@ export const GET_PROJECT_COMPONENTS = gql`
         feature_layer {
           internal_table
         }
+        line_representation
       }
       moped_proj_components_subcomponents {
         subcomponent_id
