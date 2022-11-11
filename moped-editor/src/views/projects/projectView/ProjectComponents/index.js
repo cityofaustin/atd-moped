@@ -23,6 +23,7 @@ import { useAppBarHeight } from "./utils/map";
 import {
   ADD_PROJECT_COMPONENT,
   GET_PROJECT_COMPONENTS,
+  DELETE_PROJECT_COMPONENT,
 } from "src/queries/components";
 import {
   makeDrawnLinesInsertionData,
@@ -102,6 +103,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
+  const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
   const {
     loading,
     error,
@@ -243,10 +245,12 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onDeleteComponent = () => {
-    const newComponentList = components.filter(
-      (comp) => comp._id !== clickedComponent._id
-    );
-    setComponents(newComponentList);
+    deleteProjectComponent({
+      variables: { projectComponentId: clickedComponent.project_component_id },
+    }).then(() => {
+      refetchProjectComponents();
+    });
+
     setClickedComponent(null);
     setIsDeletingComponent(false);
   };

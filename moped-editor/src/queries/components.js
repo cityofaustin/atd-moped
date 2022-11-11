@@ -84,9 +84,19 @@ export const GET_PROJECT_COMPONENTS = gql`
   }
 `;
 
-// Probably can't reuse existing mutation
-// Need to come up with how to handle conflicts
-// export const UPDATE_PROJECT_COMPONENT = gql``;
-
-// probably can use similar mutation to DELETE_MOPED_COMPONENT
-// export const DELETE_PROJECT_COMPONENT = gql``;
+export const DELETE_PROJECT_COMPONENT = gql`
+  mutation DeleteMopedComponent($projectComponentId: Int!) {
+    update_moped_proj_components(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+  }
+`;
