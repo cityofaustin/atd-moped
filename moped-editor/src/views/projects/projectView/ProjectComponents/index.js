@@ -67,7 +67,7 @@ export default function MapView({ projectName, projectStatuses }) {
 
   /* holds this project's components */
   const [components, setComponents] = useState([]);
-  const [componentFeatureCollections, setComponentFeatureCollections] =
+  const [featureCollectionsByComponentId, setFeatureCollectionsByComponentId] =
     useState({});
 
   /* tracks a component clicked from the list or the projectFeature popup */
@@ -113,9 +113,9 @@ export default function MapView({ projectName, projectStatuses }) {
 
       // Create feature collections of all features in each component
       const componentFeatureCollections = makeComponentFeatureCollectionsMap(
-        data.moped_proj_components
+        data.project_geography
       );
-      setComponentFeatureCollections(componentFeatureCollections);
+      setFeatureCollectionsByComponentId(componentFeatureCollections);
 
       // Create map of feature ids to component ids
     },
@@ -123,14 +123,14 @@ export default function MapView({ projectName, projectStatuses }) {
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
-    const featureCollection =
-      componentFeatureCollections[component.project_component_id];
+    const componentId = component.project_component_id;
+    const featureCollection = featureCollectionsByComponentId[componentId];
 
-    setClickedComponent(component);
+    const clickedComponent = featureCollection;
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(featureCollection), {
+    mapRef.current?.fitBounds(bbox(clickedComponent), {
       maxZoom: 19,
       // accounting for fixed top bar
       padding: {
@@ -301,7 +301,9 @@ export default function MapView({ projectName, projectStatuses }) {
                     setIsDeletingComponent={setIsDeletingComponent}
                     onStartEditingComponent={onStartEditingComponent}
                     onClickZoomToComponent={onClickZoomToComponent}
-                    componentFeatureCollections={componentFeatureCollections}
+                    featureCollectionsByComponentId={
+                      featureCollectionsByComponentId
+                    }
                   />
                 );
               })}

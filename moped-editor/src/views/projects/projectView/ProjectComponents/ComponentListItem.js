@@ -26,11 +26,11 @@ export default function ComponentListItem({
   setIsDeletingComponent,
   onStartEditingComponent,
   onClickZoomToComponent,
-  componentFeatureCollections,
+  featureCollectionsByComponentId,
 }) {
   const classes = useStyles();
   const componentId = component.project_component_id;
-  const clickedComponent = componentFeatureCollections[componentId];
+  const clickedComponent = featureCollectionsByComponentId[componentId];
 
   return (
     <Box
