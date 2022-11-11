@@ -101,18 +101,6 @@ export const ProjectsListViewQueryConf = {
       width: "50%",
       type: "String",
     },
-    current_status: {
-      searchable: false,
-      sortable: false,
-      hidden: true,
-      label: "Status",
-      type: "String",
-      width: "5%",
-    },
-    status_id: {
-      hidden: true,
-      searchable: false,
-    },
     current_phase: {
       searchable: true,
       sortable: false,
@@ -246,7 +234,7 @@ export const ProjectsListViewQueryConf = {
   order_by: { updated_at: "desc" },
   where: {
     is_deleted: "_eq: false",
-    status_id: "_neq: 3",
+    current_phase_key: '_neq: "canceled"',
   },
   or: null,
   and: null,

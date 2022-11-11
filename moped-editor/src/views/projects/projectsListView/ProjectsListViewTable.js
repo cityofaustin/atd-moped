@@ -257,21 +257,19 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId) => (
+  const buildStatusBadge = (phase) => (
     <ProjectStatusBadge
-      status={statusId}
       phase={phase}
       projectStatuses={referenceData?.moped_status ?? []}
       condensed
     />
   );
-
   // Data Management
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery
   );
-
+    
   const columns = [
     {
       title: "ID",
@@ -307,7 +305,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Status",
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
-      render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
+      render: (entry) => buildStatusBadge(entry.current_phase),
     },
     {
       title: "Team",
