@@ -6,16 +6,16 @@ import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
+import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { useFeatureTypes } from "./utils";
+import { useFeatureTypes, interactiveLayerIds } from "./utils";
 import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
-import {
-  interactiveLayerIds,
-  useComponentFeatureCollection,
-  ProjectComponentsSourcesAndLayers,
-} from "./mapUtils";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { isDrawnFeature, makeCapturedFromLayerFeature } from "./featureUtils";
+import {
+  isDrawnFeature,
+  makeCapturedFromLayerFeature,
+  useComponentFeatureCollection,
+} from "./featureUtils";
 import { featureTableFieldMap } from "./utils/features";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -227,7 +227,7 @@ export default function TheMap({
         setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
-      <ProjectComponentsSourcesAndLayers
+      <ComponentsSourcesAndLayers
         data={data}
         isEditingComponent={isEditingComponent}
         isDrawing={isDrawing}

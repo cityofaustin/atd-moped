@@ -12,7 +12,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
  * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
  * @returns JSX.Element
  */
-export const ProjectComponentsSourcesAndLayers = ({
+const ComponentsSourcesAndLayers = ({
   data,
   isEditingComponent,
   linkMode,
@@ -229,3 +229,5 @@ export const ProjectComponentsSourcesAndLayers = ({
     </>
   );
 };
+
+export default ComponentsSourcesAndLayers;

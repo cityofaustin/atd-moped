@@ -1,5 +1,12 @@
+import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./utils";
+
+export const useComponentFeatureCollection = (component) =>
+  useMemo(() => {
+    if (!component || !component?.features) return null;
+    return { type: "FeatureCollection", features: component.features };
+  }, [component]);
 
 /**
  * Captured from feature object example

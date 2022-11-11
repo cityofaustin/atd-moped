@@ -8,6 +8,21 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
+import { MAP_STYLES } from "./mapStyleSettings";
+
+/**
+ * Iterate through the map styles config to create an array of interactive layers
+ */
+export const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
+  (acc, [key, value]) => {
+    if (value.isInteractive) {
+      acc.push(key);
+    }
+
+    return acc;
+  },
+  []
+);
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
