@@ -29,16 +29,14 @@ export const featureTableFieldMap = {
     // name: undefined
     // signal_type: undefined
   },
-  feature_drawn_lines: {},
-  feature_drawn_points: {},
 };
 
 export const makeLineStringFeatureInsertionData = (
   featureTable,
-  draftComponent,
+  featuresToProcess,
   featuresToInsert
 ) => {
-  draftComponent.features.forEach((feature) => {
+  featuresToProcess.forEach((feature) => {
     const featureToInsert = {};
     const translationMap = featureTableFieldMap[featureTable];
 
@@ -67,10 +65,10 @@ export const makeLineStringFeatureInsertionData = (
 
 export const makePointFeatureInsertionData = (
   featureTable,
-  draftComponent,
+  featuresToProcess,
   featuresToInsert
 ) => {
-  draftComponent.features.forEach((feature) => {
+  featuresToProcess.forEach((feature) => {
     const featureToInsert = {};
     const translationMap = featureTableFieldMap[featureTable];
 
@@ -88,6 +86,33 @@ export const makePointFeatureInsertionData = (
 
     featureToInsert["geography"] = {
       type: "MultiPoint",
+      coordinates: [coordinatesArray],
+    };
+
+    featuresToInsert.push(featureToInsert);
+  });
+
+  return featuresToInsert;
+};
+
+export const makeDrawnLineInsertionData = (
+  featuresToProcess,
+  featuresToInsert
+) => {
+  featuresToProcess.forEach((feature) => {
+    const featureToInsert = {};
+
+    // Convert DRAW_ID from map tools library to project_extent_id
+    featureToInsert["project_extent_id"] = feature.properties.DRAW_ID;
+
+    // Add source_layer
+    featureToInsert["source_layer"] = feature.properties._layerId;
+
+    // Convert from Point to a MultiPoint
+    const coordinatesArray = feature.geometry.coordinates;
+
+    featureToInsert["geography"] = {
+      type: "MultiLineString",
       coordinates: [coordinatesArray],
     };
 

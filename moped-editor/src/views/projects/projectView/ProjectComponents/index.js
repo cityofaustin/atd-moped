@@ -25,6 +25,7 @@ import {
   GET_PROJECT_COMPONENTS,
 } from "src/queries/components";
 import {
+  makeDrawnLineInsertionData,
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./utils/makeFeatures";
@@ -150,6 +151,7 @@ export default function MapView({ projectName, projectStatuses }) {
       moped_subcomponents,
       component_name,
       internal_table,
+      features,
     } = draftComponent;
 
     // Subcomponents
@@ -165,20 +167,29 @@ export default function MapView({ projectName, projectStatuses }) {
     const featureTable = internal_table;
 
     const featuresToInsert = [];
+    const drawnLinesToInsert = [];
+
+    const drawnFeatures = features.filter(
+      (feature) => feature?.properties?.["DRAW_ID"]
+    );
+    const selectedFeatures = features.filter(
+      (feature) => !feature?.properties?.["DRAW_ID"]
+    );
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
         featureTable,
-        draftComponent,
+        selectedFeatures,
         featuresToInsert
       );
+      makeDrawnLineInsertionData(drawnFeatures, drawnLinesToInsert);
     } else if (
       featureTable === "feature_intersections" ||
       featureTable === "feature_signals"
     ) {
       makePointFeatureInsertionData(
         featureTable,
-        draftComponent,
+        selectedFeatures,
         featuresToInsert
       );
     }
@@ -197,6 +208,7 @@ export default function MapView({ projectName, projectStatuses }) {
       [featureTable]: {
         data: featuresToInsert,
       },
+      feature_drawn_lines: { data: drawnLinesToInsert },
     };
 
     // End data preparation
