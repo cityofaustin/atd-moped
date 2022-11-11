@@ -1387,6 +1387,15 @@
           remote_table:
             name: feature_drawn_lines
             schema: public
+    - name: feature_drawn_points
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_points
+            schema: public
     - name: feature_intersections
       using:
         manual_configuration:

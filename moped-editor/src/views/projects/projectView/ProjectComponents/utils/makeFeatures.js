@@ -1,6 +1,7 @@
 /*
  * When we insert in the DB we need to translate the property names that either come from a CTN layer
- * or the draw tools into columns names in the database
+ * or the draw tools into columns names in the database.
+ * This is also used to track all layers of data present in the map.
  */
 export const featureTableFieldMap = {
   feature_street_segments: {
@@ -29,6 +30,8 @@ export const featureTableFieldMap = {
     // name: undefined
     // signal_type: undefined
   },
+  feature_drawn_lines: {},
+  feature_drawn_points: {},
 };
 
 export const makeLineStringFeatureInsertionData = (
@@ -95,7 +98,7 @@ export const makePointFeatureInsertionData = (
   return featuresToInsert;
 };
 
-export const makeDrawnLineInsertionData = (
+export const makeDrawnLinesInsertionData = (
   featuresToProcess,
   featuresToInsert
 ) => {
@@ -113,6 +116,33 @@ export const makeDrawnLineInsertionData = (
 
     featureToInsert["geography"] = {
       type: "MultiLineString",
+      coordinates: [coordinatesArray],
+    };
+
+    featuresToInsert.push(featureToInsert);
+  });
+
+  return featuresToInsert;
+};
+
+export const makeDrawnPointsInsertionData = (
+  featuresToProcess,
+  featuresToInsert
+) => {
+  featuresToProcess.forEach((feature) => {
+    const featureToInsert = {};
+
+    // Convert DRAW_ID from map tools library to project_extent_id
+    featureToInsert["project_extent_id"] = feature.properties.DRAW_ID;
+
+    // Add source_layer
+    featureToInsert["source_layer"] = feature.properties._layerId;
+
+    // Convert from Point to a MultiPoint
+    const coordinatesArray = feature.geometry.coordinates;
+
+    featureToInsert["geography"] = {
+      type: "MultiPoint",
       coordinates: [coordinatesArray],
     };
 

@@ -25,7 +25,8 @@ import {
   GET_PROJECT_COMPONENTS,
 } from "src/queries/components";
 import {
-  makeDrawnLineInsertionData,
+  makeDrawnLinesInsertionData,
+  makeDrawnPointsInsertionData,
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./utils/makeFeatures";
@@ -154,20 +155,17 @@ export default function MapView({ projectName, projectStatuses }) {
       features,
     } = draftComponent;
 
-    // Subcomponents
-    // Translate value key from field option to subcomponent_id that it represents
     const subcomponentsArray = moped_subcomponents
       ? moped_subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
         }))
       : [];
 
-    // Features
-    // Try a feature_street_segments feature first (Access Control)
     const featureTable = internal_table;
 
     const featuresToInsert = [];
     const drawnLinesToInsert = [];
+    const drawnPointsToInsert = [];
 
     const drawnFeatures = features.filter(
       (feature) => feature?.properties?.["DRAW_ID"]
@@ -182,7 +180,7 @@ export default function MapView({ projectName, projectStatuses }) {
         selectedFeatures,
         featuresToInsert
       );
-      makeDrawnLineInsertionData(drawnFeatures, drawnLinesToInsert);
+      makeDrawnLinesInsertionData(drawnFeatures, drawnLinesToInsert);
     } else if (
       featureTable === "feature_intersections" ||
       featureTable === "feature_signals"
@@ -192,10 +190,8 @@ export default function MapView({ projectName, projectStatuses }) {
         selectedFeatures,
         featuresToInsert
       );
+      makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
     }
-
-    // Query for fields and create map to translate layer fields to DB fields
-    // Create a fragment and then pass it to the mutation?
 
     const newComponentData = {
       description,
@@ -209,6 +205,7 @@ export default function MapView({ projectName, projectStatuses }) {
         data: featuresToInsert,
       },
       feature_drawn_lines: { data: drawnLinesToInsert },
+      feature_drawn_points: { data: drawnPointsToInsert },
     };
 
     // End data preparation
@@ -218,10 +215,6 @@ export default function MapView({ projectName, projectStatuses }) {
         refetchProjectComponents();
       }
     );
-
-    // TODO: Remove this since we are populating state from returned data only
-    // const newComponents = [...components, draftComponent];
-    // setComponents(newComponents);
 
     setIsEditingComponent(false);
     setDraftComponent(null);
