@@ -8,7 +8,7 @@ import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { useFeatureTypes, interactiveLayerIds } from "./utils/utils";
+import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
 import {
   useAgolFeatures,
   findFeatureInAgolGeojsonFeatures,

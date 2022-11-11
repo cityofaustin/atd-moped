@@ -28,6 +28,7 @@ export default function FeaturePopup({
   components,
   setClickedComponent,
 }) {
+  console.log({ feature, components });
   const featureComponents = useFeatureComponents(feature, components);
 
   const center = useMemo(() => {

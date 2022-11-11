@@ -19,7 +19,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight } from "./utils/utils";
+import { useAppBarHeight } from "./utils/map";
 import {
   ADD_PROJECT_COMPONENT,
   GET_PROJECT_COMPONENTS,
@@ -28,6 +28,7 @@ import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./utils/makeFeatures";
+import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 
 const drawerWidth = 350;
 
@@ -110,33 +111,13 @@ export default function MapView({ projectName, projectStatuses }) {
     onCompleted: () => {
       setComponents(data.moped_proj_components);
 
-      // TODO: Extract this into a helper
-      const componentGeographyMap = {};
-      data.project_geography.forEach((component) => {
-        const currentComponentId = component.component_id;
-        const currentFeature = {
-          type: "Feature",
-          properties: {},
-          geometry: component.geometry,
-        };
+      // Create feature collections of all features in each component
+      const componentFeatureCollections = makeComponentFeatureCollectionsMap(
+        data.moped_proj_components
+      );
+      setComponentFeatureCollections(componentFeatureCollections);
 
-        if (!componentGeographyMap[currentComponentId]) {
-          componentGeographyMap[currentComponentId] = {
-            type: "FeatureCollection",
-            features: [currentFeature],
-          };
-        } else {
-          componentGeographyMap[currentComponentId] = {
-            type: "FeatureCollection",
-            features: [
-              ...componentGeographyMap[currentComponentId].features,
-              currentFeature,
-            ],
-          };
-        }
-      });
-
-      setComponentFeatureCollections(componentGeographyMap);
+      // Create map of feature ids to component ids
     },
   });
 

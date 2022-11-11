@@ -20,7 +20,7 @@ import {
   makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
-} from "./utils/utils";
+} from "./utils/map";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -113,7 +113,6 @@ const ComponentEditModal = ({
     } = formData;
 
     // TODO: Create helper to pass formData and create component data payload
-    // TODO: Add DB view to get fields per table per feature
     // TODO: If it is a drawn feature, we need to insert in drawn tables
 
     const newComponent = {

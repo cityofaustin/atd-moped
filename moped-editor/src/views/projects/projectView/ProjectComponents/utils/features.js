@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getIntersectionLabel } from "./utils";
+import { getIntersectionLabel } from "./map";
 
 export const useComponentFeatureCollection = (component) =>
   useMemo(() => {
