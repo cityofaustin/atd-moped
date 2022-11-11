@@ -126,11 +126,11 @@ export default function MapView({ projectName, projectStatuses }) {
     const componentId = component.project_component_id;
     const featureCollection = featureCollectionsByComponentId[componentId];
 
-    const clickedComponent = featureCollection;
+    setClickedComponent(featureCollection);
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(clickedComponent), {
+    mapRef.current?.fitBounds(bbox(featureCollection), {
       maxZoom: 19,
       // accounting for fixed top bar
       padding: {
