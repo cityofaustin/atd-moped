@@ -29,7 +29,6 @@ import GridTableListHeader from "./GridTableListHeader";
 import GridTablePagination from "./GridTablePagination";
 import GridTableSearch from "./GridTableSearch";
 import ApolloErrorHandler from "../ApolloErrorHandler";
-import ProjectStatusBadge from "../../views/projects/projectView/ProjectStatusBadge";
 import { getSearchValue } from "../../utils/gridTableHelpers";
 
 /**
