@@ -1,6 +1,25 @@
 - table:
     name: current_phase_view
     schema: public
+  object_relationships:
+    - name: moped_phase
+      using:
+        manual_configuration:
+          column_mapping:
+            phase_id: phase_id
+          insertion_order: null
+          remote_table:
+            name: moped_phases
+            schema: public
+    - name: moped_proj_phase
+      using:
+        manual_configuration:
+          column_mapping:
+            project_phase_id: project_phase_id
+          insertion_order: null
+          remote_table:
+            name: moped_proj_phases
+            schema: public
   select_permissions:
     - role: moped-admin
       permission:
@@ -3206,6 +3225,15 @@
     name: moped_project
     schema: public
   object_relationships:
+    - name: current_phase_view
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: current_phase_view
+            schema: public
     - name: moped_entity
       using:
         foreign_key_constraint_on: project_sponsor
