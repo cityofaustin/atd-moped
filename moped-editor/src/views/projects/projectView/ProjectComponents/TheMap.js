@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
-import FeaturePopup from "./FeaturePopup";
+// import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
@@ -242,12 +242,12 @@ export default function TheMap({
         componentFeatureCollection={componentFeatureCollection}
         clickedComponent={clickedComponent}
       />
-      <FeaturePopup
+      {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
         components={components}
         setClickedComponent={setClickedComponent}
-      />
+      /> */}
     </MapGL>
   );
 }
