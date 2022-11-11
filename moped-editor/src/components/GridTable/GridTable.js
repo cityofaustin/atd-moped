@@ -35,7 +35,7 @@ import { getSearchValue } from "../../utils/gridTableHelpers";
 /**
  * GridTable Style
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
@@ -179,11 +179,10 @@ const GridTable = ({
      * add the to the Or list.
      */
     Object.keys(query.config.columns)
-      .filter(column => query.config.columns[column]?.searchable)
-      .forEach(column => {
-        const { operator, quoted, envelope } = query.config.columns[
-          column
-        ].search;
+      .filter((column) => query.config.columns[column]?.searchable)
+      .forEach((column) => {
+        const { operator, quoted, envelope } =
+          query.config.columns[column].search;
         const searchValue = getSearchValue(query, column, search.value);
         const graphqlSearchValue = quoted
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
@@ -195,15 +194,9 @@ const GridTable = ({
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
-  Object.keys(filters).forEach(filter => {
-    let {
-      envelope,
-      field,
-      gqlOperator,
-      value,
-      type,
-      specialNullValue,
-    } = filters[filter];
+  Object.keys(filters).forEach((filter) => {
+    let { envelope, field, gqlOperator, value, type, specialNullValue } =
+      filters[filter];
 
     // If we have no operator, then there is nothing we can do.
     if (field === null || gqlOperator === null) {
@@ -234,7 +227,7 @@ const GridTable = ({
    * Handles the header click for sorting asc/desc.
    * @param {string} columnName - The name of the column
    **/
-  const handleTableHeaderClick = columnName => {
+  const handleTableHeaderClick = (columnName) => {
     // Before anything, let's clear all current conditions
     query.clearOrderBy();
 
@@ -266,15 +259,15 @@ const GridTable = ({
    * @param {string} input - The string to be tested
    * @returns {boolean}
    */
-  const isAlphanumeric = input => input.match(/^[0-9a-zA-Z\-_]+$/) !== null;
+  const isAlphanumeric = (input) => input.match(/^[0-9a-zA-Z\-_]+$/) !== null;
 
   /**
    * Extracts a list of keys in a graphql expression
    * @param {string} exp - The expression
    * @returns {Array}
    */
-  const listKeys = exp =>
-    exp.split(/[{} ]+/).filter(n => isAlphanumeric(n) && n !== "");
+  const listKeys = (exp) =>
+    exp.split(/[{} ]+/).filter((n) => isAlphanumeric(n) && n !== "");
 
   /**
    * Returns the value of a data structure based on the list of keys provided
@@ -331,21 +324,6 @@ const GridTable = ({
     // Merge all into a string
     return result.join(", ");
   };
-
-  /**
-   * Returns a ProjectStatusBadge component based on the status and phase of project
-   * @param {string} phase - A project's current phase
-   * @param {number} statusId - Project's status id
-   * @return {JSX.Element}
-   */
-  const buildStatusBadge = (phase, statusId) => (
-    <ProjectStatusBadge
-      status={statusId}
-      phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
-      condensed
-    />
-  );
 
   /**
    * Returns a stringified object with information to format link.
@@ -493,20 +471,10 @@ const GridTable = ({
                                         )
                                       ) : isAlphanumeric(column) ? (
                                         <>
-                                          {query.config.columns[
-                                            column
-                                          ].hasOwnProperty("badge")
-                                            ? buildStatusBadge(
-                                                row[column],
-                                                row[
-                                                  query.config.columns[column]
-                                                    .badge
-                                                ]
-                                              )
-                                            : query.getFormattedValue(
-                                                column,
-                                                row[column]
-                                              )}
+                                          {query.getFormattedValue(
+                                            column,
+                                            row[column]
+                                          )}
                                         </>
                                       ) : (
                                         // if column is not alphanumeric

@@ -106,7 +106,6 @@ export const ProjectsListViewQueryConf = {
       sortable: false,
       label: "Status",
       width: "15%",
-      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
