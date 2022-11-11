@@ -5,11 +5,11 @@ import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
+import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { useFeatureTypes } from "./utils";
 import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
 import {
-  BaseMapSourceAndLayers,
   interactiveLayerIds,
   useComponentFeatureCollection,
   ProjectComponentsSourcesAndLayers,
