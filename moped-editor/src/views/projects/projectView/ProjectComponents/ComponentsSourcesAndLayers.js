@@ -196,11 +196,11 @@ const ComponentsSourcesAndLayers = ({
         data={componentFeatureCollection}
         promoteId="id"
       >
-        {/* render type as property to switch this on and off */}
         <Layer
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-lines"].layerProps,
+            // Filter down to line render type since visibility doesn't support expressions
             filter: ["==", ["get", "render_type"], "line"],
             layout: {
               ...MAP_STYLES["clicked-component-features-lines"].layerProps
@@ -213,6 +213,7 @@ const ComponentsSourcesAndLayers = ({
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["clicked-component-features-points"].layerProps,
+            // Filter down to point render type since visibility doesn't support expressions
             filter: ["==", ["get", "render_type"], "point"],
             layout: {
               visibility: componentFeatureCollection ? "visible" : "none",

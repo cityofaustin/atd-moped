@@ -92,12 +92,10 @@ export default function TheMap({
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
-  // TODO: Refactor this hook to use the map of feature collections
-  // return a valid feature collection if there is no component clicked (to avoid Mapbox errors)
-  // const componentFeatureCollection =
-  //   useComponentFeatureCollection(clickedComponent);
-  const componentFeatureCollection =
-    featureCollectionsByComponentId[clickedComponent?.project_component_id];
+  const componentFeatureCollection = useComponentFeatureCollection(
+    clickedComponent,
+    featureCollectionsByComponentId
+  );
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
