@@ -11,7 +11,7 @@ UPDATE moped_phases set phase_key ='construction_ready' where phase_name = 'Cons
 UPDATE moped_phases set phase_key ='construction' where phase_name = 'Construction';
 UPDATE moped_phases set phase_key ='post_construction' where phase_name = 'Post-construction';
 UPDATE moped_phases set phase_key ='complete' where phase_name = 'Complete';
-UPDATE moped_phases set phase_key ='bid_award_Execution' where phase_name = 'Bid/Award/Execution';
+UPDATE moped_phases set phase_key ='bid_award_execution' where phase_name = 'Bid/Award/Execution';
 UPDATE moped_phases set phase_key ='pre_construction' where phase_name = 'Pre-construction';
 UPDATE moped_phases set phase_key ='on_hold' where phase_name = 'On hold';
 UPDATE moped_phases set phase_key ='canceled' where phase_name = 'Canceled';
