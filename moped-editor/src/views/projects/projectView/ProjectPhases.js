@@ -306,7 +306,7 @@ const ProjectPhases = ({
       }}
       title={
         <Typography variant="h2" color="primary">
-          Project phases
+          Phases
         </Typography>
       }
       options={{
