@@ -37,8 +37,6 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
-      current_phase
-      current_status
       capitally_funded
       ecapris_subproject_id
       fiscal_year
@@ -47,7 +45,6 @@ export const SUMMARY_QUERY = gql`
       project_sponsor
       project_lead_id
       project_website
-      status_id
       work_assignment_id
       parent_project_id
       interim_project_id
@@ -86,6 +83,12 @@ export const SUMMARY_QUERY = gql`
         entity_name
         entity_id
       }
+      moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+        moped_phase {
+          phase_name
+          phase_key
+        }
+      }
     }
     moped_proj_partners(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -102,18 +105,6 @@ export const SUMMARY_QUERY = gql`
       phase_name
       phase_order
     }
-    moped_proj_phases(
-      where: {
-        project_id: { _eq: $projectId }
-        is_current_phase: { _eq: true }
-      }
-    ) {
-      project_phase_id
-      is_current_phase
-      project_id
-      phase_start
-      phase_end
-    }
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
@@ -121,13 +112,6 @@ export const SUMMARY_QUERY = gql`
     moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
-    }
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
     }
     moped_user_followed_projects(
       where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }

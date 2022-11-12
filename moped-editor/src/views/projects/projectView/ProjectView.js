@@ -420,12 +420,8 @@ const ProjectView = () => {
   /**
    * Establishes the project status for our badge
    */
-  const projectStatus = {
-    status: data?.moped_project?.[0]?.status_id ?? 0,
-    phase: data?.moped_project?.[0]?.current_phase ?? null,
-    current_status: data?.moped_project?.[0]?.current_status ?? null,
-  };
-
+  const currentPhase =
+    data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted;
 
   return (
@@ -488,9 +484,8 @@ const ProjectView = () => {
                           />
                           <Box>
                             <ProjectStatusBadge
-                              status={projectStatus.status}
-                              phase={projectStatus.phase}
-                              projectStatuses={data?.moped_status ?? []}
+                              phaseKey={currentPhase?.phase_key}
+                              phaseName={currentPhase?.phase_name}
                             />
                           </Box>
                         </Box>
@@ -532,7 +527,7 @@ const ProjectView = () => {
                             </ListItemIcon>
                             <ListItemText primary="Rename" />
                           </MenuItem>
-                          {projectStatus?.current_status !== "on hold" && (
+                          {currentPhase?.phase_key !== "on_hold" && (
                             <MenuItem
                               onClick={() => handleUpdateStatus("on hold")}
                               className={classes.projectOptionsMenuItem}
@@ -546,7 +541,7 @@ const ProjectView = () => {
                               <ListItemText primary="Place on hold" />
                             </MenuItem>
                           )}
-                          {projectStatus?.current_status !== "canceled" && (
+                          {currentPhase?.phase_key !== "canceled" && (
                             <MenuItem
                               onClick={() => handleUpdateStatus("canceled")}
                               className={classes.projectOptionsMenuItem}
@@ -660,7 +655,8 @@ const ProjectView = () => {
                     target="new"
                   >
                     submit a Data &amp; Technology Services support request
-                  </Link>.
+                  </Link>
+                  .
                 </Typography>
               </DialogContent>
               <DialogActions>
