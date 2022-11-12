@@ -62,11 +62,10 @@ const useStyles = makeStyles((theme) => ({
  * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
- * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query, searchTerm, referenceData }) => {
+const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**

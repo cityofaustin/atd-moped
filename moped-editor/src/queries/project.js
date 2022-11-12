@@ -122,18 +122,6 @@ export const SUMMARY_QUERY = gql`
   }
 `;
 
-export const STATUS_QUERY = gql`
-  query StatusQuery {
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
-    }
-  }
-`;
-
 export const TYPES_QUERY = gql`
   query TypeQuery {
     moped_types(order_by: { type_name: asc }) {
