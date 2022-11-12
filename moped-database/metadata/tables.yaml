@@ -3233,9 +3233,6 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
-    - name: moped_status
-      using:
-        foreign_key_constraint_on: status_id
     - name: moped_user
       using:
         foreign_key_constraint_on: added_by
@@ -3324,300 +3321,226 @@
       permission:
         check: {}
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
         check: {}
-  event_triggers:
-    - name: activity_log_moped_project
-      definition:
-        delete:
-          columns: '*'
-        enable_manual: false
-        insert:
-          columns: '*'
-        update:
-          columns:
-            - capitally_funded
-            - is_deleted
-            - end_date
-            - added_by
-            - milestone_id
-            - project_id
-            - project_importance
-            - project_length
-            - project_order
-            - project_sponsor
-            - status_id
-            - timeline_id
-            - task_order
-            - ecapris_subproject_id
-            - current_phase
-            - current_phase_id
-            - current_status
-            - fiscal_year
-            - knack_project_id
-            - project_description
-            - project_description_public
-            - project_name
-            - project_priority
-            - project_website
-            - work_assignment_id
-            - date_added
-            - updated_at
-            - project_uuid
-            - parent_project_id
-      retry_conf:
-        interval_sec: 10
-        num_retries: 0
-        timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
-      headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
 - table:
     name: moped_project_files
     schema: public
