@@ -60,21 +60,6 @@ const ProjectPhases = ({
   if (loading || !data) return <CircularProgress />;
 
   /**
-   * Direct access to the moped_status array
-   */
-  const statusMap = data?.moped_status ?? [];
-
-  /**
-   * Retrieves the moped_status values from the statusMap array
-   * @param {string} status - The name of the status
-   * @returns {Object} {status_id: , status_name} or undefined
-   */
-  const getStatusByPhaseName = (phase_name) =>
-    statusMap.find(
-      (s) => s.status_name.toLowerCase() === phase_name.toLowerCase()
-    );
-
-  /**
    * Subphase table lookup object formatted into the shape that <MaterialTable>
    * expects.
    * Ex: { bid: "Bid", "environmental study": "Environmental Study", ...}
@@ -115,33 +100,6 @@ const ProjectPhases = ({
         }
       });
     }
-  };
-
-  /**
-   * Checks if phase being added or updated has a corresponding status and creates
-   * update object accordingly
-   * @param {string} mutationPhaseId - phase being added or updated in project phase table
-   * @returns {Object} Object that will be used in updates to project status
-   */
-  const getProjectStatusUpdateObject = (mutationPhaseId) => {
-    const newPhaseName = phaseNameLookup(data)[mutationPhaseId];
-    const statusMapped = getStatusByPhaseName(newPhaseName);
-
-    return !!statusMapped
-      ? {
-          // There is a status with same name as phase
-          status_id: statusMapped.status_id,
-          current_status: statusMapped.status_name.toLowerCase(),
-          current_phase: newPhaseName.toLowerCase(),
-          current_phase_id: mutationPhaseId,
-        }
-      : {
-          // There isn't a status that matches the phase
-          status_id: 1,
-          current_status: "active",
-          current_phase: newPhaseName.toLowerCase(),
-          current_phase_id: mutationPhaseId,
-        };
   };
 
   /**
@@ -273,31 +231,16 @@ const ProjectPhases = ({
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           updateExistingPhases(newPhaseObject);
 
-          const projectUpdateInput = getProjectStatusUpdateObject(
-            newPhaseObject?.phase_id
-          );
-
           // Execute insert mutation, returns promise
           return addProjectPhase({
             variables: {
               objects: [newPhaseObject],
             },
-          })
-            .then(() =>
-              !!newPhaseObject?.is_current_phase
-                ? updateProjectStatus({
-                    variables: {
-                      projectId: projectId,
-                      projectUpdateInput: projectUpdateInput,
-                    },
-                  })
-                : true
-            )
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            });
+          }).then(() => {
+            // Refetch data
+            refetch();
+            !!projectViewRefetch && projectViewRefetch();
+          });
         },
         onRowUpdate: (newData, oldData) => {
           const updatedPhaseObject = {
@@ -323,14 +266,6 @@ const ProjectPhases = ({
             }
           });
 
-          // Check if differences include phase_id or is_current_phase
-          const existingCurrentPhaseChanged =
-            differences.filter((value) => "is_current_phase" === value).length >
-            0;
-
-          // We need to know if the updated phase is set as is_current_phase
-          const isCurrentPhase = !!newData?.is_current_phase;
-
           // Remove extraneous fields given by MaterialTable that
           // Hasura doesn't need
           delete updatedPhaseObject.tableData;
@@ -340,46 +275,14 @@ const ProjectPhases = ({
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           updateExistingPhases(updatedPhaseObject);
 
-          const mappedProjectUpdateInput = getProjectStatusUpdateObject(
-            updatedPhaseObject?.phase_id
-          );
-
           // Execute update mutation, returns promise
           return updateProjectPhase({
             variables: updatedPhaseObject,
-          })
-            .then(() => {
-              // if the phase being updated is toggled as the current phase
-              // update moped_project with new current_phase, updating the status badge
-              if (isCurrentPhase) {
-                return updateProjectStatus({
-                  variables: {
-                    projectId: projectId,
-                    projectUpdateInput: mappedProjectUpdateInput,
-                  },
-                });
-              } else if (existingCurrentPhaseChanged) {
-                // if updated phase is not toggled as current phase, but was previously current phase
-                // update moped_project with generic current status and current phase
-                return updateProjectStatus({
-                  variables: {
-                    projectId: projectId,
-                    projectUpdateInput: {
-                      status_id: 1,
-                      current_status: "active",
-                      current_phase: "active",
-                      // we don't have a phase id for active, since it is not an official phase
-                      current_phase_id: 0,
-                    },
-                  },
-                });
-              }
-            })
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            });
+          }).then(() => {
+            // Refetch data
+            refetch();
+            !!projectViewRefetch && projectViewRefetch();
+          });
         },
         onRowDelete: (oldData) => {
           // Execute mutation to set current phase of phase to be deleted to false
@@ -394,29 +297,10 @@ const ProjectPhases = ({
               variables: {
                 project_phase_id: oldData.project_phase_id,
               },
-            })
-              .then(() =>
-                // if the deleted phase was the project's current phase,
-                // we need to reset what phase and status are considered "current"
-                was_current_phase
-                  ? updateProjectStatus({
-                      variables: {
-                        projectId: projectId,
-                        projectUpdateInput: {
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: "active",
-                          // we don't have a phase id for active, since it is not an official phase
-                          current_phase_id: 0,
-                        },
-                      },
-                    })
-                  : true
-              )
-              .then(() => {
-                refetch();
-                !!projectViewRefetch && projectViewRefetch();
-              });
+            }).then(() => {
+              refetch();
+              !!projectViewRefetch && projectViewRefetch();
+            });
           });
         },
       }}

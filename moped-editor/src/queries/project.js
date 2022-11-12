@@ -287,10 +287,6 @@ export const TIMELINE_QUERY = gql`
         related_phase_id
       }
     }
-    moped_status {
-      status_id
-      status_name
-    }
   }
 `;
 
