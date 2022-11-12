@@ -53,7 +53,6 @@ const ProjectPhases = ({
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
-  const [updateProjectStatus] = useMutation(PROJECT_UPDATE_STATUS);
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
