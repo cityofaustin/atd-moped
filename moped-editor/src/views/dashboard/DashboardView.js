@@ -140,10 +140,10 @@ const DashboardView = () => {
     selectedData.forEach((project) => {
       project["project_name"] = project.project.project_name;
       project["project_id"] = project.project.project_id;
-      project["current_phase"] = project.project.current_phase;
-      project["current_status"] = project.project.current_status;
-      project["status_id"] = project.project.status_id;
-
+      project["phase_name"] =
+        project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
+      project["phase_key"] =
+        project.project.moped_proj_phases?.[0]?.moped_phase.phase_key;
       /**
        * Get percentage of milestones completed
        */
@@ -204,7 +204,7 @@ const DashboardView = () => {
     },
     {
       title: "Status",
-      field: "current_phase",
+      field: "phase_name",
       editable: "never",
       render: (entry) => (
         <DashboardTimelineModal
@@ -214,9 +214,8 @@ const DashboardView = () => {
           dashboardRefetch={refetch}
         >
           <ProjectStatusBadge
-            status={entry.status_id}
-            phase={entry.current_phase}
-            projectStatuses={data?.moped_status ?? []}
+            phaseName={entry.phase_name}
+            phaseKey={entry.phase_key}
             condensed
             clickable
           />
