@@ -357,46 +357,6 @@ const ProjectView = () => {
     refetch();
   };
 
-  /**
-   * Finds the status_id for a status name
-   * @param {string} phase - The name of the phase
-   * @returns {number}
-   */
-  const resolveStatusIdForStatusName = (status) =>
-    data?.moped_status.find((s) => s.status_name.toLowerCase() === status)
-      .status_id ?? 1;
-
-  /**
-   * Updates status of the current project to either on-hold or canceled
-   */
-  const handleUpdateStatus = (new_status) => {
-    updateStatus({
-      variables: {
-        projectId: projectId,
-        currentStatus: new_status,
-        statusId: resolveStatusIdForStatusName(new_status),
-      },
-    })
-      .then(() =>
-        clearCurrentNoPhase({
-          variables: {
-            projectId: projectId,
-          },
-        })
-      )
-      .then(() => refetch())
-      .catch((err) => {
-        // If there is an error, show it in the dialog
-        setDialogContent(
-          "Error",
-          `It appears there was an error while changing status to '${new_status}', please contact the Data & Technology Services department. Reference: ${String(
-            err
-          )}`,
-          <Button onClick={handleDialogClose}>Close</Button>
-        );
-      });
-  };
-
   const handleFollowProject = () => {
     if (!isFollowing) {
       followProject({
@@ -527,34 +487,6 @@ const ProjectView = () => {
                             </ListItemIcon>
                             <ListItemText primary="Rename" />
                           </MenuItem>
-                          {currentPhase?.phase_key !== "on_hold" && (
-                            <MenuItem
-                              onClick={() => handleUpdateStatus("on hold")}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <PauseCircleOutlineOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Place on hold" />
-                            </MenuItem>
-                          )}
-                          {currentPhase?.phase_key !== "canceled" && (
-                            <MenuItem
-                              onClick={() => handleUpdateStatus("canceled")}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <CancelOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Cancel" />
-                            </MenuItem>
-                          )}
                           <MenuItem
                             onClick={handleDeleteClick}
                             className={classes.projectOptionsMenuItem}
