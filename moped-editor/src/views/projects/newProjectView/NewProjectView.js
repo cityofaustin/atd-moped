@@ -68,12 +68,8 @@ const NewProjectView = () => {
    * @type {Object} featureCollection - The final GeoJSON to be inserted into a component
    */
   const [projectDetails, setProjectDetails] = useState({
-    current_phase: "potential",
-    current_phase_id: 1,
     project_description: "",
     project_name: "",
-    current_status: "potential",
-    status_id: 2,
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
