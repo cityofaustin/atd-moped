@@ -114,6 +114,11 @@ export const ProjectsListViewQueryConf = {
       },
       type: "string",
     },
+    current_phase_key: {
+      searchable: false,
+      sortable: false,
+      hidden: true,
+    },
     project_team_members: {
       searchable: false,
       sortable: false,
@@ -227,13 +232,12 @@ export const ProjectsListViewQueryConf = {
     },
     added_by: {
       type: "string",
-    }
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
   where: {
     is_deleted: "_eq: false",
-    current_phase_key: '_neq: "canceled"',
   },
   or: null,
   and: null,

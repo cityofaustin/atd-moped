@@ -35,10 +35,10 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-      "& .MuiTableCell-head:nth-of-type(2)": {
-        left: "0px",
-        position: "sticky"
-      },
+    "& .MuiTableCell-head:nth-of-type(2)": {
+      left: "0px",
+      position: "sticky",
+    },
   },
   paper: {
     width: "100%",
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
+const ProjectsListViewTable = ({ query, searchTerm, referenceData }) => {
   const classes = useStyles();
 
   /**
@@ -257,19 +257,15 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase) => (
-    <ProjectStatusBadge
-      phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
-      condensed
-    />
+  const buildStatusBadge = ({ phaseName, phaseKey }) => (
+    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
   // Data Management
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery
   );
-    
+
   const columns = [
     {
       title: "ID",
@@ -299,13 +295,17 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         backgroundColor: "white",
         whiteSpace: "noWrap",
         zIndex: 1,
-      }
+      },
     },
     {
       title: "Status",
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
-      render: (entry) => buildStatusBadge(entry.current_phase),
+      render: (entry) =>
+        buildStatusBadge({
+          phaseName: entry.current_phase,
+          phaseKey: entry.current_phase_key,
+        }),
     },
     {
       title: "Team",
