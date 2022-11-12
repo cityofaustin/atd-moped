@@ -77,8 +77,9 @@ const SubprojectsTable = ({ projectId = null }) => {
       ),
     },
     {
-      title: "Current status",
-      field: "current_status",
+      title: "Status",
+      // todo: does the 'field' need to actually exist in the data?
+      field: "status",
       editable: "never",
       width: "30%",
       render: (entry) => (
@@ -146,7 +147,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             editRow: {
               deleteText: "Are you sure you want to remove this subproject?",
             },
-          },
+          },  
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
