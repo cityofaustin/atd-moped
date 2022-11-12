@@ -17,7 +17,6 @@ import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
-  PROJECT_UPDATE_STATUS,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useMutation } from "@apollo/client";

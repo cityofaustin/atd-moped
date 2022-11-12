@@ -8,8 +8,6 @@ export const ADD_PROJECT = gql`
       project_name
       project_description
       project_priority
-      current_phase
-      current_status
       ecapris_subproject_id
       fiscal_year
       capitally_funded
@@ -768,21 +766,6 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
   }
 `;
 
-export const PROJECT_UPDATE_CURRENT_STATUS = gql`
-  mutation UpdateProjectCurrentStatus(
-    $projectId: Int!
-    $currentStatus: String!
-    $statusId: Int = 1
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { current_status: $currentStatus, status_id: $statusId }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_UPDATE_TYPES = gql`
   mutation UpdateMopedProjectTypes(
     $types: [moped_project_types_insert_input!]!
@@ -889,23 +872,6 @@ export const UPDATE_PROJECT_KNACK_ID = gql`
         knack_project_id
         project_id
       }
-    }
-  }
-`;
-
-/*
- *   projectUpdateInput contains status_id, current_status, and current_phase
- */
-export const PROJECT_UPDATE_STATUS = gql`
-  mutation UpdateProjectPhase(
-    $projectId: Int!
-    $projectUpdateInput: moped_project_set_input!
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: $projectUpdateInput
-    ) {
-      affected_rows
     }
   }
 `;

@@ -44,8 +44,6 @@ import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import {
   PROJECT_ARCHIVE,
-  PROJECT_CLEAR_NO_CURRENT_PHASE,
-  PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
   PROJECT_FOLLOW,
   PROJECT_UNFOLLOW,
@@ -225,10 +223,7 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
-  // clearCurrentNoPhase sets current phase as null on moped_project
   // and sets phases in moped_proj_phases as is_current_phase: false
-  const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
