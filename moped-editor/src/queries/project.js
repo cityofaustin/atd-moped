@@ -347,10 +347,11 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   }
 `;
 
+// Delete a project phase **and** make it not current
 export const DELETE_PROJECT_PHASE = gql`
   mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
-      _set: { is_deleted: true }
+      _set: { is_deleted: true, is_current_phase: false }
       where: { project_phase_id: { _eq: $project_phase_id } }
     ) {
       affected_rows

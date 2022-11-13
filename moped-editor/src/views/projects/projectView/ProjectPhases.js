@@ -277,22 +277,14 @@ const ProjectPhases = ({
           });
         },
         onRowDelete: (oldData) => {
-          // Execute mutation to set current phase of phase to be deleted to false
-          // to ensure summary table stays up to date
-          const was_current_phase = !!oldData?.is_current_phase;
-          oldData.is_current_phase = false;
-          return updateProjectPhase({
-            variables: oldData,
+          // Execute delete mutation, returns promise
+          return deleteProjectPhase({
+            variables: {
+              project_phase_id: oldData.project_phase_id,
+            },
           }).then(() => {
-            // Execute delete mutation, returns promise
-            return deleteProjectPhase({
-              variables: {
-                project_phase_id: oldData.project_phase_id,
-              },
-            }).then(() => {
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            });
+            refetch();
+            !!projectViewRefetch && projectViewRefetch();
           });
         },
       }}
