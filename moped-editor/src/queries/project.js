@@ -244,7 +244,7 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: { phase_start: desc }
+      order_by: { phase_start: desc, moped_phase: { phase_order: desc } }
     ) {
       project_phase_id
       is_current_phase
@@ -287,24 +287,12 @@ export const TIMELINE_QUERY = gql`
 
 export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
-    $phase_description: String
-    $is_current_phase: Boolean
-    $phase_start: date = null
-    $phase_end: date = null
     $project_phase_id: Int!
-    $phase_id: Int
-    $subphase_id: Int = 0
+    $object: moped_proj_phases_set_input!
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
-      _set: {
-        phase_description: $phase_description
-        is_current_phase: $is_current_phase
-        phase_start: $phase_start
-        phase_end: $phase_end
-        phase_id: $phase_id
-        subphase_id: $subphase_id
-      }
+      _set: $object
     ) {
       project_id
       project_phase_id
