@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Material
 import {
@@ -8,12 +8,14 @@ import {
   FormControl,
   FormHelperText,
   TextField,
+  Chip,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
+  Check,
 } from "@material-ui/icons";
 import MaterialTable, {
   MTableEditRow,
@@ -56,6 +58,8 @@ const ProjectPhases = ({
    * */
   const addActionRefPhases = React.useRef();
 
+  const [isMutating, setIsMutating] = useState(false);
+
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
@@ -69,33 +73,30 @@ const ProjectPhases = ({
   if (loading || !data) return <CircularProgress />;
 
   /**
-   * If phaseObject has is_current_phase === true,
-   * set is_current_phase of any other true phases to false
+   * Set is_current_phase of all proj phases except currentPhaseId to false
    * to ensure there is only one active phase
    */
-  const updateExistingPhases = (phaseObject) => {
-    if (phaseObject.is_current_phase) {
-      data.moped_proj_phases.forEach((phase) => {
-        if (
-          phase.is_current_phase &&
-          phase.project_phase_id !== phaseObject.project_phase_id
-        ) {
-          phase.is_current_phase = false;
-          // Execute update mutation, returns promise
-          return updateProjectPhase({
-            variables: phase,
+  const updateExistingPhases = (currentPhaseId) => {
+    data.moped_proj_phases.forEach(({ is_current_phase, project_phase_id }) => {
+      if (is_current_phase && project_phase_id !== currentPhaseId) {
+        const updatePhasePayload = {
+          project_phase_id,
+          object: { is_current_phase: false },
+        };
+        // Execute update mutation, returns promise
+        return updateProjectPhase({
+          variables: updatePhasePayload,
+        })
+          .then(() => {
+            // Refetch data
+            refetch();
+            !!projectViewRefetch && projectViewRefetch();
           })
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
-      });
-    }
+          .catch((err) => {
+            console.error(err);
+          });
+      }
+    });
   };
 
   /**
@@ -176,6 +177,12 @@ const ProjectPhases = ({
       title: "Current",
       field: "is_current_phase",
       lookup: { true: "Yes", false: "No" },
+      render: (rowData) =>
+        rowData.is_current_phase ? (
+          <Chip label="Yes" color="primary" icon={<Check />} />
+        ) : (
+          "No"
+        ),
       editComponent: (props) => (
         <ToggleEditComponent {...props} name="is_current_phase" />
       ),
@@ -185,6 +192,7 @@ const ProjectPhases = ({
 
   return (
     <MaterialTable
+      isLoading={isMutating}
       columns={phasesColumns}
       data={data.moped_proj_phases}
       // Action component customized as described in this gh-issue:
@@ -228,10 +236,11 @@ const ProjectPhases = ({
         },
       }}
       editable={{
-        onRowAdd: (newData) => {
+        onRowAdd: async (newData) => {
+          setIsMutating(true);
           const { moped_phase, ...rest } = newData;
 
-          const newPhaseObject = {
+          const newPhasePayload = {
             project_id: projectId,
             completion_percentage: 0,
             completed: false,
@@ -240,52 +249,72 @@ const ProjectPhases = ({
           };
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
-          updateExistingPhases(newPhaseObject);
-
+          if (newPhasePayload.is_current_phase) {
+            updateExistingPhases();
+          }
           // Execute insert mutation, returns promise
-          return addProjectPhase({
+          await addProjectPhase({
             variables: {
-              objects: [newPhaseObject],
+              objects: [newPhasePayload],
             },
-          }).then(() => {
-            // Refetch data
-            refetch();
-            !!projectViewRefetch && projectViewRefetch();
           });
+          // Refetch data
+          await refetch();
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
         },
-        onRowUpdate: (newData, oldData) => {
-          const { moped_phase, __typename, ...updatedPhaseObject } = newData;
-          updatedPhaseObject.phase_id = moped_phase.phase_id;
+        onRowUpdate: async (newData, oldData) => {
+          setIsMutating(true);
+          const {
+            project_phase_id,
+            moped_phase,
+            moped_subphase,
+            __typename,
+            ...updatedPhasePayload
+          } = newData;
+          // extract phase_id from moped_phase object
+          updatedPhasePayload.phase_id = moped_phase.phase_id;
 
           // Replace empty strings with null values
-          Object.keys(updatedPhaseObject).forEach((key) => {
-            if (updatedPhaseObject[key] === "") {
-              updatedPhaseObject[key] = null;
+          Object.keys(updatedPhasePayload).forEach((key) => {
+            if (updatedPhasePayload[key] === "") {
+              updatedPhasePayload[key] = null;
             }
           });
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
-          updateExistingPhases(updatedPhaseObject);
+          if (updatedPhasePayload.is_current_phase) {
+            updateExistingPhases(project_phase_id);
+          }
 
-          // Execute update mutation, returns promise
-          return updateProjectPhase({
-            variables: updatedPhaseObject,
-          }).then(() => {
-            // Refetch data
-            refetch();
-            !!projectViewRefetch && projectViewRefetch();
+          // Execute update mutation
+          await updateProjectPhase({
+            variables: { project_phase_id, object: updatedPhasePayload },
           });
+          // Refetch data
+          await refetch();
+
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
         },
-        onRowDelete: (oldData) => {
-          // Execute delete mutation, returns promise
-          return deleteProjectPhase({
+        onRowDelete: async (oldData) => {
+          // Execute delete mutation
+          setIsMutating(true);
+          await deleteProjectPhase({
             variables: {
               project_phase_id: oldData.project_phase_id,
             },
-          }).then(() => {
-            refetch();
-            !!projectViewRefetch && projectViewRefetch();
           });
+          await refetch();
+
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
         },
       }}
       title={
