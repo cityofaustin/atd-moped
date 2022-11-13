@@ -1,7 +1,16 @@
 import React from "react";
 
 // Material
-import { Button, CircularProgress, Typography } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  Typography,
+  FormControl,
+  FormHelperText,
+  TextField,
+} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
+
 import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
@@ -24,7 +33,6 @@ import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
 // Helpers
-import { phaseNameLookup } from "src/utils/timelineTableHelpers";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
@@ -53,22 +61,12 @@ const ProjectPhases = ({
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
+  // Dropdown options
+  const phaseOptions = data?.moped_phases || [];
+
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
-
-  /**
-   * Subphase table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { bid: "Bid", "environmental study": "Environmental Study", ...}
-   */
-  const subphaseNameLookup = data.moped_subphases.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.subphase_id]: item.subphase_name,
-      }),
-    {}
-  );
 
   /**
    * If phaseObject has is_current_phase === true,
@@ -105,19 +103,37 @@ const ProjectPhases = ({
    */
   const phasesColumns = [
     {
-      title: "Phase name",
-      field: "phase_id",
-      lookup: phaseNameLookup(data),
-      validate: (row) => !!row.phase_id,
+      title: "Phase",
+      field: "moped_phase",
+      validate: (row) => !!row.moped_phase?.phase_id,
+      render: (row) => row.moped_phase?.phase_name,
       editComponent: (props) => (
-        <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
+        <FormControl style={{ minWidth: 150 }}>
+          <Autocomplete
+            id="phase_id_autocomplete"
+            name="phase_id_autocomplete"
+            options={phaseOptions}
+            getOptionLabel={(phase) => phase.phase_name}
+            getOptionSelected={(option, value) =>
+              option.phase_id === value.phase_id
+            }
+            value={props.value || null}
+            onChange={(event, value) => {
+              return props.onChange(value);
+            }}
+            renderInput={(params) => (
+              <TextField {...params} autoFocus style={{ minWidth: 200 }} />
+            )}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
-      width: "18%",
+      width: "25%",
     },
     {
-      title: "Sub-phase name",
+      title: "Subphase",
       field: "subphase_id",
-      lookup: subphaseNameLookup,
+      render: (rowData) => rowData.moped_subphase?.subphase_name,
       editComponent: (props) => (
         <DropDownSelectComponent
           {...props}
@@ -125,40 +141,36 @@ const ProjectPhases = ({
           data={data}
         />
       ),
-      width: "18%",
+      width: "20%",
     },
     {
       title: "Description",
       field: "phase_description",
-      width: "18%",
+      width: "25%",
     },
     {
-      title: "Start date",
+      title: "Start",
       field: "phase_start",
       render: (rowData) =>
         rowData.phase_start
           ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
-        <DateFieldEditComponent
-          {...props}
-          name="phase_start"
-          label="Start Date"
-        />
+        <DateFieldEditComponent {...props} name="phase_start" label="Start" />
       ),
-      width: "18%",
+      width: "10%",
     },
     {
-      title: "End date",
+      title: "End",
       field: "phase_end",
       render: (rowData) =>
         rowData.phase_end
           ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent {...props} name="phase_end" label="End" />
       ),
-      width: "18%",
+      width: "10%",
     },
     {
       title: "Current",
@@ -217,14 +229,15 @@ const ProjectPhases = ({
       }}
       editable={{
         onRowAdd: (newData) => {
-          const newPhaseObject = Object.assign(
-            {
-              project_id: projectId,
-              completion_percentage: 0,
-              completed: false,
-            },
-            newData
-          );
+          const { moped_phase, ...rest } = newData;
+
+          const newPhaseObject = {
+            project_id: projectId,
+            completion_percentage: 0,
+            completed: false,
+            phase_id: moped_phase.phase_id,
+            ...rest,
+          };
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           updateExistingPhases(newPhaseObject);
@@ -241,34 +254,15 @@ const ProjectPhases = ({
           });
         },
         onRowUpdate: (newData, oldData) => {
-          const updatedPhaseObject = {
-            ...oldData,
-          };
-          // Array of differences between new and old data
-          let differences = Object.keys(oldData).filter(
-            (key) => oldData[key] !== newData[key]
-          );
+          const { moped_phase, __typename, ...updatedPhaseObject } = newData;
+          updatedPhaseObject.phase_id = moped_phase.phase_id;
 
-          // Loop through the differences and assign newData values.
-          // If one of the Date fields is blanked out, coerce empty
-          // string to null.
-          differences.forEach((diff) => {
-            let shouldCoerceEmptyStringToNull =
-              newData[diff] === "" &&
-              (diff === "phase_start" || diff === "phase_end");
-
-            if (shouldCoerceEmptyStringToNull) {
-              updatedPhaseObject[diff] = null;
-            } else {
-              updatedPhaseObject[diff] = newData[diff];
+          // Replace empty strings with null values
+          Object.keys(updatedPhaseObject).forEach((key) => {
+            if (updatedPhaseObject[key] === "") {
+              updatedPhaseObject[key] = null;
             }
           });
-
-          // Remove extraneous fields given by MaterialTable that
-          // Hasura doesn't need
-          delete updatedPhaseObject.tableData;
-          delete updatedPhaseObject.project_id;
-          delete updatedPhaseObject.__typename;
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           updateExistingPhases(updatedPhaseObject);
