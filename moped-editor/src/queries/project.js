@@ -244,7 +244,11 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: { phase_start: desc, moped_phase: { phase_order: desc } }
+      order_by: {
+        phase_start: desc
+        moped_phase: { phase_order: desc }
+        moped_subphase: { subphase_order: desc }
+      }
     ) {
       project_phase_id
       is_current_phase
@@ -285,6 +289,7 @@ export const TIMELINE_QUERY = gql`
   }
 `;
 
+// use this to update a single moped_proj_phase
 export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
     $project_phase_id: Int!
@@ -302,6 +307,18 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       subphase_id
       is_current_phase
       phase_description
+    }
+  }
+`;
+
+// provide an array of project_phase_id's to set them not current
+export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
+  mutation ClearCurrentProjectPhasePKs($ids: [Int!]!) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $ids } }
+    ) {
+      affected_rows
     }
   }
 `;

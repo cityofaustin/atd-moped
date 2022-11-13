@@ -28,6 +28,7 @@ import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
+  CLEAR_CURRENT_PROJECT_PHASES_MUTATION,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useMutation } from "@apollo/client";
@@ -38,6 +39,20 @@ import parseISO from "date-fns/parseISO";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
+
+/**
+ * Identify any current moped_proj_phases
+ * @param {Int} newCurrentPhaseId - the ID of the phase that should be marked as current - optional
+ * @param {Array} existingProjPhases - array of this project's moped_proj_phases
+ * @return {Array} array of moped_proj_phases.project_phase_id primary keys
+ */
+const getCurrentPhaseIDs = (newCurrentPhaseId, existingProjPhases) =>
+  existingProjPhases
+    .filter(
+      ({ is_current_phase, project_phase_id }) =>
+        is_current_phase && project_phase_id !== newCurrentPhaseId
+    )
+    .map(({ project_phase_id }) => project_phase_id);
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -62,6 +77,9 @@ const ProjectPhases = ({
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
+  const [clearCurrentProjectPhases] = useMutation(
+    CLEAR_CURRENT_PROJECT_PHASES_MUTATION
+  );
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
@@ -76,26 +94,13 @@ const ProjectPhases = ({
    * Set is_current_phase of all proj phases except currentPhaseId to false
    * to ensure there is only one active phase
    */
-  const updateExistingPhases = (currentPhaseId) => {
-    data.moped_proj_phases.forEach(({ is_current_phase, project_phase_id }) => {
-      if (is_current_phase && project_phase_id !== currentPhaseId) {
-        const updatePhasePayload = {
-          project_phase_id,
-          object: { is_current_phase: false },
-        };
-        // Execute update mutation, returns promise
-        return updateProjectPhase({
-          variables: updatePhasePayload,
-        })
-          .then(() => {
-            // Refetch data
-            refetch();
-            !!projectViewRefetch && projectViewRefetch();
-          })
-          .catch((err) => {
-            console.error(err);
-          });
-      }
+  const updateExistingPhases = async (projPhasesIdsToUpdate) => {
+    // Execute update mutation
+    // We bundle all phases into this single mutation so that it can be cleanly awaited
+    await clearCurrentProjectPhases({
+      variables: { ids: projPhasesIdsToUpdate },
+    }).catch((err) => {
+      console.error(err);
     });
   };
 
@@ -250,13 +255,21 @@ const ProjectPhases = ({
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           if (newPhasePayload.is_current_phase) {
-            updateExistingPhases();
+            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+              null,
+              data.moped_proj_phases
+            );
+            if (projPhasesIdsToUpdate.length > 0) {
+              await updateExistingPhases(projPhasesIdsToUpdate);
+            }
           }
           // Execute insert mutation, returns promise
           await addProjectPhase({
             variables: {
               objects: [newPhasePayload],
             },
+          }).catch((err) => {
+            console.error(err);
           });
           // Refetch data
           await refetch();
@@ -286,12 +299,20 @@ const ProjectPhases = ({
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           if (updatedPhasePayload.is_current_phase) {
-            updateExistingPhases(project_phase_id);
+            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+              project_phase_id,
+              data.moped_proj_phases
+            );
+            if (projPhasesIdsToUpdate.length > 0) {
+              await updateExistingPhases(projPhasesIdsToUpdate);
+            }
           }
 
           // Execute update mutation
           await updateProjectPhase({
             variables: { project_phase_id, object: updatedPhasePayload },
+          }).catch((err) => {
+            console.error(err);
           });
           // Refetch data
           await refetch();
@@ -308,6 +329,8 @@ const ProjectPhases = ({
             variables: {
               project_phase_id: oldData.project_phase_id,
             },
+          }).catch((err) => {
+            console.error(err);
           });
           await refetch();
 
