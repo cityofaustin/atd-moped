@@ -1,7 +1,8 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import { Select, MenuItem, FormControl } from "@material-ui/core";
 
+// hook which keeps available subphase options in sync
 const useSubphaseOptions = ({ phases, phaseId }) =>
   useMemo(() => {
     if (!phaseId || !phases) return [];
@@ -24,10 +25,22 @@ const useSubphaseOptions = ({ phases, phaseId }) =>
  * @constructor
  */
 const DropDownSelectComponent = ({ name, data, rowData, value, onChange }) => {
+  const phaseId = rowData?.moped_phase?.phase_id;
+  const phases = data.moped_phases;
+
   const subphaseOptions = useSubphaseOptions({
-    phases: data.moped_phases,
-    phaseId: rowData?.moped_phase?.phase_id,
+    phases,
+    phaseId,
   });
+
+  useEffect(() => {
+    // this effect ensures the subphase value is reset when the row's
+    // phase changes
+    if (value && !subphaseOptions.find((option) => option.value === value)) {
+      onChange("");
+    }
+  }, [value, subphaseOptions, phaseId]);
+
   // Hide this component if there are no related subphases
   if (subphaseOptions.length === 0) return null;
 
@@ -39,7 +52,7 @@ const DropDownSelectComponent = ({ name, data, rowData, value, onChange }) => {
             onChange={() => onChange(value)}
             onClick={() => onChange(value)}
             onKeyDown={(e) => handleKeyEvent(e)}
-            value={value}
+            value={value || ""}
             key={value}
           >
             {label}
