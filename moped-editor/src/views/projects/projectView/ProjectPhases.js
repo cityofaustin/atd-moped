@@ -285,7 +285,6 @@ const ProjectPhases = ({
         onRowDelete: (oldData) => {
           // Execute mutation to set current phase of phase to be deleted to false
           // to ensure summary table stays up to date
-          const was_current_phase = !!oldData?.is_current_phase;
           oldData.is_current_phase = false;
           return updateProjectPhase({
             variables: oldData,
