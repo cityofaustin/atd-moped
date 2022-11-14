@@ -20,7 +20,6 @@ const useSubphaseOptions = ({ phases, phaseId }) =>
 /**
  * DropDownSelectComponent - Renders a drop down menu for MaterialTable
  * @param {object} props - Values passed through Material Table `editComponent`
- * @param {string} name - Field name
  * @return {JSX.Element}
  * @constructor
  */
