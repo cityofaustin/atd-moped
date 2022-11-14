@@ -2,6 +2,8 @@ import { Source, Layer } from "react-map-gl";
 import { SOURCES } from "./mapSettings";
 import { MAP_STYLES } from "./mapStyleSettings";
 
+const mapStyles = MAP_STYLES;
+
 /**
  * Component that renders all sources and layers for project components
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
@@ -52,9 +54,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["ctn-lines-underlay"].layerProps,
+            ...mapStyles["ctn-lines-underlay"].layerProps,
             layout: {
-              ...MAP_STYLES["ctn-lines-underlay"].layerProps.layout,
+              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -63,9 +65,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["ctn-lines"].layerProps,
+            ...mapStyles["ctn-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["ctn-lines"].layerProps.layout,
+              ...mapStyles["ctn-lines"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -81,9 +83,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-lines-underlay"].layerProps,
+            ...mapStyles["project-lines-underlay"].layerProps,
             layout: {
-              ...MAP_STYLES["project-lines-underlay"].layerProps.layout,
+              ...mapStyles["project-lines-underlay"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -91,9 +93,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-lines"].layerProps,
+            ...mapStyles["project-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["project-lines"].layerProps.layout,
+              ...mapStyles["project-lines"].layerProps.layout,
               visibility: isViewingComponents ? "visible" : "none",
             },
           }}
@@ -101,9 +103,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-lines-muted"].layerProps,
+            ...mapStyles["project-lines-muted"].layerProps,
             layout: {
-              ...MAP_STYLES["project-lines-muted"].layerProps.layout,
+              ...mapStyles["project-lines-muted"].layerProps.layout,
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
@@ -119,7 +121,7 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["ctn-points-underlay"].layerProps,
+            ...mapStyles["ctn-points-underlay"].layerProps,
             layout: {
               visibility: isEditingPoints ? "visible" : "none",
             },
@@ -128,7 +130,7 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["ctn-points"].layerProps,
+            ...mapStyles["ctn-points"].layerProps,
             layout: {
               visibility: isEditingPoints ? "visible" : "none",
             },
@@ -145,9 +147,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-points"].layerProps,
+            ...mapStyles["project-points"].layerProps,
             layout: {
-              ...MAP_STYLES["project-points"].layerProps.layout,
+              ...mapStyles["project-points"].layerProps.layout,
               visibility: isViewingComponents ? "visible" : "none",
             },
           }}
@@ -155,7 +157,7 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-points-muted"].layerProps,
+            ...mapStyles["project-points-muted"].layerProps,
             layout: {
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
@@ -172,9 +174,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["draft-component-lines"].layerProps,
+            ...mapStyles["draft-component-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["clicked-component-features-lines"].layerProps
+              ...mapStyles["clicked-component-features-lines"].layerProps
                 .layout,
               visibility: linkMode === "lines" ? "visible" : "none",
             },
@@ -190,7 +192,7 @@ const ComponentsSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          {...MAP_STYLES["draft-component-points"].layerProps}
+          {...mapStyles["draft-component-points"].layerProps}
           layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
         />
       </Source>
@@ -204,9 +206,9 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["clicked-component-features-lines"].layerProps,
+            ...mapStyles["clicked-component-features-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["clicked-component-features-lines"].layerProps
+              ...mapStyles["clicked-component-features-lines"].layerProps
                 .layout,
               visibility:
                 componentFeatureCollection &&
@@ -219,7 +221,7 @@ const ComponentsSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["clicked-component-features-points"].layerProps,
+            ...mapStyles["clicked-component-features-points"].layerProps,
             layout: {
               visibility:
                 componentFeatureCollection &&
