@@ -145,7 +145,7 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onSaveComponent = () => {
-    // Start data preparation
+    /* Start data preparation */
     const {
       component_id,
       description,
@@ -207,8 +207,7 @@ export default function MapView({ projectName, projectStatuses }) {
       feature_drawn_lines: { data: drawnLinesToInsert },
       feature_drawn_points: { data: drawnPointsToInsert },
     };
-
-    // End data preparation
+    /* End data preparation */
 
     addProjectComponent({ variables: { object: newComponentData } }).then(
       () => {

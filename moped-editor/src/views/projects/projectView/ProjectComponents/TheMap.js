@@ -239,8 +239,8 @@ export default function TheMap({
         isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}
-        componentFeatureCollection={componentFeatureCollection}
         clickedComponent={clickedComponent}
+        componentFeatureCollection={componentFeatureCollection}
       />
       {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
