@@ -17,7 +17,6 @@ import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
   ComponentOptionWithIcon,
-  makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
 } from "./utils/map";
@@ -112,11 +111,7 @@ const ComponentEditModal = ({
       description,
     } = formData;
 
-    // TODO: Create helper to pass formData and create component data payload
-    // TODO: If it is a drawn feature, we need to insert in drawn tables
-
     const newComponent = {
-      _id: makeRandomComponentId(),
       component_id,
       component_name,
       component_subtype,

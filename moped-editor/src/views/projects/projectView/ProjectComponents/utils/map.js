@@ -95,11 +95,6 @@ export const ComponentOptionWithIcon = ({ option }) => {
   );
 };
 
-/*
- * Components need a unique id generated on creation to avoid collisions
- */
-export const makeRandomComponentId = () => uuidv4();
-
 /**
  * Use MUI-exposed breakpoints and toolbar height to size content below the toolbar
  * @returns {number} Current pixel height of the toolbar
