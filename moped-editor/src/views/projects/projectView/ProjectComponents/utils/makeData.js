@@ -34,11 +34,3 @@ export const makeComponentFeatureCollectionsMap = (components) => {
 
   return componentGeographyMap;
 };
-
-export const makeFeatureIdToComponentIdMap = (components) => {
-  const featureIdToComponentIdMap = {};
-
-  //
-
-  return featureIdToComponentIdMap;
-};

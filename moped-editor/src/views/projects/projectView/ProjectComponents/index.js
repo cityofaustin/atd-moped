@@ -120,8 +120,6 @@ export default function MapView({ projectName, projectStatuses }) {
         data.project_geography
       );
       setFeatureCollectionsByComponentId(componentFeatureCollections);
-
-      // Create map of feature ids to component ids
     },
   });
 
