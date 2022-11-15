@@ -55,6 +55,17 @@ const getCurrentPhaseIDs = (newCurrentPhaseId, existingProjPhases) =>
     .map(({ project_phase_id }) => project_phase_id);
 
 /**
+ * Replace all object properties which are empty strings "" with null
+ */
+const replaceEmptyStrings = (obj) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === "") {
+      obj[key] = null;
+    }
+  });
+};
+
+/**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
  * tab is active
  * @return {JSX.Element}
@@ -253,6 +264,8 @@ const ProjectPhases = ({
             ...rest,
           };
 
+          replaceEmptyStrings(newPhasePayload);
+
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           if (newPhasePayload.is_current_phase) {
             const projPhasesIdsToUpdate = getCurrentPhaseIDs(
@@ -263,6 +276,7 @@ const ProjectPhases = ({
               await updateExistingPhases(projPhasesIdsToUpdate);
             }
           }
+
           // Execute insert mutation, returns promise
           await addProjectPhase({
             variables: {
@@ -290,12 +304,7 @@ const ProjectPhases = ({
           // extract phase_id from moped_phase object
           updatedPhasePayload.phase_id = moped_phase.phase_id;
 
-          // Replace empty strings with null values
-          Object.keys(updatedPhasePayload).forEach((key) => {
-            if (updatedPhasePayload[key] === "") {
-              updatedPhasePayload[key] = null;
-            }
-          });
+          replaceEmptyStrings(updatedPhasePayload);
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
           if (updatedPhasePayload.is_current_phase) {
