@@ -27,7 +27,7 @@ pg_dump --column-inserts --data-only --schema public \
   -t moped_project_files \
   -t moped_user_followed_projects \
   -t moped_users \
-  postgres://moped:moped@localhost:5432/moped > 1602292389297_initial_seed_staging.sql
+  postgres://moped:moped@localhost:5432/moped > seeds/1602292389297_initial_seed_staging.sql
 ```
 
 6. At the top of the updated seed file (), check make sure the search path configuration looks like this - change it if necessary:
