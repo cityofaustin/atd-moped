@@ -3536,6 +3536,51 @@
           - is_deleted
         filter: {}
         check: {}
+  event_triggers:
+    - name: activity_log_moped_project
+      definition:
+        delete:
+          columns: '*'
+        enable_manual: false
+        insert:
+          columns: '*'
+        update:
+          columns:
+            - capitally_funded
+            - is_deleted
+            - end_date
+            - added_by
+            - milestone_id
+            - project_id
+            - project_importance
+            - project_length
+            - project_order
+            - project_sponsor
+            - timeline_id
+            - task_order
+            - ecapris_subproject_id
+            - fiscal_year
+            - knack_project_id
+            - project_description
+            - project_description_public
+            - project_name
+            - project_priority
+            - project_website
+            - work_assignment_id
+            - date_added
+            - updated_at
+            - project_uuid
+            - parent_project_id
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: MOPED_API_EVENTS_URL
+      headers:
+        - name: MOPED_API_APIKEY
+          value_from_env: MOPED_API_APIKEY
+        - name: MOPED_API_EVENT_NAME
+          value: activity_log
 - table:
     name: moped_project_files
     schema: public
