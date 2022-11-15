@@ -10,12 +10,11 @@ SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', 'public', false);
+SELECT pg_catalog.set_config('search_path', '', false);
 SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
-
 
 --
 -- Data for Name: moped_users; Type: TABLE DATA; Schema: public; Owner: moped
@@ -56,6 +55,7 @@ INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgr
 
 INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('05dad987-acbf-4543-a623-fbc9c6f1e877', 'Demo Project #1', 'This is a demo project for demonstration purposes', NULL, 7333.001, NULL, NULL, 227, NULL, NULL, NULL, NULL, true, NULL, '2022-11-12 18:07:30.266299+00', 1, false, NULL, '2022-11-12 18:07:30.264117+00', 3, 'https://austinmobility.io', NULL, NULL, 'ABC123', NULL, 1, 1);
 INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('4bc62a02-a75d-4ac8-9354-f74358428c5a', ' CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST', 'It''s a fake signal project', NULL, NULL, NULL, NULL, 228, NULL, NULL, NULL, NULL, NULL, NULL, '2022-11-12 18:16:37.450157+00', 1, false, NULL, '2022-11-12 18:16:37.445531+00', 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('f4298b3e-4393-4433-89f8-c13b4ecf3c74', 'Demo Project #2', 'Best project ever', NULL, 123.455, NULL, NULL, 229, NULL, NULL, NULL, NULL, true, NULL, '2022-11-15 16:47:15.440396+00', 1, false, NULL, '2022-11-15 16:47:15.438683+00', 11, 'https://austintexas.gov', NULL, '[{"dept": "6000", "name": "johnny Morris/Hwy 290 Water Line Extension", "status": "Active", "balance": "-1997.78", "tk_type": "Memo", "task_order": "60M7242QMD", "display_name": "60M7242QMD | johnny Morris/Hwy 290 Water Line Extension", "chargedamount": "1997.78", "current_estimate": "0"}, {"dept": "2400", "name": "FY17 Parking Mgmt. ROW", "status": "Inactive", "balance": "0", "tk_type": "Internal Billed", "buyer_fdus": "5610 2400 4200", "task_order": "24ROW51000", "display_name": "24ROW51000 | FY17 Parking Mgmt. ROW", "chargedamount": "119095.09", "current_estimate": "119095.09"}]', NULL, NULL, NULL, 10);
 
 
 --
@@ -65,6 +65,7 @@ INSERT INTO public.moped_project (project_uuid, project_name, project_descriptio
 INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (2, 227, 7, '', 'This will be nice', false, NULL);
 INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (3, 227, 61, '', 'let there be light', false, NULL);
 INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (4, 228, 18, 'Signal', 'Signal - Traffic', false, NULL);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (5, 229, 13, '', 'New crosswalks', false, NULL);
 
 
 --
@@ -79,6 +80,7 @@ INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_i
 --
 
 INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false);
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false);
 
 
 --
@@ -106,6 +108,10 @@ INSERT INTO public.moped_proj_features (feature_id, feature, project_component_i
 INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (14, '{"id": 31750, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72708157077432, 30.25692083389619]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225769}}', 3, false);
 INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (15, '{"id": 31605, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72790785878897, 30.255067357091647]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225135}}', 3, false);
 INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (16, '{"id": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88", "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72068, 30.255787]}, "properties": {"id": "5817c088e052e0422be6c6c2", "signal_id": "365", "renderType": "Point", "signal_type": "TRAFFIC", "sourceLayer": "drawnByUser", "location_name": " CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST", "PROJECT_EXTENT_ID": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88"}}', 4, false);
+INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (17, '{"id": 28834, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74212155491114, 30.26991055253903]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225873}}', 5, false);
+INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (18, '{"id": 28546, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.7434235997498, 30.270272362977707]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224868}}', 5, false);
+INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (19, '{"id": 28475, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74378100410104, 30.269352704539784]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224814}}', 5, false);
+INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (20, '{"id": 28759, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74247946217656, 30.26897163447613]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225554}}', 5, false);
 
 
 --
@@ -173,6 +179,11 @@ INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id
 INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Signs & Markings', 6, 4, 227, '2022-11-12 18:09:10.836667+00', NULL, false);
 INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Traffic Impact Analysis Fiscal', 12, 5, 227, '2022-11-12 18:09:10.836672+00', NULL, false);
 INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA Aviation', 14, 6, 227, '2022-11-12 18:09:10.836677+00', NULL, false);
+INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Development Review', 4, 7, 229, '2022-11-15 16:47:43.293093+00', NULL, false);
+INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Systems Development', 7, 8, 229, '2022-11-15 16:47:43.293178+00', NULL, false);
+INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Transportation Engineering', 8, 9, 229, '2022-11-15 16:47:43.293185+00', NULL, false);
+INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Traffic Impact Analysis Fiscal', 12, 10, 229, '2022-11-15 16:47:43.29319+00', NULL, false);
+INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA PWD Neighborhood Partnering', 21, 11, 229, '2022-11-15 16:47:43.293194+00', NULL, false);
 
 
 --
@@ -186,6 +197,7 @@ INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_
 INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 204, '2022-11-12 18:12:11.046501+00', NULL, NULL, 13, false);
 INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 205, '2022-11-12 18:12:20.960275+00', NULL, NULL, 11, false);
 INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 206, '2022-11-12 18:12:40.203738+00', NULL, '', 9, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (229, 207, '2022-11-15 16:49:03.086392+00', NULL, NULL, 1, false);
 
 
 --
@@ -200,6 +212,8 @@ INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project
 INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (6, 204, 11, false);
 INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (7, 205, 1, false);
 INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (8, 206, 17, false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (9, 207, 8, false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (10, 207, 15, false);
 
 
 --
@@ -210,6 +224,9 @@ INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion
 INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES ('Some other description', NULL, 0, NULL, NULL, '2022-11-30', NULL, NULL, true, false, 66, 227, NULL, NULL, '2022-11-12 18:10:31.179722+00', 3, NULL, 22, false);
 INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES (NULL, NULL, 0, NULL, NULL, '2022-12-05', NULL, NULL, false, false, 67, 227, NULL, NULL, '2022-11-12 18:15:58.500377+00', 9, NULL, NULL, false);
 INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES (NULL, NULL, 0, NULL, NULL, '2022-11-12', NULL, NULL, true, false, 68, 228, NULL, NULL, '2022-11-12 18:16:37.457285+00', 1, NULL, NULL, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES (NULL, NULL, 0, NULL, NULL, '2022-10-30', '2022-11-17', NULL, false, false, 70, 229, NULL, NULL, '2022-11-15 16:50:49.717814+00', 6, NULL, 18, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES ('This phase went really well', NULL, 0, NULL, NULL, '2022-11-01', '2022-11-02', NULL, false, false, 69, 229, NULL, NULL, '2022-11-15 16:47:15.442451+00', 1, NULL, 5, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion_percentage, phase_status, phase_privacy, phase_start, phase_end, phase_priority, is_current_phase, completed, project_phase_id, project_id, started_by_user_id, completed_by_user_id, date_added, phase_id, subphase_name, subphase_id, is_deleted) VALUES (NULL, NULL, 0, NULL, NULL, '2022-11-16', '2022-11-17', NULL, true, false, 71, 229, NULL, NULL, '2022-11-15 16:51:03.146297+00', 9, NULL, 7, false);
 
 
 --
@@ -219,6 +236,8 @@ INSERT INTO public.moped_proj_phases (phase_description, phase_order, completion
 INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (1, 227, 1, false);
 INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (2, 227, 7, false);
 INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (3, 227, 2, false);
+INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (4, 229, 10, false);
+INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (5, 229, 7, false);
 
 
 --
@@ -233,6 +252,7 @@ INSERT INTO public.moped_proj_tags (id, project_id, tag_id, is_deleted) VALUES (
 
 INSERT INTO public.moped_user_followed_projects (id, project_id, user_id, created_at) VALUES (1, 227, 1, '2022-11-12 18:07:30.295804');
 INSERT INTO public.moped_user_followed_projects (id, project_id, user_id, created_at) VALUES (2, 228, 1, '2022-11-12 18:16:37.476743');
+INSERT INTO public.moped_user_followed_projects (id, project_id, user_id, created_at) VALUES (3, 229, 1, '2022-11-15 16:47:15.458074');
 
 
 --
@@ -246,14 +266,14 @@ SELECT pg_catalog.setval('public.moped_financials_financials_id_seq', 1, true);
 -- Name: moped_phase_history_project_milestone_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 68, true);
+SELECT pg_catalog.setval('public.moped_phase_history_project_milestone_id_seq', 71, true);
 
 
 --
 -- Name: moped_proj_components_project_component_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_components_project_component_id_seq', 4, true);
+SELECT pg_catalog.setval('public.moped_proj_components_project_component_id_seq', 5, true);
 
 
 --
@@ -274,7 +294,7 @@ SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, tru
 -- Name: moped_proj_features_feature_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_features_feature_id_seq', 16, true);
+SELECT pg_catalog.setval('public.moped_proj_features_feature_id_seq', 20, true);
 
 
 --
@@ -309,28 +329,28 @@ SELECT pg_catalog.setval('public.moped_proj_notes_project_note_id_seq', 3, true)
 -- Name: moped_proj_partners_proj_partner_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_partners_proj_partner_id_seq', 6, true);
+SELECT pg_catalog.setval('public.moped_proj_partners_proj_partner_id_seq', 11, true);
 
 
 --
 -- Name: moped_proj_personnel_project_personnel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_personnel_project_personnel_id_seq', 206, true);
+SELECT pg_catalog.setval('public.moped_proj_personnel_project_personnel_id_seq', 207, true);
 
 
 --
 -- Name: moped_proj_personnel_roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_personnel_roles_id_seq', 8, true);
+SELECT pg_catalog.setval('public.moped_proj_personnel_roles_id_seq', 10, true);
 
 
 --
 -- Name: moped_proj_tags_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_proj_tags_id_seq', 3, true);
+SELECT pg_catalog.setval('public.moped_proj_tags_id_seq', 5, true);
 
 
 --
@@ -344,21 +364,21 @@ SELECT pg_catalog.setval('public.moped_project_files_project_file_id_seq', 32, t
 -- Name: moped_project_project_id_simple_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_project_project_id_simple_seq', 228, true);
+SELECT pg_catalog.setval('public.moped_project_project_id_simple_seq', 229, true);
 
 
 --
 -- Name: moped_purchase_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 1, true);
+SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 2, true);
 
 
 --
 -- Name: moped_user_followed_projects_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_user_followed_projects_id_seq', 2, true);
+SELECT pg_catalog.setval('public.moped_user_followed_projects_id_seq', 3, true);
 
 
 --
