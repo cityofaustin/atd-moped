@@ -105,8 +105,14 @@ export const makeDrawnFeature = (feature, linkMode) => {
 
 /**
  * Determine if a feature is drawn by the user
- * @param {Object} feature
+ * @param {Object} feature - a feature object
+ * @returns {String} - assigned ID of the drawn feature
+ */
+export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
+
+/**
+ * Determine if a feature is drawn by the user
+ * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnFeature = (feature) =>
-  feature?.properties?.DRAW_ID ? true : false;
+export const isDrawnFeature = (feature) => (getDrawId(feature) ? true : false);

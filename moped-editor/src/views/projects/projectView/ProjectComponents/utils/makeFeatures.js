@@ -1,3 +1,5 @@
+import { getDrawId } from "./features";
+
 /*
  * When we insert in the DB we need to translate the property names that either come from a CTN layer
  * or the draw tools into columns names in the database.
@@ -106,7 +108,7 @@ export const makeDrawnLinesInsertionData = (
     const featureToInsert = {};
 
     // Convert DRAW_ID from map tools library to project_extent_id
-    featureToInsert["project_extent_id"] = feature.properties.DRAW_ID;
+    featureToInsert["project_extent_id"] = getDrawId(feature);
 
     // Add source_layer
     featureToInsert["source_layer"] = feature.properties._layerId;
@@ -133,7 +135,7 @@ export const makeDrawnPointsInsertionData = (
     const featureToInsert = {};
 
     // Convert DRAW_ID from map tools library to project_extent_id
-    featureToInsert["project_extent_id"] = feature.properties.DRAW_ID;
+    featureToInsert["project_extent_id"] = getDrawId(feature);
 
     // Add source_layer
     featureToInsert["source_layer"] = feature.properties._layerId;

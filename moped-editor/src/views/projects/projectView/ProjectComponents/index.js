@@ -32,6 +32,7 @@ import {
   makePointFeatureInsertionData,
 } from "./utils/makeFeatures";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
+import { getDrawId } from "./utils/features";
 
 const drawerWidth = 350;
 
@@ -167,11 +168,11 @@ export default function MapView({ projectName, projectStatuses }) {
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
 
-    const drawnFeatures = features.filter(
-      (feature) => feature?.properties?.["DRAW_ID"]
+    const drawnFeatures = features.filter((feature) =>
+      Boolean(getDrawId(feature))
     );
     const selectedFeatures = features.filter(
-      (feature) => !feature?.properties?.["DRAW_ID"]
+      (feature) => !Boolean(getDrawId(feature))
     );
 
     if (featureTable === "feature_street_segments") {
