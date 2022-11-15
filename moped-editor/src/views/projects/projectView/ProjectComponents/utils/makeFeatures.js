@@ -15,13 +15,11 @@ export const featureTableFieldMap = {
     // project_extent_id: NULL,
     // knack_id: NULL,
     // symbol: undefined,
-    // render_type: undefined,
     // name: NULL
   },
   feature_intersections: {
     intersection_id: "COA_INTERSECTION_POINTS_ID",
     // project_extent_id: NULL,
-    // render_type: undefined,
     // name: NULL
   },
   feature_signals: {
