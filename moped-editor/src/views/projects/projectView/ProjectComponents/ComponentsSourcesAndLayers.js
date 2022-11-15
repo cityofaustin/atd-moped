@@ -46,7 +46,7 @@ const ComponentsSourcesAndLayers = ({
   return (
     <>
       <Source
-        id="ctn-lines"
+        id="ATD_ADMIN.CTN"
         type="geojson"
         data={ctnLinesGeojson}
         promoteId={SOURCES["ctn-lines"]._featureIdProp}
@@ -113,7 +113,7 @@ const ComponentsSourcesAndLayers = ({
       </Source>
 
       <Source
-        id="ctn-points"
+        id="ATD_ADMIN.CTN_Intersections"
         type="geojson"
         data={ctnPointsGeojson}
         promoteId={SOURCES["ctn-points"]._featureIdProp}

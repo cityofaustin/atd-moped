@@ -12,28 +12,35 @@ export const featureTableFieldMap = {
     from_address_min: "FROM_ADDRESS_MIN",
     to_address_max: "TO_ADDRESS_MAX",
     line_type: "LINE_TYPE",
-    // project_extent_id: undefined,
-    // knack_id: undefined,
+    // project_extent_id: NULL,
+    // knack_id: NULL,
     // symbol: undefined,
     // render_type: undefined,
-    // name: undefined
+    // name: NULL
   },
   feature_intersections: {
     intersection_id: "COA_INTERSECTION_POINTS_ID",
-    // project_extent_id: undefined,
+    // project_extent_id: NULL,
     // render_type: undefined,
-    // name: undefined
+    // name: NULL
   },
   feature_signals: {
+    // TODO: Update when signal autocomplete is added
+    // See https://github.com/cityofaustin/atd-data-tech/issues/10511
     // location_name: undefined,
     // knack_id: undefined,
     // project_extent_id: undefined,
     // render_type: undefined,
     // name: undefined
     // signal_type: undefined
+    // signal_id: undefined
   },
-  feature_drawn_lines: {},
-  feature_drawn_points: {},
+  feature_drawn_lines: {
+    // name: NULL
+  },
+  feature_drawn_points: {
+    // name: NULL
+  },
 };
 
 /**
