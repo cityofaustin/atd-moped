@@ -36,6 +36,13 @@ export const featureTableFieldMap = {
   feature_drawn_points: {},
 };
 
+/**
+ * Prepare LineString features for insertion into the database
+ * @param {String} featureTable - name of database table to insert into
+ * @param {Array} featuresToProcess - array of feature objects to prepare for insertion
+ * @param {Array} featuresToInsert - array to contain feature objects ready to insert
+ * @returns {Array} - array of MultiLineString feature objects ready to insert
+ */
 export const makeLineStringFeatureInsertionData = (
   featureTable,
   featuresToProcess,
@@ -68,6 +75,13 @@ export const makeLineStringFeatureInsertionData = (
   return featuresToInsert;
 };
 
+/**
+ * Prepare Point features for insertion into the database
+ * @param {String} featureTable - name of database table to insert into
+ * @param {Array} featuresToProcess - array of feature objects to prepare for insertion
+ * @param {Array} featuresToInsert - array to contain feature objects ready to insert
+ * @returns {Array} - array of MultiPoint feature objects ready to insert
+ */
 export const makePointFeatureInsertionData = (
   featureTable,
   featuresToProcess,
@@ -100,6 +114,13 @@ export const makePointFeatureInsertionData = (
   return featuresToInsert;
 };
 
+/**
+ * Prepare Drawn LineString features for insertion into the database
+ * @param {String} featureTable - name of database table to insert into
+ * @param {Array} featuresToProcess - array of feature objects to prepare for insertion
+ * @param {Array} featuresToInsert - array to contain feature objects ready to insert
+ * @returns {Array} - array of drawn MultiLineString feature objects ready to insert
+ */
 export const makeDrawnLinesInsertionData = (
   featuresToProcess,
   featuresToInsert
@@ -127,6 +148,13 @@ export const makeDrawnLinesInsertionData = (
   return featuresToInsert;
 };
 
+/**
+ * Prepare Drawn Point features for insertion into the database
+ * @param {String} featureTable - name of database table to insert into
+ * @param {Array} featuresToProcess - array of feature objects to prepare for insertion
+ * @param {Array} featuresToInsert - array to contain feature objects ready to insert
+ * @returns {Array} - array of drawn MultiPoint feature objects ready to insert
+ */
 export const makeDrawnPointsInsertionData = (
   featuresToProcess,
   featuresToInsert
