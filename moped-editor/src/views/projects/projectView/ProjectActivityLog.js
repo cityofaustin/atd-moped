@@ -125,7 +125,7 @@ const ProjectActivityLog = () => {
    * @param {Array} eventList - The data object as provided by apollo
    * @return {Array}
    */
-  const reorderCreationEvent = eventList => {
+  const reorderCreationEvent = eventList => { // why
     // Clone eventList array so it can be mutated
     let outputList = [...eventList];
 
@@ -143,6 +143,32 @@ const ProjectActivityLog = () => {
 
     return outputList;
   };
+
+  const getDiffs = eventList => {
+    let outputList = [];
+
+    eventList.forEach(event => {
+      let outputEvent = {...event}
+      if (event.description[0].newSchema) {
+        console.log(event)
+        if (event.operation_type === "INSERT") {
+          outputEvent.description=[]
+        } else {
+          const newData = outputEvent.record_data.data.new;
+          const oldData = outputEvent.record_data.data.old;
+          let changedField = ""
+          Object.keys(newData).forEach(key => {
+            if(newData[key] !== oldData[key]){
+              changedField = key;
+           }
+         });
+          outputEvent.description = [{"new": newData[changedField], "old": oldData[changedField], "field": changedField}]
+        }
+      }
+      outputList.push(outputEvent)
+    })
+    return outputList;
+  }
 
   if (data) {
     data["moped_users"].forEach(user => {
@@ -178,12 +204,13 @@ const ProjectActivityLog = () => {
                   <TableCell align="left">
                     <b>Change</b>
                   </TableCell>
-                  <TableCell align="left"> </TableCell>
+                  <TableCell align="left" />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderCreationEvent(data["moped_activity_log"]).map(
-                  change => (
+                {getDiffs(data["moped_activity_log"]).map(
+                  change => {
+                    return (
                     <TableRow key={change.activity_id}>
                       <TableCell
                         align="left"
@@ -203,10 +230,10 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <CDNAvatar
                               className={classes.avatarSmall}
-                              src={change?.moped_user?.picture}
-                              initials={getInitials(change?.moped_user)}
+                              src={change?.moped_user?.picture ?? change?.updated_by_user?.picture}
+                              initials={getInitials(change?.moped_user ?? change?.updated_by_user)}
                               userColor={null}
-                              useGenericAvatar={true}
+                              useGenericAvatar={true} // find what this is
                             />
                           </Box>
                           <Box
@@ -214,7 +241,7 @@ const ProjectActivityLog = () => {
                             flexGrow={1}
                             className={classes.avatarName}
                           >
-                            {getUserFullName(change?.moped_user)}
+                            {getUserFullName(change?.moped_user ?? change?.updated_by_user)}
                           </Box>
                         </Box>
                       </TableCell>
@@ -226,7 +253,7 @@ const ProjectActivityLog = () => {
                         <b>
                           {getOperationName(
                             change.operation_type,
-                            change.record_type
+                            change.record_type // todo: could this be better
                           )}
                         </b>
                       </TableCell>
@@ -332,7 +359,7 @@ const ProjectActivityLog = () => {
                         </Button>
                       </TableCell>
                     </TableRow>
-                  )
+                  )}
                 )}
               </TableBody>
             </Table>

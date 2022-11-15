@@ -481,6 +481,13 @@ export const PROJECT_ACTIVITY_LOG = gql`
         email
         user_id
       }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
+        user_id
+      }
     }
     moped_users {
       first_name
