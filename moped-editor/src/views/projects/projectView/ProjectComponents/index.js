@@ -105,24 +105,22 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
   const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
-  const {
-    loading,
-    error,
-    data,
-    refetch: refetchProjectComponents,
-  } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: { projectId },
-    fetchPolicy: "no-cache",
-    onCompleted: () => {
-      setComponents(data.moped_proj_components);
+  const { data, refetch: refetchProjectComponents } = useQuery(
+    GET_PROJECT_COMPONENTS,
+    {
+      variables: { projectId },
+      fetchPolicy: "no-cache",
+      onCompleted: () => {
+        setComponents(data.moped_proj_components);
 
-      // Create feature collections of all features in each component
-      const componentFeatureCollections = makeComponentFeatureCollectionsMap(
-        data.project_geography
-      );
-      setFeatureCollectionsByComponentId(componentFeatureCollections);
-    },
-  });
+        // Create feature collections of all features in each component
+        const componentFeatureCollections = makeComponentFeatureCollectionsMap(
+          data.project_geography
+        );
+        setFeatureCollectionsByComponentId(componentFeatureCollections);
+      },
+    }
+  );
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
