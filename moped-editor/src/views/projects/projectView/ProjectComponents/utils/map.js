@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import { makeStyles, useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
-import { v4 as uuidv4 } from "uuid";
 import { Icon } from "@material-ui/core";
 import {
   RoomOutlined as RoomOutlinedIcon,
