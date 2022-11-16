@@ -33,6 +33,7 @@ import {
 } from "./utils/makeFeatures";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { getDrawId } from "./utils/features";
+import { fitBoundsOptions } from "./mapSettings";
 
 const drawerWidth = 350;
 
@@ -137,15 +138,7 @@ export default function MapView({ projectName, projectStatuses }) {
     };
 
     const bboxOfAllFeatures = bbox(featureCollection);
-    mapRef.current.fitBounds(bboxOfAllFeatures, {
-      maxZoom: 19,
-      padding: {
-        top: 75,
-        bottom: 75,
-        left: 75,
-        right: 75,
-      },
-    });
+    mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions);
 
     setHasMapZoomedInitially(true);
   }, [data, hasMapZoomedInitially]);
@@ -159,16 +152,7 @@ export default function MapView({ projectName, projectStatuses }) {
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(featureCollection), {
-      maxZoom: 19,
-      // accounting for fixed top bar
-      padding: {
-        top: 75,
-        bottom: 75,
-        left: 75,
-        right: 75,
-      },
-    });
+    mapRef.current?.fitBounds(bbox(featureCollection), fitBoundsOptions);
   };
 
   const onSaveComponent = () => {

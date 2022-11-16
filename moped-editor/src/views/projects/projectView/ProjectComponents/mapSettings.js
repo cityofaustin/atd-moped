@@ -33,6 +33,17 @@ export const initialViewState = {
   zoom: 15,
 };
 
+export const fitBoundsOptions = {
+  maxZoom: 19,
+  // accounting for fixed top bar
+  padding: {
+    top: 75,
+    bottom: 75,
+    left: 75,
+    right: 75,
+  },
+};
+
 /**
  * @see https://docs.mapbox.com/mapbox-gl-js/api/map/#map-parameters
  */
