@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -121,6 +121,34 @@ export default function MapView({ projectName, projectStatuses }) {
       },
     }
   );
+
+  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+
+  useEffect(() => {
+    if (!data || hasMapZoomedInitially) return;
+
+    if (data.project_geography.length === 0) {
+      setHasMapZoomedInitially(true);
+    }
+
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: data.project_geography,
+    };
+
+    const bboxOfAllFeatures = bbox(featureCollection);
+    mapRef.current.fitBounds(bboxOfAllFeatures, {
+      maxZoom: 19,
+      padding: {
+        top: 75,
+        bottom: 75,
+        left: 75,
+        right: 75,
+      },
+    });
+
+    setHasMapZoomedInitially(true);
+  }, [data, hasMapZoomedInitially]);
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
