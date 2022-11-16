@@ -38,7 +38,7 @@ const DropDownSelectComponent = ({ name, data, rowData, value, onChange }) => {
     if (value && !subphaseOptions.find((option) => option.value === value)) {
       onChange("");
     }
-  }, [value, subphaseOptions, phaseId]);
+  }, [value, subphaseOptions, phaseId, onChange]);
 
   // Hide this component if there are no related subphases
   if (subphaseOptions.length === 0) return null;
