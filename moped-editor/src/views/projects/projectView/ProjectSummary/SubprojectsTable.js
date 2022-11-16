@@ -78,10 +78,14 @@ const SubprojectsTable = ({ projectId = null }) => {
     },
     {
       title: "Status",
-      // todo: does the 'field' need to actually exist in the data?
       field: "status",
       editable: "never",
       width: "30%",
+      customSort: (a, b) =>
+        a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
+        b.moped_proj_phases?.[0]?.moped_phase?.phase_name
+          ? -1
+          : 1,
       render: (entry) => (
         <ProjectStatusBadge
           phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
@@ -147,7 +151,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             editRow: {
               deleteText: "Are you sure you want to remove this subproject?",
             },
-          },  
+          },
         }}
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{

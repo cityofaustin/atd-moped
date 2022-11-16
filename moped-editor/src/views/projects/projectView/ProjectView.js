@@ -59,9 +59,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
-import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 
 const useStyles = makeStyles((theme) => ({
