@@ -82,10 +82,10 @@ const TopBar = ({ className, ...rest }) => {
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
-      {process.env.REACT_APP_HASURA_ENV === "staging" && (
+      {process.env.REACT_APP_HASURA_ENV !== "production" && (
         // If in staging environment, display info alert
         <Alert severity="info">
-          Welcome to Moped Staging. This environment is for testing purposes.
+          This is a Moped development environment for testing purposes.
         </Alert>
       )}
       <Toolbar>
