@@ -59,7 +59,6 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * GridTable Search Capability plus Material Table
- * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
  * @return {JSX.Element}

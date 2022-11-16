@@ -15,7 +15,7 @@ const DateFieldEditComponent = (props) => (
     label={props.label}
     type="date"
     variant="standard"
-    value={props.value}
+    value={props.value || ""}
     onChange={(e) => props.onChange(e.target.value)}
     onKeyDown={(e) => handleKeyEvent(e)}
     InputLabelProps={{

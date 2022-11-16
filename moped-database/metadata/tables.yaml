@@ -2935,6 +2935,9 @@
     - name: moped_phase
       using:
         foreign_key_constraint_on: phase_id
+    - name: moped_subphase
+      using:
+        foreign_key_constraint_on: subphase_id
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2945,6 +2948,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -2957,8 +2961,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -2968,6 +2970,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -2980,8 +2983,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -2991,6 +2992,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -3003,8 +3005,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
         filter: {}
     - role: moped-editor
       permission:
@@ -3014,6 +3014,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -3026,8 +3027,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
         filter: {}
     - role: moped-viewer
       permission:
@@ -3037,6 +3036,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -3049,8 +3049,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3061,6 +3059,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -3073,8 +3072,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -3085,6 +3082,7 @@
           - completion_percentage
           - date_added
           - is_current_phase
+          - is_deleted
           - phase_description
           - phase_end
           - phase_id
@@ -3097,8 +3095,6 @@
           - project_phase_id
           - started_by_user_id
           - subphase_id
-          - subphase_name
-          - is_deleted
         filter: {}
         check: {}
   event_triggers:
@@ -3111,25 +3107,24 @@
           columns: '*'
         update:
           columns:
-            - completed
-            - is_current_phase
-            - phase_privacy
-            - phase_end
-            - phase_start
-            - completed_by_user_id
-            - completion_percentage
-            - phase_id
-            - phase_order
-            - phase_priority
             - project_id
-            - project_phase_id
             - started_by_user_id
-            - subphase_id
-            - phase_description
-            - phase_status
-            - subphase_name
-            - date_added
+            - completed_by_user_id
+            - phase_order
+            - phase_start
+            - phase_end
             - is_deleted
+            - subphase_id
+            - phase_id
+            - completion_percentage
+            - phase_privacy
+            - date_added
+            - phase_description
+            - is_current_phase
+            - completed
+            - phase_priority
+            - project_phase_id
+            - phase_status
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3233,9 +3228,6 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
-    - name: moped_status
-      using:
-        foreign_key_constraint_on: status_id
     - name: moped_user
       using:
         foreign_key_constraint_on: added_by
@@ -3324,249 +3316,224 @@
       permission:
         check: {}
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
+        allow_aggregations: true
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - capitally_funded
-          - current_phase
-          - current_phase_id
-          - current_status
-          - date_added
-          - ecapris_subproject_id
           - end_date
-          - fiscal_year
-          - is_deleted
-          - knack_project_id
+          - added_by
+          - interim_project_id
           - milestone_id
-          - project_description
-          - project_description_public
+          - parent_project_id
           - project_id
           - project_importance
           - project_lead_id
           - project_length
-          - project_name
           - project_order
-          - project_priority
           - project_sponsor
-          - project_uuid
-          - project_website
-          - status_id
-          - task_order
           - timeline_id
-          - updated_at
+          - task_order
+          - ecapris_subproject_id
+          - fiscal_year
+          - knack_project_id
+          - project_description
+          - project_description_public
+          - project_name
+          - project_priority
+          - project_website
           - work_assignment_id
-          - parent_project_id
-          - interim_project_id
+          - date_added
+          - updated_at
+          - project_uuid
+          - is_deleted
         filter: {}
         check: {}
   event_triggers:
@@ -3589,13 +3556,9 @@
             - project_length
             - project_order
             - project_sponsor
-            - status_id
             - timeline_id
             - task_order
             - ecapris_subproject_id
-            - current_phase
-            - current_phase_id
-            - current_status
             - fiscal_year
             - knack_project_id
             - project_description
@@ -3987,84 +3950,6 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
-- table:
-    name: moped_status
-    schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-        filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-        filter: {}
-        check: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - status_description
-          - status_flag
-          - status_id
-          - status_name
-          - status_order
-          - status_priority
-        filter: {}
-        check: {}
 - table:
     name: moped_subcomponents
     schema: public
