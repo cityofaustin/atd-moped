@@ -523,6 +523,13 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
         last_name
         user_id
       }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
+        user_id
+      }
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { activity_id: { _eq: $activityId } }
