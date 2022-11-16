@@ -46,11 +46,7 @@ AS WITH project_person_list_lookup AS (
     mp.task_order,
     mp.updated_at,
     current_phase.phase_name as current_phase,
-    -- use of coalesce is a hack to work around hasura's '_neq' filter behavior, which
-    -- would exclude projects with a `null` current phase. We need to patch to the
-    -- GQLAbstract to support a more complex `where` directive. see 'Caveat for null values':
-    -- https://hasura.io/docs/latest/queries/postgres/query-filters/#comparison-operators
-    COALESCE(current_phase.phase_key, '') as current_phase_key,
+    current_phase.phase_key as current_phase_key,
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,

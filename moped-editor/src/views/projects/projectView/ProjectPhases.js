@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useState } from "react";
 
 // Material
-import { Button, CircularProgress, Typography } from "@material-ui/core";
+import {
+  Button,
+  CircularProgress,
+  Typography,
+  FormControl,
+  FormHelperText,
+  TextField,
+  Chip,
+} from "@material-ui/core";
+import Autocomplete from "@material-ui/lab/Autocomplete";
 import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
+  Check,
 } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/styles";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
-
 // Query
 import {
   UPDATE_PROJECT_PHASES_MUTATION,
   DELETE_PROJECT_PHASE,
   ADD_PROJECT_PHASE,
-  PROJECT_UPDATE_STATUS,
+  CLEAR_CURRENT_PROJECT_PHASES_MUTATION,
 } from "../../../queries/project";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useMutation } from "@apollo/client";
@@ -25,10 +35,44 @@ import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
 // Helpers
-import { phaseNameLookup } from "src/utils/timelineTableHelpers";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
+
+const useStyles = makeStyles((theme) => ({
+  chipColor: {
+    backgroundColor: theme.palette.success.main,
+    color: "#fff",
+  },
+  chipIcon: {
+    color: theme.palette.common.white,
+  },
+}));
+
+/**
+ * Identify any current moped_proj_phases
+ * @param {Int} newCurrentPhaseId - the ID of the phase that should be marked as current - optional
+ * @param {Array} existingProjPhases - array of this project's moped_proj_phases
+ * @return {Array} array of moped_proj_phases.project_phase_id primary keys
+ */
+const getCurrentPhaseIDs = (newCurrentPhaseId, existingProjPhases) =>
+  existingProjPhases
+    .filter(
+      ({ is_current_phase, project_phase_id }) =>
+        is_current_phase && project_phase_id !== newCurrentPhaseId
+    )
+    .map(({ project_phase_id }) => project_phase_id);
+
+/**
+ * Replace all object properties which are empty strings "" with null
+ */
+const replaceEmptyStrings = (obj) => {
+  Object.keys(obj).forEach((key) => {
+    if (obj[key] === "") {
+      obj[key] = null;
+    }
+  });
+};
 
 /**
  * ProjectTimeline Component - renders the view displayed when the "Timeline"
@@ -43,105 +87,42 @@ const ProjectPhases = ({
   refetch,
   projectViewRefetch,
 }) => {
+  const classes = useStyles();
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
    * @type {object} addActionRef
    * */
   const addActionRefPhases = React.useRef();
 
+  const [isMutating, setIsMutating] = useState(false);
+
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
+  const [clearCurrentProjectPhases] = useMutation(
+    CLEAR_CURRENT_PROJECT_PHASES_MUTATION
+  );
   const [deleteProjectPhase] = useMutation(DELETE_PROJECT_PHASE);
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
-  const [updateProjectStatus] = useMutation(PROJECT_UPDATE_STATUS);
+
+  // Dropdown options
+  const phaseOptions = data?.moped_phases || [];
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
 
   /**
-   * Direct access to the moped_status array
-   */
-  const statusMap = data?.moped_status ?? [];
-
-  /**
-   * Retrieves the moped_status values from the statusMap array
-   * @param {string} status - The name of the status
-   * @returns {Object} {status_id: , status_name} or undefined
-   */
-  const getStatusByPhaseName = (phase_name) =>
-    statusMap.find(
-      (s) => s.status_name.toLowerCase() === phase_name.toLowerCase()
-    );
-
-  /**
-   * Subphase table lookup object formatted into the shape that <MaterialTable>
-   * expects.
-   * Ex: { bid: "Bid", "environmental study": "Environmental Study", ...}
-   */
-  const subphaseNameLookup = data.moped_subphases.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.subphase_id]: item.subphase_name,
-      }),
-    {}
-  );
-
-  /**
-   * If phaseObject has is_current_phase === true,
-   * set is_current_phase of any other true phases to false
+   * Set is_current_phase of all proj phases except currentPhaseId to false
    * to ensure there is only one active phase
    */
-  const updateExistingPhases = (phaseObject) => {
-    if (phaseObject.is_current_phase) {
-      data.moped_proj_phases.forEach((phase) => {
-        if (
-          phase.is_current_phase &&
-          phase.project_phase_id !== phaseObject.project_phase_id
-        ) {
-          phase.is_current_phase = false;
-          // Execute update mutation, returns promise
-          return updateProjectPhase({
-            variables: phase,
-          })
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            })
-            .catch((err) => {
-              console.error(err);
-            });
-        }
-      });
-    }
-  };
-
-  /**
-   * Checks if phase being added or updated has a corresponding status and creates
-   * update object accordingly
-   * @param {string} mutationPhaseId - phase being added or updated in project phase table
-   * @returns {Object} Object that will be used in updates to project status
-   */
-  const getProjectStatusUpdateObject = (mutationPhaseId) => {
-    const newPhaseName = phaseNameLookup(data)[mutationPhaseId];
-    const statusMapped = getStatusByPhaseName(newPhaseName);
-
-    return !!statusMapped
-      ? {
-          // There is a status with same name as phase
-          status_id: statusMapped.status_id,
-          current_status: statusMapped.status_name.toLowerCase(),
-          current_phase: newPhaseName.toLowerCase(),
-          current_phase_id: mutationPhaseId,
-        }
-      : {
-          // There isn't a status that matches the phase
-          status_id: 1,
-          current_status: "active",
-          current_phase: newPhaseName.toLowerCase(),
-          current_phase_id: mutationPhaseId,
-        };
+  const updateExistingPhases = async (projPhasesIdsToUpdate) => {
+    // Execute update mutation
+    // We bundle all phases into this single mutation so that it can be cleanly awaited
+    await clearCurrentProjectPhases({
+      variables: { ids: projPhasesIdsToUpdate },
+    }).catch((err) => {
+      console.error(err);
+    });
   };
 
   /**
@@ -149,19 +130,37 @@ const ProjectPhases = ({
    */
   const phasesColumns = [
     {
-      title: "Phase name",
-      field: "phase_id",
-      lookup: phaseNameLookup(data),
-      validate: (row) => !!row.phase_id,
+      title: "Phase",
+      field: "moped_phase",
+      validate: (row) => !!row.moped_phase?.phase_id,
+      render: (row) => row.moped_phase?.phase_name,
       editComponent: (props) => (
-        <DropDownSelectComponent {...props} name={"phase_name"} data={data} />
+        <FormControl style={{ minWidth: 150 }}>
+          <Autocomplete
+            id="phase_id_autocomplete"
+            name="phase_id_autocomplete"
+            options={phaseOptions}
+            getOptionLabel={(phase) => phase.phase_name}
+            getOptionSelected={(option, value) =>
+              option.phase_id === value.phase_id
+            }
+            value={props.value || null}
+            onChange={(event, value) => {
+              return props.onChange(value);
+            }}
+            renderInput={(params) => (
+              <TextField {...params} autoFocus style={{ minWidth: 200 }} />
+            )}
+          />
+          <FormHelperText>Required</FormHelperText>
+        </FormControl>
       ),
-      width: "18%",
+      width: "25%",
     },
     {
-      title: "Sub-phase name",
+      title: "Subphase",
       field: "subphase_id",
-      lookup: subphaseNameLookup,
+      render: (rowData) => rowData.moped_subphase?.subphase_name,
       editComponent: (props) => (
         <DropDownSelectComponent
           {...props}
@@ -169,45 +168,51 @@ const ProjectPhases = ({
           data={data}
         />
       ),
-      width: "18%",
+      width: "20%",
     },
     {
       title: "Description",
       field: "phase_description",
-      width: "18%",
+      width: "25%",
     },
     {
-      title: "Start date",
+      title: "Start",
       field: "phase_start",
       render: (rowData) =>
         rowData.phase_start
           ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
-        <DateFieldEditComponent
-          {...props}
-          name="phase_start"
-          label="Start Date"
-        />
+        <DateFieldEditComponent {...props} name="phase_start" label="Start" />
       ),
-      width: "18%",
+      width: "10%",
     },
     {
-      title: "End date",
+      title: "End",
       field: "phase_end",
       render: (rowData) =>
         rowData.phase_end
           ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End Date" />
+        <DateFieldEditComponent {...props} name="phase_end" label="End" />
       ),
-      width: "18%",
+      width: "10%",
     },
     {
       title: "Current",
       field: "is_current_phase",
       lookup: { true: "Yes", false: "No" },
+      render: (rowData) =>
+        rowData.is_current_phase ? (
+          <Chip
+            label="Yes"
+            className={classes.chipColor}
+            icon={<Check className={classes.chipIcon} />}
+          />
+        ) : (
+          "No"
+        ),
       editComponent: (props) => (
         <ToggleEditComponent {...props} name="is_current_phase" />
       ),
@@ -217,6 +222,7 @@ const ProjectPhases = ({
 
   return (
     <MaterialTable
+      isLoading={isMutating}
       columns={phasesColumns}
       data={data.moped_proj_phases}
       // Action component customized as described in this gh-issue:
@@ -260,169 +266,106 @@ const ProjectPhases = ({
         },
       }}
       editable={{
-        onRowAdd: (newData) => {
-          const newPhaseObject = Object.assign(
-            {
-              project_id: projectId,
-              completion_percentage: 0,
-              completed: false,
-            },
-            newData
-          );
+        onRowAdd: async (newData) => {
+          setIsMutating(true);
+          const { moped_phase, ...rest } = newData;
+
+          const newPhasePayload = {
+            project_id: projectId,
+            completion_percentage: 0,
+            completed: false,
+            phase_id: moped_phase.phase_id,
+            ...rest,
+          };
+
+          replaceEmptyStrings(newPhasePayload);
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
-          updateExistingPhases(newPhaseObject);
-
-          const projectUpdateInput = getProjectStatusUpdateObject(
-            newPhaseObject?.phase_id
-          );
+          if (newPhasePayload.is_current_phase) {
+            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+              null,
+              data.moped_proj_phases
+            );
+            if (projPhasesIdsToUpdate.length > 0) {
+              await updateExistingPhases(projPhasesIdsToUpdate);
+            }
+          }
 
           // Execute insert mutation, returns promise
-          return addProjectPhase({
+          await addProjectPhase({
             variables: {
-              objects: [newPhaseObject],
+              objects: [newPhasePayload],
             },
-          })
-            .then(() =>
-              !!newPhaseObject?.is_current_phase
-                ? updateProjectStatus({
-                    variables: {
-                      projectId: projectId,
-                      projectUpdateInput: projectUpdateInput,
-                    },
-                  })
-                : true
-            )
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            });
-        },
-        onRowUpdate: (newData, oldData) => {
-          const updatedPhaseObject = {
-            ...oldData,
-          };
-          // Array of differences between new and old data
-          let differences = Object.keys(oldData).filter(
-            (key) => oldData[key] !== newData[key]
-          );
-
-          // Loop through the differences and assign newData values.
-          // If one of the Date fields is blanked out, coerce empty
-          // string to null.
-          differences.forEach((diff) => {
-            let shouldCoerceEmptyStringToNull =
-              newData[diff] === "" &&
-              (diff === "phase_start" || diff === "phase_end");
-
-            if (shouldCoerceEmptyStringToNull) {
-              updatedPhaseObject[diff] = null;
-            } else {
-              updatedPhaseObject[diff] = newData[diff];
-            }
+          }).catch((err) => {
+            console.error(err);
           });
+          // Refetch data
+          await refetch();
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
+        },
+        onRowUpdate: async (newData, oldData) => {
+          setIsMutating(true);
+          const {
+            project_phase_id,
+            moped_phase,
+            moped_subphase,
+            __typename,
+            ...updatedPhasePayload
+          } = newData;
+          // extract phase_id from moped_phase object
+          updatedPhasePayload.phase_id = moped_phase.phase_id;
 
-          // Check if differences include phase_id or is_current_phase
-          const existingCurrentPhaseChanged =
-            differences.filter((value) => "is_current_phase" === value).length >
-            0;
-
-          // We need to know if the updated phase is set as is_current_phase
-          const isCurrentPhase = !!newData?.is_current_phase;
-
-          // Remove extraneous fields given by MaterialTable that
-          // Hasura doesn't need
-          delete updatedPhaseObject.tableData;
-          delete updatedPhaseObject.project_id;
-          delete updatedPhaseObject.__typename;
+          replaceEmptyStrings(updatedPhasePayload);
 
           // if necessary, updates existing phases in table to ensure only one is marked "current"
-          updateExistingPhases(updatedPhaseObject);
+          if (updatedPhasePayload.is_current_phase) {
+            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+              project_phase_id,
+              data.moped_proj_phases
+            );
+            if (projPhasesIdsToUpdate.length > 0) {
+              await updateExistingPhases(projPhasesIdsToUpdate);
+            }
+          }
 
-          const mappedProjectUpdateInput = getProjectStatusUpdateObject(
-            updatedPhaseObject?.phase_id
-          );
-
-          // Execute update mutation, returns promise
-          return updateProjectPhase({
-            variables: updatedPhaseObject,
-          })
-            .then(() => {
-              // if the phase being updated is toggled as the current phase
-              // update moped_project with new current_phase, updating the status badge
-              if (isCurrentPhase) {
-                return updateProjectStatus({
-                  variables: {
-                    projectId: projectId,
-                    projectUpdateInput: mappedProjectUpdateInput,
-                  },
-                });
-              } else if (existingCurrentPhaseChanged) {
-                // if updated phase is not toggled as current phase, but was previously current phase
-                // update moped_project with generic current status and current phase
-                return updateProjectStatus({
-                  variables: {
-                    projectId: projectId,
-                    projectUpdateInput: {
-                      status_id: 1,
-                      current_status: "active",
-                      current_phase: "active",
-                      // we don't have a phase id for active, since it is not an official phase
-                      current_phase_id: 0,
-                    },
-                  },
-                });
-              }
-            })
-            .then(() => {
-              // Refetch data
-              refetch();
-              !!projectViewRefetch && projectViewRefetch();
-            });
-        },
-        onRowDelete: (oldData) => {
-          // Execute mutation to set current phase of phase to be deleted to false
-          // to ensure summary table stays up to date
-          const was_current_phase = !!oldData?.is_current_phase;
-          oldData.is_current_phase = false;
-          return updateProjectPhase({
-            variables: oldData,
-          }).then(() => {
-            // Execute delete mutation, returns promise
-            return deleteProjectPhase({
-              variables: {
-                project_phase_id: oldData.project_phase_id,
-              },
-            })
-              .then(() =>
-                // if the deleted phase was the project's current phase,
-                // we need to reset what phase and status are considered "current"
-                was_current_phase
-                  ? updateProjectStatus({
-                      variables: {
-                        projectId: projectId,
-                        projectUpdateInput: {
-                          status_id: 1,
-                          current_status: "active",
-                          current_phase: "active",
-                          // we don't have a phase id for active, since it is not an official phase
-                          current_phase_id: 0,
-                        },
-                      },
-                    })
-                  : true
-              )
-              .then(() => {
-                refetch();
-                !!projectViewRefetch && projectViewRefetch();
-              });
+          // Execute update mutation
+          await updateProjectPhase({
+            variables: { project_phase_id, object: updatedPhasePayload },
+          }).catch((err) => {
+            console.error(err);
           });
+          // Refetch data
+          await refetch();
+
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
+        },
+        onRowDelete: async (oldData) => {
+          // Execute delete mutation
+          setIsMutating(true);
+          await deleteProjectPhase({
+            variables: {
+              project_phase_id: oldData.project_phase_id,
+            },
+          }).catch((err) => {
+            console.error(err);
+          });
+          await refetch();
+
+          if (!!projectViewRefetch) {
+            await projectViewRefetch();
+          }
+          setIsMutating(false);
         },
       }}
       title={
         <Typography variant="h2" color="primary">
-          Project phases
+          Phases
         </Typography>
       }
       options={{
