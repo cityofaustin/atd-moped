@@ -173,6 +173,12 @@ export const useSubcomponentOptions = (component) =>
     return options;
   }, [component]);
 
+/**
+ * Use Mapbox fitBounds to zoom to existing project components feature collection
+ * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
+ * @param {Object} data - Data returned from the moped_components query
+ * @param {Array} data.project_geography - Array of existing component features
+ */
 export const useZoomToExistingComponents = (mapRef, data) => {
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
