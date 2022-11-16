@@ -187,6 +187,7 @@ export const useZoomToExistingComponents = (mapRef, data) => {
 
     if (data.project_geography.length === 0) {
       setHasMapZoomedInitially(true);
+      return;
     }
 
     const featureCollection = {
