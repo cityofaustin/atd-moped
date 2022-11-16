@@ -11,18 +11,17 @@ import {
   Chip,
 } from "@material-ui/core";
 import Autocomplete from "@material-ui/lab/Autocomplete";
-
 import {
   AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
   Check,
 } from "@material-ui/icons";
+import { makeStyles } from "@material-ui/styles";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
-
 // Query
 import {
   UPDATE_PROJECT_PHASES_MUTATION,
@@ -39,6 +38,16 @@ import parseISO from "date-fns/parseISO";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
+
+const useStyles = makeStyles((theme) => ({
+  chipColor: {
+    backgroundColor: theme.palette.success.main,
+    color: "#fff",
+  },
+  chipIcon: {
+    color: theme.palette.common.white,
+  },
+}));
 
 /**
  * Identify any current moped_proj_phases
@@ -78,6 +87,7 @@ const ProjectPhases = ({
   refetch,
   projectViewRefetch,
 }) => {
+  const classes = useStyles();
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
    * @type {object} addActionRef
@@ -195,7 +205,11 @@ const ProjectPhases = ({
       lookup: { true: "Yes", false: "No" },
       render: (rowData) =>
         rowData.is_current_phase ? (
-          <Chip label="Yes" color="primary" icon={<Check />} />
+          <Chip
+            label="Yes"
+            className={classes.chipColor}
+            icon={<Check className={classes.chipIcon} />}
+          />
         ) : (
           "No"
         ),
