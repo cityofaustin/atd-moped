@@ -19,7 +19,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight } from "./utils/map";
+import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import {
   ADD_PROJECT_COMPONENT,
   GET_PROJECT_COMPONENTS,
@@ -123,25 +123,7 @@ export default function MapView({ projectName, projectStatuses }) {
     }
   );
 
-  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
-
-  useEffect(() => {
-    if (!data || hasMapZoomedInitially) return;
-
-    if (data.project_geography.length === 0) {
-      setHasMapZoomedInitially(true);
-    }
-
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: data.project_geography,
-    };
-
-    const bboxOfAllFeatures = bbox(featureCollection);
-    mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions);
-
-    setHasMapZoomedInitially(true);
-  }, [data, hasMapZoomedInitially]);
+  useZoomToExistingComponents(mapRef, data);
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
