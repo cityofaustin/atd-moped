@@ -198,5 +198,5 @@ export const useZoomToExistingComponents = (mapRef, data) => {
     mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions);
 
     setHasMapZoomedInitially(true);
-  }, [data, hasMapZoomedInitially]);
+  }, [data, hasMapZoomedInitially, mapRef]);
 };

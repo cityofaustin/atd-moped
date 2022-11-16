@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
