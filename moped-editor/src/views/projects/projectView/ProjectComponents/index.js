@@ -34,6 +34,7 @@ import {
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { getDrawId } from "./utils/features";
 import { fitBoundsOptions } from "./mapSettings";
+import ComponentEditModal from "./ComponentEditModal";
 
 const drawerWidth = 350;
 
@@ -248,6 +249,16 @@ export default function MapView({ projectName, projectStatuses }) {
     setIsDeletingComponent(false);
   };
 
+  const onEditAttributes = () => {
+    alert("Now you can edit this component's attributes");
+  };
+
+  const onEditFeatures = () => {
+    alert("Now you can edit this component's features");
+  };
+
+  console.log({ showComponentEditDialog, showEditModeDialog });
+
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -345,11 +356,12 @@ export default function MapView({ projectName, projectStatuses }) {
             onDeleteComponent={onDeleteComponent}
           />
           <EditModeDialog
-            setIsCreatingComponent={setIsCreatingComponent}
-            setShowComponentEditDialog={setShowComponentEditDialog}
             showDialog={showEditModeDialog}
             onClose={onCancelComponentEdit}
+            onEditAttributes={onEditAttributes}
+            onEditFeatures={onEditFeatures}
           />
+          {/* <ComponentEditModal showDialog={is} /> */}
         </main>
       </div>
     </Dialog>

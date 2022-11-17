@@ -24,7 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditModeDialog = ({ showDialog, onClose, setIsCreatingComponent }) => {
+const EditModeDialog = ({
+  showDialog,
+  onClose,
+  onEditAttributes,
+  onEditFeatures,
+}) => {
   const classes = useStyles();
 
   return (
@@ -43,9 +48,7 @@ const EditModeDialog = ({ showDialog, onClose, setIsCreatingComponent }) => {
               variant="outlined"
               className={classes.margin}
               startIcon={<ListIcon />}
-              onClick={() =>
-                alert("Now you can edit this component's attributes")
-              }
+              onClick={onEditAttributes}
             >
               Attributes
             </Button>
@@ -56,9 +59,7 @@ const EditModeDialog = ({ showDialog, onClose, setIsCreatingComponent }) => {
               color="primary"
               className={classes.margin}
               startIcon={<TimelineIcon />}
-              onClick={() =>
-                alert("Now you can edit this component's features")
-              }
+              onClick={onEditFeatures}
             >
               Map
             </Button>
