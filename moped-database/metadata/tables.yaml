@@ -3535,7 +3535,37 @@
         insert:
           columns: '*'
         update:
-          columns: '*'
+          columns:
+            - end_date
+            - work_assignment_id
+            - knack_project_id
+            - project_website
+            - project_priority
+            - fiscal_year
+            - current_phase
+            - current_status
+            - project_description_public
+            - project_description
+            - project_name
+            - project_uuid
+            - ecapris_subproject_id
+            - project_importance
+            - project_order
+            - project_id
+            - timeline_id
+            - project_length
+            - capitally_funded
+            - date_added
+            - added_by
+            - is_deleted
+            - milestone_id
+            - status_id
+            - project_sponsor
+            - task_order
+            - current_phase_id
+            - parent_project_id
+            - interim_project_id
+            - project_lead_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3546,7 +3576,7 @@
           action: transform
           template: |-
             {
-                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) {insert_moped_activity_log_one(object: $object) {activity_id}}",
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
                             "variables": {
                                 "object": {
                                     "record_id": {{ $body.event.data.new.project_id }},
@@ -3558,7 +3588,9 @@
                                     "updated_by": "f366d1bb-61c8-421e-b8c6-7a00834784fc",
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                                }
+                                },
+                                "updated_at": {{$body.created_at}},
+                                "project_id": {{$body.event.data.new.project_id}}
                             }
                         }
         method: POST
