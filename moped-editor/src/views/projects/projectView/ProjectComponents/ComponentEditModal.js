@@ -22,51 +22,49 @@ const useStyles = makeStyles((theme) => ({
 const ComponentEditModal = ({
   showDialog,
   setShowDialog,
-  setDraftComponent,
-  setLinkMode,
-  setIsCreatingComponent,
+  setIsEditingComponent,
+  componentToEdit,
 }) => {
   const classes = useStyles();
 
   const onSave = (formData) => {
-    const {
-      component: {
-        data: {
-          component_id,
-          component_name,
-          component_subtype,
-          line_representation,
-          feature_layer: { internal_table },
-        },
-      },
-      subcomponents,
-      description,
-    } = formData;
+    console.log("You saved!");
+    // const {
+    //   component: {
+    //     data: {
+    //       component_id,
+    //       component_name,
+    //       component_subtype,
+    //       line_representation,
+    //       feature_layer: { internal_table },
+    //     },
+    //   },
+    //   subcomponents,
+    //   description,
+    // } = formData;
 
-    const newComponent = {
-      component_id,
-      component_name,
-      component_subtype,
-      line_representation,
-      internal_table,
-      moped_subcomponents: subcomponents,
-      description,
-      label: component_name,
-      features: [],
-    };
+    // const newComponent = {
+    //   component_id,
+    //   component_name,
+    //   component_subtype,
+    //   line_representation,
+    //   internal_table,
+    //   moped_subcomponents: subcomponents,
+    //   description,
+    //   label: component_name,
+    //   features: [],
+    // };
 
-    const linkMode = newComponent.line_representation ? "lines" : "points";
+    // const linkMode = newComponent.line_representation ? "lines" : "points";
 
-    setDraftComponent(newComponent);
-    setLinkMode(linkMode);
-    // switch to components tab
-    setShowDialog(false);
+    // setDraftComponent(newComponent);
+    // setLinkMode(linkMode);
+    // // switch to components tab
+    // setShowDialog(false);
   };
 
   const onClose = () => {
-    setLinkMode(null);
-    setDraftComponent(null);
-    setIsCreatingComponent(false);
+    setIsEditingComponent(false);
     setShowDialog(false);
   };
 

@@ -94,20 +94,20 @@ export default function MapView({ projectName, projectStatuses }) {
 
   /* if a new component is being created */
   const [isCreatingComponent, setIsCreatingComponent] = useState(false);
+  const [showComponentCreateDialog, setShowComponentCreateDialog] =
+    useState(false);
 
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
+  const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
+
+  const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
   /* if a component is being deleted */
   const [isDeletingComponent, setIsDeletingComponent] = useState(false);
 
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
-
-  const [showComponentCreateDialog, setShowComponentCreateDialog] =
-    useState(false);
-
-  const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
   const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
@@ -251,14 +251,15 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onEditAttributes = () => {
-    alert("Now you can edit this component's attributes");
+    setShowComponentEditDialog(true);
+    setShowEditModeDialog(false);
   };
 
   const onEditFeatures = () => {
     alert("Now you can edit this component's features");
   };
 
-  console.log({ showComponentCreateDialog, showEditModeDialog });
+  console.log({ clickedComponent });
 
   return (
     <Dialog fullScreen open={true}>
@@ -362,7 +363,12 @@ export default function MapView({ projectName, projectStatuses }) {
             onEditAttributes={onEditAttributes}
             onEditFeatures={onEditFeatures}
           />
-          {/* <ComponentEditModal showDialog={is} /> */}
+          <ComponentEditModal
+            showDialog={showComponentEditDialog}
+            setShowDialog={setShowComponentEditDialog}
+            setIsEditingComponent={setIsEditingComponent}
+            componentToEdit={clickedComponent}
+          />
         </main>
       </div>
     </Dialog>
