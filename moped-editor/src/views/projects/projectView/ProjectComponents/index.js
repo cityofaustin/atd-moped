@@ -104,7 +104,8 @@ export default function MapView({ projectName, projectStatuses }) {
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
-  const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
+  const [showComponentCreateDialog, setShowComponentCreateDialog] =
+    useState(false);
 
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
@@ -225,7 +226,7 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const onStartCreatingComponent = () => {
     setIsCreatingComponent(true);
-    setShowComponentEditDialog(true);
+    setShowComponentCreateDialog(true);
     setClickedComponent(null);
   };
 
@@ -257,7 +258,7 @@ export default function MapView({ projectName, projectStatuses }) {
     alert("Now you can edit this component's features");
   };
 
-  console.log({ showComponentEditDialog, showEditModeDialog });
+  console.log({ showComponentCreateDialog, showEditModeDialog });
 
   return (
     <Dialog fullScreen open={true}>
@@ -341,8 +342,8 @@ export default function MapView({ projectName, projectStatuses }) {
             />
           </div>
           <ComponentCreateModal
-            showDialog={showComponentEditDialog}
-            setShowDialog={setShowComponentEditDialog}
+            showDialog={showComponentCreateDialog}
+            setShowDialog={setShowComponentCreateDialog}
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
             setIsCreatingComponent={setIsCreatingComponent}
