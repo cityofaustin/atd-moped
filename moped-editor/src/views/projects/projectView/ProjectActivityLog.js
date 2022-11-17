@@ -259,7 +259,7 @@ const ProjectActivityLog = () => {
                       </TableCell>
                       <TableCell
                         align="left"
-                        width="70%"
+                        width="75%" // if the details link comes back, this goes back to 70%
                         className={classes.tableCell}
                       >
                         <Box display="flex" p={0}>
@@ -351,13 +351,14 @@ const ProjectActivityLog = () => {
                           </Box>
                         </Box>
                       </TableCell>
-                      <TableCell width="5%">
-                        <Button
-                          onClick={() => handleDetailsOpen(change.activity_id)}
-                        >
-                          Details
-                        </Button>
-                      </TableCell>
+                      {// <TableCell width="5%">
+                      //   <Button
+                      //     onClick={() => handleDetailsOpen(change.activity_id)}
+                      //   >
+                      //     Details
+                      //   </Button>
+                      // </TableCell>
+                      }
                     </TableRow>
                   )}
                 )}
@@ -365,12 +366,12 @@ const ProjectActivityLog = () => {
             </Table>
           </TableContainer>
         )}
-        {!!activityId && (
+{/*        {!!activityId && (
           <ProjectActivityLogDialog
             activity_id={activityId}
             handleClose={handleDetailsClose}
           />
-        )}
+        )}*/}
       </CardContent>
     </ApolloErrorHandler>
   );
