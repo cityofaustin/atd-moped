@@ -3536,41 +3536,44 @@
           columns: '*'
         update:
           columns:
-            - end_date
-            - work_assignment_id
-            - knack_project_id
-            - project_website
-            - project_priority
-            - fiscal_year
-            - current_phase
-            - current_status
-            - project_description_public
-            - project_description
-            - project_name
-            - project_uuid
-            - ecapris_subproject_id
-            - project_importance
-            - project_order
             - project_id
-            - timeline_id
+            - work_assignment_id
+            - end_date
+            - parent_project_id
+            - project_sponsor
+            - status_id
+            - project_order
+            - project_name
             - project_length
             - capitally_funded
-            - date_added
-            - added_by
-            - is_deleted
-            - milestone_id
-            - status_id
-            - project_sponsor
-            - task_order
-            - current_phase_id
-            - parent_project_id
-            - interim_project_id
+            - project_description_public
+            - current_status
+            - timeline_id
+            - fiscal_year
             - project_lead_id
+            - added_by
+            - project_uuid
+            - milestone_id
+            - project_description
+            - task_order
+            - current_phase
+            - current_phase_id
+            - project_importance
+            - project_website
+            - is_deleted
+            - knack_project_id
+            - date_added
+            - project_priority
+            - interim_project_id
+            - ecapris_subproject_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
       webhook: http://localhost:8080/v1/graphql
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ADMIN_SECRET
       request_transform:
         body:
           action: transform
