@@ -3570,7 +3570,7 @@
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook: http://localhost:8080/v1/graphql
+      webhook_from_env: HASURA_ENDPOINT
       headers:
         - name: x-hasura-admin-secret
           value_from_env: ADMIN_SECRET
