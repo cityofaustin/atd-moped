@@ -1,35 +1,15 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Grid,
-  TextField,
-} from "@material-ui/core";
+import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
   ComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
 } from "./utils/map";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const initialFormValues = {
   component: {},
