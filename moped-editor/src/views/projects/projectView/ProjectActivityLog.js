@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
@@ -14,11 +14,11 @@ import {
   ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
-import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
+// import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
 
 import {
   Box,
-  Button,
+  // Button,
   CardContent,
   CircularProgress,
   Grid,
@@ -85,22 +85,22 @@ const ProjectActivityLog = () => {
     onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
-  const [activityId, setActivityId] = useState(null);
+  // const [activityId, setActivityId] = useState(null);
 
-  /**
-   * Closes the details dialog
-   */
-  const handleDetailsClose = () => {
-    setActivityId(null);
-  };
+  // /**
+  //  * Closes the details dialog
+  //  */
+  // const handleDetailsClose = () => {
+  //   setActivityId(null);
+  // };
 
-  /**
-   * Opens the details dialog
-   * @param {string} activityId - The activity uuid
-   */
-  const handleDetailsOpen = activityId => {
-    setActivityId(activityId);
-  };
+  // /**
+  //  * Opens the details dialog
+  //  * @param {string} activityId - The activity uuid
+  //  */
+  // const handleDetailsOpen = activityId => {
+  //   setActivityId(activityId);
+  // };
 
   if (loading || lookupLoading) return <CircularProgress />;
 
@@ -119,30 +119,6 @@ const ProjectActivityLog = () => {
    */
   const isFieldGeneric = field =>
     field in ProjectActivityLogGenericDescriptions;
-
-  /**
-   * Makes sure the creation of the project always comes first
-   * @param {Array} eventList - The data object as provided by apollo
-   * @return {Array}
-   */
-  const reorderCreationEvent = eventList => { // why
-    // Clone eventList array so it can be mutated
-    let outputList = [...eventList];
-
-    outputList.forEach(event => {
-      // If this is the creation of a project
-      if (
-        event.record_type === "moped_project" &&
-        event.operation_type === "INSERT"
-      ) {
-        // Remove that object from the array and add it back on at the end
-        outputList.splice(outputList.indexOf(event), 1);
-        outputList.push(event);
-      }
-    });
-
-    return outputList;
-  };
 
   const getDiffs = eventList => {
     let outputList = [];
