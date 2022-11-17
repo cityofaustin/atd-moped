@@ -8,7 +8,7 @@ const mapStyles = MAP_STYLES;
  * Component that renders all sources and layers for project components
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} data - GeoJSON data for all project components
- * @param {Boolean} isEditingComponent - are we editing a component?
+ * @param {Boolean} isCreatingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @param {Object} clickedComponent - Details of the component that was clicked
  * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
@@ -16,7 +16,7 @@ const mapStyles = MAP_STYLES;
  */
 const ComponentsSourcesAndLayers = ({
   data,
-  isEditingComponent,
+  isCreatingComponent,
   linkMode,
   clickedComponent,
   componentFeatureCollection,
@@ -31,14 +31,14 @@ const ComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
-  const isViewingComponents = !isEditingComponent && !clickedComponent;
+  const isViewingComponents = !isCreatingComponent && !clickedComponent;
 
   const isEditingLines =
-    isEditingComponent && linkMode === "lines" && !isDrawing;
+    isCreatingComponent && linkMode === "lines" && !isDrawing;
   const isEditingPoints =
-    isEditingComponent && linkMode === "points" && !isDrawing;
+    isCreatingComponent && linkMode === "points" && !isDrawing;
 
-  const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
+  const shouldShowMutedFeatures = clickedComponent || isCreatingComponent;
 
   const isClickedComponentLineRepresentation =
     clickedComponent?.moped_components?.line_representation;

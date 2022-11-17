@@ -80,7 +80,7 @@ const ComponentEditModal = ({
   setShowDialog,
   setDraftComponent,
   setLinkMode,
-  setIsEditingComponent,
+  setIsCreatingComponent,
 }) => {
   const classes = useStyles();
 
@@ -134,7 +134,7 @@ const ComponentEditModal = ({
   const onClose = () => {
     setLinkMode(null);
     setDraftComponent(null);
-    setIsEditingComponent(false);
+    setIsCreatingComponent(false);
     setShowDialog(false);
     reset(initialFormValues);
   };

@@ -70,7 +70,7 @@ export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
   components,
-  isEditingComponent,
+  isCreatingComponent,
   draftComponent,
   setDraftComponent,
   mapRef,
@@ -141,7 +141,7 @@ export default function TheMap({
     }
 
     /* If not editing, handle click on project feature */
-    if (!isEditingComponent) {
+    if (!isCreatingComponent) {
       const clickedProjectFeature = e.features.find((feature) =>
         feature.layer.id.includes("project")
       );
@@ -235,7 +235,7 @@ export default function TheMap({
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ComponentsSourcesAndLayers
         data={data}
-        isEditingComponent={isEditingComponent}
+        isCreatingComponent={isCreatingComponent}
         isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}

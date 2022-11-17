@@ -91,6 +91,9 @@ export default function MapView({ projectName, projectStatuses }) {
   are `points`, `lines`, or `null` */
   const [linkMode, setLinkMode] = useState(null);
 
+  /* if a new component is being created */
+  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
+
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
 
@@ -208,19 +211,19 @@ export default function MapView({ projectName, projectStatuses }) {
       }
     );
 
-    setIsEditingComponent(false);
+    setIsCreatingComponent(false);
     setDraftComponent(null);
     setLinkMode(null);
   };
 
   const onCancelComponentCreate = () => {
-    setIsEditingComponent(!isEditingComponent);
+    setIsCreatingComponent(!isCreatingComponent);
     setDraftComponent(null);
     setLinkMode(null);
   };
 
   const onStartCreatingComponent = () => {
-    setIsEditingComponent(true);
+    setIsCreatingComponent(true);
     setShowComponentEditDialog(true);
     setClickedComponent(null);
   };
@@ -231,7 +234,7 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const onCancelComponentEdit = () => {
     setShowEditModeDialog(false);
-    setIsEditingComponent(false);
+    setIsCreatingComponent(false);
   };
 
   const onDeleteComponent = () => {
@@ -264,7 +267,7 @@ export default function MapView({ projectName, projectStatuses }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!isEditingComponent && (
+              {!isCreatingComponent && (
                 <>
                   <ListItem dense>
                     <Button
@@ -316,7 +319,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setDraftComponent={setDraftComponent}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
-              isEditingComponent={isEditingComponent}
+              isCreatingComponent={isCreatingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
               clickedProjectFeature={clickedProjectFeature}
@@ -331,7 +334,7 @@ export default function MapView({ projectName, projectStatuses }) {
             setShowDialog={setShowComponentEditDialog}
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
-            setIsEditingComponent={setIsEditingComponent}
+            setIsCreatingComponent={setIsCreatingComponent}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}
@@ -342,7 +345,7 @@ export default function MapView({ projectName, projectStatuses }) {
             onDeleteComponent={onDeleteComponent}
           />
           <EditModeDialog
-            setIsEditingComponent={setIsEditingComponent}
+            setIsCreatingComponent={setIsCreatingComponent}
             setShowComponentEditDialog={setShowComponentEditDialog}
             showDialog={showEditModeDialog}
             onClose={onCancelComponentEdit}

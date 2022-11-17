@@ -24,14 +24,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditModeDialog = ({ showDialog, onClose, setIsEditingComponent }) => {
+const EditModeDialog = ({ showDialog, onClose, setIsCreatingComponent }) => {
   const classes = useStyles();
 
   return (
-    <Dialog
-      open={showDialog}
-      onClose={onClose}
-    >
+    <Dialog open={showDialog} onClose={onClose}>
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>What do you want to edit?</h3>
         <IconButton onClick={onClose}>
@@ -46,7 +43,9 @@ const EditModeDialog = ({ showDialog, onClose, setIsEditingComponent }) => {
               variant="outlined"
               className={classes.margin}
               startIcon={<ListIcon />}
-              onClick={() => alert("Now you can edit this component's attributes")}
+              onClick={() =>
+                alert("Now you can edit this component's attributes")
+              }
             >
               Attributes
             </Button>
@@ -57,7 +56,9 @@ const EditModeDialog = ({ showDialog, onClose, setIsEditingComponent }) => {
               color="primary"
               className={classes.margin}
               startIcon={<TimelineIcon />}
-              onClick={() => alert("Now you can edit this component's features")}
+              onClick={() =>
+                alert("Now you can edit this component's features")
+              }
             >
               Map
             </Button>
