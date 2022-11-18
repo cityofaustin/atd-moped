@@ -88,6 +88,22 @@ export const GET_PROJECT_COMPONENTS = gql`
   }
 `;
 
+// Delete all subcomponents and replace
+// See https://hasura.io/docs/latest/mutations/postgres/update/#replace-all-nested-array-objects-of-an-object
+export const UPDATE_PROJECT_ATTRIBUTES = gql`
+  mutation DeleteMopedComponent(
+    $projectComponentId: Int!
+    $description: String!
+  ) {
+    update_moped_proj_components_by_pk(
+      pk_columns: { project_component_id: $projectComponentId }
+      _set: { is_deleted: true }
+    ) {
+      project_component_id
+    }
+  }
+`;
+
 export const DELETE_PROJECT_COMPONENT = gql`
   mutation DeleteMopedComponent($projectComponentId: Int!) {
     update_moped_proj_components(
