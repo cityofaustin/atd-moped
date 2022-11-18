@@ -8,8 +8,6 @@ export const ADD_PROJECT = gql`
       project_name
       project_description
       project_priority
-      current_phase
-      current_status
       ecapris_subproject_id
       fiscal_year
       capitally_funded
@@ -37,8 +35,6 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
-      current_phase
-      current_status
       capitally_funded
       ecapris_subproject_id
       fiscal_year
@@ -47,7 +43,6 @@ export const SUMMARY_QUERY = gql`
       project_sponsor
       project_lead_id
       project_website
-      status_id
       work_assignment_id
       parent_project_id
       interim_project_id
@@ -86,6 +81,12 @@ export const SUMMARY_QUERY = gql`
         entity_name
         entity_id
       }
+      moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+        moped_phase {
+          phase_name
+          phase_key
+        }
+      }
     }
     moped_proj_partners(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -102,18 +103,6 @@ export const SUMMARY_QUERY = gql`
       phase_name
       phase_order
     }
-    moped_proj_phases(
-      where: {
-        project_id: { _eq: $projectId }
-        is_current_phase: { _eq: true }
-      }
-    ) {
-      project_phase_id
-      is_current_phase
-      project_id
-      phase_start
-      phase_end
-    }
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
@@ -122,30 +111,11 @@ export const SUMMARY_QUERY = gql`
       type_id
       type_name
     }
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
-    }
     moped_user_followed_projects(
       where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }
     ) {
       project_id
       user_id
-    }
-  }
-`;
-
-export const STATUS_QUERY = gql`
-  query StatusQuery {
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
     }
   }
 `;
@@ -263,10 +233,7 @@ export const DELETE_PROJECT_PERSONNEL = gql`
 
 export const TIMELINE_QUERY = gql`
   query TeamTimeline($projectId: Int) {
-    moped_phases(
-      where: { phase_id: { _gt: 0 } }
-      order_by: { phase_order: asc }
-    ) {
+    moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
       phase_order
@@ -275,25 +242,29 @@ export const TIMELINE_QUERY = gql`
         subphase_id
       }
     }
-    moped_subphases(
-      where: { subphase_id: { _gt: 0 } }
-      order_by: { subphase_order: asc }
-    ) {
-      subphase_name
-      subphase_id
-    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: { phase_start: desc }
+      order_by: {
+        phase_start: desc
+        moped_phase: { phase_order: desc }
+        moped_subphase: { subphase_order: desc }
+      }
     ) {
-      phase_id
       project_phase_id
       is_current_phase
       project_id
       phase_start
       phase_end
       subphase_id
+      moped_subphase {
+        subphase_id
+        subphase_name
+      }
       phase_description
+      moped_phase {
+        phase_id
+        phase_name
+      }
     }
     moped_milestones(where: { milestone_id: { _gt: 0 } }) {
       milestone_id
@@ -315,33 +286,18 @@ export const TIMELINE_QUERY = gql`
         related_phase_id
       }
     }
-    moped_status {
-      status_id
-      status_name
-    }
   }
 `;
 
+// use this to update a single moped_proj_phase
 export const UPDATE_PROJECT_PHASES_MUTATION = gql`
   mutation ProjectPhasesMutation(
-    $phase_description: String
-    $is_current_phase: Boolean
-    $phase_start: date = null
-    $phase_end: date = null
     $project_phase_id: Int!
-    $phase_id: Int
-    $subphase_id: Int = 0
+    $object: moped_proj_phases_set_input!
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
-      _set: {
-        phase_description: $phase_description
-        is_current_phase: $is_current_phase
-        phase_start: $phase_start
-        phase_end: $phase_end
-        phase_id: $phase_id
-        subphase_id: $subphase_id
-      }
+      _set: $object
     ) {
       project_id
       project_phase_id
@@ -351,6 +307,18 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       subphase_id
       is_current_phase
       phase_description
+    }
+  }
+`;
+
+// provide an array of project_phase_id's to set them not current
+export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
+  mutation ClearCurrentProjectPhasePKs($ids: [Int!]!) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $ids } }
+    ) {
+      affected_rows
     }
   }
 `;
@@ -384,10 +352,11 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   }
 `;
 
+// Delete a project phase **and** make it not current
 export const DELETE_PROJECT_PHASE = gql`
   mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
-      _set: { is_deleted: true }
+      _set: { is_deleted: true, is_current_phase: false }
       where: { project_phase_id: { _eq: $project_phase_id } }
     ) {
       affected_rows
@@ -800,21 +769,6 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
   }
 `;
 
-export const PROJECT_UPDATE_CURRENT_STATUS = gql`
-  mutation UpdateProjectCurrentStatus(
-    $projectId: Int!
-    $currentStatus: String!
-    $statusId: Int = 1
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { current_status: $currentStatus, status_id: $statusId }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_UPDATE_TYPES = gql`
   mutation UpdateMopedProjectTypes(
     $types: [moped_project_types_insert_input!]!
@@ -921,23 +875,6 @@ export const UPDATE_PROJECT_KNACK_ID = gql`
         knack_project_id
         project_id
       }
-    }
-  }
-`;
-
-/*
- *   projectUpdateInput contains status_id, current_status, and current_phase
- */
-export const PROJECT_UPDATE_STATUS = gql`
-  mutation UpdateProjectPhase(
-    $projectId: Int!
-    $projectUpdateInput: moped_project_set_input!
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: $projectUpdateInput
-    ) {
-      affected_rows
     }
   }
 `;

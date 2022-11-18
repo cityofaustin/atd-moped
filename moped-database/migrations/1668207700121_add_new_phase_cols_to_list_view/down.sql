@@ -33,9 +33,12 @@ AS WITH project_person_list_lookup AS (
     mp.project_id,
     mp.project_name,
     mp.project_description,
+    mp.project_description_public,
     mp.ecapris_subproject_id,
     mp.project_order,
+    mp.current_status,
     mp.timeline_id,
+    mp.current_phase,
     mp.end_date,
     mp.project_length,
     mp.fiscal_year,
@@ -44,13 +47,17 @@ AS WITH project_person_list_lookup AS (
     mp.is_deleted,
     mp.milestone_id,
     mp.task_order,
+    COALESCE(mp.status_id, 0) AS status_id,
     mp.updated_at,
-    current_phase.phase_name as current_phase,
-    current_phase.phase_key as current_phase_key,
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
+    CASE
+        WHEN mp.status_id = 0 OR mp.status_id IS NULL THEN NULL::text
+        WHEN mp.status_id = 1 THEN mp.current_phase
+        ELSE mp.current_status
+    END AS status_name,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     COALESCE( -- coalesce because this subquery can come back 'null' if there are no component assets
       ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
@@ -150,27 +157,28 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
-     LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
   GROUP BY mp.project_uuid, 
     mp.project_id, 
     mp.project_name, 
     mp.project_description, 
     ppll.project_team_members, 
+    mp.project_description_public, 
     mp.ecapris_subproject_id, 
     mp.project_order, 
+    mp.current_status, 
     mp.timeline_id, 
+    mp.current_phase, 
     mp.end_date, 
     mp.fiscal_year, 
     mp.capitally_funded, 
     mp.date_added,
     mp.is_deleted, 
     mp.milestone_id, 
+    mp.status_id, 
     me.entity_name, 
     mel.entity_name, 
     mp.updated_at, 
     mp.task_order,
-    current_phase.phase_name,
-    current_phase.phase_key,
     ptl.type_name, 
     fsl.funding_source_name,
     added_by_user.first_name,
