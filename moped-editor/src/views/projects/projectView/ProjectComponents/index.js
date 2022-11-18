@@ -134,7 +134,10 @@ export default function MapView({ projectName, projectStatuses }) {
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(featureCollection), fitBoundsOptions);
+    mapRef.current?.fitBounds(
+      bbox(featureCollection),
+      fitBoundsOptions.zoomToClickedComponent
+    );
   };
 
   const onSaveComponent = () => {
