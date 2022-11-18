@@ -9,6 +9,7 @@ import {
   ComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
+  useInitialValuesOnAttributesEdit,
 } from "./utils/map";
 
 const defaultFormValues = {
@@ -75,39 +76,12 @@ const ComponentForm = ({
   const { component } = watch();
   const subcomponentOptions = useSubcomponentOptions(component);
 
-  console.log({ optionsData, componentOptions, subcomponentOptions });
-
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (componentOptions.length === 0) return;
-
-    setValue("component", {
-      value: initialFormValues.component.component_id,
-      label: componentOptions.find(
-        (option) => option.value === initialFormValues.component.component_id
-      ).label,
-      data: {
-        moped_subcomponents:
-          initialFormValues.component.moped_components.moped_subcomponents,
-      },
-    });
-  }, [componentOptions]);
-
-  useEffect(() => {
-    if (subcomponentOptions.length === 0) return;
-    if (initialFormValues.subcomponents.length === 0) return;
-
-    const selectedSubcomponents = initialFormValues.subcomponents.map(
-      (subcomponent) => ({
-        value: subcomponent,
-        label: subcomponentOptions.find(
-          (option) => option.value === subcomponent.subcomponent_id
-        ).label,
-      })
-    );
-
-    setValue("subcomponents", selectedSubcomponents);
-  }, [subcomponentOptions]);
+  useInitialValuesOnAttributesEdit(
+    initialFormValues,
+    setValue,
+    componentOptions,
+    subcomponentOptions
+  );
 
   return (
     <form onSubmit={handleSubmit(onSave)}>

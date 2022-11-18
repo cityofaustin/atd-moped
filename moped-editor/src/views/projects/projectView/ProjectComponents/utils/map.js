@@ -175,6 +175,50 @@ export const useSubcomponentOptions = (component) =>
     return options;
   }, [component]);
 
+export const useInitialValuesOnAttributesEdit = (
+  initialFormValues,
+  setValue,
+  componentOptions,
+  subcomponentOptions
+) => {
+  // Set the selected component after the component options are loaded
+  useEffect(() => {
+    if (!initialFormValues) return;
+    if (componentOptions.length === 0) return;
+
+    setValue("component", {
+      value: initialFormValues.component.component_id,
+      label: componentOptions.find(
+        (option) => option.value === initialFormValues.component.component_id
+      ).label,
+      data: {
+        moped_subcomponents:
+          initialFormValues.component.moped_components.moped_subcomponents,
+      },
+    });
+  }, [componentOptions]);
+
+  // Set the selected subcomponent after the subcomponent options are loaded
+  useEffect(() => {
+    if (subcomponentOptions.length === 0) return;
+    if (initialFormValues.subcomponents.length === 0) return;
+
+    const selectedSubcomponents = initialFormValues.subcomponents.map(
+      (subcomponent) => ({
+        value: subcomponent,
+        label: subcomponentOptions.find(
+          (option) => option.value === subcomponent.subcomponent_id
+        ).label,
+      })
+    );
+
+    setValue("subcomponents", selectedSubcomponents);
+  }, [subcomponentOptions]);
+
+  // Set the description once
+  useEffect(() => setValue("description", initialFormValues.description), []);
+};
+
 /**
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
