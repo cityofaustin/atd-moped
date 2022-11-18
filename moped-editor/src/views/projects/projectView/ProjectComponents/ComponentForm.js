@@ -93,22 +93,21 @@ const ComponentForm = ({
     });
   }, [componentOptions]);
 
-  // useEffect(() => {
-  //   if (subcomponentOptions.length === 0) return;
-  //   if (initialFormValues.subcomponents.length === 0) return;
+  useEffect(() => {
+    if (subcomponentOptions.length === 0) return;
+    if (initialFormValues.subcomponents.length === 0) return;
 
-  //   const selectedSubcomponents = initialFormValues.subcomponents.map(
-  //     (subcomponent) => ({
-  //       value: subcomponent,
-  //       label: subcomponentOptions.find(
-  //         (option) => option.value === subcomponent
-  //       ).label,
-  //     })
-  //   );
-  //   console.log(subcomponentOptions);
+    const selectedSubcomponents = initialFormValues.subcomponents.map(
+      (subcomponent) => ({
+        value: subcomponent,
+        label: subcomponentOptions.find(
+          (option) => option.value === subcomponent.subcomponent_id
+        ).label,
+      })
+    );
 
-  //   setValue("subcomponents", selectedSubcomponents);
-  // }, [subcomponentOptions]);
+    setValue("subcomponents", selectedSubcomponents);
+  }, [subcomponentOptions]);
 
   return (
     <form onSubmit={handleSubmit(onSave)}>

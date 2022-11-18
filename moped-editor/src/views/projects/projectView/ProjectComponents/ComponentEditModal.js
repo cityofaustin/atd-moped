@@ -74,12 +74,6 @@ const ComponentEditModal = ({
     description: componentToEdit?.description,
   };
 
-  //   const initialFormValues = {
-  //     component: { value: 7, label: "Bike Lane - Buffered" },
-  //     description: "teatsdfdasf",
-  //     subcomponents: [{ value: 10, label: "Raised pavement markers" }],
-  //   };
-
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle disableTypography className={classes.dialogTitle}>
