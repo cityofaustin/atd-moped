@@ -46,35 +46,6 @@ const ComponentsSourcesAndLayers = ({
   return (
     <>
       <Source
-        id="ATD_ADMIN.CTN"
-        type="geojson"
-        data={ctnLinesGeojson}
-        promoteId={SOURCES["ctn-lines"]._featureIdProp}
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-lines-underlay"].layerProps,
-            layout: {
-              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
-              visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-lines"].layerProps,
-            layout: {
-              ...mapStyles["ctn-lines"].layerProps.layout,
-              visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
         id="project-lines"
         type="geojson"
         data={projectLines}
@@ -107,32 +78,6 @@ const ComponentsSourcesAndLayers = ({
             layout: {
               ...mapStyles["project-lines-muted"].layerProps.layout,
               visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
-        id="ATD_ADMIN.CTN_Intersections"
-        type="geojson"
-        data={ctnPointsGeojson}
-        promoteId={SOURCES["ctn-points"]._featureIdProp}
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-points-underlay"].layerProps,
-            layout: {
-              visibility: isEditingPoints ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-points"].layerProps,
-            layout: {
-              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -228,6 +173,61 @@ const ComponentsSourcesAndLayers = ({
                 !isClickedComponentLineRepresentation
                   ? "visible"
                   : "none",
+            },
+          }}
+        />
+      </Source>
+
+      <Source
+        id="ATD_ADMIN.CTN"
+        type="geojson"
+        data={ctnLinesGeojson}
+        promoteId={SOURCES["ctn-lines"]._featureIdProp}
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-lines-underlay"].layerProps,
+            layout: {
+              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-lines"].layerProps,
+            layout: {
+              ...mapStyles["ctn-lines"].layerProps.layout,
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+      </Source>
+
+      <Source
+        id="ATD_ADMIN.CTN_Intersections"
+        type="geojson"
+        data={ctnPointsGeojson}
+        promoteId={SOURCES["ctn-points"]._featureIdProp}
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-points-underlay"].layerProps,
+            layout: {
+              visibility: isEditingPoints ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-points"].layerProps,
+            layout: {
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
