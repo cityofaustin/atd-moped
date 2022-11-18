@@ -59,10 +59,8 @@ def row_dict(columns, row):
     return dict(zip(columns, row))
 
 
-# Maybe change this to be dynamic by accepting a command line parameter?
 db_path = "/app/database/database.mdb"
-
-out_dir = "data"
+out_dir = "/app/data/raw"
 
 def get_conn():
     # JDBC Database Drivers
