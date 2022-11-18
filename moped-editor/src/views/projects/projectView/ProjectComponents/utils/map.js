@@ -162,7 +162,9 @@ export const useComponentOptions = (data) =>
  */
 export const useSubcomponentOptions = (component) =>
   useMemo(() => {
+    console.log("this ran", component);
     const subcomponents = component?.data?.moped_subcomponents;
+    console.log(subcomponents);
     if (!subcomponents) return [];
 
     const options = subcomponents.map((subComp) => ({

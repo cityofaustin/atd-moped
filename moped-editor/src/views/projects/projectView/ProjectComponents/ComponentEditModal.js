@@ -68,16 +68,32 @@ const ComponentEditModal = ({
     setShowDialog(false);
   };
 
+  const initialFormValues = {
+    component: componentToEdit,
+    subcomponents: componentToEdit?.moped_proj_components_subcomponents,
+    description: componentToEdit?.description,
+  };
+
+  //   const initialFormValues = {
+  //     component: { value: 7, label: "Bike Lane - Buffered" },
+  //     description: "teatsdfdasf",
+  //     subcomponents: [{ value: 10, label: "Raised pavement markers" }],
+  //   };
+
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle disableTypography className={classes.dialogTitle}>
-        <h3>New component</h3>
+        <h3>Edit component</h3>
         <IconButton onClick={onClose}>
           <CloseIcon />
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        <ComponentForm onSave={onSave} formButtonText="Continue" />
+        <ComponentForm
+          onSave={onSave}
+          formButtonText="Save"
+          initialFormValues={initialFormValues}
+        />
       </DialogContent>
     </Dialog>
   );

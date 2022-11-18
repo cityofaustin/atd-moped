@@ -29,6 +29,7 @@ const ComponentCreateModal = ({
   const classes = useStyles();
 
   const onSave = (formData) => {
+    console.log(formData);
     const {
       component: {
         data: {

@@ -259,8 +259,6 @@ export default function MapView({ projectName, projectStatuses }) {
     alert("Now you can edit this component's features");
   };
 
-  console.log({ clickedComponent });
-
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>

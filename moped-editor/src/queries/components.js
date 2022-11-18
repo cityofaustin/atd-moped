@@ -44,6 +44,10 @@ export const GET_PROJECT_COMPONENTS = gql`
           internal_table
         }
         line_representation
+        moped_subcomponents {
+          subcomponent_id
+          subcomponent_name
+        }
       }
       moped_proj_components_subcomponents {
         subcomponent_id

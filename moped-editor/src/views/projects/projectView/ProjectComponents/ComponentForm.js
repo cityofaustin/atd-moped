@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Grid, TextField } from "@material-ui/core";
@@ -11,7 +11,7 @@ import {
   useSubcomponentOptions,
 } from "./utils/map";
 
-const initialFormValues = {
+const defaultFormValues = {
   component: {},
   subcomponents: [],
   description: "",
@@ -55,15 +55,17 @@ const ControlledAutocomplete = ({
   />
 );
 
-const ComponentForm = ({ formButtonText, onSave }) => {
-  const { register, handleSubmit, control, reset, watch } = useForm({
-    defaultValues: initialFormValues,
-  });
+const ComponentForm = ({
+  formButtonText,
+  onSave,
+  initialFormValues = null,
+}) => {
+  const doesInitialValueHaveSubcomponents =
+    initialFormValues?.subcomponents.length > 0;
 
-  const handleFormSubmit = (formData) => {
-    onSave(formData);
-    reset(initialFormValues);
-  };
+  const { register, handleSubmit, control, watch, setValue } = useForm({
+    defaultValues: defaultFormValues,
+  });
 
   // Get and format component and subcomponent options
   const { data: optionsData, loading: areOptionsLoading } = useQuery(
@@ -73,8 +75,43 @@ const ComponentForm = ({ formButtonText, onSave }) => {
   const { component } = watch();
   const subcomponentOptions = useSubcomponentOptions(component);
 
+  console.log({ optionsData, componentOptions, subcomponentOptions });
+
+  useEffect(() => {
+    if (!initialFormValues) return;
+    if (componentOptions.length === 0) return;
+
+    setValue("component", {
+      value: initialFormValues.component.component_id,
+      label: componentOptions.find(
+        (option) => option.value === initialFormValues.component.component_id
+      ).label,
+      data: {
+        moped_subcomponents:
+          initialFormValues.component.moped_components.moped_subcomponents,
+      },
+    });
+  }, [componentOptions]);
+
+  // useEffect(() => {
+  //   if (subcomponentOptions.length === 0) return;
+  //   if (initialFormValues.subcomponents.length === 0) return;
+
+  //   const selectedSubcomponents = initialFormValues.subcomponents.map(
+  //     (subcomponent) => ({
+  //       value: subcomponent,
+  //       label: subcomponentOptions.find(
+  //         (option) => option.value === subcomponent
+  //       ).label,
+  //     })
+  //   );
+  //   console.log(subcomponentOptions);
+
+  //   setValue("subcomponents", selectedSubcomponents);
+  // }, [subcomponentOptions]);
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)}>
+    <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
@@ -90,7 +127,8 @@ const ComponentForm = ({ formButtonText, onSave }) => {
           />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
-        {subcomponentOptions.length !== 0 && (
+        {(subcomponentOptions.length !== 0 ||
+          doesInitialValueHaveSubcomponents) && (
           <Grid item xs={12}>
             <ControlledAutocomplete
               id="subcomponents"
