@@ -28,8 +28,8 @@ export const SOURCES = {
 };
 
 export const initialViewState = {
-  latitude: 30.28,
-  longitude: -97.74,
+  latitude: 30.2747,
+  longitude: -97.7406,
   zoom: 15,
 };
 
