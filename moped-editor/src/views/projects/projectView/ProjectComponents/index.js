@@ -100,23 +100,26 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
   const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
-  const { data, refetch: refetchProjectComponents } = useQuery(
-    GET_PROJECT_COMPONENTS,
-    {
-      variables: { projectId },
-      fetchPolicy: "no-cache",
-    }
-  );
+  const {
+    data,
+    refetch: refetchProjectComponents,
+    error,
+  } = useQuery(GET_PROJECT_COMPONENTS, {
+    variables: { projectId },
+    fetchPolicy: "no-cache",
+  });
+
+  if (error) console.log(error);
 
   /* holds this project's components */
   const components = useMemo(() => {
-    if (data === undefined) return [];
+    if (!data?.moped_proj_components) return [];
 
     return data.moped_proj_components;
   }, [data]);
 
   const featureCollectionsByComponentId = useMemo(() => {
-    if (data === undefined) return [];
+    if (!data?.project_geography) return {};
 
     return makeComponentFeatureCollectionsMap(data.project_geography);
   }, [data]);

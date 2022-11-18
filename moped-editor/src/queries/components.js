@@ -86,11 +86,11 @@ export const GET_PROJECT_COMPONENTS = gql`
 
 export const DELETE_PROJECT_COMPONENT = gql`
   mutation DeleteMopedComponent($projectComponentId: Int!) {
-    update_moped_proj_components(
-      where: { project_component_id: { _eq: $projectComponentId } }
+    update_moped_proj_components_by_pk(
+      pk_columns: { project_component_id: $projectComponentId }
       _set: { is_deleted: true }
     ) {
-      affected_rows
+      project_component_id
     }
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
