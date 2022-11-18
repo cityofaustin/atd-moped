@@ -28,7 +28,7 @@ const ComponentEditModal = ({
   const classes = useStyles();
 
   const onSave = (formData) => {
-    console.log("You saved!");
+    console.log("You saved!", formData);
     // const {
     //   component: {
     //     data: {

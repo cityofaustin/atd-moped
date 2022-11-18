@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Grid, TextField } from "@material-ui/core";
@@ -10,7 +10,7 @@ import {
   useComponentOptions,
   useSubcomponentOptions,
   useInitialValuesOnAttributesEdit,
-} from "./utils/map";
+} from "./utils/form";
 
 const defaultFormValues = {
   component: {},
@@ -27,6 +27,7 @@ const ControlledAutocomplete = ({
   label,
   autoFocus = false,
   multiple = false,
+  disabled,
 }) => (
   <Controller
     id={id}
@@ -40,6 +41,7 @@ const ControlledAutocomplete = ({
         getOptionSelected={(option, value) => option?.value === value?.value}
         renderOption={renderOption}
         value={value}
+        disabled={disabled}
         renderInput={(params) => (
           <TextField
             {...params}
@@ -76,6 +78,8 @@ const ComponentForm = ({
   const { component } = watch();
   const subcomponentOptions = useSubcomponentOptions(component);
 
+  /* TODO: Fix bug where you can add the same subcomponent passed in initialFormValues
+  through the form once data is loaded (also isn't selected with a grey bar) */
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
@@ -97,6 +101,7 @@ const ComponentForm = ({
             name="component"
             control={control}
             autoFocus
+            disabled={initialFormValues !== null}
           />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
