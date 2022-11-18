@@ -286,7 +286,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       }}
       title={
         <Typography variant="h2" color="primary">
-          Project milestones
+          Milestones
         </Typography>
       }
       options={{
