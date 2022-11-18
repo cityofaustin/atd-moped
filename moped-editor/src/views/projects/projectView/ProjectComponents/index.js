@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -69,11 +69,6 @@ export default function MapView({ projectName, projectStatuses }) {
   const mapRef = useRef();
   const { projectId } = useParams();
 
-  /* holds this project's components */
-  const [components, setComponents] = useState([]);
-  const [featureCollectionsByComponentId, setFeatureCollectionsByComponentId] =
-    useState({});
-
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
 
@@ -110,17 +105,21 @@ export default function MapView({ projectName, projectStatuses }) {
     {
       variables: { projectId },
       fetchPolicy: "no-cache",
-      onCompleted: () => {
-        setComponents(data.moped_proj_components);
-
-        // Create feature collections of all features in each component
-        const componentFeatureCollections = makeComponentFeatureCollectionsMap(
-          data.project_geography
-        );
-        setFeatureCollectionsByComponentId(componentFeatureCollections);
-      },
     }
   );
+
+  /* holds this project's components */
+  const components = useMemo(() => {
+    if (data === undefined) return [];
+
+    return data.moped_proj_components;
+  }, [data]);
+
+  const featureCollectionsByComponentId = useMemo(() => {
+    if (data === undefined) return [];
+
+    return makeComponentFeatureCollectionsMap(data.project_geography);
+  }, [data]);
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
