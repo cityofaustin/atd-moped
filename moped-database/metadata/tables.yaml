@@ -3573,7 +3573,7 @@
       webhook_from_env: HASURA_ENDPOINT
       headers:
         - name: x-hasura-admin-secret
-          value_from_env: ADMIN_SECRET
+          value_from_env: HASURA_ADMIN_SECRET
       request_transform:
         body:
           action: transform
