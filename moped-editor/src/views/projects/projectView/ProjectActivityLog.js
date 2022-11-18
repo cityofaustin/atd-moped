@@ -87,17 +87,17 @@ const ProjectActivityLog = () => {
 
   // const [activityId, setActivityId] = useState(null);
 
-  // /**
-  //  * Closes the details dialog
-  //  */
+  /**
+   * Closes the details dialog
+   */
   // const handleDetailsClose = () => {
   //   setActivityId(null);
   // };
 
-  // /**
-  //  * Opens the details dialog
-  //  * @param {string} activityId - The activity uuid
-  //  */
+  /**
+   * Opens the details dialog
+   * @param {string} activityId - The activity uuid
+   */
   // const handleDetailsOpen = activityId => {
   //   setActivityId(activityId);
   // };
@@ -120,16 +120,24 @@ const ProjectActivityLog = () => {
   const isFieldGeneric = field =>
     field in ProjectActivityLogGenericDescriptions;
 
+  /**
+   * checks if event is from new schema and if so finds the updated difference and includes that
+   * in the object
+   * @param {Array} eventList - The data object as provided by apollo
+   * @returns {Array}
+   */
   const getDiffs = eventList => {
     let outputList = [];
 
     eventList.forEach(event => {
       let outputEvent = {...event}
+      // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0].newSchema) {
-        console.log(event)
+        // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
           outputEvent.description=[]
         } else {
+          // otherwise compare the old record to the new record to find the field that was updated
           const newData = outputEvent.record_data.data.new;
           const oldData = outputEvent.record_data.data.old;
           let changedField = ""
@@ -206,10 +214,11 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <CDNAvatar
                               className={classes.avatarSmall}
+                              // until we update the events in the activity log to use the user id
+                              // instead of the cognito id, we have to check both places
                               src={change?.moped_user?.picture ?? change?.updated_by_user?.picture}
                               initials={getInitials(change?.moped_user ?? change?.updated_by_user)}
                               userColor={null}
-                              useGenericAvatar={true} // find what this is
                             />
                           </Box>
                           <Box
@@ -235,7 +244,8 @@ const ProjectActivityLog = () => {
                       </TableCell>
                       <TableCell
                         align="left"
-                        width="75%" // if the details link comes back, this goes back to 70%
+                        // if the details link comes back, this goes back to 70%
+                        width="75%"
                         className={classes.tableCell}
                       >
                         <Box display="flex" p={0}>

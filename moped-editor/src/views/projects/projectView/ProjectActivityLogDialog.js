@@ -75,8 +75,6 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   const classes = useStyles();
 
-  console.log(activity_id)
-
   const {
     getLookups,
     lookupLoading,
@@ -91,7 +89,6 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
     onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
   });
 
-  console.log(data)
   const [showDiffOnly, setShowDiffOnly] = useState(true);
 
   const getEventData = (data, mode) => {
