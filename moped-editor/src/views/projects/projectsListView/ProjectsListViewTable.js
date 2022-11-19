@@ -90,8 +90,9 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @default {{value: "", column: ""}}
    */
   const [sort, setSort] = useState({
-    column: "",
-    order: "",
+    column: "project_id",
+    columnId: 0,
+    order: "desc",
   });
 
   /**
@@ -530,25 +531,20 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // If both column and order are empty...
-    if (sort.order === "" && sort.column === "") {
-      // First time sort is applied
-      setSort({
-        order: "asc",
-        column: columnName,
-      });
-    } else if (sort.column === columnName) {
-      // Else if the current sortColumn is the same as the new
+    if (sort.column === columnName) {
+      // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
       setSort({
         order: sort.order === "desc" ? "asc" : "desc",
         column: columnName,
+        columnId: columnId,
       });
     } else if (sort.column !== columnName) {
-      // Sort different column after initial sort, then reset
+      // Sort different column in same order as previous column
       setSort({
-        order: "desc",
+        order: sort.order,
         column: columnName,
+        columnId: columnId,
       });
     }
   };
@@ -628,13 +624,18 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         />
                       );
                     },
-                    Header: (props) => (
-                      <MTableHeader
-                        {...props}
-                        onOrderChange={handleTableHeaderClick}
-                        orderDirection={sort.order}
-                      />
-                    ),
+                    Header: (props) => {
+                      console.log(props);
+                      console.log(sort);
+                      return (
+                        <MTableHeader
+                          {...props}
+                          onOrderChange={handleTableHeaderClick}
+                          orderBy={sort.columnId}
+                          orderDirection={sort.order}
+                        />
+                      );
+                    },
                     Body: (props) => {
                       // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
                       // we have configured MT to use local data but are technically using remote data
