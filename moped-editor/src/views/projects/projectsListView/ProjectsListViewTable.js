@@ -624,18 +624,14 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         />
                       );
                     },
-                    Header: (props) => {
-                      console.log(props);
-                      console.log(sort);
-                      return (
-                        <MTableHeader
-                          {...props}
-                          onOrderChange={handleTableHeaderClick}
-                          orderBy={sort.columnId}
-                          orderDirection={sort.order}
-                        />
-                      );
-                    },
+                    Header: (props) => (
+                      <MTableHeader
+                        {...props}
+                        onOrderChange={handleTableHeaderClick}
+                        orderBy={sort.columnId}
+                        orderDirection={sort.order}
+                      />
+                    ),
                     Body: (props) => {
                       // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
                       // we have configured MT to use local data but are technically using remote data
