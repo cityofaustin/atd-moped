@@ -104,7 +104,6 @@ with Flow("Moped Test Instance Commission") as test_commission:
     do_migrations = Parameter("do_migrations", default=True, required=True)
 
     slug = slug_branch_name(branch)
-    print(slug)
 
     ## Get github checkout
 
