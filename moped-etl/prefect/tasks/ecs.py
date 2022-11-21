@@ -277,7 +277,6 @@ def remove_route53_cname_for_validation(parameters):
         },
     )
 
-
 @task(name="Create EC2 ELB Listeners")
 def create_load_balancer_listener(
     load_balancer, target_group, certificate, ready_for_listeners
@@ -324,6 +323,7 @@ def create_load_balancer_listener(
 def create_task_definition(slug, api_endpoint):
     basename = slug["basename"]
     database = slug["database"]
+    graphql_endpoint = slug["graphql_endpoint"]
     logger.info("Adding task definition")
     ecs = boto3.client("ecs", region_name=AWS_DEFAULT_REGION)
 
@@ -361,8 +361,13 @@ def create_task_definition(slug, api_endpoint):
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
                     {
+                        #"name": "HASURA_GRAPHQL_ADMIN_SECRET",
                         "name": "HASURA_ADMIN_SECRET",
                         "value": shared.generate_access_key(basename),
+                    },
+                    {
+                        "name": "HASURA_ENDPOINT",
+                        "value": "https://" + shared.form_graphql_endpoint_hostname(graphql_endpoint) + "/v1/graphql",
                     },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     {
