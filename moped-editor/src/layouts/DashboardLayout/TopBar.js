@@ -21,7 +21,7 @@ import NavLink from "src/components/NavLink";
 
 const getAlertBannerSeverity = (env) => {
   // show an orange banner on local
-  // show blue on staging, netlify, test, ...not production 
+  // show blue on staging, netlify, test, ...not production
   switch (env) {
     case "local":
       return "warning";
@@ -37,7 +37,8 @@ const EnvAlertBanner = () => {
   }
   return (
     <Alert severity={getAlertBannerSeverity(env)}>
-      This is a {env} environment for testing purposes.
+      This is a <span style={{ fontWeight: "bold" }}>{env}</span> environment
+      for testing purposes.
     </Alert>
   );
 };
