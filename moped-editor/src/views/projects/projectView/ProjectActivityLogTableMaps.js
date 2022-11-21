@@ -930,9 +930,16 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
+  moped_proj_tags: {
+    label: (record, userList) => {
+      console.log(record) // how do we get the tag name here
+      return (
+        "New tag added"
+      );
+    },
+  },
   generic: {
     label: record => {
-      //console.log(record);
       return "Added";
     },
   },
@@ -1017,11 +1024,13 @@ export const getOperationName = (event_type, record_type = "moped_project") => {
  * @return {string}
  */
 export const getCreationLabel = (record, userList, phaseList) => {
+  console.log(record.record_type)
   const recordType =
     record.record_type in ProjectActivityLogCreateDescriptions
       ? record.record_type
       : "generic";
 
+  console.log(recordType)
   const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
 
   return label ? label(record, userList, phaseList) : "Created";
