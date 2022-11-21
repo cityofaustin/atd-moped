@@ -94,7 +94,14 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateProjectAttributes(
     $projectComponentId: Int!
     $description: String!
+    $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
   ) {
+    update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
       _set: { description: $description }

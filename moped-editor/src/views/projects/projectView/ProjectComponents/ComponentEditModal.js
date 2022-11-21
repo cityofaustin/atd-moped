@@ -55,7 +55,7 @@ const ComponentEditModal = ({
       setClickedComponent((prevComponent) => ({
         ...prevComponent,
         description,
-        moped_proj_components_subcomponents: subcomponentsArray,
+        subcomponents: subcomponentsArray,
       }));
     });
     // const {
