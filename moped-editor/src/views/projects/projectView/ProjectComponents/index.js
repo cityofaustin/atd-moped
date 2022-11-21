@@ -366,6 +366,8 @@ export default function MapView({ projectName, projectStatuses }) {
             setShowDialog={setShowComponentEditDialog}
             setIsEditingComponent={setIsEditingComponent}
             componentToEdit={clickedComponent}
+            refetchProjectComponents={refetchProjectComponents}
+            setClickedComponent={setClickedComponent}
           />
         </main>
       </div>

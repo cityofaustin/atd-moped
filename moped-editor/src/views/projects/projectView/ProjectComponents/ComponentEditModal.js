@@ -1,4 +1,5 @@
 import React from "react";
+import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
 import {
   Dialog,
@@ -8,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -24,11 +26,29 @@ const ComponentEditModal = ({
   setShowDialog,
   setIsEditingComponent,
   componentToEdit,
+  refetchProjectComponents,
+  setClickedComponent,
 }) => {
   const classes = useStyles();
 
+  const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
+
   const onSave = (formData) => {
     console.log("You saved!", formData);
+
+    updateComponentAttributes({
+      variables: {
+        description: formData.description,
+        projectComponentId: componentToEdit.project_component_id,
+      },
+    }).then(() => {
+      // Update component list item and clicked component state
+      refetchProjectComponents();
+      setClickedComponent((prevComponent) => ({
+        ...prevComponent,
+        description: formData.description,
+      }));
+    });
     // const {
     //   component: {
     //     data: {
@@ -61,6 +81,7 @@ const ComponentEditModal = ({
     // setLinkMode(linkMode);
     // // switch to components tab
     // setShowDialog(false);
+    onClose();
   };
 
   const onClose = () => {
