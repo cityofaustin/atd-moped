@@ -88,6 +88,7 @@ export function useActivityLogLookupTables() {
   const [lookupObject, setLookupObject] = useState({
     query: INITIAL_QUERY,
     areLookups: false,
+    tablesMap: {},
   });
 
   const [lookupMap, setLookupMap] = useState(null);

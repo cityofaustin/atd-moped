@@ -775,6 +775,21 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+  moped_proj_tags: {
+    fields: {
+      tag_id: {
+        icon: "",
+        label: "Tag ID",
+        data_type: "integer",
+        lookup: {
+          table: "moped_tags",
+          fieldLabel: "id",
+          fieldValues: ["name"],
+        },
+      }
+
+    }
+  }
 };
 
 export const ProjectActivityLogOperationMaps = {
@@ -932,7 +947,7 @@ export const ProjectActivityLogCreateDescriptions = {
   },
   moped_proj_tags: {
     label: (record, userList) => {
-      console.log(record) // how do we get the tag name here
+      // how do we get the tag name here
       return (
         "New tag added"
       );
@@ -1024,13 +1039,11 @@ export const getOperationName = (event_type, record_type = "moped_project") => {
  * @return {string}
  */
 export const getCreationLabel = (record, userList, phaseList) => {
-  console.log(record.record_type)
   const recordType =
     record.record_type in ProjectActivityLogCreateDescriptions
       ? record.record_type
       : "generic";
 
-  console.log(recordType)
   const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
 
   return label ? label(record, userList, phaseList) : "Created";
