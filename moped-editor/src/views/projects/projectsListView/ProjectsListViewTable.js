@@ -82,6 +82,18 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   });
 
   /**
+   * The default sorting properties applied to the table.
+   * This overrides MaterialTable props and determines how
+   * the table is sorted when the page loads. Must remain consistent
+   * with the sorting order passed in from ProjectsListViewQueryConf.
+   */
+  const defaultSortingProperties = {
+    column: "updated_at",
+    columnId: 8,
+    order: "desc",
+  };
+
+  /**
    * Stores the column name and the order to order by
    * @type {Object} sort
    * @property {string} column - The column name in graphql to sort by
@@ -89,11 +101,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @function setSort - Sets the state of sort
    * @default {{value: "", column: ""}}
    */
-  const [sort, setSort] = useState({
-    column: "updated_at",
-    columnId: 8,
-    order: "desc",
-  });
+  const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -179,9 +187,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  if (sort.column !== "" && sort.order !== "") {
-    query.setOrder(sort.column, sort.order);
-  }
+  query.setOrder(sort.column, sort.order);
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
