@@ -142,7 +142,7 @@ export default function TheMap({
       return;
     }
 
-    /* If not editing, handle click on project feature */
+    /* If not creating or editing, we need to set clicked features in state */
     if (!isCreatingComponent && !isEditingComponent) {
       const clickedProjectFeature = getClickedFeatureFromMap(e);
 
@@ -150,47 +150,52 @@ export default function TheMap({
       return;
     }
 
-    /* We're creating, so handle add/remove draft component feature */
-    const newDraftComponent = cloneDeep(draftComponent);
-    const clickedDraftComponentFeature = e.features.find(
-      (feature) => feature.layer.id === draftLayerId
-    );
+    if (isCreatingComponent) {
+      /* We're creating, so handle add/remove draft component feature */
+      const newDraftComponent = cloneDeep(draftComponent);
+      const clickedDraftComponentFeature = e.features.find(
+        (feature) => feature.layer.id === draftLayerId
+      );
 
-    // If we clicked a drawn feature, we don't need to capture from the CTN layers
-    if (isDrawnFeature(clickedDraftComponentFeature)) return;
+      // If we clicked a drawn feature, we don't need to capture from the CTN layers
+      if (isDrawnFeature(clickedDraftComponentFeature)) return;
 
-    if (clickedDraftComponentFeature) {
-      // remove project feature, ignore underlying CTN features
-      const filteredFeatures = draftComponent.features.filter((compFeature) => {
-        return !(
-          compFeature.properties.id ===
-            clickedDraftComponentFeature.properties.id &&
-          compFeature.properties._layerId ===
-            clickedDraftComponentFeature.properties._layerId
+      if (clickedDraftComponentFeature) {
+        // remove project feature, ignore underlying CTN features
+        const filteredFeatures = draftComponent.features.filter(
+          (compFeature) => {
+            return !(
+              compFeature.properties.id ===
+                clickedDraftComponentFeature.properties.id &&
+              compFeature.properties._layerId ===
+                clickedDraftComponentFeature.properties._layerId
+            );
+          }
         );
-      });
-      newDraftComponent.features = filteredFeatures;
+        newDraftComponent.features = filteredFeatures;
+        setDraftComponent(newDraftComponent);
+        return;
+      }
+
+      // if multiple features are clicked, we ignore all but one
+      const clickedFeature = e.features[0];
+      const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
+        clickedFeature,
+        linkMode,
+        ctnLinesGeojson,
+        ctnPointsGeojson
+      );
+
+      const newFeature = makeCapturedFromLayerFeature(
+        featureFromAgolGeojson,
+        clickedFeature,
+        ctnLinesGeojson
+      );
+
+      newDraftComponent.features.push(newFeature);
       setDraftComponent(newDraftComponent);
-      return;
     }
 
-    // if multiple features are clicked, we ignore all but one
-    const clickedFeature = e.features[0];
-    const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
-      clickedFeature,
-      linkMode,
-      ctnLinesGeojson,
-      ctnPointsGeojson
-    );
-
-    const newFeature = makeCapturedFromLayerFeature(
-      featureFromAgolGeojson,
-      clickedFeature,
-      ctnLinesGeojson
-    );
-
-    newDraftComponent.features.push(newFeature);
-    setDraftComponent(newDraftComponent);
     // setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
