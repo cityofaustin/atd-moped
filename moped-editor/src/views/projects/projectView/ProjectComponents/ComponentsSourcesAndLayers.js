@@ -17,6 +17,7 @@ const mapStyles = MAP_STYLES;
 const ComponentsSourcesAndLayers = ({
   data,
   isCreatingComponent,
+  isEditingComponent,
   linkMode,
   clickedComponent,
   componentFeatureCollection,
@@ -31,14 +32,20 @@ const ComponentsSourcesAndLayers = ({
     draftComponentFeatures,
   } = data;
 
-  const isViewingComponents = !isCreatingComponent && !clickedComponent;
+  const isViewingComponents =
+    !isCreatingComponent && !clickedComponent && !isEditingComponent;
 
   const isEditingLines =
-    isCreatingComponent && linkMode === "lines" && !isDrawing;
+    (isCreatingComponent || isEditingComponent) &&
+    linkMode === "lines" &&
+    !isDrawing;
   const isEditingPoints =
-    isCreatingComponent && linkMode === "points" && !isDrawing;
+    (isCreatingComponent || isEditingComponent) &&
+    linkMode === "points" &&
+    !isDrawing;
 
-  const shouldShowMutedFeatures = clickedComponent || isCreatingComponent;
+  const shouldShowMutedFeatures =
+    clickedComponent || isCreatingComponent || isEditingComponent;
 
   const isClickedComponentLineRepresentation =
     clickedComponent?.moped_components?.line_representation;

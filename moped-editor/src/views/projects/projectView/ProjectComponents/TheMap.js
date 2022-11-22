@@ -71,6 +71,7 @@ export default function TheMap({
   hoveredOnMapFeature,
   components,
   isCreatingComponent,
+  isEditingComponent,
   draftComponent,
   setDraftComponent,
   mapRef,
@@ -236,6 +237,7 @@ export default function TheMap({
       <ComponentsSourcesAndLayers
         data={data}
         isCreatingComponent={isCreatingComponent}
+        isEditingComponent={isEditingComponent}
         isDrawing={isDrawing}
         linkMode={linkMode}
         draftLayerId={draftLayerId}

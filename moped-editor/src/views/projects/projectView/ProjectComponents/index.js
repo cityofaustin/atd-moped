@@ -331,6 +331,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
               isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
               clickedProjectFeature={clickedProjectFeature}
