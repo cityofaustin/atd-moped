@@ -256,7 +256,14 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onEditFeatures = () => {
-    alert("Now you can edit this component's features");
+    // TODO: Add helper to convert line representation to "lines" or "points"
+    // TODO: Set clicked component as the draft component
+    const { line_representation } = clickedComponent;
+    const linkMode = line_representation === true ? "lines" : "points";
+
+    setLinkMode(linkMode);
+    setIsEditingComponent(true);
+    setShowEditModeDialog(false);
   };
 
   return (
