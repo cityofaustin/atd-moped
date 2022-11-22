@@ -1,0 +1,1 @@
+ALTER TABLE moped_proj_components_subcomponents DROP CONSTRAINT IF EXISTS unique_component_and_subcomponent;
