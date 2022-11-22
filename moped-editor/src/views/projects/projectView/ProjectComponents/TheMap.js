@@ -196,6 +196,13 @@ export default function TheMap({
       setDraftComponent(newDraftComponent);
     }
 
+    if (isEditingComponent) {
+      // TODO: Find clicked feature in clickedComponent
+      const clickedFeature = e.features[0];
+      const clickedFeatureSource = clickedFeature.layer.source;
+      console.log({ clickedComponent, clickedFeature, clickedFeatureSource });
+    }
+
     // setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
