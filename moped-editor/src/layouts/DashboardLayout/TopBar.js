@@ -19,6 +19,30 @@ import DropdownMenu from "./NavBar/DropdownMenu";
 import NavigationSearchInput from "./NavBar/NavigationSearchInput";
 import NavLink from "src/components/NavLink";
 
+const getAlertBannerSeverity = (env) => {
+  // show an orange banner on local
+  // show blue on staging, netlify, test, ...not production
+  switch (env) {
+    case "local":
+      return "warning";
+    default:
+      return "info";
+  }
+};
+
+const EnvAlertBanner = () => {
+  const env = process.env.REACT_APP_HASURA_ENV;
+  if (env === "production") {
+    return null;
+  }
+  return (
+    <Alert severity={getAlertBannerSeverity(env)}>
+      This is a <span style={{ fontWeight: "bold" }}>{env}</span> environment
+      for testing purposes.
+    </Alert>
+  );
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
@@ -82,12 +106,7 @@ const TopBar = ({ className, ...rest }) => {
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
-      {process.env.REACT_APP_HASURA_ENV !== "production" && (
-        // If in staging environment, display info alert
-        <Alert severity="info">
-          This is a Moped development environment for testing purposes.
-        </Alert>
-      )}
+      <EnvAlertBanner />
       <Toolbar>
         <RouterLink to="/moped">
           <Logo />
@@ -118,13 +137,13 @@ const TopBar = ({ className, ...rest }) => {
           <NavigationSearchInput />
         </Hidden>
         <Hidden smDown>
-        <Box>
-          <DropdownMenu
-            handleDropdownClick={handleDropdownClick}
-            handleDropdownClose={handleDropdownClose}
-            dropdownAnchorEl={dropdownAnchorEl}
-          />
-        </Box>
+          <Box>
+            <DropdownMenu
+              handleDropdownClick={handleDropdownClick}
+              handleDropdownClose={handleDropdownClose}
+              dropdownAnchorEl={dropdownAnchorEl}
+            />
+          </Box>
         </Hidden>
         <Hidden mdUp>
           <MobileDropdownMenu />
