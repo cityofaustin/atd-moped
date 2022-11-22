@@ -3245,7 +3245,6 @@
                   "record_project_id": {{ $body.event.data.new.project_id }},
                   "record_data": {{ $body.event }},
                   "description": [{"newSchema": "true"}],
-                  "updated_by": "f366d1bb-61c8-421e-b8c6-7a00834784fc",
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
                 },
@@ -3638,7 +3637,6 @@
                                     "record_project_id": {{ $body.event.data.new.project_id }},
                                     "record_data": {{ $body.event }},
                                     "description": [{"newSchema": "true"}],
-                                    "updated_by": "f366d1bb-61c8-421e-b8c6-7a00834784fc",
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
                                 },

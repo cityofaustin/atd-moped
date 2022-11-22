@@ -66,6 +66,9 @@ const useStyles = makeStyles(theme => ({
     fontFamily: typography.fontFamily,
     padding: "0rem 0 2rem 0",
   },
+  boldText: {
+    fontWeight: 700,
+  }
 }));
 
 const ProjectActivityLog = () => {
@@ -176,17 +179,17 @@ const ProjectActivityLog = () => {
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">
-                    <b>Date</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Date
                   </TableCell>
-                  <TableCell align="left">
-                    <b>User</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    User
                   </TableCell>
-                  <TableCell align="left">
-                    <b>Action</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Action
                   </TableCell>
-                  <TableCell align="left">
-                    <b>Change</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Change
                   </TableCell>
                   <TableCell align="left" />
                 </TableRow>
@@ -235,12 +238,10 @@ const ProjectActivityLog = () => {
                         width="5%"
                         className={classes.tableCell}
                       >
-                        <b>
-                          {getOperationName(
-                            change.operation_type,
-                            change.record_type // todo: could this be better
-                          )}
-                        </b>
+                        {getOperationName(
+                          change.operation_type,
+                          change.record_type // todo: could this be better
+                        )}
                       </TableCell>
                       <TableCell
                         align="left"
@@ -268,13 +269,13 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>
+                                    <span className={classes.boldText}>
                                       {getCreationLabel(
                                         change,
                                         userList,
                                         phaseList
                                       )}
-                                    </b>
+                                    </span>
                                   </Grid>
                                 )}
                               {change.description.map(changeItem => {
@@ -284,16 +285,16 @@ const ProjectActivityLog = () => {
                                     className={classes.tableChangeItem}
                                   >
                                     {isFieldGeneric(changeItem.field) ? (
-                                      <b>
+                                      <span className={classes.boldText}>
                                         {
                                           ProjectActivityLogGenericDescriptions[
                                             changeItem.field
                                           ]?.label
                                         }
-                                      </b>
+                                      </span>
                                     ) : (
                                       <>
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {getRecordTypeLabel(
                                             change.record_type
                                           )}{" "}
@@ -301,9 +302,9 @@ const ProjectActivityLog = () => {
                                             change.record_type,
                                             changeItem.field
                                           )}
-                                        </b>
+                                        </span>
                                         &nbsp;from&nbsp;
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -314,9 +315,9 @@ const ProjectActivityLog = () => {
                                                 String(changeItem.old)
                                               )
                                             : fieldFormat(changeItem.old)}
-                                        </b>
+                                        </span>
                                         &nbsp;to&nbsp;
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -327,7 +328,7 @@ const ProjectActivityLog = () => {
                                                 String(changeItem.new)
                                               )
                                             : fieldFormat(changeItem.new)}
-                                        </b>
+                                        </span>
                                       </>
                                     )}
                                   </Grid>
