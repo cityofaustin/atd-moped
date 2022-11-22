@@ -37,6 +37,7 @@ const ComponentEditModal = ({
     const { description, subcomponents } = formData;
     const { project_component_id: projectComponentId } = componentToEdit;
 
+    // Prepare the subcomponent data for the mutation
     const subcomponentsArray = subcomponents
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
@@ -45,8 +46,6 @@ const ComponentEditModal = ({
         }))
       : [];
 
-    console.log({ subcomponentsArray });
-
     updateComponentAttributes({
       variables: {
         projectComponentId: projectComponentId,
@@ -54,7 +53,7 @@ const ComponentEditModal = ({
         subcomponents: subcomponentsArray,
       },
     }).then(() => {
-      // Update component list item and clicked component state
+      // Update component list item and clicked component state to keep UI up to date
       refetchProjectComponents();
       setClickedComponent((prevComponent) => ({
         ...prevComponent,
@@ -62,38 +61,7 @@ const ComponentEditModal = ({
         moped_proj_components_subcomponents: subcomponentsArray,
       }));
     });
-    // const {
-    //   component: {
-    //     data: {
-    //       component_id,
-    //       component_name,
-    //       component_subtype,
-    //       line_representation,
-    //       feature_layer: { internal_table },
-    //     },
-    //   },
-    //   subcomponents,
-    //   description,
-    // } = formData;
 
-    // const newComponent = {
-    //   component_id,
-    //   component_name,
-    //   component_subtype,
-    //   line_representation,
-    //   internal_table,
-    //   moped_subcomponents: subcomponents,
-    //   description,
-    //   label: component_name,
-    //   features: [],
-    // };
-
-    // const linkMode = newComponent.line_representation ? "lines" : "points";
-
-    // setDraftComponent(newComponent);
-    // setLinkMode(linkMode);
-    // // switch to components tab
-    // setShowDialog(false);
     onClose();
   };
 
