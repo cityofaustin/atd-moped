@@ -90,8 +90,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @default {{value: "", column: ""}}
    */
   const [sort, setSort] = useState({
-    column: "project_id",
-    columnId: 0,
+    column: "updated_at",
+    columnId: 8,
     order: "desc",
   });
 
