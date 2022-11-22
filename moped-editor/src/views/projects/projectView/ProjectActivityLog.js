@@ -41,7 +41,7 @@ import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
@@ -68,7 +68,7 @@ const useStyles = makeStyles(theme => ({
   },
   boldText: {
     fontWeight: 700,
-  }
+  },
 }));
 
 const ProjectActivityLog = () => {
@@ -77,15 +77,12 @@ const ProjectActivityLog = () => {
   const userList = {};
   const phaseList = {};
 
-  const {
-    getLookups,
-    lookupLoading,
-    lookupError,
-  } = useActivityLogLookupTables();
+  const { getLookups, lookupLoading, lookupError } =
+    useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
+    onCompleted: (data) => getLookups(data, "activity_log_lookup_tables"),
   });
 
   // const [activityId, setActivityId] = useState(null);
@@ -120,7 +117,7 @@ const ProjectActivityLog = () => {
    * @param {string} field - The field name (column name)
    * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
    */
-  const isFieldGeneric = field =>
+  const isFieldGeneric = (field) =>
     field in ProjectActivityLogGenericDescriptions;
 
   /**
@@ -129,39 +126,45 @@ const ProjectActivityLog = () => {
    * @param {Array} eventList - The data object as provided by apollo
    * @returns {Array}
    */
-  const getDiffs = eventList => {
+  const getDiffs = (eventList) => {
     let outputList = [];
 
-    eventList.forEach(event => {
-      let outputEvent = {...event}
+    eventList.forEach((event) => {
+      let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0].newSchema) {
         // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
-          outputEvent.description=[]
+          outputEvent.description = [];
         } else {
           // otherwise compare the old record to the new record to find the field that was updated
           const newData = outputEvent.record_data.data.new;
           const oldData = outputEvent.record_data.data.old;
-          let changedField = ""
-          Object.keys(newData).forEach(key => {
-            if(newData[key] !== oldData[key]){
+          let changedField = "";
+          Object.keys(newData).forEach((key) => {
+            if (newData[key] !== oldData[key]) {
               changedField = key;
-           }
-         });
-          outputEvent.description = [{"new": newData[changedField], "old": oldData[changedField], "field": changedField}]
+            }
+          });
+          outputEvent.description = [
+            {
+              new: newData[changedField],
+              old: oldData[changedField],
+              field: changedField,
+            },
+          ];
         }
       }
-      outputList.push(outputEvent)
-    })
+      outputList.push(outputEvent);
+    });
     return outputList;
-  }
+  };
 
   if (data) {
-    data["moped_users"].forEach(user => {
+    data["moped_users"].forEach((user) => {
       userList[`${user.user_id}`] = getUserFullName(user);
     });
-    data["moped_phases"].forEach(phase => {
+    data["moped_phases"].forEach((phase) => {
       phaseList[`${phase.phase_id}`] = phase.phase_name;
     });
   }
@@ -195,9 +198,8 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getDiffs(data["moped_activity_log"]).map(
-                  change => {
-                    return (
+                {getDiffs(data["moped_activity_log"]).map((change) => {
+                  return (
                     <TableRow key={change.activity_id}>
                       <TableCell
                         align="left"
@@ -219,8 +221,13 @@ const ProjectActivityLog = () => {
                               className={classes.avatarSmall}
                               // until we update the events in the activity log to use the user id
                               // instead of the cognito id, we have to check both places
-                              src={change?.moped_user?.picture ?? change?.updated_by_user?.picture}
-                              initials={getInitials(change?.moped_user ?? change?.updated_by_user)}
+                              src={
+                                change?.moped_user?.picture ??
+                                change?.updated_by_user?.picture
+                              }
+                              initials={getInitials(
+                                change?.moped_user ?? change?.updated_by_user
+                              )}
                               userColor={null}
                             />
                           </Box>
@@ -229,7 +236,9 @@ const ProjectActivityLog = () => {
                             flexGrow={1}
                             className={classes.avatarName}
                           >
-                            {getUserFullName(change?.moped_user ?? change?.updated_by_user)}
+                            {getUserFullName(
+                              change?.moped_user ?? change?.updated_by_user
+                            )}
                           </Box>
                         </Box>
                       </TableCell>
@@ -278,7 +287,7 @@ const ProjectActivityLog = () => {
                                     </span>
                                   </Grid>
                                 )}
-                              {change.description.map(changeItem => {
+                              {change.description.map((changeItem) => {
                                 return (
                                   <Grid
                                     item
@@ -338,22 +347,23 @@ const ProjectActivityLog = () => {
                           </Box>
                         </Box>
                       </TableCell>
-                      {// <TableCell width="5%">
-                      //   <Button
-                      //     onClick={() => handleDetailsOpen(change.activity_id)}
-                      //   >
-                      //     Details
-                      //   </Button>
-                      // </TableCell>
+                      {
+                        // <TableCell width="5%">
+                        //   <Button
+                        //     onClick={() => handleDetailsOpen(change.activity_id)}
+                        //   >
+                        //     Details
+                        //   </Button>
+                        // </TableCell>
                       }
                     </TableRow>
-                  )}
-                )}
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
         )}
-{/*        {!!activityId && (
+        {/*        {!!activityId && (
           <ProjectActivityLogDialog
             activity_id={activityId}
             handleClose={handleDetailsClose}
