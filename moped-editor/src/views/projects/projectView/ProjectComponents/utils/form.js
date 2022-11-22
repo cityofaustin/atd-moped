@@ -86,7 +86,7 @@ export const useInitialValuesOnAttributesEdit = (
 
     const selectedSubcomponents = initialFormValues.subcomponents.map(
       (subcomponent) => ({
-        value: subcomponent,
+        value: subcomponent.subcomponent_id,
         label: subcomponentOptions.find(
           (option) => option.value === subcomponent.subcomponent_id
         ).label,

@@ -34,18 +34,22 @@ const ComponentEditModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
 
   const onSave = (formData) => {
-    console.log({ formData, componentToEdit });
     const { description, subcomponents } = formData;
+    const { project_component_id: projectComponentId } = componentToEdit;
 
     const subcomponentsArray = subcomponents
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
+          is_deleted: false,
+          project_component_id: projectComponentId,
         }))
       : [];
 
+    console.log({ subcomponentsArray });
+
     updateComponentAttributes({
       variables: {
-        projectComponentId: componentToEdit.project_component_id,
+        projectComponentId: projectComponentId,
         description,
         subcomponents: subcomponentsArray,
       },
@@ -55,7 +59,7 @@ const ComponentEditModal = ({
       setClickedComponent((prevComponent) => ({
         ...prevComponent,
         description,
-        subcomponents: subcomponentsArray,
+        moped_proj_components_subcomponents: subcomponentsArray,
       }));
     });
     // const {

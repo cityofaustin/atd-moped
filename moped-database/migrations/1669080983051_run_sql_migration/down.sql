@@ -1,0 +1,3 @@
+-- Could not auto-generate a down migration.
+-- Please write an appropriate down migration for the SQL below:
+-- ALTER TABLE moped_proj_components_subcomponents ADD CONSTRAINT unique_component_and_subcomponent UNIQUE ("project_component_id", "subcomponent_id");

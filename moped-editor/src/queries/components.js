@@ -49,7 +49,9 @@ export const GET_PROJECT_COMPONENTS = gql`
           subcomponent_name
         }
       }
-      moped_proj_components_subcomponents {
+      moped_proj_components_subcomponents(
+        where: { is_deleted: { _eq: false } }
+      ) {
         subcomponent_id
       }
       feature_street_segments {
@@ -107,6 +109,15 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
       _set: { description: $description }
     ) {
       project_component_id
+    }
+    insert_moped_proj_components_subcomponents(
+      objects: $subcomponents
+      on_conflict: {
+        constraint: unique_component_and_subcomponent
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
     }
   }
 `;
