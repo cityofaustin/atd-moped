@@ -20,6 +20,7 @@ import {
   useComponentFeatureCollection,
 } from "./utils/features";
 import { featureTableFieldMap } from "./utils/makeFeatures";
+import { getClickedFeatureFromMap } from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -142,18 +143,14 @@ export default function TheMap({
     }
 
     /* If not editing, handle click on project feature */
-    if (!isCreatingComponent) {
-      const clickedProjectFeature = e.features.find((feature) =>
-        feature.layer.id.includes("project")
-      );
-      if (!clickedProjectFeature) {
-        return;
-      }
+    if (!isCreatingComponent && !isEditingComponent) {
+      const clickedProjectFeature = getClickedFeatureFromMap(e);
+
       setClickedProjectFeature(clickedProjectFeature);
       return;
     }
 
-    /* We're editing, so handle add/remove draft component feature */
+    /* We're creating, so handle add/remove draft component feature */
     const newDraftComponent = cloneDeep(draftComponent);
     const clickedDraftComponentFeature = e.features.find(
       (feature) => feature.layer.id === draftLayerId
