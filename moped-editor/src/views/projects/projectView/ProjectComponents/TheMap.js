@@ -198,6 +198,10 @@ export default function TheMap({
 
     if (isEditingComponent) {
       // TODO: Find clicked feature in clickedComponent
+      // TODO: Get feature ID from MAP_STYLES config
+      // TODO: Get id from properties from project_geography payload
+      // TODO: Use line_representation to decided whether to worry about point or line layer
+      // TODO: If isEditingComponent, show only that list item with a "Save Edit" button
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
       console.log({ clickedComponent, clickedFeature, clickedFeatureSource });
