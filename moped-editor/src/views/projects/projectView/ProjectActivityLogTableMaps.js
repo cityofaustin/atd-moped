@@ -947,7 +947,7 @@ export const ProjectActivityLogCreateDescriptions = {
   },
   moped_proj_tags: {
     label: (record, userList) => {
-      // how do we get the tag name here
+      // temporary, I have ideas on how to get the tag name here
       return (
         "New tag added"
       );
