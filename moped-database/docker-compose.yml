@@ -20,7 +20,8 @@ services:
             - MOPED_API_EVENTS_URL=http://localhost:5000/events
             - HASURA_ENDPOINT=http://localhost:8080/v1/graphql
             - MOPED_API_APIKEY=DuMmyApiKeyHFVOVto19otC1wX6sP2N0VSKrCD70L10B7Sm525ZR6L672i2F79M9!
-            - HASURA_ADMIN_SECRET=hasurapassword
+            - HASURA_GRAPHQL_JWT_SECRET=${HASURA_JWT_SECRET}
+            - HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
         command: ["graphql-engine", "serve",  "--enable-console"]
 
 
