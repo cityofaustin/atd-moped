@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { makeStyles, useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
@@ -8,6 +8,8 @@ import {
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
 import { MAP_STYLES } from "../mapStyleSettings";
+import { fitBoundsOptions } from "../mapSettings";
+import bbox from "@turf/bbox";
 
 /**
  * Iterate through the map styles config to create an array of interactive layers
@@ -170,3 +172,33 @@ export const useSubcomponentOptions = (component) =>
 
     return options;
   }, [component]);
+
+/**
+ * Use Mapbox fitBounds to zoom to existing project components feature collection
+ * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
+ * @param {Object} data - Data returned from the moped_components query
+ * @param {Array} data.project_geography - Array of existing component features
+ */
+export const useZoomToExistingComponents = (mapRef, data) => {
+  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+
+  useEffect(() => {
+    if (!data || hasMapZoomedInitially) return;
+    if (!mapRef?.current) return;
+
+    if (data.project_geography.length === 0) {
+      setHasMapZoomedInitially(true);
+      return;
+    }
+
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: data.project_geography,
+    };
+
+    const bboxOfAllFeatures = bbox(featureCollection);
+    mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions.zoomToExtent);
+
+    setHasMapZoomedInitially(true);
+  }, [data, hasMapZoomedInitially, mapRef]);
+};

@@ -19,7 +19,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight } from "./utils/map";
+import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import {
   ADD_PROJECT_COMPONENT,
   GET_PROJECT_COMPONENTS,
@@ -33,6 +33,7 @@ import {
 } from "./utils/makeFeatures";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { getDrawId } from "./utils/features";
+import { fitBoundsOptions } from "./mapSettings";
 
 const drawerWidth = 350;
 
@@ -124,6 +125,8 @@ export default function MapView({ projectName, projectStatuses }) {
     return makeComponentFeatureCollectionsMap(data.project_geography);
   }, [data]);
 
+  useZoomToExistingComponents(mapRef, data);
+
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
     const componentId = component.project_component_id;
@@ -133,16 +136,10 @@ export default function MapView({ projectName, projectStatuses }) {
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(featureCollection), {
-      maxZoom: 19,
-      // accounting for fixed top bar
-      padding: {
-        top: 75,
-        bottom: 75,
-        left: 75,
-        right: 75,
-      },
-    });
+    mapRef.current?.fitBounds(
+      bbox(featureCollection),
+      fitBoundsOptions.zoomToClickedComponent
+    );
   };
 
   const onSaveComponent = () => {
