@@ -57,8 +57,10 @@ const DeleteComponentModal = ({
             <Box borderLeft={7} borderColor="secondary.main">
               <ListItem>
                 <ListItemText
-                  primary={clickedComponent.component_name}
-                  secondary={clickedComponent.component_subtype}
+                  primary={clickedComponent.moped_components?.component_name}
+                  secondary={
+                    clickedComponent.moped_components?.component_subtype
+                  }
                 />
               </ListItem>
             </Box>

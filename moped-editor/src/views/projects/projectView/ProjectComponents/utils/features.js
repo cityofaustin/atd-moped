@@ -1,5 +1,19 @@
+import { useMemo } from "react";
 import { v4 as uuidv4 } from "uuid";
-import { getIntersectionLabel } from "./utils";
+import { getIntersectionLabel } from "./map";
+
+export const useComponentFeatureCollection = (
+  component,
+  featureCollectionsByComponentId
+) =>
+  useMemo(() => {
+    if (!component) return { type: "FeatureCollection", features: [] };
+
+    const componentFeatureCollection =
+      featureCollectionsByComponentId[component?.project_component_id];
+
+    return componentFeatureCollection;
+  }, [component, featureCollectionsByComponentId]);
 
 /**
  * Captured from feature object example
@@ -41,8 +55,8 @@ export const makeCapturedFromLayerFeature = (
     properties: {
       ...featureFromAgolGeojson.properties,
       id: featureFromAgolGeojson.id,
-      // AGOL data doesn't include layer so we grab it from the clicked Mapbox feature
-      _layerId: clickedFeature.layer.id,
+      // AGOL data doesn't include source layer ID so we grab it from the clicked Mapbox feature
+      _layerId: clickedFeature.layer.source,
     },
   };
 
@@ -91,8 +105,14 @@ export const makeDrawnFeature = (feature, linkMode) => {
 
 /**
  * Determine if a feature is drawn by the user
- * @param {Object} feature
+ * @param {Object} feature - a feature object
+ * @returns {String} - assigned ID of the drawn feature
+ */
+export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
+
+/**
+ * Determine if a feature is drawn by the user
+ * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnFeature = (feature) =>
-  feature?.properties?.DRAW_ID ? true : false;
+export const isDrawnFeature = (feature) => (getDrawId(feature) ? true : false);

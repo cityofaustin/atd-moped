@@ -1,22 +1,45 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { makeStyles, useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
-import { v4 as uuidv4 } from "uuid";
 import { Icon } from "@material-ui/core";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
+import { MAP_STYLES } from "../mapStyleSettings";
+import { fitBoundsOptions } from "../mapSettings";
+import bbox from "@turf/bbox";
+
+/**
+ * Iterate through the map styles config to create an array of interactive layers
+ */
+export const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
+  (acc, [key, value]) => {
+    if (value.isInteractive) {
+      acc.push(key);
+    }
+
+    return acc;
+  },
+  []
+);
 
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
   useMemo(() => {
+    if (!featureCollection)
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
+
     const features = featureCollection.features.filter((feature) => {
       const thisGeom = feature.geometry.type.toLowerCase();
       return thisGeom.includes(geomType);
     });
-    return { type: "FeatureCollection", features };
+
+    return { type: "FeatureCollection", features: features };
   }, [featureCollection, geomType]);
 
 /*
@@ -72,11 +95,6 @@ export const ComponentOptionWithIcon = ({ option }) => {
     </>
   );
 };
-
-/*
- * Components need a unique id generated on creation to avoid collisions
- */
-export const makeRandomComponentId = () => uuidv4();
 
 /**
  * Use MUI-exposed breakpoints and toolbar height to size content below the toolbar
@@ -154,3 +172,33 @@ export const useSubcomponentOptions = (component) =>
 
     return options;
   }, [component]);
+
+/**
+ * Use Mapbox fitBounds to zoom to existing project components feature collection
+ * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
+ * @param {Object} data - Data returned from the moped_components query
+ * @param {Array} data.project_geography - Array of existing component features
+ */
+export const useZoomToExistingComponents = (mapRef, data) => {
+  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+
+  useEffect(() => {
+    if (!data || hasMapZoomedInitially) return;
+    if (!mapRef?.current) return;
+
+    if (data.project_geography.length === 0) {
+      setHasMapZoomedInitially(true);
+      return;
+    }
+
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: data.project_geography,
+    };
+
+    const bboxOfAllFeatures = bbox(featureCollection);
+    mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions.zoomToExtent);
+
+    setHasMapZoomedInitially(true);
+  }, [data, hasMapZoomedInitially, mapRef]);
+};

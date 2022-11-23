@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
-import { makeDrawnFeature } from "./featureUtils";
+import { makeDrawnFeature, isDrawnFeature, getDrawId } from "./utils/features";
 import { cloneDeep } from "lodash";
 
 /**
@@ -26,7 +26,7 @@ const ComponentDrawTools = ({
 
       const previouslyDrawnFeatures = cloneDeep(
         prevDraftComponent.features
-      ).filter((feature) => !!feature.properties?.["DRAW_ID"]);
+      ).filter((feature) => Boolean(getDrawId(feature)));
 
       // Add properties needed to distinguish drawn features from other features
       drawnFeatures.forEach((feature) => {
@@ -52,16 +52,14 @@ const ComponentDrawTools = ({
 
     if (wasComponentDragged) {
       setDraftComponent((prevDraftComponent) => {
-        const featureIdsToUpdate = updatedFeaturesArray.map(
-          (feature) => feature.properties["DRAW_ID"]
+        const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
+          getDrawId(feature)
         );
 
         const draftFeaturesToKeep = prevDraftComponent.features.filter(
           (feature) => {
-            if (feature.properties["DRAW_ID"]) {
-              return !featureIdsToUpdate.includes(
-                feature.properties["DRAW_ID"]
-              );
+            if (isDrawnFeature(feature)) {
+              return !featureIdsToUpdate.includes(getDrawId(feature));
             } else {
               return true;
             }
@@ -78,14 +76,14 @@ const ComponentDrawTools = ({
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
     setDraftComponent((prevDraftComponent) => {
-      const featureIdsToDelete = deletedFeaturesArray.map(
-        (feature) => feature.properties["DRAW_ID"]
+      const featureIdsToDelete = deletedFeaturesArray.map((feature) =>
+        getDrawId(feature)
       );
 
       const draftFeaturesToKeep = prevDraftComponent.features.filter(
         (feature) => {
-          if (feature.properties["DRAW_ID"]) {
-            return !featureIdsToDelete.includes(feature.properties["DRAW_ID"]);
+          if (isDrawnFeature(feature)) {
+            return !featureIdsToDelete.includes(getDrawId(feature));
           } else {
             return true;
           }

@@ -1,67 +1,8 @@
-import { useMemo } from "react";
 import { Source, Layer } from "react-map-gl";
-import { basemaps, SOURCES } from "./mapSettings";
-import { MAP_STYLES, COLORS } from "./mapStyleSettings";
+import { SOURCES } from "./mapSettings";
+import { MAP_STYLES } from "./mapStyleSettings";
 
 const mapStyles = MAP_STYLES;
-
-export const useComponentFeatureCollection = (component) =>
-  useMemo(() => {
-    if (!component || !component?.features) return null;
-    return { type: "FeatureCollection", features: component.features };
-  }, [component]);
-
-/**
- * Iterate through the mapStyles config to create an array of interactive layers
- */
-export const interactiveLayerIds = Object.entries(mapStyles).reduce(
-  (acc, [key, value]) => {
-    if (value.isInteractive) {
-      acc.push(key);
-    }
-
-    return acc;
-  },
-  []
-);
-
-/**
- * Component that renders Mapbox source and layers needed for the aerial basemap
- * @param {string} basemapKey
- * @returns JSX.Element
- */
-export const BaseMapSourceAndLayers = ({ basemapKey }) => {
-  return (
-    <>
-      <Source {...basemaps.aerial.sources.aerials} />
-      <Layer
-        {...basemaps.aerial.layers.aerials}
-        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
-      />
-      {/* Always show street labels so they can be the "target" of beforeId 
-      and always appear on top of everything else */}
-      <Layer
-        {...{
-          ...basemaps.aerial.layers.streetLabels,
-          layout: {
-            ...basemaps.aerial.layers.streetLabels.layout,
-          },
-          // Update street label text color to be readable on either basemap type
-          paint:
-            basemapKey === "aerial"
-              ? {
-                  "text-color": COLORS.white,
-                  "text-halo-color": COLORS.black,
-                  "text-halo-width": 1,
-                }
-              : {
-                  "text-color": COLORS.black,
-                },
-        }}
-      />
-    </>
-  );
-};
 
 /**
  * Component that renders all sources and layers for project components
@@ -73,7 +14,7 @@ export const BaseMapSourceAndLayers = ({ basemapKey }) => {
  * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
  * @returns JSX.Element
  */
-export const ProjectComponentsSourcesAndLayers = ({
+const ComponentsSourcesAndLayers = ({
   data,
   isEditingComponent,
   linkMode,
@@ -91,43 +32,19 @@ export const ProjectComponentsSourcesAndLayers = ({
   } = data;
 
   const isViewingComponents = !isEditingComponent && !clickedComponent;
+
   const isEditingLines =
     isEditingComponent && linkMode === "lines" && !isDrawing;
   const isEditingPoints =
     isEditingComponent && linkMode === "points" && !isDrawing;
+
   const shouldShowMutedFeatures = clickedComponent || isEditingComponent;
+
+  const isClickedComponentLineRepresentation =
+    clickedComponent?.moped_components?.line_representation;
 
   return (
     <>
-      <Source
-        id="ctn-lines"
-        type="geojson"
-        data={ctnLinesGeojson}
-        promoteId={SOURCES["ctn-lines"]._featureIdProp}
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-lines-underlay"].layerProps,
-            layout: {
-              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
-              visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-lines"].layerProps,
-            layout: {
-              ...mapStyles["ctn-lines"].layerProps.layout,
-              visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
       <Source
         id="project-lines"
         type="geojson"
@@ -161,32 +78,6 @@ export const ProjectComponentsSourcesAndLayers = ({
             layout: {
               ...mapStyles["project-lines-muted"].layerProps.layout,
               visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
-        id="ctn-points"
-        type="geojson"
-        data={ctnPointsGeojson}
-        promoteId={SOURCES["ctn-points"]._featureIdProp}
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-points-underlay"].layerProps,
-            layout: {
-              visibility: isEditingPoints ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["ctn-points"].layerProps,
-            layout: {
-              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -266,7 +157,7 @@ export const ProjectComponentsSourcesAndLayers = ({
                 .layout,
               visibility:
                 componentFeatureCollection &&
-                clickedComponent.line_representation
+                isClickedComponentLineRepresentation
                   ? "visible"
                   : "none",
             },
@@ -279,9 +170,64 @@ export const ProjectComponentsSourcesAndLayers = ({
             layout: {
               visibility:
                 componentFeatureCollection &&
-                !clickedComponent.line_representation
+                !isClickedComponentLineRepresentation
                   ? "visible"
                   : "none",
+            },
+          }}
+        />
+      </Source>
+
+      <Source
+        id="ATD_ADMIN.CTN"
+        type="geojson"
+        data={ctnLinesGeojson}
+        promoteId={SOURCES["ctn-lines"]._featureIdProp}
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-lines-underlay"].layerProps,
+            layout: {
+              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-lines"].layerProps,
+            layout: {
+              ...mapStyles["ctn-lines"].layerProps.layout,
+              visibility: isEditingLines ? "visible" : "none",
+            },
+          }}
+        />
+      </Source>
+
+      <Source
+        id="ATD_ADMIN.CTN_Intersections"
+        type="geojson"
+        data={ctnPointsGeojson}
+        promoteId={SOURCES["ctn-points"]._featureIdProp}
+      >
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-points-underlay"].layerProps,
+            layout: {
+              visibility: isEditingPoints ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...mapStyles["ctn-points"].layerProps,
+            layout: {
+              visibility: isEditingPoints ? "visible" : "none",
             },
           }}
         />
@@ -289,3 +235,5 @@ export const ProjectComponentsSourcesAndLayers = ({
     </>
   );
 };
+
+export default ComponentsSourcesAndLayers;

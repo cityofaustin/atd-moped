@@ -1,4 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
+import { useMutation, useQuery } from "@apollo/client";
+import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
@@ -17,7 +19,21 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight } from "./utils";
+import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
+import {
+  ADD_PROJECT_COMPONENT,
+  GET_PROJECT_COMPONENTS,
+  DELETE_PROJECT_COMPONENT,
+} from "src/queries/components";
+import {
+  makeDrawnLinesInsertionData,
+  makeDrawnPointsInsertionData,
+  makeLineStringFeatureInsertionData,
+  makePointFeatureInsertionData,
+} from "./utils/makeFeatures";
+import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
+import { getDrawId } from "./utils/features";
+import { fitBoundsOptions } from "./mapSettings";
 
 const drawerWidth = 350;
 
@@ -52,9 +68,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
-
-  /* holds this project's components */
-  const [components, setComponents] = useState([]);
+  const { projectId } = useParams();
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
@@ -85,31 +99,120 @@ export default function MapView({ projectName, projectStatuses }) {
 
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
+  const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
+  const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
+  const {
+    data,
+    refetch: refetchProjectComponents,
+    error,
+  } = useQuery(GET_PROJECT_COMPONENTS, {
+    variables: { projectId },
+    fetchPolicy: "no-cache",
+  });
+
+  if (error) console.log(error);
+
+  /* holds this project's components */
+  const components = useMemo(() => {
+    if (!data?.moped_proj_components) return [];
+
+    return data.moped_proj_components;
+  }, [data]);
+
+  const featureCollectionsByComponentId = useMemo(() => {
+    if (!data?.project_geography) return {};
+
+    return makeComponentFeatureCollectionsMap(data.project_geography);
+  }, [data]);
+
+  useZoomToExistingComponents(mapRef, data);
+
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: component.features,
-    };
+    const componentId = component.project_component_id;
+    const featureCollection = featureCollectionsByComponentId[componentId];
+
     setClickedComponent(component);
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(bbox(featureCollection), {
-      maxZoom: 19,
-      // accounting for fixed top bar
-      padding: {
-        top: 75,
-        bottom: 75,
-        left: 75,
-        right: 75,
-      },
-    });
+    mapRef.current?.fitBounds(
+      bbox(featureCollection),
+      fitBoundsOptions.zoomToClickedComponent
+    );
   };
 
   const onSaveComponent = () => {
-    const newComponents = [...components, draftComponent];
-    setComponents(newComponents);
+    /* Start data preparation */
+    const {
+      component_id,
+      description,
+      moped_subcomponents,
+      component_name,
+      internal_table,
+      features,
+    } = draftComponent;
+
+    const subcomponentsArray = moped_subcomponents
+      ? moped_subcomponents.map((subcomponent) => ({
+          subcomponent_id: subcomponent.value,
+        }))
+      : [];
+
+    const featureTable = internal_table;
+
+    const featuresToInsert = [];
+    const drawnLinesToInsert = [];
+    const drawnPointsToInsert = [];
+
+    const drawnFeatures = features.filter((feature) =>
+      Boolean(getDrawId(feature))
+    );
+    const selectedFeatures = features.filter(
+      (feature) => !Boolean(getDrawId(feature))
+    );
+
+    if (featureTable === "feature_street_segments") {
+      makeLineStringFeatureInsertionData(
+        featureTable,
+        selectedFeatures,
+        featuresToInsert
+      );
+      makeDrawnLinesInsertionData(drawnFeatures, drawnLinesToInsert);
+    } else if (
+      featureTable === "feature_intersections" ||
+      featureTable === "feature_signals"
+    ) {
+      makePointFeatureInsertionData(
+        featureTable,
+        selectedFeatures,
+        featuresToInsert
+      );
+      makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
+    }
+
+    const newComponentData = {
+      description,
+      component_id,
+      name: component_name,
+      project_id: projectId,
+      moped_proj_components_subcomponents: {
+        data: subcomponentsArray,
+      },
+      [featureTable]: {
+        data: featuresToInsert,
+      },
+      feature_drawn_lines: { data: drawnLinesToInsert },
+      feature_drawn_points: { data: drawnPointsToInsert },
+    };
+    /* End data preparation */
+
+    addProjectComponent({ variables: { object: newComponentData } }).then(
+      () => {
+        refetchProjectComponents();
+      }
+    );
+
     setIsEditingComponent(false);
     setDraftComponent(null);
     setLinkMode(null);
@@ -137,10 +240,12 @@ export default function MapView({ projectName, projectStatuses }) {
   };
 
   const onDeleteComponent = () => {
-    const newComponentList = components.filter(
-      (comp) => comp._id !== clickedComponent._id
-    );
-    setComponents(newComponentList);
+    deleteProjectComponent({
+      variables: { projectComponentId: clickedComponent.project_component_id },
+    }).then(() => {
+      refetchProjectComponents();
+    });
+
     setClickedComponent(null);
     setIsDeletingComponent(false);
   };
@@ -188,10 +293,12 @@ export default function MapView({ projectName, projectStatuses }) {
                 />
               )}
               {components.map((component) => {
-                const isExpanded = clickedComponent?._id === component._id;
+                const isExpanded =
+                  clickedComponent?.project_component_id ===
+                  component.project_component_id;
                 return (
                   <ComponentListItem
-                    key={component._id}
+                    key={component.project_component_id}
                     component={component}
                     isExpanded={isExpanded}
                     setClickedComponent={setClickedComponent}
@@ -221,12 +328,12 @@ export default function MapView({ projectName, projectStatuses }) {
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
+              featureCollectionsByComponentId={featureCollectionsByComponentId}
             />
           </div>
           <ComponentEditModal
             showDialog={showComponentEditDialog}
             setShowDialog={setShowComponentEditDialog}
-            draftComponent={draftComponent}
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
             setIsEditingComponent={setIsEditingComponent}

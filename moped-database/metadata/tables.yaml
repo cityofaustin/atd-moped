@@ -749,6 +749,10 @@
 - table:
     name: moped_components
     schema: public
+  object_relationships:
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
     - name: moped_subcomponents
       using:
@@ -767,6 +771,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
     - role: moped-editor
       permission:
         check: {}
@@ -776,6 +781,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -785,6 +791,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-editor
       permission:
@@ -794,6 +801,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-viewer
       permission:
@@ -803,6 +811,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -813,6 +822,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
         check: {}
     - role: moped-editor
@@ -823,6 +833,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
         check: {}
 - table:
@@ -1367,6 +1378,51 @@
       using:
         foreign_key_constraint_on: component_id
   array_relationships:
+    - name: feature_drawn_lines
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_lines
+            schema: public
+    - name: feature_drawn_points
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_points
+            schema: public
+    - name: feature_intersections
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_intersections
+            schema: public
+    - name: feature_signals
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_signals
+            schema: public
+    - name: feature_street_segments
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_street_segments
+            schema: public
     - name: moped_proj_components_subcomponents
       using:
         foreign_key_constraint_on:

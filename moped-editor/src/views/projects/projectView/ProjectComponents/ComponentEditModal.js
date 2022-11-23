@@ -17,10 +17,9 @@ import CloseIcon from "@material-ui/icons/Close";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import {
   ComponentOptionWithIcon,
-  makeRandomComponentId,
   useComponentOptions,
   useSubcomponentOptions,
-} from "./utils";
+} from "./utils/map";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -82,7 +81,6 @@ const ComponentEditModal = ({
   setDraftComponent,
   setLinkMode,
   setIsEditingComponent,
-  linkMode,
 }) => {
   const classes = useStyles();
 
@@ -106,6 +104,7 @@ const ComponentEditModal = ({
           component_name,
           component_subtype,
           line_representation,
+          feature_layer: { internal_table },
         },
       },
       subcomponents,
@@ -113,11 +112,11 @@ const ComponentEditModal = ({
     } = formData;
 
     const newComponent = {
-      _id: makeRandomComponentId(),
       component_id,
       component_name,
       component_subtype,
       line_representation,
+      internal_table,
       moped_subcomponents: subcomponents,
       description,
       label: component_name,

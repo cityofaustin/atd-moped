@@ -1,21 +1,25 @@
 import { useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
-import FeaturePopup from "./FeaturePopup";
+// import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
+import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
+import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
-import { useFeatureTypes } from "./utils";
-import { useAgolFeatures, findFeatureInAgolGeojsonFeatures } from "./agolUtils";
+import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
 import {
-  BaseMapSourceAndLayers,
-  interactiveLayerIds,
-  useComponentFeatureCollection,
-  ProjectComponentsSourcesAndLayers,
-} from "./mapUtils";
+  useAgolFeatures,
+  findFeatureInAgolGeojsonFeatures,
+} from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
-import { isDrawnFeature, makeCapturedFromLayerFeature } from "./featureUtils";
+import {
+  isDrawnFeature,
+  makeCapturedFromLayerFeature,
+  useComponentFeatureCollection,
+} from "./utils/features";
+import { featureTableFieldMap } from "./utils/makeFeatures";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -26,14 +30,31 @@ mapboxgl.workerClass =
 // returns geojson of features across all components
 const useProjectFeatures = (components) =>
   useMemo(() => {
+    if (components.length === 0)
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
+
     const allComponentfeatures = [];
-    components.forEach((component) =>
-      allComponentfeatures.push(component.features)
-    );
+
+    components.forEach((component) => {
+      Object.keys(featureTableFieldMap).forEach((key) => {
+        if (component.hasOwnProperty(key))
+          allComponentfeatures.push(component[key]);
+      });
+    });
+
+    // Make features valid GeoJSON by adding type and properties attributes
+    const geoJsonFeatures = allComponentfeatures.flat().map((component) => ({
+      ...component,
+      type: "Feature",
+      properties: {},
+    }));
 
     return {
       type: "FeatureCollection",
-      features: allComponentfeatures.flat(),
+      features: geoJsonFeatures,
     };
   }, [components]);
 
@@ -59,6 +80,7 @@ export default function TheMap({
   setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
+  featureCollectionsByComponentId,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -70,8 +92,10 @@ export default function TheMap({
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
-  const componentFeatureCollection =
-    useComponentFeatureCollection(clickedComponent);
+  const componentFeatureCollection = useComponentFeatureCollection(
+    clickedComponent,
+    featureCollectionsByComponentId
+  );
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
@@ -209,7 +233,7 @@ export default function TheMap({
         setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
-      <ProjectComponentsSourcesAndLayers
+      <ComponentsSourcesAndLayers
         data={data}
         isEditingComponent={isEditingComponent}
         isDrawing={isDrawing}
@@ -218,12 +242,12 @@ export default function TheMap({
         clickedComponent={clickedComponent}
         componentFeatureCollection={componentFeatureCollection}
       />
-      <FeaturePopup
+      {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
         components={components}
         setClickedComponent={setClickedComponent}
-      />
+      /> */}
     </MapGL>
   );
 }

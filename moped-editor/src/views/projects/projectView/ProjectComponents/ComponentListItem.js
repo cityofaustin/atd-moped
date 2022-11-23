@@ -48,8 +48,8 @@ export default function ComponentListItem({
         }}
       >
         <ListItemText
-          primary={component.component_name}
-          secondary={component.component_subtype}
+          primary={component.moped_components?.component_name}
+          secondary={component.moped_components?.component_subtype}
         />
         <ListItemSecondaryAction>
           <IconButton

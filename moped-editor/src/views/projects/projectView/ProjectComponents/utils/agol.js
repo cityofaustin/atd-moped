@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from "react";
-import { SOURCES, MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
+import { SOURCES, MIN_SELECT_FEATURE_ZOOM } from "../mapSettings";
 
 /**
  * Provides a hook and supporting functions to query an AGOL feature service
