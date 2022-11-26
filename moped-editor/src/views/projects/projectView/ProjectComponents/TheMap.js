@@ -204,7 +204,15 @@ export default function TheMap({
       // TODO: If isEditingComponent, show only that list item with a "Save Edit" button
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
-      console.log({ clickedComponent, clickedFeature, clickedFeatureSource });
+      const featureId = clickedFeature.properties.CTN_SEGMENT_ID; // MAP_STYLES
+      console.log({
+        clickedComponent,
+        clickedFeature,
+        clickedFeatureSource,
+        featureId,
+      });
+
+      // Find the clicked feature in
     }
 
     // setHoveredOnMapFeatureId(newFeature.properties.id);
