@@ -28,19 +28,20 @@ export const SOURCES = {
 };
 
 export const initialViewState = {
-  latitude: 30.28,
-  longitude: -97.74,
-  zoom: 15,
+  latitude: 30.2747,
+  longitude: -97.7406,
+  zoom: 12,
 };
 
 export const fitBoundsOptions = {
-  maxZoom: 19,
-  // accounting for fixed top bar
-  padding: {
-    top: 75,
-    bottom: 75,
-    left: 75,
-    right: 75,
+  zoomToExtent: {
+    maxZoom: 15,
+    // accounting for fixed top bar
+    padding: 200,
+  },
+  zoomToClickedComponent: {
+    maxZoom: 19,
+    padding: 200,
   },
 };
 
