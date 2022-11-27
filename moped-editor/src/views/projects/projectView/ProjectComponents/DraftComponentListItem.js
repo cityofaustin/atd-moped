@@ -6,7 +6,13 @@ import ListItemText from "@material-ui/core/ListItemText";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 
-const DraftComponentListItem = ({ component, onSave, onCancel }) => {
+const DraftComponentListItem = ({
+  component,
+  onSave,
+  onCancel,
+  saveButtonText,
+  saveButtonDisabled,
+}) => {
   return (
     <Box
       borderLeft={7}
@@ -41,11 +47,11 @@ const DraftComponentListItem = ({ component, onSave, onCancel }) => {
               size="small"
               color="primary"
               variant="contained"
-              disabled={!component?.features.length > 0}
+              disabled={saveButtonDisabled}
               startIcon={<CheckCircle />}
               onClick={onSave}
             >
-              Save
+              {saveButtonText}
             </Button>
           }
         />

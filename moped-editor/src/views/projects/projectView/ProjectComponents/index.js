@@ -80,6 +80,9 @@ export default function MapView({ projectName, projectStatuses }) {
   /* holds the state of a component that's being created */
   const [draftComponent, setDraftComponent] = useState(null);
 
+  /* holds the features added when editing an existing component */
+  const [createdOnEditFeatures, setCreatedOnEditFeatures] = useState([]);
+
   /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
 
@@ -308,11 +311,22 @@ export default function MapView({ projectName, projectStatuses }) {
                   <Divider />
                 </>
               )}
-              {draftComponent && (
+              {draftComponent && !isEditingComponent && (
                 <DraftComponentListItem
                   component={draftComponent}
                   onSave={onSaveComponent}
                   onCancel={onCancelComponentCreate}
+                  saveButtonDisabled={!draftComponent?.features.length > 0}
+                  saveButtonText="Save"
+                />
+              )}
+              {isEditingComponent && (
+                <DraftComponentListItem
+                  component={clickedComponent}
+                  onSave={onSaveComponent}
+                  onCancel={onCancelComponentCreate}
+                  saveButtonDisabled={false}
+                  saveButtonText="Save Edit"
                 />
               )}
               {components.map((component) => {
@@ -353,6 +367,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               featureCollectionsByComponentId={featureCollectionsByComponentId}
+              setCreatedOnEditFeatures={setCreatedOnEditFeatures}
             />
           </div>
           <ComponentCreateModal
