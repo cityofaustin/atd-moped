@@ -217,6 +217,11 @@ export default function MapView({ projectName, projectStatuses }) {
     setShowEditModeDialog(false);
   };
 
+  // TODO: Ways to simplify this
+  // The map only needs to know what to show in blue
+  // It doesn't need to know whether that is the clicked component or editing component
+  // How can we create a slot for that data and simplify all of the prep work?
+
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
