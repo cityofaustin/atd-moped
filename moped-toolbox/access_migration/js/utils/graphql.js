@@ -14,13 +14,12 @@ function makeHasuraRequest({ query, variables, env = "local" }) {
     "X-Hasura-Admin-Secret": HASURA.admin_secret[env],
     "content-type": "application/json",
   };
-  const res = request({
+  return request({
     url: HASURA.endpoint[env],
     document: query,
     variables,
     requestHeaders: headers,
   }).then((data) => data);
-  return res;
 }
 
 module.exports = {
