@@ -10,7 +10,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "graphql-request": "^5.0.0",
-    "winston": "^3.8.2"
+    "graphql-request": "^5.0.0"
   }
 }

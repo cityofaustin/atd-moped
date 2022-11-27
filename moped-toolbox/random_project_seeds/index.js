@@ -1,6 +1,5 @@
 const { gql } = require("graphql-request");
 const { makeHasuraRequest } = require("./utils/graphql");
-const { logger } = require("./utils/logger");
 const { settings } = require("./utils/settings");
 const { lookups } = require("./utils/lookups");
 
@@ -190,7 +189,7 @@ const chunkProjects = (projects, chunkSize = 50) => {
 };
 
 async function main() {
-  logger.info("Deleting all projects...");
+  console.log("Deleting all projects...");
   await makeHasuraRequest({
     query: DELETE_ALL_PROJECTS_MUTATION,
   });
@@ -198,11 +197,11 @@ async function main() {
     randomProject()
   );
 
-  logger.info(`Inserting ${projects.length} projects...`);
+  console.log(`Inserting ${projects.length} projects...`);
 
   for (const chunk of chunkProjects(projects)) {
     try {
-      logger.info(`Uploading ${chunk.length} projects...`);
+      console.log(`Uploading ${chunk.length} projects...`);
       await makeHasuraRequest({
         query: INSERT_PROJECTS_MUTATION,
         variables: { objects: chunk },
