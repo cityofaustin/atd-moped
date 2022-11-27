@@ -232,6 +232,12 @@ export default function MapView({ projectName, projectStatuses }) {
     setLinkMode(null);
   };
 
+  const onCancelComponentMapEdit = () => {
+    setIsEditingComponent(false);
+    setCreatedOnEditFeatures([]);
+    setLinkMode(null);
+  };
+
   const onStartCreatingComponent = () => {
     setIsCreatingComponent(true);
     setShowComponentCreateDialog(true);
@@ -242,7 +248,7 @@ export default function MapView({ projectName, projectStatuses }) {
     setShowEditModeDialog(true);
   };
 
-  const onCancelComponentEdit = () => {
+  const onCancelComponentAttributesEdit = () => {
     setShowEditModeDialog(false);
     setIsCreatingComponent(false);
   };
@@ -275,6 +281,8 @@ export default function MapView({ projectName, projectStatuses }) {
     setIsEditingComponent(true);
     setShowEditModeDialog(false);
   };
+
+  console.log(clickedComponent);
 
   return (
     <Dialog fullScreen open={true}>
@@ -313,7 +321,8 @@ export default function MapView({ projectName, projectStatuses }) {
               )}
               {draftComponent && !isEditingComponent && (
                 <DraftComponentListItem
-                  component={draftComponent}
+                  primaryText={draftComponent.component_name}
+                  secondaryText={draftComponent.component_subtype}
                   onSave={onSaveComponent}
                   onCancel={onCancelComponentCreate}
                   saveButtonDisabled={!draftComponent?.features.length > 0}
@@ -322,9 +331,12 @@ export default function MapView({ projectName, projectStatuses }) {
               )}
               {isEditingComponent && (
                 <DraftComponentListItem
-                  component={clickedComponent}
+                  primaryText={clickedComponent.moped_components.component_name}
+                  secondaryText={
+                    clickedComponent.moped_components.component_subtype
+                  }
                   onSave={onSaveComponent}
-                  onCancel={onCancelComponentCreate}
+                  onCancel={onCancelComponentMapEdit}
                   saveButtonDisabled={false}
                   saveButtonText="Save Edit"
                 />
@@ -387,7 +399,7 @@ export default function MapView({ projectName, projectStatuses }) {
           />
           <EditModeDialog
             showDialog={showEditModeDialog}
-            onClose={onCancelComponentEdit}
+            onClose={onCancelComponentAttributesEdit}
             onEditAttributes={onEditAttributes}
             onEditFeatures={onEditFeatures}
           />

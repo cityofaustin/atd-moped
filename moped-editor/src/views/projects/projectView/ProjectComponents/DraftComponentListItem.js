@@ -7,7 +7,8 @@ import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
 
 const DraftComponentListItem = ({
-  component,
+  primaryText,
+  secondaryText,
   onSave,
   onCancel,
   saveButtonText,
@@ -21,10 +22,7 @@ const DraftComponentListItem = ({
       }}
     >
       <ListItem dense>
-        <ListItemText
-          primary={component.component_name}
-          secondary={component.component_subtype}
-        />
+        <ListItemText primary={primaryText} secondary={secondaryText} />
       </ListItem>
       <ListItem dense>
         <ListItemText
