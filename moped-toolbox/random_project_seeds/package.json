@@ -1,0 +1,16 @@
+{
+  "name": "random_project_seeds",
+  "version": "1.0.0",
+  "description": "Create random projects in Moped",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "graphql-request": "^5.0.0",
+    "winston": "^3.8.2"
+  }
+}
