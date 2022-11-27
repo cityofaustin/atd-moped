@@ -1,6 +1,6 @@
 const settings = {
   /* number of projects to be created */
-  projects: 2000,
+  projects: 500,
   /* number of other records to be created per project */
   proj_phases: 6,
   proj_milestones: 20,
