@@ -3,7 +3,12 @@
 
 ### Issues to make
 
-- fix padding in local env now that we have a banner
+- list view query performance - create indexes - see https://explain.dalibo.com/
+  - https://github.com/cityofaustin/atd-data-tech/issues/10851
+  
+- project notes - stop using added_by (user text) - use added_by_user_id
+- on moped_project, track this rel: moped_proj_contract . project_id  → moped_project . project_id  
+
 - work authorizations - can we just mirror Data Tracker functionality in SMB?
   - if we must; strive for simplest implementation!
   - work order id (text)
@@ -21,7 +26,6 @@
 - create and track fk relationship between notes and projects
 - use a lookup table for note types 
 - drop unused moped_proj_phase columns
-- list view query performance - create indexes - see https://explain.dalibo.com/
 
 ### NW Questions
 
