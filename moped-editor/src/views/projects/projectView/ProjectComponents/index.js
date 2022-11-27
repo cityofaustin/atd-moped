@@ -282,8 +282,6 @@ export default function MapView({ projectName, projectStatuses }) {
     setShowEditModeDialog(false);
   };
 
-  console.log(clickedComponent);
-
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -319,7 +317,7 @@ export default function MapView({ projectName, projectStatuses }) {
                   <Divider />
                 </>
               )}
-              {draftComponent && !isEditingComponent && (
+              {draftComponent && isCreatingComponent && (
                 <DraftComponentListItem
                   primaryText={draftComponent.component_name}
                   secondaryText={draftComponent.component_subtype}
@@ -345,16 +343,19 @@ export default function MapView({ projectName, projectStatuses }) {
                 const isExpanded =
                   clickedComponent?.project_component_id ===
                   component.project_component_id;
+                const isEditingThisComponent = isExpanded && isEditingComponent;
                 return (
-                  <ComponentListItem
-                    key={component.project_component_id}
-                    component={component}
-                    isExpanded={isExpanded}
-                    setClickedComponent={setClickedComponent}
-                    setIsDeletingComponent={setIsDeletingComponent}
-                    onStartEditingComponent={onStartEditingComponent}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                  />
+                  !isEditingThisComponent && (
+                    <ComponentListItem
+                      key={component.project_component_id}
+                      component={component}
+                      isExpanded={isExpanded}
+                      setClickedComponent={setClickedComponent}
+                      setIsDeletingComponent={setIsDeletingComponent}
+                      onStartEditingComponent={onStartEditingComponent}
+                      onClickZoomToComponent={onClickZoomToComponent}
+                    />
+                  )
                 );
               })}
             </List>
