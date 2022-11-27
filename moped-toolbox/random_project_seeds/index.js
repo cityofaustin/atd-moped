@@ -190,21 +190,27 @@ const chunkProjects = (projects, chunkSize = 50) => {
 
 async function main() {
   console.log("Deleting all projects...");
+
   await makeHasuraRequest({
     query: DELETE_ALL_PROJECTS_MUTATION,
   });
+
+  console.log(`Generating ${settings.projects} random projects...`);
+
   const projects = [...new Array(settings.projects)].map((_) =>
     randomProject()
   );
 
-  console.log(`Inserting ${projects.length} projects...`);
+  const chunks = chunkProjects(projects);
 
-  for (const chunk of chunkProjects(projects)) {
+  for (let i = 0; i < chunks.length; i++) {
     try {
-      console.log(`Uploading ${chunk.length} projects...`);
+      console.log(
+        `${i+1}/${chunks.length} - uploading ${chunks[i].length} projects...`
+      );
       await makeHasuraRequest({
         query: INSERT_PROJECTS_MUTATION,
-        variables: { objects: chunk },
+        variables: { objects: chunks[i] },
       });
     } catch (err) {
       console.error(err);
