@@ -204,6 +204,10 @@ export default function TheMap({
       // TODO: If isEditingComponent, show only that list item with a "Save Edit" button
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
+      // We have the source layer like "ATD_ADMIN.CTN" here
+      // We need to be able to translate "ATD_ADMIN.CTN" to the correct table in the DB
+      // Add new feature tied to clickedComponent or remove component_id from feature table (or hard delete it)
+      // These only happen when clicking the new "Save Edit" button
       const featureId = clickedFeature.properties.CTN_SEGMENT_ID; // MAP_STYLES
       console.log({
         clickedComponent,
@@ -212,7 +216,12 @@ export default function TheMap({
         featureId,
       });
 
-      // Find the clicked feature in
+      // Add a segment
+      // Collect new features in state in a custom hook and then send add them on save click
+
+      // Remove an existing segment
+      // Check the clicked component to see it is already associated with the component
+      // If so, add to list of feature IDs to remove on save click
     }
 
     // setHoveredOnMapFeatureId(newFeature.properties.id);
