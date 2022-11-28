@@ -25,6 +25,7 @@ import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { fitBoundsOptions } from "./mapSettings";
 import { onSaveComponent, onUpdateComponent } from "./utils/crud";
 import { useCreateComponent } from "./utils/useCreateComponent";
+import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
 import ComponentEditModal from "./ComponentEditModal";
 
@@ -67,6 +68,18 @@ export default function MapView({ projectName, projectStatuses }) {
   are `points`, `lines`, or `null` */
   const [linkMode, setLinkMode] = useState(null);
 
+  /* tracks a component clicked from the list or the projectFeature popup */
+  const [clickedComponent, setClickedComponent] = useState(null);
+
+  /* tracks a projectFeature clicked from the map */
+  const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
+
+  /* tracks a projectFeature hovered on map */
+  const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
+
+  /* tracks the loading state of AGOL feature service fetching */
+  const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
+
   const {
     isCreatingComponent,
     setIsCreatingComponent,
@@ -78,31 +91,19 @@ export default function MapView({ projectName, projectStatuses }) {
   } = useCreateComponent();
 
   const {
+    isEditingComponent,
+    setIsEditingComponent,
+    showComponentEditDialog,
+    setShowComponentEditDialog,
+    showEditModeDialog,
+    setShowEditModeDialog,
+  } = useUpdateComponent();
+
+  const {
     isDeletingComponent,
     setIsDeletingComponent,
     deleteProjectComponent,
   } = useDeleteComponent();
-
-  /* tracks a component clicked from the list or the projectFeature popup */
-  const [clickedComponent, setClickedComponent] = useState(null);
-
-  /* tracks a projectFeature clicked from the map */
-  const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
-
-  /* holds the features added when editing an existing component */
-  const [createdOnEditFeatures, setCreatedOnEditFeatures] = useState([]);
-
-  /* tracks a projectFeature hovered on map */
-  const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
-
-  /* if a component is being edited */
-  const [isEditingComponent, setIsEditingComponent] = useState(false);
-  const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
-
-  const [showEditModeDialog, setShowEditModeDialog] = useState(false);
-
-  /* tracks the loading state of AGOL feature service fetching */
-  const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
   const {
     data,
