@@ -111,7 +111,6 @@ export default function MapView({ projectName, projectStatuses }) {
     showComponentEditDialog,
     setShowComponentEditDialog,
     showEditModeDialog,
-    setShowEditModeDialog,
     createdOnEditFeatures,
     setCreatedOnEditFeatures,
     onStartEditingComponent,
@@ -119,13 +118,15 @@ export default function MapView({ projectName, projectStatuses }) {
     onCancelComponentAttributesEdit,
     onCancelComponentMapEdit,
     onEditAttributes,
-  } = useUpdateComponent({ setLinkMode });
+    onEditFeatures,
+  } = useUpdateComponent({ clickedComponent, setLinkMode });
 
-  const {
-    isDeletingComponent,
-    setIsDeletingComponent,
-    deleteProjectComponent,
-  } = useDeleteComponent();
+  const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
+    useDeleteComponent({
+      clickedComponent,
+      setClickedComponent,
+      refetchProjectComponents,
+    });
 
   if (error) console.log(error);
 
@@ -157,30 +158,6 @@ export default function MapView({ projectName, projectStatuses }) {
       bbox(featureCollection),
       fitBoundsOptions.zoomToClickedComponent
     );
-  };
-
-  const onDeleteComponent = () => {
-    deleteProjectComponent({
-      variables: { projectComponentId: clickedComponent.project_component_id },
-    }).then(() => {
-      refetchProjectComponents();
-    });
-
-    setClickedComponent(null);
-    setIsDeletingComponent(false);
-  };
-
-  const onEditFeatures = () => {
-    // TODO: Add helper to convert line representation to "lines" or "points"
-    // TODO: Set clicked component as the draft component
-    const {
-      moped_components: { line_representation },
-    } = clickedComponent;
-    const linkMode = line_representation === true ? "lines" : "points";
-
-    setLinkMode(linkMode);
-    setIsEditingComponent(true);
-    setShowEditModeDialog(false);
   };
 
   // TODO: Ways to simplify this

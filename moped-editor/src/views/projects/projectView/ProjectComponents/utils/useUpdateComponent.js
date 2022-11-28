@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { onUpdateComponent } from "./crud";
 
-export const useUpdateComponent = ({ setLinkMode }) => {
+export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
   const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
@@ -34,13 +34,25 @@ export const useUpdateComponent = ({ setLinkMode }) => {
     setLinkMode(null);
   };
 
+  const onEditFeatures = () => {
+    // TODO: Add helper to convert line representation to "lines" or "points"
+    // TODO: Set clicked component as the draft component
+    const {
+      moped_components: { line_representation },
+    } = clickedComponent;
+    const linkMode = line_representation === true ? "lines" : "points";
+
+    setLinkMode(linkMode);
+    setIsEditingComponent(true);
+    setShowEditModeDialog(false);
+  };
+
   return {
     isEditingComponent,
     setIsEditingComponent,
     showComponentEditDialog,
     setShowComponentEditDialog,
     showEditModeDialog,
-    setShowEditModeDialog,
     createdOnEditFeatures,
     setCreatedOnEditFeatures,
     onStartEditingComponent,
@@ -48,5 +60,6 @@ export const useUpdateComponent = ({ setLinkMode }) => {
     onCancelComponentAttributesEdit,
     onCancelComponentMapEdit,
     onEditAttributes,
+    onEditFeatures,
   };
 };
