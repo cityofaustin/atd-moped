@@ -44,6 +44,17 @@ fields = [
     in: "StatusDate",
     out: "updated_at",
     required: false,
+    transform(row) {
+      // use the last status date if present
+      if (row["StatusDate"]) {
+        return row["StatusDate"];
+      } else if (row["ProjectInitiationDate"]) {
+        // or the project initiation date if present
+        return row["ProjectInitiationDate"];
+      } else {
+        return "2010-01-01";
+      }
+    },
   },
   {
     in: "ProjectInitiationDate",
