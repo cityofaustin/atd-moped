@@ -207,6 +207,7 @@ export default function TheMap({
     }
 
     if (isEditingComponent) {
+      console.log(e.features);
       // TODO: Find clicked feature in clickedComponent
       // TODO: Get feature ID from MAP_STYLES config
       // TODO: Get id from properties from project_geography payload
@@ -243,7 +244,7 @@ export default function TheMap({
 
       // If the feature is not alread in the draftEditComponent, add it
       const tableToInsert =
-        clickedComponent.moped_components.feature_layer.internal_table;
+        clickedComponent?.moped_components?.feature_layer?.internal_table;
 
       setDraftEditComponent((prev) => {
         const isFeatureAlreadyInComponent = Boolean(
@@ -253,7 +254,6 @@ export default function TheMap({
               feature?.properties?.CTN_SEGMENT_ID === featureId
           )
         );
-        console.log({ isFeatureAlreadyInComponent, prev, featureId });
 
         if (!isFeatureAlreadyInComponent) {
           return [
@@ -271,9 +271,6 @@ export default function TheMap({
                   feature?.ctn_segment_id !== featureId &&
                   feature?.properties?.CTN_SEGMENT_ID !== featureId;
                 console.log(doesFeatureMatchId);
-                console.log(typeof feature?.ctn_segment_id);
-                console.log(typeof feature?.properties?.CTN_SEGMENT_ID);
-                console.log(typeof featureId);
                 return doesFeatureMatchId;
               }),
             },
@@ -338,6 +335,7 @@ export default function TheMap({
       <EditDraftComponentSourcesAndLayers
         draftEditComponentFeatures={draftEditComponentFeatures}
         linkMode={linkMode}
+        isEditingComponent={isEditingComponent}
       />
       <CTNSourcesAndLayers
         isCreatingComponent={isCreatingComponent}

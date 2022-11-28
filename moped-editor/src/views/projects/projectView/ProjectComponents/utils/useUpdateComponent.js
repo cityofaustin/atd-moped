@@ -21,7 +21,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
 
   const onEditFeatures = () => {
     // TODO: Add helper to convert line representation to "lines" or "points"
-    // TODO: Set clicked component as the draft component
     const {
       moped_components: { line_representation },
     } = clickedComponent;
@@ -31,7 +30,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     setIsEditingComponent(true);
     setShowEditModeDialog(false);
     setDraftEditComponent([clickedComponent]);
-    console.log({ clickedComponent, message: "Fired" });
   };
 
   const onSaveEditedComponent = () => {

@@ -8,11 +8,13 @@ const mapStyles = MAP_STYLES;
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} draftEditComponentFeatures - GeoJSON feature collection of the draft component
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
+ * @param {Boolean} isEditingComponent - are we editing a component?
  * @returns JSX.Element
  */
 const EditDraftComponentSourcesAndLayers = ({
   draftEditComponentFeatures,
   linkMode,
+  isEditingComponent,
 }) => {
   return (
     <>
@@ -29,7 +31,8 @@ const EditDraftComponentSourcesAndLayers = ({
             layout: {
               ...mapStyles["clicked-component-features-lines"].layerProps
                 .layout,
-              visibility: linkMode === "lines" ? "visible" : "none",
+              visibility:
+                linkMode === "lines" && isEditingComponent ? "visible" : "none",
             },
           }}
         />
@@ -44,7 +47,10 @@ const EditDraftComponentSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...mapStyles["edit-draft-component-points"].layerProps}
-          layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
+          layout={{
+            visibility:
+              linkMode === "points" && isEditingComponent ? "visible" : "none",
+          }}
         />
       </Source>
     </>
