@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import { Dialog } from "@material-ui/core";
@@ -20,15 +20,12 @@ import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
-import {
-  ADD_PROJECT_COMPONENT,
-  GET_PROJECT_COMPONENTS,
-  DELETE_PROJECT_COMPONENT,
-} from "src/queries/components";
+import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { fitBoundsOptions } from "./mapSettings";
 import { onSaveComponent, onUpdateComponent } from "./utils/crud";
 import { useCreateComponent } from "./utils/useCreateComponent";
+import { useDeleteComponent } from "./utils/useDeleteComponent";
 import ComponentEditModal from "./ComponentEditModal";
 
 const drawerWidth = 350;
@@ -66,6 +63,10 @@ export default function MapView({ projectName, projectStatuses }) {
   const mapRef = useRef();
   const { projectId } = useParams();
 
+  /* sets the type of geometry to use in component edit mode. allowed values
+  are `points`, `lines`, or `null` */
+  const [linkMode, setLinkMode] = useState(null);
+
   const {
     isCreatingComponent,
     setIsCreatingComponent,
@@ -73,7 +74,14 @@ export default function MapView({ projectName, projectStatuses }) {
     setShowComponentCreateDialog,
     draftComponent,
     setDraftComponent,
+    addProjectComponent,
   } = useCreateComponent();
+
+  const {
+    isDeletingComponent,
+    setIsDeletingComponent,
+    deleteProjectComponent,
+  } = useDeleteComponent();
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
@@ -87,40 +95,15 @@ export default function MapView({ projectName, projectStatuses }) {
   /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
 
-  /* sets the type of geometry to use in component edit mode. allowed values
-  are `points`, `lines`, or `null` */
-  const [linkMode, setLinkMode] = useState(null);
-
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
   const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
 
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
-  /* if a component is being deleted */
-  const [isDeletingComponent, setIsDeletingComponent] = useState(false);
-
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
-  console.table({
-    clickedComponent,
-    clickedProjectFeature,
-    draftComponent,
-    createdOnEditFeatures,
-    hoveredOnMapFeature,
-    linkMode,
-    isCreatingComponent,
-    showComponentCreateDialog,
-    isEditingComponent,
-    showComponentEditDialog,
-    showEditModeDialog,
-    isDeletingComponent,
-    isFetchingFeatures,
-  });
-
-  const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
-  const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
   const {
     data,
     refetch: refetchProjectComponents,
