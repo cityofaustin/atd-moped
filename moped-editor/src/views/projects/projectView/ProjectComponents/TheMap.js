@@ -6,6 +6,8 @@ import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
+import ComponentSourcesAndLayers from "./ComponentSourcesAndLayers";
+import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
@@ -282,6 +284,23 @@ export default function TheMap({
         setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
+      <ComponentSourcesAndLayers
+        data={data}
+        isCreatingComponent={isCreatingComponent}
+        isEditingComponent={isEditingComponent}
+        isDrawing={isDrawing}
+        linkMode={linkMode}
+        clickedComponent={clickedComponent}
+      />
+      <DraftComponentSourcesAndLayers data={data} linkMode={linkMode} />
+      <ComponentSourcesAndLayers
+        data={data}
+        isCreatingComponent={isCreatingComponent}
+        isEditingComponent={isEditingComponent}
+        isDrawing={isDrawing}
+        linkMode={linkMode}
+        clickedComponent={clickedComponent}
+      />
       <ComponentsSourcesAndLayers
         data={data}
         isCreatingComponent={isCreatingComponent}

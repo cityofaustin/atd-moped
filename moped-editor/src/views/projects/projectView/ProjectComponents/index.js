@@ -99,6 +99,7 @@ export default function MapView({ projectName, projectStatuses }) {
     onSaveDraftComponent,
     onCancelComponentCreate,
   } = useCreateComponent({
+    projectId,
     setClickedComponent,
     setLinkMode,
     refetchProjectComponents,

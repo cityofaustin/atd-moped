@@ -1,16 +1,14 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { useParams } from "react-router";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 import { onSaveComponent } from "./crud";
 
 export const useCreateComponent = ({
+  projectId,
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
 }) => {
-  const { projectId } = useParams();
-
   /* if a new component is being created */
   const [isCreatingComponent, setIsCreatingComponent] = useState(false);
   const [showComponentCreateDialog, setShowComponentCreateDialog] =

@@ -24,16 +24,7 @@ const ComponentsSourcesAndLayers = ({
   isDrawing,
 }) => {
   // This is a temporary to get data into the map sources
-  const {
-    ctnLinesGeojson,
-    ctnPointsGeojson,
-    projectLines,
-    projectPoints,
-    draftComponentFeatures,
-  } = data;
-
-  const isViewingComponents =
-    !isCreatingComponent && !clickedComponent && !isEditingComponent;
+  const { ctnLinesGeojson, ctnPointsGeojson } = data;
 
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
@@ -44,111 +35,11 @@ const ComponentsSourcesAndLayers = ({
     linkMode === "points" &&
     !isDrawing;
 
-  const shouldShowMutedFeatures =
-    clickedComponent || isCreatingComponent || isEditingComponent;
-
   const isClickedComponentLineRepresentation =
     clickedComponent?.moped_components?.line_representation;
 
   return (
     <>
-      <Source
-        id="project-lines"
-        type="geojson"
-        data={projectLines}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["project-lines-underlay"].layerProps,
-            layout: {
-              ...mapStyles["project-lines-underlay"].layerProps.layout,
-              visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["project-lines"].layerProps,
-            layout: {
-              ...mapStyles["project-lines"].layerProps.layout,
-              visibility: isViewingComponents ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["project-lines-muted"].layerProps,
-            layout: {
-              ...mapStyles["project-lines-muted"].layerProps.layout,
-              visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
-        id="project-points"
-        type="geojson"
-        data={projectPoints}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["project-points"].layerProps,
-            layout: {
-              ...mapStyles["project-points"].layerProps.layout,
-              visibility: isViewingComponents ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["project-points-muted"].layerProps,
-            layout: {
-              visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
-        id="draft-component-lines"
-        type="geojson"
-        data={draftComponentFeatures}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["draft-component-lines"].layerProps,
-            layout: {
-              ...mapStyles["clicked-component-features-lines"].layerProps
-                .layout,
-              visibility: linkMode === "lines" ? "visible" : "none",
-            },
-          }}
-        />
-      </Source>
-
-      <Source
-        id="draft-component-points"
-        type="geojson"
-        data={draftComponentFeatures}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...mapStyles["draft-component-points"].layerProps}
-          layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
-        />
-      </Source>
-
       <Source
         id="clicked-component-features"
         type="geojson"
