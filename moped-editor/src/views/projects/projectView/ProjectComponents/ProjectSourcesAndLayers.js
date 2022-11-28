@@ -6,24 +6,24 @@ const mapStyles = MAP_STYLES;
 /**
  * Component that renders all sources and layers for project components
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Object} data - GeoJSON data for all project components
- * @param {Boolean} isCreatingComponent - are we editing a component?
+ * @param {Boolean} isCreatingComponent - are we creating a component?
+ * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @param {Object} clickedComponent - Details of the component that was clicked
- * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
+ * @param {Boolean} isDrawing - is the user currently drawing?
+ * @param {Object} projectLines - GeoJSON feature collection with all project lines
+ * @param {Object} projectPoints - GeoJSON feature collection with all project points
  * @returns JSX.Element
  */
-const ComponentSourcesAndLayers = ({
-  data,
+const ProjectSourcesAndLayers = ({
   isCreatingComponent,
   isEditingComponent,
   linkMode,
   clickedComponent,
   isDrawing,
+  projectLines,
+  projectPoints,
 }) => {
-  // This is a temporary to get data into the map sources
-  const { projectLines, projectPoints } = data;
-
   const isViewingComponents =
     !isCreatingComponent && !clickedComponent && !isEditingComponent;
 
@@ -105,4 +105,4 @@ const ComponentSourcesAndLayers = ({
   );
 };
 
-export default ComponentSourcesAndLayers;
+export default ProjectSourcesAndLayers;

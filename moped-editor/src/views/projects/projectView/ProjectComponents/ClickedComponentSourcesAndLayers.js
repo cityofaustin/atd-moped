@@ -7,7 +7,7 @@ const mapStyles = MAP_STYLES;
  * Component that renders GeoJSON data for the clicked component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} clickedComponent - Details of the component that was clicked
- * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
+ * @param {Object} componentFeatureCollection - GeoJSON feature collection of the component clicked
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @returns JSX.Element
  */
