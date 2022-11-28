@@ -4,7 +4,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 const mapStyles = MAP_STYLES;
 
 /**
- * Component that renders all sources and layers for project components
+ * Component that renders feature collection of component features in a project
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?

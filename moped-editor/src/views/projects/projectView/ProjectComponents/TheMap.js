@@ -253,15 +253,6 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
-  // This is a temporary to get data into the map sources
-  const data = {
-    draftComponentFeatures,
-    ctnLinesGeojson,
-    ctnPointsGeojson,
-    projectLines,
-    projectPoints,
-  };
-
   return (
     <MapGL
       ref={mapRef}
@@ -285,7 +276,10 @@ export default function TheMap({
         setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
-      <DraftComponentSourcesAndLayers data={data} linkMode={linkMode} />
+      <DraftComponentSourcesAndLayers
+        draftComponentFeatures={draftComponentFeatures}
+        linkMode={linkMode}
+      />
       <ProjectSourcesAndLayers
         isCreatingComponent={isCreatingComponent}
         isEditingComponent={isEditingComponent}

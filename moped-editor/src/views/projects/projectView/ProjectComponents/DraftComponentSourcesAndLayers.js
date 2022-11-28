@@ -4,19 +4,16 @@ import { MAP_STYLES } from "./mapStyleSettings";
 const mapStyles = MAP_STYLES;
 
 /**
- * Component that renders all sources and layers for project components
+ * Component that renders the feature collection of a draft component while creating a component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Object} data - GeoJSON data for all project components
- * @param {Boolean} isCreatingComponent - are we editing a component?
+ * @param {Object} draftComponentFeatures - GeoJSON feature collection of the draft component
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
- * @param {Object} clickedComponent - Details of the component that was clicked
- * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
  * @returns JSX.Element
  */
-const DraftComponentSourcesAndLayers = ({ data, linkMode }) => {
-  // This is a temporary to get data into the map sources
-  const { draftComponentFeatures } = data;
-
+const DraftComponentSourcesAndLayers = ({
+  draftComponentFeatures,
+  linkMode,
+}) => {
   return (
     <>
       <Source
