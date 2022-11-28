@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { useMutation } from "@apollo/client";
+import { useParams } from "react-router";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
+import { onSaveComponent } from "./crud";
 
-export const useCreateComponent = () => {
+export const useCreateComponent = ({
+  setClickedComponent,
+  setLinkMode,
+  refetchProjectComponents,
+}) => {
+  const { projectId } = useParams();
+
   /* if a new component is being created */
   const [isCreatingComponent, setIsCreatingComponent] = useState(false);
   const [showComponentCreateDialog, setShowComponentCreateDialog] =
@@ -13,6 +21,31 @@ export const useCreateComponent = () => {
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
 
+  const onStartCreatingComponent = () => {
+    setIsCreatingComponent(true);
+    setShowComponentCreateDialog(true);
+    setClickedComponent(null);
+  };
+
+  const onSaveDraftComponent = () => {
+    onSaveComponent({
+      addProjectComponent,
+      draftComponent,
+      projectId,
+      refetchProjectComponents,
+      setDraftComponent,
+      setIsCreatingComponent,
+      setShowComponentCreateDialog,
+      setLinkMode,
+    });
+  };
+
+  const onCancelComponentCreate = () => {
+    setIsCreatingComponent(!isCreatingComponent);
+    setDraftComponent(null);
+    setLinkMode(null);
+  };
+
   return {
     isCreatingComponent,
     setIsCreatingComponent,
@@ -20,6 +53,8 @@ export const useCreateComponent = () => {
     setShowComponentCreateDialog,
     draftComponent,
     setDraftComponent,
-    addProjectComponent,
+    onStartCreatingComponent,
+    onSaveDraftComponent,
+    onCancelComponentCreate,
   };
 };

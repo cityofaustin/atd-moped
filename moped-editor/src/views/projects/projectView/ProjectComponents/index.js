@@ -23,7 +23,7 @@ import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { fitBoundsOptions } from "./mapSettings";
-import { onSaveComponent, onUpdateComponent } from "./utils/crud";
+import { onUpdateComponent } from "./utils/crud";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
@@ -81,14 +81,29 @@ export default function MapView({ projectName, projectStatuses }) {
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
   const {
+    data,
+    refetch: refetchProjectComponents,
+    error,
+  } = useQuery(GET_PROJECT_COMPONENTS, {
+    variables: { projectId },
+    fetchPolicy: "no-cache",
+  });
+
+  const {
     isCreatingComponent,
     setIsCreatingComponent,
     showComponentCreateDialog,
     setShowComponentCreateDialog,
     draftComponent,
     setDraftComponent,
-    addProjectComponent,
-  } = useCreateComponent();
+    onStartCreatingComponent,
+    onSaveDraftComponent,
+    onCancelComponentCreate,
+  } = useCreateComponent({
+    setClickedComponent,
+    setLinkMode,
+    refetchProjectComponents,
+  });
 
   const {
     isEditingComponent,
@@ -97,22 +112,20 @@ export default function MapView({ projectName, projectStatuses }) {
     setShowComponentEditDialog,
     showEditModeDialog,
     setShowEditModeDialog,
-  } = useUpdateComponent();
+    createdOnEditFeatures,
+    setCreatedOnEditFeatures,
+    onStartEditingComponent,
+    onSaveEditedComponent,
+    onCancelComponentAttributesEdit,
+    onCancelComponentMapEdit,
+    onEditAttributes,
+  } = useUpdateComponent({ setLinkMode });
 
   const {
     isDeletingComponent,
     setIsDeletingComponent,
     deleteProjectComponent,
   } = useDeleteComponent();
-
-  const {
-    data,
-    refetch: refetchProjectComponents,
-    error,
-  } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: { projectId },
-    fetchPolicy: "no-cache",
-  });
 
   if (error) console.log(error);
 
@@ -146,50 +159,6 @@ export default function MapView({ projectName, projectStatuses }) {
     );
   };
 
-  const onSaveDraftComponent = () => {
-    onSaveComponent({
-      addProjectComponent,
-      draftComponent,
-      projectId,
-      refetchProjectComponents,
-      setDraftComponent,
-      setIsCreatingComponent,
-      setShowComponentCreateDialog,
-      setLinkMode,
-    });
-  };
-
-  const onCancelComponentCreate = () => {
-    setIsCreatingComponent(!isCreatingComponent);
-    setDraftComponent(null);
-    setLinkMode(null);
-  };
-
-  const onSaveEditedComponent = () => {
-    onUpdateComponent({ createdOnEditFeatures });
-  };
-
-  const onCancelComponentMapEdit = () => {
-    setIsEditingComponent(false);
-    setCreatedOnEditFeatures([]);
-    setLinkMode(null);
-  };
-
-  const onStartCreatingComponent = () => {
-    setIsCreatingComponent(true);
-    setShowComponentCreateDialog(true);
-    setClickedComponent(null);
-  };
-
-  const onStartEditingComponent = () => {
-    setShowEditModeDialog(true);
-  };
-
-  const onCancelComponentAttributesEdit = () => {
-    setShowEditModeDialog(false);
-    setIsCreatingComponent(false);
-  };
-
   const onDeleteComponent = () => {
     deleteProjectComponent({
       variables: { projectComponentId: clickedComponent.project_component_id },
@@ -199,11 +168,6 @@ export default function MapView({ projectName, projectStatuses }) {
 
     setClickedComponent(null);
     setIsDeletingComponent(false);
-  };
-
-  const onEditAttributes = () => {
-    setShowComponentEditDialog(true);
-    setShowEditModeDialog(false);
   };
 
   const onEditFeatures = () => {
