@@ -13,7 +13,8 @@ import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
-import ComponentCreateModal from "./ComponentCreateModal";
+import CreateComponentModal from "./CreateComponentModal";
+import EditComponentModal from "./EditComponentModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
@@ -23,11 +24,9 @@ import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { fitBoundsOptions } from "./mapSettings";
-import { onUpdateComponent } from "./utils/crud";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
-import ComponentEditModal from "./ComponentEditModal";
 
 const drawerWidth = 350;
 
@@ -268,7 +267,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setCreatedOnEditFeatures={setCreatedOnEditFeatures}
             />
           </div>
-          <ComponentCreateModal
+          <CreateComponentModal
             showDialog={showComponentCreateDialog}
             setShowDialog={setShowComponentCreateDialog}
             setDraftComponent={setDraftComponent}
@@ -289,7 +288,7 @@ export default function MapView({ projectName, projectStatuses }) {
             onEditAttributes={onEditAttributes}
             onEditFeatures={onEditFeatures}
           />
-          <ComponentEditModal
+          <EditComponentModal
             showDialog={showComponentEditDialog}
             setShowDialog={setShowComponentEditDialog}
             setIsEditingComponent={setIsEditingComponent}

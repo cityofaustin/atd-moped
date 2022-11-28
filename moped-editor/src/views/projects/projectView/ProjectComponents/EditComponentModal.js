@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ComponentEditModal = ({
+const EditComponentModal = ({
   showDialog,
   setShowDialog,
   setIsEditingComponent,
@@ -95,4 +95,4 @@ const ComponentEditModal = ({
   );
 };
 
-export default ComponentEditModal;
+export default EditComponentModal;

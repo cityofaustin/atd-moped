@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ComponentCreateModal = ({
+const CreateComponentModal = ({
   showDialog,
   setShowDialog,
   setDraftComponent,
@@ -85,4 +85,4 @@ const ComponentCreateModal = ({
   );
 };
 
-export default ComponentCreateModal;
+export default CreateComponentModal;
