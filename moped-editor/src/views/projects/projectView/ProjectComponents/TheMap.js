@@ -78,6 +78,7 @@ export default function TheMap({
   isEditingComponent,
   draftComponent,
   setDraftComponent,
+  draftEditComponent,
   mapRef,
   clickedProjectFeature,
   setClickedProjectFeature,
@@ -95,6 +96,8 @@ export default function TheMap({
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
+  const draftEditComponentFeatures =
+    useDraftComponentFeatures(draftEditComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
   const componentFeatureCollection = useComponentFeatureCollection(

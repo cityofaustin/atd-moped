@@ -19,19 +19,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     setShowEditModeDialog(false);
   };
 
-  const onSaveEditedComponent = () => {
-    console.log("Updating component");
-  };
-
-  const onCancelComponentAttributesEdit = () => {
-    setShowEditModeDialog(false);
-  };
-
-  const onCancelComponentMapEdit = () => {
-    setIsEditingComponent(false);
-    setLinkMode(null);
-  };
-
   const onEditFeatures = () => {
     // TODO: Add helper to convert line representation to "lines" or "points"
     // TODO: Set clicked component as the draft component
@@ -43,6 +30,23 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     setLinkMode(linkMode);
     setIsEditingComponent(true);
     setShowEditModeDialog(false);
+    setDraftEditComponent(clickedComponent);
+  };
+
+  const onSaveEditedComponent = () => {
+    console.log("Updating component");
+
+    // Compare features in draftEditComponent with clickedComponent
+    // Add/remove features as needed
+  };
+
+  const onCancelComponentAttributesEdit = () => {
+    setShowEditModeDialog(false);
+  };
+
+  const onCancelComponentMapEdit = () => {
+    setIsEditingComponent(false);
+    setLinkMode(null);
   };
 
   return {
@@ -57,5 +61,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     onCancelComponentMapEdit,
     onEditAttributes,
     onEditFeatures,
+    draftEditComponent,
   };
 };
