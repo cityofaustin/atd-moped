@@ -14,7 +14,7 @@ export const COLORS = {
   blueLight: "#a1cdf7",
   steel: "#607d8f",
   white: "#fff",
-  test: "#fff000",
+  test: "#f28100",
 };
 
 export const pointsCircleRadiusStops = {

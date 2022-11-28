@@ -118,6 +118,7 @@ export default function MapView({ projectName, projectStatuses }) {
     onEditAttributes,
     onEditFeatures,
     draftEditComponent,
+    setDraftEditComponent,
   } = useUpdateComponent({ clickedComponent, setLinkMode });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
@@ -254,6 +255,7 @@ export default function MapView({ projectName, projectStatuses }) {
               draftComponent={draftComponent}
               setDraftComponent={setDraftComponent}
               draftEditComponent={draftEditComponent}
+              setDraftEditComponent={setDraftEditComponent}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
               isCreatingComponent={isCreatingComponent}

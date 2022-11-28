@@ -80,6 +80,7 @@ export default function TheMap({
   draftComponent,
   setDraftComponent,
   draftEditComponent,
+  setDraftEditComponent,
   mapRef,
   clickedProjectFeature,
   setClickedProjectFeature,
@@ -239,6 +240,46 @@ export default function TheMap({
         clickedFeature,
         ctnLinesGeojson
       );
+
+      // If the feature is not alread in the draftEditComponent, add it
+      const tableToInsert =
+        clickedComponent.moped_components.feature_layer.internal_table;
+
+      setDraftEditComponent((prev) => {
+        const isFeatureAlreadyInComponent = Boolean(
+          draftEditComponent[0][tableToInsert].find(
+            (feature) =>
+              feature?.ctn_segment_id === featureId ||
+              feature?.properties?.CTN_SEGMENT_ID === featureId
+          )
+        );
+        console.log({ isFeatureAlreadyInComponent, prev, featureId });
+
+        if (!isFeatureAlreadyInComponent) {
+          return [
+            {
+              ...prev[0],
+              [tableToInsert]: [...prev[0][tableToInsert], newFeature],
+            },
+          ];
+        } else if (isFeatureAlreadyInComponent) {
+          return [
+            {
+              ...prev[0],
+              [tableToInsert]: prev[0][tableToInsert].filter((feature) => {
+                const doesFeatureMatchId =
+                  feature?.ctn_segment_id !== featureId &&
+                  feature?.properties?.CTN_SEGMENT_ID !== featureId;
+                console.log(doesFeatureMatchId);
+                console.log(typeof feature?.ctn_segment_id);
+                console.log(typeof feature?.properties?.CTN_SEGMENT_ID);
+                console.log(typeof featureId);
+                return doesFeatureMatchId;
+              }),
+            },
+          ];
+        }
+      });
 
       // Remove an existing segment
       // Check the clicked component to see it is already associated with the component

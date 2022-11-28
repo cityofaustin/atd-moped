@@ -63,5 +63,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     onEditAttributes,
     onEditFeatures,
     draftEditComponent,
+    setDraftEditComponent,
   };
 };

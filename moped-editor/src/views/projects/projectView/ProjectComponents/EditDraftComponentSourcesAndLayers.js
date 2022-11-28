@@ -14,8 +14,6 @@ const EditDraftComponentSourcesAndLayers = ({
   draftEditComponentFeatures,
   linkMode,
 }) => {
-  console.log(draftEditComponentFeatures, linkMode);
-
   return (
     <>
       <Source
