@@ -186,7 +186,7 @@ export default function MapView({ projectName, projectStatuses }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!isCreatingComponent && (
+              {!isCreatingComponent && !isEditingComponent && (
                 <>
                   <ListItem dense>
                     <Button
@@ -239,6 +239,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       setIsDeletingComponent={setIsDeletingComponent}
                       onStartEditingComponent={onStartEditingComponent}
                       onClickZoomToComponent={onClickZoomToComponent}
+                      isEditingComponent={isEditingComponent}
                     />
                   )
                 );
