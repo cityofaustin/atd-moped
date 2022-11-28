@@ -140,6 +140,9 @@ export default function TheMap({
       if (clickedComponent) {
         setClickedComponent(null);
       }
+      if (clickedProjectFeature) {
+        setClickedProjectFeature(null);
+      }
       return;
     }
 

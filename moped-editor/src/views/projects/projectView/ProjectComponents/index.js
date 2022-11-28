@@ -101,6 +101,22 @@ export default function MapView({ projectName, projectStatuses }) {
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
+  console.table({
+    clickedComponent,
+    clickedProjectFeature,
+    draftComponent,
+    createdOnEditFeatures,
+    hoveredOnMapFeature,
+    linkMode,
+    isCreatingComponent,
+    showComponentCreateDialog,
+    isEditingComponent,
+    showComponentEditDialog,
+    showEditModeDialog,
+    isDeletingComponent,
+    isFetchingFeatures,
+  });
+
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
   const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
   const {
@@ -221,6 +237,8 @@ export default function MapView({ projectName, projectStatuses }) {
   // The map only needs to know what to show in blue
   // It doesn't need to know whether that is the clicked component or editing component
   // How can we create a slot for that data and simplify all of the prep work?
+  // Break down Sources and Layers into create/edit/clicked/etc?
+  // useReducer to group together some of the state in this file?
 
   return (
     <Dialog fullScreen open={true}>
