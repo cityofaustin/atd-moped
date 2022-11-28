@@ -59,17 +59,17 @@ def row_dict(columns, row):
     return dict(zip(columns, row))
 
 
-db_path = "/app/database/database.mdb"
-out_dir = "/app/data/raw"
+db_path = "/app/export_data/database/database.mdb"
+out_dir = "/app/migrate_data/data/raw"
 
 def get_conn():
     # JDBC Database Drivers
     ucanaccess_jars = [
-        "/app/jdbc/ucanaccess-5.0.1.jar",
-        "/app/jdbc/lib/commons-lang3-3.8.1.jar",
-        "/app/jdbc/lib/commons-logging-1.2.jar",
-        "/app/jdbc/lib/hsqldb-2.5.0.jar",
-        "/app/jdbc/lib/jackcess-3.0.1.jar",
+        "/app/export_data/jdbc/ucanaccess-5.0.1.jar",
+        "/app/export_data/jdbc/lib/commons-lang3-3.8.1.jar",
+        "/app/export_data/jdbc/lib/commons-logging-1.2.jar",
+        "/app/export_data/jdbc/lib/hsqldb-2.5.0.jar",
+        "/app/export_data/jdbc/lib/jackcess-3.0.1.jar",
     ]
 
     # Class path

@@ -128,11 +128,12 @@ function main() {
   });
 
   logger.info(`Inserting ${ready.length} projects...`);
-  const res = makeHasuraRequest({
+  
+  makeHasuraRequest({
     query: INSERT_PROJECTS_MUTATION,
     variables: { objects: ready },
-  }).then((what) => {
-    console.log("HI", what);
+  }).then((results) => {
+    console.log(results);
   });
 }
 
