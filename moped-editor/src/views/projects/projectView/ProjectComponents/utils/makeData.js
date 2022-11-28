@@ -16,8 +16,6 @@ export const makeComponentFeatureCollectionsMap = (components) => {
       geometry: component.geometry,
     };
 
-    console.log(currentFeature, component);
-
     if (!componentGeographyMap[currentComponentId]) {
       componentGeographyMap[currentComponentId] = {
         type: "FeatureCollection",

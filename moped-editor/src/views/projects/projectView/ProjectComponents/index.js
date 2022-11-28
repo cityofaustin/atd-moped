@@ -111,8 +111,6 @@ export default function MapView({ projectName, projectStatuses }) {
     showComponentEditDialog,
     setShowComponentEditDialog,
     showEditModeDialog,
-    createdOnEditFeatures,
-    setCreatedOnEditFeatures,
     onStartEditingComponent,
     onSaveEditedComponent,
     onCancelComponentAttributesEdit,
@@ -265,7 +263,6 @@ export default function MapView({ projectName, projectStatuses }) {
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               featureCollectionsByComponentId={featureCollectionsByComponentId}
-              setCreatedOnEditFeatures={setCreatedOnEditFeatures}
             />
           </div>
           <CreateComponentModal

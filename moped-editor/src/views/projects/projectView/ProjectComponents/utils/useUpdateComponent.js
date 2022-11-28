@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { onUpdateComponent } from "./crud";
 
 export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
   /* if a component is being edited */
@@ -9,7 +8,7 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
   const [showEditModeDialog, setShowEditModeDialog] = useState(false);
 
   /* holds the features added when editing an existing component */
-  const [createdOnEditFeatures, setCreatedOnEditFeatures] = useState([]);
+  const [draftEditComponent, setDraftEditComponent] = useState(null);
 
   const onStartEditingComponent = () => {
     setShowEditModeDialog(true);
@@ -21,7 +20,7 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
   };
 
   const onSaveEditedComponent = () => {
-    onUpdateComponent({ createdOnEditFeatures });
+    console.log("Updating component");
   };
 
   const onCancelComponentAttributesEdit = () => {
@@ -30,7 +29,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
 
   const onCancelComponentMapEdit = () => {
     setIsEditingComponent(false);
-    setCreatedOnEditFeatures([]);
     setLinkMode(null);
   };
 
@@ -53,8 +51,6 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     showComponentEditDialog,
     setShowComponentEditDialog,
     showEditModeDialog,
-    createdOnEditFeatures,
-    setCreatedOnEditFeatures,
     onStartEditingComponent,
     onSaveEditedComponent,
     onCancelComponentAttributesEdit,

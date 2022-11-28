@@ -86,7 +86,6 @@ export default function TheMap({
   linkMode,
   setIsFetchingFeatures,
   featureCollectionsByComponentId,
-  setCreatedOnEditFeatures,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -237,8 +236,6 @@ export default function TheMap({
         clickedFeature,
         ctnLinesGeojson
       );
-
-      setCreatedOnEditFeatures((prev) => [...prev, newFeature]);
 
       // Remove an existing segment
       // Check the clicked component to see it is already associated with the component
