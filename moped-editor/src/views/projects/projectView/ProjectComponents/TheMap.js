@@ -8,6 +8,7 @@ import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
+import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
@@ -34,7 +35,7 @@ mapboxgl.workerClass =
 // returns geojson of features across all components
 const useProjectFeatures = (components) =>
   useMemo(() => {
-    if (components.length === 0)
+    if (components === null || components.length === 0)
       return {
         type: "FeatureCollection",
         features: [],
@@ -96,8 +97,7 @@ export default function TheMap({
   const projectFeatures = useProjectFeatures(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
-  const draftEditComponentFeatures =
-    useDraftComponentFeatures(draftEditComponent);
+  const draftEditComponentFeatures = useProjectFeatures(draftEditComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
   const componentFeatureCollection = useComponentFeatureCollection(
@@ -293,6 +293,10 @@ export default function TheMap({
         clickedComponent={clickedComponent}
         componentFeatureCollection={componentFeatureCollection}
         isEditingComponent={isEditingComponent}
+      />
+      <EditDraftComponentSourcesAndLayers
+        draftEditComponentFeatures={draftEditComponentFeatures}
+        linkMode={linkMode}
       />
       <CTNSourcesAndLayers
         isCreatingComponent={isCreatingComponent}

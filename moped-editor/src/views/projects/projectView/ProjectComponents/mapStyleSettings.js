@@ -14,6 +14,7 @@ export const COLORS = {
   blueLight: "#a1cdf7",
   steel: "#607d8f",
   white: "#fff",
+  test: "#fff000",
 };
 
 export const pointsCircleRadiusStops = {
@@ -147,6 +148,42 @@ export const MAP_STYLES = {
     isInteractive: true,
     layerProps: {
       id: "draft-component-points",
+      _featureIdProp: "id",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": COLORS.blueDark,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": COLORS.blueLight,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
+  "edit-draft-component-lines": {
+    isInteractive: true,
+    layerProps: {
+      id: "edit-draft-component-lines",
+      _featureIdProp: "id",
+      type: "line",
+      paint: {
+        "line-width": {
+          stops: [
+            [10, 2],
+            [20, 10],
+          ],
+        },
+        "line-color": COLORS.test,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "edit-draft-component-points": {
+    isInteractive: true,
+    layerProps: {
+      id: "edit-draft-component-points",
       _featureIdProp: "id",
       type: "circle",
       paint: {
