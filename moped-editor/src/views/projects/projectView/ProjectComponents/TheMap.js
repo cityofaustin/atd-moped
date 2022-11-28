@@ -8,7 +8,8 @@ import ComponentDrawTools from "./ComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ComponentSourcesAndLayers from "./ComponentSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
-import ComponentsSourcesAndLayers from "./ComponentsSourcesAndLayers";
+import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
+import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
 import { basemaps, mapParameters, initialViewState } from "./mapSettings";
 import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
 import {
@@ -301,15 +302,16 @@ export default function TheMap({
         linkMode={linkMode}
         clickedComponent={clickedComponent}
       />
-      <ComponentsSourcesAndLayers
+      <ClickedComponentSourcesAndLayers
+        clickedComponent={clickedComponent}
+        componentFeatureCollection={componentFeatureCollection}
+      />
+      <CTNSourcesAndLayers
         data={data}
         isCreatingComponent={isCreatingComponent}
         isEditingComponent={isEditingComponent}
         isDrawing={isDrawing}
         linkMode={linkMode}
-        draftLayerId={draftLayerId}
-        clickedComponent={clickedComponent}
-        componentFeatureCollection={componentFeatureCollection}
       />
       {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}

@@ -14,13 +14,11 @@ const mapStyles = MAP_STYLES;
  * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
  * @returns JSX.Element
  */
-const ComponentsSourcesAndLayers = ({
+const CTNSourcesAndLayers = ({
   data,
   isCreatingComponent,
   isEditingComponent,
   linkMode,
-  clickedComponent,
-  componentFeatureCollection,
   isDrawing,
 }) => {
   // This is a temporary to get data into the map sources
@@ -35,47 +33,8 @@ const ComponentsSourcesAndLayers = ({
     linkMode === "points" &&
     !isDrawing;
 
-  const isClickedComponentLineRepresentation =
-    clickedComponent?.moped_components?.line_representation;
-
   return (
     <>
-      <Source
-        id="clicked-component-features"
-        type="geojson"
-        data={componentFeatureCollection}
-        promoteId="id"
-      >
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["clicked-component-features-lines"].layerProps,
-            layout: {
-              ...mapStyles["clicked-component-features-lines"].layerProps
-                .layout,
-              visibility:
-                componentFeatureCollection &&
-                isClickedComponentLineRepresentation
-                  ? "visible"
-                  : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
-            ...mapStyles["clicked-component-features-points"].layerProps,
-            layout: {
-              visibility:
-                componentFeatureCollection &&
-                !isClickedComponentLineRepresentation
-                  ? "visible"
-                  : "none",
-            },
-          }}
-        />
-      </Source>
-
       <Source
         id="ATD_ADMIN.CTN"
         type="geojson"
@@ -134,4 +93,4 @@ const ComponentsSourcesAndLayers = ({
   );
 };
 
-export default ComponentsSourcesAndLayers;
+export default CTNSourcesAndLayers;
