@@ -4,13 +4,11 @@ import { MAP_STYLES } from "./mapStyleSettings";
 const mapStyles = MAP_STYLES;
 
 /**
- * Component that renders all sources and layers for project components
+ * Component that renders GeoJSON data for the clicked component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Object} data - GeoJSON data for all project components
- * @param {Boolean} isCreatingComponent - are we editing a component?
- * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @param {Object} clickedComponent - Details of the component that was clicked
  * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
+ * @param {Boolean} isEditingComponent - are we editing a component?
  * @returns JSX.Element
  */
 const ClickedComponentSourcesAndLayers = ({

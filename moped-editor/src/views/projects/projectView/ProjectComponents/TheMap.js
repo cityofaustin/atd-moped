@@ -308,11 +308,12 @@ export default function TheMap({
         isEditingComponent={isEditingComponent}
       />
       <CTNSourcesAndLayers
-        data={data}
         isCreatingComponent={isCreatingComponent}
         isEditingComponent={isEditingComponent}
         isDrawing={isDrawing}
         linkMode={linkMode}
+        ctnLinesGeojson={ctnLinesGeojson}
+        ctnPointsGeojson={ctnPointsGeojson}
       />
       {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}

@@ -5,25 +5,24 @@ import { MAP_STYLES } from "./mapStyleSettings";
 const mapStyles = MAP_STYLES;
 
 /**
- * Component that renders all sources and layers for project components
+ * Component that renders CTN GeoJSON data to be captured into draft or edited components
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Object} data - GeoJSON data for all project components
- * @param {Boolean} isCreatingComponent - are we editing a component?
+ * @param {Boolean} isCreatingComponent - are we creating a component?
+ * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
- * @param {Object} clickedComponent - Details of the component that was clicked
- * @param {Object} componentFeatureCollection - GeoJSON data for the component clicked
+ * @param {Boolean} isDrawing - is the user currently drawing?
+ * @param {Object} ctnLinesGeojson - GeoJSON data for CTN lines in the visible area of the map
+ * @param {Object} ctnPointsGeojson - GeoJSON data for CTN points in the visible area of the map
  * @returns JSX.Element
  */
 const CTNSourcesAndLayers = ({
-  data,
   isCreatingComponent,
   isEditingComponent,
   linkMode,
   isDrawing,
+  ctnLinesGeojson,
+  ctnPointsGeojson,
 }) => {
-  // This is a temporary to get data into the map sources
-  const { ctnLinesGeojson, ctnPointsGeojson } = data;
-
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "lines" &&
