@@ -1,8 +1,16 @@
+/**
+ * These utilities generate `moped_proj_phases` and `moped_proj_notes` records from the
+ * "project_statusupdate" table, which manages both of these entities in the Access DB.
+ * 
+ * To determine a project's phases as well as the current phase, we must extract all
+ * unique phase occurrences per project and use their timestamps to guess which phase
+ * is current.
+ */
 const { loadJsonFile } = require("./utils/loader");
-
 const { PHASES_MAP } = require("./mappings/phases");
 const FNAME = "./data/raw/project_statusupdate.json";
 
+/* Given a status update text, find it's corresponding phase data */
 const setPhaseId = (statusUpdate) => {
   const phaseIn = statusUpdate.ProjectPhase;
   const mopedPhaseId = PHASES_MAP.find((phase) => phase.in === phaseIn)?.out
@@ -10,6 +18,7 @@ const setPhaseId = (statusUpdate) => {
   statusUpdate.phase_id = mopedPhaseId || null;
 };
 
+/* Groups status updates by project ID and phase */
 const groupByProjectAndPhase = (statusUpdates) =>
   statusUpdates.reduce((grouped, statusUpdate) => {
     const projectId = statusUpdate.ProjectID;
