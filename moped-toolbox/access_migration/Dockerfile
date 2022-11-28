@@ -8,5 +8,4 @@ RUN apt-get update \
 # Install python requirement libraries
 RUN pip install requests jaydebeapi
 
-COPY . /app
 WORKDIR /app

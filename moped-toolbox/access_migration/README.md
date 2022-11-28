@@ -1,7 +1,63 @@
 
 # IMPDB Access Migration
 
+This directory is home to the tools that will migrate the Interim Mobility Project Database, an MS Access DB, into Moped.
+
+The process is split into two steps.
+
+1. Use Python to export all Access DB tables to JSON.
+2. Use Javascript to transform and load the project data into Moped.
+
+## Get it running
+
+### Access DB Extraction
+
+1. Download a snapshot of the Access DB from [Drive](https://drive.google.com/drive/u/2/folders/1-pNBTdfPBxJm8VpYjxpZwA8ziCLMZdRx). Save it as `./export_data/database/database.md`
+
+2. From this directory, build the docker image:
+
+```shell
+$ docker build -t moped-migra -t moped-migra:latest .
+```
+
+3. Run the export script by mounting this directory into the docker container:
+
+```shell
+$ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/export_data.py
+```
+
+### Transform and Load
+
+1. Start the Hasura cluster and Moped Editor
+
+```shell
+# from atd-moped/moped-database
+$ ./hasura-cluster start
+
+# from atd-moped/moped-editor
+$ npm run start
+```
+
+2. Navigate to `./migrate_data` and install package dependencies:
+
+```shell
+# optionally activate your node environment
+$ nvm use 
+# install packages
+$ npm install
+```
+
+3. Run the migration!
+
+```shell
+$ node index.js
+```
+
+4. Open the Moped Editor to inspect projects ✨
+
+
 ### Issues to make
+
 - remove dupe RRFB component
 - update delete cascades: https://github.com/cityofaustin/atd-data-tech/issues/10848
 - list view query performance - create indexes: https://github.com/cityofaustin/atd-data-tech/issues/10851
