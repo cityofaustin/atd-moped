@@ -305,6 +305,7 @@ export default function TheMap({
       <ClickedComponentSourcesAndLayers
         clickedComponent={clickedComponent}
         componentFeatureCollection={componentFeatureCollection}
+        isEditingComponent={isEditingComponent}
       />
       <CTNSourcesAndLayers
         data={data}

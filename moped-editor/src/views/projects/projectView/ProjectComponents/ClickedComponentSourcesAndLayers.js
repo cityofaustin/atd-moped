@@ -1,5 +1,4 @@
 import { Source, Layer } from "react-map-gl";
-import { SOURCES } from "./mapSettings";
 import { MAP_STYLES } from "./mapStyleSettings";
 
 const mapStyles = MAP_STYLES;
@@ -17,6 +16,7 @@ const mapStyles = MAP_STYLES;
 const ClickedComponentSourcesAndLayers = ({
   clickedComponent,
   componentFeatureCollection,
+  isEditingComponent,
 }) => {
   const isClickedComponentLineRepresentation =
     clickedComponent?.moped_components?.line_representation;
@@ -38,7 +38,8 @@ const ClickedComponentSourcesAndLayers = ({
                 .layout,
               visibility:
                 componentFeatureCollection &&
-                isClickedComponentLineRepresentation
+                isClickedComponentLineRepresentation &&
+                !isEditingComponent
                   ? "visible"
                   : "none",
             },
@@ -51,7 +52,8 @@ const ClickedComponentSourcesAndLayers = ({
             layout: {
               visibility:
                 componentFeatureCollection &&
-                !isClickedComponentLineRepresentation
+                !isClickedComponentLineRepresentation &&
+                !isEditingComponent
                   ? "visible"
                   : "none",
             },
