@@ -28,6 +28,7 @@ import {
 import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
 import { fitBoundsOptions } from "./mapSettings";
 import { onSaveComponent, onUpdateComponent } from "./utils/crud";
+import { useCreateComponent } from "./utils/useCreateComponent";
 import ComponentEditModal from "./ComponentEditModal";
 
 const drawerWidth = 350;
@@ -65,14 +66,20 @@ export default function MapView({ projectName, projectStatuses }) {
   const mapRef = useRef();
   const { projectId } = useParams();
 
+  const {
+    isCreatingComponent,
+    setIsCreatingComponent,
+    showComponentCreateDialog,
+    setShowComponentCreateDialog,
+    draftComponent,
+    setDraftComponent,
+  } = useCreateComponent();
+
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
 
   /* tracks a projectFeature clicked from the map */
   const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
-
-  /* holds the state of a component that's being created */
-  const [draftComponent, setDraftComponent] = useState(null);
 
   /* holds the features added when editing an existing component */
   const [createdOnEditFeatures, setCreatedOnEditFeatures] = useState([]);
@@ -83,11 +90,6 @@ export default function MapView({ projectName, projectStatuses }) {
   /* sets the type of geometry to use in component edit mode. allowed values
   are `points`, `lines`, or `null` */
   const [linkMode, setLinkMode] = useState(null);
-
-  /* if a new component is being created */
-  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
-  const [showComponentCreateDialog, setShowComponentCreateDialog] =
-    useState(false);
 
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
