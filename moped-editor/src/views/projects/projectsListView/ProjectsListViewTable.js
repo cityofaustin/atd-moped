@@ -86,6 +86,9 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * This overrides MaterialTable props and determines how
    * the table is sorted when the page loads. Must remain consistent
    * with the sorting order passed in from ProjectsListViewQueryConf.
+   * @property {string} column - The column name in graphql to sort by
+   * @property {integer} columnId - The column id in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or ""
    */
   const defaultSortingProperties = {
     column: "updated_at",
@@ -96,10 +99,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   /**
    * Stores the column name and the order to order by
    * @type {Object} sort
-   * @property {string} column - The column name in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or "" (default: "")
    * @function setSort - Sets the state of sort
-   * @default {{value: "", column: ""}}
+   * @default {defaultSortingProperties}
    */
   const [sort, setSort] = useState(defaultSortingProperties);
 
