@@ -775,6 +775,21 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+  moped_proj_tags: {
+    fields: {
+      tag_id: {
+        icon: "",
+        label: "Tag ID",
+        data_type: "integer",
+        lookup: {
+          table: "moped_tags",
+          fieldLabel: "id",
+          fieldValues: ["name"],
+        },
+      }
+
+    }
+  }
 };
 
 export const ProjectActivityLogOperationMaps = {
@@ -930,9 +945,16 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
+  moped_proj_tags: {
+    label: (record, userList) => {
+      // temporary, I have ideas on how to get the tag name here
+      return (
+        "New tag added"
+      );
+    },
+  },
   generic: {
     label: record => {
-      //console.log(record);
       return "Added";
     },
   },
