@@ -269,12 +269,12 @@ with Flow("Moped Test Instance Commission test") as test_commission:
 
     ## Commission the Activity Log
 
-    commission_activity_log_command = activity_log.create_activity_log_command(
-        slug=slug, upstream_tasks=[git_repo_checked_out]
-    )
-    deploy_activity_log = activity_log.create_activity_log_task(
-        command=commission_activity_log_command
-    )
+    # commission_activity_log_command = activity_log.create_activity_log_command(
+    #     slug=slug, upstream_tasks=[git_repo_checked_out]
+    # )
+    # deploy_activity_log = activity_log.create_activity_log_task(
+    #     command=commission_activity_log_command
+    # )
 
     ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
