@@ -27,6 +27,7 @@ export default function ComponentListItem({
   onStartEditingComponent,
   onClickZoomToComponent,
   isEditingComponent,
+  isCreatingComponent,
 }) {
   const classes = useStyles();
 
@@ -34,7 +35,7 @@ export default function ComponentListItem({
     // If we are editing a component, clicking on a component should not change the clicked component
     if (isExpanded) {
       setClickedComponent(null);
-    } else if (!isEditingComponent) {
+    } else if (!isEditingComponent && !isCreatingComponent) {
       setClickedComponent(component);
     }
   };

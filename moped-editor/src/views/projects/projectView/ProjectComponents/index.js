@@ -240,6 +240,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       onStartEditingComponent={onStartEditingComponent}
                       onClickZoomToComponent={onClickZoomToComponent}
                       isEditingComponent={isEditingComponent}
+                      isCreatingComponent={isCreatingComponent}
                     />
                   )
                 );
