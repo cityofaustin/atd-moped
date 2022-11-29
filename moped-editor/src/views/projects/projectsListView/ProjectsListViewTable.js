@@ -82,17 +82,27 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   });
 
   /**
+   * The default sorting properties applied to the table.
+   * This overrides MaterialTable props and determines how
+   * the table is sorted when the page loads. Must remain consistent
+   * with the sorting order passed in from ProjectsListViewQueryConf.
+   * @property {string} column - The column name in graphql to sort by
+   * @property {integer} columnId - The column id in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or ""
+   */
+  const defaultSortingProperties = {
+    column: "updated_at",
+    columnId: 8,
+    order: "desc",
+  };
+
+  /**
    * Stores the column name and the order to order by
    * @type {Object} sort
-   * @property {string} column - The column name in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or "" (default: "")
    * @function setSort - Sets the state of sort
-   * @default {{value: "", column: ""}}
+   * @default {defaultSortingProperties}
    */
-  const [sort, setSort] = useState({
-    column: "",
-    order: "",
-  });
+  const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -178,9 +188,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  if (sort.column !== "" && sort.order !== "") {
-    query.setOrder(sort.column, sort.order);
-  }
+  query.setOrder(sort.column, sort.order);
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -530,25 +538,20 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // If both column and order are empty...
-    if (sort.order === "" && sort.column === "") {
-      // First time sort is applied
-      setSort({
-        order: "asc",
-        column: columnName,
-      });
-    } else if (sort.column === columnName) {
-      // Else if the current sortColumn is the same as the new
+    if (sort.column === columnName) {
+      // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
       setSort({
         order: sort.order === "desc" ? "asc" : "desc",
         column: columnName,
+        columnId: columnId,
       });
     } else if (sort.column !== columnName) {
-      // Sort different column after initial sort, then reset
+      // Sort different column in same order as previous column
       setSort({
-        order: "desc",
+        order: sort.order,
         column: columnName,
+        columnId: columnId,
       });
     }
   };
@@ -632,6 +635,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
+                        orderBy={sort.columnId}
                         orderDirection={sort.order}
                       />
                     ),
