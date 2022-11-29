@@ -361,9 +361,12 @@ def create_task_definition(slug, api_endpoint):
                         "value": HASURA_GRAPHQL_DATABASE_URL,
                     },
                     {
-                        #"name": "HASURA_GRAPHQL_ADMIN_SECRET",
-                        "name": "HASURA_ADMIN_SECRET",
+                        "name": "HASURA_GRAPHQL_ADMIN_SECRET",
                         "value": shared.generate_access_key(basename),
+                    },
+                    {
+                        "name": "HASURA_GRAPHQL_JWT_SECRET",
+                        "value":'{"type":"RS256","jwk_url": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_U2dzkxfTv/.well-known/jwks.json","claims_format": "stringified_json"}'
                     },
                     {
                         "name": "HASURA_ENDPOINT",
