@@ -538,6 +538,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
+    // Resets pagination to 0 when user clicks a header to display most relevant results
+    setPagination({
+      limit: query.limit,
+      offset: query.offset,
+      page: 0,
+    });
+
     if (sort.column === columnName) {
       // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
