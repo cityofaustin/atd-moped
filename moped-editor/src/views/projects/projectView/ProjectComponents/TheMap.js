@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
 // import FeaturePopup from "./FeaturePopup";
@@ -23,7 +23,10 @@ import {
   makeCapturedFromLayerFeature,
   useComponentFeatureCollection,
 } from "./utils/features";
-import { featureTableFieldMap } from "./utils/makeFeatures";
+import {
+  useProjectFeatures,
+  useDraftComponentFeatures,
+} from "./utils/makeData";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -31,45 +34,6 @@ import mapboxgl from "mapbox-gl";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
-
-// returns geojson of features across all components
-const useProjectFeatures = (components) =>
-  useMemo(() => {
-    if (components === null || components.length === 0)
-      return {
-        type: "FeatureCollection",
-        features: [],
-      };
-
-    const allComponentfeatures = [];
-
-    components.forEach((component) => {
-      Object.keys(featureTableFieldMap).forEach((key) => {
-        if (component.hasOwnProperty(key))
-          allComponentfeatures.push(component[key]);
-      });
-    });
-
-    // Make features valid GeoJSON by adding type and properties attributes
-    const geoJsonFeatures = allComponentfeatures.flat().map((component) => ({
-      ...component,
-      type: "Feature",
-      properties: {},
-    }));
-
-    return {
-      type: "FeatureCollection",
-      features: geoJsonFeatures,
-    };
-  }, [components]);
-
-const useDraftComponentFeatures = (draftComponent) =>
-  useMemo(() => {
-    return {
-      type: "FeatureCollection",
-      features: draftComponent?.features || [],
-    };
-  }, [draftComponent]);
 
 export default function TheMap({
   setHoveredOnMapFeature,
