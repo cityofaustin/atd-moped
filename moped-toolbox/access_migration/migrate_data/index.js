@@ -1,5 +1,5 @@
 const { gql } = require("graphql-request");
-const { getProjPhasesAndNotes } = require("./moped_proj_phases");
+const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { makeHasuraRequest } = require("./utils/graphql");
 const { loadJsonFile } = require("./utils/loader");
