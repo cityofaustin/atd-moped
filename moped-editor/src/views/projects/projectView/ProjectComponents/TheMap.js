@@ -173,13 +173,10 @@ export default function TheMap({
     }
 
     if (isEditingComponent) {
-      // TODO: Get id from properties from project_geography payload
-      // TODO: Use line_representation to decide whether to worry about point or line layer
+      // TODO: Combine steps that overlap with creating in this handler, make helpers out of the rest
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
-      console.log(clickedFeatureSource);
-      // Add new feature tied to clickedComponent or remove component_id from feature table (or hard delete it)
-      // This only happens when clicking the new "Save Edit" button
+
       const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
       const featureId = clickedFeature.properties[sourceFeatureId];
       console.log({
@@ -210,12 +207,13 @@ export default function TheMap({
         const isFeatureAlreadyInComponent = Boolean(
           draftEditComponent[0][tableToInsert].find(
             (feature) =>
-              feature?.[sourceFeatureId] === featureId || // Already in database
+              feature?.[sourceFeatureId.toLowerCase()] === featureId || // Already in database
               feature?.properties?.[sourceFeatureId] === featureId // From CTN layers
           )
         );
 
-        // If the feature is not alread in the draftEditComponent, add it
+        // If the feature is not already in the draftEditComponent, add it
+        // Otherwise, remove it
         if (!isFeatureAlreadyInComponent) {
           return [
             {
@@ -229,17 +227,13 @@ export default function TheMap({
               ...prev[0],
               [tableToInsert]: prev[0][tableToInsert].filter(
                 (feature) =>
-                  feature?.[sourceFeatureId] !== featureId &&
-                  feature?.properties?.[sourceFeatureId] !== featureId
+                  feature?.[sourceFeatureId.toLowerCase()] !== featureId && // Already in database
+                  feature?.properties?.[sourceFeatureId] !== featureId // From CTN layers
               ),
             },
           ];
         }
       });
-
-      // Remove an existing segment
-      // Check the clicked component to see it is already associated with the component
-      // If so, add to list of feature IDs to remove on save click
     }
 
     // setHoveredOnMapFeatureId(newFeature.properties.id);
