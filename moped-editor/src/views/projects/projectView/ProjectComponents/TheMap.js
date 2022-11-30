@@ -210,11 +210,11 @@ export default function TheMap({
         const isFeatureAlreadyInComponent = Boolean(
           draftEditComponent[0][tableToInsert].find(
             (feature) =>
-              feature?.[sourceFeatureId] === featureId ||
-              feature?.properties?.[sourceFeatureId] === featureId
+              feature?.[sourceFeatureId] === featureId || // Already in database
+              feature?.properties?.[sourceFeatureId] === featureId // From CTN layers
           )
         );
-        console.log({ prev, tableToInsert, sourceFeatureId });
+
         // If the feature is not alread in the draftEditComponent, add it
         if (!isFeatureAlreadyInComponent) {
           return [

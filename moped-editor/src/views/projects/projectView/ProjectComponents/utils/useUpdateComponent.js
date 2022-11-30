@@ -44,6 +44,9 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     //  "feature_street_segments": { 1 : {...featureGeoJSON}, 2: {...featureGeoJSON} },
     // }
     // Add/remove features as needed
+    // OR
+    // Go through table of draftEditComponent and update each feature's geometry
+    // features without an id key are new features to insert
   };
 
   const onCancelComponentAttributesEdit = () => {

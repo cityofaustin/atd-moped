@@ -248,13 +248,8 @@ export const MAP_STYLES = {
       type: "circle",
       _featureIdProp: "INTERSECTION_ID",
       paint: {
-        "circle-radius": {
-          stops: [
-            [5, 4],
-            [16, 10],
-          ],
-        },
-        "circle-stroke-opacity": 0.9,
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-opacity": 0.4,
         "circle-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
@@ -262,6 +257,8 @@ export const MAP_STYLES = {
           COLORS.steel,
         ],
         "circle-opacity": 0.4,
+        "circle-stroke-color": COLORS.steel,
+        "circle-stroke-width": 2,
       },
       minzoom: MIN_SELECT_FEATURE_ZOOM,
     },
