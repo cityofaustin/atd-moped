@@ -96,9 +96,9 @@ def drain_service(slug):
 
 
 # change the Flow's name below when testing, otherwise registering your test flow
-# will overwrite the production flow
-# with Flow("Moped Test Instance Commission") as test_commission:
-with Flow("Moped Test Instance Commission test") as test_commission:
+# will overwrite the production flow ex:
+# with Flow("Moped Test Instance Commission test") as test_commission:
+with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch", default="feature-branch-name", required=True)
     database_seed_source = Parameter(
         "database_seed_source", default="seed", required=True
