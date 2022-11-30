@@ -1,5 +1,6 @@
 import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
+import { useFeatureTypes } from "./utils/map";
 
 const mapStyles = MAP_STYLES;
 
@@ -21,10 +22,30 @@ const ProjectSourcesAndLayers = ({
   linkMode,
   clickedComponent,
   isDrawing,
-  projectLines,
-  projectPoints,
+  projectFeatures,
   draftEditComponent,
 }) => {
+  // If we are editing, we don't show the feature being edited
+  const draftEditComponentId = draftEditComponent?.[0]?.project_component_id;
+
+  const projectFeaturesWithoutComponentBeingEdited = draftEditComponent
+    ? {
+        ...projectFeatures,
+        features: projectFeatures.features.filter(
+          (feature) => feature.component_id !== draftEditComponentId
+        ),
+      }
+    : projectFeatures;
+
+  const projectLines = useFeatureTypes(
+    projectFeaturesWithoutComponentBeingEdited,
+    "line"
+  );
+  const projectPoints = useFeatureTypes(
+    projectFeaturesWithoutComponentBeingEdited,
+    "point"
+  );
+
   const isViewingComponents =
     !isCreatingComponent && !clickedComponent && !isEditingComponent;
 
@@ -36,25 +57,12 @@ const ProjectSourcesAndLayers = ({
   const shouldShowMutedFeatures =
     clickedComponent || isCreatingComponent || isEditingComponent;
 
-  const draftEditComponentId = draftEditComponent?.[0]?.project_component_id;
-
-  const filteredProjectLines = draftEditComponent
-    ? {
-        ...projectLines,
-        features: projectLines.features.filter(
-          (feature) => feature.component_id !== draftEditComponentId
-        ),
-      }
-    : projectLines;
-
-  console.log({ draftEditComponent, filteredProjectLines });
-
   return (
     <>
       <Source
         id="project-lines"
         type="geojson"
-        data={filteredProjectLines}
+        data={projectLines}
         promoteId="id"
       >
         <Layer

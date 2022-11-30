@@ -17,7 +17,7 @@ import {
   initialViewState,
   SOURCES,
 } from "./mapSettings";
-import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
+import { interactiveLayerIds } from "./utils/map";
 import {
   useAgolFeatures,
   findFeatureInAgolGeojsonFeatures,
@@ -82,9 +82,6 @@ export default function TheMap({
     currentZoom,
     bounds
   );
-
-  const projectLines = useFeatureTypes(projectFeatures, "line");
-  const projectPoints = useFeatureTypes(projectFeatures, "point");
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
@@ -285,8 +282,7 @@ export default function TheMap({
         isDrawing={isDrawing}
         linkMode={linkMode}
         clickedComponent={clickedComponent}
-        projectLines={projectLines}
-        projectPoints={projectPoints}
+        projectFeatures={projectFeatures}
         draftEditComponent={draftEditComponent}
       />
       <ClickedComponentSourcesAndLayers
