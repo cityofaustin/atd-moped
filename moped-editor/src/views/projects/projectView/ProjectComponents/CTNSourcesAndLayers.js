@@ -67,7 +67,7 @@ const CTNSourcesAndLayers = ({
         id="ATD_ADMIN.CTN_Intersections"
         type="geojson"
         data={ctnPointsGeojson}
-        promoteId={SOURCES["ctn-points"]._featureIdProp}
+        promoteId={SOURCES["ATD_ADMIN.CTN_Intersections"]._featureIdProp}
       >
         <Layer
           beforeId="street-labels"

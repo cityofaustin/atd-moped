@@ -16,7 +16,7 @@ export const SOURCES = {
     _featureIdProp: "CTN_SEGMENT_ID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
   },
-  "ctn-points": {
+  "ATD_ADMIN.CTN_Intersections": {
     id: "ctn-points",
     featureService: {
       name: "LOCATION_coa_intersection_points",

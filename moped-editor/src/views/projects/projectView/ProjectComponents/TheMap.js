@@ -177,6 +177,7 @@ export default function TheMap({
       // TODO: Use line_representation to decide whether to worry about point or line layer
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
+      console.log(clickedFeatureSource);
       // Add new feature tied to clickedComponent or remove component_id from feature table (or hard delete it)
       // This only happens when clicking the new "Save Edit" button
       const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
@@ -209,11 +210,11 @@ export default function TheMap({
         const isFeatureAlreadyInComponent = Boolean(
           draftEditComponent[0][tableToInsert].find(
             (feature) =>
-              feature?.ctn_segment_id === featureId ||
+              feature?.[sourceFeatureId] === featureId ||
               feature?.properties?.[sourceFeatureId] === featureId
           )
         );
-
+        console.log({ prev, tableToInsert, sourceFeatureId });
         // If the feature is not alread in the draftEditComponent, add it
         if (!isFeatureAlreadyInComponent) {
           return [
@@ -228,7 +229,7 @@ export default function TheMap({
               ...prev[0],
               [tableToInsert]: prev[0][tableToInsert].filter(
                 (feature) =>
-                  feature?.ctn_segment_id !== featureId &&
+                  feature?.[sourceFeatureId] !== featureId &&
                   feature?.properties?.[sourceFeatureId] !== featureId
               ),
             },

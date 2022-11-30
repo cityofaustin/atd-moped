@@ -188,10 +188,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.blueDark,
+        "circle-stroke-color": COLORS.test,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.blueLight,
+        "circle-color": COLORS.test,
         "circle-opacity": 0.9,
       },
     },
