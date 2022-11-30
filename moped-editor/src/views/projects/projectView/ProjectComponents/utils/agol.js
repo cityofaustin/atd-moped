@@ -67,7 +67,7 @@ export const findFeatureInAgolGeojsonFeatures = (
   ctnPointsGeojson
 ) => {
   if (linkMode === "lines") {
-    const linesIdProperty = SOURCES["ctn-lines"]._featureIdProp;
+    const linesIdProperty = SOURCES["ATD_ADMIN.CTN"]._featureIdProp;
     const clickedFeatureId = clickedFeature.properties[linesIdProperty];
 
     return ctnLinesGeojson.features.find(
@@ -103,11 +103,11 @@ export const useAgolFeatures = (
   bounds
 ) => {
   const ctnLinesGeojson = useFeatureService({
-    layerId: SOURCES["ctn-lines"].featureService.layerId,
-    name: SOURCES["ctn-lines"].featureService.name,
+    layerId: SOURCES["ATD_ADMIN.CTN"].featureService.layerId,
+    name: SOURCES["ATD_ADMIN.CTN"].featureService.name,
     bounds,
     isVisible: linkMode === "lines" && currentZoom >= MIN_SELECT_FEATURE_ZOOM,
-    featureIdProp: SOURCES["ctn-lines"]._featureIdProp,
+    featureIdProp: SOURCES["ATD_ADMIN.CTN"]._featureIdProp,
     setIsFetchingFeatures,
   });
 

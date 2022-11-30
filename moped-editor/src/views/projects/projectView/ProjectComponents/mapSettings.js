@@ -7,7 +7,7 @@ const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 export const MIN_SELECT_FEATURE_ZOOM = 15;
 
 export const SOURCES = {
-  "ctn-lines": {
+  "ATD_ADMIN.CTN": {
     id: "ctn-lines",
     featureService: {
       name: "CTN_Segments_MOPED_FS",
