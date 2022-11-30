@@ -59,26 +59,32 @@ export const GET_PROJECT_COMPONENTS = gql`
         geometry: geography
         source_layer
         ctn_segment_id
+        component_id
       }
       feature_intersections {
         id
         geometry: geography
         source_layer
+        intersection_id
+        component_id
       }
       feature_signals {
         id
         geometry: geography
         source_layer
+        component_id
       }
       feature_drawn_lines {
         id
         geometry: geography
         source_layer
+        component_id
       }
       feature_drawn_points {
         id
         geometry: geography
         source_layer
+        component_id
       }
     }
     project_geography(

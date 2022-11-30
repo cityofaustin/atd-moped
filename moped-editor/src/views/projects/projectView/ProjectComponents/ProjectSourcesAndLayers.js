@@ -23,6 +23,7 @@ const ProjectSourcesAndLayers = ({
   isDrawing,
   projectLines,
   projectPoints,
+  draftEditComponent,
 }) => {
   const isViewingComponents =
     !isCreatingComponent && !clickedComponent && !isEditingComponent;
@@ -35,12 +36,25 @@ const ProjectSourcesAndLayers = ({
   const shouldShowMutedFeatures =
     clickedComponent || isCreatingComponent || isEditingComponent;
 
+  const draftEditComponentId = draftEditComponent?.[0]?.project_component_id;
+
+  const filteredProjectLines = draftEditComponent
+    ? {
+        ...projectLines,
+        features: projectLines.features.filter(
+          (feature) => feature.component_id !== draftEditComponentId
+        ),
+      }
+    : projectLines;
+
+  console.log({ draftEditComponent, filteredProjectLines });
+
   return (
     <>
       <Source
         id="project-lines"
         type="geojson"
-        data={projectLines}
+        data={filteredProjectLines}
         promoteId="id"
       >
         <Layer

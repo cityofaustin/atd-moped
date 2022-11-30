@@ -287,6 +287,7 @@ export default function TheMap({
         clickedComponent={clickedComponent}
         projectLines={projectLines}
         projectPoints={projectPoints}
+        draftEditComponent={draftEditComponent}
       />
       <ClickedComponentSourcesAndLayers
         clickedComponent={clickedComponent}
