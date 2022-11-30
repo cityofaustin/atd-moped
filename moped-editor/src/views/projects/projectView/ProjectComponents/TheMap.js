@@ -176,20 +176,14 @@ export default function TheMap({
     }
 
     if (isEditingComponent) {
-      console.log(e.features);
-      // TODO: Find clicked feature in clickedComponent
-      // TODO: Get feature ID from MAP_STYLES config
       // TODO: Get id from properties from project_geography payload
-      // TODO: Use line_representation to decided whether to worry about point or line layer
-      // TODO: If isEditingComponent, show only that list item with a "Save Edit" button
+      // TODO: Use line_representation to decide whether to worry about point or line layer
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
-      // We have the source layer like "ATD_ADMIN.CTN" here
-      // We need to be able to translate "ATD_ADMIN.CTN" to the correct table in the DB
       // Add new feature tied to clickedComponent or remove component_id from feature table (or hard delete it)
-      // These only happen when clicking the new "Save Edit" button
+      // This only happens when clicking the new "Save Edit" button
       const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
-      const featureId = clickedFeature.properties[sourceFeatureId]; // MAP_STYLES
+      const featureId = clickedFeature.properties[sourceFeatureId];
       console.log({
         clickedComponent,
         clickedFeature,
@@ -197,8 +191,6 @@ export default function TheMap({
         featureId,
       });
 
-      // Add a segment
-      // Collect new features in state in a custom hook and then send add them on save click
       const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
         clickedFeature,
         linkMode,
@@ -212,9 +204,9 @@ export default function TheMap({
         ctnLinesGeojson
       );
 
-      // If the feature is not alread in the draftEditComponent, add it
       const tableToInsert =
-        clickedComponent?.moped_components?.feature_layer?.internal_table;
+        draftEditComponent?.[0]?.moped_components?.feature_layer
+          ?.internal_table;
 
       setDraftEditComponent((prev) => {
         const isFeatureAlreadyInComponent = Boolean(
@@ -225,6 +217,7 @@ export default function TheMap({
           )
         );
 
+        // If the feature is not alread in the draftEditComponent, add it
         if (!isFeatureAlreadyInComponent) {
           return [
             {
@@ -236,13 +229,11 @@ export default function TheMap({
           return [
             {
               ...prev[0],
-              [tableToInsert]: prev[0][tableToInsert].filter((feature) => {
-                const doesFeatureMatchId =
+              [tableToInsert]: prev[0][tableToInsert].filter(
+                (feature) =>
                   feature?.ctn_segment_id !== featureId &&
-                  feature?.properties?.[sourceFeatureId] !== featureId;
-                console.log(doesFeatureMatchId);
-                return doesFeatureMatchId;
-              }),
+                  feature?.properties?.[sourceFeatureId] !== featureId
+              ),
             },
           ];
         }

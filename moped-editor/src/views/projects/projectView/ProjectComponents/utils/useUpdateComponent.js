@@ -35,7 +35,9 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
 
   const onSaveEditedComponent = () => {
     console.log("Updating component");
-
+    const tableToInsert =
+      draftEditComponent?.[0]?.moped_components?.feature_layer?.internal_table;
+    console.log(tableToInsert);
     // Compare features in draftEditComponent with clickedComponent
     // Add/remove features as needed
   };

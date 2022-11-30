@@ -214,9 +214,11 @@ export default function MapView({ projectName, projectStatuses }) {
               )}
               {isEditingComponent && (
                 <DraftComponentListItem
-                  primaryText={clickedComponent.moped_components.component_name}
+                  primaryText={
+                    clickedComponent?.moped_components?.component_name
+                  }
                   secondaryText={
-                    clickedComponent.moped_components.component_subtype
+                    clickedComponent?.moped_components?.component_subtype
                   }
                   onSave={onSaveEditedComponent}
                   onCancel={onCancelComponentMapEdit}
