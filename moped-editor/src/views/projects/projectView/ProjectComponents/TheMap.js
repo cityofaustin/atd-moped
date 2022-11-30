@@ -11,7 +11,12 @@ import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
-import { basemaps, mapParameters, initialViewState } from "./mapSettings";
+import {
+  basemaps,
+  mapParameters,
+  initialViewState,
+  SOURCES,
+} from "./mapSettings";
 import { useFeatureTypes, interactiveLayerIds } from "./utils/map";
 import {
   useAgolFeatures,
@@ -183,7 +188,8 @@ export default function TheMap({
       // We need to be able to translate "ATD_ADMIN.CTN" to the correct table in the DB
       // Add new feature tied to clickedComponent or remove component_id from feature table (or hard delete it)
       // These only happen when clicking the new "Save Edit" button
-      const featureId = clickedFeature.properties.CTN_SEGMENT_ID; // MAP_STYLES
+      const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
+      const featureId = clickedFeature.properties[sourceFeatureId]; // MAP_STYLES
       console.log({
         clickedComponent,
         clickedFeature,
@@ -215,7 +221,7 @@ export default function TheMap({
           draftEditComponent[0][tableToInsert].find(
             (feature) =>
               feature?.ctn_segment_id === featureId ||
-              feature?.properties?.CTN_SEGMENT_ID === featureId
+              feature?.properties?.[sourceFeatureId] === featureId
           )
         );
 
@@ -233,7 +239,7 @@ export default function TheMap({
               [tableToInsert]: prev[0][tableToInsert].filter((feature) => {
                 const doesFeatureMatchId =
                   feature?.ctn_segment_id !== featureId &&
-                  feature?.properties?.CTN_SEGMENT_ID !== featureId;
+                  feature?.properties?.[sourceFeatureId] !== featureId;
                 console.log(doesFeatureMatchId);
                 return doesFeatureMatchId;
               }),
