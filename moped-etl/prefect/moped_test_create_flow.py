@@ -379,3 +379,4 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 if __name__ == "__main__":
     # this could be another place to change for a test flow, project_name="Moped staging"
     test_commission.register(project_name="Moped")
+    # test_decommission.register(project_name="Moped")
