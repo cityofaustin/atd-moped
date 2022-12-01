@@ -1,3 +1,5 @@
+import { filterProjectTeamMembers, filterProjectFeatures } from "./helpers.js";
+
 /**
  * The ProjectsListView export settings
  * @constant
@@ -22,6 +24,7 @@ export const ProjectsListViewExportConf = {
   },
   project_team_members: {
     label: "project_team_members",
+    // filter: filterProjectTeamMembers,
   },
   ecapris_subproject_id: {
     label: "ecapris_id",
@@ -38,14 +41,12 @@ export const ProjectsListViewExportConf = {
   updated_at: {
     label: "updated_at",
   },
-  task_order: {
-    label: "task_order",
-  },
   task_order_name: {
     label: "task_order_name",
   },
   project_feature: {
-    label: "project_feature",
+    label: "signal_ids",
+    filter: filterProjectFeatures,
   },
   type_name: {
     label: "type_name",

@@ -18,3 +18,19 @@ export const filterProjectTeamMembers = (value) => {
     </span>
   ));
 };
+
+export const filterProjectFeatures = (project_feature) => {
+  // if there are no features, project_feature is [null]
+  if (!project_feature[0]?.properties?.signal_id) {
+    return "-";
+  } else {
+    const signalIds = [];
+    project_feature.forEach((projectFeature) => {
+      const signal = projectFeature?.properties?.signal_id;
+      if (signal) {
+        signalIds.push(signal);
+      }
+    });
+    return signalIds.join(", ");
+  }
+};
