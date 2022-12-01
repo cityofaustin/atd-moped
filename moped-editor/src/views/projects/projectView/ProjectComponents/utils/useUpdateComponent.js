@@ -1,6 +1,10 @@
 import { useState } from "react";
 
-export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
+export const useUpdateComponent = ({
+  components,
+  clickedComponent,
+  setLinkMode,
+}) => {
   /* if a component is being edited */
   const [isEditingComponent, setIsEditingComponent] = useState(false);
   const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
@@ -39,14 +43,12 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
       draftEditComponent?.[0]?.moped_components?.feature_layer?.internal_table;
     console.log(tableToInsert);
     // Collect table names and features IDs to update
+    // 1. Find the draft component's original features in the components array
+    // 2. Compare the draft features and original features to find the features that remain
+    // 3. Make insertion data out of the new features
+    // 4. Soft delete the ones that don't have a match in the edit draft
+
     // Collect table names and feature IDs to delete
-    // Ex. {
-    //  { 1 : {...featureGeoJSON}, 2: {...featureGeoJSON} },
-    // }
-    // Add/remove features as needed
-    // OR
-    // Go through table of draftEditComponent and update each feature's geometry
-    // features without an id key are new features to insert
   };
 
   const onCancelComponentAttributesEdit = () => {

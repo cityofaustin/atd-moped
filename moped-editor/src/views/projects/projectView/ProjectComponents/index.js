@@ -88,6 +88,19 @@ export default function MapView({ projectName, projectStatuses }) {
     fetchPolicy: "no-cache",
   });
 
+  /* holds this project's components */
+  const components = useMemo(() => {
+    if (!data?.moped_proj_components) return [];
+
+    return data.moped_proj_components;
+  }, [data]);
+
+  const featureCollectionsByComponentId = useMemo(() => {
+    if (!data?.project_geography) return {};
+
+    return makeComponentFeatureCollectionsMap(data.project_geography);
+  }, [data]);
+
   const {
     isCreatingComponent,
     setIsCreatingComponent,
@@ -119,7 +132,7 @@ export default function MapView({ projectName, projectStatuses }) {
     onEditFeatures,
     draftEditComponent,
     setDraftEditComponent,
-  } = useUpdateComponent({ clickedComponent, setLinkMode });
+  } = useUpdateComponent({ components, clickedComponent, setLinkMode });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({
@@ -129,19 +142,6 @@ export default function MapView({ projectName, projectStatuses }) {
     });
 
   if (error) console.log(error);
-
-  /* holds this project's components */
-  const components = useMemo(() => {
-    if (!data?.moped_proj_components) return [];
-
-    return data.moped_proj_components;
-  }, [data]);
-
-  const featureCollectionsByComponentId = useMemo(() => {
-    if (!data?.project_geography) return {};
-
-    return makeComponentFeatureCollectionsMap(data.project_geography);
-  }, [data]);
 
   useZoomToExistingComponents(mapRef, data);
 
