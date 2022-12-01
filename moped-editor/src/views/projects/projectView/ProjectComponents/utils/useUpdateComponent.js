@@ -41,7 +41,7 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     // Collect table names and features IDs to update
     // Collect table names and feature IDs to delete
     // Ex. {
-    //  "feature_street_segments": { 1 : {...featureGeoJSON}, 2: {...featureGeoJSON} },
+    //  { 1 : {...featureGeoJSON}, 2: {...featureGeoJSON} },
     // }
     // Add/remove features as needed
     // OR

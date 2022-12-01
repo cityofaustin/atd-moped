@@ -181,12 +181,12 @@ export default function TheMap({
       const clickedFeatureSource = clickedFeature.layer.source;
 
       const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
-      const featureId = clickedFeature.properties[sourceFeatureId];
+      const featureUniqueId = clickedFeature.properties[sourceFeatureId];
       console.log({
         clickedComponent,
         clickedFeature,
         clickedFeatureSource,
-        featureId,
+        featureUniqueId,
       });
 
       const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
@@ -205,12 +205,13 @@ export default function TheMap({
       const tableToInsert =
         draftEditComponent?.moped_components?.feature_layer?.internal_table;
 
+      // Update UI
       setDraftEditComponent((prev) => {
         const isFeatureAlreadyInComponent = Boolean(
           draftEditComponent[tableToInsert].find(
             (feature) =>
-              feature?.[sourceFeatureId.toLowerCase()] === featureId || // Already in database
-              feature?.properties?.[sourceFeatureId] === featureId // From CTN layers
+              feature?.[sourceFeatureId.toLowerCase()] === featureUniqueId || // Already in database
+              feature?.properties?.[sourceFeatureId] === featureUniqueId // From CTN layers
           )
         );
 
@@ -226,8 +227,8 @@ export default function TheMap({
             ...prev,
             [tableToInsert]: prev[tableToInsert].filter(
               (feature) =>
-                feature?.[sourceFeatureId.toLowerCase()] !== featureId && // Already in database
-                feature?.properties?.[sourceFeatureId] !== featureId // From CTN layers
+                feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
+                feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
             ),
           };
         }
