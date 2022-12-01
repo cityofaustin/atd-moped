@@ -1,11 +1,20 @@
 const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
+const { getComponents } = require("./moped_proj_components");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { makeHasuraRequest } = require("./utils/graphql");
 const { loadJsonFile } = require("./utils/loader");
 const { logger } = require("./utils/logger");
-
+const { mapRow } = require("./utils/mapper");
 const FNAME = "./data/raw/projects.json";
+
+const DELETE_ALL_PROJECTS_MUTATION = gql`
+  mutation DeleteAlllProjects {
+    delete_moped_project(where: { project_id: { _is_null: false } }) {
+      affected_rows
+    }
+  }
+`;
 
 const INSERT_PROJECTS_MUTATION = gql`
   mutation InsertProjects($objects: [moped_project_insert_input!]!) {
@@ -76,16 +85,6 @@ fields = [
   },
 ];
 
-const mapRow = (row) =>
-  fields.reduce((newRow, field) => {
-    if (field.transform) {
-      newRow[field.out] = field.transform(row);
-    } else {
-      newRow[field.out] = row[field.in];
-    }
-    return newRow;
-  }, {});
-
 const getInvalidFields = (row) => {
   const invalidFields = fields
     .filter((field) => field.required)
@@ -96,12 +95,18 @@ const getInvalidFields = (row) => {
   }
 };
 
-function main() {
+async function main() {
+  // dont do this in prod :)
+  logger.info("Deleting all projects....");
+  await makeHasuraRequest({
+    query: DELETE_ALL_PROJECTS_MUTATION,
+  });
+
   const data = loadJsonFile(FNAME);
 
   const ready = data
     .map((row) => {
-      const newRow = mapRow(row);
+      const newRow = mapRow(row, fields);
       if (getInvalidFields(newRow)) {
         return null;
         // throw getInvalidFields(newRow).join(", ");
@@ -111,6 +116,8 @@ function main() {
     .filter((row) => !!row);
 
   const { projPhases, projNotes } = getProjPhasesAndNotes();
+
+  const projComponents = getComponents();
 
   // attach proj phases to projects
   ready.forEach((proj) => {
@@ -125,10 +132,15 @@ function main() {
     if (notes?.length) {
       proj.moped_proj_notes = { data: notes };
     }
+
+    const components = projComponents[interim_project_id];
+    if (components?.length) {
+      proj.moped_proj_components = { data: components };
+    }
   });
 
   logger.info(`Inserting ${ready.length} projects...`);
-  
+
   makeHasuraRequest({
     query: INSERT_PROJECTS_MUTATION,
     variables: { objects: ready },
