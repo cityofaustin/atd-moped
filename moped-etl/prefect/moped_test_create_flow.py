@@ -95,8 +95,10 @@ def drain_service(slug):
     return drained_service
 
 
-# with Flow("Moped Test Instance Commission") as test_commission:
-with Flow("Moped Test Instance Commission", executor=executor) as test_commission:
+# change the Flow's name below when testing, otherwise registering your test flow
+# will overwrite the production flow ex:
+# with Flow("Moped Test Instance Commission test") as test_commission:
+with Flow("Moped Test Instance Commission") as test_commission:
     branch = Parameter("branch", default="feature-branch-name", required=True)
     database_seed_source = Parameter(
         "database_seed_source", default="seed", required=True
@@ -267,12 +269,12 @@ with Flow("Moped Test Instance Commission", executor=executor) as test_commissio
 
     ## Commission the Activity Log
 
-    commission_activity_log_command = activity_log.create_activity_log_command(
-        slug=slug, upstream_tasks=[git_repo_checked_out]
-    )
-    deploy_activity_log = activity_log.create_activity_log_task(
-        command=commission_activity_log_command
-    )
+    # commission_activity_log_command = activity_log.create_activity_log_command(
+    #     slug=slug, upstream_tasks=[git_repo_checked_out]
+    # )
+    # deploy_activity_log = activity_log.create_activity_log_task(
+    #     command=commission_activity_log_command
+    # )
 
     ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
@@ -375,10 +377,6 @@ with Flow("Moped Test Instance Decommission") as test_decommission:
 
 
 if __name__ == "__main__":
-    branch = "refactor-user-activation-and-main"
-
+    # this could be another place to change for a test flow, project_name="Moped staging"
     test_commission.register(project_name="Moped")
     # test_decommission.register(project_name="Moped")
-
-    # test_commission.run(branch=branch, database_seed_source="staging")
-    # test_decommission.run(branch=branch)
