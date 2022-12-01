@@ -1,4 +1,4 @@
-import { filterProjectTeamMembers, filterProjectFeatures } from "./helpers.js";
+import { filterProjectFeatures } from "./helpers.js";
 
 /**
  * The ProjectsListView export settings
