@@ -76,6 +76,7 @@ export const buildLookupQuery = tableNames => {
 export const getActivityLogTableNames = (response, lookupDataKey) => {
   const lookupTableData = response?.[lookupDataKey];
 
+  // would this length ever be more than one??
   if (!lookupTableData || lookupTableData.length === 0) return null;
 
   const tableNames = lookupTableData.map(record => record.record_type);
@@ -87,6 +88,7 @@ export function useActivityLogLookupTables() {
   const [lookupObject, setLookupObject] = useState({
     query: INITIAL_QUERY,
     areLookups: false,
+    tablesMap: {},
   });
 
   const [lookupMap, setLookupMap] = useState(null);

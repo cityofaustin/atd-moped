@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
@@ -14,11 +14,11 @@ import {
   ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
-import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
+// import ProjectActivityLogDialog from "./ProjectActivityLogDialog";
 
 import {
   Box,
-  Button,
+  // Button,
   CardContent,
   CircularProgress,
   Grid,
@@ -41,7 +41,7 @@ import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   table: {
     minWidth: 650,
   },
@@ -66,6 +66,9 @@ const useStyles = makeStyles(theme => ({
     fontFamily: typography.fontFamily,
     padding: "0rem 0 2rem 0",
   },
+  boldText: {
+    fontWeight: 700,
+  },
 }));
 
 const ProjectActivityLog = () => {
@@ -74,33 +77,30 @@ const ProjectActivityLog = () => {
   const userList = {};
   const phaseList = {};
 
-  const {
-    getLookups,
-    lookupLoading,
-    lookupError,
-  } = useActivityLogLookupTables();
+  const { getLookups, lookupLoading, lookupError } =
+    useActivityLogLookupTables();
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    onCompleted: data => getLookups(data, "activity_log_lookup_tables"),
+    onCompleted: (data) => getLookups(data, "activity_log_lookup_tables"),
   });
 
-  const [activityId, setActivityId] = useState(null);
+  // const [activityId, setActivityId] = useState(null);
 
   /**
    * Closes the details dialog
    */
-  const handleDetailsClose = () => {
-    setActivityId(null);
-  };
+  // const handleDetailsClose = () => {
+  //   setActivityId(null);
+  // };
 
   /**
    * Opens the details dialog
    * @param {string} activityId - The activity uuid
    */
-  const handleDetailsOpen = activityId => {
-    setActivityId(activityId);
-  };
+  // const handleDetailsOpen = activityId => {
+  //   setActivityId(activityId);
+  // };
 
   if (loading || lookupLoading) return <CircularProgress />;
 
@@ -117,38 +117,54 @@ const ProjectActivityLog = () => {
    * @param {string} field - The field name (column name)
    * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
    */
-  const isFieldGeneric = field =>
+  const isFieldGeneric = (field) =>
     field in ProjectActivityLogGenericDescriptions;
 
   /**
-   * Makes sure the creation of the project always comes first
+   * checks if event is from new schema and if so finds the updated difference and includes that
+   * in the object
    * @param {Array} eventList - The data object as provided by apollo
-   * @return {Array}
+   * @returns {Array}
    */
-  const reorderCreationEvent = eventList => {
-    // Clone eventList array so it can be mutated
-    let outputList = [...eventList];
+  const getDiffs = (eventList) => {
+    let outputList = [];
 
-    outputList.forEach(event => {
-      // If this is the creation of a project
-      if (
-        event.record_type === "moped_project" &&
-        event.operation_type === "INSERT"
-      ) {
-        // Remove that object from the array and add it back on at the end
-        outputList.splice(outputList.indexOf(event), 1);
-        outputList.push(event);
+    eventList.forEach((event) => {
+      let outputEvent = { ...event };
+      // if the description includes "newSchema", we need to manually find the difference in the update
+      if (event.description[0].newSchema) {
+        // if event is an INSERT there is no previous record to compare to
+        if (event.operation_type === "INSERT") {
+          outputEvent.description = [];
+        } else {
+          // otherwise compare the old record to the new record to find the field that was updated
+          const newData = outputEvent.record_data.data.new;
+          const oldData = outputEvent.record_data.data.old;
+          let changedField = "";
+          Object.keys(newData).forEach((key) => {
+            if (newData[key] !== oldData[key]) {
+              changedField = key;
+            }
+          });
+          outputEvent.description = [
+            {
+              new: newData[changedField],
+              old: oldData[changedField],
+              field: changedField,
+            },
+          ];
+        }
       }
+      outputList.push(outputEvent);
     });
-
     return outputList;
   };
 
   if (data) {
-    data["moped_users"].forEach(user => {
+    data["moped_users"].forEach((user) => {
       userList[`${user.user_id}`] = getUserFullName(user);
     });
-    data["moped_phases"].forEach(phase => {
+    data["moped_phases"].forEach((phase) => {
       phaseList[`${phase.phase_id}`] = phase.phase_name;
     });
   }
@@ -166,24 +182,24 @@ const ProjectActivityLog = () => {
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell align="left">
-                    <b>Date</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Date
                   </TableCell>
-                  <TableCell align="left">
-                    <b>User</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    User
                   </TableCell>
-                  <TableCell align="left">
-                    <b>Action</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Action
                   </TableCell>
-                  <TableCell align="left">
-                    <b>Change</b>
+                  <TableCell align="left" className={classes.boldText}>
+                    Change
                   </TableCell>
-                  <TableCell align="left"> </TableCell>
+                  <TableCell align="left" />
                 </TableRow>
               </TableHead>
               <TableBody>
-                {reorderCreationEvent(data["moped_activity_log"]).map(
-                  change => (
+                {getDiffs(data["moped_activity_log"]).map((change) => {
+                  return (
                     <TableRow key={change.activity_id}>
                       <TableCell
                         align="left"
@@ -203,10 +219,16 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <CDNAvatar
                               className={classes.avatarSmall}
-                              src={change?.moped_user?.picture}
-                              initials={getInitials(change?.moped_user)}
+                              // until we update the events in the activity log to use the user id
+                              // instead of the cognito id, we have to check both places
+                              src={
+                                change?.moped_user?.picture ??
+                                change?.updated_by_user?.picture
+                              }
+                              initials={getInitials(
+                                change?.moped_user ?? change?.updated_by_user
+                              )}
                               userColor={null}
-                              useGenericAvatar={true}
                             />
                           </Box>
                           <Box
@@ -214,7 +236,9 @@ const ProjectActivityLog = () => {
                             flexGrow={1}
                             className={classes.avatarName}
                           >
-                            {getUserFullName(change?.moped_user)}
+                            {getUserFullName(
+                              change?.moped_user ?? change?.updated_by_user
+                            )}
                           </Box>
                         </Box>
                       </TableCell>
@@ -223,16 +247,15 @@ const ProjectActivityLog = () => {
                         width="5%"
                         className={classes.tableCell}
                       >
-                        <b>
-                          {getOperationName(
-                            change.operation_type,
-                            change.record_type
-                          )}
-                        </b>
+                        {getOperationName(
+                          change.operation_type,
+                          change.record_type // todo: could this be better
+                        )}
                       </TableCell>
                       <TableCell
                         align="left"
-                        width="70%"
+                        // if the details link comes back, this goes back to 70%
+                        width="75%"
                         className={classes.tableCell}
                       >
                         <Box display="flex" p={0}>
@@ -255,32 +278,32 @@ const ProjectActivityLog = () => {
                                     item
                                     className={classes.tableChangeItem}
                                   >
-                                    <b>
+                                    <span className={classes.boldText}>
                                       {getCreationLabel(
                                         change,
                                         userList,
                                         phaseList
                                       )}
-                                    </b>
+                                    </span>
                                   </Grid>
                                 )}
-                              {change.description.map(changeItem => {
+                              {change.description.map((changeItem) => {
                                 return (
                                   <Grid
                                     item
                                     className={classes.tableChangeItem}
                                   >
                                     {isFieldGeneric(changeItem.field) ? (
-                                      <b>
+                                      <span className={classes.boldText}>
                                         {
                                           ProjectActivityLogGenericDescriptions[
                                             changeItem.field
                                           ]?.label
                                         }
-                                      </b>
+                                      </span>
                                     ) : (
                                       <>
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {getRecordTypeLabel(
                                             change.record_type
                                           )}{" "}
@@ -288,9 +311,9 @@ const ProjectActivityLog = () => {
                                             change.record_type,
                                             changeItem.field
                                           )}
-                                        </b>
+                                        </span>
                                         &nbsp;from&nbsp;
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -301,9 +324,9 @@ const ProjectActivityLog = () => {
                                                 String(changeItem.old)
                                               )
                                             : fieldFormat(changeItem.old)}
-                                        </b>
+                                        </span>
                                         &nbsp;to&nbsp;
-                                        <b>
+                                        <span className={classes.boldText}>
                                           {isFieldMapped(
                                             change.record_type,
                                             changeItem.field
@@ -314,7 +337,7 @@ const ProjectActivityLog = () => {
                                                 String(changeItem.new)
                                               )
                                             : fieldFormat(changeItem.new)}
-                                        </b>
+                                        </span>
                                       </>
                                     )}
                                   </Grid>
@@ -324,26 +347,28 @@ const ProjectActivityLog = () => {
                           </Box>
                         </Box>
                       </TableCell>
-                      <TableCell width="5%">
-                        <Button
-                          onClick={() => handleDetailsOpen(change.activity_id)}
-                        >
-                          Details
-                        </Button>
-                      </TableCell>
+                      {
+                        // <TableCell width="5%">
+                        //   <Button
+                        //     onClick={() => handleDetailsOpen(change.activity_id)}
+                        //   >
+                        //     Details
+                        //   </Button>
+                        // </TableCell>
+                      }
                     </TableRow>
-                  )
-                )}
+                  );
+                })}
               </TableBody>
             </Table>
           </TableContainer>
         )}
-        {!!activityId && (
+        {/*        {!!activityId && (
           <ProjectActivityLogDialog
             activity_id={activityId}
             handleClose={handleDetailsClose}
           />
-        )}
+        )}*/}
       </CardContent>
     </ApolloErrorHandler>
   );
