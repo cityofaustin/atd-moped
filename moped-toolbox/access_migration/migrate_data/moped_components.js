@@ -1,5 +1,6 @@
 const { loadJsonFile } = require("./utils/loader");
 const FACILITIES_FNAME = "./data/raw/project_facilities.json";
+const { COMPONENTS_MAP } = require("./mappings/components");
 
 fields = [
   {
@@ -8,7 +9,8 @@ fields = [
     required: true,
     transform(row) {
       const componentName = row[this.in];
-      return "get from some mapping";
+      // todo: and if we don't have a component?
+      return COMPONENTS_MAP.find((comp) => comp.in === componentName);
     },
   },
   {
