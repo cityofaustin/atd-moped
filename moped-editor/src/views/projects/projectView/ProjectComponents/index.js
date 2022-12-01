@@ -215,10 +215,12 @@ export default function MapView({ projectName, projectStatuses }) {
               {isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
-                    clickedComponent?.moped_components?.component_name
+                    clickedComponent?.moped_components?.component_name ||
+                    draftEditComponent?.moped_components?.component_name
                   }
                   secondaryText={
-                    clickedComponent?.moped_components?.component_subtype
+                    clickedComponent?.moped_components?.component_subtype ||
+                    draftEditComponent?.moped_components?.component_subtype
                   }
                   onSave={onSaveEditedComponent}
                   onCancel={onCancelComponentMapEdit}
@@ -229,7 +231,9 @@ export default function MapView({ projectName, projectStatuses }) {
               {components.map((component) => {
                 const isExpanded =
                   clickedComponent?.project_component_id ===
-                  component.project_component_id;
+                    component.project_component_id ||
+                  draftEditComponent?.project_component_id ===
+                    component.project_component_id;
                 const isEditingThisComponent = isExpanded && isEditingComponent;
                 return (
                   !isEditingThisComponent && (

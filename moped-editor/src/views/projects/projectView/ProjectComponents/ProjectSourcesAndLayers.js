@@ -25,7 +25,7 @@ const ProjectSourcesAndLayers = ({
   draftEditComponent,
 }) => {
   // If we are editing, we don't show the feature being edited
-  const draftEditComponentId = draftEditComponent?.[0]?.project_component_id;
+  const draftEditComponentId = draftEditComponent?.project_component_id;
 
   const projectFeaturesWithoutComponentBeingEdited = draftEditComponent
     ? {
