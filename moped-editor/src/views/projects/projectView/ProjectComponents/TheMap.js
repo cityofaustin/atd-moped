@@ -217,23 +217,19 @@ export default function TheMap({
         // If the feature is not already in the draftEditComponent, add it
         // Otherwise, remove it
         if (!isFeatureAlreadyInComponent) {
-          return [
-            {
-              ...prev,
-              [tableToInsert]: [...prev[tableToInsert], newFeature],
-            },
-          ];
+          return {
+            ...prev,
+            [tableToInsert]: [...prev[tableToInsert], newFeature],
+          };
         } else if (isFeatureAlreadyInComponent) {
-          return [
-            {
-              ...prev,
-              [tableToInsert]: prev[tableToInsert].filter(
-                (feature) =>
-                  feature?.[sourceFeatureId.toLowerCase()] !== featureId && // Already in database
-                  feature?.properties?.[sourceFeatureId] !== featureId // From CTN layers
-              ),
-            },
-          ];
+          return {
+            ...prev,
+            [tableToInsert]: prev[tableToInsert].filter(
+              (feature) =>
+                feature?.[sourceFeatureId.toLowerCase()] !== featureId && // Already in database
+                feature?.properties?.[sourceFeatureId] !== featureId // From CTN layers
+            ),
+          };
         }
       });
     }
