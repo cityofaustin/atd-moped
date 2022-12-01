@@ -26,10 +26,11 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {
   isDrawnFeature,
   makeCapturedFromLayerFeature,
-  useComponentFeatureCollection,
+  useComponentFeatureCollectionFromMap,
 } from "./utils/features";
 import {
-  useProjectFeatures,
+  useComponentFeatureCollection,
+  useAllComponentsFeatureCollection,
   useDraftComponentFeatures,
 } from "./utils/makeData";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
@@ -64,13 +65,15 @@ export default function TheMap({
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const [isDrawing, setIsDrawing] = useState(false);
-  const projectFeatures = useProjectFeatures(components);
+  const projectComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(components);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
-  const draftEditComponentFeatures = useProjectFeatures(draftEditComponent);
+  const draftEditComponentFeatureCollection =
+    useComponentFeatureCollection(draftEditComponent);
   const draftLayerId = `draft-component-${linkMode}`;
 
-  const componentFeatureCollection = useComponentFeatureCollection(
+  const componentFeatureCollection = useComponentFeatureCollectionFromMap(
     clickedComponent,
     featureCollectionsByComponentId
   );
@@ -200,12 +203,11 @@ export default function TheMap({
       );
 
       const tableToInsert =
-        draftEditComponent?.[0]?.moped_components?.feature_layer
-          ?.internal_table;
+        draftEditComponent?.moped_components?.feature_layer?.internal_table;
 
       setDraftEditComponent((prev) => {
         const isFeatureAlreadyInComponent = Boolean(
-          draftEditComponent[0][tableToInsert].find(
+          draftEditComponent[tableToInsert].find(
             (feature) =>
               feature?.[sourceFeatureId.toLowerCase()] === featureId || // Already in database
               feature?.properties?.[sourceFeatureId] === featureId // From CTN layers
@@ -217,15 +219,15 @@ export default function TheMap({
         if (!isFeatureAlreadyInComponent) {
           return [
             {
-              ...prev[0],
-              [tableToInsert]: [...prev[0][tableToInsert], newFeature],
+              ...prev,
+              [tableToInsert]: [...prev[tableToInsert], newFeature],
             },
           ];
         } else if (isFeatureAlreadyInComponent) {
           return [
             {
-              ...prev[0],
-              [tableToInsert]: prev[0][tableToInsert].filter(
+              ...prev,
+              [tableToInsert]: prev[tableToInsert].filter(
                 (feature) =>
                   feature?.[sourceFeatureId.toLowerCase()] !== featureId && // Already in database
                   feature?.properties?.[sourceFeatureId] !== featureId // From CTN layers
@@ -277,7 +279,7 @@ export default function TheMap({
         isDrawing={isDrawing}
         linkMode={linkMode}
         clickedComponent={clickedComponent}
-        projectFeatures={projectFeatures}
+        projectComponentsFeatureCollection={projectComponentsFeatureCollection}
         draftEditComponent={draftEditComponent}
       />
       <ClickedComponentSourcesAndLayers
@@ -286,7 +288,9 @@ export default function TheMap({
         isEditingComponent={isEditingComponent}
       />
       <EditDraftComponentSourcesAndLayers
-        draftEditComponentFeatures={draftEditComponentFeatures}
+        draftEditComponentFeatureCollection={
+          draftEditComponentFeatureCollection
+        }
         linkMode={linkMode}
         isEditingComponent={isEditingComponent}
       />

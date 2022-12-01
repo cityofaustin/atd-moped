@@ -38,8 +38,36 @@ export const makeComponentFeatureCollectionsMap = (components) => {
   return componentGeographyMap;
 };
 
+export const useComponentFeatureCollection = (component) =>
+  useMemo(() => {
+    if (component === null)
+      return {
+        type: "FeatureCollection",
+        features: [],
+      };
+
+    const allComponentFeatures = [];
+
+    Object.keys(featureTableFieldMap).forEach((key) => {
+      if (component.hasOwnProperty(key))
+        allComponentFeatures.push(component[key]);
+    });
+
+    // Make features valid GeoJSON by adding type and properties attributes
+    const geoJsonFeatures = allComponentFeatures.flat().map((component) => ({
+      ...component,
+      type: "Feature",
+      properties: {},
+    }));
+
+    return {
+      type: "FeatureCollection",
+      features: geoJsonFeatures,
+    };
+  }, [component]);
+
 // returns geojson of features across all components
-export const useProjectFeatures = (components) =>
+export const useAllComponentsFeatureCollection = (components) =>
   useMemo(() => {
     if (components === null || components.length === 0)
       return {

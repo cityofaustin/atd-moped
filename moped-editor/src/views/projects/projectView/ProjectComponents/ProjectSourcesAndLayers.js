@@ -12,8 +12,7 @@ const mapStyles = MAP_STYLES;
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @param {Object} clickedComponent - Details of the component that was clicked
  * @param {Boolean} isDrawing - is the user currently drawing?
- * @param {Object} projectLines - GeoJSON feature collection with all project lines
- * @param {Object} projectPoints - GeoJSON feature collection with all project points
+ * @param {Object} projectComponentsFeatureCollection - GeoJSON feature collection with all project features
  * @returns JSX.Element
  */
 const ProjectSourcesAndLayers = ({
@@ -22,7 +21,7 @@ const ProjectSourcesAndLayers = ({
   linkMode,
   clickedComponent,
   isDrawing,
-  projectFeatures,
+  projectComponentsFeatureCollection,
   draftEditComponent,
 }) => {
   // If we are editing, we don't show the feature being edited
@@ -30,12 +29,12 @@ const ProjectSourcesAndLayers = ({
 
   const projectFeaturesWithoutComponentBeingEdited = draftEditComponent
     ? {
-        ...projectFeatures,
-        features: projectFeatures.features.filter(
+        ...projectComponentsFeatureCollection,
+        features: projectComponentsFeatureCollection.features.filter(
           (feature) => feature.component_id !== draftEditComponentId
         ),
       }
-    : projectFeatures;
+    : projectComponentsFeatureCollection;
 
   const projectLines = useFeatureTypes(
     projectFeaturesWithoutComponentBeingEdited,

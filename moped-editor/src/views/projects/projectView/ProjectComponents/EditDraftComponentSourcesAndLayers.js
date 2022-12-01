@@ -6,13 +6,13 @@ const mapStyles = MAP_STYLES;
 /**
  * Component that renders the feature collection of a draft component while creating a component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Object} draftEditComponentFeatures - GeoJSON feature collection of the draft component
+ * @param {Object} draftEditComponentFeatureCollection - GeoJSON feature collection of the draft component
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @returns JSX.Element
  */
 const EditDraftComponentSourcesAndLayers = ({
-  draftEditComponentFeatures,
+  draftEditComponentFeatureCollection,
   linkMode,
   isEditingComponent,
 }) => {
@@ -21,7 +21,7 @@ const EditDraftComponentSourcesAndLayers = ({
       <Source
         id="edit-draft-component-lines"
         type="geojson"
-        data={draftEditComponentFeatures}
+        data={draftEditComponentFeatureCollection}
         promoteId="id"
       >
         <Layer
@@ -41,7 +41,7 @@ const EditDraftComponentSourcesAndLayers = ({
       <Source
         id="edit-draft-component-points"
         type="geojson"
-        data={draftEditComponentFeatures}
+        data={draftEditComponentFeatureCollection}
         promoteId="id"
       >
         <Layer

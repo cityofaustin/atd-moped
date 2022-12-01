@@ -30,7 +30,7 @@ export const useUpdateComponent = ({ clickedComponent, setLinkMode }) => {
     setIsEditingComponent(true);
     setShowEditModeDialog(false);
     console.log(clickedComponent);
-    setDraftEditComponent([clickedComponent]);
+    setDraftEditComponent(clickedComponent);
   };
 
   const onSaveEditedComponent = () => {
