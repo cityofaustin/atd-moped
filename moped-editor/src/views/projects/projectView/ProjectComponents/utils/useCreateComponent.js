@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 import {
@@ -9,16 +9,50 @@ import {
 } from "./makeFeatures";
 import { getDrawId } from "./features";
 
+const createReducer = (state, action) => {
+  if (action.type === "start_create") {
+    return {
+      ...state,
+      showCreateDialog: true,
+      isCreatingComponent: true,
+    };
+  } else if (action.type === "save_create") {
+    return {
+      ...state,
+      showCreateDialog: false,
+      isCreatingComponent: false,
+    };
+  } else if (action.type === "cancel_create") {
+    return {
+      ...state,
+      showCreateDialog: false,
+      isCreatingComponent: false,
+      // draftComponent: null
+    };
+  } else if (action.type === "close_create_dialog") {
+    return {
+      ...state,
+      showCreateDialog: false,
+    };
+  }
+  throw Error(`Unknown action. ${action.type}`);
+};
+
 export const useCreateComponent = ({
   projectId,
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
 }) => {
+  const [createState, createDispatch] = useReducer(createReducer, {
+    isCreatingComponent: false,
+    showCreateDialog: false,
+  });
+
   /* if a new component is being created */
-  const [isCreatingComponent, setIsCreatingComponent] = useState(false);
-  const [showComponentCreateDialog, setShowComponentCreateDialog] =
-    useState(false);
+  // const [isCreatingComponent, setIsCreatingComponent] = useState(false);
+  // const [showCreateDialog, setShowComponentCreateDialog] =
+  //   useState(false);
 
   /* holds the state of a component that's being created */
   const [draftComponent, setDraftComponent] = useState(null);
@@ -26,13 +60,12 @@ export const useCreateComponent = ({
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
 
   const onStartCreatingComponent = () => {
-    setIsCreatingComponent(true);
-    setShowComponentCreateDialog(true);
+    createDispatch({ type: "start_create" });
     setClickedComponent(null);
   };
 
   const onCancelComponentCreate = () => {
-    setIsCreatingComponent(!isCreatingComponent);
+    createDispatch({ type: "cancel_create" });
     setDraftComponent(null);
     setLinkMode(null);
   };
@@ -108,16 +141,18 @@ export const useCreateComponent = ({
       }
     );
 
-    setIsCreatingComponent(false);
+    createDispatch({ type: "save_create" });
     setDraftComponent(null);
     setLinkMode(null);
   };
 
   return {
-    isCreatingComponent,
-    setIsCreatingComponent,
-    showComponentCreateDialog,
-    setShowComponentCreateDialog,
+    createState,
+    createDispatch,
+    // isCreatingComponent,
+    // setIsCreatingComponent,
+    // showCreateDialog,
+    // setShowComponentCreateDialog,
     draftComponent,
     setDraftComponent,
     onStartCreatingComponent,

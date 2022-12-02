@@ -102,15 +102,17 @@ export default function MapView({ projectName, projectStatuses }) {
   }, [data]);
 
   const {
-    isCreatingComponent,
-    setIsCreatingComponent,
-    showComponentCreateDialog,
-    setShowComponentCreateDialog,
+    // isCreatingComponent,
+    // setIsCreatingComponent,
+    // showCreateDialog,
+    // setShowComponentCreateDialog,
     draftComponent,
     setDraftComponent,
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
+    createState,
+    createDispatch,
   } = useCreateComponent({
     projectId,
     setClickedComponent,
@@ -186,7 +188,7 @@ export default function MapView({ projectName, projectStatuses }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!isCreatingComponent && !isEditingComponent && (
+              {!createState.isCreatingComponent && !isEditingComponent && (
                 <>
                   <ListItem dense>
                     <Button
@@ -202,7 +204,7 @@ export default function MapView({ projectName, projectStatuses }) {
                   <Divider />
                 </>
               )}
-              {draftComponent && isCreatingComponent && (
+              {draftComponent && createState.isCreatingComponent && (
                 <DraftComponentListItem
                   primaryText={draftComponent.component_name}
                   secondaryText={draftComponent.component_subtype}
@@ -246,7 +248,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       onStartEditingComponent={onStartEditingComponent}
                       onClickZoomToComponent={onClickZoomToComponent}
                       isEditingComponent={isEditingComponent}
-                      isCreatingComponent={isCreatingComponent}
+                      isCreatingComponent={createState.isCreatingComponent}
                     />
                   )
                 );
@@ -266,7 +268,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setDraftEditComponent={setDraftEditComponent}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
-              isCreatingComponent={isCreatingComponent}
+              isCreatingComponent={createState.isCreatingComponent}
               isEditingComponent={isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
@@ -278,11 +280,10 @@ export default function MapView({ projectName, projectStatuses }) {
             />
           </div>
           <CreateComponentModal
-            showDialog={showComponentCreateDialog}
-            setShowDialog={setShowComponentCreateDialog}
             setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
-            setIsCreatingComponent={setIsCreatingComponent}
+            createDispatch={createDispatch}
+            showDialog={createState.showCreateDialog}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}

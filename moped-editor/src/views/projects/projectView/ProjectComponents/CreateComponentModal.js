@@ -8,6 +8,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
+import { create } from "filepond";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -21,10 +22,9 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateComponentModal = ({
   showDialog,
-  setShowDialog,
   setDraftComponent,
   setLinkMode,
-  setIsCreatingComponent,
+  createDispatch,
 }) => {
   const classes = useStyles();
 
@@ -60,14 +60,13 @@ const CreateComponentModal = ({
     setDraftComponent(newComponent);
     setLinkMode(linkMode);
     // switch to components tab
-    setShowDialog(false);
+    createDispatch({ type: "close_create_dialog" });
   };
 
   const onClose = () => {
     setLinkMode(null);
+    createDispatch({ type: "cancel_create" });
     setDraftComponent(null);
-    setIsCreatingComponent(false);
-    setShowDialog(false);
   };
 
   return (
