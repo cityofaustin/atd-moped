@@ -115,11 +115,8 @@ export default function MapView({ projectName, projectStatuses }) {
   });
 
   const {
-    isEditingComponent,
-    setIsEditingComponent,
     editState,
     editDispatch,
-    showEditModeDialog,
     onStartEditingComponent,
     onSaveEditedComponent,
     onCancelComponentAttributesEdit,
@@ -175,22 +172,23 @@ export default function MapView({ projectName, projectStatuses }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!createState.isCreatingComponent && !isEditingComponent && (
-                <>
-                  <ListItem dense>
-                    <Button
-                      size="small"
-                      color="primary"
-                      fullWidth
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={onStartCreatingComponent}
-                    >
-                      New Component
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                </>
-              )}
+              {!createState.isCreatingComponent &&
+                !editState.isEditingComponent && (
+                  <>
+                    <ListItem dense>
+                      <Button
+                        size="small"
+                        color="primary"
+                        fullWidth
+                        startIcon={<AddCircleOutlineIcon />}
+                        onClick={onStartCreatingComponent}
+                      >
+                        New Component
+                      </Button>
+                    </ListItem>
+                    <Divider />
+                  </>
+                )}
               {createState.draftComponent &&
                 createState.isCreatingComponent && (
                   <DraftComponentListItem
@@ -204,7 +202,7 @@ export default function MapView({ projectName, projectStatuses }) {
                     saveButtonText="Save"
                   />
                 )}
-              {isEditingComponent && (
+              {editState.isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
                     clickedComponent?.moped_components?.component_name ||
@@ -226,7 +224,8 @@ export default function MapView({ projectName, projectStatuses }) {
                     component.project_component_id ||
                   draftEditComponent?.project_component_id ===
                     component.project_component_id;
-                const isEditingThisComponent = isExpanded && isEditingComponent;
+                const isEditingThisComponent =
+                  isExpanded && editState.isEditingComponent;
                 return (
                   !isEditingThisComponent && (
                     <ComponentListItem
@@ -237,7 +236,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       setIsDeletingComponent={setIsDeletingComponent}
                       onStartEditingComponent={onStartEditingComponent}
                       onClickZoomToComponent={onClickZoomToComponent}
-                      isEditingComponent={isEditingComponent}
+                      isEditingComponent={editState.isEditingComponent}
                       isCreatingComponent={createState.isCreatingComponent}
                     />
                   )
@@ -259,7 +258,7 @@ export default function MapView({ projectName, projectStatuses }) {
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
               isCreatingComponent={createState.isCreatingComponent}
-              isEditingComponent={isEditingComponent}
+              isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
               clickedProjectFeature={clickedProjectFeature}

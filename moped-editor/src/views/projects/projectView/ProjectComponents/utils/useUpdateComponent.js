@@ -6,7 +6,6 @@ const editReducer = (state, action) => {
       return {
         ...state,
         showEditModeDialog: true,
-        isEditingComponent: true,
       };
     case "start_attributes_edit":
       return {
@@ -18,6 +17,7 @@ const editReducer = (state, action) => {
       return {
         ...state,
         showEditModeDialog: false,
+        isEditingComponent: true,
       };
     case "cancel_mode_edit":
       return {
@@ -29,6 +29,11 @@ const editReducer = (state, action) => {
       return {
         ...state,
         showEditAttributesDialog: false,
+        isEditingComponent: false,
+      };
+    case "cancel_map_edit":
+      return {
+        ...state,
         isEditingComponent: false,
       };
     default:
@@ -90,7 +95,7 @@ export const useUpdateComponent = ({
   };
 
   const onCancelComponentMapEdit = () => {
-    editDispatch({ type: "cancel_edit" });
+    editDispatch({ type: "cancel_map_edit" });
     setLinkMode(null);
     setDraftEditComponent(null);
   };
