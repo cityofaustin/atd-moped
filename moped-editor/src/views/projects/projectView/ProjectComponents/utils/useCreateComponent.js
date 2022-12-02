@@ -44,19 +44,19 @@ const createReducer = (state, action) => {
     const newDrawnFeatures = action.payload;
     const updatedFeatures = [...draftComponent.features, ...newDrawnFeatures];
 
-    const draftComponentWithNewDrawnFeatures = {
+    const updatedDraftComponent = {
       ...draftComponent,
       features: [...draftComponent.features, ...newDrawnFeatures],
     };
 
     action.callback(updatedFeatures);
 
-    return { ...state, draftComponent: draftComponentWithNewDrawnFeatures };
+    return { ...state, draftComponent: updatedDraftComponent };
   } else if (action.type === "update_drawn_features") {
     const { draftComponent } = state;
-    const updatedFeaturesArray = action.payload;
+    const updatedFeatures = action.payload;
 
-    const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
+    const featureIdsToUpdate = updatedFeatures.map((feature) =>
       getDrawId(feature)
     );
 
@@ -70,7 +70,7 @@ const createReducer = (state, action) => {
 
     const updatedDraftComponent = {
       ...draftComponent,
-      features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
+      features: [...draftFeaturesToKeep, ...updatedFeatures],
     };
 
     return { ...state, draftComponent: updatedDraftComponent };
