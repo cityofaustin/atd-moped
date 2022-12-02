@@ -18,6 +18,7 @@ const editReducer = (state, action) => {
         ...state,
         showEditModeDialog: false,
         isEditingComponent: true,
+        draftEditComponent: action.payload,
       };
     case "cancel_mode_edit":
       return {
@@ -35,7 +36,14 @@ const editReducer = (state, action) => {
       return {
         ...state,
         isEditingComponent: false,
+        draftEditComponent: null,
       };
+    case "update_clicked_features":
+      const updatedDraftEditComponent = action.callback(
+        state.draftEditComponent
+      );
+
+      return { ...state, draftEditComponent: updatedDraftEditComponent };
     default:
       throw Error(`Unknown action. ${action.type}`);
   }
@@ -50,10 +58,8 @@ export const useUpdateComponent = ({
     isEditingComponent: false,
     showEditAttributesDialog: false,
     showEditModeDialog: false,
+    draftEditComponent: null,
   });
-
-  /* holds the features added when editing an existing component */
-  const [draftEditComponent, setDraftEditComponent] = useState(null);
 
   const onEditFeatures = () => {
     // TODO: Add helper to convert line representation to "lines" or "points"
@@ -63,15 +69,15 @@ export const useUpdateComponent = ({
     const linkMode = line_representation === true ? "lines" : "points";
 
     setLinkMode(linkMode);
-    editDispatch({ type: "start_map_edit" });
+    editDispatch({ type: "start_map_edit", payload: clickedComponent });
     console.log(clickedComponent);
-    setDraftEditComponent(clickedComponent);
   };
 
   const onSaveEditedComponent = () => {
     console.log("Updating component");
     const tableToInsert =
-      draftEditComponent?.moped_components?.feature_layer?.internal_table;
+      editState.draftEditComponent?.moped_components?.feature_layer
+        ?.internal_table;
     console.log(tableToInsert);
     // Collect table names and features IDs to update
     // 1. Find the draft component's original features in the components array
@@ -85,7 +91,6 @@ export const useUpdateComponent = ({
   const onCancelComponentMapEdit = () => {
     editDispatch({ type: "cancel_map_edit" });
     setLinkMode(null);
-    setDraftEditComponent(null);
   };
 
   return {
@@ -94,7 +99,5 @@ export const useUpdateComponent = ({
     onSaveEditedComponent,
     onCancelComponentMapEdit,
     onEditFeatures,
-    draftEditComponent,
-    setDraftEditComponent,
   };
 };

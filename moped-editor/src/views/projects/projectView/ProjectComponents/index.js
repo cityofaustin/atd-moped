@@ -120,8 +120,6 @@ export default function MapView({ projectName, projectStatuses }) {
     onSaveEditedComponent,
     onCancelComponentMapEdit,
     onEditFeatures,
-    draftEditComponent,
-    setDraftEditComponent,
   } = useUpdateComponent({ components, clickedComponent, setLinkMode });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
@@ -203,11 +201,13 @@ export default function MapView({ projectName, projectStatuses }) {
                 <DraftComponentListItem
                   primaryText={
                     clickedComponent?.moped_components?.component_name ||
-                    draftEditComponent?.moped_components?.component_name
+                    editState.draftEditComponent?.moped_components
+                      ?.component_name
                   }
                   secondaryText={
                     clickedComponent?.moped_components?.component_subtype ||
-                    draftEditComponent?.moped_components?.component_subtype
+                    editState.draftEditComponent?.moped_components
+                      ?.component_subtype
                   }
                   onSave={onSaveEditedComponent}
                   onCancel={onCancelComponentMapEdit}
@@ -219,7 +219,7 @@ export default function MapView({ projectName, projectStatuses }) {
                 const isExpanded =
                   clickedComponent?.project_component_id ===
                     component.project_component_id ||
-                  draftEditComponent?.project_component_id ===
+                  editState.draftEditComponent?.project_component_id ===
                     component.project_component_id;
                 const isEditingThisComponent =
                   isExpanded && editState.isEditingComponent;
@@ -250,8 +250,8 @@ export default function MapView({ projectName, projectStatuses }) {
               components={components}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
-              draftEditComponent={draftEditComponent}
-              setDraftEditComponent={setDraftEditComponent}
+              draftEditComponent={editState.draftEditComponent}
+              editDispatch={editDispatch}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
               isCreatingComponent={createState.isCreatingComponent}

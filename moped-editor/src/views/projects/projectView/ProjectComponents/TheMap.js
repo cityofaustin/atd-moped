@@ -50,6 +50,7 @@ export default function TheMap({
   draftComponent,
   createDispatch,
   draftEditComponent,
+  editDispatch,
   setDraftEditComponent,
   mapRef,
   clickedProjectFeature,
@@ -212,9 +213,9 @@ export default function TheMap({
         draftEditComponent?.moped_components?.feature_layer?.internal_table;
 
       // Update UI
-      setDraftEditComponent((prev) => {
+      const addOrRemoveClickedEditFeatures = (currentComponent) => {
         const isFeatureAlreadyInComponent = Boolean(
-          draftEditComponent[tableToInsert].find(
+          currentComponent[tableToInsert].find(
             (feature) =>
               feature?.[sourceFeatureId.toLowerCase()] === featureUniqueId || // Already in database
               feature?.properties?.[sourceFeatureId] === featureUniqueId // From CTN layers
@@ -222,22 +223,27 @@ export default function TheMap({
         );
 
         // If the feature is not already in the draftEditComponent, add it
-        // Otherwise, remove it
+        // otherwise, remove it.
         if (!isFeatureAlreadyInComponent) {
           return {
-            ...prev,
-            [tableToInsert]: [...prev[tableToInsert], newFeature],
+            ...currentComponent,
+            [tableToInsert]: [...currentComponent[tableToInsert], newFeature],
           };
         } else if (isFeatureAlreadyInComponent) {
           return {
-            ...prev,
-            [tableToInsert]: prev[tableToInsert].filter(
+            ...currentComponent,
+            [tableToInsert]: currentComponent[tableToInsert].filter(
               (feature) =>
                 feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
                 feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
             ),
           };
         }
+      };
+
+      editDispatch({
+        type: "update_clicked_features",
+        callback: addOrRemoveClickedEditFeatures,
       });
     }
 
