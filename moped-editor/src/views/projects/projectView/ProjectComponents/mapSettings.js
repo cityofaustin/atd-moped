@@ -15,6 +15,7 @@ export const SOURCES = {
     },
     _featureIdProp: "CTN_SEGMENT_ID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
+    table: "feature_street_segments",
   },
   "ATD_ADMIN.CTN_Intersections": {
     id: "ctn-points",
@@ -24,6 +25,7 @@ export const SOURCES = {
     },
     _featureIdProp: "INTERSECTION_ID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
+    table: "feature_intersections",
   },
 };
 

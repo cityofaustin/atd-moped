@@ -1,10 +1,9 @@
 import { useReducer } from "react";
 import {
-  makeDrawnLinesInsertionData,
-  makeDrawnPointsInsertionData,
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./makeFeatures";
+import { SOURCES } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -80,10 +79,10 @@ export const useUpdateComponent = ({
   };
 
   const onSaveEditedComponent = () => {
-    console.log("Updating component");
     const featureTable =
       editState.draftEditComponent?.moped_components?.feature_layer
         ?.internal_table;
+
     console.log(featureTable, editState.draftEditComponent);
 
     const editedComponentId = editState.draftEditComponent.project_component_id;
@@ -115,6 +114,16 @@ export const useUpdateComponent = ({
         featuresToInsert
       );
     }
+
+    // Find the features to delete
+    const originalFeaturesToDelete = originalComponent[featureTable].filter(
+      (feature) => {
+        const { id } = feature;
+        return !editState.draftEditComponent[featureTable].find(
+          (feature) => feature.id === id
+        );
+      }
+    );
 
     // Collect table names and features IDs to update
     // 1. Find the draft component's original features in the components array
