@@ -1,4 +1,4 @@
-import { useState, useReducer } from "react";
+import { useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 import {
@@ -7,7 +7,7 @@ import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./makeFeatures";
-import { getDrawId } from "./features";
+import { getDrawId, isDrawnFeature } from "./features";
 
 const createReducer = (state, action) => {
   if (action.type === "start_create") {
@@ -40,14 +40,40 @@ const createReducer = (state, action) => {
 
     return { ...state, draftComponent };
   } else if (action.type === "add_drawn_features") {
+    const { draftComponent } = state;
     const newDrawnFeatures = action.payload;
+    const updatedFeatures = [...draftComponent.features, ...newDrawnFeatures];
 
     const draftComponentWithNewDrawnFeatures = {
-      ...state.draftComponent,
-      features: [...state.draftComponent.features, ...newDrawnFeatures],
+      ...draftComponent,
+      features: [...draftComponent.features, ...newDrawnFeatures],
     };
 
+    action.callback(updatedFeatures);
+
     return { ...state, draftComponent: draftComponentWithNewDrawnFeatures };
+  } else if (action.type === "update_drawn_features") {
+    const { draftComponent } = state;
+    const updatedFeaturesArray = action.payload;
+
+    const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
+      getDrawId(feature)
+    );
+
+    const draftFeaturesToKeep = draftComponent.features.filter((feature) => {
+      if (isDrawnFeature(feature)) {
+        return !featureIdsToUpdate.includes(getDrawId(feature));
+      } else {
+        return true;
+      }
+    });
+
+    const updatedDraftComponent = {
+      ...draftComponent,
+      features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
+    };
+
+    return { ...state, draftComponent: updatedDraftComponent };
   }
   throw Error(`Unknown action. ${action.type}`);
 };

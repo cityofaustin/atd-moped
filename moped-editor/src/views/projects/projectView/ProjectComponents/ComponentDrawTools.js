@@ -22,34 +22,24 @@ const ComponentDrawTools = ({
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    const prevDraftComponent = createState.draftComponent;
-
-    const drawnFeatures = cloneDeep(createdFeaturesArray);
-
-    const previouslyDrawnFeatures = cloneDeep(
-      prevDraftComponent.features
-    ).filter((feature) => Boolean(getDrawId(feature)));
-
     // Add properties needed to distinguish drawn features from other features
-    drawnFeatures.forEach((feature) => {
+    const drawnFeatures = createdFeaturesArray.map((feature) => {
       makeDrawnFeature(feature, linkMode);
+      return feature;
     });
 
     // We must override the features in the draw control's internal state with ones
     // that have our properties so that we can find them later in onDelete
-    drawControlsRef.current.set({
-      type: "FeatureCollection",
-      features: [...previouslyDrawnFeatures, ...drawnFeatures],
-    });
-
-    // const newDraftComponent = {
-    //   ...prevDraftComponent,
-    //   features: [...prevDraftComponent.features, ...drawnFeatures],
-    // };
+    const updateMapDrawToolFeatures = (updatedFeatures) =>
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: updatedFeatures,
+      });
 
     createDispatch({
-      type: "add_drawn_feature",
+      type: "add_drawn_features",
       payload: drawnFeatures,
+      callback: updateMapDrawToolFeatures,
     });
   };
 
@@ -57,30 +47,9 @@ const ComponentDrawTools = ({
     const wasComponentDragged = action === "move";
 
     if (wasComponentDragged) {
-      const prevDraftComponent = createState.draftComponent;
-
-      const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
-        getDrawId(feature)
-      );
-
-      const draftFeaturesToKeep = prevDraftComponent.features.filter(
-        (feature) => {
-          if (isDrawnFeature(feature)) {
-            return !featureIdsToUpdate.includes(getDrawId(feature));
-          } else {
-            return true;
-          }
-        }
-      );
-
-      const updatedDraftComponent = {
-        ...prevDraftComponent,
-        features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
-      };
-
       createDispatch({
-        type: "store_draft_component",
-        payload: updatedDraftComponent,
+        type: "update_drawn_features",
+        payload: updatedFeaturesArray,
       });
     }
   };
