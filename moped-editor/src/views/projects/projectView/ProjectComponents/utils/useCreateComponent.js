@@ -10,72 +10,77 @@ import {
 import { getDrawId, isDrawnFeature } from "./features";
 
 const createReducer = (state, action) => {
-  if (action.type === "start_create") {
-    return {
-      ...state,
-      showCreateDialog: true,
-      isCreatingComponent: true,
-    };
-  } else if (action.type === "save_create") {
-    return {
-      ...state,
-      showCreateDialog: false,
-      isCreatingComponent: false,
-      draftComponent: null,
-    };
-  } else if (action.type === "cancel_create") {
-    return {
-      ...state,
-      showCreateDialog: false,
-      isCreatingComponent: false,
-      draftComponent: null,
-    };
-  } else if (action.type === "close_create_dialog") {
-    return {
-      ...state,
-      showCreateDialog: false,
-    };
-  } else if (action.type === "store_draft_component") {
-    const draftComponent = action.payload;
+  switch (action.type) {
+    case "start_create":
+      return {
+        ...state,
+        showCreateDialog: true,
+        isCreatingComponent: true,
+      };
+    case "save_create":
+      return {
+        ...state,
+        showCreateDialog: false,
+        isCreatingComponent: false,
+        draftComponent: null,
+      };
+    case "cancel_create":
+      return {
+        ...state,
+        showCreateDialog: false,
+        isCreatingComponent: false,
+        draftComponent: null,
+      };
+    case "close_create_dialog":
+      return {
+        ...state,
+        showCreateDialog: false,
+      };
+    case "store_draft_component":
+      return { ...state, draftComponent: action.payload };
+    case "add_drawn_features":
+      const newDrawnFeatures = action.payload;
+      const featuresWithAdditions = [
+        ...state.draftComponent.features,
+        ...newDrawnFeatures,
+      ];
 
-    return { ...state, draftComponent };
-  } else if (action.type === "add_drawn_features") {
-    const { draftComponent } = state;
-    const newDrawnFeatures = action.payload;
-    const updatedFeatures = [...draftComponent.features, ...newDrawnFeatures];
+      const newDraftComponent = {
+        ...state.draftComponent,
+        features: [...state.draftComponent.features, ...newDrawnFeatures],
+      };
 
-    const updatedDraftComponent = {
-      ...draftComponent,
-      features: [...draftComponent.features, ...newDrawnFeatures],
-    };
+      action.callback(featuresWithAdditions);
 
-    action.callback(updatedFeatures);
+      console.log({ ...state, draftComponent: newDraftComponent });
 
-    return { ...state, draftComponent: updatedDraftComponent };
-  } else if (action.type === "update_drawn_features") {
-    const { draftComponent } = state;
-    const updatedFeatures = action.payload;
+      return { ...state, draftComponent: newDraftComponent };
 
-    const featureIdsToUpdate = updatedFeatures.map((feature) =>
-      getDrawId(feature)
-    );
+    case "update_drawn_features":
+      const { draftComponent } = state;
+      const updatedFeatures = action.payload;
 
-    const draftFeaturesToKeep = draftComponent.features.filter((feature) => {
-      if (isDrawnFeature(feature)) {
-        return !featureIdsToUpdate.includes(getDrawId(feature));
-      } else {
-        return true;
-      }
-    });
+      const featureIdsToUpdate = updatedFeatures.map((feature) =>
+        getDrawId(feature)
+      );
 
-    const updatedDraftComponent = {
-      ...draftComponent,
-      features: [...draftFeaturesToKeep, ...updatedFeatures],
-    };
+      const draftFeaturesToKeep = draftComponent.features.filter((feature) => {
+        if (isDrawnFeature(feature)) {
+          return !featureIdsToUpdate.includes(getDrawId(feature));
+        } else {
+          return true;
+        }
+      });
 
-    return { ...state, draftComponent: updatedDraftComponent };
+      const updatedDraftComponent = {
+        ...draftComponent,
+        features: [...draftFeaturesToKeep, ...updatedFeatures],
+      };
+
+      return { ...state, draftComponent: updatedDraftComponent };
+    default:
+      throw Error(`Unknown action. ${action.type}`);
   }
-  throw Error(`Unknown action. ${action.type}`);
 };
 
 export const useCreateComponent = ({
