@@ -1,8 +1,10 @@
 import { useReducer } from "react";
+import { useMutation } from "@apollo/client";
 import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./makeFeatures";
+import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -65,6 +67,8 @@ export const useUpdateComponent = ({
     draftEditComponent: null,
   });
 
+  const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
+
   const onEditFeatures = () => {
     // TODO: Add helper to convert line representation to "lines" or "points"
     const {
@@ -115,7 +119,7 @@ export const useUpdateComponent = ({
     }
 
     // Find the features to delete
-    const originalFeaturesToDelete = originalComponent[featureTable].filter(
+    const featuresToDelete = originalComponent[featureTable].filter(
       (feature) => {
         const { id } = feature;
         return !editState.draftEditComponent[featureTable].find(
@@ -123,6 +127,21 @@ export const useUpdateComponent = ({
         );
       }
     );
+
+    const deletes = featuresToDelete.map((feature) => ({
+      where: {
+        _and: {
+          component_id: {
+            _eq: editState.draftEditComponent.project_component_id,
+          },
+          id: { _eq: feature.id },
+        },
+      },
+      _set: { is_deleted: true },
+    }));
+    console.log(deletes);
+
+    updateComponentFeatures({ variables: { updates: deletes } });
   };
 
   const onCancelComponentMapEdit = () => {

@@ -13,6 +13,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -24,6 +25,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -35,6 +37,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -47,6 +50,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -59,6 +63,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -72,6 +77,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -84,6 +90,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -110,6 +117,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -121,6 +129,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -132,6 +141,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -144,6 +154,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -156,6 +167,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -169,6 +181,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -181,6 +194,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -208,6 +222,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -220,6 +235,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -232,6 +248,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -245,6 +262,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -258,6 +276,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -272,6 +291,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -285,6 +305,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -343,6 +364,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -358,6 +380,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -373,6 +396,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -389,6 +413,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -405,6 +430,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -422,6 +448,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -438,6 +465,7 @@
           - signal_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -471,6 +499,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -489,6 +518,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -507,6 +537,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -526,6 +557,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -545,6 +577,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -565,6 +598,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -584,6 +618,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -605,6 +640,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -613,6 +649,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -621,8 +658,22 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: null
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: null
 - table:
     name: moped_activity_log
     schema: public

@@ -129,7 +129,13 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   }
 `;
 
-export const UPDATE_COMPONENT_FEATURES = gql``;
+export const UPDATE_COMPONENT_FEATURES = gql`
+  mutation UpdateComponentFeatures($updates: [features_updates!]!) {
+    update_features_many(updates: $updates) {
+      affected_rows
+    }
+  }
+`;
 
 export const DELETE_PROJECT_COMPONENT = gql`
   mutation DeleteMopedComponent($projectComponentId: Int!) {
