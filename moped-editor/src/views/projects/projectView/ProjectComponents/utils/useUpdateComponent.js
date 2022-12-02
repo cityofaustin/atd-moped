@@ -1,4 +1,10 @@
-import { useState, useReducer } from "react";
+import { useReducer } from "react";
+import {
+  makeDrawnLinesInsertionData,
+  makeDrawnPointsInsertionData,
+  makeLineStringFeatureInsertionData,
+  makePointFeatureInsertionData,
+} from "./makeFeatures";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -75,10 +81,41 @@ export const useUpdateComponent = ({
 
   const onSaveEditedComponent = () => {
     console.log("Updating component");
-    const tableToInsert =
+    const featureTable =
       editState.draftEditComponent?.moped_components?.feature_layer
         ?.internal_table;
-    console.log(tableToInsert);
+    console.log(featureTable, editState.draftEditComponent);
+
+    const editedComponentId = editState.draftEditComponent.project_component_id;
+
+    const originalComponent = components.find(
+      (component) => component.project_component_id === editedComponentId
+    );
+
+    // Get the new features
+    const newFeaturesToInsert = editState.draftEditComponent[
+      featureTable
+    ].filter((feature) => !feature.id);
+
+    const featuresToInsert = [];
+
+    if (featureTable === "feature_street_segments") {
+      makeLineStringFeatureInsertionData(
+        featureTable,
+        newFeaturesToInsert,
+        featuresToInsert
+      );
+    } else if (
+      featureTable === "feature_intersections" ||
+      featureTable === "feature_signals"
+    ) {
+      makePointFeatureInsertionData(
+        featureTable,
+        newFeaturesToInsert,
+        featuresToInsert
+      );
+    }
+
     // Collect table names and features IDs to update
     // 1. Find the draft component's original features in the components array
     // 2. Compare the draft features and original features to find the features that remain

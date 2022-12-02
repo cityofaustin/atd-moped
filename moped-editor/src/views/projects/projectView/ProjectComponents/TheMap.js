@@ -189,12 +189,6 @@ export default function TheMap({
 
       const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
       const featureUniqueId = clickedFeature.properties[sourceFeatureId];
-      console.log({
-        clickedComponent,
-        clickedFeature,
-        clickedFeatureSource,
-        featureUniqueId,
-      });
 
       const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
         clickedFeature,
