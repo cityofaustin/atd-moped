@@ -1,26 +1,61 @@
-import { useState } from "react";
+import { useState, useReducer } from "react";
+
+const editReducer = (state, action) => {
+  switch (action.type) {
+    case "start_edit":
+      return {
+        ...state,
+        showEditModeDialog: true,
+        isEditingComponent: true,
+      };
+    case "start_attributes_edit":
+      return {
+        ...state,
+        showEditModeDialog: false,
+        showEditAttributesDialog: true,
+      };
+    case "start_map_edit":
+      return {
+        ...state,
+        showEditModeDialog: false,
+      };
+    case "cancel_mode_edit":
+      return {
+        ...state,
+        showEditModeDialog: false,
+        isEditingComponent: false,
+      };
+    case "cancel_attributes_edit":
+      return {
+        ...state,
+        showEditAttributesDialog: false,
+        isEditingComponent: false,
+      };
+    default:
+      throw Error(`Unknown action. ${action.type}`);
+  }
+};
 
 export const useUpdateComponent = ({
   components,
   clickedComponent,
   setLinkMode,
 }) => {
-  /* if a component is being edited */
-  const [isEditingComponent, setIsEditingComponent] = useState(false);
-  const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
-
-  const [showEditModeDialog, setShowEditModeDialog] = useState(false);
+  const [editState, editDispatch] = useReducer(editReducer, {
+    isEditingComponent: false,
+    showEditAttributesDialog: false,
+    showEditModeDialog: false,
+  });
 
   /* holds the features added when editing an existing component */
   const [draftEditComponent, setDraftEditComponent] = useState(null);
 
   const onStartEditingComponent = () => {
-    setShowEditModeDialog(true);
+    editDispatch({ type: "start_edit" });
   };
 
   const onEditAttributes = () => {
-    setShowComponentEditDialog(true);
-    setShowEditModeDialog(false);
+    editDispatch({ type: "start_attributes_edit" });
   };
 
   const onEditFeatures = () => {
@@ -31,8 +66,7 @@ export const useUpdateComponent = ({
     const linkMode = line_representation === true ? "lines" : "points";
 
     setLinkMode(linkMode);
-    setIsEditingComponent(true);
-    setShowEditModeDialog(false);
+    editDispatch({ type: "start_map_edit" });
     console.log(clickedComponent);
     setDraftEditComponent(clickedComponent);
   };
@@ -40,7 +74,7 @@ export const useUpdateComponent = ({
   const onSaveEditedComponent = () => {
     console.log("Updating component");
     const tableToInsert =
-      draftEditComponent?.[0]?.moped_components?.feature_layer?.internal_table;
+      draftEditComponent?.moped_components?.feature_layer?.internal_table;
     console.log(tableToInsert);
     // Collect table names and features IDs to update
     // 1. Find the draft component's original features in the components array
@@ -52,21 +86,18 @@ export const useUpdateComponent = ({
   };
 
   const onCancelComponentAttributesEdit = () => {
-    setShowEditModeDialog(false);
+    editDispatch({ type: "cancel_mode_edit" });
   };
 
   const onCancelComponentMapEdit = () => {
-    setIsEditingComponent(false);
+    editDispatch({ type: "cancel_edit" });
     setLinkMode(null);
     setDraftEditComponent(null);
   };
 
   return {
-    isEditingComponent,
-    setIsEditingComponent,
-    showComponentEditDialog,
-    setShowComponentEditDialog,
-    showEditModeDialog,
+    editDispatch,
+    editState,
     onStartEditingComponent,
     onSaveEditedComponent,
     onCancelComponentAttributesEdit,

@@ -23,8 +23,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditComponentModal = ({
   showDialog,
-  setShowDialog,
-  setIsEditingComponent,
+  editDispatch,
   componentToEdit,
   refetchProjectComponents,
   setClickedComponent,
@@ -66,8 +65,7 @@ const EditComponentModal = ({
   };
 
   const onClose = () => {
-    setIsEditingComponent(false);
-    setShowDialog(false);
+    editDispatch({ type: "cancel_attributes_edit" });
   };
 
   const initialFormValues = {

@@ -14,7 +14,7 @@ import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
-import EditComponentModal from "./EditComponentModal";
+import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
@@ -117,8 +117,8 @@ export default function MapView({ projectName, projectStatuses }) {
   const {
     isEditingComponent,
     setIsEditingComponent,
-    showComponentEditDialog,
-    setShowComponentEditDialog,
+    editState,
+    editDispatch,
     showEditModeDialog,
     onStartEditingComponent,
     onSaveEditedComponent,
@@ -155,13 +155,6 @@ export default function MapView({ projectName, projectStatuses }) {
       fitBoundsOptions.zoomToClickedComponent
     );
   };
-
-  // TODO: Ways to simplify this
-  // The map only needs to know what to show in blue
-  // It doesn't need to know whether that is the clicked component or editing component
-  // How can we create a slot for that data and simplify all of the prep work?
-  // Break down Sources and Layers into create/edit/clicked/etc?
-  // useReducer to group together some of the state in this file?
 
   return (
     <Dialog fullScreen open={true}>
@@ -290,15 +283,14 @@ export default function MapView({ projectName, projectStatuses }) {
             onDeleteComponent={onDeleteComponent}
           />
           <EditModeDialog
-            showDialog={showEditModeDialog}
+            showDialog={editState.showEditModeDialog}
             onClose={onCancelComponentAttributesEdit}
             onEditAttributes={onEditAttributes}
             onEditFeatures={onEditFeatures}
           />
-          <EditComponentModal
-            showDialog={showComponentEditDialog}
-            setShowDialog={setShowComponentEditDialog}
-            setIsEditingComponent={setIsEditingComponent}
+          <EditAttributesModal
+            showDialog={editState.showEditAttributesDialog}
+            editDispatch={editDispatch}
             componentToEdit={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
             setClickedComponent={setClickedComponent}

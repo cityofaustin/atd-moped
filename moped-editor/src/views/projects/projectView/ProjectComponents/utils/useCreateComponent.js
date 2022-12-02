@@ -120,8 +120,6 @@ export const useCreateComponent = ({
     draftComponent: null,
   });
 
-  /* if a new component is being created */
-
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
 
   const onStartCreatingComponent = () => {
