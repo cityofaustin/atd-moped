@@ -24,7 +24,7 @@ export default function ComponentListItem({
   isExpanded,
   setClickedComponent,
   setIsDeletingComponent,
-  onStartEditingComponent,
+  editDispatch,
   onClickZoomToComponent,
   isEditingComponent,
   isCreatingComponent,
@@ -39,6 +39,8 @@ export default function ComponentListItem({
       setClickedComponent(component);
     }
   };
+
+  const onStartEditingComponent = () => editDispatch({ type: "start_edit" });
 
   return (
     <Box

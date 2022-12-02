@@ -24,13 +24,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditModeDialog = ({
-  showDialog,
-  onClose,
-  onEditAttributes,
-  onEditFeatures,
-}) => {
+const EditModeDialog = ({ showDialog, editDispatch, onEditFeatures }) => {
   const classes = useStyles();
+
+  const onClose = () => editDispatch({ type: "cancel_mode_edit" });
+  const onEditAttributes = () =>
+    editDispatch({ type: "start_attributes_edit" });
 
   return (
     <Dialog open={showDialog} onClose={onClose}>

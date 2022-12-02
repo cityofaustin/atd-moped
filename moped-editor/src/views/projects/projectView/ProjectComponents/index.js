@@ -117,11 +117,8 @@ export default function MapView({ projectName, projectStatuses }) {
   const {
     editState,
     editDispatch,
-    onStartEditingComponent,
     onSaveEditedComponent,
-    onCancelComponentAttributesEdit,
     onCancelComponentMapEdit,
-    onEditAttributes,
     onEditFeatures,
     draftEditComponent,
     setDraftEditComponent,
@@ -234,7 +231,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       isExpanded={isExpanded}
                       setClickedComponent={setClickedComponent}
                       setIsDeletingComponent={setIsDeletingComponent}
-                      onStartEditingComponent={onStartEditingComponent}
+                      editDispatch={editDispatch}
                       onClickZoomToComponent={onClickZoomToComponent}
                       isEditingComponent={editState.isEditingComponent}
                       isCreatingComponent={createState.isCreatingComponent}
@@ -283,8 +280,7 @@ export default function MapView({ projectName, projectStatuses }) {
           />
           <EditModeDialog
             showDialog={editState.showEditModeDialog}
-            onClose={onCancelComponentAttributesEdit}
-            onEditAttributes={onEditAttributes}
+            editDispatch={editDispatch}
             onEditFeatures={onEditFeatures}
           />
           <EditAttributesModal

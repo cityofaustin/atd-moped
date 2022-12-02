@@ -55,14 +55,6 @@ export const useUpdateComponent = ({
   /* holds the features added when editing an existing component */
   const [draftEditComponent, setDraftEditComponent] = useState(null);
 
-  const onStartEditingComponent = () => {
-    editDispatch({ type: "start_edit" });
-  };
-
-  const onEditAttributes = () => {
-    editDispatch({ type: "start_attributes_edit" });
-  };
-
   const onEditFeatures = () => {
     // TODO: Add helper to convert line representation to "lines" or "points"
     const {
@@ -90,10 +82,6 @@ export const useUpdateComponent = ({
     // Collect table names and feature IDs to delete
   };
 
-  const onCancelComponentAttributesEdit = () => {
-    editDispatch({ type: "cancel_mode_edit" });
-  };
-
   const onCancelComponentMapEdit = () => {
     editDispatch({ type: "cancel_map_edit" });
     setLinkMode(null);
@@ -103,11 +91,8 @@ export const useUpdateComponent = ({
   return {
     editDispatch,
     editState,
-    onStartEditingComponent,
     onSaveEditedComponent,
-    onCancelComponentAttributesEdit,
     onCancelComponentMapEdit,
-    onEditAttributes,
     onEditFeatures,
     draftEditComponent,
     setDraftEditComponent,
