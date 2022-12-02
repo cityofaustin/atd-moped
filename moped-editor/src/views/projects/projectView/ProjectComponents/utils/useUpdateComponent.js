@@ -3,7 +3,6 @@ import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./makeFeatures";
-import { SOURCES } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -124,14 +123,6 @@ export const useUpdateComponent = ({
         );
       }
     );
-
-    // Collect table names and features IDs to update
-    // 1. Find the draft component's original features in the components array
-    // 2. Compare the draft features and original features to find the features that remain
-    // 3. Make insertion data out of the new features
-    // 4. Soft delete the ones that don't have a match in the edit draft
-
-    // Collect table names and feature IDs to delete
   };
 
   const onCancelComponentMapEdit = () => {

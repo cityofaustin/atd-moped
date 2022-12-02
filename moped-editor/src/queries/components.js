@@ -129,6 +129,8 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   }
 `;
 
+export const UPDATE_COMPONENT_FEATURES = gql``;
+
 export const DELETE_PROJECT_COMPONENT = gql`
   mutation DeleteMopedComponent($projectComponentId: Int!) {
     update_moped_proj_components_by_pk(
