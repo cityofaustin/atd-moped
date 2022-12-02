@@ -13,7 +13,6 @@ import { cloneDeep } from "lodash";
  */
 const ComponentDrawTools = ({
   createDispatch,
-  createState,
   linkMode,
   setCursor,
   setIsDrawing,
@@ -55,30 +54,9 @@ const ComponentDrawTools = ({
   };
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
-    const prevDraftComponent = createState.draftComponent;
-
-    const featureIdsToDelete = deletedFeaturesArray.map((feature) =>
-      getDrawId(feature)
-    );
-
-    const draftFeaturesToKeep = prevDraftComponent.features.filter(
-      (feature) => {
-        if (isDrawnFeature(feature)) {
-          return !featureIdsToDelete.includes(getDrawId(feature));
-        } else {
-          return true;
-        }
-      }
-    );
-
-    const updatedDraftComponent = {
-      ...prevDraftComponent,
-      features: [...draftFeaturesToKeep],
-    };
-
     createDispatch({
-      type: "store_draft_component",
-      payload: updatedDraftComponent,
+      type: "delete_drawn_features",
+      payload: deletedFeaturesArray,
     });
   };
 

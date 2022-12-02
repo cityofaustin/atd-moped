@@ -57,27 +57,52 @@ const createReducer = (state, action) => {
       return { ...state, draftComponent: newDraftComponent };
 
     case "update_drawn_features":
-      const { draftComponent } = state;
       const updatedFeatures = action.payload;
 
       const featureIdsToUpdate = updatedFeatures.map((feature) =>
         getDrawId(feature)
       );
 
-      const draftFeaturesToKeep = draftComponent.features.filter((feature) => {
-        if (isDrawnFeature(feature)) {
-          return !featureIdsToUpdate.includes(getDrawId(feature));
-        } else {
-          return true;
+      const unchangedDraftFeatures = state.draftComponent.features.filter(
+        (feature) => {
+          if (isDrawnFeature(feature)) {
+            return !featureIdsToUpdate.includes(getDrawId(feature));
+          } else {
+            return true;
+          }
         }
-      });
+      );
 
-      const updatedDraftComponent = {
-        ...draftComponent,
-        features: [...draftFeaturesToKeep, ...updatedFeatures],
+      const draftComponentWithUpdates = {
+        ...state.draftComponent,
+        features: [...unchangedDraftFeatures, ...updatedFeatures],
       };
 
-      return { ...state, draftComponent: updatedDraftComponent };
+      return { ...state, draftComponent: draftComponentWithUpdates };
+
+    case "delete_drawn_features":
+      const deletedFeatures = action.payload;
+
+      const featureIdsToDelete = deletedFeatures.map((feature) =>
+        getDrawId(feature)
+      );
+
+      const draftFeaturesToKeep = state.draftComponent.features.filter(
+        (feature) => {
+          if (isDrawnFeature(feature)) {
+            return !featureIdsToDelete.includes(getDrawId(feature));
+          } else {
+            return true;
+          }
+        }
+      );
+
+      const draftComponentWithDeletes = {
+        ...state.draftComponent,
+        features: [...draftFeaturesToKeep],
+      };
+
+      return { ...state, draftComponent: draftComponentWithDeletes };
     default:
       throw Error(`Unknown action. ${action.type}`);
   }

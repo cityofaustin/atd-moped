@@ -49,7 +49,6 @@ export default function TheMap({
   isEditingComponent,
   draftComponent,
   createDispatch,
-  createState,
   draftEditComponent,
   setDraftEditComponent,
   mapRef,
@@ -268,7 +267,6 @@ export default function TheMap({
       <GeocoderControl position="top-left" marker={false} />
       <ComponentDrawTools
         createDispatch={createDispatch}
-        createState={createState}
         linkMode={linkMode}
         setCursor={setCursor}
         setIsDrawing={setIsDrawing}
