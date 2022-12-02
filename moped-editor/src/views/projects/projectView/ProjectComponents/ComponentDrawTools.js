@@ -1,11 +1,10 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
-import { makeDrawnFeature, isDrawnFeature, getDrawId } from "./utils/features";
-import { cloneDeep } from "lodash";
+import { makeDrawnFeature } from "./utils/features";
 
 /**
  * Renders project component draw tools
- * @param {Function} setDraftComponent - function to update the draft component
+ * @param {Function} createDispatch - dispatch to call create actions
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setCursor - function to update the cursor type
  * @param {Function} setIsDrawing - function to update if we are drawing or not

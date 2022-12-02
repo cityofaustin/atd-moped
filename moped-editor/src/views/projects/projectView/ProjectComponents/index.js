@@ -102,10 +102,6 @@ export default function MapView({ projectName, projectStatuses }) {
   }, [data]);
 
   const {
-    // isCreatingComponent,
-    // setIsCreatingComponent,
-    // showCreateDialog,
-    // setShowComponentCreateDialog,
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
