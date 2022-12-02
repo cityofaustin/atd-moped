@@ -1,4 +1,4 @@
-const { loadJsonFile } = require("./utils/loader");
+const { loadJsonFile } = require("../utils/loader");
 
 const FNAME_MOPED_USERS = "./data/moped/moped_users_prod.json";
 const FNAME_ACCESS_USERS = "./data/raw/employees.json";

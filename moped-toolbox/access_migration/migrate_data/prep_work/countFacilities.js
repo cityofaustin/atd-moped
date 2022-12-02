@@ -1,5 +1,5 @@
 /* Count usage of facility_attributestypes */
-const { loadJsonFile } = require("./utils/loader");
+const { loadJsonFile } = require("../utils/loader");
 
 const facilityTypesFile = "./data/raw/project_facilitytypes.json";
 const facilitiesFile = "./data/raw/project_facilities.json";
