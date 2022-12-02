@@ -49,6 +49,7 @@ export default function TheMap({
   isEditingComponent,
   draftComponent,
   createDispatch,
+  createState,
   draftEditComponent,
   setDraftEditComponent,
   mapRef,
@@ -265,12 +266,13 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      {/* <ComponentDrawTools
-        setDraftComponent={setDraftComponent}
+      <ComponentDrawTools
+        createDispatch={createDispatch}
+        createState={createState}
         linkMode={linkMode}
         setCursor={setCursor}
         setIsDrawing={setIsDrawing}
-      /> */}
+      />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <DraftComponentSourcesAndLayers
         draftComponentFeatures={draftComponentFeatures}

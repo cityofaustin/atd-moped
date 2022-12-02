@@ -265,6 +265,7 @@ export default function MapView({ projectName, projectStatuses }) {
               components={components}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
+              createState={createState}
               draftEditComponent={draftEditComponent}
               setDraftEditComponent={setDraftEditComponent}
               setHoveredOnMapFeature={setHoveredOnMapFeature}

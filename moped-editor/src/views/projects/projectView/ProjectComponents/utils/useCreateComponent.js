@@ -39,6 +39,15 @@ const createReducer = (state, action) => {
     const draftComponent = action.payload;
 
     return { ...state, draftComponent };
+  } else if (action.type === "add_drawn_features") {
+    const newDrawnFeatures = action.payload;
+
+    const draftComponentWithNewDrawnFeatures = {
+      ...state.draftComponent,
+      features: [...state.draftComponent.features, ...newDrawnFeatures],
+    };
+
+    return { ...state, draftComponent: draftComponentWithNewDrawnFeatures };
   }
   throw Error(`Unknown action. ${action.type}`);
 };

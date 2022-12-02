@@ -12,7 +12,8 @@ import { cloneDeep } from "lodash";
  * @returns {JSX.Element}
  */
 const ComponentDrawTools = ({
-  setDraftComponent,
+  createDispatch,
+  createState,
   linkMode,
   setCursor,
   setIsDrawing,
@@ -21,29 +22,34 @@ const ComponentDrawTools = ({
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    setDraftComponent((prevDraftComponent) => {
-      const drawnFeatures = cloneDeep(createdFeaturesArray);
+    const prevDraftComponent = createState.draftComponent;
 
-      const previouslyDrawnFeatures = cloneDeep(
-        prevDraftComponent.features
-      ).filter((feature) => Boolean(getDrawId(feature)));
+    const drawnFeatures = cloneDeep(createdFeaturesArray);
 
-      // Add properties needed to distinguish drawn features from other features
-      drawnFeatures.forEach((feature) => {
-        makeDrawnFeature(feature, linkMode);
-      });
+    const previouslyDrawnFeatures = cloneDeep(
+      prevDraftComponent.features
+    ).filter((feature) => Boolean(getDrawId(feature)));
 
-      // We must override the features in the draw control's internal state with ones
-      // that have our properties so that we can find them later in onDelete
-      drawControlsRef.current.set({
-        type: "FeatureCollection",
-        features: [...previouslyDrawnFeatures, ...drawnFeatures],
-      });
+    // Add properties needed to distinguish drawn features from other features
+    drawnFeatures.forEach((feature) => {
+      makeDrawnFeature(feature, linkMode);
+    });
 
-      return {
-        ...prevDraftComponent,
-        features: [...prevDraftComponent.features, ...drawnFeatures],
-      };
+    // We must override the features in the draw control's internal state with ones
+    // that have our properties so that we can find them later in onDelete
+    drawControlsRef.current.set({
+      type: "FeatureCollection",
+      features: [...previouslyDrawnFeatures, ...drawnFeatures],
+    });
+
+    // const newDraftComponent = {
+    //   ...prevDraftComponent,
+    //   features: [...prevDraftComponent.features, ...drawnFeatures],
+    // };
+
+    createDispatch({
+      type: "add_drawn_feature",
+      payload: drawnFeatures,
     });
   };
 
@@ -51,49 +57,59 @@ const ComponentDrawTools = ({
     const wasComponentDragged = action === "move";
 
     if (wasComponentDragged) {
-      setDraftComponent((prevDraftComponent) => {
-        const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
-          getDrawId(feature)
-        );
+      const prevDraftComponent = createState.draftComponent;
 
-        const draftFeaturesToKeep = prevDraftComponent.features.filter(
-          (feature) => {
-            if (isDrawnFeature(feature)) {
-              return !featureIdsToUpdate.includes(getDrawId(feature));
-            } else {
-              return true;
-            }
-          }
-        );
-
-        return {
-          ...prevDraftComponent,
-          features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
-        };
-      });
-    }
-  };
-
-  const onDelete = ({ features: deletedFeaturesArray }) => {
-    setDraftComponent((prevDraftComponent) => {
-      const featureIdsToDelete = deletedFeaturesArray.map((feature) =>
+      const featureIdsToUpdate = updatedFeaturesArray.map((feature) =>
         getDrawId(feature)
       );
 
       const draftFeaturesToKeep = prevDraftComponent.features.filter(
         (feature) => {
           if (isDrawnFeature(feature)) {
-            return !featureIdsToDelete.includes(getDrawId(feature));
+            return !featureIdsToUpdate.includes(getDrawId(feature));
           } else {
             return true;
           }
         }
       );
 
-      return {
+      const updatedDraftComponent = {
         ...prevDraftComponent,
-        features: [...draftFeaturesToKeep],
+        features: [...draftFeaturesToKeep, ...updatedFeaturesArray],
       };
+
+      createDispatch({
+        type: "store_draft_component",
+        payload: updatedDraftComponent,
+      });
+    }
+  };
+
+  const onDelete = ({ features: deletedFeaturesArray }) => {
+    const prevDraftComponent = createState.draftComponent;
+
+    const featureIdsToDelete = deletedFeaturesArray.map((feature) =>
+      getDrawId(feature)
+    );
+
+    const draftFeaturesToKeep = prevDraftComponent.features.filter(
+      (feature) => {
+        if (isDrawnFeature(feature)) {
+          return !featureIdsToDelete.includes(getDrawId(feature));
+        } else {
+          return true;
+        }
+      }
+    );
+
+    const updatedDraftComponent = {
+      ...prevDraftComponent,
+      features: [...draftFeaturesToKeep],
+    };
+
+    createDispatch({
+      type: "store_draft_component",
+      payload: updatedDraftComponent,
     });
   };
 
