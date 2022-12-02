@@ -21,19 +21,24 @@ const createReducer = (state, action) => {
       ...state,
       showCreateDialog: false,
       isCreatingComponent: false,
+      draftComponent: null,
     };
   } else if (action.type === "cancel_create") {
     return {
       ...state,
       showCreateDialog: false,
       isCreatingComponent: false,
-      // draftComponent: null
+      draftComponent: null,
     };
   } else if (action.type === "close_create_dialog") {
     return {
       ...state,
       showCreateDialog: false,
     };
+  } else if (action.type === "store_draft_component") {
+    const draftComponent = action.payload;
+
+    return { ...state, draftComponent };
   }
   throw Error(`Unknown action. ${action.type}`);
 };
@@ -47,15 +52,10 @@ export const useCreateComponent = ({
   const [createState, createDispatch] = useReducer(createReducer, {
     isCreatingComponent: false,
     showCreateDialog: false,
+    draftComponent: null,
   });
 
   /* if a new component is being created */
-  // const [isCreatingComponent, setIsCreatingComponent] = useState(false);
-  // const [showCreateDialog, setShowComponentCreateDialog] =
-  //   useState(false);
-
-  /* holds the state of a component that's being created */
-  const [draftComponent, setDraftComponent] = useState(null);
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
 
@@ -66,7 +66,6 @@ export const useCreateComponent = ({
 
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
-    setDraftComponent(null);
     setLinkMode(null);
   };
 
@@ -79,7 +78,7 @@ export const useCreateComponent = ({
       component_name,
       internal_table,
       features,
-    } = draftComponent;
+    } = createState.draftComponent;
 
     const subcomponentsArray = moped_subcomponents
       ? moped_subcomponents.map((subcomponent) => ({
@@ -142,19 +141,12 @@ export const useCreateComponent = ({
     );
 
     createDispatch({ type: "save_create" });
-    setDraftComponent(null);
     setLinkMode(null);
   };
 
   return {
     createState,
     createDispatch,
-    // isCreatingComponent,
-    // setIsCreatingComponent,
-    // showCreateDialog,
-    // setShowComponentCreateDialog,
-    draftComponent,
-    setDraftComponent,
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,

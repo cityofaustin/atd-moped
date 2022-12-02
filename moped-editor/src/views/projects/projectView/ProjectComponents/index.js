@@ -106,8 +106,6 @@ export default function MapView({ projectName, projectStatuses }) {
     // setIsCreatingComponent,
     // showCreateDialog,
     // setShowComponentCreateDialog,
-    draftComponent,
-    setDraftComponent,
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
@@ -204,16 +202,19 @@ export default function MapView({ projectName, projectStatuses }) {
                   <Divider />
                 </>
               )}
-              {draftComponent && createState.isCreatingComponent && (
-                <DraftComponentListItem
-                  primaryText={draftComponent.component_name}
-                  secondaryText={draftComponent.component_subtype}
-                  onSave={onSaveDraftComponent}
-                  onCancel={onCancelComponentCreate}
-                  saveButtonDisabled={!draftComponent?.features.length > 0}
-                  saveButtonText="Save"
-                />
-              )}
+              {createState.draftComponent &&
+                createState.isCreatingComponent && (
+                  <DraftComponentListItem
+                    primaryText={createState.draftComponent.component_name}
+                    secondaryText={createState.draftComponent.component_subtype}
+                    onSave={onSaveDraftComponent}
+                    onCancel={onCancelComponentCreate}
+                    saveButtonDisabled={
+                      !createState.draftComponent?.features.length > 0
+                    }
+                    saveButtonText="Save"
+                  />
+                )}
               {isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
@@ -262,8 +263,8 @@ export default function MapView({ projectName, projectStatuses }) {
             <TheMap
               mapRef={mapRef}
               components={components}
-              draftComponent={draftComponent}
-              setDraftComponent={setDraftComponent}
+              draftComponent={createState.draftComponent}
+              createDispatch={createDispatch}
               draftEditComponent={draftEditComponent}
               setDraftEditComponent={setDraftEditComponent}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
@@ -280,7 +281,6 @@ export default function MapView({ projectName, projectStatuses }) {
             />
           </div>
           <CreateComponentModal
-            setDraftComponent={setDraftComponent}
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}

@@ -48,7 +48,7 @@ export default function TheMap({
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
-  setDraftComponent,
+  createDispatch,
   draftEditComponent,
   setDraftEditComponent,
   mapRef,
@@ -152,7 +152,10 @@ export default function TheMap({
           }
         );
         newDraftComponent.features = filteredFeatures;
-        setDraftComponent(newDraftComponent);
+        createDispatch({
+          type: "store_draft_component",
+          payload: newDraftComponent,
+        });
         return;
       }
 
@@ -172,7 +175,10 @@ export default function TheMap({
       );
 
       newDraftComponent.features.push(newFeature);
-      setDraftComponent(newDraftComponent);
+      createDispatch({
+        type: "store_draft_component",
+        payload: newDraftComponent,
+      });
     }
 
     if (isEditingComponent) {
@@ -259,12 +265,12 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <ComponentDrawTools
+      {/* <ComponentDrawTools
         setDraftComponent={setDraftComponent}
         linkMode={linkMode}
         setCursor={setCursor}
         setIsDrawing={setIsDrawing}
-      />
+      /> */}
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <DraftComponentSourcesAndLayers
         draftComponentFeatures={draftComponentFeatures}

@@ -20,12 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateComponentModal = ({
-  showDialog,
-  setDraftComponent,
-  setLinkMode,
-  createDispatch,
-}) => {
+const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
   const classes = useStyles();
 
   const onSave = (formData) => {
@@ -57,16 +52,14 @@ const CreateComponentModal = ({
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
-    setDraftComponent(newComponent);
+    createDispatch({ type: "store_draft_component", payload: newComponent });
     setLinkMode(linkMode);
-    // switch to components tab
     createDispatch({ type: "close_create_dialog" });
   };
 
   const onClose = () => {
     setLinkMode(null);
     createDispatch({ type: "cancel_create" });
-    setDraftComponent(null);
   };
 
   return (
