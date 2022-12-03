@@ -54,33 +54,33 @@ export const GET_PROJECT_COMPONENTS = gql`
       ) {
         subcomponent_id
       }
-      feature_street_segments {
+      feature_street_segments(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
         source_layer
         ctn_segment_id
         component_id
       }
-      feature_intersections {
+      feature_intersections(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
         source_layer
         intersection_id
         component_id
       }
-      feature_signals {
+      feature_signals(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
         source_layer
         component_id
       }
-      feature_drawn_lines {
+      feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
         source_layer
         component_id
       }
-      feature_drawn_points {
+      feature_drawn_points(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
         source_layer
