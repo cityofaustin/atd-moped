@@ -139,9 +139,15 @@ export const useUpdateComponent = ({
       },
       _set: { is_deleted: true },
     }));
-    console.log(deletes);
 
-    updateComponentFeatures({ variables: { updates: deletes } });
+    const featuresReadyToInsert = featuresToInsert.map((feature) => ({
+      ...feature,
+      component_id: editedComponentId,
+    }));
+
+    updateComponentFeatures({
+      variables: { updates: deletes, streetSegments: featuresReadyToInsert },
+    });
   };
 
   const onCancelComponentMapEdit = () => {

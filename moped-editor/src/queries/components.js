@@ -130,7 +130,13 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
 `;
 
 export const UPDATE_COMPONENT_FEATURES = gql`
-  mutation UpdateComponentFeatures($updates: [features_updates!]!) {
+  mutation UpdateComponentFeatures(
+    $updates: [features_updates!]!
+    $streetSegments: [feature_street_segments_insert_input!]!
+  ) {
+    insert_feature_street_segments(objects: $streetSegments) {
+      affected_rows
+    }
     update_features_many(updates: $updates) {
       affected_rows
     }
