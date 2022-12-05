@@ -1,7 +1,7 @@
 const { loadJsonFile } = require("./utils/loader");
 const FACILITIES_FNAME = "./data/raw/project_facilities.json";
 const { COMPONENTS_MAP } = require("./mappings/components");
-const { mapRow } = require("./utils/mapper");
+const { mapRow } = require("./utils/misc");
 
 const fields = [
   {

@@ -8,6 +8,15 @@ const mapRow = (row, fields) =>
     return newRow;
   }, {});
 
+const chunkArray = (arr, chunkSize = 50) => {
+  const chunks = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+    chunks.push(arr.slice(i, i + chunkSize));
+  }
+  return chunks;
+};
+
 module.exports = {
+  chunkArray,
   mapRow,
 };
