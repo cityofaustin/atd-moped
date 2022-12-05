@@ -50,6 +50,12 @@ const editReducer = (state, action) => {
       );
 
       return { ...state, draftEditComponent: updatedDraftEditComponent };
+    case "save_edit":
+      return {
+        ...state,
+        isEditingComponent: false,
+        draftEditComponent: null,
+      };
     default:
       throw Error(`Unknown action. ${action.type}`);
   }
@@ -148,6 +154,8 @@ export const useUpdateComponent = ({
     updateComponentFeatures({
       variables: { updates: deletes, streetSegments: featuresReadyToInsert },
     });
+
+    editDispatch({ type: "save_edit" });
   };
 
   const onCancelComponentMapEdit = () => {
