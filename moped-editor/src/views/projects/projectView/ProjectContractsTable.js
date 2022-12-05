@@ -90,6 +90,10 @@ const ProjectContractsTable = () => {
       title: "Description",
       field: "description",
     },
+    {
+      title: "Work Assignment ID",
+      field: "work_assignment_id"
+    }
   ];
 
   return (
