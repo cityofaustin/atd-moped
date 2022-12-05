@@ -5,4 +5,11 @@ const loadJsonFile = (name) => {
   return JSON.parse(raw);
 };
 
-exports.loadJsonFile = loadJsonFile;
+const saveJsonFile = (name, data) => {
+  fs.writeFileSync(name, JSON.stringify(data));
+};
+
+module.exports = {
+  loadJsonFile,
+  saveJsonFile,
+};
