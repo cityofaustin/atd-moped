@@ -2,16 +2,23 @@ const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { ENTITIES_MAP } = require("./mappings/entities");
-const { makeHasuraRequest } = require("./utils/graphql");
-const { loadJsonFile } = require("./utils/loader");
+const {
+  exportMetadata,
+  replaceMetadata,
+  reloadMetadata,
+  makeHasuraRequest,
+} = require("./utils/graphql");
+const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { logger } = require("./utils/logger");
-const { mapRow } = require("./utils/mapper");
+const { mapRow, chunkArray } = require("./utils/misc");
+
 const FNAME = "./data/raw/projects.json";
+const METADATA_FNAME = "./backup/metadata.json";
 
 const DELETE_ALL_PROJECTS_MUTATION = gql`
   mutation DeleteAlllProjects {
     delete_moped_project(where: { project_id: { _is_null: false } }) {
-      affected_rows
+      __typename
     }
   }
 `;
@@ -95,12 +102,73 @@ const getInvalidFields = (row) => {
   }
 };
 
-async function main() {
-  // dont do this in prod :)
-  logger.info("Deleting all projects....");
-  await makeHasuraRequest({
-    query: DELETE_ALL_PROJECTS_MUTATION,
+const removeEventTriggers = (metadata) => {
+  metadata.sources.forEach((source) => {
+    source.tables.forEach((table) => {
+      delete table.event_triggers;
+    });
   });
+};
+
+async function main(env) {
+  logger.info(`Running Access migration on env ${env} 🚀`);
+
+  let metadata;
+
+  try {
+    metadata = loadJsonFile(METADATA_FNAME);
+  } catch {
+    // pass
+  }
+
+  if (!metadata) {
+    // if we dont have a metadata backup, make one
+    logger.info("Backing up metadata...");
+    try {
+      metadata = await exportMetadata({ env });
+    } catch (error) {
+      logger.error(error);
+      return;
+    }
+    saveJsonFile(METADATA_FNAME, metadata);
+    logger.info(`✅ Metadata saved to '${METADATA_FNAME}'`);
+  } else {
+    logger.info(`✅ Loaded metadata backup from '${METADATA_FNAME}'`);
+  }
+
+  // Addresses a hopefully only test instance ECS-fussing situation
+  // Where the Hasura console falls out of sync with what DB triggers
+  // actually exist.
+  logger.info("Reloading metadata...");
+
+  try {
+    await reloadMetadata({ env });
+  } catch (error) {
+    logger.error({ message: error });
+    return;
+  }
+
+  logger.info("✅ Metadata reloaded");
+
+  logger.info("Disabling event triggers...");
+  removeEventTriggers(metadata);
+
+  try {
+    await replaceMetadata({ env, metadata });
+  } catch (error) {
+    logger.error({ message: error });
+    return;
+  }
+
+  logger.info("✅ Event triggers disabled");
+
+  if (env === "local" || env === "test") {
+    logger.info("Deleting all projects....");
+    await makeHasuraRequest({
+      query: DELETE_ALL_PROJECTS_MUTATION,
+      env,
+    });
+  }
 
   const data = loadJsonFile(FNAME);
 
@@ -141,15 +209,51 @@ async function main() {
 
   logger.info(`Inserting ${ready.length} projects...`);
 
-  makeHasuraRequest({
-    query: INSERT_PROJECTS_MUTATION,
-    variables: { objects: ready },
-  }).then((results) => {
-    console.log(results);
-  });
+  const projectChunks = chunkArray(ready.slice(0, 100), 10);
+
+  for (let i = 0; i < projectChunks.length; i++) {
+    try {
+      logger.info(
+        `${i + 1}/${projectChunks.length} - uploading ${
+          projectChunks[i].length
+        } projects...`
+      );
+      await makeHasuraRequest({
+        query: INSERT_PROJECTS_MUTATION,
+        variables: { objects: projectChunks[i] },
+        env,
+      });
+    } catch (error) {
+      logger.error({ message: error });
+      break;
+    }
+  }
+
+  logger.info("Restoring event triggers...");
+  const metadataBackup = loadJsonFile(METADATA_FNAME);
+
+  try {
+    await replaceMetadata({ env, metadata: metadataBackup });
+  } catch (error) {
+    logger.error({ message: error });
+    return;
+  }
+  logger.info("✅ Event trigger restored");
+
+  logger.info("Done :)");
 }
 
-main();
+const getEnv = () => {
+  const env = process.argv[2];
+  if (!["local", "test", "staging"].includes(env)) {
+    throw "Unknown environment. Choose 'local', 'test', 'staging'";
+  }
+  return env;
+};
+
+const env = getEnv();
+
+main(env);
 
 // def test_is_valid(row):
 //     assert all([row[field["out"]] for field in fields if field["required"]])
