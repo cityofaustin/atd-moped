@@ -24,7 +24,11 @@ services:
             - HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
             - ACTIVITY_LOG_API_SECRET=hasurapassword
         command: ["graphql-engine", "serve",  "--enable-console"]
-
+        healthcheck:
+            test: timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1
+            interval: 2s
+            timeout: 1s
+            retries: 10
 
 # There is a volume which is common
 volumes:
