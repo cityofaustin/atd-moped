@@ -154,11 +154,14 @@ export const useUpdateComponent = ({
 
     updateComponentFeatures({
       variables: { updates: deletes, streetSegments: featuresReadyToInsert },
-    }).then(() => {
-      refetchProjectComponents();
-    });
-
-    editDispatch({ type: "save_edit" });
+    })
+      .then(() => {
+        refetchProjectComponents();
+        editDispatch({ type: "save_edit" });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const onCancelComponentMapEdit = () => {

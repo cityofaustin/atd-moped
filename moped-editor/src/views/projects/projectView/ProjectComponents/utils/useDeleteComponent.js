@@ -15,9 +15,13 @@ export const useDeleteComponent = ({
   const onDeleteComponent = () => {
     deleteProjectComponent({
       variables: { projectComponentId: clickedComponent.project_component_id },
-    }).then(() => {
-      refetchProjectComponents();
-    });
+    })
+      .then(() => {
+        refetchProjectComponents();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     setClickedComponent(null);
     setIsDeletingComponent(false);

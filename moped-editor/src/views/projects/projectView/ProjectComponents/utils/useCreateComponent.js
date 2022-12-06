@@ -197,11 +197,13 @@ export const useCreateComponent = ({
     };
     /* End data preparation */
 
-    addProjectComponent({ variables: { object: newComponentData } }).then(
-      () => {
+    addProjectComponent({ variables: { object: newComponentData } })
+      .then(() => {
         refetchProjectComponents();
-      }
-    );
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     createDispatch({ type: "save_create" });
     setLinkMode(null);
