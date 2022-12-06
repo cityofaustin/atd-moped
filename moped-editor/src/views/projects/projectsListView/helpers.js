@@ -1,6 +1,14 @@
+export const filterNullValues = (value) => {
+  if (!value) {
+    return "-";
+  } else {
+    return value;
+  }
+};
+
 export const filterProjectTeamMembers = (value) => {
   if (!value) {
-    return "";
+    return "-";
   }
   const namesArray = value.split(",");
   const uniqueNames = {};
@@ -12,20 +20,19 @@ export const filterProjectTeamMembers = (value) => {
       uniqueNames[fullName] = projectRole;
     }
   });
-  return Object.keys(uniqueNames).map((key) => (
-    <span key={key} style={{display: "block"}}>
-      {`${key} - ${uniqueNames[key]}`}
-    </span>
-  ));
+  const projectTeamMembers = Object.keys(uniqueNames).map(
+    (key) => `${key} - ${uniqueNames[key]}`
+  );
+  return projectTeamMembers.join(", ");
 };
 
-export const filterProjectFeatures = (project_feature) => {
+export const filterProjectFeatures = (value) => {
   // if there are no features, project_feature is [null]
-  if (!project_feature[0]?.properties?.signal_id) {
+  if (!value[0]?.properties?.signal_id) {
     return "-";
   } else {
     const signalIds = [];
-    project_feature.forEach((projectFeature) => {
+    value.forEach((projectFeature) => {
       const signal = projectFeature?.properties?.signal_id;
       if (signal) {
         signalIds.push(signal);
@@ -33,4 +40,15 @@ export const filterProjectFeatures = (project_feature) => {
     });
     return signalIds.join(", ");
   }
+};
+
+export const filterTaskOrderName = (value) => {
+  if (!value) {
+    return "-";
+  }
+  const taskOrderArray = [];
+  value.forEach((value) => {
+    taskOrderArray.push(value.display_name);
+  });
+  return taskOrderArray.join(", ");
 };
