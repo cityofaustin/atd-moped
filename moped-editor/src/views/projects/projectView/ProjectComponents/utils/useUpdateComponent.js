@@ -78,7 +78,6 @@ export const useUpdateComponent = ({
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
 
   const onEditFeatures = () => {
-    // TODO: Add helper to convert line representation to "lines" or "points"
     const {
       moped_components: { line_representation },
     } = clickedComponent;
@@ -107,23 +106,24 @@ export const useUpdateComponent = ({
       featureTable
     ].filter((feature) => !feature.id);
 
-    const featuresToInsert = [];
+    const streetSegments = [];
+    const intersections = [];
+    const signals = [];
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
         featureTable,
         newFeaturesToInsert,
-        featuresToInsert
+        streetSegments
       );
-    } else if (
-      featureTable === "feature_intersections" ||
-      featureTable === "feature_signals"
-    ) {
+    } else if (featureTable === "feature_intersections") {
       makePointFeatureInsertionData(
         featureTable,
         newFeaturesToInsert,
-        featuresToInsert
+        intersections
       );
+    } else if (featureTable === "feature_signals") {
+      makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
 
     // Find the features to delete
@@ -148,13 +148,28 @@ export const useUpdateComponent = ({
       _set: { is_deleted: true },
     }));
 
-    const featuresReadyToInsert = featuresToInsert.map((feature) => ({
+    const streetSegmentsWithComponentId = streetSegments.map((feature) => ({
+      ...feature,
+      component_id: editedComponentId,
+    }));
+
+    const intersectionsWithComponentId = intersections.map((feature) => ({
+      ...feature,
+      component_id: editedComponentId,
+    }));
+
+    const signalsWithComponentId = signals.map((feature) => ({
       ...feature,
       component_id: editedComponentId,
     }));
 
     updateComponentFeatures({
-      variables: { updates: deletes, streetSegments: featuresReadyToInsert },
+      variables: {
+        updates: deletes,
+        streetSegments: streetSegmentsWithComponentId,
+        intersections: intersectionsWithComponentId,
+        signals: signalsWithComponentId,
+      },
     })
       .then(() => {
         refetchProjectComponents();
