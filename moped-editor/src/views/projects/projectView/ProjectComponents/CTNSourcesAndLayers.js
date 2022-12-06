@@ -2,8 +2,6 @@ import { Source, Layer } from "react-map-gl";
 import { SOURCES } from "./mapSettings";
 import { MAP_STYLES } from "./mapStyleSettings";
 
-const mapStyles = MAP_STYLES;
-
 /**
  * Component that renders CTN GeoJSON data to be captured into draft or edited components
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
@@ -43,9 +41,9 @@ const CTNSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["ctn-lines-underlay"].layerProps,
+            ...MAP_STYLES["ctn-lines-underlay"].layerProps,
             layout: {
-              ...mapStyles["ctn-lines-underlay"].layerProps.layout,
+              ...MAP_STYLES["ctn-lines-underlay"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -54,9 +52,9 @@ const CTNSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["ctn-lines"].layerProps,
+            ...MAP_STYLES["ctn-lines"].layerProps,
             layout: {
-              ...mapStyles["ctn-lines"].layerProps.layout,
+              ...MAP_STYLES["ctn-lines"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -72,7 +70,7 @@ const CTNSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["ctn-points-underlay"].layerProps,
+            ...MAP_STYLES["ctn-points-underlay"].layerProps,
             layout: {
               visibility: isEditingPoints ? "visible" : "none",
             },
@@ -81,7 +79,7 @@ const CTNSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["ctn-points"].layerProps,
+            ...MAP_STYLES["ctn-points"].layerProps,
             layout: {
               visibility: isEditingPoints ? "visible" : "none",
             },

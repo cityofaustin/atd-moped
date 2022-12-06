@@ -1,8 +1,6 @@
 import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 
-const mapStyles = MAP_STYLES;
-
 /**
  * Component that renders GeoJSON data for the clicked component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
@@ -30,9 +28,9 @@ const ClickedComponentSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["clicked-component-features-lines"].layerProps,
+            ...MAP_STYLES["clicked-component-features-lines"].layerProps,
             layout: {
-              ...mapStyles["clicked-component-features-lines"].layerProps
+              ...MAP_STYLES["clicked-component-features-lines"].layerProps
                 .layout,
               visibility:
                 componentFeatureCollection &&
@@ -46,7 +44,7 @@ const ClickedComponentSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["clicked-component-features-points"].layerProps,
+            ...MAP_STYLES["clicked-component-features-points"].layerProps,
             layout: {
               visibility:
                 componentFeatureCollection &&

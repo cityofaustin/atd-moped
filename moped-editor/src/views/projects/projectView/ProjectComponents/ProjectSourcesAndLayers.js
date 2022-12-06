@@ -2,8 +2,6 @@ import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 import { useFeatureTypes } from "./utils/map";
 
-const mapStyles = MAP_STYLES;
-
 /**
  * Component that renders feature collection of component features in a project
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
@@ -67,9 +65,9 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["project-lines-underlay"].layerProps,
+            ...MAP_STYLES["project-lines-underlay"].layerProps,
             layout: {
-              ...mapStyles["project-lines-underlay"].layerProps.layout,
+              ...MAP_STYLES["project-lines-underlay"].layerProps.layout,
               visibility: isEditingLines ? "visible" : "none",
             },
           }}
@@ -77,9 +75,9 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["project-lines"].layerProps,
+            ...MAP_STYLES["project-lines"].layerProps,
             layout: {
-              ...mapStyles["project-lines"].layerProps.layout,
+              ...MAP_STYLES["project-lines"].layerProps.layout,
               visibility: isViewingComponents ? "visible" : "none",
             },
           }}
@@ -87,9 +85,9 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["project-lines-muted"].layerProps,
+            ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
-              ...mapStyles["project-lines-muted"].layerProps.layout,
+              ...MAP_STYLES["project-lines-muted"].layerProps.layout,
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
@@ -105,9 +103,9 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["project-points"].layerProps,
+            ...MAP_STYLES["project-points"].layerProps,
             layout: {
-              ...mapStyles["project-points"].layerProps.layout,
+              ...MAP_STYLES["project-points"].layerProps.layout,
               visibility: isViewingComponents ? "visible" : "none",
             },
           }}
@@ -115,7 +113,7 @@ const ProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["project-points-muted"].layerProps,
+            ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },

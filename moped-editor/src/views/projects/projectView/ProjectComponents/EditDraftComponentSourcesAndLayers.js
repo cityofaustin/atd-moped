@@ -1,8 +1,6 @@
 import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 
-const mapStyles = MAP_STYLES;
-
 /**
  * Component that renders the feature collection of a draft component while creating a component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
@@ -27,9 +25,9 @@ const EditDraftComponentSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...mapStyles["edit-draft-component-lines"].layerProps,
+            ...MAP_STYLES["edit-draft-component-lines"].layerProps,
             layout: {
-              ...mapStyles["clicked-component-features-lines"].layerProps
+              ...MAP_STYLES["clicked-component-features-lines"].layerProps
                 .layout,
               visibility:
                 linkMode === "lines" && isEditingComponent ? "visible" : "none",
@@ -46,7 +44,7 @@ const EditDraftComponentSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          {...mapStyles["edit-draft-component-points"].layerProps}
+          {...MAP_STYLES["edit-draft-component-points"].layerProps}
           layout={{
             visibility:
               linkMode === "points" && isEditingComponent ? "visible" : "none",
