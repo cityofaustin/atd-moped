@@ -23,6 +23,8 @@ import MaterialTable, {
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import { currencyFormatter } from "../../../utils/numberFormatters";
+import FundingAmountIntegerField from "./FundingAmountIntegerField";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -93,7 +95,14 @@ const ProjectContractsTable = () => {
     {
       title: "Work Assignment ID",
       field: "work_assignment_id"
-    }
+    },
+    {
+      title: "Amount",
+      field: "contract_amount",
+      render: (row) => currencyFormatter.format(row.contract_amount),
+      editComponent: (props) => <FundingAmountIntegerField {...props} />,
+      type: "currency",
+    },
   ];
 
   return (

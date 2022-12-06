@@ -1622,6 +1622,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
     - role: moped-editor
       permission:
         check: {}
@@ -1633,6 +1634,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
   select_permissions:
     - role: moped-admin
       permission:
@@ -1644,6 +1646,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
         filter: {}
     - role: moped-editor
       permission:
@@ -1655,6 +1658,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
         filter: {}
     - role: moped-viewer
       permission:
@@ -1666,6 +1670,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -1678,6 +1683,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
         filter: {}
         check: {}
     - role: moped-editor
@@ -1690,6 +1696,7 @@
           - project_id
           - is_deleted
           - work_assignment_id
+          - contract_amount
         filter: {}
         check: {}
 - table:
