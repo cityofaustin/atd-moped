@@ -14,9 +14,12 @@ export const DASHBOARD_QUERY = gql`
       project {
         project_id
         project_name
-        current_phase
-        current_status
-        status_id
+        moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+          moped_phase {
+            phase_name
+            phase_key
+          }
+        }
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
@@ -40,9 +43,12 @@ export const DASHBOARD_QUERY = gql`
       project {
         project_id
         project_name
-        current_phase
-        current_status
-        status_id
+        moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+          moped_phase {
+            phase_name
+            phase_key
+          }
+        }
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
@@ -56,13 +62,6 @@ export const DASHBOARD_QUERY = gql`
           project_note
         }
       }
-    }
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
     }
   }
 `;

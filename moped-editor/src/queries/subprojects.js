@@ -2,14 +2,19 @@ import { gql } from "@apollo/client";
 
 export const SUBPROJECT_QUERY = gql`
   query SubprojectSummary($projectId: Int) {
-    subprojects: moped_project(where: { project_id: { _eq: $projectId } }) {
-      moped_projects(where: { is_deleted: { _eq: false } }) {
-        project_name
-        project_id
-        status_id
-        current_phase
+    subprojects: moped_project(
+      where: { parent_project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+    ) {
+      project_name
+      project_id
+      moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+        moped_phase {
+          phase_name
+          phase_key
+        }
       }
     }
+    # todo: we might shouldnt be fetching all projects every time this tab loads...
     subprojectOptions: moped_project(
       where: {
         _and: [
@@ -22,13 +27,6 @@ export const SUBPROJECT_QUERY = gql`
     ) {
       project_id
       project_name
-    }
-    moped_status(
-      where: { status_id: { _gt: 0 } }
-      order_by: { status_order: asc }
-    ) {
-      status_id
-      status_name
     }
   }
 `;

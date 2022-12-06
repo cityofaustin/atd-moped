@@ -1,7 +1,5 @@
 import { gql } from "@apollo/client";
 
-// Status ID 3 is cancelled
-
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
@@ -11,16 +9,14 @@ export const SIGNAL_PROJECTS_QUERY = gql`
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              is_deleted: {_eq: false }
+              is_deleted: { _eq: false }
             }
-            status_id: { _is_null: true }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
-              is_deleted: {_eq: false }
+              is_deleted: { _eq: false }
             }
-            status_id: { _neq: 3 }
           }
         ]
       }
@@ -66,7 +62,9 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         }
       }
       moped_proj_personnel(where: { is_deleted: { _eq: false } }) {
-        role_id
+        moped_proj_personnel_roles {
+          project_role_id
+        }
         moped_user {
           first_name
           last_name
@@ -85,15 +83,10 @@ export const SIGNAL_PROJECTS_QUERY = gql`
 `;
 
 export const UPDATE_SIGNAL_PROJECT = gql`
-  mutation SignalProjectMutation(
-    $project_id: Int!
-    $entity_id: Int
-  ) {
+  mutation SignalProjectMutation($project_id: Int!, $entity_id: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $project_id }
-      _set: {
-        project_sponsor: $entity_id
-      }
+      _set: { project_sponsor: $entity_id }
     ) {
       project_id
     }

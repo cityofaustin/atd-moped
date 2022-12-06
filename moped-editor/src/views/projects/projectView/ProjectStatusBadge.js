@@ -6,19 +6,22 @@ import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlin
 import RemoveCircleOutlineOutlinedIcon from "@material-ui/icons/RemoveCircleOutlineOutlined";
 import PlayCircleOutlineOutlinedIcon from "@material-ui/icons/PlayCircleOutlineOutlined";
 import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlineOutlined";
+import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
 import { makeStyles } from "@material-ui/styles";
 import clsx from "clsx";
 
-const defaultIcon = PlayCircleOutlineOutlinedIcon;
+const defaultIcon = HelpOutlineIcon;
+const defaultLabel = "Unknown";
 
 /**
  * Retrieves the style configuration for an individual phase
  * @param {Object} theme - The theme object
- * @param {string} phase - The phase name
+ * @param {string} phaseName - The phase name to be used as the badge label
+ * @param {string} phaseKey - The key to be used to determine badge styles
  * @returns {Object}
  */
-const getStyle = (theme, phase) => {
+const getStyle = (theme, phaseKey) => {
   /**
    * Font colors
    */
@@ -43,17 +46,12 @@ const getStyle = (theme, phase) => {
    * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
    */
   const styleMapping = {
-    active: {
-      color: white,
-      background: backgroundColors.success,
-      icon: PlayCircleOutlineOutlinedIcon,
-    },
     planned: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "preliminary engineering": {
+    preliminary_engineering: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
@@ -63,7 +61,7 @@ const getStyle = (theme, phase) => {
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "preliminary design": {
+    preliminary_design: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
@@ -73,17 +71,17 @@ const getStyle = (theme, phase) => {
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "pre-construction": {
+    pre_construction: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "bid/award/execution": {
+    bid_award_execution: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "construction-ready": {
+    construction_ready: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
@@ -93,7 +91,7 @@ const getStyle = (theme, phase) => {
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
     },
-    "post-construction": {
+    post_construction: {
       color: white,
       background: backgroundColors.success,
       icon: PlayCircleOutlineOutlinedIcon,
@@ -108,7 +106,7 @@ const getStyle = (theme, phase) => {
       background: backgroundColors.error,
       icon: CancelOutlinedIcon,
     },
-    "on hold": {
+    on_hold: {
       color: primary,
       background: backgroundColors.default,
       icon: PauseCircleOutlineOutlinedIcon,
@@ -124,7 +122,7 @@ const getStyle = (theme, phase) => {
       icon: defaultIcon,
     },
   };
-  return styleMapping?.[phase] ?? styleMapping.default;
+  return styleMapping?.[phaseKey] ?? styleMapping.default;
 };
 
 /**
@@ -133,7 +131,7 @@ const getStyle = (theme, phase) => {
 const useFontColorStyles = makeStyles((theme) => ({
   root: {
     // Find text color
-    color: (props) => getStyle(theme, (props?.phase ?? "").toLowerCase()).color,
+    color: (props) => getStyle(theme, props?.phaseKey ?? "").color,
   },
 }));
 
@@ -155,7 +153,8 @@ const useChipStyles = makeStyles((theme) => ({
     height: "2.5rem",
     padding: ".5rem",
     // Find background color
-    backgroundColor: (props) => getStyle(theme, props.phase ?? "").background,
+    backgroundColor: ({ phaseKey }) =>
+      getStyle(theme, phaseKey ?? "").background,
   },
   condensed: {
     fontWeight: "500",
@@ -163,7 +162,8 @@ const useChipStyles = makeStyles((theme) => ({
     borderRadius: "2rem",
     height: "1.75rem",
     // Find background color
-    backgroundColor: (props) => getStyle(theme, props.phase ?? "").background,
+    backgroundColor: ({ phaseKey }) =>
+      getStyle(theme, phaseKey ?? "").background,
   },
 }));
 
@@ -176,81 +176,35 @@ const useChipStyles = makeStyles((theme) => ({
  * @constructor
  */
 const ProjectStatusBadge = ({
-  status,
-  phase,
-  projectStatuses,
+  phaseKey,
+  phaseName,
   condensed = false,
-  clickable = false
+  clickable = false,
 }) => {
   const classes = useStyles();
-  /**
-   * Returns the label given a status-phase combination
-   * @param {number} status - The status id number
-   * @param {string} phase - The name of the phase
-   * @returns {string}
-   */
-  const getComponentMapName = (status, phase) =>
-    status > 1 // is not active?
-      ? // Then it can be found as a status
-        (
-          projectStatuses.find((s) => s.status_id === status)?.status_name ??
-          String(phase)
-        ) // if not, default to phase
-          .toLowerCase()
-      : // if it's active then it's a phase for sure
-        String(phase).toLowerCase();
-
-  /**
-   * Bundle status properties object
-   */
-  const statusProperties = {
-    status: status,
-    phase: getComponentMapName(status, phase), // It's here so it can be corrected by status id
-  };
 
   /**
    * Generate chip and icon classes
    */
-  const chipClasses = useChipStyles(statusProperties);
-  const iconClasses = useFontColorStyles(statusProperties);
+  const chipClasses = useChipStyles({ phaseKey });
+  const iconClasses = useFontColorStyles({ phaseKey });
 
   /**
    * Create an abstract component pointer
    */
-  const ChipIcon =
-    getStyle(null, getComponentMapName(status, phase))?.icon ?? defaultIcon;
+  const ChipIcon = getStyle(null, phaseKey ?? "")?.icon ?? defaultIcon;
 
-  /**
-   * Make sure the text in the chip is capital-case
-   * @param {string} text - The contents of the chip text
-   * @returns {string}
-   */
-  const capitalCase = (text) =>
-    String(text).charAt(0).toUpperCase() +
-    String(text).toLowerCase().substring(1);
-
-  /**
-   * Show chip is true if we have a phase or a valid status id
-   * @type {boolean}
-   */
-  const showChip = (!!phase && String(phase).trim().length > 0) || status > 1;
-
-  /**
-   * Return the object
-   */
   return (
-    showChip && (
-      <Chip
-        className={clsx(
-          iconClasses.root,
-          clickable && classes.clickableChip,
-          condensed ? chipClasses.condensed : chipClasses.root
-        )}
-        icon={<ChipIcon className={iconClasses.root} />}
-        label={capitalCase(statusProperties.phase)}
-        color={"default"}
-      />
-    )
+    <Chip
+      className={clsx(
+        iconClasses.root,
+        clickable && classes.clickableChip,
+        condensed ? chipClasses.condensed : chipClasses.root
+      )}
+      icon={<ChipIcon className={iconClasses.root} />}
+      label={phaseName || defaultLabel}
+      color={"default"}
+    />
   );
 };
 
