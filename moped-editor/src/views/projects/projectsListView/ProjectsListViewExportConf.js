@@ -23,9 +23,11 @@ export const ProjectsListViewExportConf = {
   },
   current_phase_key: {
     label: "current_phase_key",
+    filter: filterNullValues,
   },
   current_phase: {
     label: "current_phase",
+    filter: filterNullValues,
   },
   project_team_members: {
     label: "project_team_members",
