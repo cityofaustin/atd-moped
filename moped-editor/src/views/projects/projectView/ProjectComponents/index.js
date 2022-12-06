@@ -120,7 +120,12 @@ export default function MapView({ projectName, projectStatuses }) {
     onSaveEditedComponent,
     onCancelComponentMapEdit,
     onEditFeatures,
-  } = useUpdateComponent({ components, clickedComponent, setLinkMode });
+  } = useUpdateComponent({
+    components,
+    clickedComponent,
+    setLinkMode,
+    refetchProjectComponents,
+  });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({

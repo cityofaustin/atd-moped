@@ -65,6 +65,7 @@ export const useUpdateComponent = ({
   components,
   clickedComponent,
   setLinkMode,
+  refetchProjectComponents,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -153,6 +154,8 @@ export const useUpdateComponent = ({
 
     updateComponentFeatures({
       variables: { updates: deletes, streetSegments: featuresReadyToInsert },
+    }).then(() => {
+      refetchProjectComponents();
     });
 
     editDispatch({ type: "save_edit" });
