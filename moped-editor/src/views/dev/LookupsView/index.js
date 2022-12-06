@@ -6,10 +6,12 @@ import { createBrowserHistory } from "history";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 import LinkIcon from "@material-ui/icons/Link";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import { makeStyles } from "@material-ui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
@@ -62,10 +64,13 @@ const LookupsView = () => {
    * */
   const refs = useMemo(
     () =>
-      SETTINGS.reduce((prev, recordType) => {
-        prev[recordType.key] = createRef();
-        return prev;
-      }, {}),
+      SETTINGS.reduce(
+        (prev, recordType) => {
+          prev[recordType.key] = createRef();
+          return prev;
+        },
+        { _scroll_to_top: createRef() }
+      ),
     []
   );
 
@@ -96,6 +101,7 @@ const LookupsView = () => {
             spacing={3}
             className={classes.topMargin}
             component={Paper}
+            ref={refs._scroll_to_top}
           >
             {SETTINGS.map((recordType) => (
               <Grid item key={recordType.key}>
@@ -129,18 +135,36 @@ const LookupsView = () => {
                   <Grid item>
                     <Typography variant="h2">{recordType.label}</Typography>
                   </Grid>
+
                   <Grid item>
-                    <IconButton
-                      component={Link}
-                      to={createRecordKeyHash(recordType.key)}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        scrollToTable(recordType.key, refs);
-                        history.replace(createRecordKeyHash(recordType.key));
-                      }}
-                    >
-                      <LinkIcon fontSize="small" />
-                    </IconButton>
+                    <Tooltip title="Link to this table">
+                      <IconButton
+                        component={Link}
+                        to={createRecordKeyHash(recordType.key)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToTable(recordType.key, refs);
+                          history.replace(createRecordKeyHash(recordType.key));
+                        }}
+                      >
+                        <LinkIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </Grid>
+                  <Grid item>
+                    <Tooltip title="Return to top of page">
+                      <IconButton
+                        component={Link}
+                        to={"#"}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          scrollToTable("_scroll_to_top", refs);
+                          history.replace("");
+                        }}
+                      >
+                        <ArrowUpwardIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
                   </Grid>
                   <Grid item xs={12}>
                     <RecordTable

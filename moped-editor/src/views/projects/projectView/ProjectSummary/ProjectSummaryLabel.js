@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Tooltip, Typography } from "@material-ui/core";
 
 /**
  *
@@ -16,9 +16,11 @@ const ProjectSummaryLabel = ({
   onClickEdit,
   className,
   spanClassName,
+  tooltipText,
 }) => {
   return (
-    <>
+    // the tooltip will not appear if the `title` is empty
+    <Tooltip placement="bottom-start" title={tooltipText || ""}>
       <Typography
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
@@ -35,7 +37,7 @@ const ProjectSummaryLabel = ({
         {/* Otherwise, render the input on one line */}
         {!Array.isArray(text) && <span className={spanClassName}>{text}</span>}
       </Typography>
-    </>
+    </Tooltip>
   );
 };
 

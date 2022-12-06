@@ -82,22 +82,20 @@ const SignalProjectTable = () => {
   /**
    * Build data needed in Signals Material Table
    */
-  data.moped_project.forEach(project => {
+  data.moped_project.forEach((project) => {
     // project status update equivalent to most recent project note
     project["status_update"] = "";
     if (project?.moped_proj_notes?.length) {
       const note = project.moped_proj_notes[0]["project_note"];
       // Remove any HTML tags
-      project["status_update"] = note
-        ? parse(String(note))
-        : "";
+      project["status_update"] = note ? parse(String(note)) : "";
     }
 
     // Signal IDs
     const signal_ids = [];
     if (project?.moped_proj_components.length) {
-      project.moped_proj_components.forEach(projectComponent => {
-        projectComponent.moped_proj_features.forEach(projectFeature => {
+      project.moped_proj_components.forEach((projectComponent) => {
+        projectComponent.moped_proj_features.forEach((projectFeature) => {
           const signal = projectFeature?.feature?.properties?.signal_id;
           if (signal) {
             signal_ids.push({
@@ -114,7 +112,7 @@ const SignalProjectTable = () => {
     // moped project types
     const project_types = [];
     if (project?.moped_project_types?.length) {
-      project.moped_project_types.forEach(projType => {
+      project.moped_project_types.forEach((projType) => {
         project_types.push(projType?.moped_type?.type_id);
       });
     }
@@ -122,7 +120,7 @@ const SignalProjectTable = () => {
 
     // project sponsor
     project["project_sponsor_object"] = entityList.find(
-      e => e.entity_id === project?.project_sponsor
+      (e) => e.entity_id === project?.project_sponsor
     );
 
     // Targeted Construction Start > moped_proj_phases where phase = Construction,
@@ -133,21 +131,21 @@ const SignalProjectTable = () => {
     if (project?.moped_proj_phases?.length) {
       // check for construction phase
       const constructionPhase = project.moped_proj_phases.find(
-        p => p.phase_id === 9 // 9 is the phase_id for Construction
+        (p) => p.phase_id === 9 // 9 is the phase_id for Construction
       );
       if (constructionPhase) {
         project["construction_start"] = constructionPhase.phase_start;
       }
       // check for completion phase
       const completionPhase = project.moped_proj_phases.find(
-        p => p.phase_id === 11 // 11 is phase_id for complete
+        (p) => p.phase_id === 11 // 11 is phase_id for complete
       );
       if (completionPhase) {
         project["completion_date"] = completionPhase.phase_end;
       }
       // get current phase
       const currentPhase = project.moped_proj_phases.find(
-        p => p.is_current_phase
+        (p) => p.is_current_phase
       );
       if (currentPhase) {
         project["current_phase"] =
@@ -159,7 +157,7 @@ const SignalProjectTable = () => {
     // funding source
     const funding_sources = [];
     if (project?.moped_proj_funding?.length) {
-      project.moped_proj_funding.forEach(source => {
+      project.moped_proj_funding.forEach((source) => {
         funding_sources.push(source?.moped_fund_source?.funding_source_name);
       });
     }
@@ -169,19 +167,21 @@ const SignalProjectTable = () => {
     const designers = [];
     const inspectors = [];
     // role_ids come from moped_project_roles. 8 is Designer and 12 is Inspector
-    const isDesigner = personnel => personnel?.role_id === 8;
-    const isInspector = personnel => personnel?.role_id === 12;
+    const isDesigner = (personnel) =>
+      personnel?.moped_proj_personnel_roles.find(
+        (role) => role.project_role_id === 8
+      );
+    const isInspector = (personnel) =>
+      personnel?.moped_proj_personnel_roles.find(
+        (role) => role.project_role_id === 12
+      );
     if (project?.moped_proj_personnel?.length) {
-      project.moped_proj_personnel.forEach(personnel => {
+      project.moped_proj_personnel.forEach((personnel) => {
         if (isDesigner(personnel)) {
-          designers.push(
-            getUserFullName(personnel)
-          );
+          designers.push(getUserFullName(personnel.moped_user));
         }
         if (isInspector(personnel)) {
-          inspectors.push(
-            getUserFullName(personnel)
-          );
+          inspectors.push(getUserFullName(personnel.moped_user));
         }
       });
     }
@@ -198,7 +198,7 @@ const SignalProjectTable = () => {
       field: "project_name",
       editable: "never",
       cellStyle: { ...typographyStyle, minWidth: "200px" },
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_name}
@@ -213,11 +213,11 @@ const SignalProjectTable = () => {
       cellStyle: typographyStyle,
       customFilterAndSearch: (term, rowData) => {
         const displaySignals = rowData.signal_ids
-          .map(s => s.signal_id)
+          .map((s) => s.signal_id)
           .join(" ");
         return displaySignals.includes(term);
       },
-      render: entry => <RenderSignalLink signals={entry.signal_ids} />,
+      render: (entry) => <RenderSignalLink signals={entry.signal_ids} />,
     },
     {
       title: "Project types",
@@ -225,18 +225,18 @@ const SignalProjectTable = () => {
       customEdit: "projectTypes",
       customFilterAndSearch: (term, rowData) => {
         const displayProjectTypes = rowData.project_types
-          .map(t => typeDict[t])
+          .map((t) => typeDict[t])
           .join(" ");
         return displayProjectTypes.toUpperCase().includes(term.toUpperCase());
       },
-      render: entry => {
+      render: (entry) => {
         if (entry?.project_types?.length) {
           return (
             <Typography
               className={classes.tableTypography}
               style={{ maxWidth: "155px" }}
             >
-              {entry.project_types.map(t => typeDict[t]).join(", ")}
+              {entry.project_types.map((t) => typeDict[t]).join(", ")}
             </Typography>
           );
         }
@@ -248,7 +248,7 @@ const SignalProjectTable = () => {
       field: "current_phase",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.current_phase}
@@ -264,19 +264,19 @@ const SignalProjectTable = () => {
       customFilterAndSearch: (term, rowData) => {
         const displayTaskOrders = rowData.task_order
           ? rowData.task_order
-              .map(taskOrder => taskOrder.display_name)
+              .map((taskOrder) => taskOrder.display_name)
               .join(" ")
           : "";
         return displayTaskOrders.toUpperCase().includes(term.toUpperCase());
       },
-      render: entry => {
+      render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
         if (entry.task_order.length < 1) {
           return "-";
         }
         // Render values as a comma seperated string
         let content = entry.task_order
-          .map(taskOrder => {
+          .map((taskOrder) => {
             return taskOrder.display_name;
           })
           .join(", ");
@@ -295,7 +295,7 @@ const SignalProjectTable = () => {
       field: "funding_sources",
       cellStyle: typographyStyle,
       editable: "never",
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.funding_sources.join(", ")}
@@ -311,7 +311,7 @@ const SignalProjectTable = () => {
           .toUpperCase()
           .includes(term.toUpperCase());
       },
-      render: entry => (
+      render: (entry) => (
         <Typography className={classes.tableTypography}>
           {entry?.project_sponsor_object?.entity_name === "None"
             ? "-"
@@ -325,7 +325,7 @@ const SignalProjectTable = () => {
       field: "project_designer",
       cellStyle: typographyStyle,
       editable: "never",
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_designer}
@@ -338,7 +338,7 @@ const SignalProjectTable = () => {
       field: "project_inspector",
       cellStyle: typographyStyle,
       editable: "never",
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={entry.project_inspector}
@@ -351,7 +351,7 @@ const SignalProjectTable = () => {
       field: "construction_start",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={
@@ -368,7 +368,7 @@ const SignalProjectTable = () => {
       field: "completion_date",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry => (
+      render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
           value={
@@ -383,7 +383,7 @@ const SignalProjectTable = () => {
       field: "last_modified",
       editable: "never",
       cellStyle: typographyStyle,
-      render: entry => formatTimeStampTZType(entry.updated_at),
+      render: (entry) => formatTimeStampTZType(entry.updated_at),
     },
   ];
 
@@ -401,16 +401,16 @@ const SignalProjectTable = () => {
           },
         });
       } else if (columnDef.customEdit === "projectTypes") {
-        const typeIdsToDelete = oldData.filter(t => !newData.includes(t));
-        const typeIdsToInsert = newData.filter(t => !oldData.includes(t));
-        const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
+        const typeIdsToDelete = oldData.filter((t) => !newData.includes(t));
+        const typeIdsToInsert = newData.filter((t) => !oldData.includes(t));
+        const typeObjectsToInsert = typeIdsToInsert.map((type_id) => ({
           project_id: rowData.project_id,
           project_type_id: type_id,
         }));
         // List of primary keys to delete
         const typePksToDelete = rowData.moped_project_types
-          .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
-          .map(t => t.id);
+          .filter((t) => typeIdsToDelete.includes(t?.moped_type.type_id))
+          .map((t) => t.id);
         return updateProjectTypes({
           variables: {
             types: typeObjectsToInsert,
@@ -449,29 +449,31 @@ const SignalProjectTable = () => {
    * Custom edit components
    */
   const cellEditComponents = {
-    projectSponsor: props => (
+    projectSponsor: (props) => (
       <Autocomplete
         value={props.value ?? "None"}
         defaultValue={"None"}
         options={entityList}
-        getOptionLabel={e => e.entity_name}
+        getOptionLabel={(e) => e.entity_name}
         onChange={(event, value) => props.onChange(value)}
         getOptionSelected={(option, value) =>
           option.entity_id === value.entity_id
         }
-        renderInput={params => (
+        renderInput={(params) => (
           <TextField {...params} variant="standard" label={null} />
         )}
       />
     ),
-    projectTypes: props => {
+    projectTypes: (props) => {
       return (
         <Select
           multiple
           value={props.value}
           onChange={(event, value) => props.onChange(event.target.value)} //handleChange}
           input={<Input />}
-          renderValue={type_ids => type_ids.map(t => typeDict[t]).join(", ")}
+          renderValue={(type_ids) =>
+            type_ids.map((t) => typeDict[t]).join(", ")
+          }
           /*
             There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
             this is fixed by overriding the function "getContentAnchorEl".
@@ -485,7 +487,7 @@ const SignalProjectTable = () => {
             },
           }}
         >
-          {typeList.map(type => (
+          {typeList.map((type) => (
             <MenuItem key={type.type_id} value={type.type_id}>
               <Checkbox
                 checked={props.value.includes(type.type_id)}
@@ -497,7 +499,7 @@ const SignalProjectTable = () => {
         </Select>
       );
     },
-    taskOrders: props => (
+    taskOrders: (props) => (
       <TaskOrderAutocomplete props={props} value={props.value} />
     ),
   };
@@ -510,10 +512,10 @@ const SignalProjectTable = () => {
             <MaterialTable
               columns={columns}
               components={{
-                EditRow: props => (
+                EditRow: (props) => (
                   <MTableEditRow
                     {...props}
-                    onKeyDown={e => {
+                    onKeyDown={(e) => {
                       if (e.keyCode === 13) {
                         // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                         // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -521,7 +523,7 @@ const SignalProjectTable = () => {
                     }}
                   />
                 ),
-                EditField: props =>
+                EditField: (props) =>
                   props.columnDef.customEdit ? (
                     cellEditComponents[props.columnDef.customEdit](props)
                   ) : (

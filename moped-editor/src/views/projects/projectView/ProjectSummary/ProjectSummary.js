@@ -13,7 +13,7 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 */
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
-import ProjectSummaryProjectSponsor from "./ProjectSummaryProjectSponsor";
+import ProjectSummaryProjectEntity from "./ProjectSummaryProjectEntity";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -197,12 +197,25 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 classes={classes}
               />
               <Grid item xs={12}>
-                <ProjectSummaryProjectSponsor
+                <ProjectSummaryProjectEntity
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
+                  entityName="Lead"
+                  tooltipText="Division, department, or organization responsible for successful project implementation"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ProjectSummaryProjectEntity
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                  entityName="Sponsor"
+                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -212,6 +225,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
+                  tooltipText="Other internal or external workgroups participating in the project"
                 />
               </Grid>
               <Grid item xs={12}>
