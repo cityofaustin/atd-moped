@@ -54,7 +54,6 @@ export default function TheMap({
   createDispatch,
   draftEditComponent,
   editDispatch,
-  setDraftEditComponent,
   mapRef,
   clickedProjectFeature,
   setClickedProjectFeature,
@@ -161,6 +160,64 @@ export default function TheMap({
     }
   };
 
+  const handleEditOnClick = (e) => {
+    const clickedFeature = e.features[0];
+    const clickedFeatureSource = clickedFeature.layer.source;
+
+    const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
+    const featureUniqueId = clickedFeature.properties[sourceFeatureId];
+
+    const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
+      clickedFeature,
+      linkMode,
+      ctnLinesGeojson,
+      ctnPointsGeojson
+    );
+
+    const newFeature = makeCapturedFromLayerFeature(
+      featureFromAgolGeojson,
+      clickedFeature,
+      ctnLinesGeojson
+    );
+
+    const tableToInsert =
+      draftEditComponent?.moped_components?.feature_layer?.internal_table;
+
+    // Update UI
+    const addOrRemoveClickedEditFeatures = (currentComponent) => {
+      const isFeatureAlreadyInComponent = Boolean(
+        currentComponent[tableToInsert].find(
+          (feature) =>
+            feature?.[sourceFeatureId.toLowerCase()] === featureUniqueId || // Already in database
+            feature?.properties?.[sourceFeatureId] === featureUniqueId // From CTN layers
+        )
+      );
+
+      // If the feature is not already in the draftEditComponent, add it
+      // otherwise, remove it.
+      if (!isFeatureAlreadyInComponent) {
+        return {
+          ...currentComponent,
+          [tableToInsert]: [...currentComponent[tableToInsert], newFeature],
+        };
+      } else if (isFeatureAlreadyInComponent) {
+        return {
+          ...currentComponent,
+          [tableToInsert]: currentComponent[tableToInsert].filter(
+            (feature) =>
+              feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
+              feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
+          ),
+        };
+      }
+    };
+
+    editDispatch({
+      type: "update_clicked_features",
+      callback: addOrRemoveClickedEditFeatures,
+    });
+  };
+
   const onClick = (e) => {
     // if map is clicked outside interactive layers
     if (e.features.length === 0) {
@@ -191,61 +248,8 @@ export default function TheMap({
 
     /* We're editing, so handle add/remove existing component features */
     if (isEditingComponent) {
-      const clickedFeature = e.features[0];
-      const clickedFeatureSource = clickedFeature.layer.source;
-
-      const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
-      const featureUniqueId = clickedFeature.properties[sourceFeatureId];
-
-      const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
-        clickedFeature,
-        linkMode,
-        ctnLinesGeojson,
-        ctnPointsGeojson
-      );
-
-      const newFeature = makeCapturedFromLayerFeature(
-        featureFromAgolGeojson,
-        clickedFeature,
-        ctnLinesGeojson
-      );
-
-      const tableToInsert =
-        draftEditComponent?.moped_components?.feature_layer?.internal_table;
-
-      // Update UI
-      const addOrRemoveClickedEditFeatures = (currentComponent) => {
-        const isFeatureAlreadyInComponent = Boolean(
-          currentComponent[tableToInsert].find(
-            (feature) =>
-              feature?.[sourceFeatureId.toLowerCase()] === featureUniqueId || // Already in database
-              feature?.properties?.[sourceFeatureId] === featureUniqueId // From CTN layers
-          )
-        );
-
-        // If the feature is not already in the draftEditComponent, add it
-        // otherwise, remove it.
-        if (!isFeatureAlreadyInComponent) {
-          return {
-            ...currentComponent,
-            [tableToInsert]: [...currentComponent[tableToInsert], newFeature],
-          };
-        } else if (isFeatureAlreadyInComponent) {
-          return {
-            ...currentComponent,
-            [tableToInsert]: currentComponent[tableToInsert].filter(
-              (feature) =>
-                feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
-                feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
-            ),
-          };
-        }
-      };
-
-      editDispatch({
-        type: "update_clicked_features",
-        callback: addOrRemoveClickedEditFeatures,
-      });
+      handleEditOnClick(e);
+      return;
     }
 
     // setHoveredOnMapFeatureId(newFeature.properties.id);
