@@ -78,8 +78,6 @@ const ComponentForm = ({
   const { component } = watch();
   const subcomponentOptions = useSubcomponentOptions(component);
 
-  /* TODO: Fix bug where you can add the same subcomponent passed in initialFormValues
-  through the form once data is loaded (also isn't selected with a grey bar) */
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
