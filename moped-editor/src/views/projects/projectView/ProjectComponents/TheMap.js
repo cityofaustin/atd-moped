@@ -33,7 +33,10 @@ import {
   useAllComponentsFeatureCollection,
   useDraftComponentFeatures,
 } from "./utils/makeData";
-import { getClickedFeatureFromMap } from "./utils/onMapClick";
+import {
+  getClickedFeatureFromMap,
+  removeDeselectedFeaturesFromDraftComponent,
+} from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -111,18 +114,20 @@ export default function TheMap({
   };
 
   const onClick = (e) => {
+    // if map is clicked outside interactive layers
     if (e.features.length === 0) {
-      // clear clickedComponent if map is clicked elsewhere
+      // clear clickedComponent to collapse list item
       if (clickedComponent) {
         setClickedComponent(null);
       }
+      // clear clickedProjectFeature to close FeaturePopup
       if (clickedProjectFeature) {
         setClickedProjectFeature(null);
       }
       return;
     }
 
-    /* If not creating or editing, we need to set clicked features in state */
+    /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {
       const clickedProjectFeature = getClickedFeatureFromMap(e);
 
@@ -130,8 +135,8 @@ export default function TheMap({
       return;
     }
 
+    /* We're creating, so handle add/remove draft component feature */
     if (isCreatingComponent) {
-      /* We're creating, so handle add/remove draft component feature */
       const newDraftComponent = cloneDeep(draftComponent);
       const clickedDraftComponentFeature = e.features.find(
         (feature) => feature.layer.id === draftLayerId
@@ -140,27 +145,22 @@ export default function TheMap({
       // If we clicked a drawn feature, we don't need to capture from the CTN layers
       if (isDrawnFeature(clickedDraftComponentFeature)) return;
 
+      // If we clicked a feature that's already in the draftComponent, we remove it
       if (clickedDraftComponentFeature) {
-        // remove project feature, ignore underlying CTN features
-        const filteredFeatures = draftComponent.features.filter(
-          (compFeature) => {
-            return !(
-              compFeature.properties.id ===
-                clickedDraftComponentFeature.properties.id &&
-              compFeature.properties._layerId ===
-                clickedDraftComponentFeature.properties._layerId
-            );
-          }
-        );
-        newDraftComponent.features = filteredFeatures;
+        const draftComponentWithDeselectedFeatureRemoved =
+          removeFeatureFromDraftComponent(
+            draftComponent,
+            clickedDraftComponentFeature
+          );
+
         createDispatch({
           type: "store_draft_component",
-          payload: newDraftComponent,
+          payload: draftComponentWithDeselectedFeatureRemoved,
         });
         return;
       }
 
-      // if multiple features are clicked, we ignore all but one
+      // Otherwise, we capture the feature from the CTN layers and add it to the draftComponent
       const clickedFeature = e.features[0];
       const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
         clickedFeature,
@@ -168,7 +168,6 @@ export default function TheMap({
         ctnLinesGeojson,
         ctnPointsGeojson
       );
-
       const newFeature = makeCapturedFromLayerFeature(
         featureFromAgolGeojson,
         clickedFeature,
@@ -176,12 +175,14 @@ export default function TheMap({
       );
 
       newDraftComponent.features.push(newFeature);
+
       createDispatch({
         type: "store_draft_component",
         payload: newDraftComponent,
       });
     }
 
+    /* We're editing, so handle add/remove existing component features */
     if (isEditingComponent) {
       // TODO: Combine steps that overlap with creating in this handler, make helpers out of the rest
       const clickedFeature = e.features[0];
