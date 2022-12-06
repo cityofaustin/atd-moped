@@ -97,6 +97,9 @@ export const GET_PROJECT_COMPONENTS = gql`
   }
 `;
 
+// This mutation updates component subcomponents by updating all existing
+// subcomponents to is_deleted = true and then inserting the new subcomponents
+// with is_deleted = false on conflict
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateProjectAttributes(
     $projectComponentId: Int!

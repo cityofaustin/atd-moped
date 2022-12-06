@@ -40,7 +40,7 @@ const EditComponentModal = ({
     const subcomponentsArray = subcomponents
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
-          is_deleted: false,
+          is_deleted: false, // Used for update on constraint in mutation
           project_component_id: projectComponentId,
         }))
       : [];
