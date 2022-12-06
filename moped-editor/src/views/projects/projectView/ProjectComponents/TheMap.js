@@ -35,7 +35,7 @@ import {
 } from "./utils/makeData";
 import {
   getClickedFeatureFromMap,
-  removeDeselectedFeaturesFromDraftComponent,
+  removeFeatureFromDraftComponent,
 } from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -113,29 +113,7 @@ export default function TheMap({
     // });
   };
 
-  const onClick = (e) => {
-    // if map is clicked outside interactive layers
-    if (e.features.length === 0) {
-      // clear clickedComponent to collapse list item
-      if (clickedComponent) {
-        setClickedComponent(null);
-      }
-      // clear clickedProjectFeature to close FeaturePopup
-      if (clickedProjectFeature) {
-        setClickedProjectFeature(null);
-      }
-      return;
-    }
-
-    /* If not creating or editing, set clickedFeature for FeaturePopup */
-    if (!isCreatingComponent && !isEditingComponent) {
-      const clickedProjectFeature = getClickedFeatureFromMap(e);
-
-      setClickedProjectFeature(clickedProjectFeature);
-      return;
-    }
-
-    /* We're creating, so handle add/remove draft component feature */
+  const handleCreateOnClick = (e) => {
     if (isCreatingComponent) {
       const newDraftComponent = cloneDeep(draftComponent);
       const clickedDraftComponentFeature = e.features.find(
@@ -181,10 +159,38 @@ export default function TheMap({
         payload: newDraftComponent,
       });
     }
+  };
+
+  const onClick = (e) => {
+    // if map is clicked outside interactive layers
+    if (e.features.length === 0) {
+      // clear clickedComponent to collapse list item
+      if (clickedComponent) {
+        setClickedComponent(null);
+      }
+      // clear clickedProjectFeature to close FeaturePopup
+      if (clickedProjectFeature) {
+        setClickedProjectFeature(null);
+      }
+      return;
+    }
+
+    /* If not creating or editing, set clickedFeature for FeaturePopup */
+    if (!isCreatingComponent && !isEditingComponent) {
+      const clickedProjectFeature = getClickedFeatureFromMap(e);
+
+      setClickedProjectFeature(clickedProjectFeature);
+      return;
+    }
+
+    /* We're creating, so handle add/remove draft component feature */
+    if (isCreatingComponent) {
+      handleCreateOnClick(e);
+      return;
+    }
 
     /* We're editing, so handle add/remove existing component features */
     if (isEditingComponent) {
-      // TODO: Combine steps that overlap with creating in this handler, make helpers out of the rest
       const clickedFeature = e.features[0];
       const clickedFeatureSource = clickedFeature.layer.source;
 
