@@ -64,6 +64,7 @@ const editReducer = (state, action) => {
 export const useUpdateComponent = ({
   components,
   clickedComponent,
+  setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
 }) => {
@@ -157,6 +158,7 @@ export const useUpdateComponent = ({
     })
       .then(() => {
         refetchProjectComponents();
+        setClickedComponent(null);
         editDispatch({ type: "save_edit" });
       })
       .catch((error) => {

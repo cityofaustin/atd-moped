@@ -91,7 +91,7 @@ export default function MapView({ projectName, projectStatuses }) {
   /* holds this project's components */
   const components = useMemo(() => {
     if (!data?.moped_proj_components) return [];
-    console.log("fired");
+
     return data.moped_proj_components;
   }, [data]);
 
@@ -123,6 +123,7 @@ export default function MapView({ projectName, projectStatuses }) {
   } = useUpdateComponent({
     components,
     clickedComponent,
+    setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
   });
