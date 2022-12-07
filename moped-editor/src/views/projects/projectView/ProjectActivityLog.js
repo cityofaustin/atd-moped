@@ -132,7 +132,7 @@ const ProjectActivityLog = () => {
     eventList.forEach((event) => {
       let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
-      if (event.description[0].newSchema) {
+      if (event.description[0]?.newSchema) {
         // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
           outputEvent.description = [];
