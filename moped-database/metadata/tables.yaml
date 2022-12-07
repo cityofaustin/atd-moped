@@ -740,7 +740,7 @@
           - id
           - is_deleted
         filter: {}
-        check: null
+        check: {}
     - role: moped-editor
       permission:
         columns:
@@ -749,7 +749,7 @@
           - id
           - is_deleted
         filter: {}
-        check: null
+        check: {}
 - table:
     name: moped_activity_log
     schema: public
