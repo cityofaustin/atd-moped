@@ -51,15 +51,19 @@ const EditComponentModal = ({
         description,
         subcomponents: subcomponentsArray,
       },
-    }).then(() => {
-      // Update component list item and clicked component state to keep UI up to date
-      refetchProjectComponents();
-      setClickedComponent((prevComponent) => ({
-        ...prevComponent,
-        description,
-        moped_proj_components_subcomponents: subcomponentsArray,
-      }));
-    });
+    })
+      .then(() => {
+        // Update component list item and clicked component state to keep UI up to date
+        refetchProjectComponents();
+        setClickedComponent((prevComponent) => ({
+          ...prevComponent,
+          description,
+          moped_proj_components_subcomponents: subcomponentsArray,
+        }));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
 
     onClose();
   };

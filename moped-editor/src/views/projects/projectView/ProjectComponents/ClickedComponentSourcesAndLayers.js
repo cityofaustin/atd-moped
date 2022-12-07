@@ -2,7 +2,7 @@ import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 
 /**
- * Component that renders GeoJSON data for the clicked component
+ * Component that rendersa feature collection of features for the clicked component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} clickedComponent - Details of the component that was clicked
  * @param {Object} componentFeatureCollection - GeoJSON feature collection of the component clicked

@@ -2,7 +2,7 @@ import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 
 /**
- * Component that renders the feature collection of a draft component while creating a component
+ * Component that renders the feature collection of a draft component while editing a component
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} draftEditComponentFeatureCollection - GeoJSON feature collection of the draft component
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"

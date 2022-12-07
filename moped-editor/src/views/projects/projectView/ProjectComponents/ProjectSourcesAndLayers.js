@@ -3,7 +3,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import { useFeatureTypes } from "./utils/map";
 
 /**
- * Component that renders feature collection of component features in a project
+ * Component that renders feature collection of existing component features in a project
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?
