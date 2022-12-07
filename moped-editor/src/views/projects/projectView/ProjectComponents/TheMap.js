@@ -201,14 +201,19 @@ export default function TheMap({
           [tableToInsert]: [...currentComponent[tableToInsert], newFeature],
         };
       } else if (isFeatureAlreadyInComponent) {
-        return {
-          ...currentComponent,
-          [tableToInsert]: currentComponent[tableToInsert].filter(
-            (feature) =>
-              feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
-              feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
-          ),
-        };
+        const filteredFeatures = currentComponent[tableToInsert].filter(
+          (feature) =>
+            feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
+            feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
+        );
+
+        const isAtLeastOneFeatureRemaining = filteredFeatures.length > 0;
+        return isAtLeastOneFeatureRemaining
+          ? {
+              ...currentComponent,
+              [tableToInsert]: filteredFeatures,
+            }
+          : currentComponent;
       }
     };
 
