@@ -352,7 +352,6 @@ def create_task_definition(slug, api_endpoint):
                     {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
                 ],
                 "essential": True,
-                "healthCheck": { "command": ["CMD-SHELL", "curl -f http://localhost:8080/healthz || exit 1"]},
                 "environment": [
                     {"name": "HTTP_PORT", "value": "8080"},
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
