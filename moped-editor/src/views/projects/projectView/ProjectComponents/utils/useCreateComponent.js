@@ -52,8 +52,6 @@ const createReducer = (state, action) => {
 
       action.callback(featuresWithAdditions);
 
-      console.log({ ...state, draftComponent: newDraftComponent });
-
       return { ...state, draftComponent: newDraftComponent };
 
     case "update_drawn_features":

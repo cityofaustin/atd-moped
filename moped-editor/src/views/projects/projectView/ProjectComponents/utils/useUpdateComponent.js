@@ -85,15 +85,12 @@ export const useUpdateComponent = ({
 
     setLinkMode(linkMode);
     editDispatch({ type: "start_map_edit", payload: clickedComponent });
-    console.log(clickedComponent);
   };
 
   const onSaveEditedComponent = () => {
     const featureTable =
       editState.draftEditComponent?.moped_components?.feature_layer
         ?.internal_table;
-
-    console.log(featureTable, editState.draftEditComponent);
 
     const editedComponentId = editState.draftEditComponent.project_component_id;
 

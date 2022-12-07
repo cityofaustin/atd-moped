@@ -686,6 +686,23 @@
 - table:
     name: features
     schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - name
+          - component_id
+          - id
+          - is_deleted
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - name
+          - component_id
+          - id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -718,12 +735,18 @@
     - role: moped-admin
       permission:
         columns:
+          - name
+          - component_id
+          - id
           - is_deleted
         filter: {}
         check: null
     - role: moped-editor
       permission:
         columns:
+          - name
+          - component_id
+          - id
           - is_deleted
         filter: {}
         check: null
