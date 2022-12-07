@@ -32,7 +32,7 @@ import {
   useComponentFeatureCollection,
   useAllComponentsFeatureCollection,
   useDraftComponentFeatures,
-} from "./utils/makeData";
+} from "./utils/makeFeatureCollections";
 import {
   getClickedFeatureFromMap,
   removeFeatureFromDraftComponent,

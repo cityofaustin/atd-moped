@@ -22,7 +22,7 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
+import { makeComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
