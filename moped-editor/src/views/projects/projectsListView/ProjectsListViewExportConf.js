@@ -16,8 +16,8 @@ export const ProjectsListViewExportConf = {
   project_description: {
     label: "project_description",
   },
-  current_status: {
-    label: "current_status",
+  current_phase_key: {
+    label: "current_phase_key",
   },
   current_phase: {
     label: "current_phase",

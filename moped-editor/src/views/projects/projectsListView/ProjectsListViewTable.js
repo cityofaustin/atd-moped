@@ -35,10 +35,10 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-      "& .MuiTableCell-head:nth-of-type(2)": {
-        left: "0px",
-        position: "sticky"
-      },
+    "& .MuiTableCell-head:nth-of-type(2)": {
+      left: "0px",
+      position: "sticky",
+    },
   },
   paper: {
     width: "100%",
@@ -59,14 +59,12 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * GridTable Search Capability plus Material Table
- * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
- * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
+const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**
@@ -84,17 +82,27 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   });
 
   /**
+   * The default sorting properties applied to the table.
+   * This overrides MaterialTable props and determines how
+   * the table is sorted when the page loads. Must remain consistent
+   * with the sorting order passed in from ProjectsListViewQueryConf.
+   * @property {string} column - The column name in graphql to sort by
+   * @property {integer} columnId - The column id in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or ""
+   */
+  const defaultSortingProperties = {
+    column: "updated_at",
+    columnId: 8,
+    order: "desc",
+  };
+
+  /**
    * Stores the column name and the order to order by
    * @type {Object} sort
-   * @property {string} column - The column name in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or "" (default: "")
    * @function setSort - Sets the state of sort
-   * @default {{value: "", column: ""}}
+   * @default {defaultSortingProperties}
    */
-  const [sort, setSort] = useState({
-    column: "",
-    order: "",
-  });
+  const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -180,9 +188,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  if (sort.column !== "" && sort.order !== "") {
-    query.setOrder(sort.column, sort.order);
-  }
+  query.setOrder(sort.column, sort.order);
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -257,15 +263,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId) => (
-    <ProjectStatusBadge
-      status={statusId}
-      phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
-      condensed
-    />
+  const buildStatusBadge = ({ phaseName, phaseKey }) => (
+    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
-
   // Data Management
   const { data, loading, error } = useQuery(
     query.gql,
@@ -301,13 +301,17 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
         backgroundColor: "white",
         whiteSpace: "noWrap",
         zIndex: 1,
-      }
+      },
     },
     {
       title: "Status",
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
-      render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
+      render: (entry) =>
+        buildStatusBadge({
+          phaseName: entry.current_phase,
+          phaseKey: entry.current_phase_key,
+        }),
     },
     {
       title: "Team",
@@ -534,25 +538,27 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // If both column and order are empty...
-    if (sort.order === "" && sort.column === "") {
-      // First time sort is applied
-      setSort({
-        order: "asc",
-        column: columnName,
-      });
-    } else if (sort.column === columnName) {
-      // Else if the current sortColumn is the same as the new
+    // Resets pagination to 0 when user clicks a header to display most relevant results
+    setPagination({
+      limit: query.limit,
+      offset: query.offset,
+      page: 0,
+    });
+
+    if (sort.column === columnName) {
+      // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
       setSort({
         order: sort.order === "desc" ? "asc" : "desc",
         column: columnName,
+        columnId: columnId,
       });
     } else if (sort.column !== columnName) {
-      // Sort different column after initial sort, then reset
+      // Sort different column in same order as previous column
       setSort({
-        order: "desc",
+        order: sort.order,
         column: columnName,
+        columnId: columnId,
       });
     }
   };
@@ -636,6 +642,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
+                        orderBy={sort.columnId}
                         orderDirection={sort.order}
                       />
                     ),

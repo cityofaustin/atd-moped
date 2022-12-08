@@ -1,6 +1,5 @@
 import { gql } from "@apollo/client";
 
-// Status ID 3 is cancelled
 export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
@@ -12,14 +11,12 @@ export const SIGNAL_PROJECTS_QUERY = gql`
               moped_components: { component_name: { _ilike: "signal" } }
               is_deleted: { _eq: false }
             }
-            status_id: { _is_null: true }
           }
           {
             moped_proj_components: {
               moped_components: { component_name: { _ilike: "signal" } }
               is_deleted: { _eq: false }
             }
-            status_id: { _neq: 3 }
           }
         ]
       }

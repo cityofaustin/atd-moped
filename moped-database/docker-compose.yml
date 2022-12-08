@@ -3,7 +3,7 @@
 version: '3.7'
 services:
     hasura:
-        image: hasura/graphql-engine:v2.11.2
+        image: hasura/graphql-engine:v2.16.0
         restart: always
         depends_on:
             - moped-pgsql

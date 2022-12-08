@@ -28,7 +28,7 @@ export const ProjectsListViewQueryConf = {
   showFilters: false,
   showExport: true,
   showNewItemButton: false,
-  noResultsMessage: "No projects found. Canceled projects are not shown.",
+  noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
@@ -101,24 +101,11 @@ export const ProjectsListViewQueryConf = {
       width: "50%",
       type: "String",
     },
-    current_status: {
-      searchable: false,
-      sortable: false,
-      hidden: true,
-      label: "Status",
-      type: "String",
-      width: "5%",
-    },
-    status_id: {
-      hidden: true,
-      searchable: false,
-    },
     current_phase: {
       searchable: true,
       sortable: false,
       label: "Status",
       width: "15%",
-      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
@@ -126,6 +113,11 @@ export const ProjectsListViewQueryConf = {
         envelope: "%{VALUE}%",
       },
       type: "string",
+    },
+    current_phase_key: {
+      searchable: false,
+      sortable: false,
+      hidden: true,
     },
     project_team_members: {
       searchable: false,
@@ -240,16 +232,15 @@ export const ProjectsListViewQueryConf = {
     },
     added_by: {
       type: "string",
-    }
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
   where: {
     is_deleted: "_eq: false",
-    status_id: "_neq: 3",
   },
   or: null,
   and: null,
-  limit: 25,
+  limit: 100,
   offset: 0,
 };

@@ -23,6 +23,8 @@ import MaterialTable, {
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import { currencyFormatter } from "../../../utils/numberFormatters";
+import DollarAmountIntegerField from "./DollarAmountIntegerField";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -81,14 +83,30 @@ const ProjectContractsTable = () => {
     {
       title: "Contractor",
       field: "contractor",
+      width: "20%",
     },
     {
       title: "Contract #",
       field: "contract_number",
+      width: "20%",
     },
     {
       title: "Description",
       field: "description",
+      width: "25%",
+    },
+    {
+      title: "Work assignment ID",
+      field: "work_assignment_id",
+      width: "20%",
+    },
+    {
+      title: "Amount",
+      field: "contract_amount",
+      render: (row) => currencyFormatter.format(row.contract_amount),
+      editComponent: (props) => <DollarAmountIntegerField {...props} />,
+      type: "currency",
+      width: "15%",
     },
   ];
 
@@ -198,6 +216,9 @@ const ProjectContractsTable = () => {
 
             // Remove unneeded variable
             delete updateContractData.__typename;
+            updateContractData.contract_amount = Number(
+              newData.contract_amount
+            );
 
             return updateContract({
               variables: updateContractData,
