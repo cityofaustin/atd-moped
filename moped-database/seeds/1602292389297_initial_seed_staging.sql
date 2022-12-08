@@ -79,9 +79,9 @@ INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_i
 -- Data for Name: moped_proj_contract; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false);
-INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false);
-
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false, null, 889);
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false, 'GCS 12', null);
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, null, null, null, 229, false, 'WA - 10 Unity', 1224);
 
 --
 -- Data for Name: moped_proj_entities; Type: TABLE DATA; Schema: public; Owner: moped
