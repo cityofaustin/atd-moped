@@ -277,6 +277,7 @@ def remove_route53_cname_for_validation(parameters):
         },
     )
 
+
 @task(name="Create EC2 ELB Listeners")
 def create_load_balancer_listener(
     load_balancer, target_group, certificate, ready_for_listeners
@@ -344,7 +345,7 @@ def create_task_definition(slug, api_endpoint):
         containerDefinitions=[
             {
                 "name": "graphql-engine",
-                "image": "hasura/graphql-engine:v2.7.0",
+                "image": "hasura/graphql-engine:v2.15.1",
                 # "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
@@ -352,6 +353,16 @@ def create_task_definition(slug, api_endpoint):
                     {"containerPort": 8080, "hostPort": 8080, "protocol": "tcp"}
                 ],
                 "essential": True,
+                # see: https://github.com/hasura/graphql-engine/issues/1532#issuecomment-1161637925
+                "healthCheck": {
+                    "command": [
+                        "CMD-SHELL",
+                        "timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1",
+                    ],
+                    "interval": 2,
+                    "retries": 10,
+                    "imeout": 1,
+                },
                 "environment": [
                     {"name": "HTTP_PORT", "value": "8080"},
                     {"name": "HASURA_GRAPHQL_ENABLE_CONSOLE", "value": "true"},
@@ -370,11 +381,13 @@ def create_task_definition(slug, api_endpoint):
                     },
                     {
                         "name": "HASURA_GRAPHQL_JWT_SECRET",
-                        "value":'{"type":"RS256","jwk_url": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_U2dzkxfTv/.well-known/jwks.json","claims_format": "stringified_json"}'
+                        "value": '{"type":"RS256","jwk_url": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_U2dzkxfTv/.well-known/jwks.json","claims_format": "stringified_json"}',
                     },
                     {
                         "name": "HASURA_ENDPOINT",
-                        "value": "https://" + shared.form_graphql_endpoint_hostname(graphql_endpoint) + "/v1/graphql",
+                        "value": "https://"
+                        + shared.form_graphql_endpoint_hostname(graphql_endpoint)
+                        + "/v1/graphql",
                     },
                     #  This depends on the Moped API endpoint returned from API commission tasks, add /events/ to end
                     {
