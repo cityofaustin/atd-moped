@@ -8,6 +8,7 @@ import {
   makePointFeatureInsertionData,
 } from "./makeFeatures";
 import { getDrawId, isDrawnFeature } from "./features";
+import { removeFeatureFromDraftComponent } from "./onMapClick";
 
 const createReducer = (state, action) => {
   switch (action.type) {
@@ -38,6 +39,18 @@ const createReducer = (state, action) => {
       };
     case "store_draft_component":
       return { ...state, draftComponent: action.payload };
+    case "remove_draft_component_feature":
+      const clickedDraftComponentFeature = action.payload;
+      const draftComponentWithDeselectedFeatureRemoved =
+        removeFeatureFromDraftComponent(
+          state.draftComponent,
+          clickedDraftComponentFeature
+        );
+
+      return {
+        ...state,
+        draftComponent: draftComponentWithDeselectedFeatureRemoved,
+      };
     case "add_drawn_features":
       const newDrawnFeatures = action.payload;
       const featuresWithAdditions = [

@@ -33,10 +33,7 @@ import {
   useAllComponentsFeatureCollection,
   useDraftComponentFeatures,
 } from "./utils/makeFeatureCollections";
-import {
-  getClickedFeatureFromMap,
-  removeFeatureFromDraftComponent,
-} from "./utils/onMapClick";
+import { getClickedFeatureFromMap } from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -113,51 +110,43 @@ export default function TheMap({
   };
 
   const handleCreateOnClick = (e) => {
-    if (isCreatingComponent) {
-      const newDraftComponent = cloneDeep(draftComponent);
-      const clickedDraftComponentFeature = e.features.find(
-        (feature) => feature.layer.id === draftLayerId
-      );
+    const newDraftComponent = cloneDeep(draftComponent);
+    const clickedDraftComponentFeature = e.features.find(
+      (feature) => feature.layer.id === draftLayerId
+    );
 
-      // If we clicked a drawn feature, we don't need to capture from the CTN layers
-      if (isDrawnFeature(clickedDraftComponentFeature)) return;
+    // If we clicked a drawn feature, we don't need to capture from the CTN layers
+    if (isDrawnFeature(clickedDraftComponentFeature)) return;
 
-      // If we clicked a feature that's already in the draftComponent, we remove it
-      if (clickedDraftComponentFeature) {
-        const draftComponentWithDeselectedFeatureRemoved =
-          removeFeatureFromDraftComponent(
-            draftComponent,
-            clickedDraftComponentFeature
-          );
-
-        createDispatch({
-          type: "store_draft_component",
-          payload: draftComponentWithDeselectedFeatureRemoved,
-        });
-        return;
-      }
-
-      // Otherwise, we capture the feature from the CTN layers and add it to the draftComponent
-      const clickedFeature = e.features[0];
-      const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
-        clickedFeature,
-        linkMode,
-        ctnLinesGeojson,
-        ctnPointsGeojson
-      );
-      const newFeature = makeCapturedFromLayerFeature(
-        featureFromAgolGeojson,
-        clickedFeature,
-        ctnLinesGeojson
-      );
-
-      newDraftComponent.features.push(newFeature);
-
+    // If we clicked a feature that's already in the draftComponent, we remove it
+    if (clickedDraftComponentFeature) {
       createDispatch({
-        type: "store_draft_component",
-        payload: newDraftComponent,
+        type: "remove_draft_component_feature",
+        payload: clickedDraftComponentFeature,
       });
+      return;
     }
+
+    // Otherwise, we capture the feature from the CTN layers and add it to the draftComponent
+    const clickedFeature = e.features[0];
+    const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
+      clickedFeature,
+      linkMode,
+      ctnLinesGeojson,
+      ctnPointsGeojson
+    );
+    const newFeature = makeCapturedFromLayerFeature(
+      featureFromAgolGeojson,
+      clickedFeature,
+      ctnLinesGeojson
+    );
+
+    newDraftComponent.features.push(newFeature);
+
+    createDispatch({
+      type: "store_draft_component",
+      payload: newDraftComponent,
+    });
   };
 
   const handleEditOnClick = (e) => {

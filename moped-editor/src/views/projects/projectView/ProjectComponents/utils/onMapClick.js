@@ -22,7 +22,5 @@ export const removeFeatureFromDraftComponent = (
     );
   });
 
-  draftComponent.features = filteredFeatures;
-
-  return draftComponent;
+  return { ...draftComponent, features: filteredFeatures };
 };
