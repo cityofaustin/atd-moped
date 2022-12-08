@@ -277,10 +277,6 @@ export default function TheMap({
         setIsDrawing={setIsDrawing}
       />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
-      <DraftComponentSourcesAndLayers
-        draftComponentFeatures={draftComponentFeatures}
-        linkMode={linkMode}
-      />
       <ProjectSourcesAndLayers
         isCreatingComponent={isCreatingComponent}
         isEditingComponent={isEditingComponent}
@@ -289,6 +285,10 @@ export default function TheMap({
         clickedComponent={clickedComponent}
         projectComponentsFeatureCollection={projectComponentsFeatureCollection}
         draftEditComponent={draftEditComponent}
+      />
+      <DraftComponentSourcesAndLayers
+        draftComponentFeatures={draftComponentFeatures}
+        linkMode={linkMode}
       />
       <ClickedComponentSourcesAndLayers
         clickedComponent={clickedComponent}
