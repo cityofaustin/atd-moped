@@ -25,6 +25,7 @@ import {
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
   isDrawnDraftFeature,
+  isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
   useComponentFeatureCollectionFromMap,
 } from "./utils/features";
@@ -161,6 +162,10 @@ export default function TheMap({
     // Pack some metadata into the feature properties in the front end?
     // Pack some metadata into the feature properties in the back end?
     if (isDrawnExistingFeature(clickedFeature)) {
+      // Once we know it's drawn, we can use the draw tools to edit it
+      // Add state to toggle render of EditComponentDrawTools?
+      // Then load drawn features into the tool
+      // Use CRUD handlers and reducer to add/update features as we go
       console.log("this is drawn");
     }
 
