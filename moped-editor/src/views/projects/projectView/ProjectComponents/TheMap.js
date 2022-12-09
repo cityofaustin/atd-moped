@@ -154,9 +154,15 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
     console.log(clickedFeature);
-    // If the clicked feature is drawn, use draw tools to edit it
 
-    console.log("this is drawn");
+    // If the clicked feature is drawn, use draw tools to edit it
+    // TODO: We need to get a signal that this is drawn
+    // Do we:
+    // Pack some metadata into the feature properties in the front end?
+    // Pack some metadata into the feature properties in the back end?
+    if (isDrawnExistingFeature(clickedFeature)) {
+      console.log("this is drawn");
+    }
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
