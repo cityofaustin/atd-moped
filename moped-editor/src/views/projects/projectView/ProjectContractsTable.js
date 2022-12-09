@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Snackbar,
   Typography,
+  TextField,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import {
@@ -84,6 +85,13 @@ const ProjectContractsTable = () => {
       title: "Contractor",
       field: "contractor",
       width: "20%",
+      editComponent: (props) => (
+        <TextField
+          {...props}
+          onChange={(e) => props.onChange(e.target.value)}
+          autoFocus
+        />
+      ),
     },
     {
       title: "Contract #",
@@ -178,9 +186,7 @@ const ProjectContractsTable = () => {
           },
           body: {
             emptyDataSourceMessage: (
-              <Typography variant="body1">
-                No contracts to display
-              </Typography>
+              <Typography variant="body1">No contracts to display</Typography>
             ),
           },
         }}
