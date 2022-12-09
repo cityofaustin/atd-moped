@@ -11,7 +11,7 @@ import { makeDrawnFeature } from "./utils/features";
  * @returns {JSX.Element}
  */
 const EditComponentDrawTools = ({
-  createDispatch,
+  editDispatch,
   linkMode,
   setCursor,
   setIsDrawing,
@@ -20,43 +20,15 @@ const EditComponentDrawTools = ({
   const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    // Add properties needed to distinguish drawn features from other features
-    const drawnFeatures = createdFeaturesArray.map((feature) => {
-      makeDrawnFeature(feature, linkMode);
-      return feature;
-    });
-
-    // We must override the features in the draw control's internal state with ones
-    // that have our properties so that we can find them later in onDelete
-    const updateMapDrawToolFeatures = (updatedFeatures) =>
-      drawControlsRef.current.set({
-        type: "FeatureCollection",
-        features: updatedFeatures,
-      });
-
-    createDispatch({
-      type: "add_drawn_features",
-      payload: drawnFeatures,
-      callback: updateMapDrawToolFeatures,
-    });
+    console.log("update draftEditComponent with new drawn features");
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    const wasComponentDragged = action === "move";
-
-    if (wasComponentDragged) {
-      createDispatch({
-        type: "update_drawn_features",
-        payload: updatedFeaturesArray,
-      });
-    }
+    console.log("handle dragging of drawn features");
   };
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
-    createDispatch({
-      type: "delete_drawn_features",
-      payload: deletedFeaturesArray,
-    });
+    console.log("soft delete existing features in draftEditComponent");
   };
 
   const onModeChange = ({ mode }) => {
