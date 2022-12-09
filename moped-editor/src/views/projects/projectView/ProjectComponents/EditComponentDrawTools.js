@@ -10,7 +10,7 @@ import { makeDrawnFeature } from "./utils/features";
  * @param {Function} setIsDrawing - function to update if we are drawing or not
  * @returns {JSX.Element}
  */
-const ComponentDrawTools = ({
+const EditComponentDrawTools = ({
   createDispatch,
   linkMode,
   setCursor,
@@ -99,4 +99,4 @@ const ComponentDrawTools = ({
   );
 };
 
-export default ComponentDrawTools;
+export default EditComponentDrawTools;

@@ -4,7 +4,7 @@ import { cloneDeep } from "lodash";
 // import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
-import ComponentDrawTools from "./ComponentDrawTools";
+import CreateComponentDrawTools from "./CreateComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
@@ -270,7 +270,7 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <ComponentDrawTools
+      <CreateComponentDrawTools
         createDispatch={createDispatch}
         linkMode={linkMode}
         setCursor={setCursor}
