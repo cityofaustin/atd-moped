@@ -192,11 +192,11 @@ const FileUploadDialogSingle = props => {
         <Grid container>
           <Grid item xs={12} md={12}>
             <TextField
+              autoFocus
               className={classes.textField}
               id="standard-multiline-flexible"
               placeholder={"File name"}
               multiline={false}
-              rowsMax={1}
               value={null}
               onChange={handleFileNameChange}
               fullWidth
@@ -261,7 +261,7 @@ const FileUploadDialogSingle = props => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel} color="primary" autoFocus>
+        <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
         <Button
