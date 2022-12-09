@@ -78,11 +78,6 @@ const CreateComponentDrawTools = ({
     }
   };
 
-  const initializeExistingDrawFeatures = () => {
-    console.log("initializeExistingDrawFeatures");
-    // TODO: This may be needed when we implement editing existing components
-  };
-
   return (
     shouldShowDrawControls && (
       <ComponentsDrawControl
@@ -93,7 +88,6 @@ const CreateComponentDrawTools = ({
         linkMode={linkMode}
         onModeChange={onModeChange}
         onSelectionChange={onSelectionChange}
-        initializeExistingDrawFeatures={initializeExistingDrawFeatures}
       />
     )
   );
