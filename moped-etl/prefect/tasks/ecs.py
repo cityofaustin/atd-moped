@@ -361,7 +361,7 @@ def create_task_definition(slug, api_endpoint):
                     ],
                     "interval": 2,
                     "retries": 10,
-                    "imeout": 1,
+                    "timeout": 1,
                 },
                 "environment": [
                     {"name": "HTTP_PORT", "value": "8080"},
