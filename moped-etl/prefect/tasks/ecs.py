@@ -359,7 +359,7 @@ def create_task_definition(slug, api_endpoint):
                         "CMD-SHELL",
                         "timeout 1s bash -c ':> /dev/tcp/127.0.0.1/8080' || exit 1",
                     ],
-                    "interval": 2,
+                    "interval": 5,
                     "retries": 10,
                     "timeout": 1,
                 },
