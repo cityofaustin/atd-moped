@@ -24,7 +24,7 @@ import {
 } from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  isDrawnFeature,
+  isDrawnDraftFeature,
   makeCapturedFromLayerFeature,
   useComponentFeatureCollectionFromMap,
 } from "./utils/features";
@@ -37,6 +37,7 @@ import { getClickedFeatureFromMap } from "./utils/onMapClick";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
+import EditComponentDrawTools from "./EditComponentDrawTools";
 mapboxgl.workerClass =
   // eslint-disable-next-line import/no-webpack-loader-syntax
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
@@ -116,7 +117,7 @@ export default function TheMap({
     );
 
     // If we clicked a drawn feature, we don't need to capture from the CTN layers
-    if (isDrawnFeature(clickedDraftComponentFeature)) return;
+    if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
 
     // If we clicked a feature that's already in the draftComponent, we remove it
     if (clickedDraftComponentFeature) {
@@ -152,6 +153,10 @@ export default function TheMap({
   const handleEditOnClick = (e) => {
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
+    console.log(clickedFeature);
+    // If the clicked feature is drawn, use draw tools to edit it
+
+    console.log("this is drawn");
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
@@ -276,6 +281,7 @@ export default function TheMap({
         setCursor={setCursor}
         setIsDrawing={setIsDrawing}
       />
+      <EditComponentDrawTools editDispatch={editDispatch} />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectSourcesAndLayers
         isCreatingComponent={isCreatingComponent}

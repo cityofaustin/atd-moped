@@ -7,7 +7,7 @@ import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
 } from "./makeFeatures";
-import { getDrawId, isDrawnFeature } from "./features";
+import { getDrawId, isDrawnDraftFeature } from "./features";
 import { removeFeatureFromDraftComponent } from "./onMapClick";
 
 const createReducer = (state, action) => {
@@ -76,7 +76,7 @@ const createReducer = (state, action) => {
 
       const unchangedDraftFeatures = state.draftComponent.features.filter(
         (feature) => {
-          if (isDrawnFeature(feature)) {
+          if (isDrawnDraftFeature(feature)) {
             return !featureIdsToUpdate.includes(getDrawId(feature));
           } else {
             return true;
@@ -100,7 +100,7 @@ const createReducer = (state, action) => {
 
       const draftFeaturesToKeep = state.draftComponent.features.filter(
         (feature) => {
-          if (isDrawnFeature(feature)) {
+          if (isDrawnDraftFeature(feature)) {
             return !featureIdsToDelete.includes(getDrawId(feature));
           } else {
             return true;

@@ -115,4 +115,5 @@ export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnFeature = (feature) => (getDrawId(feature) ? true : false);
+export const isDrawnDraftFeature = (feature) =>
+  getDrawId(feature) ? true : false;
