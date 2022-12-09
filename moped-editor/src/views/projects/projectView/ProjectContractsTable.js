@@ -85,6 +85,7 @@ const ProjectContractsTable = () => {
       title: "Contractor",
       field: "contractor",
       width: "20%",
+      // we use this custom component in order to autofocus the input
       editComponent: (props) => (
         <TextField
           {...props}
