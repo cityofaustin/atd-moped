@@ -25,7 +25,7 @@ import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import { get } from "lodash";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     "& > *": {
       margin: theme.spacing(1),
@@ -128,7 +128,7 @@ const GridTableSearch = ({
    * @param {*} value - Any value
    * @return {string}
    */
-  const dataSanitizeValueExport = value => {
+  const dataSanitizeValueExport = (value) => {
     return typeof value !== "number" ? `"${value}"` : String(value);
   };
 
@@ -137,9 +137,9 @@ const GridTableSearch = ({
    * @param {Array} data - The data payload
    * @return {string[]}
    */
-  const dataGetHeaders = data => {
+  const dataGetHeaders = (data) => {
     return Array.isArray(data)
-      ? Object.keys(data[0]).filter(key => key !== "__typename")
+      ? Object.keys(data[0]).filter((key) => key !== "__typename")
       : [];
   };
 
@@ -154,9 +154,9 @@ const GridTableSearch = ({
       headers.join(",") +
       "\n" +
       data
-        .map(item => {
+        .map((item) => {
           return headers
-            .map(key => dataSanitizeValueExport(item[key]))
+            .map((key) => dataSanitizeValueExport(item[key]))
             .join(",");
         })
         .join("\n")
@@ -167,7 +167,7 @@ const GridTableSearch = ({
    * Downloads the contents of fileContents into a file
    * @param {string} fileContents
    */
-  const downloadFile = fileContents => {
+  const downloadFile = (fileContents) => {
     const exportFileName =
       query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
     const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
@@ -188,11 +188,11 @@ const GridTableSearch = ({
    * @param {object} record - The record to build
    * @return {object}
    */
-  const buildRecordEntry = record => {
+  const buildRecordEntry = (record) => {
     // Allocate an empty object
     const entry = {};
     // For each column in the export configuration
-    Object.keys(query.config.export).forEach(column => {
+    Object.keys(query.config.export).forEach((column) => {
       // Extract the label, filter, and path
       const { label, filter, path } = query.config.export[column];
       // Determine the new column name, if available.
@@ -214,9 +214,9 @@ const GridTableSearch = ({
    * @param {array} data - Data returned from DB with nested data structures
    * @returns {array}
    */
-  const formatExportData = data => {
+  const formatExportData = (data) => {
     if (data) {
-      return data.map(record => {
+      return data.map((record) => {
         return buildRecordEntry(record);
       });
     }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 // Material
@@ -24,12 +24,16 @@ import MaterialTable, {
 import Autocomplete from "@material-ui/lab/Autocomplete";
 
 import typography from "../../../theme/typography";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import { TEAM_QUERY, UPSERT_PROJECT_PERSONNEL } from "../../../queries/project";
+import {
+  TEAM_QUERY,
+  UPDATE_PROJECT_PERSONNEL,
+  INSERT_PROJECT_PERSONNEL,
+  DELETE_PROJECT_PERSONNEL,
+} from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -49,6 +53,94 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Adds a `roleIds` property to each team member - which we'll use as the i/o for the
+ *  moped_project_role multiselect
+ * @param {Array} projPersonnel - An array of of moped_proj_personnel objects
+ * @return {string} the same array, with a `roleIds` prop added to each object
+ */
+const usePersonnel = (projPersonnel) =>
+  useMemo(() => {
+    if (!projPersonnel) return projPersonnel;
+    projPersonnel.forEach((person) => {
+      const roleIds = person.moped_proj_personnel_roles.map(
+        ({ moped_project_role }) => moped_project_role.project_role_id
+      );
+      person.roleIds = roleIds;
+    });
+    return projPersonnel;
+  }, [projPersonnel]);
+
+/**
+ * Construct a moped_project_personnel object that can be passed to an insert mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
+ */
+const getNewPersonnelPayload = ({
+  newData: {
+    moped_user: { user_id },
+    notes,
+    roleIds,
+  },
+  projectId: project_id,
+}) => {
+  const payload = { notes, project_id, user_id };
+  const personnelRoles = roleIds.map((roleId) => ({
+    project_role_id: roleId,
+  }));
+  payload["moped_proj_personnel_roles"] = { data: personnelRoles };
+  return payload;
+};
+
+/**
+ * Construct a moped_project_personnel object that can be passed to an update mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ *  is handled separately
+ */
+const getEditPersonnelPayload = ({ newData }) => {
+  // and the new values
+  const {
+    moped_user: { user_id },
+    notes,
+  } = newData;
+  return { user_id, notes };
+};
+
+/**
+ * Constructs payload objects for adding and removing moped_proj_personnel_roles
+ * @param {Object} newData - a table row object with the new values
+ * @param {Object} oldData - a table row object with the old values
+ * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
+ *  personnel role objects to delete
+ */
+const getEditRolesPayload = ({ newData, oldData }) => {
+  const { project_personnel_id } = oldData;
+
+  // get an array of moped_proj_personnel_roles IDs to delete
+  const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
+    .filter((projRole) => {
+      const roleId = projRole.moped_project_role.project_role_id;
+      return !newData.roleIds.includes(roleId);
+    })
+    .map((projRole) => projRole.id);
+
+  // contruct an array of new moped_proj_personnel_roles objects
+  const existingRoleIds = oldData.moped_proj_personnel_roles.map(
+    ({ moped_project_role }) => moped_project_role.project_role_id
+  );
+  const roleIdsToAdd = newData.roleIds.filter(
+    (roleId) => !existingRoleIds.includes(roleId)
+  );
+  const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
+    project_personnel_id,
+    project_role_id: newRoleId,
+  }));
+  return [rolesToAddPayload, projRoleIdsToDelete];
+};
+
 const ProjectTeamTable = ({ projectId }) => {
   const classes = useStyles();
 
@@ -59,136 +151,16 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const addActionRef = React.useRef();
 
-  const [upsertProjectPersonnel] = useMutation(UPSERT_PROJECT_PERSONNEL);
+  const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
+  const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
+  const [deleteProjecPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
 
-  if (loading || !data) return <CircularProgress />;
-
-  /**
-   * Returns True if it finds tupleItem in tupleList, false otherwise.
-   * @param tupleList - The list of tuples
-   * @param tupleItem - The tuple to search for
-   * @return {boolean}
-   */
-  const tuplesContain = (tupleList, tupleItem) =>
-    !!tupleList.find(
-      (currentTuple) =>
-        currentTuple[0] === tupleItem[0] && currentTuple[1] === tupleItem[1]
-    );
-
-  const availableUsers = data.moped_users;
-
-  const makeListOfActivePersonnel = (personnelArray) => {
-    // 1. Multiple roles per user comes from multiple rows in the proj_personnel table
-    // so we have to dedupe project personnel and aggregate the roles to appear
-    // as multiple roles per personnel row in the UI
-    // 2. Similarly, personnel notes are concatenated into one string to show in the UI
-    // 3. Soft deleted personnel are filtered
-    let personnel = {};
-
-    // For each personnel entry...
-    personnelArray.forEach((item) => {
-      // If the item does not exist in the aggregated object
-      if (!personnel.hasOwnProperty(item.user_id)) {
-        // instantiate a new object & populate
-        personnel[`${item.user_id}`] = {
-          user_id: item.user_id,
-          role_id: [item.role_id],
-          notes: item.notes,
-          project_personnel_id: item.project_personnel_id,
-          is_moped_user_deleted: item.moped_user.is_deleted,
-          is_deleted: item.is_deleted,
-        };
-      } else {
-        // Aggregate role_ids, and notes.
-        personnel[`${item.user_id}`].role_id.push(item.role_id);
-        personnel[`${item.user_id}`].notes = (
-          (personnel[`${item.user_id}`].notes ?? "") +
-          " " +
-          item.notes
-        ).trim();
-        personnel[`${item.user_id}`].project_personnel_id =
-          item.project_personnel_id;
-      }
-    });
-
-    const personnelTableList = Object.keys(personnel).map(
-      (item) => personnel[item]
-    );
-
-    // Filter soft deleted project personnel
-    const activePersonnelList = personnelTableList.filter(
-      (personnel) => personnel.is_deleted === false
-    );
-
-    return activePersonnelList;
-  };
-
-  // Create some objects for lookups
-  const workgroups = data.moped_workgroup.reduce(
-    (acc, workgroup) => ({
-      ...acc,
-      [workgroup?.workgroup_id ?? 0]: workgroup?.workgroup_name ?? "N/A",
-    }),
-    {}
+  const personnel = usePersonnel(
+    data?.moped_project_by_pk.moped_proj_personnel
   );
-  const roles = data.moped_project_roles.reduce(
-    (acc, role) => ({
-      ...acc,
-      [role?.project_role_id ?? 0]: role?.project_role_name ?? "N/A",
-    }),
-    {}
-  );
+  const roles = data?.moped_project_roles;
 
-  const roleDescriptions = data.moped_project_roles.reduce(
-    (acc, role) => ({
-      ...acc,
-      [role?.project_role_id ?? 0]: role?.project_role_description ?? "N/A",
-    }),
-    {}
-  );
-
-  // Options for Autocomplete form elements filtered to active users
-  const userIds = availableUsers
-    .filter((user) => user.is_deleted === false)
-    .map((user) => user.user_id);
-
-  /**
-   * Get a user object from the users array
-   * @param {number} id - User id from the moped project personnel row
-   * @return {object} Object containing user data
-   */
-  const getUserById = (id) =>
-    availableUsers.find((user) => user.user_id === id);
-
-  /**
-   * Get personnel name from their user ID
-   * @param {number} id - User id from the moped project personnel row
-   * @return {string} Full name of user
-   */
-  const getPersonnelName = (id) => {
-    const user = getUserById(id);
-    return getUserFullName(user);
-  };
-
-  /**
-   * Get personnel workgroup from their user ID
-   * @param {number} id - User id from the moped project personnel row
-   * @return {string} Workgroup name of the user
-   */
-  const getPersonnelWorkgroup = (id) => {
-    const user = getUserById(id);
-    return workgroups[user?.workgroup_id ?? 0];
-  };
-
-  /**
-   * Get string of role names from roleIDs
-   * @param {Array} rolesArray - Array of roleIDs
-   * @return {string} roles separated by comma and space
-   */
-  const getPersonnelRoles = (rolesArray) => {
-    const roleNames = rolesArray.map((roleId) => roles[roleId]);
-    return roleNames.join(", ");
-  };
+  const users = data?.moped_users;
 
   /**
    * Column configuration for <MaterialTable>
@@ -196,39 +168,57 @@ const ProjectTeamTable = ({ projectId }) => {
   const columns = [
     {
       title: "Name",
-      field: "user_id",
+      field: "moped_user",
       render: (personnel) => {
-        const { is_moped_user_deleted } = personnel;
+        const isDeleted = personnel?.moped_user.is_deleted;
+        const fullName = getUserFullName(personnel.moped_user);
 
-        return is_moped_user_deleted ? (
-          <Typography className={classes.inactiveUserText}>{`${getPersonnelName(
-            personnel.user_id
-          )} - Inactive`}</Typography>
+        return isDeleted ? (
+          <Typography
+            className={classes.inactiveUserText}
+          >{`${fullName} - Inactive`}</Typography>
         ) : (
-          <Typography>{getPersonnelName(personnel.user_id)}</Typography>
+          <Typography>{fullName}</Typography>
         );
       },
-      validate: (rowData) => !!rowData.user_id,
-      editComponent: (props) => (
-        <FormControl style={{ width: "100%" }}>
-          <Autocomplete
-            id="user_id"
-            name="user_id"
-            options={userIds}
-            getOptionLabel={(option) => getPersonnelName(option)}
-            getOptionSelected={(option, value) => option === value}
-            value={props.value || null}
-            onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField {...params} />}
-          />
-          <FormHelperText>Required</FormHelperText>
-        </FormControl>
-      ),
+      validate: (rowData) => !!rowData?.moped_user?.user_id,
+      editComponent: (props) => {
+        const isNewRow = !props.rowData?.project_personnel_id;
+        let userOptions = users;
+        if (isNewRow) {
+          // prevent same user from being added twice
+          const existingPersonnelUserIds = personnel.map(
+            (pers) => pers.moped_user.user_id
+          );
+          userOptions = users.filter(
+            (user) => !existingPersonnelUserIds.includes(user.user_id)
+          );
+        }
+        return (
+          <FormControl style={{ width: "100%" }}>
+            <Autocomplete
+              id="moped_user_autocomplete"
+              name="moped_user_autocomplete"
+              options={userOptions}
+              getOptionLabel={(option) => getUserFullName(option)}
+              getOptionSelected={(option, value) =>
+                option.user_id === value.user_id
+              }
+              value={props.value || null}
+              onChange={(event, value) => props.onChange(value)}
+              renderInput={(params) => <TextField {...params} autoFocus />}
+            />
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
+        );
+      },
     },
     {
       title: "Workgroup",
       render: (personnel) => (
-        <Typography>{getPersonnelWorkgroup(personnel.user_id)}</Typography>
+        <Typography>
+          {personnel.moped_user.moped_workgroup.workgroup_name}
+        </Typography>
       ),
     },
     {
@@ -244,21 +234,23 @@ const ProjectTeamTable = ({ projectId }) => {
           </Link>
         </span>
       ),
-      field: "role_id",
-      render: (personnel) => (
-        <Typography>{getPersonnelRoles(personnel.role_id)}</Typography>
-      ),
-      validate: (rowData) =>
-        Array.isArray(rowData.role_id) && rowData.role_id.length > 0,
+      field: "roleIds",
+      render: (personnel) =>
+        personnel.moped_proj_personnel_roles.map(
+          ({ id, moped_project_role }) => (
+            <Typography key={id}>
+              {moped_project_role.project_role_name}
+            </Typography>
+          )
+        ),
+      validate: (rowData) => rowData?.roleIds?.length > 0,
       editComponent: (props) => (
         <ProjectTeamRoleMultiselect
-          id="role_id"
-          name="role_id"
-          initialValue={props.rowData.role_id}
-          value={props.value}
+          id="role_ids"
+          name="role_ids"
+          value={props.value || []}
           onChange={props.onChange}
           roles={roles}
-          roleDescriptions={roleDescriptions}
         />
       ),
     },
@@ -281,6 +273,8 @@ const ProjectTeamTable = ({ projectId }) => {
       },
     },
   ];
+
+  if (loading || !data) return <CircularProgress />;
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -321,16 +315,14 @@ const ProjectTeamTable = ({ projectId }) => {
             }
           },
         }}
-        data={makeListOfActivePersonnel(data.moped_proj_personnel)}
+        data={personnel}
         title={
           <Typography variant="h2" color="primary">
             Project team
           </Typography>
         }
         options={{
-          ...(data.moped_proj_personnel.length < PAGING_DEFAULT_COUNT + 1 && {
-            paging: false,
-          }),
+          paging: false,
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
@@ -350,96 +342,35 @@ const ProjectTeamTable = ({ projectId }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
-            // Our new data is unique, we will attempt upsert since
-            // we may have existing data in our table
-            const personnelData = newData.role_id.map((roleId, index) => {
-              return {
-                project_id: Number.parseInt(projectId),
-                user_id: newData.user_id,
-                role_id: roleId,
-                notes: index === 0 ? newData.notes : "",
-              };
-            });
-
-            // Upsert as usual
-            return upsertProjectPersonnel({
+            const payload = getNewPersonnelPayload({ newData, projectId });
+            return insertProjectPersonnel({
               variables: {
-                objects: personnelData,
+                object: payload,
               },
             }).then(() => refetch());
           },
-          onRowUpdate: (newData, oldData) => {
-            // Creates a set of tuples that contain the user id and the role comprised by the new state
-            const newStateTuples = newData.role_id.map((role_id) => [
-              newData.user_id,
-              role_id,
-            ]);
-
-            // Creates a set of tuples that contain the user id and role comprised by the old state
-            const oldStateTuples = oldData.role_id.map((role_id) => [
-              oldData.user_id,
-              role_id,
-            ]);
-
-            /**
-             * From the old state, we need to remove the tuples that are not present
-             * in the new state, these tuples are 'orphans' and need to be archived.
-             */
-            const orphanData = oldStateTuples.filter(
-              (oldTuple) => !tuplesContain(newStateTuples, oldTuple)
-            );
-
-            /**
-             * We must build a unique set of tuples so that there are no repeated
-             * operations run against the database
-             */
-            const uniqueSetOfTuples = [
-              ...newStateTuples,
-              ...oldStateTuples,
-            ].reduce((accumulator, item) => {
-              if (!tuplesContain(accumulator, item)) accumulator.push(item);
-              return accumulator;
-            }, []);
-
-            // Removed ids means they are not present in new data,
-            const updatedPersonnelData = uniqueSetOfTuples.map(
-              (currentTuple, index) => {
-                return {
-                  project_id: Number.parseInt(projectId),
-                  user_id: currentTuple[0],
-                  role_id: currentTuple[1],
-                  is_deleted: tuplesContain(orphanData, currentTuple)
-                    ? true
-                    : false,
-                  notes: index === 0 ? newData.notes : "",
-                };
-              }
-            );
-
-            return upsertProjectPersonnel({
+          onRowUpdate: async (newData, oldData) => {
+            const { project_personnel_id } = oldData;
+            const payload = getEditPersonnelPayload({
+              newData,
+            });
+            const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload({
+              newData,
+              oldData,
+            });
+            return updateProjectPersonnel({
               variables: {
-                objects: updatedPersonnelData,
+                updatePersonnelObject: payload,
+                id: project_personnel_id,
+                deleteIds: roleIdsToDelete,
+                addRolesObjects: rolesToAdd,
               },
             }).then(() => refetch());
           },
           onRowDelete: (oldData) => {
-            // We will soft delete by marking as is_deleted = true
-            const updatedPersonnelData = oldData.role_id.map(
-              (roleId, index) => {
-                return {
-                  project_id: Number.parseInt(projectId),
-                  user_id: oldData.user_id,
-                  role_id: roleId,
-                  is_deleted: true,
-                  notes: index === 0 ? oldData.notes : "",
-                };
-              }
-            );
-            // Upsert as usual
-            return upsertProjectPersonnel({
-              variables: {
-                objects: updatedPersonnelData,
-              },
+            const id = oldData.project_personnel_id;
+            return deleteProjecPersonnel({
+              variables: { id },
             }).then(() => refetch());
           },
         }}

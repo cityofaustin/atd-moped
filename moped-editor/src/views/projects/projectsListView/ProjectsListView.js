@@ -1,6 +1,5 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
-import { useQuery } from "@apollo/client";
 
 // Material
 import { makeStyles } from "@material-ui/core";
@@ -11,10 +10,8 @@ import GQLAbstract from "../../../libs/GQLAbstract";
 import ProjectsListViewTable from "./ProjectsListViewTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 
-import { STATUS_QUERY } from "../../../queries/project";
-
 // Styles
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     minHeight: "100%",
     paddingBottom: theme.spacing(1),
@@ -37,15 +34,12 @@ const ProjectsListView = () => {
   const classes = useStyles();
   const navSearchTerm = useLocation()?.state?.searchTerm;
 
-  const { data } = useQuery(STATUS_QUERY);
-
   return (
     <Page className={classes.root} title="Projects">
       <ProjectsListViewTable
         title={"Projects"}
         query={projectsQuery}
         searchTerm={navSearchTerm}
-        referenceData={data}
       />
     </Page>
   );

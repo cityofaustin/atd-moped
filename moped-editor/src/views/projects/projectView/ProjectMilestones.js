@@ -23,7 +23,6 @@ import {
   DELETE_PROJECT_MILESTONE,
   ADD_PROJECT_MILESTONE,
 } from "../../../queries/project";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
@@ -287,13 +286,11 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       }}
       title={
         <Typography variant="h2" color="primary">
-          Project milestones
+          Milestones
         </Typography>
       }
       options={{
-        ...(data.moped_proj_milestones.length < PAGING_DEFAULT_COUNT + 1 && {
-          paging: false,
-        }),
+        paging: false,
         search: false,
         rowStyle: { fontFamily: typography.fontFamily },
         actionsColumnIndex: -1,

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 import {
   Checkbox,
@@ -8,14 +8,13 @@ import {
   ListItemText,
   MenuItem,
   Select,
+  Typography,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
-    minWidth: 120,
-    maxWidth: 300,
   },
   noLabel: {
     marginTop: theme.spacing(3),
@@ -25,28 +24,8 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ProjectTeamRoleMultiselect = ({
-  roles,
-  roleDescriptions,
-  initialValue,
-  value,
-  onChange,
-}) => {
+const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
   const classes = useStyles();
-  const [userRoles, setUserRoles] = useState(
-    initialValue ? initialValue.map(v => Number.parseInt(v)) : []
-  );
-
-  const handleChange = event => {
-    setUserRoles(event.target.value);
-  };
-
-  useEffect(() => {
-    onChange(userRoles);
-    // Unfortunately, adding onChange breaks useEffect
-    // eslint-disable-next-line
-  }, [userRoles, value]);
-
   return (
     <FormControl className={classes.formControl}>
       <Select
@@ -54,32 +33,55 @@ const ProjectTeamRoleMultiselect = ({
         labelId="team-role-multiselect-label"
         id="team-role-multiselect"
         multiple
-        value={userRoles}
-        onChange={handleChange}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         input={<Input id="select-multiple" />}
-        renderValue={selected => selected.map(value => roles[value]).join(", ")}
-        /*
+        renderValue={() => {
+          const selectedRoles = roles.filter((role) =>
+            value.includes(role.project_role_id)
+          );
+          return selectedRoles.map(({ project_role_name }) => (
+            <Typography key={project_role_name}>{project_role_name}</Typography>
+          ));
+        }}
+        /*  
             There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
             this is fixed by overriding the function "getContentAnchorEl".
                 Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
         */
         MenuProps={{
-          getContentAnchorEl: () => null,
+          getContentAnchorEl: null,
           style: {
-            maxHeight: 400,
-            width: 450,
+            maxHeight: 500,
           },
+          PaperProps: { style: { width: "50%" } },
+          anchorOrigin: { vertical: "bottom", horizontal: "center" },
+          transformOrigin: { vertical: "top", horizontal: "center" },
         }}
       >
-        {Object.keys(roles).map(roleId => (
-          <MenuItem key={roleId} value={Number.parseInt(roleId)}>
-            <Checkbox
-              checked={userRoles.includes(Number.parseInt(roleId))}
-              color={"primary"}
-            />
-            <ListItemText primary={roles[roleId]} />
-          </MenuItem>
-        ))}
+        {roles.map(
+          ({
+            project_role_id,
+            project_role_name,
+            project_role_description,
+          }) => {
+            const isChecked = value.includes(project_role_id);
+            return (
+              // ListItemClasses
+              <MenuItem key={project_role_id} value={project_role_id}>
+                <Checkbox checked={isChecked} color={"primary"} />
+                <ListItemText
+                  primary={<span>{project_role_name}</span>}
+                  secondary={
+                    <span style={{ whiteSpace: "normal" }}>
+                      {project_role_description}
+                    </span>
+                  }
+                />
+              </MenuItem>
+            );
+          }
+        )}
       </Select>
       <FormHelperText>Required</FormHelperText>
     </FormControl>

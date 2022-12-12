@@ -35,6 +35,10 @@ import parse from "html-react-parser";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
+    "& .MuiTableCell-head:nth-of-type(2)": {
+      left: "0px",
+      position: "sticky",
+    },
   },
   paper: {
     width: "100%",
@@ -55,14 +59,12 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * GridTable Search Capability plus Material Table
- * @param {string} title - The title header of the component
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
- * @param {Object} referenceData - optional, static data used in presentation
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
+const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**
@@ -80,17 +82,27 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
   });
 
   /**
+   * The default sorting properties applied to the table.
+   * This overrides MaterialTable props and determines how
+   * the table is sorted when the page loads. Must remain consistent
+   * with the sorting order passed in from ProjectsListViewQueryConf.
+   * @property {string} column - The column name in graphql to sort by
+   * @property {integer} columnId - The column id in graphql to sort by
+   * @property {string} order - Either "asc" or "desc" or ""
+   */
+  const defaultSortingProperties = {
+    column: "updated_at",
+    columnId: 8,
+    order: "desc",
+  };
+
+  /**
    * Stores the column name and the order to order by
    * @type {Object} sort
-   * @property {string} column - The column name in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or "" (default: "")
    * @function setSort - Sets the state of sort
-   * @default {{value: "", column: ""}}
+   * @default {defaultSortingProperties}
    */
-  const [sort, setSort] = useState({
-    column: "",
-    order: "",
-  });
+  const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -141,6 +153,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     project_name: false,
     current_phase: false,
     project_team_members: false,
+    project_lead: false,
     project_sponsor: false,
     project_partner: false,
     ecapris_subproject_id: false,
@@ -157,6 +170,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     contractors: false,
     contract_numbers: false,
     project_tags: false,
+    added_by: true,
   };
 
   const [hiddenColumns, setHiddenColumns] = useState(
@@ -174,9 +188,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  if (sort.column !== "" && sort.order !== "") {
-    query.setOrder(sort.column, sort.order);
-  }
+  query.setOrder(sort.column, sort.order);
 
   // Set limit, offset based on pagination state
   if (query.config.showPagination) {
@@ -251,15 +263,9 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
    * @param {number} statusId - Project's status id
    * @return {JSX.Element}
    */
-  const buildStatusBadge = (phase, statusId) => (
-    <ProjectStatusBadge
-      status={statusId}
-      phase={phase}
-      projectStatuses={referenceData?.moped_status ?? []}
-      condensed
-    />
+  const buildStatusBadge = ({ phaseName, phaseKey }) => (
+    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
-
   // Data Management
   const { data, loading, error } = useQuery(
     query.gql,
@@ -268,12 +274,12 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project_id",
       hidden: hiddenColumns["project_id"],
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project_name",
       hidden: hiddenColumns["project_name"],
       render: (entry) => (
@@ -289,33 +295,62 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           {entry.project_name}
         </RouterLink>
       ),
+      cellStyle: {
+        position: "sticky",
+        left: 0,
+        backgroundColor: "white",
+        whiteSpace: "noWrap",
+        zIndex: 1,
+      },
     },
     {
       title: "Status",
       field: "current_phase",
       hidden: hiddenColumns["current_phase"],
-      render: (entry) => buildStatusBadge(entry.current_phase, entry.status_id),
+      render: (entry) =>
+        buildStatusBadge({
+          phaseName: entry.current_phase,
+          phaseKey: entry.current_phase_key,
+        }),
     },
     {
-      title: "Team members",
+      title: "Team",
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "pre-wrap" },
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) => renderProjectTeamMembers(entry.project_team_members),
     },
     {
-      title: "Project sponsor",
+      title: "Lead",
+      field: "project_lead",
+      hidden: hiddenColumns["project_lead"],
+      editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) =>
+        entry.project_lead === null ? "-" : entry.project_lead,
+    },
+    {
+      title: "Sponsor",
       field: "project_sponsor",
       hidden: hiddenColumns["project_sponsor"],
       editable: "never",
+      cellStyle: { whiteSpace: "noWrap" },
       render: (entry) =>
         entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
     },
     {
-      title: "Project partners",
+      title: "Partners",
       field: "project_partner",
       hidden: hiddenColumns["project_partner"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.project_partner.split(",").map((partner) => (
+          <span key={partner} style={{ display: "block" }}>
+            {partner}
+          </span>
+        ));
+      },
     },
     {
       title: "eCAPRIS ID",
@@ -329,7 +364,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       ),
     },
     {
-      title: "Last modified",
+      title: "Modified",
       field: "updated_at",
       hidden: hiddenColumns["updated_at"],
       render: (entry) => formatTimeStampTZType(entry.updated_at),
@@ -362,6 +397,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       title: "Task order",
       field: "task_order",
       hidden: hiddenColumns["task_order"],
+      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
       render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
@@ -369,32 +405,49 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
           return "-";
         }
         // Render values as a comma seperated string
-        let content = entry.task_order
-          .map((taskOrder) => {
-            return taskOrder.display_name;
-          })
-          .join(", ");
-
-        return <div style={{ maxWidth: "265px" }}>{content}</div>;
+        return entry.task_order.map((taskOrder) => (
+          <span key={taskOrder.task_order} style={{ display: "block" }}>
+            {taskOrder.display_name}
+          </span>
+        ));
       },
     },
     {
-      title: "Project type",
+      title: "Type",
       field: "type_name",
       hidden: hiddenColumns["type_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.type_name.split(",").map((type_name) => (
+          <span key={type_name} style={{ display: "block" }}>
+            {type_name}
+          </span>
+        ));
+      },
     },
     {
-      title: "Funding source",
+      title: "Funding",
       field: "funding_source_name",
       hidden: hiddenColumns["funding_source_name"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.funding_source_name
+          .split(",")
+          .map((funding_source_name, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {funding_source_name}
+            </span>
+          ));
+      },
     },
     {
       title: "Status update",
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
+      cellStyle: { minWidth: 300 },
       render: (entry) => parse(String(entry.project_note)),
     },
     {
@@ -405,7 +458,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       render: (entry) => formatDateType(entry.construction_start_date),
     },
     {
-      title: "Project completion",
+      title: "Completion date",
       field: "completion_end_date",
       hidden: hiddenColumns["completion_end_date"],
       emptyValue: "-",
@@ -428,17 +481,47 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
       field: "contractors",
       hidden: hiddenColumns["contractors"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contractors.split(",").map((contractor, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractor}
+          </span>
+        ));
+      },
     },
     {
       title: "Contract numbers",
       field: "contract_numbers",
       hidden: hiddenColumns["contract_numbers"],
       emptyValue: "-",
+      cellStyle: { whiteSpace: "noWrap" },
+      render: (entry) => {
+        return entry.contract_numbers.split(",").map((contractNumber, i) => (
+          <span key={i} style={{ display: "block" }}>
+            {contractNumber}
+          </span>
+        ));
+      },
     },
     {
-      title: "Project tags",
+      title: "Tags",
       field: "project_tags",
       hidden: hiddenColumns["project_tags"],
+      cellStyle: { whiteSpace: "noWrap" },
+      emptyValue: "-",
+      render: (entry) => {
+        return entry.project_tags.split(",").map((tag) => (
+          <span key={tag} style={{ display: "block" }}>
+            {tag}
+          </span>
+        ));
+      },
+    },
+    {
+      title: "Created by",
+      field: "added_by",
+      hidden: hiddenColumns["added_by"],
       emptyValue: "-",
     },
   ];
@@ -455,25 +538,27 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // If both column and order are empty...
-    if (sort.order === "" && sort.column === "") {
-      // First time sort is applied
-      setSort({
-        order: "asc",
-        column: columnName,
-      });
-    } else if (sort.column === columnName) {
-      // Else if the current sortColumn is the same as the new
+    // Resets pagination to 0 when user clicks a header to display most relevant results
+    setPagination({
+      limit: query.limit,
+      offset: query.offset,
+      page: 0,
+    });
+
+    if (sort.column === columnName) {
+      // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
       setSort({
         order: sort.order === "desc" ? "asc" : "desc",
         column: columnName,
+        columnId: columnId,
       });
     } else if (sort.column !== columnName) {
-      // Sort different column after initial sort, then reset
+      // Sort different column in same order as previous column
       setSort({
-        order: "desc",
+        order: sort.order,
         column: columnName,
+        columnId: columnId,
       });
     }
   };
@@ -532,6 +617,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
                       zIndex: 1,
+                      whiteSpace: "nowrap",
                     },
                     columnsButton: true,
                   }}
@@ -556,6 +642,7 @@ const ProjectsListViewTable = ({ title, query, searchTerm, referenceData }) => {
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
+                        orderBy={sort.columnId}
                         orderDirection={sort.order}
                       />
                     ),

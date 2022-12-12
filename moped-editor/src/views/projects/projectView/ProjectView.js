@@ -29,6 +29,7 @@ import {
   ListItemText,
   Snackbar,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
@@ -43,8 +44,6 @@ import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import {
   PROJECT_ARCHIVE,
-  PROJECT_CLEAR_NO_CURRENT_PHASE,
-  PROJECT_UPDATE_CURRENT_STATUS,
   SUMMARY_QUERY,
   PROJECT_FOLLOW,
   PROJECT_UNFOLLOW,
@@ -60,9 +59,7 @@ import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
-import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
 import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
-import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 
 const useStyles = makeStyles((theme) => ({
@@ -75,10 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardWrapper: {
     marginTop: theme.spacing(3),
-  },
-  cardActions: {
-    display: "flex",
-    justifyContent: "flex-end",
   },
   button: {
     marginTop: theme.spacing(1),
@@ -228,10 +221,7 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  const [updateStatus] = useMutation(PROJECT_UPDATE_CURRENT_STATUS);
-  // clearCurrentNoPhase sets current phase as null on moped_project
   // and sets phases in moped_proj_phases as is_current_phase: false
-  const [clearCurrentNoPhase] = useMutation(PROJECT_CLEAR_NO_CURRENT_PHASE);
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
@@ -360,46 +350,6 @@ const ProjectView = () => {
     refetch();
   };
 
-  /**
-   * Finds the status_id for a status name
-   * @param {string} phase - The name of the phase
-   * @returns {number}
-   */
-  const resolveStatusIdForStatusName = (status) =>
-    data?.moped_status.find((s) => s.status_name.toLowerCase() === status)
-      .status_id ?? 1;
-
-  /**
-   * Updates status of the current project to either on-hold or canceled
-   */
-  const handleUpdateStatus = (new_status) => {
-    updateStatus({
-      variables: {
-        projectId: projectId,
-        currentStatus: new_status,
-        statusId: resolveStatusIdForStatusName(new_status),
-      },
-    })
-      .then(() =>
-        clearCurrentNoPhase({
-          variables: {
-            projectId: projectId,
-          },
-        })
-      )
-      .then(() => refetch())
-      .catch((err) => {
-        // If there is an error, show it in the dialog
-        setDialogContent(
-          "Error",
-          `It appears there was an error while changing status to '${new_status}', please contact the Data & Technology Services department. Reference: ${String(
-            err
-          )}`,
-          <Button onClick={handleDialogClose}>Close</Button>
-        );
-      });
-  };
-
   const handleFollowProject = () => {
     if (!isFollowing) {
       followProject({
@@ -423,11 +373,9 @@ const ProjectView = () => {
   /**
    * Establishes the project status for our badge
    */
-  const projectStatus = {
-    status: data?.moped_project?.[0]?.status_id ?? 0,
-    phase: data?.moped_project?.[0]?.current_phase ?? null,
-    current_status: data?.moped_project?.[0]?.current_status ?? null,
-  };
+  const currentPhase =
+    data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
+  const isProjectDeleted = data?.moped_project[0]?.is_deleted;
 
   return (
     <ApolloErrorHandler error={error}>
@@ -489,9 +437,8 @@ const ProjectView = () => {
                           />
                           <Box>
                             <ProjectStatusBadge
-                              status={projectStatus.status}
-                              phase={projectStatus.phase}
-                              projectStatuses={data?.moped_status ?? []}
+                              phaseKey={currentPhase?.phase_key}
+                              phaseName={currentPhase?.phase_name}
                             />
                           </Box>
                         </Box>
@@ -533,34 +480,6 @@ const ProjectView = () => {
                             </ListItemIcon>
                             <ListItemText primary="Rename" />
                           </MenuItem>
-                          {projectStatus?.current_status !== "on hold" && (
-                            <MenuItem
-                              onClick={() => handleUpdateStatus("on hold")}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <PauseCircleOutlineOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Place on hold" />
-                            </MenuItem>
-                          )}
-                          {projectStatus?.current_status !== "canceled" && (
-                            <MenuItem
-                              onClick={() => handleUpdateStatus("canceled")}
-                              className={classes.projectOptionsMenuItem}
-                              selected={false}
-                            >
-                              <ListItemIcon
-                                className={classes.projectOptionsMenuItemIcon}
-                              >
-                                <CancelOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary="Cancel" />
-                            </MenuItem>
-                          )}
                           <MenuItem
                             onClick={handleDeleteClick}
                             className={classes.projectOptionsMenuItem}
@@ -639,6 +558,42 @@ const ProjectView = () => {
                 </DialogContentText>
               </DialogContent>
               <DialogActions>{dialogState?.actions}</DialogActions>
+            </Dialog>
+          )}
+          {isProjectDeleted && (
+            <Dialog
+              open={isProjectDeleted}
+              onClose={handleDialogClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogContent>
+                <Typography variant={"h3"} align={"center"} gutterBottom>
+                  This project has been deleted.
+                </Typography>
+                <Typography align={"center"} style={{ paddingTop: "15px" }}>
+                  If you need to restore a deleted project, please{" "}
+                  <Link
+                    href={
+                      "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D"
+                    }
+                    target="new"
+                  >
+                    submit a Data &amp; Technology Services support request
+                  </Link>
+                  .
+                </Typography>
+              </DialogContent>
+              <DialogActions>
+                <Button>
+                  <RouterLink
+                    to={allProjectsLink}
+                    className={"MuiTypography-colorPrimary"}
+                  >
+                    Back to all projects
+                  </RouterLink>
+                </Button>
+              </DialogActions>
             </Dialog>
           )}
         </Page>

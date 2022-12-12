@@ -28,7 +28,7 @@ export const ProjectsListViewQueryConf = {
   showFilters: false,
   showExport: true,
   showNewItemButton: false,
-  noResultsMessage: "No projects found. Canceled projects are not shown.",
+  noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [5, 10, 25, 50, 100],
@@ -37,7 +37,7 @@ export const ProjectsListViewQueryConf = {
   export: ProjectsListViewExportConf,
   search: {
     placeholder:
-      "Search by project ID, name, description, phase, or eCAPRIS subproject ID.",
+      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -101,24 +101,11 @@ export const ProjectsListViewQueryConf = {
       width: "50%",
       type: "String",
     },
-    current_status: {
-      searchable: false,
-      sortable: false,
-      hidden: true,
-      label: "Status",
-      type: "String",
-      width: "5%",
-    },
-    status_id: {
-      hidden: true,
-      searchable: false,
-    },
     current_phase: {
       searchable: true,
       sortable: false,
       label: "Status",
       width: "15%",
-      badge: "status_id",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
@@ -127,12 +114,29 @@ export const ProjectsListViewQueryConf = {
       },
       type: "string",
     },
+    current_phase_key: {
+      searchable: false,
+      sortable: false,
+      hidden: true,
+    },
     project_team_members: {
       searchable: false,
       sortable: false,
       label: "Team members",
       width: "20%",
       filter: filterProjectTeamMembers,
+    },
+    project_lead: {
+      label: "Project lead",
+      searchable: true,
+      search: {
+        label: "Search by project lead",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+      filter: (value) => (value === "None" ? "-" : value),
     },
     project_sponsor: {
       label: "Project sponsor",
@@ -226,15 +230,17 @@ export const ProjectsListViewQueryConf = {
     project_tags: {
       type: "string",
     },
+    added_by: {
+      type: "string",
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
   where: {
     is_deleted: "_eq: false",
-    status_id: "_neq: 3",
   },
   or: null,
   and: null,
-  limit: 25,
+  limit: 100,
   offset: 0,
 };

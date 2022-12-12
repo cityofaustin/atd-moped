@@ -7,25 +7,10 @@ import {
   IconButton,
   Tooltip,
 } from "@material-ui/core";
+import clsx from "clsx";
 import CloseIcon from "@material-ui/icons/Close";
 import ControlPointIcon from "@material-ui/icons/ControlPoint";
-import { makeStyles } from "@material-ui/core/styles";
 import ProjectComments from "../projects/projectView/ProjectComments";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  statusUpdateText: {
-    cursor: "pointer",
-  },
-  tooltipIcon: {
-    fontSize: "20px",
-  },
-}));
 
 const DashboardStatusModal = ({
   projectId,
@@ -34,8 +19,8 @@ const DashboardStatusModal = ({
   statusUpdate,
   queryRefetch,
   children,
+  classes,
 }) => {
-  const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleDialogClose = () => {
@@ -47,12 +32,15 @@ const DashboardStatusModal = ({
     <>
       <Typography
         component={"span"}
-        className={classes.statusUpdateText}
+        className={clsx({
+          [classes.fieldLabelText]: modalParent === "summary",
+          [classes.statusUpdateText]: modalParent !== "summary",
+        })}
         onClick={() => setIsDialogOpen(true)}
       >
         {/* if there is no status update, render the add status icon */}
         {!statusUpdate && (
-          <div>
+          <div className={classes.newStatusIconDiv}>
             {/* if the parent is the summary page, also render the status label */}
             {modalParent === "summary" && children}
             <Tooltip placement="bottom-start" title="Create new status update">

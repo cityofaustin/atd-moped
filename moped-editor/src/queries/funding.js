@@ -114,6 +114,8 @@ export const CONTRACT_QUERY = gql`
       id
       contract_number
       description
+      work_assignment_id
+      contract_amount
     }
   }
 `;
@@ -134,6 +136,8 @@ export const UPDATE_CONTRACT = gql`
     $contractor: String!
     $contract_number: String!
     $description: String!
+    $work_assignment_id: String!
+    $contract_amount: Int!
   ) {
     update_moped_proj_contract_by_pk(
       pk_columns: { id: $id }
@@ -141,6 +145,8 @@ export const UPDATE_CONTRACT = gql`
         contractor: $contractor
         contract_number: $contract_number
         description: $description
+        work_assignment_id: $work_assignment_id
+        contract_amount: $contract_amount
       }
     ) {
       id

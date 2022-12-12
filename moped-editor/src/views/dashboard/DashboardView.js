@@ -73,6 +73,18 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
+  dialogTitle: {
+    fontFamily: theme.typography.fontFamily,
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
+  tooltipIcon: {
+    fontSize: "20px",
+  },
 }));
 
 function a11yProps(index) {
@@ -128,10 +140,10 @@ const DashboardView = () => {
     selectedData.forEach((project) => {
       project["project_name"] = project.project.project_name;
       project["project_id"] = project.project.project_id;
-      project["current_phase"] = project.project.current_phase;
-      project["current_status"] = project.project.current_status;
-      project["status_id"] = project.project.status_id;
-
+      project["phase_name"] =
+        project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
+      project["phase_key"] =
+        project.project.moped_proj_phases?.[0]?.moped_phase.phase_key;
       /**
        * Get percentage of milestones completed
        */
@@ -171,14 +183,14 @@ const DashboardView = () => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project.project_id",
       editable: "never",
       cellStyle: { ...typographyStyle },
       width: "10%",
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project.project_name",
       editable: "never",
       cellStyle: { ...typographyStyle },
@@ -192,7 +204,7 @@ const DashboardView = () => {
     },
     {
       title: "Status",
-      field: "current_phase",
+      field: "phase_name",
       editable: "never",
       render: (entry) => (
         <DashboardTimelineModal
@@ -202,9 +214,8 @@ const DashboardView = () => {
           dashboardRefetch={refetch}
         >
           <ProjectStatusBadge
-            status={entry.status_id}
-            phase={entry.current_phase}
-            projectStatuses={data?.moped_status ?? []}
+            phaseName={entry.phase_name}
+            phaseKey={entry.phase_key}
             condensed
             clickable
           />
@@ -223,6 +234,7 @@ const DashboardView = () => {
           modalParent="dashboard"
           statusUpdate={entry.status_update}
           queryRefetch={refetch}
+          classes={classes}
         >
           {parse(String(entry.status_update))}
         </DashboardStatusModal>

@@ -5,6 +5,7 @@ import {
   Icon,
   TextField,
   Typography,
+  IconButton,
 } from "@material-ui/core";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
@@ -60,7 +61,7 @@ const ProjectSummaryProjectDescription = ({
         refetch();
         snackbarHandle(true, "Project description updated.", "success");
       })
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(
           true,
           "Failed to update project description: " + String(err),
@@ -75,46 +76,45 @@ const ProjectSummaryProjectDescription = ({
    * Updates the description state
    * @param {Object} e - Event object
    */
-  const handleProjectDescriptionChange = e => {
+  const handleProjectDescriptionChange = (e) => {
     setDescription(e.target.value);
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>Project description</Typography>
+      <Typography className={classes.fieldLabel}>Description</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
         className={classes.fieldBox}
+        flexWrap="nowrap"
+        alignItems="center"
       >
         {editMode && (
           <>
             <TextField
+              autoFocus
               fullWidth
               multiline={true}
-              rows={4}
+              minRows={4}
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
               value={description}
             />
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectDescriptionSave}
-            >
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectDescriptionClose}
-            >
-              close
-            </Icon>
+
+            <IconButton onClick={handleProjectDescriptionSave}>
+              <Icon>check</Icon>
+            </IconButton>
+
+            <IconButton onClick={handleProjectDescriptionClose}>
+              <Icon>close</Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={description || "None"}
+            text={description || " - "}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

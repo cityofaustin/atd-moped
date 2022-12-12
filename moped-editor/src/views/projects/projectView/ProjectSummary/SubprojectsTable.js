@@ -43,13 +43,13 @@ const SubprojectsTable = ({ projectId = null }) => {
 
   const columns = [
     {
-      title: "Project ID",
+      title: "ID",
       field: "project_id",
       editable: "never",
       width: "15%",
     },
     {
-      title: "Project name",
+      title: "Name",
       field: "project_name",
       width: "45%",
       validate: (entry) => !!entry.project_name,
@@ -65,7 +65,9 @@ const SubprojectsTable = ({ projectId = null }) => {
             id="project_name"
             name="project_name"
             options={data.subprojectOptions}
-            getOptionLabel={(option) => `${option.project_id} - ${option.project_name}`}
+            getOptionLabel={(option) =>
+              `${option.project_id} - ${option.project_name}`
+            }
             value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
             renderInput={(params) => <TextField {...params} />}
@@ -75,15 +77,19 @@ const SubprojectsTable = ({ projectId = null }) => {
       ),
     },
     {
-      title: "Current status",
-      field: "current_status",
+      title: "Status",
+      field: "status",
       editable: "never",
       width: "30%",
+      customSort: (a, b) =>
+        a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
+        b.moped_proj_phases?.[0]?.moped_phase?.phase_name
+          ? -1
+          : 1,
       render: (entry) => (
         <ProjectStatusBadge
-          status={entry.status_id}
-          phase={entry.current_phase}
-          projectStatuses={data?.moped_status ?? []}
+          phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+          phaseKey={entry.moped_proj_phases?.[0]?.moped_phase?.phase_key}
           condensed
         />
       ),
@@ -93,7 +99,7 @@ const SubprojectsTable = ({ projectId = null }) => {
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
-        data={data.subprojects[0]?.moped_projects ?? []}
+        data={data.subprojects ?? []}
         columns={columns}
         style={{ padding: "8px" }}
         components={{
