@@ -1,9 +1,7 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
-import mapboxDrawStylesOverrides, {
-  activeLineWidth,
-} from "src/styles/mapboxDrawStylesOverrides";
+import { activeLineWidth } from "src/styles/createDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here
@@ -21,7 +19,6 @@ export const DrawControl = React.forwardRef((props, ref) => {
         props.overrideDirectSelect();
       });
       map.on("draw.selectionchange", props.onSelectionChange);
-      map.on("load", props.initializeExistingDrawFeatures);
 
       return new MapboxDraw(props);
     },
@@ -102,7 +99,7 @@ const ComponentsDrawControl = React.forwardRef(
       linkMode,
       onModeChange,
       onSelectionChange,
-      initializeExistingDrawFeatures,
+      styleOverrides,
     },
     ref
   ) => {
@@ -129,9 +126,8 @@ const ComponentsDrawControl = React.forwardRef(
       onDelete,
       onModeChange,
       onSelectionChange,
-      initializeExistingDrawFeatures,
       overrideDirectSelect,
-      styles: mapboxDrawStylesOverrides,
+      styles: styleOverrides,
     };
 
     if (shouldDrawPoints)

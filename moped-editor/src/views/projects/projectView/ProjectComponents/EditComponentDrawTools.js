@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature, useExistingDrawnFeatures } from "./utils/features";
+import createDrawStylesOverrides from "src/styles/createDrawStylesOverrides";
 
 /**
  * Renders project component edit draw tools
@@ -55,11 +56,6 @@ const EditComponentDrawTools = ({
     }
   };
 
-  const initializeExistingDrawFeatures = () => {
-    console.log("initializeExistingDrawFeatures");
-    // TODO: Load existing drawn features from draftEditComponent
-  };
-
   return (
     <ComponentsDrawControl
       ref={drawControlsRef}
@@ -69,7 +65,7 @@ const EditComponentDrawTools = ({
       linkMode={linkMode}
       onModeChange={onModeChange}
       onSelectionChange={onSelectionChange}
-      initializeExistingDrawFeatures={initializeExistingDrawFeatures}
+      styleOverrides={createDrawStylesOverrides}
     />
   );
 };
