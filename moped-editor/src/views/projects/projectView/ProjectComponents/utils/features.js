@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./map";
 
@@ -128,3 +128,34 @@ export const isDrawnDraftFeature = (feature) =>
 export const isDrawnExistingFeature = (feature) =>
   !feature.source.includes("ATD_ADMIN.CTN_Intersections") &&
   !feature.source.includes("ATD_ADMIN.CTN");
+
+/**
+ * Determine if a feature is drawn by the user by checking that the source is
+ * not CTN lines (ATD.)
+ * @param {Object} drawControlsRef - ref for the draw controls
+ * @param {Object} draftEditComponent - the component being edited
+ * @param {String} linkMode - tracks if we are editing "lines" or "points"
+ */
+export const useExistingDrawnFeatures = ({
+  drawControlsRef,
+  draftEditComponent,
+  linkMode,
+}) => {
+  useEffect(() => {
+    if (!drawControlsRef.current) return;
+
+    if (linkMode === "lines") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: draftEditComponent.feature_drawn_lines,
+      });
+    }
+
+    if (linkMode === "points") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: draftEditComponent.feature_drawn_points,
+      });
+    }
+  }, [linkMode, draftEditComponent, drawControlsRef]);
+};
