@@ -318,7 +318,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => renderProjectTeamMembers(entry.project_team_members),
+      render: (entry) => renderProjectTeamMembers(entry.project_team_members, "projectsListView"),
     },
     {
       title: "Lead",
