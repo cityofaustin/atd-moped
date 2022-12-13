@@ -3,8 +3,8 @@ import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
 
 /**
- * Renders project component draw tools
- * @param {Function} createDispatch - dispatch to call create actions
+ * Renders project component edit draw tools
+ * @param {Function} editDispatch - dispatch to call edit actions
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setCursor - function to update the cursor type
  * @param {Function} setIsDrawing - function to update if we are drawing or not
@@ -17,7 +17,6 @@ const EditComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     console.log("update draftEditComponent with new drawn features");
@@ -56,18 +55,16 @@ const EditComponentDrawTools = ({
   };
 
   return (
-    shouldShowDrawControls && (
-      <ComponentsDrawControl
-        ref={drawControlsRef}
-        onCreate={onCreate}
-        onDelete={onDelete}
-        onUpdate={onUpdate}
-        linkMode={linkMode}
-        onModeChange={onModeChange}
-        onSelectionChange={onSelectionChange}
-        initializeExistingDrawFeatures={initializeExistingDrawFeatures}
-      />
-    )
+    <ComponentsDrawControl
+      ref={drawControlsRef}
+      onCreate={onCreate}
+      onDelete={onDelete}
+      onUpdate={onUpdate}
+      linkMode={linkMode}
+      onModeChange={onModeChange}
+      onSelectionChange={onSelectionChange}
+      initializeExistingDrawFeatures={initializeExistingDrawFeatures}
+    />
   );
 };
 
