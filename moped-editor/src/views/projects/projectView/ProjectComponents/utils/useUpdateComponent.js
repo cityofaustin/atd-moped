@@ -145,8 +145,6 @@ export const useUpdateComponent = ({
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
 
-    debugger;
-
     // Find the features to delete
     const featuresToDelete = originalComponent[featureTable].filter(
       (feature) => {
