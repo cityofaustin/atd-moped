@@ -45,6 +45,7 @@ export const ProjectsListViewExportConf = {
   },
   project_sponsor: {
     label: "project_sponsor",
+    filter: filterNullValues,
   },
   project_partner: {
     label: "project_partner",
