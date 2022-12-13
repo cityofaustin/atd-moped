@@ -160,7 +160,7 @@ export const MAP_STYLES = {
             [20, 10],
           ],
         },
-        "line-color": theme.palette.map.test,
+        "line-color": theme.palette.map.orange,
       },
       layout: {
         "line-cap": "round",
@@ -175,10 +175,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.test,
+        "circle-stroke-color": theme.palette.map.orange,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.test,
+        "circle-color": theme.palette.map.orange,
         "circle-opacity": 0.9,
       },
     },

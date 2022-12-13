@@ -26,8 +26,8 @@ const createDrawStylesOverrides = [
     type: "fill",
     filter: ["all", ["==", "active", "true"], ["==", "$type", "Polygon"]],
     paint: {
-      "fill-color": theme.palette.map.draw.orange,
-      "fill-outline-color": theme.palette.map.draw.orange,
+      "fill-color": theme.palette.map.orange,
+      "fill-outline-color": theme.palette.map.orange,
       "fill-opacity": 0.1,
     },
   },
@@ -37,7 +37,7 @@ const createDrawStylesOverrides = [
     filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.draw.orange,
+      "circle-color": theme.palette.map.orange,
     },
   },
   {
@@ -67,7 +67,7 @@ const createDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": theme.palette.map.draw.orange,
+      "line-color": theme.palette.map.orange,
       "line-dasharray": [0.2, 2],
       "line-width": 2,
     },
@@ -128,7 +128,7 @@ const createDrawStylesOverrides = [
     ],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.draw.orange,
+      "circle-color": theme.palette.map.orange,
     },
   },
   {

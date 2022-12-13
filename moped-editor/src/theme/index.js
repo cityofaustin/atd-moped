@@ -34,7 +34,6 @@ const theme = createTheme({
       trail: "#4caf50",
       draw: {
         activeLineVertices: "#7ac943",
-        orange: "#fbb03b",
         blue: "#3bb2d0",
         gray: "#404040",
       },
@@ -48,7 +47,7 @@ const theme = createTheme({
       blueLight: "#a1cdf7",
       steel: "#607d8f",
       white: "#fff",
-      test: "#f28100",
+      orange: "#ffb300",
     },
   },
   shadows,
