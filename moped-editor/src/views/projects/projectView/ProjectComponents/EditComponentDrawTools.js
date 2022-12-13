@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature, useExistingDrawnFeatures } from "./utils/features";
-import createDrawStylesOverrides from "src/styles/createDrawStylesOverrides";
+import editDrawStylesOverrides from "src/styles/editDrawStylesOverrides";
 
 /**
  * Renders project component edit draw tools
@@ -65,7 +65,7 @@ const EditComponentDrawTools = ({
       linkMode={linkMode}
       onModeChange={onModeChange}
       onSelectionChange={onSelectionChange}
-      styleOverrides={createDrawStylesOverrides}
+      styleOverrides={editDrawStylesOverrides}
     />
   );
 };

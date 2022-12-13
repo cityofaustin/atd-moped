@@ -5,7 +5,7 @@ import { activeLineWidth } from "./createDrawStylesOverrides";
 // Default Mapbox GL Draw styles with overrides from MUI theme
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // See https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
-const createDrawStylesOverrides = [
+const editDrawStylesOverrides = [
   {
     id: "gl-draw-polygon-fill-inactive",
     type: "fill",
@@ -85,7 +85,7 @@ const createDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.primary.main,
+      "line-color": theme.palette.map.orange,
       "line-width": 4,
     },
   },
@@ -97,7 +97,7 @@ const createDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.primary.main,
+      "line-color": theme.palette.map.orange,
       "line-width": activeLineWidth,
     },
   },
@@ -159,7 +159,7 @@ const createDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 4,
-      "circle-stroke-color": theme.palette.primary.main,
+      "circle-stroke-color": theme.palette.map.orange,
       "circle-color": theme.palette.secondary.main,
     },
   },
@@ -190,7 +190,7 @@ const createDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 8,
-      "circle-stroke-color": theme.palette.primary.main,
+      "circle-stroke-color": theme.palette.map.orange,
       "circle-color": theme.palette.secondary.main,
     },
   },
@@ -241,4 +241,4 @@ const createDrawStylesOverrides = [
   },
 ];
 
-export default createDrawStylesOverrides;
+export default editDrawStylesOverrides;
