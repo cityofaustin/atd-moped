@@ -7,6 +7,7 @@ import {
   makeDrawnPointsInsertionData,
 } from "./makeFeatures";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
+import { getDrawId } from "./features";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -82,24 +83,22 @@ const editReducer = (state, action) => {
       action.callback(featuresWithNewPoints);
 
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
-    case "delete_drawn_line":
+    case "delete_drawn_lines":
       const deletedLineFeatures = action.payload;
 
-      const lineIdsToDelete = deletedLineFeatures.map((feature) =>
-        getDrawId(feature)
-      );
+      const lineIdsToDelete = deletedLineFeatures.map((feature) => feature.id);
 
       const draftLineFeaturesToKeep =
         state.draftEditComponent.feature_drawn_lines.filter(
-          (feature) => !lineIdsToDelete.includes(getDrawId(feature))
+          (feature) => !lineIdsToDelete.includes(feature.id)
         );
 
       const draftComponentWithDeletes = {
         ...state.draftEditComponent,
-        feature_drawn_lines: [...draftLineFeaturesToKeep],
+        feature_drawn_lines: draftLineFeaturesToKeep,
       };
 
-      return { ...state, draftComponent: draftComponentWithDeletes };
+      return { ...state, draftEditComponent: draftComponentWithDeletes };
     case "save_edit":
       return {
         ...state,
@@ -194,8 +193,17 @@ export const useUpdateComponent = ({
         );
       }
     );
+    const drawnLinesToDelete = originalComponent.feature_drawn_lines.filter(
+      (feature) => {
+        const { id } = feature;
+        return !editState.draftEditComponent.feature_drawn_lines.find(
+          (feature) => feature.id === id
+        );
+      }
+    );
+    const allFeaturesToDelete = [...featuresToDelete, ...drawnLinesToDelete];
 
-    const deletes = featuresToDelete.map((feature) => ({
+    const deletes = allFeaturesToDelete.map((feature) => ({
       where: {
         _and: {
           component_id: {
