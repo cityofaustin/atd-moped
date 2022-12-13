@@ -40,11 +40,19 @@ const EditComponentDrawTools = ({
         features: updatedFeatures,
       });
 
-    editDispatch({
-      type: "add_drawn_features",
-      payload: drawnFeatures,
-      callback: updateMapDrawToolFeatures,
-    });
+    if (linkMode === "lines") {
+      editDispatch({
+        type: "add_drawn_line",
+        payload: drawnFeatures,
+        callback: updateMapDrawToolFeatures,
+      });
+    } else {
+      editDispatch({
+        type: "add_drawn_point",
+        payload: drawnFeatures,
+        callback: updateMapDrawToolFeatures,
+      });
+    }
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
