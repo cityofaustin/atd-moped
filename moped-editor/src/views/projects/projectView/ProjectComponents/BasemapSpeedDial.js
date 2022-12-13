@@ -6,7 +6,6 @@ import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,
 } from "./mapStyleSettings";
-import theme from "src/theme/index";
 
 const useStyles = makeStyles((theme) => ({
   speedDialAction: {

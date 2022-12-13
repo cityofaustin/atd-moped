@@ -26,7 +26,25 @@ const EditComponentDrawTools = ({
   });
 
   const onCreate = ({ features: createdFeaturesArray }) => {
-    console.log("update draftEditComponent with new drawn features");
+    // Add properties needed to distinguish drawn features from other features
+    const drawnFeatures = createdFeaturesArray.map((feature) => {
+      makeDrawnFeature(feature, linkMode);
+      return feature;
+    });
+
+    // We must override the features in the draw control's internal state with ones
+    // that have our properties so that we can find them later in onDelete
+    const updateMapDrawToolFeatures = (updatedFeatures) =>
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: updatedFeatures,
+      });
+
+    editDispatch({
+      type: "add_drawn_features",
+      payload: drawnFeatures,
+      callback: updateMapDrawToolFeatures,
+    });
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {

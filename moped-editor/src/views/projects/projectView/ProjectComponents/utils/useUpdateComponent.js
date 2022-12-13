@@ -50,6 +50,21 @@ const editReducer = (state, action) => {
       );
 
       return { ...state, draftEditComponent: updatedDraftEditComponent };
+    case "add_drawn_features":
+      const newDrawnFeatures = action.payload;
+      const featuresWithAdditions = [
+        ...state.draftEditComponent.features,
+        ...newDrawnFeatures,
+      ];
+
+      const newDraftEditComponent = {
+        ...state.draftComponent,
+        features: [...state.draftComponent.features, ...newDrawnFeatures],
+      };
+
+      action.callback(featuresWithAdditions);
+
+      return { ...state, draftEditComponent: newDraftEditComponent };
     case "save_edit":
       return {
         ...state,
