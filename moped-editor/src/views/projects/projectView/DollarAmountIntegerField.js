@@ -12,7 +12,7 @@ import {
  * @param {String} props.value - Material Table field value
  * @return {JSX.Element}
  */
-const FundingAmountIntegerField = ({ onChange, value }) => {
+const DollarAmountIntegerField = ({ onChange, value }) => {
   const handleInputChange = event => {
     const { value: inputValue } = event.target;
 
@@ -37,4 +37,4 @@ const FundingAmountIntegerField = ({ onChange, value }) => {
   );
 };
 
-export default FundingAmountIntegerField;
+export default DollarAmountIntegerField;

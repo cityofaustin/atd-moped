@@ -142,11 +142,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: feature_drawn_points
@@ -239,11 +237,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: feature_intersections
@@ -343,11 +339,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: feature_layers
@@ -496,11 +490,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: feature_street_segments
@@ -642,11 +634,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: features
@@ -1188,11 +1178,9 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: moped_funds
@@ -1637,6 +1625,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
     - role: moped-editor
       permission:
         check: {}
@@ -1647,6 +1637,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
   select_permissions:
     - role: moped-admin
       permission:
@@ -1657,6 +1649,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
         filter: {}
     - role: moped-editor
       permission:
@@ -1667,6 +1661,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
         filter: {}
     - role: moped-viewer
       permission:
@@ -1677,6 +1673,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -1688,6 +1686,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
         filter: {}
         check: {}
     - role: moped-editor
@@ -1699,6 +1699,8 @@
           - description
           - project_id
           - is_deleted
+          - work_assignment_id
+          - contract_amount
         filter: {}
         check: {}
 - table:
@@ -3231,7 +3233,7 @@
       webhook_from_env: HASURA_ENDPOINT
       headers:
         - name: x-hasura-admin-secret
-          value_from_env: HASURA_ADMIN_SECRET
+          value_from_env: ACTIVITY_LOG_API_SECRET
       request_transform:
         body:
           action: transform
@@ -3623,7 +3625,7 @@
       webhook_from_env: HASURA_ENDPOINT
       headers:
         - name: x-hasura-admin-secret
-          value_from_env: HASURA_ADMIN_SECRET
+          value_from_env: ACTIVITY_LOG_API_SECRET
       request_transform:
         body:
           action: transform
@@ -4416,15 +4418,12 @@
   delete_permissions:
     - role: moped-admin
       permission:
-        backend_only: false
         filter: {}
     - role: moped-editor
       permission:
-        backend_only: false
         filter: {}
     - role: moped-viewer
       permission:
-        backend_only: false
         filter: {}
 - table:
     name: moped_users

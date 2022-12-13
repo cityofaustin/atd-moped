@@ -68,8 +68,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -83,7 +81,6 @@ const ProjectActivityLog = () => {
     variables: { projectId },
     onCompleted: (data) => getLookups(data, "activity_log_lookup_tables"),
   });
-
 
   // const [activityId, setActivityId] = useState(null);
 
@@ -121,18 +118,18 @@ const ProjectActivityLog = () => {
     field in ProjectActivityLogGenericDescriptions;
 
   /**
-   * checks if event is from new schema and if so finds the updated difference and includes that
-   * in the object
+   * if event is from new schema, finds the updated difference and includes in the object
+   * Makes sure the project creation event is the last in the returned Array
    * @param {Array} eventList - The data object as provided by apollo
    * @returns {Array}
    */
   const getDiffs = (eventList) => {
     let outputList = [];
-
+    let createdEvent = {};
     eventList.forEach((event) => {
       let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
-      if (event.description[0].newSchema) {
+      if (event.description[0]?.newSchema) {
         // if event is an INSERT there is no previous record to compare to
         if (event.operation_type === "INSERT") {
           outputEvent.description = [];
@@ -156,7 +153,23 @@ const ProjectActivityLog = () => {
         }
       }
       outputList.push(outputEvent);
+
+      // If this is the creation of a project, make a copy of it
+      // so we can make sure it shows up at the bottom of the list
+      if (
+        outputEvent.record_type === "moped_project" &&
+        outputEvent.operation_type === "INSERT"
+      ) {
+        createdEvent = outputEvent;
+      }
     });
+
+    // remove the project creation event from the array, and tack on to the end
+    if (createdEvent["record_type"]) {
+      outputList.splice(outputList.indexOf(createdEvent), 1);
+      outputList.push(createdEvent);
+    }
+
     return outputList;
   };
 
