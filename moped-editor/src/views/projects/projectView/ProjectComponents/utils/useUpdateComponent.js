@@ -4,6 +4,7 @@ import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
   makeDrawnLinesInsertionData,
+  makeDrawnPointsInsertionData,
 } from "./makeFeatures";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
@@ -52,20 +53,35 @@ const editReducer = (state, action) => {
 
       return { ...state, draftEditComponent: updatedDraftEditComponent };
     case "add_drawn_line":
-      const newDrawnFeatures = action.payload;
-      const featuresWithAdditions = [
+      const newDrawnLineFeatures = action.payload;
+      const featuresWithNewLines = [
         ...state.draftEditComponent.feature_drawn_lines,
-        ...newDrawnFeatures,
+        ...newDrawnLineFeatures,
       ];
 
-      const newDraftEditComponent = {
+      const draftEditComponentWithNewLines = {
         ...state.draftEditComponent,
-        feature_drawn_lines: featuresWithAdditions,
+        feature_drawn_lines: featuresWithNewLines,
       };
 
-      action.callback(featuresWithAdditions);
+      action.callback(featuresWithNewLines);
 
-      return { ...state, draftEditComponent: newDraftEditComponent };
+      return { ...state, draftEditComponent: draftEditComponentWithNewLines };
+    case "add_drawn_point":
+      const newDrawnPointFeatures = action.payload;
+      const featuresWithNewPoints = [
+        ...state.draftEditComponent.feature_drawn_points,
+        ...newDrawnPointFeatures,
+      ];
+
+      const draftEditComponentWithNewPoints = {
+        ...state.draftEditComponent,
+        feature_drawn_points: featuresWithNewPoints,
+      };
+
+      action.callback(featuresWithNewPoints);
+
+      return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
     case "save_edit":
       return {
         ...state,
@@ -118,15 +134,20 @@ export const useUpdateComponent = ({
     const newFeaturesToInsert = editState.draftEditComponent[
       featureTable
     ].filter((feature) => !feature.id);
-    // Get the new features that are drawn lines (not associated with a component yet)
+    // Get the new features that are drawn lines or points (not associated with a component yet)
     const drawnLines = editState.draftEditComponent.feature_drawn_lines.filter(
       (feature) => !feature.component_id
     );
+    const drawnPoints =
+      editState.draftEditComponent.feature_drawn_points.filter(
+        (feature) => !feature.component_id
+      );
 
     const streetSegments = [];
     const intersections = [];
     const signals = [];
     const drawnLinesToInsert = [];
+    const drawnPointsToInsert = [];
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
@@ -141,6 +162,7 @@ export const useUpdateComponent = ({
         newFeaturesToInsert,
         intersections
       );
+      makeDrawnPointsInsertionData(drawnPoints, drawnPointsToInsert);
     } else if (featureTable === "feature_signals") {
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
@@ -187,6 +209,11 @@ export const useUpdateComponent = ({
       component_id: editedComponentId,
     }));
 
+    const drawnPointsWithComponentId = drawnPointsToInsert.map((feature) => ({
+      ...feature,
+      component_id: editedComponentId,
+    }));
+
     updateComponentFeatures({
       variables: {
         updates: deletes,
@@ -194,6 +221,7 @@ export const useUpdateComponent = ({
         intersections: intersectionsWithComponentId,
         signals: signalsWithComponentId,
         drawnLines: drawnLinesWithComponentId,
+        drawnPoints: drawnPointsWithComponentId,
       },
     })
       .then(() => {
