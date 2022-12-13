@@ -93,12 +93,30 @@ const editReducer = (state, action) => {
           (feature) => !lineIdsToDelete.includes(feature.id)
         );
 
-      const draftComponentWithDeletes = {
+      const draftComponentWithLineDeletes = {
         ...state.draftEditComponent,
         feature_drawn_lines: draftLineFeaturesToKeep,
       };
 
-      return { ...state, draftEditComponent: draftComponentWithDeletes };
+      return { ...state, draftEditComponent: draftComponentWithLineDeletes };
+    case "delete_drawn_points":
+      const deletedPointFeatures = action.payload;
+
+      const pointIdsToDelete = deletedPointFeatures.map(
+        (feature) => feature.id
+      );
+
+      const draftPointFeaturesToKeep =
+        state.draftEditComponent.feature_drawn_points.filter(
+          (feature) => !pointIdsToDelete.includes(feature.id)
+        );
+
+      const draftComponentWithPointDeletes = {
+        ...state.draftEditComponent,
+        feature_drawn_points: draftPointFeaturesToKeep,
+      };
+
+      return { ...state, draftEditComponent: draftComponentWithPointDeletes };
     case "save_edit":
       return {
         ...state,
@@ -201,7 +219,19 @@ export const useUpdateComponent = ({
         );
       }
     );
-    const allFeaturesToDelete = [...featuresToDelete, ...drawnLinesToDelete];
+    const drawnPointsToDelete = originalComponent.feature_drawn_points.filter(
+      (feature) => {
+        const { id } = feature;
+        return !editState.draftEditComponent.feature_drawn_points.find(
+          (feature) => feature.id === id
+        );
+      }
+    );
+    const allFeaturesToDelete = [
+      ...featuresToDelete,
+      ...drawnLinesToDelete,
+      ...drawnPointsToDelete,
+    ];
 
     const deletes = allFeaturesToDelete.map((feature) => ({
       where: {
