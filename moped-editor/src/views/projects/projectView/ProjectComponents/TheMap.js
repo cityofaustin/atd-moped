@@ -154,7 +154,6 @@ export default function TheMap({
   const handleEditOnClick = (e) => {
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
-    console.log(clickedFeature);
 
     // If the clicked feature is drawn, use draw tools to edit it
     // TODO: We need to get a signal that this is drawn
@@ -162,6 +161,7 @@ export default function TheMap({
     // Pack some metadata into the feature properties in the front end?
     // Pack some metadata into the feature properties in the back end?
     if (isDrawnExistingFeature(clickedFeature)) {
+      debugger;
       // Once we know it's drawn, we can use the draw tools to edit it
       // Add state to toggle render of EditComponentDrawTools?
       // Then load drawn features into the tool

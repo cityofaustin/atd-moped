@@ -111,7 +111,8 @@ export const makeDrawnFeature = (feature, linkMode) => {
 export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
 
 /**
- * Determine if a feature is drawn by the user
+ * Determine if a draft feature is drawn by the user by the draw ID
+ * that is added when creating a new drawn feature
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
@@ -119,9 +120,11 @@ export const isDrawnDraftFeature = (feature) =>
   getDrawId(feature) ? true : false;
 
 /**
- * Determine if a feature is drawn by the user
+ * Determine if a feature is drawn by the user by checking that the source is
+ * not CTN lines (ATD.)
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
 export const isDrawnExistingFeature = (feature) =>
-  feature.layer.source.includes("drawnByUser");
+  !feature.source.includes("ATD_ADMIN.CTN_Intersections") &&
+  !feature.source.includes("ATD_ADMIN.CTN");
