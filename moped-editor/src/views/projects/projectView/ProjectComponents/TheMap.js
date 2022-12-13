@@ -159,7 +159,6 @@ export default function TheMap({
     // Is link mode set at this point?
     // Check if the right conditions are met to show the edit draw tools
     if (isDrawnExistingFeature(clickedFeature)) {
-      debugger;
       // Once we know it's drawn, we can use the draw tools to edit it
       // Add state to toggle render of EditComponentDrawTools?
       // Then load drawn features into the tool
@@ -308,6 +307,7 @@ export default function TheMap({
           linkMode={linkMode}
           setCursor={setCursor}
           setIsDrawing={setIsDrawing}
+          draftEditComponent={draftEditComponent}
         />
       )}
       <BaseMapSourceAndLayers basemapKey={basemapKey} />

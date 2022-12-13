@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
 
@@ -15,8 +15,26 @@ const EditComponentDrawTools = ({
   linkMode,
   setCursor,
   setIsDrawing,
+  draftEditComponent,
 }) => {
   const drawControlsRef = useRef();
+
+  useEffect(() => {
+    console.log(draftEditComponent, drawControlsRef.current);
+    if (linkMode === "lines") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: draftEditComponent.feature_drawn_lines,
+      });
+    }
+
+    if (linkMode === "points") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: draftEditComponent.feature_drawn_points,
+      });
+    }
+  }, []);
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     console.log("update draftEditComponent with new drawn features");
@@ -51,7 +69,7 @@ const EditComponentDrawTools = ({
 
   const initializeExistingDrawFeatures = () => {
     console.log("initializeExistingDrawFeatures");
-    // TODO: This may be needed when we implement editing existing components
+    // TODO: Load existing drawn features from draftEditComponent
   };
 
   return (
