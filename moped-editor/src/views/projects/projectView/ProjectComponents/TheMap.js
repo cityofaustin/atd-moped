@@ -270,6 +270,12 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
+  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
+  const shouldShowCreateDrawControls =
+    isCreatingComponent && shouldShowDrawControls;
+  const shouldShowEditDrawControls =
+    isEditingComponent && shouldShowDrawControls;
+
   return (
     <MapGL
       ref={mapRef}
@@ -286,13 +292,17 @@ export default function TheMap({
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <CreateComponentDrawTools
-        createDispatch={createDispatch}
-        linkMode={linkMode}
-        setCursor={setCursor}
-        setIsDrawing={setIsDrawing}
-      />
-      <EditComponentDrawTools editDispatch={editDispatch} />
+      {shouldShowCreateDrawControls && (
+        <CreateComponentDrawTools
+          createDispatch={createDispatch}
+          linkMode={linkMode}
+          setCursor={setCursor}
+          setIsDrawing={setIsDrawing}
+        />
+      )}
+      {shouldShowEditDrawControls && (
+        <EditComponentDrawTools editDispatch={editDispatch} />
+      )}
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectSourcesAndLayers
         isCreatingComponent={isCreatingComponent}

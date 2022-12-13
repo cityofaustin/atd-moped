@@ -17,7 +17,6 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -79,17 +78,15 @@ const CreateComponentDrawTools = ({
   };
 
   return (
-    shouldShowDrawControls && (
-      <ComponentsDrawControl
-        ref={drawControlsRef}
-        onCreate={onCreate}
-        onDelete={onDelete}
-        onUpdate={onUpdate}
-        linkMode={linkMode}
-        onModeChange={onModeChange}
-        onSelectionChange={onSelectionChange}
-      />
-    )
+    <ComponentsDrawControl
+      ref={drawControlsRef}
+      onCreate={onCreate}
+      onDelete={onDelete}
+      onUpdate={onUpdate}
+      linkMode={linkMode}
+      onModeChange={onModeChange}
+      onSelectionChange={onSelectionChange}
+    />
   );
 };
 
