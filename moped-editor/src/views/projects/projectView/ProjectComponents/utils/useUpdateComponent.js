@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import {
   makeLineStringFeatureInsertionData,
   makePointFeatureInsertionData,
+  makeDrawnLinesInsertionData,
 } from "./makeFeatures";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
@@ -113,14 +114,19 @@ export const useUpdateComponent = ({
       (component) => component.project_component_id === editedComponentId
     );
 
-    // Get the new features
+    // Get the new features that are selected from a CTN layer
     const newFeaturesToInsert = editState.draftEditComponent[
       featureTable
     ].filter((feature) => !feature.id);
+    // Get the new features that are drawn lines (not associated with a component yet)
+    const drawnLines = editState.draftEditComponent.feature_drawn_lines.filter(
+      (feature) => !feature.component_id
+    );
 
     const streetSegments = [];
     const intersections = [];
     const signals = [];
+    const drawnLinesToInsert = [];
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
@@ -128,6 +134,7 @@ export const useUpdateComponent = ({
         newFeaturesToInsert,
         streetSegments
       );
+      makeDrawnLinesInsertionData(drawnLines, drawnLinesToInsert);
     } else if (featureTable === "feature_intersections") {
       makePointFeatureInsertionData(
         featureTable,
@@ -137,6 +144,8 @@ export const useUpdateComponent = ({
     } else if (featureTable === "feature_signals") {
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
+
+    debugger;
 
     // Find the features to delete
     const featuresToDelete = originalComponent[featureTable].filter(
@@ -175,12 +184,18 @@ export const useUpdateComponent = ({
       component_id: editedComponentId,
     }));
 
+    const drawnLinesWithComponentId = drawnLinesToInsert.map((feature) => ({
+      ...feature,
+      component_id: editedComponentId,
+    }));
+
     updateComponentFeatures({
       variables: {
         updates: deletes,
         streetSegments: streetSegmentsWithComponentId,
         intersections: intersectionsWithComponentId,
         signals: signalsWithComponentId,
+        drawnLines: drawnLinesWithComponentId,
       },
     })
       .then(() => {
