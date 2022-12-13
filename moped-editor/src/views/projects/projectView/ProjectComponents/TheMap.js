@@ -91,7 +91,9 @@ export default function TheMap({
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
     // so set point radii and line widths accordingly
-    setCursor("pointer");
+    if (!isDrawing) {
+      setCursor("pointer");
+    }
 
     e.features.forEach((feature) => {
       if (feature.layer.id.includes("project")) {
@@ -103,7 +105,9 @@ export default function TheMap({
   };
 
   const onMouseLeave = (e) => {
-    setCursor("grab");
+    if (!isDrawing) {
+      setCursor("grab");
+    }
     setHoveredOnMapFeature(null);
     // e.features.forEach((feature) => {
     //   mapRef.current?.setFeatureState(feature, { hover: false });
