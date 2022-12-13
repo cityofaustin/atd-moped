@@ -157,9 +157,8 @@ export default function TheMap({
 
     // If the clicked feature is drawn, use draw tools to edit it
     // TODO: We need to get a signal that this is drawn
-    // Do we:
-    // Pack some metadata into the feature properties in the front end?
-    // Pack some metadata into the feature properties in the back end?
+    // Is link mode set at this point?
+    // Check if the right conditions are met to show the edit draw tools
     if (isDrawnExistingFeature(clickedFeature)) {
       debugger;
       // Once we know it's drawn, we can use the draw tools to edit it
