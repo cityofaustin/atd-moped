@@ -61,6 +61,18 @@ const EditComponentDrawTools = ({
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
     console.log("soft delete existing features in draftEditComponent");
+
+    if (linkMode === "lines") {
+      editDispatch({
+        type: "delete_drawn_lines",
+        payload: deletedFeaturesArray,
+      });
+    } else {
+      editDispatch({
+        type: "delete_drawn_points",
+        payload: deletedFeaturesArray,
+      });
+    }
   };
 
   const onModeChange = ({ mode }) => {

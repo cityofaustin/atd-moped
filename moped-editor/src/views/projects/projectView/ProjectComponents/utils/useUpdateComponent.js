@@ -82,6 +82,24 @@ const editReducer = (state, action) => {
       action.callback(featuresWithNewPoints);
 
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
+    case "delete_drawn_line":
+      const deletedLineFeatures = action.payload;
+
+      const lineIdsToDelete = deletedLineFeatures.map((feature) =>
+        getDrawId(feature)
+      );
+
+      const draftLineFeaturesToKeep =
+        state.draftEditComponent.feature_drawn_lines.filter(
+          (feature) => !lineIdsToDelete.includes(getDrawId(feature))
+        );
+
+      const draftComponentWithDeletes = {
+        ...state.draftEditComponent,
+        feature_drawn_lines: [...draftLineFeaturesToKeep],
+      };
+
+      return { ...state, draftComponent: draftComponentWithDeletes };
     case "save_edit":
       return {
         ...state,
