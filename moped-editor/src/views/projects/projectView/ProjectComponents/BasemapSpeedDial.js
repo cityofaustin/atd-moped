@@ -5,8 +5,8 @@ import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
 import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,
-  COLORS,
 } from "./mapStyleSettings";
+import theme from "src/theme/index";
 
 const useStyles = makeStyles((theme) => ({
   speedDialAction: {
@@ -14,7 +14,7 @@ const useStyles = makeStyles((theme) => ({
     height: MAPBOX_CONTROL_BUTTON_WIDTH * 2,
     backgroundSize: "100% 100%",
     borderRadius: 4,
-    background: COLORS.mutedGray,
+    background: theme.palette.map.mutedGray,
   },
   speedDialStreets: {
     color: "black",
