@@ -1,5 +1,5 @@
 export const filterNullValues = (value) => {
-  if (!value) {
+  if (!value || value === "-") {
     return "";
   } else {
     return value;
