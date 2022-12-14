@@ -241,6 +241,6 @@ export const ProjectsListViewQueryConf = {
   },
   or: null,
   and: null,
-  limit: 25,
+  limit: 100,
   offset: 0,
 };
