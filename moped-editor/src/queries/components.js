@@ -101,7 +101,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 // subcomponents to is_deleted = true and then inserting the new subcomponents
 // with is_deleted = false on conflict
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
-  mutation UpdateProjectAttributes(
+  mutation UpdateComponentAttributes(
     $projectComponentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
