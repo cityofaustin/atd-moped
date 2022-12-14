@@ -203,7 +203,7 @@ export default function MapView({ projectName, projectStatuses }) {
                     saveButtonText="Save"
                   />
                 )}
-              {editState.isEditingComponent && (
+              {editState.draftEditComponent && editState.isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
                     editState.draftEditComponent?.moped_components
@@ -219,16 +219,13 @@ export default function MapView({ projectName, projectStatuses }) {
                   saveButtonText="Save Edit"
                 />
               )}
-              {components.map((component) => {
-                const isExpanded =
-                  clickedComponent?.project_component_id ===
-                    component.project_component_id ||
-                  editState.draftEditComponent?.project_component_id ===
+              {!editState.isEditingComponent &&
+                !createState.isCreatingComponent &&
+                components.map((component) => {
+                  const isExpanded =
+                    clickedComponent?.project_component_id ===
                     component.project_component_id;
-                const isEditingThisComponent =
-                  isExpanded && editState.isEditingComponent;
-                return (
-                  !isEditingThisComponent && (
+                  return (
                     <ComponentListItem
                       key={component.project_component_id}
                       component={component}
@@ -240,9 +237,8 @@ export default function MapView({ projectName, projectStatuses }) {
                       isEditingComponent={editState.isEditingComponent}
                       isCreatingComponent={createState.isCreatingComponent}
                     />
-                  )
-                );
-              })}
+                  );
+                })}
             </List>
           </div>
         </Drawer>
