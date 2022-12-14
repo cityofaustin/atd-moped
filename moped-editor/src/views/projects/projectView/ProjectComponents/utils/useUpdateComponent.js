@@ -84,26 +84,25 @@ const editReducer = (state, action) => {
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
     case "update_drawn_lines":
       const updatedLineFeatures = action.payload;
-
-      const featureIdsToUpdate = updatedLineFeatures.map(
+      const lineFeatureIdsToUpdate = updatedLineFeatures.map(
         (feature) => feature.id
       );
 
       const drawnLineFeatureToUpdate =
         state.draftEditComponent.feature_drawn_lines.find((feature) =>
-          featureIdsToUpdate.includes(feature.id)
+          lineFeatureIdsToUpdate.includes(feature.id)
         );
-      const newGeometry = updatedLineFeatures.find(
+      const newLineGeometry = updatedLineFeatures.find(
         (feature) => feature.id === drawnLineFeatureToUpdate.id
       ).geometry;
 
       const updatedDrawnLineFeature = {
         ...drawnLineFeatureToUpdate,
-        geometry: newGeometry,
+        geometry: newLineGeometry,
       };
       const unchangedDrawnLineFeatures =
         state.draftEditComponent.feature_drawn_lines.filter(
-          (feature) => !featureIdsToUpdate.includes(feature.id)
+          (feature) => !lineFeatureIdsToUpdate.includes(feature.id)
         );
 
       const draftEditComponentWithDrawnLineUpdates = {
@@ -122,6 +121,50 @@ const editReducer = (state, action) => {
         drawnLineFeatureUpdates: [
           ...state.drawnLineFeatureUpdates,
           updatedDrawnLineFeature,
+        ],
+      };
+    case "update_drawn_points":
+      const updatedPointFeatures = action.payload;
+      const pointFeatureIdsToUpdate = updatedPointFeatures.map(
+        (feature) => feature.id
+      );
+
+      const drawnPointFeatureToUpdate =
+        state.draftEditComponent.feature_drawn_points.find((feature) =>
+          pointFeatureIdsToUpdate.includes(feature.id)
+        );
+      const newPointGeometry = updatedPointFeatures.find(
+        (feature) => feature.id === drawnPointFeatureToUpdate.id
+      ).geometry;
+
+      const updatedDrawnPointFeature = {
+        ...drawnPointFeatureToUpdate,
+        geometry: newPointGeometry,
+      };
+      const unchangedDrawnPointFeatures =
+        state.draftEditComponent.feature_drawn_points.filter(
+          (feature) => !pointFeatureIdsToUpdate.includes(feature.id)
+        );
+
+      const draftEditComponentWithDrawnPointUpdates = {
+        ...state.draftEditComponent,
+        feature_drawn_points: [
+          ...unchangedDrawnPointFeatures,
+          updatedDrawnPointFeature,
+        ],
+      };
+
+      action.callback([
+        ...unchangedDrawnPointFeatures,
+        updatedDrawnPointFeature,
+      ]);
+
+      return {
+        ...state,
+        draftEditComponent: draftEditComponentWithDrawnPointUpdates,
+        drawnPointFeatureUpdates: [
+          ...state.drawnPointFeatureUpdates,
+          updatedDrawnPointFeature,
         ],
       };
     case "delete_drawn_lines":
@@ -182,6 +225,7 @@ export const useUpdateComponent = ({
     showEditModeDialog: false,
     draftEditComponent: null,
     drawnLineFeatureUpdates: [],
+    drawnPointFeatureUpdates: [],
   });
 
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);

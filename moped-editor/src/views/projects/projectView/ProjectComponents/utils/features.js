@@ -152,7 +152,7 @@ export const useExistingDrawnFeatures = ({
       })
     );
     const drawnPointsWithProperties =
-      draftEditComponent.feature_drawn_lines.map((feature) => ({
+      draftEditComponent.feature_drawn_points.map((feature) => ({
         ...feature,
         properties: {},
       }));
