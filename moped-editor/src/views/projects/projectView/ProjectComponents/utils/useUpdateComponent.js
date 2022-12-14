@@ -114,6 +114,8 @@ const editReducer = (state, action) => {
         ],
       };
 
+      action.callback([...unchangedDrawnLineFeatures, updatedDrawnLineFeature]);
+
       return {
         ...state,
         draftEditComponent: draftEditComponentWithDrawnLineUpdates,

@@ -25,20 +25,28 @@ const EditComponentDrawTools = ({
     linkMode,
   });
 
+  // We must override the features in the draw control's internal state with ones
+  // that have our properties so that we can find them later in onDelete
+  const updateMapDrawToolFeatures = (updatedFeatures) => {
+    const drawToolsFeatures = updatedFeatures.map((feature) => {
+      const { id, properties, type, geometry } = feature;
+
+      return { id, properties, type, geometry };
+    });
+
+    console.log("updateMapDrawToolFeatures", drawControlsRef.current.getAll());
+    drawControlsRef.current.set({
+      type: "FeatureCollection",
+      features: drawToolsFeatures,
+    });
+  };
+
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
     const drawnFeatures = createdFeaturesArray.map((feature) => {
       makeDrawnFeature(feature, linkMode);
       return feature;
     });
-
-    // We must override the features in the draw control's internal state with ones
-    // that have our properties so that we can find them later in onDelete
-    const updateMapDrawToolFeatures = (updatedFeatures) =>
-      drawControlsRef.current.set({
-        type: "FeatureCollection",
-        features: updatedFeatures,
-      });
 
     if (linkMode === "lines") {
       editDispatch({
@@ -63,11 +71,13 @@ const EditComponentDrawTools = ({
       editDispatch({
         type: "update_drawn_lines",
         payload: updatedFeaturesArray,
+        callback: updateMapDrawToolFeatures,
       });
     } else {
       editDispatch({
         type: "update_drawn_points",
         payload: updatedFeaturesArray,
+        callback: updateMapDrawToolFeatures,
       });
     }
   };

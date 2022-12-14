@@ -144,17 +144,30 @@ export const useExistingDrawnFeatures = ({
   useEffect(() => {
     if (!drawControlsRef.current) return;
 
+    // Mapbox GL Draw requires valid features with properties or else it will throw an error
+    const drawnLinesWithProperties = draftEditComponent.feature_drawn_lines.map(
+      (feature) => ({
+        ...feature,
+        properties: {},
+      })
+    );
+    const drawnPointsWithProperties =
+      draftEditComponent.feature_drawn_lines.map((feature) => ({
+        ...feature,
+        properties: {},
+      }));
+
     if (linkMode === "lines") {
       drawControlsRef.current.set({
         type: "FeatureCollection",
-        features: draftEditComponent.feature_drawn_lines,
+        features: drawnLinesWithProperties,
       });
     }
 
     if (linkMode === "points") {
       drawControlsRef.current.set({
         type: "FeatureCollection",
-        features: draftEditComponent.feature_drawn_points,
+        features: drawnPointsWithProperties,
       });
     }
   }, [linkMode, draftEditComponent, drawControlsRef]);
