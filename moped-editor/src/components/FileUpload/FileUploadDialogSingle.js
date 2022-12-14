@@ -17,7 +17,7 @@ import FileUpload from "./FileUpload";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     padding: "0rem 0 2rem 0",
   },
@@ -40,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const FileUploadDialogSingle = props => {
+const FileUploadDialogSingle = (props) => {
   const classes = useStyles();
 
   /**
@@ -62,7 +62,7 @@ const FileUploadDialogSingle = props => {
    * Logic that needs to be run after the file has been uploaded to S3
    * @param {string} fileKey - The name of the file in S3
    */
-  const handleOnFileProcessed = fileKey => {
+  const handleOnFileProcessed = (fileKey) => {
     setFileKey(fileKey);
   };
 
@@ -81,7 +81,7 @@ const FileUploadDialogSingle = props => {
    * Handles the file name changes
    * @param {Object} e - The event object
    */
-  const handleFileNameChange = e => {
+  const handleFileNameChange = (e) => {
     setFileName(e.target.value);
   };
 
@@ -89,7 +89,7 @@ const FileUploadDialogSingle = props => {
    * Handles the file description changes
    * @param {Object} e - The event object
    */
-  const handleFileDescriptionChange = e => {
+  const handleFileDescriptionChange = (e) => {
     setFileDescription(e.target.value);
   };
 
@@ -97,7 +97,7 @@ const FileUploadDialogSingle = props => {
    * Handles the file type changes
    * @param {Object} e - The event object
    */
-  const handleFileTypeChange = e => {
+  const handleFileTypeChange = (e) => {
     setFileType(e.target.value);
   };
 
@@ -145,7 +145,7 @@ const FileUploadDialogSingle = props => {
    * @param {any} value - The value in question
    * @return {number}
    */
-  const fieldLength = value => {
+  const fieldLength = (value) => {
     if (value !== null && typeof value === "string") {
       return value.length;
     }
@@ -192,11 +192,11 @@ const FileUploadDialogSingle = props => {
         <Grid container>
           <Grid item xs={12} md={12}>
             <TextField
+              autoFocus
               className={classes.textField}
               id="standard-multiline-flexible"
               placeholder={"File name"}
               multiline={false}
-              rowsMax={1}
               value={null}
               onChange={handleFileNameChange}
               fullWidth
@@ -261,7 +261,7 @@ const FileUploadDialogSingle = props => {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancel} color="primary" autoFocus>
+        <Button onClick={handleCancel} color="primary">
           Cancel
         </Button>
         <Button

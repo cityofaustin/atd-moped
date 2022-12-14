@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Snackbar,
   Typography,
+  TextField,
 } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import {
@@ -23,6 +24,8 @@ import MaterialTable, {
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
+import { currencyFormatter } from "../../../utils/numberFormatters";
+import DollarAmountIntegerField from "./DollarAmountIntegerField";
 
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -81,14 +84,38 @@ const ProjectContractsTable = () => {
     {
       title: "Contractor",
       field: "contractor",
+      width: "20%",
+      // we use this custom component in order to autofocus the input
+      editComponent: (props) => (
+        <TextField
+          {...props}
+          onChange={(e) => props.onChange(e.target.value)}
+          autoFocus
+        />
+      ),
     },
     {
       title: "Contract #",
       field: "contract_number",
+      width: "20%",
     },
     {
       title: "Description",
       field: "description",
+      width: "25%",
+    },
+    {
+      title: "Work assignment ID",
+      field: "work_assignment_id",
+      width: "20%",
+    },
+    {
+      title: "Amount",
+      field: "contract_amount",
+      render: (row) => currencyFormatter.format(row.contract_amount),
+      editComponent: (props) => <DollarAmountIntegerField {...props} />,
+      type: "currency",
+      width: "15%",
     },
   ];
 
@@ -160,9 +187,7 @@ const ProjectContractsTable = () => {
           },
           body: {
             emptyDataSourceMessage: (
-              <Typography variant="body1">
-                No contracts to display
-              </Typography>
+              <Typography variant="body1">No contracts to display</Typography>
             ),
           },
         }}
@@ -198,6 +223,9 @@ const ProjectContractsTable = () => {
 
             // Remove unneeded variable
             delete updateContractData.__typename;
+            updateContractData.contract_amount = Number(
+              newData.contract_amount
+            );
 
             return updateContract({
               variables: updateContractData,
