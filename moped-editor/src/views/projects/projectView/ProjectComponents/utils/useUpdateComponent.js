@@ -263,7 +263,6 @@ export const useUpdateComponent = ({
       editState.draftEditComponent.feature_drawn_points.filter(
         (feature) => !feature.component_id
       );
-    debugger;
 
     const streetSegments = [];
     const intersections = [];
@@ -332,6 +331,33 @@ export const useUpdateComponent = ({
       _set: { is_deleted: true },
     }));
 
+    const drawnLinesDragUpdates = editState.drawnLineFeatureUpdates.map(
+      (feature) => ({
+        where: {
+          _and: {
+            component_id: {
+              _eq: editState.draftEditComponent.project_component_id,
+            },
+            id: { _eq: feature.id },
+          },
+        },
+        _set: { geography: feature.geometry },
+      })
+    );
+    const drawnPointsDragUpdates = editState.drawnPointFeatureUpdates.map(
+      (feature) => ({
+        where: {
+          _and: {
+            component_id: {
+              _eq: editState.draftEditComponent.project_component_id,
+            },
+            id: { _eq: feature.id },
+          },
+        },
+        _set: { geography: feature.geometry },
+      })
+    );
+
     const streetSegmentsWithComponentId = streetSegments.map((feature) => ({
       ...feature,
       component_id: editedComponentId,
@@ -365,6 +391,8 @@ export const useUpdateComponent = ({
         signals: signalsWithComponentId,
         drawnLines: drawnLinesWithComponentId,
         drawnPoints: drawnPointsWithComponentId,
+        drawnLinesDragUpdates,
+        drawnPointsDragUpdates,
       },
     })
       .then(() => {
