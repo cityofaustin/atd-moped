@@ -206,12 +206,10 @@ export default function MapView({ projectName, projectStatuses }) {
               {editState.isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
-                    clickedComponent?.moped_components?.component_name ||
                     editState.draftEditComponent?.moped_components
                       ?.component_name
                   }
                   secondaryText={
-                    clickedComponent?.moped_components?.component_subtype ||
                     editState.draftEditComponent?.moped_components
                       ?.component_subtype
                   }

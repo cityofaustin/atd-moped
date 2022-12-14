@@ -40,7 +40,8 @@ export default function ComponentListItem({
     }
   };
 
-  const onStartEditingComponent = () => editDispatch({ type: "start_edit" });
+  const onStartEditingComponent = () =>
+    editDispatch({ type: "start_edit", payload: component });
 
   return (
     <Box
