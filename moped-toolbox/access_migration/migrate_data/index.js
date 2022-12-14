@@ -136,20 +136,6 @@ async function main(env) {
     logger.info(`✅ Loaded metadata backup from '${METADATA_FNAME}'`);
   }
 
-  // Addresses a hopefully only test instance ECS-fussing situation
-  // Where the Hasura console falls out of sync with what DB triggers
-  // actually exist.
-  logger.info("Reloading metadata...");
-
-  try {
-    await reloadMetadata({ env });
-  } catch (error) {
-    logger.error({ message: error });
-    return;
-  }
-
-  logger.info("✅ Metadata reloaded");
-
   logger.info("Disabling event triggers...");
   removeEventTriggers(metadata);
 
@@ -209,7 +195,7 @@ async function main(env) {
 
   logger.info(`Inserting ${ready.length} projects...`);
 
-  const projectChunks = chunkArray(ready.slice(0, 100), 10);
+  const projectChunks = chunkArray(ready, 50);
 
   for (let i = 0; i < projectChunks.length; i++) {
     try {
