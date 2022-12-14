@@ -22,7 +22,7 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import { makeComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
+import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
@@ -95,11 +95,8 @@ export default function MapView({ projectName, projectStatuses }) {
     return data.moped_proj_components;
   }, [data]);
 
-  const featureCollectionsByComponentId = useMemo(() => {
-    if (!data?.project_geography) return {};
-
-    return makeComponentFeatureCollectionsMap(data.project_geography);
-  }, [data]);
+  const featureCollectionsByComponentId =
+    useComponentFeatureCollectionsMap(data);
 
   const {
     onStartCreatingComponent,
