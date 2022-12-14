@@ -1,0 +1,1 @@
+CREATE INDEX moped_proj_personnel_roles_project_personnel_id_idx ON moped_proj_personnel_roles (project_personnel_id);
