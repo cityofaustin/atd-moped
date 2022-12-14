@@ -159,21 +159,6 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    // If the clicked feature is drawn, use draw tools to edit it
-    // Is link mode set at this point?
-    // Check if the right conditions are met to show the edit draw tools
-    if (isDrawnExistingFeature(clickedFeature)) {
-      // Once we know it's drawn, we can use the draw tools to edit it
-      // Add state to toggle render of EditComponentDrawTools?
-      // Then load drawn features into the tool
-      // Use CRUD handlers and reducer to add/update features as we go
-      console.log("this is drawn", {
-        linkMode,
-        isEditingComponent,
-        draftEditComponent,
-      });
-    }
-
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
 

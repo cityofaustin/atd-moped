@@ -7,7 +7,6 @@ import {
   makeDrawnPointsInsertionData,
 } from "./makeFeatures";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
-import { getDrawId } from "./features";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -83,6 +82,46 @@ const editReducer = (state, action) => {
       action.callback(featuresWithNewPoints);
 
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
+    case "update_drawn_lines":
+      const updatedLineFeatures = action.payload;
+
+      const featureIdsToUpdate = updatedLineFeatures.map(
+        (feature) => feature.id
+      );
+
+      const drawnLineFeatureToUpdate =
+        state.draftEditComponent.feature_drawn_lines.find((feature) =>
+          featureIdsToUpdate.includes(feature.id)
+        );
+      const newGeometry = updatedLineFeatures.find(
+        (feature) => feature.id === drawnLineFeatureToUpdate.id
+      ).geometry;
+
+      const updatedDrawnLineFeature = {
+        ...drawnLineFeatureToUpdate,
+        geometry: newGeometry,
+      };
+      const unchangedDrawnLineFeatures =
+        state.draftEditComponent.feature_drawn_lines.filter(
+          (feature) => !featureIdsToUpdate.includes(feature.id)
+        );
+
+      const draftEditComponentWithDrawnLineUpdates = {
+        ...state.draftEditComponent,
+        feature_drawn_lines: [
+          ...unchangedDrawnLineFeatures,
+          updatedDrawnLineFeature,
+        ],
+      };
+
+      return {
+        ...state,
+        draftEditComponent: draftEditComponentWithDrawnLineUpdates,
+        drawnLineFeatureUpdates: [
+          ...state.drawnLineFeatureUpdates,
+          updatedDrawnLineFeature,
+        ],
+      };
     case "delete_drawn_lines":
       const deletedLineFeatures = action.payload;
 
@@ -140,6 +179,7 @@ export const useUpdateComponent = ({
     showEditAttributesDialog: false,
     showEditModeDialog: false,
     draftEditComponent: null,
+    drawnLineFeatureUpdates: [],
   });
 
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
@@ -177,6 +217,7 @@ export const useUpdateComponent = ({
       editState.draftEditComponent.feature_drawn_points.filter(
         (feature) => !feature.component_id
       );
+    debugger;
 
     const streetSegments = [];
     const intersections = [];

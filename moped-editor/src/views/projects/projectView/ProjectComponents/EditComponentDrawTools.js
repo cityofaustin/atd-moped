@@ -56,12 +56,23 @@ const EditComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    console.log("handle dragging of drawn features");
+    const wasComponentDragged = action === "move";
+    if (!wasComponentDragged) return;
+
+    if (linkMode === "lines") {
+      editDispatch({
+        type: "update_drawn_lines",
+        payload: updatedFeaturesArray,
+      });
+    } else {
+      editDispatch({
+        type: "update_drawn_points",
+        payload: updatedFeaturesArray,
+      });
+    }
   };
 
   const onDelete = ({ features: deletedFeaturesArray }) => {
-    console.log("soft delete existing features in draftEditComponent");
-
     if (linkMode === "lines") {
       editDispatch({
         type: "delete_drawn_lines",
