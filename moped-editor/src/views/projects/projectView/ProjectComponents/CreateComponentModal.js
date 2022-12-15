@@ -44,7 +44,7 @@ const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
       line_representation,
       internal_table,
       moped_subcomponents: subcomponents,
-      description,
+      description: description.length > 0 ? description : null,
       label: component_name,
       features: [],
     };

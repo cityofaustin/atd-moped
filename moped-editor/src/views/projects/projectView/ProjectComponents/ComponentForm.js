@@ -13,7 +13,7 @@ import {
 } from "./utils/form";
 
 const defaultFormValues = {
-  component: {},
+  component: null,
   subcomponents: [],
   description: "",
 };

@@ -4,39 +4,42 @@ import { featureTableFieldMap } from "./makeFeatures";
 /**
  * Create an object map of component feature collections by component id
  * Ex. { 1: { type: "FeatureCollection", features: [...] } }
- * @param {Array} components - components returned by GET_PROJECT_COMPONENTS query
+ * @param {Object} data - data returned by GET_PROJECT_COMPONENTS query
  * @returns {Object} - map of component feature collections by component id
  */
-export const makeComponentFeatureCollectionsMap = (components) => {
-  const componentGeographyMap = {};
+export const useComponentFeatureCollectionsMap = (data) =>
+  useMemo(() => {
+    if (!data?.project_geography) return {};
 
-  components.forEach((component) => {
-    const currentComponentId = component.component_id;
+    const componentGeographyMap = {};
 
-    const currentFeature = {
-      type: "Feature",
-      properties: { ...component.attributes },
-      geometry: component.geometry,
-    };
+    data.project_geography.forEach((component) => {
+      const currentComponentId = component.component_id;
 
-    if (!componentGeographyMap[currentComponentId]) {
-      componentGeographyMap[currentComponentId] = {
-        type: "FeatureCollection",
-        features: [currentFeature],
+      const currentFeature = {
+        type: "Feature",
+        properties: { ...component.attributes },
+        geometry: component.geometry,
       };
-    } else {
-      componentGeographyMap[currentComponentId] = {
-        type: "FeatureCollection",
-        features: [
-          ...componentGeographyMap[currentComponentId].features,
-          currentFeature,
-        ],
-      };
-    }
-  });
 
-  return componentGeographyMap;
-};
+      if (!componentGeographyMap[currentComponentId]) {
+        componentGeographyMap[currentComponentId] = {
+          type: "FeatureCollection",
+          features: [currentFeature],
+        };
+      } else {
+        componentGeographyMap[currentComponentId] = {
+          type: "FeatureCollection",
+          features: [
+            ...componentGeographyMap[currentComponentId].features,
+            currentFeature,
+          ],
+        };
+      }
+    });
+
+    return componentGeographyMap;
+  }, [data]);
 
 export const useComponentFeatureCollection = (component) =>
   useMemo(() => {

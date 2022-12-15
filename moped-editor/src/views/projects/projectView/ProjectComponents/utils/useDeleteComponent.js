@@ -17,14 +17,14 @@ export const useDeleteComponent = ({
       variables: { projectComponentId: clickedComponent.project_component_id },
     })
       .then(() => {
-        refetchProjectComponents();
+        refetchProjectComponents().then(() => {
+          setClickedComponent(null);
+          setIsDeletingComponent(false);
+        });
       })
       .catch((error) => {
         console.log(error);
       });
-
-    setClickedComponent(null);
-    setIsDeletingComponent(false);
   };
 
   return {

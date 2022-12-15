@@ -11,9 +11,12 @@ import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 const editReducer = (state, action) => {
   switch (action.type) {
     case "start_edit":
+      const draftEditComponent = action.payload;
+
       return {
         ...state,
         showEditModeDialog: true,
+        draftEditComponent,
       };
     case "start_attributes_edit":
       return {
@@ -26,7 +29,6 @@ const editReducer = (state, action) => {
         ...state,
         showEditModeDialog: false,
         isEditingComponent: true,
-        draftEditComponent: action.payload,
       };
     case "cancel_mode_edit":
       return {
@@ -237,7 +239,7 @@ export const useUpdateComponent = ({
     const linkMode = line_representation === true ? "lines" : "points";
 
     setLinkMode(linkMode);
-    editDispatch({ type: "start_map_edit", payload: clickedComponent });
+    editDispatch({ type: "start_map_edit" });
   };
 
   const onSaveEditedComponent = () => {
@@ -396,9 +398,10 @@ export const useUpdateComponent = ({
       },
     })
       .then(() => {
-        refetchProjectComponents();
-        setClickedComponent(null);
-        editDispatch({ type: "save_edit" });
+        refetchProjectComponents().then(() => {
+          setClickedComponent(null);
+          editDispatch({ type: "save_edit" });
+        });
       })
       .catch((error) => {
         console.log(error);

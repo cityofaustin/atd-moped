@@ -54,14 +54,13 @@ const EditComponentModal = ({
     })
       .then(() => {
         // Update component list item and clicked component state to keep UI up to date
-        refetchProjectComponents();
+        refetchProjectComponents().then(() => onClose());
         // Update clickedComponent with the attributes that were just edited
         setClickedComponent((prevComponent) => ({
           ...prevComponent,
           description,
           moped_proj_components_subcomponents: subcomponentsArray,
         }));
-        onClose();
       })
       .catch((error) => {
         console.log(error);

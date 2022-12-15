@@ -22,7 +22,7 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import { makeComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
+import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
@@ -95,11 +95,8 @@ export default function MapView({ projectName, projectStatuses }) {
     return data.moped_proj_components;
   }, [data]);
 
-  const featureCollectionsByComponentId = useMemo(() => {
-    if (!data?.project_geography) return {};
-
-    return makeComponentFeatureCollectionsMap(data.project_geography);
-  }, [data]);
+  const featureCollectionsByComponentId =
+    useComponentFeatureCollectionsMap(data);
 
   const {
     onStartCreatingComponent,
@@ -203,15 +200,13 @@ export default function MapView({ projectName, projectStatuses }) {
                     saveButtonText="Save"
                   />
                 )}
-              {editState.isEditingComponent && (
+              {editState.draftEditComponent && editState.isEditingComponent && (
                 <DraftComponentListItem
                   primaryText={
-                    clickedComponent?.moped_components?.component_name ||
                     editState.draftEditComponent?.moped_components
                       ?.component_name
                   }
                   secondaryText={
-                    clickedComponent?.moped_components?.component_subtype ||
                     editState.draftEditComponent?.moped_components
                       ?.component_subtype
                   }
@@ -221,16 +216,13 @@ export default function MapView({ projectName, projectStatuses }) {
                   saveButtonText="Save Edit"
                 />
               )}
-              {components.map((component) => {
-                const isExpanded =
-                  clickedComponent?.project_component_id ===
-                    component.project_component_id ||
-                  editState.draftEditComponent?.project_component_id ===
+              {!editState.isEditingComponent &&
+                !createState.isCreatingComponent &&
+                components.map((component) => {
+                  const isExpanded =
+                    clickedComponent?.project_component_id ===
                     component.project_component_id;
-                const isEditingThisComponent =
-                  isExpanded && editState.isEditingComponent;
-                return (
-                  !isEditingThisComponent && (
+                  return (
                     <ComponentListItem
                       key={component.project_component_id}
                       component={component}
@@ -242,9 +234,8 @@ export default function MapView({ projectName, projectStatuses }) {
                       isEditingComponent={editState.isEditingComponent}
                       isCreatingComponent={createState.isCreatingComponent}
                     />
-                  )
-                );
-              })}
+                  );
+                })}
             </List>
           </div>
         </Drawer>
