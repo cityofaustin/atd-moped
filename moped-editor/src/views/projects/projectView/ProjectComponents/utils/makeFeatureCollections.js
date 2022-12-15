@@ -4,7 +4,7 @@ import { featureTableFieldMap } from "./makeFeatures";
 /**
  * Create an object map of component feature collections by component id
  * Ex. { 1: { type: "FeatureCollection", features: [...] } }
- * @param {Array} components - components returned by GET_PROJECT_COMPONENTS query
+ * @param {Object} data - data returned by GET_PROJECT_COMPONENTS query
  * @returns {Object} - map of component feature collections by component id
  */
 export const useComponentFeatureCollectionsMap = (data) =>
