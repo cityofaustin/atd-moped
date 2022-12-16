@@ -2948,7 +2948,6 @@
       permission:
         check: {}
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -2963,7 +2962,6 @@
       permission:
         check: {}
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -2978,7 +2976,6 @@
     - role: moped-admin
       permission:
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -2993,7 +2990,6 @@
     - role: moped-editor
       permission:
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -3008,7 +3004,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -3024,7 +3019,6 @@
     - role: moped-admin
       permission:
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -3040,7 +3034,6 @@
     - role: moped-editor
       permission:
         columns:
-          - completed
           - date_added
           - is_current_phase
           - is_deleted
@@ -3063,15 +3056,14 @@
           columns: '*'
         update:
           columns:
-            - completed
-            - subphase_id
-            - project_id
-            - is_deleted
-            - phase_start
-            - date_added
-            - phase_description
-            - phase_end
             - is_current_phase
+            - date_added
+            - subphase_id
+            - phase_description
+            - project_id
+            - phase_start
+            - is_deleted
+            - phase_end
             - project_phase_id
             - phase_id
       retry_conf:
