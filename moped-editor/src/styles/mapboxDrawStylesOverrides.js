@@ -1,12 +1,15 @@
 import theme from "src/theme/index";
-import { pointsCircleRadiusStops } from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
+import {
+  COLORS,
+  pointsCircleRadiusStops,
+} from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
 
 export const activeLineWidth = 8;
 
 // Default Mapbox GL Draw styles with overrides from MUI theme
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
 // See https://docs.mapbox.com/mapbox-gl-js/style-spec/layers/
-const createDrawStylesOverrides = [
+const mapboxDrawStylesOverrides = [
   {
     id: "gl-draw-polygon-fill-inactive",
     type: "fill",
@@ -27,8 +30,8 @@ const createDrawStylesOverrides = [
     type: "fill",
     filter: ["all", ["==", "active", "true"], ["==", "$type", "Polygon"]],
     paint: {
-      "fill-color": theme.palette.map.draw.orange,
-      "fill-outline-color": theme.palette.map.draw.orange,
+      "fill-color": COLORS.orange,
+      "fill-outline-color": COLORS.orange,
       "fill-opacity": 0.1,
     },
   },
@@ -38,7 +41,7 @@ const createDrawStylesOverrides = [
     filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.draw.orange,
+      "circle-color": COLORS.orange,
     },
   },
   {
@@ -68,7 +71,7 @@ const createDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": theme.palette.map.draw.orange,
+      "line-color": COLORS.orange,
       "line-dasharray": [0.2, 2],
       "line-width": 2,
     },
@@ -86,7 +89,7 @@ const createDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.primary.main,
+      "line-color": COLORS.orange,
       "line-width": 4,
     },
   },
@@ -98,7 +101,7 @@ const createDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.primary.main,
+      "line-color": COLORS.orange,
       "line-width": activeLineWidth,
     },
   },
@@ -129,7 +132,7 @@ const createDrawStylesOverrides = [
     ],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.draw.orange,
+      "circle-color": COLORS.orange,
     },
   },
   {
@@ -160,8 +163,8 @@ const createDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 4,
-      "circle-stroke-color": theme.palette.primary.main,
-      "circle-color": theme.palette.secondary.main,
+      "circle-stroke-color": COLORS.orange,
+      "circle-color": COLORS.lightOrange,
     },
   },
   {
@@ -191,8 +194,8 @@ const createDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 8,
-      "circle-stroke-color": theme.palette.primary.main,
-      "circle-color": theme.palette.secondary.main,
+      "circle-stroke-color": COLORS.orange,
+      "circle-color": COLORS.lightOrange,
     },
   },
   {
@@ -242,4 +245,4 @@ const createDrawStylesOverrides = [
   },
 ];
 
-export default createDrawStylesOverrides;
+export default mapboxDrawStylesOverrides;

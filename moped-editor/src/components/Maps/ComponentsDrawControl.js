@@ -1,7 +1,7 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
-import { activeLineWidth } from "src/styles/createDrawStylesOverrides";
+import { activeLineWidth } from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here

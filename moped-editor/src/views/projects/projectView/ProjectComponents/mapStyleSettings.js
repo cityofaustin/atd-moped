@@ -15,6 +15,7 @@ export const COLORS = {
   steel: "#607d8f",
   white: "#fff",
   orange: "#ffb300",
+  lightOrange: "#ffc94a",
 };
 
 export const pointsCircleRadiusStops = {
