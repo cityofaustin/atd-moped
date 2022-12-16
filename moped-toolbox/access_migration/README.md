@@ -35,13 +35,14 @@ $ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/export_dat
 $ ./hasura-cluster start
 
 # from atd-moped/moped-editor
+$ nvm use
 $ npm run start
 ```
 
 2. Navigate to `./migrate_data` and install package dependencies:
 
 ```shell
-# optionally activate your node environment
+# requires node v18
 $ nvm use 
 # install packages
 $ npm install
