@@ -262,7 +262,6 @@ const ProjectPhases = ({
 
           const newPhasePayload = {
             project_id: projectId,
-            completed: false,
             phase_id: moped_phase.phase_id,
             ...rest,
           };
