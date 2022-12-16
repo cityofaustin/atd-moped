@@ -65,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
+    overflowWrap: "break-word",
   },
   fieldAuthor: {
     marginRight: ".25rem",
