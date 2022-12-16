@@ -14,7 +14,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_id
         is_current_phase
-        completion_percentage
         completed
       }
       moped_proj_components {
@@ -386,7 +385,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_phase_id
         is_current_phase
         project_id
-        completion_percentage
         completed
       }
     }
