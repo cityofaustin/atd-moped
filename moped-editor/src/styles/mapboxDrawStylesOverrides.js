@@ -2,9 +2,8 @@ import theme from "src/theme/index";
 import {
   COLORS,
   pointsCircleRadiusStops,
+  lineWidthStops,
 } from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
-
-export const activeLineWidth = 8;
 
 // Default Mapbox GL Draw styles with overrides from MUI theme
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -90,13 +89,7 @@ const mapboxDrawStylesOverrides = [
     },
     paint: {
       "line-color": COLORS.orange,
-      // "line-width": 4,
-      "line-width": {
-        stops: [
-          [10, 2],
-          [20, 10],
-        ],
-      },
+      "line-width": lineWidthStops,
     },
   },
   {
@@ -108,13 +101,7 @@ const mapboxDrawStylesOverrides = [
     },
     paint: {
       "line-color": COLORS.orange,
-      // "line-width": activeLineWidth,
-      "line-width": {
-        stops: [
-          [10, 2],
-          [20, 10],
-        ],
-      },
+      "line-width": lineWidthStops,
     },
   },
   {

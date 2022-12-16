@@ -130,7 +130,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineWidthStops,
-        "line-color": COLORS.bluePrimary,
+        "line-color": COLORS.orange,
       },
       layout: {
         "line-cap": "round",
@@ -145,11 +145,9 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.blueDark,
+        "circle-stroke-color": COLORS.orange,
         "circle-stroke-width": 2,
-        "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.blueLight,
-        "circle-opacity": 0.9,
+        "circle-color": COLORS.lightOrange,
       },
     },
   },

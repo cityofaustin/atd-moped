@@ -5,6 +5,7 @@ import Button from "@material-ui/core/Button";
 import ListItemText from "@material-ui/core/ListItemText";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
+import { COLORS } from "./mapStyleSettings";
 
 const DraftComponentListItem = ({
   primaryText,
@@ -18,7 +19,7 @@ const DraftComponentListItem = ({
     <Box
       borderLeft={7}
       style={{
-        borderColor: "#1276D1",
+        borderColor: COLORS.orange,
       }}
     >
       <ListItem dense>
