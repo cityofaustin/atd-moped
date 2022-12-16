@@ -159,6 +159,9 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
+    // If drawn feature is clicked, the draw tools take over and we don't need to do anything else
+    if (isDrawnExistingFeature(clickedFeature)) return;
+
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
 

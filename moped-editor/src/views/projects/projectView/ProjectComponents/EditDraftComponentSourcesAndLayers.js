@@ -27,8 +27,7 @@ const EditDraftComponentSourcesAndLayers = ({
           {...{
             ...MAP_STYLES["edit-draft-component-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["clicked-component-features-lines"].layerProps
-                .layout,
+              ...MAP_STYLES["edit-draft-component-lines"].layerProps.layout,
               visibility:
                 linkMode === "lines" && isEditingComponent ? "visible" : "none",
             },

@@ -7,12 +7,14 @@ export const useComponentFeatureCollectionFromMap = (
   featureCollectionsByComponentId
 ) =>
   useMemo(() => {
-    if (!component) return { type: "FeatureCollection", features: [] };
+    const emptyFeatureCollection = { type: "FeatureCollection", features: [] };
+
+    if (!component) return emptyFeatureCollection;
 
     const componentFeatureCollection =
       featureCollectionsByComponentId[component?.project_component_id];
 
-    return componentFeatureCollection;
+    return componentFeatureCollection || emptyFeatureCollection;
   }, [component, featureCollectionsByComponentId]);
 
 /**
