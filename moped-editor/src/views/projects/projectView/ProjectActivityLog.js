@@ -1,7 +1,6 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { useActivityLogLookupTables } from "../../../utils/activityLogHelpers";
 import {
   fieldFormat,
   getCreationLabel,
@@ -37,6 +36,7 @@ import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ActivityLogComponents/ProjectActivityEntry";
+import TagsActivityEntry from "./ActivityLogComponents/TagsActivityEntry";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -71,15 +71,13 @@ const useStyles = makeStyles((theme) => ({
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
+  // todo: see if this can be moved into a ContextProvider?
   const userList = {};
   const phaseList = {};
-
-  const { getLookups, lookupLoading, lookupError } =
-    useActivityLogLookupTables();
+  const tagList = {};
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    onCompleted: (data) => getLookups(data, "activity_log_lookup_tables"),
   });
 
   // const [activityId, setActivityId] = useState(null);
@@ -99,7 +97,7 @@ const ProjectActivityLog = () => {
   //   setActivityId(activityId);
   // };
 
-  if (loading || lookupLoading) return <CircularProgress />;
+  if (loading) return <CircularProgress />;
 
   /**
    * Get the number of items we retrieved
@@ -145,8 +143,8 @@ const ProjectActivityLog = () => {
           });
           outputEvent.description = [
             {
-              new: newData[changedField],
-              old: oldData[changedField],
+              new: newData,
+              old: oldData,
               field: changedField,
             },
           ];
@@ -180,10 +178,24 @@ const ProjectActivityLog = () => {
     data["moped_phases"].forEach((phase) => {
       phaseList[`${phase.phase_id}`] = phase.phase_name;
     });
+    data["moped_tags"].forEach((tag) => {
+      tagList[`${tag.id}`] = tag.name;
+    });
   }
 
+  const selectEntryComponent = (change) => {
+    switch (change.record_type) {
+      case "moped_project":
+        return <ProjectActivityEntry change={change} />;
+      case "moped_proj_tags":
+        return <TagsActivityEntry change={change} tagList={tagList} />;
+      default:
+        return <div>There is no matching component</div>;
+    }
+  };
+
   return (
-    <ApolloErrorHandler error={error || lookupError}>
+    <ApolloErrorHandler error={error}>
       <CardContent>
         <h2 className={classes.projectPageHeader}>Activity feed</h2>
         {getTotalItems() === 0 ? (
@@ -202,9 +214,6 @@ const ProjectActivityLog = () => {
                     User
                   </TableCell>
                   <TableCell align="left" className={classes.boldText}>
-                    Action
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
                     Change
                   </TableCell>
                   <TableCell align="left" />
@@ -212,6 +221,7 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {getDiffs(data["moped_activity_log"]).map((change) => {
+                  console.log(change.record_type)
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell
@@ -260,11 +270,8 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {change.record_type === "moped_project" ? (
-                          <ProjectActivityEntry
-                            change={change}
-                            getChangeIcon={getChangeIcon}
-                          />
+                        {["moped_project", "moped_proj_tags"].includes(change.record_type) ? (
+                          selectEntryComponent(change)
                         ) : (
                           <Box display="flex" p={0}>
                             <Box p={0}>
@@ -296,7 +303,6 @@ const ProjectActivityLog = () => {
                                     </Grid>
                                   )}
                                 {change.description.map((changeItem) => {
-                                  console.log(change);
                                   return (
                                     <Grid
                                       item

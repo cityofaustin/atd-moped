@@ -1,6 +1,8 @@
 import React from "react";
-
 import { Box, Icon, Typography, makeStyles } from "@material-ui/core";
+import {
+  getChangeIcon,
+} from "./../ProjectActivityLogTableMaps";
 
 const entryMap = {
   label: "Project",
@@ -49,6 +51,7 @@ const entryMap = {
     task_order: {
       label: "task order",
     },
+    // deprecated column, but keeping because historical activities depend on it
     work_assignment_id: {
       label: "work assignment ID",
     },
@@ -68,20 +71,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getEntryText = (change) => {
+  // project creation
   if (change.description.length === 0) {
     return `${change.record_data.data.new.project_name} created`;
   }
+  // adding a field
   if (change.description[0].old === null) {
     return `Added ${entryMap.fields[change.description[0].field].label} "${
       change.description[0].new
     }"`;
   }
+  // updating a field
   return `Changed ${entryMap.fields[change.description[0].field].label} from "${
     change.description[0].old
   }" to "${change.description[0].new}"`;
 };
 
-const ProjectActivityEntry = ({ change, getChangeIcon }) => {
+const ProjectActivityEntry = ({ change }) => {
   const classes = useStyles();
 
   return (
