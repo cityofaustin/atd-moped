@@ -2949,8 +2949,6 @@
         check: {}
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -2958,21 +2956,16 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
     - role: moped-editor
       permission:
         check: {}
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -2980,21 +2973,16 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -3002,21 +2990,16 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -3024,21 +3007,16 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -3046,13 +3024,10 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
   update_permissions:
@@ -3060,8 +3035,6 @@
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -3069,13 +3042,10 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
         check: {}
@@ -3083,8 +3053,6 @@
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
@@ -3092,13 +3060,10 @@
           - phase_end
           - phase_id
           - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
           - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
         check: {}
@@ -3112,24 +3077,19 @@
           columns: '*'
         update:
           columns:
-            - project_id
-            - started_by_user_id
-            - completed_by_user_id
-            - phase_order
-            - phase_start
-            - phase_end
-            - is_deleted
             - subphase_id
-            - phase_id
-            - completion_percentage
-            - phase_privacy
+            - phase_end
+            - phase_order
+            - phase_status
+            - is_deleted
+            - project_id
+            - phase_start
             - date_added
             - phase_description
             - is_current_phase
-            - completed
-            - phase_priority
             - project_phase_id
-            - phase_status
+            - phase_id
+            - completed
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3140,6 +3100,13 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_tags
     schema: public
