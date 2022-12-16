@@ -2955,9 +2955,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -2972,9 +2970,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -2989,9 +2985,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -3006,9 +3000,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -3023,9 +3015,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -3041,9 +3031,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -3059,9 +3047,7 @@
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
           - subphase_id
@@ -3077,19 +3063,17 @@
           columns: '*'
         update:
           columns:
+            - completed
             - subphase_id
-            - phase_end
-            - phase_order
-            - phase_status
-            - is_deleted
             - project_id
+            - is_deleted
             - phase_start
             - date_added
             - phase_description
+            - phase_end
             - is_current_phase
             - project_phase_id
             - phase_id
-            - completed
       retry_conf:
         interval_sec: 10
         num_retries: 0
