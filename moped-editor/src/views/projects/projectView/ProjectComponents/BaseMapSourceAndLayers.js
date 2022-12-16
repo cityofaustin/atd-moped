@@ -1,6 +1,6 @@
 import { Source, Layer } from "react-map-gl";
 import { basemaps } from "./mapSettings";
-import theme from "src/theme/index";
+import { COLORS } from "./mapStyleSettings";
 
 /**
  * Component that renders Mapbox source and layers needed for the aerial basemap
@@ -27,12 +27,12 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
           paint:
             basemapKey === "aerial"
               ? {
-                  "text-color": theme.palette.map.white,
-                  "text-halo-color": theme.palette.map.black,
+                  "text-color": COLORS.white,
+                  "text-halo-color": COLORS.black,
                   "text-halo-width": 1,
                 }
               : {
-                  "text-color": theme.palette.map.black,
+                  "text-color": COLORS.black,
                 },
         }}
       />

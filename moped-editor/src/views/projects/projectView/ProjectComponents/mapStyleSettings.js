@@ -1,8 +1,21 @@
 import { MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
-import theme from "src/theme/index";
 
 export const MAPBOX_PADDING_PIXELS = 10;
 export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
+
+export const COLORS = {
+  black: "#000",
+  mutedGray: "#a6a2a2",
+  pinkBright: "#fc0885",
+  pinkLight: "#fc74ba",
+  pinkDark: "#b5055f",
+  bluePrimary: "#1276D1",
+  blueDark: "#1069bc",
+  blueLight: "#a1cdf7",
+  steel: "#607d8f",
+  white: "#fff",
+  orange: "#ffb300",
+};
 
 export const pointsCircleRadiusStops = {
   stops: [
@@ -26,10 +39,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.pinkBright,
+        "circle-stroke-color": COLORS.pinkBright,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.pinkLight,
+        "circle-color": COLORS.pinkLight,
         "circle-opacity": 0.9,
       },
     },
@@ -50,8 +63,8 @@ export const MAP_STYLES = {
         "line-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
-          theme.palette.map.pinkDark,
-          theme.palette.map.pinkBright,
+          COLORS.pinkDark,
+          COLORS.pinkBright,
         ],
       },
       layout: {
@@ -67,10 +80,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.mutedGray,
+        "circle-stroke-color": COLORS.mutedGray,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.mutedGray,
+        "circle-color": COLORS.mutedGray,
         "circle-opacity": 0.9,
       },
     },
@@ -88,7 +101,7 @@ export const MAP_STYLES = {
             [20, 10],
           ],
         },
-        "line-color": theme.palette.map.mutedGray,
+        "line-color": COLORS.mutedGray,
       },
       layout: {
         "line-cap": "round",
@@ -103,7 +116,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": 20,
-        "line-color": theme.palette.map.white,
+        "line-color": COLORS.white,
         "line-opacity": 0,
       },
       layout: {
@@ -124,7 +137,7 @@ export const MAP_STYLES = {
             [20, 10],
           ],
         },
-        "line-color": theme.palette.map.bluePrimary,
+        "line-color": COLORS.bluePrimary,
       },
       layout: {
         "line-cap": "round",
@@ -139,10 +152,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.blueDark,
+        "circle-stroke-color": COLORS.blueDark,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.blueLight,
+        "circle-color": COLORS.blueLight,
         "circle-opacity": 0.9,
       },
     },
@@ -160,7 +173,7 @@ export const MAP_STYLES = {
             [20, 10],
           ],
         },
-        "line-color": theme.palette.map.orange,
+        "line-color": COLORS.orange,
       },
       layout: {
         "line-cap": "round",
@@ -175,10 +188,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.orange,
+        "circle-stroke-color": COLORS.orange,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.orange,
+        "circle-color": COLORS.orange,
         "circle-opacity": 0.9,
       },
     },
@@ -201,8 +214,8 @@ export const MAP_STYLES = {
         "line-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
-          theme.palette.map.black,
-          theme.palette.map.steel,
+          COLORS.black,
+          COLORS.steel,
         ],
       },
       layout: {
@@ -220,7 +233,7 @@ export const MAP_STYLES = {
       paint: {
         "line-opacity": 0,
         "line-width": 20,
-        "line-color": theme.palette.map.white,
+        "line-color": COLORS.white,
       },
       layout: {
         "line-cap": "round",
@@ -241,10 +254,10 @@ export const MAP_STYLES = {
           "case",
           ["boolean", ["feature-state", "hover"], false],
           "black",
-          theme.palette.map.steel,
+          COLORS.steel,
         ],
         "circle-opacity": 0.4,
-        "circle-stroke-color": theme.palette.map.steel,
+        "circle-stroke-color": COLORS.steel,
         "circle-stroke-width": 2,
       },
       minzoom: MIN_SELECT_FEATURE_ZOOM,
@@ -259,7 +272,7 @@ export const MAP_STYLES = {
       paint: {
         "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-opacity": 0,
-        "circle-color": theme.palette.map.black,
+        "circle-color": COLORS.black,
         "circle-opacity": 0,
       },
       minzoom: MIN_SELECT_FEATURE_ZOOM,
@@ -278,7 +291,7 @@ export const MAP_STYLES = {
             [20, 10],
           ],
         },
-        "line-color": theme.palette.map.bluePrimary,
+        "line-color": COLORS.bluePrimary,
       },
       layout: {
         "line-cap": "round",
@@ -293,10 +306,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": theme.palette.map.blueDark,
+        "circle-stroke-color": COLORS.blueDark,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": theme.palette.map.blueLight,
+        "circle-color": COLORS.blueLight,
         "circle-opacity": 0.9,
       },
     },

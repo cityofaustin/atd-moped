@@ -34,7 +34,6 @@ const EditComponentDrawTools = ({
       return { id, properties, type, geometry };
     });
 
-    console.log("updateMapDrawToolFeatures", drawControlsRef.current.getAll());
     drawControlsRef.current.set({
       type: "FeatureCollection",
       features: drawToolsFeatures,

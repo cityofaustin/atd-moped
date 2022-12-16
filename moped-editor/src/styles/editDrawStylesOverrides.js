@@ -1,6 +1,7 @@
 import theme from "src/theme/index";
 import { pointsCircleRadiusStops } from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
 import { activeLineWidth } from "./createDrawStylesOverrides";
+import { COLORS } from "src/views/projects/projectView/ProjectComponents/mapStyleSettings";
 
 // Default Mapbox GL Draw styles with overrides from MUI theme
 // See https://github.com/mapbox/mapbox-gl-draw/blob/main/src/lib/theme.js
@@ -26,8 +27,8 @@ const editDrawStylesOverrides = [
     type: "fill",
     filter: ["all", ["==", "active", "true"], ["==", "$type", "Polygon"]],
     paint: {
-      "fill-color": theme.palette.map.orange,
-      "fill-outline-color": theme.palette.map.orange,
+      "fill-color": COLORS.orange,
+      "fill-outline-color": COLORS.orange,
       "fill-opacity": 0.1,
     },
   },
@@ -37,7 +38,7 @@ const editDrawStylesOverrides = [
     filter: ["all", ["==", "$type", "Point"], ["==", "meta", "midpoint"]],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.orange,
+      "circle-color": COLORS.orange,
     },
   },
   {
@@ -67,7 +68,7 @@ const editDrawStylesOverrides = [
       "line-join": "round",
     },
     paint: {
-      "line-color": theme.palette.map.orange,
+      "line-color": COLORS.orange,
       "line-dasharray": [0.2, 2],
       "line-width": 2,
     },
@@ -85,7 +86,7 @@ const editDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.map.orange,
+      "line-color": COLORS.orange,
       "line-width": 4,
     },
   },
@@ -97,7 +98,7 @@ const editDrawStylesOverrides = [
       "line-cap": "square",
     },
     paint: {
-      "line-color": theme.palette.map.orange,
+      "line-color": COLORS.orange,
       "line-width": activeLineWidth,
     },
   },
@@ -128,7 +129,7 @@ const editDrawStylesOverrides = [
     ],
     paint: {
       "circle-radius": 0,
-      "circle-color": theme.palette.map.orange,
+      "circle-color": COLORS.orange,
     },
   },
   {
@@ -159,7 +160,7 @@ const editDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 4,
-      "circle-stroke-color": theme.palette.map.orange,
+      "circle-stroke-color": COLORS.orange,
       "circle-color": theme.palette.secondary.main,
     },
   },
@@ -190,7 +191,7 @@ const editDrawStylesOverrides = [
     paint: {
       "circle-radius": pointsCircleRadiusStops,
       "circle-stroke-width": 8,
-      "circle-stroke-color": theme.palette.map.orange,
+      "circle-stroke-color": COLORS.orange,
       "circle-color": theme.palette.secondary.main,
     },
   },
