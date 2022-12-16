@@ -25,6 +25,13 @@ export const pointsCircleRadiusStops = {
   ],
 };
 
+export const lineWidthStops = {
+  stops: [
+    [10, 2],
+    [20, 10],
+  ],
+};
+
 /**
  * Sets the interactivity and styles of the map layers
  * isInteractive - whether the layer is included in the map's interactiveLayerIds array
@@ -55,12 +62,7 @@ export const MAP_STYLES = {
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
@@ -96,12 +98,7 @@ export const MAP_STYLES = {
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.mutedGray,
       },
       layout: {
@@ -132,12 +129,7 @@ export const MAP_STYLES = {
       _featureIdProp: "id",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.bluePrimary,
       },
       layout: {
@@ -168,12 +160,7 @@ export const MAP_STYLES = {
       _featureIdProp: "id",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.orange,
       },
       layout: {
@@ -189,7 +176,7 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.orange,
+        "circle-stroke-color": COLORS.lightOrange,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
         "circle-color": COLORS.orange,
@@ -286,12 +273,7 @@ export const MAP_STYLES = {
       featureIdProp: "id",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.bluePrimary,
       },
       layout: {
