@@ -221,7 +221,6 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {getDiffs(data["moped_activity_log"]).map((change) => {
-                  console.log(change.record_type)
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell

@@ -71,9 +71,16 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const getEntryText = (change) => {
+  let changeData = {}
+  // the legacy way has the change data in event/data
+  if (change.record_data.event) {
+    changeData = change.record_data.event.data
+  } else {
+    changeData = change.record_data.data
+  }
   // project creation
   if (change.description.length === 0) {
-    return `${change.record_data.data.new.project_name} created`;
+    return `${changeData.new.project_name} created`;
   }
   // adding a field
   if (change.description[0].old === null) {
