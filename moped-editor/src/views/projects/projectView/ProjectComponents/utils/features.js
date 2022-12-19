@@ -123,7 +123,7 @@ export const isDrawnDraftFeature = (feature) =>
 
 /**
  * Determine if a feature is drawn by the user by checking that the source is
- * not CTN lines (ATD.)
+ * not CTN
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
@@ -132,8 +132,7 @@ export const isDrawnExistingFeature = (feature) =>
   !feature.source.includes("ATD_ADMIN.CTN");
 
 /**
- * Determine if a feature is drawn by the user by checking that the source is
- * not CTN lines (ATD.)
+ * Create a feature collection from the features in the a component being edited
  * @param {Object} drawControlsRef - ref for the draw controls
  * @param {Object} draftEditComponent - the component being edited
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
