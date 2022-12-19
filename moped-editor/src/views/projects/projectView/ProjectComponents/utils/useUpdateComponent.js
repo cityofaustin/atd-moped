@@ -5,6 +5,7 @@ import {
   makePointFeatureInsertionData,
   makeDrawnLinesInsertionData,
   makeDrawnPointsInsertionData,
+  addComponentIdForUpdate,
 } from "./makeFeatures";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
@@ -248,10 +249,11 @@ export const useUpdateComponent = ({
       featureTable
     ].filter((feature) => !feature.id);
     // Get the new features that are drawn lines or points (not associated with a component yet)
-    const drawnLines = editState.draftEditComponent.feature_drawn_lines.filter(
-      (feature) => !feature.component_id
-    );
-    const drawnPoints =
+    const newDrawnLines =
+      editState.draftEditComponent.feature_drawn_lines.filter(
+        (feature) => !feature.component_id
+      );
+    const newDrawnPoints =
       editState.draftEditComponent.feature_drawn_points.filter(
         (feature) => !feature.component_id
       );
@@ -268,14 +270,14 @@ export const useUpdateComponent = ({
         newFeaturesToInsert,
         streetSegments
       );
-      makeDrawnLinesInsertionData(drawnLines, drawnLinesToInsert);
+      makeDrawnLinesInsertionData(newDrawnLines, drawnLinesToInsert);
     } else if (featureTable === "feature_intersections") {
       makePointFeatureInsertionData(
         featureTable,
         newFeaturesToInsert,
         intersections
       );
-      makeDrawnPointsInsertionData(drawnPoints, drawnPointsToInsert);
+      makeDrawnPointsInsertionData(newDrawnPoints, drawnPointsToInsert);
     } else if (featureTable === "feature_signals") {
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
@@ -350,39 +352,32 @@ export const useUpdateComponent = ({
       })
     );
 
-    const streetSegmentsWithComponentId = streetSegments.map((feature) => ({
-      ...feature,
-      component_id: editedComponentId,
-    }));
-
-    const intersectionsWithComponentId = intersections.map((feature) => ({
-      ...feature,
-      component_id: editedComponentId,
-    }));
-
-    const signalsWithComponentId = signals.map((feature) => ({
-      ...feature,
-      component_id: editedComponentId,
-    }));
-
-    const drawnLinesWithComponentId = drawnLinesToInsert.map((feature) => ({
-      ...feature,
-      component_id: editedComponentId,
-    }));
-
-    const drawnPointsWithComponentId = drawnPointsToInsert.map((feature) => ({
-      ...feature,
-      component_id: editedComponentId,
-    }));
+    const streetSegmentInserts = addComponentIdForUpdate(
+      streetSegments,
+      editedComponentId
+    );
+    const intersectionInserts = addComponentIdForUpdate(
+      intersections,
+      editedComponentId
+    );
+    const signalInserts = addComponentIdForUpdate(signals, editedComponentId);
+    const drawnLineInserts = addComponentIdForUpdate(
+      drawnLinesToInsert,
+      editedComponentId
+    );
+    const drawnPointInserts = addComponentIdForUpdate(
+      drawnPointsToInsert,
+      editedComponentId
+    );
 
     updateComponentFeatures({
       variables: {
         updates: deletes,
-        streetSegments: streetSegmentsWithComponentId,
-        intersections: intersectionsWithComponentId,
-        signals: signalsWithComponentId,
-        drawnLines: drawnLinesWithComponentId,
-        drawnPoints: drawnPointsWithComponentId,
+        streetSegments: streetSegmentInserts,
+        intersections: intersectionInserts,
+        signals: signalInserts,
+        drawnLines: drawnLineInserts,
+        drawnPoints: drawnPointInserts,
         drawnLinesDragUpdates,
         drawnPointsDragUpdates,
       },
