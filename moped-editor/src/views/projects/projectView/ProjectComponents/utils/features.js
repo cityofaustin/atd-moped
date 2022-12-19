@@ -132,7 +132,7 @@ export const isDrawnExistingFeature = (feature) =>
   !feature.source.includes("ATD_ADMIN.CTN");
 
 /**
- * Create a feature collection from the features in the a component being edited
+ * Initialize the draw tools state with existing features of the component being edited
  * @param {Object} drawControlsRef - ref for the draw controls
  * @param {Object} draftEditComponent - the component being edited
  * @param {String} linkMode - tracks if we are editing "lines" or "points"

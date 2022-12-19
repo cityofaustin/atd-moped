@@ -86,25 +86,20 @@ const editReducer = (state, action) => {
       return { ...state, draftEditComponent: draftEditComponentWithNewPoints };
     case "update_drawn_lines":
       const updatedLineFeatures = action.payload;
-      const lineFeatureIdsToUpdate = updatedLineFeatures.map(
-        (feature) => feature.id
-      );
-
-      const drawnLineFeatureToUpdate =
-        state.draftEditComponent.feature_drawn_lines.find((feature) =>
-          lineFeatureIdsToUpdate.includes(feature.id)
+      // We are only updating one feature at a time
+      const lineFeatureToUpdate = updatedLineFeatures[0];
+      const newLineGeometry = lineFeatureToUpdate.geometry;
+      const existingDrawnLineFeatureToUpdate =
+        state.draftEditComponent.feature_drawn_lines.find(
+          (feature) => feature.id === lineFeatureToUpdate.id
         );
-      const newLineGeometry = updatedLineFeatures.find(
-        (feature) => feature.id === drawnLineFeatureToUpdate.id
-      ).geometry;
-
       const updatedDrawnLineFeature = {
-        ...drawnLineFeatureToUpdate,
+        ...existingDrawnLineFeatureToUpdate,
         geometry: newLineGeometry,
       };
       const unchangedDrawnLineFeatures =
         state.draftEditComponent.feature_drawn_lines.filter(
-          (feature) => !lineFeatureIdsToUpdate.includes(feature.id)
+          (feature) => feature.id !== lineFeatureToUpdate.id
         );
 
       const draftEditComponentWithDrawnLineUpdates = {
@@ -127,25 +122,20 @@ const editReducer = (state, action) => {
       };
     case "update_drawn_points":
       const updatedPointFeatures = action.payload;
-      const pointFeatureIdsToUpdate = updatedPointFeatures.map(
-        (feature) => feature.id
-      );
-
-      const drawnPointFeatureToUpdate =
-        state.draftEditComponent.feature_drawn_points.find((feature) =>
-          pointFeatureIdsToUpdate.includes(feature.id)
+      // We are only updating one feature at a time
+      const pointFeatureToUpdate = updatedPointFeatures[0];
+      const newPointGeometry = pointFeatureToUpdate.geometry;
+      const existingDrawnPointFeatureToUpdate =
+        state.draftEditComponent.feature_drawn_points.find(
+          (feature) => feature.id === pointFeatureToUpdate.id
         );
-      const newPointGeometry = updatedPointFeatures.find(
-        (feature) => feature.id === drawnPointFeatureToUpdate.id
-      ).geometry;
-
       const updatedDrawnPointFeature = {
-        ...drawnPointFeatureToUpdate,
+        ...existingDrawnPointFeatureToUpdate,
         geometry: newPointGeometry,
       };
       const unchangedDrawnPointFeatures =
         state.draftEditComponent.feature_drawn_points.filter(
-          (feature) => !pointFeatureIdsToUpdate.includes(feature.id)
+          (feature) => feature.id !== pointFeatureToUpdate.id
         );
 
       const draftEditComponentWithDrawnPointUpdates = {
