@@ -1,14 +1,4 @@
 export const ProjectActivityLogTableMaps = {
-  moped_project: {
-    // this needs "fields" because buildLookupQuery looks for fields to find the lookup tables
-    fields: {
-      project_title: {
-        icon: "",
-        label: "title",
-        type: "text",
-      }
-    }
-  },
   moped_proj_entities: {
     label: "Entity",
     fields: {

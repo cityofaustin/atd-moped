@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
-  // todo: see if this can be moved into a ContextProvider?
+  // todo: see if this should be moved into a ContextProvider?
   const userList = {};
   const phaseList = {};
   const tagList = {};

@@ -293,7 +293,7 @@ function __hasura_server_ready() {
 # if not, it waits 1 second and tries again (up to 60 seconds)
 #
 function __wait_server_ready() {
-  INITIALIZATION_TIMEOUT_LIMIT=90
+  INITIALIZATION_TIMEOUT_LIMIT=60
   INITIALIZATION_COUNT=1
   while [ "$(__hasura_server_ready)" = "FALSE" ]; do
     echo -ne "Hasura server not ready, please wait. ${INITIALIZATION_COUNT}/${INITIALIZATION_TIMEOUT_LIMIT} 🕔\r";
