@@ -57,6 +57,7 @@ const CreateComponentDrawTools = ({
       type: "delete_drawn_features",
       payload: deletedFeaturesArray,
     });
+    setIsDrawing(false);
   };
 
   const onModeChange = ({ mode }) => {

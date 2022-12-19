@@ -93,6 +93,7 @@ const EditComponentDrawTools = ({
         payload: deletedFeaturesArray,
       });
     }
+    setIsDrawing(false);
   };
 
   const onModeChange = ({ mode }) => {
