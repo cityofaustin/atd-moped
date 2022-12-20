@@ -57,8 +57,13 @@ const editReducer = (state, action) => {
       return { ...state, draftEditComponent: updatedDraftEditComponent };
     case "add_drawn_line":
       const newDrawnLineFeatures = action.payload;
+      // Filter duplicates in the case we update an unsaved feature by dragging
+      const existingDrawnLineFeatures =
+        state.draftEditComponent.feature_drawn_lines.filter(
+          (feature) => feature.id !== newDrawnLineFeatures[0].id
+        );
       const featuresWithNewLines = [
-        ...state.draftEditComponent.feature_drawn_lines,
+        ...existingDrawnLineFeatures,
         ...newDrawnLineFeatures,
       ];
 
@@ -72,8 +77,13 @@ const editReducer = (state, action) => {
       return { ...state, draftEditComponent: draftEditComponentWithNewLines };
     case "add_drawn_point":
       const newDrawnPointFeatures = action.payload;
+      // Filter duplicates in the case we update an unsaved feature by dragging
+      const existingDrawnPointFeatures =
+        state.draftEditComponent.feature_drawn_points.filter(
+          (feature) => feature.id !== newDrawnPointFeatures[0].id
+        );
       const featuresWithNewPoints = [
-        ...state.draftEditComponent.feature_drawn_points,
+        ...existingDrawnPointFeatures,
         ...newDrawnPointFeatures,
       ];
 
