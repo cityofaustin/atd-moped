@@ -117,6 +117,7 @@ export default function MapView({ projectName, projectStatuses }) {
     onSaveEditedComponent,
     onCancelComponentMapEdit,
     onEditFeatures,
+    doesDraftEditComponentHaveFeatures,
   } = useUpdateComponent({
     components,
     clickedComponent,
@@ -212,7 +213,7 @@ export default function MapView({ projectName, projectStatuses }) {
                   }
                   onSave={onSaveEditedComponent}
                   onCancel={onCancelComponentMapEdit}
-                  saveButtonDisabled={false}
+                  saveButtonDisabled={!doesDraftEditComponentHaveFeatures}
                   saveButtonText="Save Edit"
                 />
               )}
