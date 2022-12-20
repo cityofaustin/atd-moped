@@ -66,27 +66,41 @@ const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: 700,
   },
+  strikeText: {
+    textDecoration: "line-through",
+  },
 }));
 
-const getEntryText = (change, legacyVersion) => {
+const getEntryText = (change, legacyVersion, classes) => {
   // adding a field
   if (change.description[0].old === null) {
-    return `Added ${entryMap.fields[change.description[0].field].label} "${
-      change.description[0].new
-    }"`;
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Added {entryMap.fields[change.description[0].field].label}{" "}
+        {change.description[0].new}
+      </Typography>
+    );
   }
 
   // updating a field
   if (legacyVersion) {
-    return `Changed ${
-      entryMap.fields[change.description[0].field].label
-    } from "${change.description[0].old}" to "${change.description[0].new}"`;
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Changed {entryMap.fields[change.description[0].field].label} from "
+        <span className={classes.strikeText}>{change.description[0].old}</span>"{" "}
+        to "{change.description[0].new}"
+      </Typography>
+    );
   } else {
-    return `Changed ${
-      entryMap.fields[change.description[0].field].label
-    } from "${change.description[0].old[change.description[0].field]}" to "${
-      change.description[0].new[change.description[0].field]
-    }"`;
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Changed {entryMap.fields[change.description[0].field].label} from "
+        <span className={classes.strikeText}>
+          {change.description[0].old[change.description[0].field]}
+        </span>
+        " to "{change.description[0].new[change.description[0].field]}";
+      </Typography>
+    );
   }
 };
 
@@ -126,9 +140,7 @@ const ProjectActivityEntry = ({ change }) => {
         <span class="material-symbols-outlined">summarize</span>
       </Box>
       <Box p={0} flexGrow={1}>
-        <Typography variant="body2" className={classes.entryText}>
-          {getEntryText(change, legacyVersion)}
-        </Typography>
+        {getEntryText(change, legacyVersion, classes)}
       </Box>
     </Box>
   );
