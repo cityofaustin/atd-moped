@@ -786,10 +786,9 @@ export const ProjectActivityLogTableMaps = {
           fieldLabel: "id",
           fieldValues: ["name"],
         },
-      }
-
-    }
-  }
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
@@ -891,7 +890,7 @@ export const ProjectActivityLogCreateDescriptions = {
     },
   },
   moped_project_files: {
-    label: record =>
+    label: (record) =>
       `New file '${record.record_data.event.data.new.file_name}'`,
   },
   moped_proj_milestones: {
@@ -948,13 +947,11 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_tags: {
     label: (record, userList) => {
       // temporary, I have ideas on how to get the tag name here
-      return (
-        "New tag added"
-      );
+      return "New tag added";
     },
   },
   generic: {
-    label: record => {
+    label: (record) => {
       return "Added";
     },
   },
@@ -999,7 +996,7 @@ export const getMappedValue = (type, field, value) =>
  * @param {string} type - The name of the table
  * @return {string}
  */
-export const getRecordTypeLabel = type => {
+export const getRecordTypeLabel = (type) => {
   return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
 };
 
