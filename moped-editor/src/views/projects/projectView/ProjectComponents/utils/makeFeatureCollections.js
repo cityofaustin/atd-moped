@@ -49,7 +49,7 @@ export const getAllComponentFeatures = (component) => {
       allComponentFeatures.push(component[key]);
   });
 
-  return allComponentFeatures;
+  return allComponentFeatures.flat();
 };
 
 export const useComponentFeatureCollection = (component) =>
@@ -62,13 +62,8 @@ export const useComponentFeatureCollection = (component) =>
 
     const allComponentFeatures = getAllComponentFeatures(component);
 
-    Object.keys(featureTableFieldMap).forEach((key) => {
-      if (component.hasOwnProperty(key))
-        allComponentFeatures.push(component[key]);
-    });
-
     // Make features valid GeoJSON by adding type and properties attributes
-    const geoJsonFeatures = allComponentFeatures.flat().map((component) => ({
+    const geoJsonFeatures = allComponentFeatures.map((component) => ({
       ...component,
       type: "Feature",
       properties: {},
