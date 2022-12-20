@@ -68,6 +68,8 @@ const CommentInputQuill = ({
               </div>
             )}
             <ProjectSaveButton
+              // disable save button if no text after removing html tags
+              disabled={!noteText.replace(/(<([^>]+)>)/gi, "")}
               label={<>Save</>}
               loading={commentAddLoading}
               success={commentAddSuccess}
