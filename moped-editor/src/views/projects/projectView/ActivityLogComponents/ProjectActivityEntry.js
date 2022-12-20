@@ -1,8 +1,6 @@
 import React from "react";
-import { Box, Icon, Typography, makeStyles } from "@material-ui/core";
-import {
-  getChangeIcon,
-} from "./../ProjectActivityLogTableMaps";
+import { Box, Typography, makeStyles } from "@material-ui/core";
+import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
 
 const entryMap = {
   label: "Project",
@@ -67,49 +65,73 @@ const useStyles = makeStyles((theme) => ({
   },
   boldText: {
     fontWeight: 700,
-  }
+  },
 }));
 
-const getEntryText = (change) => {
-  let changeData = {}
-  // the legacy way has the change data in event/data
-  if (change.record_data.event) {
-    changeData = change.record_data.event.data
-  } else {
-    changeData = change.record_data.data
-  }
-  // project creation
-  if (change.description.length === 0) {
-    return `${changeData.new.project_name} created`;
-  }
+const getEntryText = (change, legacyVersion) => {
   // adding a field
   if (change.description[0].old === null) {
     return `Added ${entryMap.fields[change.description[0].field].label} "${
       change.description[0].new
     }"`;
   }
+
   // updating a field
-  return `Changed ${entryMap.fields[change.description[0].field].label} from "${
-    change.description[0].old
-  }" to "${change.description[0].new}"`;
+  if (legacyVersion) {
+    return `Changed ${
+      entryMap.fields[change.description[0].field].label
+    } from "${change.description[0].old}" to "${change.description[0].new}"`;
+  } else {
+    return `Changed ${
+      entryMap.fields[change.description[0].field].label
+    } from "${change.description[0].old[change.description[0].field]}" to "${
+      change.description[0].new[change.description[0].field]
+    }"`;
+  }
 };
 
 const ProjectActivityEntry = ({ change }) => {
   const classes = useStyles();
 
+  let changeData = {};
+  // the legacy way has the change data in event/data.
+  // In the new schema, event is undefined
+  const legacyVersion = !!change.record_data.event;
+
+  if (legacyVersion) {
+    changeData = change.record_data.event.data;
+  } else {
+    changeData = change.record_data.data;
+  }
+
+  // project creation
+  if (change.description.length === 0) {
+    return (
+      <Box display="flex" p={0}>
+        <Box p={0}>
+          <BeenhereOutlinedIcon />
+        </Box>
+        <Box p={0} flexGrow={1}>
+          <Typography variant="body2" className={classes.entryText}>
+            {changeData.new.project_name} created
+          </Typography>
+        </Box>
+      </Box>
+    );
+  }
+
   return (
     <Box display="flex" p={0}>
       <Box p={0}>
-        <Icon>{getChangeIcon(change.operation_type, change.record_type)}</Icon>
+        <span class="material-symbols-outlined">summarize</span>
       </Box>
       <Box p={0} flexGrow={1}>
         <Typography variant="body2" className={classes.entryText}>
-          {getEntryText(change)}
+          {getEntryText(change, legacyVersion)}
         </Typography>
       </Box>
     </Box>
   );
 };
-
 
 export default ProjectActivityEntry;
