@@ -41,6 +41,17 @@ export const useComponentFeatureCollectionsMap = (data) =>
     return componentGeographyMap;
   }, [data]);
 
+export const getAllComponentFeatures = (component) => {
+  const allComponentFeatures = [];
+
+  Object.keys(featureTableFieldMap).forEach((key) => {
+    if (component.hasOwnProperty(key))
+      allComponentFeatures.push(component[key]);
+  });
+
+  return allComponentFeatures;
+};
+
 export const useComponentFeatureCollection = (component) =>
   useMemo(() => {
     if (component === null)
@@ -49,7 +60,7 @@ export const useComponentFeatureCollection = (component) =>
         features: [],
       };
 
-    const allComponentFeatures = [];
+    const allComponentFeatures = getAllComponentFeatures(component);
 
     Object.keys(featureTableFieldMap).forEach((key) => {
       if (component.hasOwnProperty(key))
