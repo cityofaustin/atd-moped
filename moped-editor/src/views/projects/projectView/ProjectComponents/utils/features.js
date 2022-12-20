@@ -175,6 +175,11 @@ export const useExistingDrawnFeatures = ({
   }, [linkMode, draftEditComponent, drawControlsRef]);
 };
 
+/**
+ * Track whether a draft edit component has features or not
+ * @param {Object} draftEditComponent - the draft component storing feature edits
+ * @returns {Boolean} - does the draft component have features
+ */
 export const useDoesDraftEditComponentHaveFeatures = (draftEditComponent) => {
   const [
     doesDraftEditComponentHaveFeatures,
