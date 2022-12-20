@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from "react";
+import { useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import {
   makeLineStringFeatureInsertionData,
@@ -7,7 +7,7 @@ import {
   makeDrawnPointsInsertionData,
   addComponentIdForUpdate,
 } from "./makeFeatures";
-import { getAllComponentFeatures } from "./makeFeatureCollections";
+import { useDoesDraftEditComponentHaveFeatures } from "./features";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
 const editReducer = (state, action) => {
@@ -232,23 +232,8 @@ export const useUpdateComponent = ({
     drawnPointFeatureUpdates: [],
   });
 
-  const [
-    doesDraftEditComponentHaveFeatures,
-    setDoesDraftEditComponentHaveFeatures,
-  ] = useState(false);
-
-  useEffect(() => {
-    if (editState.draftEditComponent === null) return;
-
-    const allDraftComponentFeatures = getAllComponentFeatures(
-      editState.draftEditComponent
-    );
-    const doesComponentHaveFeatures = Boolean(
-      allDraftComponentFeatures.length > 0
-    );
-
-    setDoesDraftEditComponentHaveFeatures(doesComponentHaveFeatures);
-  }, [editState.draftEditComponent]);
+  const doesDraftEditComponentHaveFeatures =
+    useDoesDraftEditComponentHaveFeatures(editState.draftEditComponent);
 
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
 
