@@ -7,8 +7,6 @@ import {
   createSummaryMapLayers,
   getSummaryMapInteractiveIds,
   MAPBOX_TOKEN,
-  mapStyles,
-  renderTooltip,
   countFeatures,
   useHoverLayer,
   useFeatureCollectionToFitBounds,
@@ -16,16 +14,7 @@ import {
   mapConfig,
 } from "../../../../utils/mapHelpers";
 
-const useStyles = makeStyles({
-  locationCountText: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-  },
-  toolTip: mapStyles.toolTipStyles,
-});
-
 const ProjectSummaryMap = ({ projectFeatureCollection }) => {
-  const classes = useStyles();
   const mapRef = useRef();
   const featureCount = countFeatures(projectFeatureCollection);
 
@@ -106,8 +95,6 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
         */}
         {projectFeatureCollection &&
           createSummaryMapLayers(projectFeatureCollection)}
-        {/* Draw tooltip on feature hover */}
-        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
       </Map>
     </Box>
   );
