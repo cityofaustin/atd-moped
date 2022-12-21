@@ -29,6 +29,13 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
   const mapRef = useRef();
   const featureCount = countFeatures(projectFeatureCollection);
 
+  // TODO:
+  // 1. Add project geography to summary query? Or add here so we only fetch once?
+  // 2. Update map to use the project
+  // 3. Use useZoomToExistingComponents hook to zoom to project geography
+  // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
+  // 5. Update map so it has same limitations as the project map (no zooming out past a certain point, etc)
+
   /**
    * Make use of a custom hook that returns a vector tile layer hover event handler
    * and the details to place and populate a tooltip.
