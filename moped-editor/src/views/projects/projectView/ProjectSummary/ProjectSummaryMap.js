@@ -20,7 +20,7 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
 
   // TODO:
   // 1. Add project geography to summary query? Or add here so we only fetch once?
-  // 2. Update map to use the project
+  // 2. Update map to use the project geography
   // 3. Use useZoomToExistingComponents hook to zoom to project geography
   // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
   // 5. Update map so it has same limitations as the project map (no zooming out past a certain point, etc)
@@ -68,8 +68,6 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           interactiveLayerIds={getSummaryMapInteractiveIds(
             projectFeatureCollection
           )}
-          /* Gets and sets data from a map feature used to populate and place a tooltip */
-          onMouseMove={handleLayerHover}
           /* Updates state of viewport on zoom, scroll, and other events */
           onMove={(e) => handleViewportChange(e.viewState)}
           mapStyle={basemaps.streets}

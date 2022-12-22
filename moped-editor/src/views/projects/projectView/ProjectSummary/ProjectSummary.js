@@ -116,7 +116,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [mapError, setMapError] = useState(false);
   const [snackbarState, setSnackbarState] = useState(false);
 
   /**
