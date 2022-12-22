@@ -75,6 +75,7 @@ const ProjectActivityLog = () => {
   const userList = {};
   const phaseList = {};
   const tagList = {};
+  const entityList = {};
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
@@ -181,12 +182,15 @@ const ProjectActivityLog = () => {
     data["moped_tags"].forEach((tag) => {
       tagList[`${tag.id}`] = tag.name;
     });
+    data["moped_entity"].forEach((entity) => {
+      entityList[`${entity.entity_id}`] = entity.entity_name;
+    });
   }
 
   const selectEntryComponent = (change) => {
     switch (change.record_type) {
       case "moped_project":
-        return <ProjectActivityEntry change={change} />;
+        return <ProjectActivityEntry change={change} entityList={entityList}/>;
       case "moped_proj_tags":
         return <TagsActivityEntry change={change} tagList={tagList} />;
       default:

@@ -34,13 +34,14 @@ const entryMap = {
       label: "contractor",
     },
     project_sponsor: {
-      label: "sponsor ID",
+      label: "project sponsor",
+      lookup: "moped_entity",
     },
     project_website: {
       label: "project website",
     },
     knack_project_id: {
-      label: "knack internal ID",
+      label: "Knack internal ID",
     },
     // deprecated column, but keeping because historical activities depend on it
     purchase_order_number: {
@@ -55,6 +56,13 @@ const entryMap = {
     },
     parent_project_id: {
       label: "parent project id",
+    },
+    interim_project_id: {
+      label: "Interim MPD (Access) ID",
+    },
+    project_lead_id: {
+      label: "project lead",
+      lookup: "moped_entity",
     },
   },
 };
@@ -83,6 +91,7 @@ const getEntryText = (change, legacyVersion, classes) => {
   }
 
   // updating a field
+  // the legacy version has only a string as the value in "old"
   if (legacyVersion) {
     return (
       <Typography variant="body2" className={classes.entryText}>
@@ -92,6 +101,7 @@ const getEntryText = (change, legacyVersion, classes) => {
       </Typography>
     );
   } else {
+    // the updated version contains an object with the entire state
     return (
       <Typography variant="body2" className={classes.entryText}>
         Changed {entryMap.fields[change.description[0].field].label} from "
@@ -104,7 +114,41 @@ const getEntryText = (change, legacyVersion, classes) => {
   }
 };
 
-const ProjectActivityEntry = ({ change }) => {
+const getEntryTextWithLookup = (change, legacyVersion, classes, entityList) => {
+  // adding a new field
+  if (change.description[0].old === null) {
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Added {entityList[change.description[0].new]} as{" "}
+        {entryMap.fields[change.description[0].field].label}
+      </Typography>
+    );
+  }
+
+  // updating a field
+  if (legacyVersion) {
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Changed {entryMap.fields[change.description[0].field].label} from "
+        <span className={classes.strikeText}>{entityList[change.description[0].old]}</span>"{" "}
+        to "{entityList[change.description[0].new]}"
+      </Typography>
+    );
+  } else {
+    return (
+      <Typography variant="body2" className={classes.entryText}>
+        Changed {entryMap.fields[change.description[0].field].label} from "
+        <span className={classes.strikeText}>
+          {entityList[change.description[0].old[change.description[0].field]]}
+        </span>
+        " to "
+        {entityList[change.description[0].new[change.description[0].field]]}";
+      </Typography>
+    );
+  }
+};
+
+const ProjectActivityEntry = ({ change, entityList }) => {
   const classes = useStyles();
 
   let changeData = {};
@@ -137,10 +181,12 @@ const ProjectActivityEntry = ({ change }) => {
   return (
     <Box display="flex" p={0}>
       <Box p={0}>
-        <span class="material-symbols-outlined">summarize</span>
+        <span className="material-symbols-outlined">summarize</span>
       </Box>
       <Box p={0} flexGrow={1}>
-        {getEntryText(change, legacyVersion, classes)}
+        {entryMap.fields[change.description[0].field]?.lookup
+          ? getEntryTextWithLookup(change, legacyVersion, classes, entityList)
+          : getEntryText(change, legacyVersion, classes)}
       </Box>
     </Box>
   );
