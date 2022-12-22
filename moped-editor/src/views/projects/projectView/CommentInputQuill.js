@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Box, Button, Container, Grid } from "@material-ui/core";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -14,7 +14,7 @@ const quillModules = {
   ],
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     backgroundColor: theme.palette.background.paper,
@@ -37,6 +37,12 @@ const CommentInputQuill = ({
   cancelCommentEdit,
 }) => {
   const classes = useStyles();
+  const ref = useRef();
+
+  useEffect(() => {
+    // autofocuses the quill input
+    ref?.current.focus();
+  }, []);
 
   return (
     <Container>
@@ -48,6 +54,7 @@ const CommentInputQuill = ({
               value={noteText}
               onChange={setNoteText}
               modules={quillModules}
+              ref={ref}
             />
           </Box>
         </Grid>

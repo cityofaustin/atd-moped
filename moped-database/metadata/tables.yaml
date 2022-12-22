@@ -3301,6 +3301,13 @@
           table:
             name: moped_proj_components
             schema: public
+    - name: moped_proj_contracts
+      using:
+        foreign_key_constraint_on:
+          column: project_id
+          table:
+            name: moped_proj_contract
+            schema: public
     - name: moped_proj_funding
       using:
         foreign_key_constraint_on:

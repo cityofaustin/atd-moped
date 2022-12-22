@@ -1,0 +1,1 @@
+DROP INDEX moped_proj_tags_project_id_idx;

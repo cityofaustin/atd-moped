@@ -41,8 +41,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
     }
     moped_entity(order_by: { entity_name: asc }) {
       entity_id
-      entity_name
-     
+      entity_name     
     }
   }
 `;
