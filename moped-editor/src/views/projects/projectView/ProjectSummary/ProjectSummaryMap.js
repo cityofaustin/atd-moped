@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
@@ -10,23 +10,39 @@ import {
   mapParameters,
   initialViewState,
 } from "../ProjectComponents/mapSettings";
-import { countFeatures } from "../../../../utils/mapHelpers";
+import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-const ProjectSummaryMap = ({ projectFeatureCollection }) => {
+const ProjectSummaryMap = ({ data }) => {
   const mapRef = useRef();
   const [basemapKey, setBasemapKey] = useState("streets");
+  console.log(data);
 
-  const featureCount = countFeatures(projectFeatureCollection);
+  const projectFeatureCollection = useMemo(() => {
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: [],
+    };
+
+    if (!data?.project_geography) return;
+
+    const projectGeographyGeoJSONFeatures = data.project_geography.map(
+      (feature) => makeFeatureFromProjectGeographyRecord(feature)
+    );
+
+    return { ...featureCollection, features: projectGeographyGeoJSONFeatures };
+  }, [data]);
+
+  const areThereComponentFeatures =
+    projectFeatureCollection.features.length > 0;
 
   // TODO:
-  // 1. Add project geography to summary query? Or add here so we only fetch once?
   // 3. Use useZoomToExistingComponents hook to zoom to project geography
   // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
 
   return (
     <Box>
-      {featureCount > 1 ? (
+      {areThereComponentFeatures ? (
         <MapGL
           ref={mapRef}
           initialViewState={initialViewState}

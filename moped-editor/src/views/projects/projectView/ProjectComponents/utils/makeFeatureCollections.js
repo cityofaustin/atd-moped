@@ -2,6 +2,18 @@ import { useMemo } from "react";
 import { featureTableFieldMap } from "./makeFeatures";
 
 /**
+ * Take a project_geography record and return a valid GeoJSON feature
+ * TODO: We should look into returning GeoJSON features directly from the DB
+ * @param {Object} record - project_geography record from GET_PROJECT_COMPONENTS query
+ * @returns {Object} - GeoJSON feature
+ */
+export const makeFeatureFromProjectGeographyRecord = (record) => ({
+  type: "Feature",
+  properties: { ...record.attributes },
+  geometry: record.geometry,
+});
+
+/**
  * Create an object map of component feature collections by component id
  * Ex. { 1: { type: "FeatureCollection", features: [...] } }
  * @param {Object} data - data returned by GET_PROJECT_COMPONENTS query
@@ -15,12 +27,7 @@ export const useComponentFeatureCollectionsMap = (data) =>
 
     data.project_geography.forEach((component) => {
       const currentComponentId = component.component_id;
-
-      const currentFeature = {
-        type: "Feature",
-        properties: { ...component.attributes },
-        geometry: component.geometry,
-      };
+      const currentFeature = makeFeatureFromProjectGeographyRecord(component);
 
       if (!componentGeographyMap[currentComponentId]) {
         componentGeographyMap[currentComponentId] = {
