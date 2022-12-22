@@ -97,8 +97,7 @@ export const useZoomToExistingComponents = (mapRef, data) => {
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
   useEffect(() => {
-    if (!data) return;
-    if (hasMapZoomedInitially) return;
+    if (!data || hasMapZoomedInitially) return;
     if (!mapRef?.current) return;
 
     if (data.project_geography.length === 0) {
