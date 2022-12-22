@@ -8,11 +8,6 @@ import { createProjectFeatureCollection } from "src/utils/projectComponentHelper
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-/*
-  Error Handler and Fallback Component
-*/
-import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
-import { ErrorBoundary } from "react-error-boundary";
 import ProjectSummaryProjectEntity from "./ProjectSummaryProjectEntity";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
@@ -28,7 +23,6 @@ import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryWorkAssignmentID from "./ProjectSummaryWorkAssignID";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 
-import { countFeatures } from "../../../../utils/mapHelpers";
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
 
@@ -144,24 +138,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
   const projectFeatureCollection =
     createProjectFeatureCollection(projectComponents);
-
-  const renderMap = () => {
-    if (countFeatures(projectFeatureCollection) < 1) {
-      return (
-        <ProjectSummaryMapFallback
-          projectId={projectId}
-          refetchProjectDetails={refetch}
-          mapData={projectFeatureCollection}
-        />
-      );
-    } else {
-      return (
-        <ProjectSummaryMap
-          projectFeatureCollection={projectFeatureCollection}
-        />
-      );
-    }
-  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -294,20 +270,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                {/* {projectFeatureCollection && (
-                  <ErrorBoundary
-                    FallbackComponent={({ error }) => (
-                      <ProjectSummaryMapFallback
-                        error={error}
-                        mapData={projectFeatureCollection}
-                      />
-                    )}
-                    onReset={() => setMapError(false)}
-                    resetKeys={[mapError]}
-                  >
-                    {renderMap()}
-                  </ErrorBoundary>
-                )} */}
                 <ProjectSummaryMap
                   projectFeatureCollection={projectFeatureCollection}
                 />
