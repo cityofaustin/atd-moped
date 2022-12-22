@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
+import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
 import {
   basemaps,
   mapParameters,
@@ -39,7 +40,19 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           style={{ width: "100%", height: "60vh" }}
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
-        />
+        >
+          <ProjectSourcesAndLayers
+            isCreatingComponent={isCreatingComponent}
+            isEditingComponent={isEditingComponent}
+            isDrawing={isDrawing}
+            linkMode={linkMode}
+            clickedComponent={clickedComponent}
+            projectComponentsFeatureCollection={
+              projectComponentsFeatureCollection
+            }
+            draftEditComponent={draftEditComponent}
+          />
+        </MapGL>
       ) : (
         <ProjectSummaryMapFallback mapData={projectFeatureCollection} />
       )}
