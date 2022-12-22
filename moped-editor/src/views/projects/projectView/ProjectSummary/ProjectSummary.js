@@ -294,14 +294,11 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                {projectFeatureCollection && (
+                {/* {projectFeatureCollection && (
                   <ErrorBoundary
-                    FallbackComponent={({ error, resetErrorBoundary }) => (
+                    FallbackComponent={({ error }) => (
                       <ProjectSummaryMapFallback
                         error={error}
-                        resetErrorBoundary={resetErrorBoundary}
-                        projectId={projectId}
-                        refetchProjectDetails={refetch}
                         mapData={projectFeatureCollection}
                       />
                     )}
@@ -310,7 +307,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   >
                     {renderMap()}
                   </ErrorBoundary>
-                )}
+                )} */}
+                <ProjectSummaryMap
+                  projectFeatureCollection={projectFeatureCollection}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />
