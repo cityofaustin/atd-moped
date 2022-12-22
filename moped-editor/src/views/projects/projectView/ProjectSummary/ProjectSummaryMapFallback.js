@@ -4,7 +4,7 @@ import { Box, Button, Card, makeStyles } from "@material-ui/core";
 
 import { Link } from "react-router-dom";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     fontSize: "0.875rem",
     fontWeight: 500,
@@ -41,24 +41,17 @@ const useStyles = makeStyles(theme => ({
 
 /**
  * Renders a fallback component that shows the user whenever there is a map error.
- * @param {object} error - provided by ErrorBoundary component, contains error details.
  * @param {object} mapData - The map data with errors to show in the console for debugging
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummaryMapFallback = ({ error, mapData }) => {
+const ProjectSummaryMapFallback = () => {
   const classes = useStyles();
-
-  /**
-   * Log whatever error there may be
-   */
-  console.debug("MapDataError: ", error);
-  console.debug("MapData: ", mapData);
 
   return (
     <Box>
       <Card className={classes.card} color="secondary">
-        <img 
+        <img
           className={classes.mapPlaceholderImg}
           alt="Map Unavailable"
           src={`${process.env.PUBLIC_URL}/static/images/map_unavailable.png`}
