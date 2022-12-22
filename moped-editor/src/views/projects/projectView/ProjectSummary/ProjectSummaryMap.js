@@ -1,8 +1,10 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
-import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
+import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
+import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
+import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
 import {
   basemaps,
   mapParameters,
@@ -19,18 +21,15 @@ mapboxgl.workerClass =
 
 const ProjectSummaryMap = ({ projectFeatureCollection }) => {
   const mapRef = useRef();
+  const [basemapKey, setBasemapKey] = useState("streets");
+
   const featureCount = countFeatures(projectFeatureCollection);
 
   // TODO:
   // 1. Add project geography to summary query? Or add here so we only fetch once?
-  // 2. Update map to use the project geography
   // 3. Use useZoomToExistingComponents hook to zoom to project geography
   // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
-  // 5. Update map so it has same limitations as the project map (no zooming out past a certain point, etc)
 
-  /**
-   * If we do have features, proceed to render map.
-   */
   return (
     <Box>
       {featureCount > 1 ? (
@@ -41,16 +40,13 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
         >
-          <ProjectSourcesAndLayers
-            isCreatingComponent={isCreatingComponent}
-            isEditingComponent={isEditingComponent}
-            isDrawing={isDrawing}
-            linkMode={linkMode}
-            clickedComponent={clickedComponent}
-            projectComponentsFeatureCollection={
-              projectComponentsFeatureCollection
-            }
-            draftEditComponent={draftEditComponent}
+          <BasemapSpeedDial
+            basemapKey={basemapKey}
+            setBasemapKey={setBasemapKey}
+          />
+          <BaseMapSourceAndLayers basemapKey={basemapKey} />
+          <ProjectSummaryMapSourcesAndLayers
+            projectFeatureCollection={projectFeatureCollection}
           />
         </MapGL>
       ) : (
