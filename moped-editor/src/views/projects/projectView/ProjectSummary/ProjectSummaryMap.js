@@ -39,7 +39,7 @@ const ProjectSummaryMap = ({ data }) => {
       features: [],
     };
 
-    if (!data?.project_geography) return;
+    if (!data?.project_geography) return featureCollection;
 
     const projectGeographyGeoJSONFeatures = data.project_geography.map(
       (feature) => makeFeatureFromProjectGeographyRecord(feature)

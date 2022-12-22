@@ -40,8 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Renders a fallback component that shows the user whenever there is a map error.
- * @param {object} mapData - The map data with errors to show in the console for debugging
+ * Renders a fallback component
  * @return {JSX.Element}
  * @constructor
  */
