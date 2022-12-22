@@ -53,6 +53,7 @@ export const fitBoundsOptions = {
 export const mapParameters = {
   touchPitch: false,
   dragRotate: false,
+  boxZoom: false,
   maxBounds: [
     [-99, 29],
     [-96, 32],

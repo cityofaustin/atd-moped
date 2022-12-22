@@ -271,7 +271,6 @@ export default function TheMap({
       onMouseLeave={onMouseLeave}
       onMoveEnd={onMoveEnd}
       onClick={onClick}
-      boxZoom={false}
       cursor={cursor}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
