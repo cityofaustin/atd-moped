@@ -9,7 +9,6 @@ import {
   getSummaryMapInteractiveIds,
   MAPBOX_TOKEN,
   countFeatures,
-  useHoverLayer,
   useFeatureCollectionToFitBounds,
   basemaps,
   mapConfig,
@@ -25,12 +24,6 @@ const ProjectSummaryMap = ({ projectFeatureCollection }) => {
   // 3. Use useZoomToExistingComponents hook to zoom to project geography
   // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
   // 5. Update map so it has same limitations as the project map (no zooming out past a certain point, etc)
-
-  /**
-   * Make use of a custom hook that returns a vector tile layer hover event handler
-   * and the details to place and populate a tooltip.
-   */
-  const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
 
   const [viewport, setViewport] = useState(mapConfig.mapInit);
   /**
