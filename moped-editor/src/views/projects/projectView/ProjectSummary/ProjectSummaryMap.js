@@ -1,4 +1,4 @@
-import React, { useRef, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
@@ -11,12 +11,27 @@ import {
   initialViewState,
 } from "../ProjectComponents/mapSettings";
 import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
+import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import "mapbox-gl/dist/mapbox-gl.css";
 
+/**
+ * Use a callback ref to get the map instance and store it in state so we can watch it with useEffect
+ * @see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
+ * @returns {Array} - [mapRef, mapRefState] - mapRef is a callback ref, mapRefState is a state variable
+ */
+const useMapRef = () => {
+  const [mapRefState, setMapRefState] = useState(null);
+  const mapRef = useCallback((mapInstance) => {
+    if (mapInstance !== null) {
+      setMapRefState({ current: mapInstance });
+    }
+  }, []);
+  return [mapRef, mapRefState];
+};
+
 const ProjectSummaryMap = ({ data }) => {
-  const mapRef = useRef();
+  const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
-  console.log(data);
 
   const projectFeatureCollection = useMemo(() => {
     const featureCollection = {
@@ -33,12 +48,10 @@ const ProjectSummaryMap = ({ data }) => {
     return { ...featureCollection, features: projectGeographyGeoJSONFeatures };
   }, [data]);
 
+  useZoomToExistingComponents(mapRefState, data);
+
   const areThereComponentFeatures =
     projectFeatureCollection.features.length > 0;
-
-  // TODO:
-  // 3. Use useZoomToExistingComponents hook to zoom to project geography
-  // 4. Update useZoomToExistingComponents to take project geography as a arg instead of data
 
   return (
     <Box>
@@ -60,7 +73,7 @@ const ProjectSummaryMap = ({ data }) => {
           />
         </MapGL>
       ) : (
-        <ProjectSummaryMapFallback mapData={projectFeatureCollection} />
+        <ProjectSummaryMapFallback />
       )}
     </Box>
   );

@@ -12,8 +12,6 @@ const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
   const projectLines = useFeatureTypes(projectFeatureCollection, "line");
   const projectPoints = useFeatureTypes(projectFeatureCollection, "point");
 
-  console.log("projectLines", projectLines);
-
   return (
     <>
       <Source
