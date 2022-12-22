@@ -116,10 +116,15 @@ const getEntryText = (change, legacyVersion, classes) => {
 
 const getEntryTextWithLookup = (change, legacyVersion, classes, entityList) => {
   // adding a new field
-  if (change.description[0].old === null) {
+  if (
+    change.description[0].old === null ||
+    // the entity list used to use 0 as an id for null or empty
+    change.description[0].old === 0 ||
+    change.description[0].old[change.description[0].field] === 0
+  ) {
     return (
       <Typography variant="body2" className={classes.entryText}>
-        Added {entityList[change.description[0].new]} as{" "}
+        Added "{entityList[change.description[0].new]}"" as{" "}
         {entryMap.fields[change.description[0].field].label}
       </Typography>
     );
@@ -130,8 +135,10 @@ const getEntryTextWithLookup = (change, legacyVersion, classes, entityList) => {
     return (
       <Typography variant="body2" className={classes.entryText}>
         Changed {entryMap.fields[change.description[0].field].label} from "
-        <span className={classes.strikeText}>{entityList[change.description[0].old]}</span>"{" "}
-        to "{entityList[change.description[0].new]}"
+        <span className={classes.strikeText}>
+          {entityList[change.description[0].old]}
+        </span>
+        " to "{entityList[change.description[0].new]}"
       </Typography>
     );
   } else {
