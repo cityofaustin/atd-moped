@@ -23,6 +23,7 @@ const useMapRef = () => {
   const [mapRefState, setMapRefState] = useState(null);
   const mapRef = useCallback((mapInstance) => {
     if (mapInstance !== null) {
+      // Store instance as the value of current just like a ref would
       setMapRefState({ current: mapInstance });
     }
   }, []);

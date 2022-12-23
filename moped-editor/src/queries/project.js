@@ -121,7 +121,6 @@ export const SUMMARY_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       geometry: geography
-      component_id
       attributes
     }
   }
