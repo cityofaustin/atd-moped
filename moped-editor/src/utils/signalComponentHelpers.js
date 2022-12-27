@@ -19,7 +19,7 @@ export const getSignalOptionSelected = (option, value) =>
  * MUI autocomplete getOptionLabel function to which formats the value rendered in
  * the select option menu
  */
-export const getSignalOptionLabel = option =>
+export const getSignalOptionLabel = (option) =>
   // this label formatting mirrors the Data Tracker formatting
   `${option.properties.signal_id}: ${option.properties.location_name}`;
 
@@ -29,7 +29,7 @@ export const getSignalOptionLabel = option =>
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
-export const signalToFeatureCollection = signal => {
+export const signalToFeatureCollection = (signal) => {
   let featureCollection = {
     type: "FeatureCollection",
     features: [],
@@ -153,7 +153,7 @@ export const getComponentDef = (
   if (signalType) {
     // try to locate a matching component def
     componentDef = componentData.find(
-      component =>
+      (component) =>
         component.component_subtype.toLowerCase() === signalType.toLowerCase()
     );
     // we must destructure to append a description prop
@@ -197,8 +197,9 @@ export const useSignalStateManager = (
 
 /**
  * Generates a project component object that can be used in mutation.
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
+ * @param {Array} componentData - Array of moped_components from DB
  * @return {Object} - The component mutation object
  */
 export const generateProjectComponent = (
@@ -217,7 +218,7 @@ export const generateProjectComponent = (
     description: componentDef.description,
     component_id: componentDef.component_id,
     moped_proj_features: {
-      data: featureCollection.features.map(feature => ({
+      data: featureCollection.features.map((feature) => ({
         feature: feature,
       })),
     },
