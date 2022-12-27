@@ -217,9 +217,18 @@ export const generateProjectComponent = (
     name: componentDef.component_name,
     description: componentDef.description,
     component_id: componentDef.component_id,
-    moped_proj_features: {
+    feature_signals: {
       data: featureCollection.features.map((feature) => ({
-        feature: feature,
+        project_extent_id: feature.properties.PROJECT_EXTENT_ID,
+        signal_id: feature.properties.signal_id,
+        signal_type: feature.properties.signal_type,
+        location_name: feature.properties.location_name,
+        knack_id: feature.properties.id,
+        geography: {
+          coordinates: [feature.geometry.coordinates],
+          type: "MultiPoint",
+        },
+        source_layer: feature.properties.sourceLayer,
       })),
     },
   };
