@@ -187,19 +187,18 @@ export const useSignalStateManager = (fromSignal, setSignal) => {
 
 /**
  * Generates a project component object that can be used in mutation.
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {Array} componentData - Array of moped_components from DB
  * @return {Object} - The component mutation object
  */
 export const generateProjectComponent = (
-  featureCollection,
+  signalRecord,
   fromSignalAsset,
   componentData
 ) => {
-  // TODO: The featureCollection has already gone through the
   const componentDef = getComponentDef(
-    featureCollection,
+    signalRecord,
     fromSignalAsset,
     componentData
   );
@@ -209,7 +208,7 @@ export const generateProjectComponent = (
     description: componentDef.description,
     component_id: componentDef.component_id,
     feature_signals: {
-      data: featureCollection.features,
+      data: [signalRecord],
     },
   };
 };

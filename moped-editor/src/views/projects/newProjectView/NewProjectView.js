@@ -65,7 +65,7 @@ const NewProjectView = () => {
    * @type {Object} projectDetails - The current state of project details
    * @type {boolean} nameError - When true, it denotes an error in the name
    * @type {boolean} descriptionError - When true, it denotes an error in the project description
-   * @type {Object} featureCollection - The final GeoJSON to be inserted into a component
+   * @type {Object} signalRecord - The signal record to be inserted into a project and its component
    */
   const [projectDetails, setProjectDetails] = useState({
     project_description: "",
@@ -73,10 +73,7 @@ const NewProjectView = () => {
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
-  const [featureCollection, setFeatureCollection] = useState({
-    type: "FeatureCollection",
-    features: [],
-  });
+  const [signalRecord, setSignalRecord] = useState(null);
 
   /**
    * Signals query
@@ -92,11 +89,11 @@ const NewProjectView = () => {
    * @type {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
    * @type {Boolean} signalError - If the current signal value is in validation error
    * @type {Boolean} fromSignalAsset - if signal autocomplete switch is active. If true,
-   *    the project name and featureCollection will be set from the `signal` value.
+   *    the project name and feature record will be set from the `signal` value.
    */
   const [signal, setSignal] = useState("");
   const [fromSignalAsset, setFromSignalAsset] = useState(false);
-  useSignalStateManager(fromSignalAsset, setSignal, setFeatureCollection);
+  useSignalStateManager(fromSignalAsset, setSignal, setSignalRecord);
   const [signalError, setSignalError] = useState(false);
 
   /**
@@ -160,7 +157,7 @@ const NewProjectView = () => {
                 moped_proj_components: {
                   data: [
                     generateProjectComponent(
-                      featureCollection,
+                      signalRecord,
                       fromSignalAsset,
                       componentData["moped_components"]
                     ),
