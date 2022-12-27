@@ -374,6 +374,7 @@ export const ProjectActivityLogTableMaps = {
         label: "partner ID",
         type: "int4",
       },
+      // deprecated column, but keeping because historical activities depend on it
       partner_name: {
         icon: "",
         label: "name",
@@ -919,10 +920,8 @@ export const ProjectActivityLogCreateDescriptions = {
   },
   moped_proj_partners: {
     label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.partner_name, true) +
-        " as a new partner"
-      );
+      // temporary, need to determine a way to display new partner id
+      return "New partner added";
     },
   },
   moped_proj_components: {
