@@ -178,11 +178,17 @@ export const getComponentDef = (
  * form state clean in new project view.
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {func} setSignal - signal state setter
+ * @param {Function} setSignalRecord - signal record state setter
  */
-export const useSignalStateManager = (fromSignal, setSignal) => {
+export const useSignalStateManager = (
+  fromSignal,
+  setSignal,
+  setSignalRecord
+) => {
   useEffect(() => {
     setSignal("");
-  }, [fromSignal, setSignal]);
+    setSignalRecord(null);
+  }, [fromSignal, setSignal, setSignalRecord]);
 };
 
 /**
