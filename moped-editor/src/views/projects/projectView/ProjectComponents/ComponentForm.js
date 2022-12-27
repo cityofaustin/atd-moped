@@ -77,7 +77,6 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
-  console.log(component);
   const {
     data: {
       component_name: componentName = null,
