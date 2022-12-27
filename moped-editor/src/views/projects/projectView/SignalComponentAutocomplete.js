@@ -14,10 +14,11 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
  * Socrata dataset and setting it as a project component.
- * * @param {Object} autcompleteProps - props to pass down to the MUI autocomplete component
+ * @param {Object} classes - MaterialUI style object
+ * @param {Object} autcompleteProps - props to pass down to the MUI autocomplete component
  *  @return {JSX.Element}
  */
-const SignalComponentAutocomplete = ({ autocompleteProps }) => {
+const SignalComponentAutocomplete = ({ classes, autocompleteProps }) => {
   const [signal, setSignal] = useState(null);
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
