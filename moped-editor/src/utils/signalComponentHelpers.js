@@ -224,6 +224,7 @@ export const generateProjectComponent = (
         signal_type: feature.properties.signal_type,
         location_name: feature.properties.location_name,
         knack_id: feature.properties.id,
+        // We update the Point geometry to be MultiPoint which needs coords wrapped in an array
         geography: {
           coordinates: [feature.geometry.coordinates],
           type: "MultiPoint",
