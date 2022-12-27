@@ -78,10 +78,13 @@ const ComponentForm = ({
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
   console.log(component);
+  const {
+    data: {
+      component_name: componentName = null,
+      component_subtype: componentSubtype = null,
+    } = {},
+  } = component || {};
 
-  // component.component_name => "Signal"
-  // component.component_subtype => "PHB"
-  // TODO: Filter by subtype in autocomplete
   const subcomponentOptions = useSubcomponentOptions(component);
 
   useInitialValuesOnAttributesEdit(
@@ -110,12 +113,15 @@ const ComponentForm = ({
             disabled={isEditingExistingComponent}
           />
         </Grid>
-        <Grid item xs={12}>
-          <SignalComponentAutocomplete
-            autocompleteProps={{ disabled: isEditingExistingComponent }}
-            set
-          />
-        </Grid>
+
+        {componentName === "Signal" && (
+          <Grid item xs={12}>
+            <SignalComponentAutocomplete
+              autocompleteProps={{ disabled: isEditingExistingComponent }}
+            />
+          </Grid>
+        )}
+
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
           doesInitialValueHaveSubcomponents) && (
