@@ -5,6 +5,7 @@ import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
 import { Autocomplete } from "@material-ui/lab";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
+import SignalComponentAutocomplete from "../SignalComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   useComponentOptions,
@@ -76,6 +77,11 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
+  console.log(component);
+
+  // component.component_name => "Signal"
+  // component.component_subtype => "PHB"
+  // TODO: Filter by subtype in autocomplete
   const subcomponentOptions = useSubcomponentOptions(component);
 
   useInitialValuesOnAttributesEdit(
@@ -101,6 +107,9 @@ const ComponentForm = ({
             autoFocus
             disabled={initialFormValues !== null}
           />
+        </Grid>
+        <Grid item xs={12}>
+          <SignalComponentAutocomplete />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
