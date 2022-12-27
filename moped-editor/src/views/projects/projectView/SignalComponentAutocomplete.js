@@ -24,20 +24,21 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  */
 const SignalComponentAutocomplete = ({
   classes,
-  setSelectedComponentSubtype,
-  setEditFeatureCollection,
-  editFeatureCollection,
+  // setSelectedComponentSubtype,
+  // setEditFeatureCollection,
+  // editFeatureCollection,
+  autocompleteProps,
 }) => {
   const [signal, setSignal] = useState(null);
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  useInitialSignalComponentValue(editFeatureCollection, setSignal);
+  // useInitialSignalComponentValue(editFeatureCollection, setSignal);
 
-  useSignalChangeEffect(
-    signal,
-    setSelectedComponentSubtype,
-    setEditFeatureCollection
-  );
+  // useSignalChangeEffect(
+  //   signal,
+  //   setSelectedComponentSubtype,
+  //   setEditFeatureCollection
+  // );
 
   if (loading) {
     return <CircularProgress color="primary" size={20} />;
@@ -60,8 +61,11 @@ const SignalComponentAutocomplete = ({
       }}
       loading={loading}
       options={features}
-      renderInput={params => renderSignalInput(params, null, "outlined")}
+      renderInput={(params) =>
+        renderSignalInput(params, null, "outlined", "small")
+      }
       value={signal || null}
+      {...autocompleteProps}
     />
   );
 };

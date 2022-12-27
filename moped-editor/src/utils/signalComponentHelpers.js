@@ -116,7 +116,8 @@ export const useSignalChangeEffect = (
 export const renderSignalInput = (
   params,
   signalError = false,
-  variant = "standard"
+  variant = "standard",
+  size = "medium"
 ) => {
   return (
     <TextField
@@ -127,6 +128,7 @@ export const renderSignalInput = (
       required
       helperText="Required"
       variant={variant}
+      size={size}
     />
   );
 };

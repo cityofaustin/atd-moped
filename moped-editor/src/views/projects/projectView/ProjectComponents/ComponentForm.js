@@ -91,6 +91,8 @@ const ComponentForm = ({
     subcomponentOptions
   );
 
+  const isEditingExistingComponent = initialFormValues !== null;
+
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
@@ -105,11 +107,14 @@ const ComponentForm = ({
             name="component"
             control={control}
             autoFocus
-            disabled={initialFormValues !== null}
+            disabled={isEditingExistingComponent}
           />
         </Grid>
         <Grid item xs={12}>
-          <SignalComponentAutocomplete />
+          <SignalComponentAutocomplete
+            autocompleteProps={{ disabled: isEditingExistingComponent }}
+            set
+          />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
