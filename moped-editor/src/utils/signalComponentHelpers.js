@@ -40,7 +40,7 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
     const featureUUID = signal?.id || uuidv4();
     const featureSignalsRecord = {
       // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
-      geometry: {
+      geography: {
         ...signal.geometry,
         type: "MultiPoint",
         coordinates: [signal.geometry.coordinates],
@@ -106,7 +106,7 @@ export const useSignalChangeEffect = (
     // TODO: Update this to knackSignalRecordToFeatureSignalsRecord
     // const featureCollection = signalToFeatureCollection(signal);
     setSelectedComponentSubtype(signalSubtype);
-    setEditFeatureCollection(featureCollection);
+    // setEditFeatureCollection(featureCollection);
   }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
 };
 
@@ -134,19 +134,17 @@ export const renderSignalInput = (
 /**
  * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Object[]} componentData - Array of moped_components from DB
  * @return {Object} - The component definition of the component
  */
 export const getComponentDef = (
-  featureCollection,
+  signalRecord,
   fromSignalAsset,
   componentData
 ) => {
   // try to extract a signal_type from the component
-  const signalType = fromSignalAsset
-    ? featureCollection?.features?.[0].properties?.signal_type
-    : null;
+  const signalType = fromSignalAsset ? signalRecord?.signal_type : null;
 
   let componentDef;
 
