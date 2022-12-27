@@ -242,7 +242,7 @@ const NewProjectView = () => {
                 setProjectDetails={setProjectDetails}
                 nameError={nameError}
                 descriptionError={descriptionError}
-                setFeatureCollection={setFeatureCollection}
+                setSignalRecord={setSignalRecord}
                 fromSignalAsset={fromSignalAsset}
                 setFromSignalAsset={setFromSignalAsset}
                 signal={signal}

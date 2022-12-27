@@ -7,7 +7,7 @@ const DefineProjectForm = ({
   setProjectDetails,
   nameError,
   descriptionError,
-  setFeatureCollection,
+  setSignalRecord,
   fromSignalAsset,
   setFromSignalAsset,
   signal,
@@ -45,7 +45,7 @@ const DefineProjectForm = ({
               setSignal={setSignal}
               projectDetails={projectDetails}
               setProjectDetails={setProjectDetails}
-              setFeatureCollection={setFeatureCollection}
+              setSignalRecord={setSignalRecord}
               signalError={signalError}
             />
           )}

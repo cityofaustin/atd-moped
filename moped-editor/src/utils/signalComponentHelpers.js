@@ -103,7 +103,8 @@ export const useSignalChangeEffect = (
     const signalSubtype = signal
       ? signal.properties.signal_type.toLowerCase()
       : "";
-    const featureCollection = signalToFeatureCollection(signal);
+    // TODO: Update this to knackSignalRecordToFeatureSignalsRecord
+    // const featureCollection = signalToFeatureCollection(signal);
     setSelectedComponentSubtype(signalSubtype);
     setEditFeatureCollection(featureCollection);
   }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
