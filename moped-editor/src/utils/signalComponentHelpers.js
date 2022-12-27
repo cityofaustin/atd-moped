@@ -25,15 +25,11 @@ export const getSignalOptionLabel = (option) =>
 
 /**
  * Imitate a "drawn point" feature from a traffic signal geojson feature. Sets required
- * fields so that featureCollection can be used in the DB mutation on submit
+ * fields so that a Knack feature can be inserted into the feature_signals table
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
-export const signalToFeatureCollection = (signal) => {
-  let featureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
+export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
   if (signal && signal?.properties && signal?.geometry) {
     /* 
     / preserves the feature's previous UUID if it's being edited. we are **not** preserving
@@ -42,22 +38,25 @@ export const signalToFeatureCollection = (signal) => {
     / geometry will be saved.
     */
     const featureUUID = signal?.id || uuidv4();
-    const feature = {
-      type: "Feature",
-      properties: {
-        ...signal?.properties,
-        renderType: "Point",
-        // I was considering changing this to be INTERSECTIONID, but since the sourceLayer is being saved
-        // as "drawnByUser" and not "ATD_ADMIN.CTN_Intersections", I've left it as PROJECT_EXTENT_ID
-        PROJECT_EXTENT_ID: featureUUID,
-        sourceLayer: "drawnByUser",
+    const featureSignalsRecord = {
+      // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+      geometry: {
+        ...signal.geometry,
+        type: "MultiPoint",
+        coordinates: [signal.geometry.coordinates],
       },
-      geometry: signal.geometry,
-      id: featureUUID,
+      knack_id: signal.properties.id,
+      location_name: signal.properties.location_name,
+      signal_type: signal.properties.signal_type,
+      signal_id: signal.properties.signal_id,
+      // I was considering changing this to be INTERSECTIONID, but since the sourceLayer is being saved
+      // as "drawnByUser" and not "ATD_ADMIN.CTN_Intersections", I've left it as PROJECT_EXTENT_ID
+      project_extent_id: featureUUID,
+      source_layer: "drawnByUser",
     };
-    featureCollection.features.push(feature);
+
+    return featureSignalsRecord;
   }
-  return featureCollection;
 };
 
 export const useInitialSignalComponentValue = (
@@ -175,24 +174,15 @@ export const getComponentDef = (
 };
 
 /**
- * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
+ * Resets signal when fromSignalAsset toggle changes. Ensures we keep
  * form state clean in new project view.
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {func} setSignal - signal state setter
- * @param {Object} setFeatureCollection - featureCollection state setter
  */
-export const useSignalStateManager = (
-  fromSignal,
-  setSignal,
-  setFeatureCollection
-) => {
+export const useSignalStateManager = (fromSignal, setSignal) => {
   useEffect(() => {
-    setFeatureCollection({
-      type: "FeatureCollection",
-      features: [],
-    });
     setSignal("");
-  }, [setFeatureCollection, fromSignal, setSignal]);
+  }, [fromSignal, setSignal]);
 };
 
 /**
@@ -207,6 +197,7 @@ export const generateProjectComponent = (
   fromSignalAsset,
   componentData
 ) => {
+  // TODO: The featureCollection has already gone through the
   const componentDef = getComponentDef(
     featureCollection,
     fromSignalAsset,
@@ -218,19 +209,7 @@ export const generateProjectComponent = (
     description: componentDef.description,
     component_id: componentDef.component_id,
     feature_signals: {
-      data: featureCollection.features.map((feature) => ({
-        project_extent_id: feature.properties.PROJECT_EXTENT_ID,
-        signal_id: feature.properties.signal_id,
-        signal_type: feature.properties.signal_type,
-        location_name: feature.properties.location_name,
-        knack_id: feature.properties.id,
-        // We update the Point geometry to be MultiPoint which needs coords wrapped in an array
-        geography: {
-          coordinates: [feature.geometry.coordinates],
-          type: "MultiPoint",
-        },
-        source_layer: feature.properties.sourceLayer,
-      })),
+      data: featureCollection.features,
     },
   };
 };

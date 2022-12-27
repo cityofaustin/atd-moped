@@ -43,6 +43,7 @@ const SignalAutocomplete = ({
   };
 
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+  console.log(features)
 
   if (loading) {
     // we don't want to render the autocomplete without options, because getOptionSelected
