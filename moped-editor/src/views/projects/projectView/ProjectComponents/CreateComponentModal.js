@@ -28,6 +28,9 @@ const CreateComponentModal = ({
   const classes = useStyles();
 
   const onSave = (formData) => {
+    // TODO: Check form data for signal value or not
+    const isSavingSignalFeature = true;
+
     const {
       component: {
         data: {
@@ -55,6 +58,16 @@ const CreateComponentModal = ({
     };
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
+
+    if (isSavingSignalFeature) {
+      // Add the signal feature to the new component
+      // Save the new component
+      // Update
+    } else {
+      createDispatch({ type: "store_draft_component", payload: newComponent });
+      setLinkMode(linkMode);
+      createDispatch({ type: "close_create_dialog" });
+    }
 
     createDispatch({ type: "store_draft_component", payload: newComponent });
     setLinkMode(linkMode);

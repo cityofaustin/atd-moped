@@ -17,6 +17,7 @@ const defaultFormValues = {
   component: null,
   subcomponents: [],
   description: "",
+  signal: null,
 };
 
 const ControlledAutocomplete = ({
@@ -100,7 +101,7 @@ const ComponentForm = ({
   // TODO: 1. User selects signal component
   // TODO: 2. Continue button changes text to "Save Signal"
   // TODO: 2. User selects signal from autocomplete
-  // TODO: 3. Save butt
+  // TODO: 3. User clicks "Save Signal"
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -122,9 +123,19 @@ const ComponentForm = ({
 
         {componentName === "Signal" && (
           <Grid item xs={12}>
-            <SignalComponentAutocomplete
-              autocompleteProps={{ disabled: isEditingExistingComponent }}
-              onSignalChange={onSignalChange}
+            <Controller
+              id="signal"
+              name="signal"
+              control={control}
+              render={({ onChange, value, ref }) => (
+                <SignalComponentAutocomplete
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                  autocompleteProps={{ disabled: isEditingExistingComponent }}
+                  onSignalChange={onSignalChange}
+                />
+              )}
             />
           </Grid>
         )}

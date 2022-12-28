@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
@@ -19,46 +19,53 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function} onSignalChange - callback function to run when the signal is changed
  *  @return {JSX.Element}
  */
-const SignalComponentAutocomplete = ({
-  classes,
-  autocompleteProps,
-  onSignalChange,
-}) => {
-  const [signal, setSignal] = useState(null);
-  const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+const SignalComponentAutocomplete = React.forwardRef(
+  ({ classes, autocompleteProps, onSignalChange, onChange, value }, ref) => {
+    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  const handleSignalChange = (e, signal) => {
-    setSignal(signal);
-    onSignalChange(signal);
-    console.log(signal);
-  };
+    const handleSignalChange = (e, signal) => {
+      onSignalChange(signal);
+      console.log(signal);
+    };
 
-  if (loading) {
-    return <CircularProgress color="primary" size={20} />;
-  } else if (error) {
+    if (loading) {
+      return <CircularProgress color="primary" size={20} />;
+    } else if (error) {
+      return (
+        <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+      );
+    }
+
     return (
-      <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+      <Autocomplete
+        className={classes}
+        id="signal-id"
+        filterOptions={filterOptions}
+        getOptionSelected={getSignalOptionSelected}
+        // this label formatting mirrors the Data Tracker formatting
+        getOptionLabel={getSignalOptionLabel}
+        onChange={onChange}
+        loading={loading}
+        options={features}
+        renderInput={(params) => (
+          // renderSignalInput(params, null, "outlined", "small")
+          <TextField
+            {...params}
+            inputRef={ref}
+            error={error}
+            InputLabelProps={{ required: false }}
+            label="Signal"
+            required
+            helperText="Required"
+            variant="outlined"
+            size="small"
+          />
+        )}
+        value={value}
+        {...autocompleteProps}
+      />
     );
   }
-
-  return (
-    <Autocomplete
-      className={classes}
-      id="signal-id"
-      filterOptions={filterOptions}
-      getOptionSelected={getSignalOptionSelected}
-      // this label formatting mirrors the Data Tracker formatting
-      getOptionLabel={getSignalOptionLabel}
-      onChange={handleSignalChange}
-      loading={loading}
-      options={features}
-      renderInput={(params) =>
-        renderSignalInput(params, null, "outlined", "small")
-      }
-      value={signal || null}
-      {...autocompleteProps}
-    />
-  );
-};
+);
 
 export default SignalComponentAutocomplete;

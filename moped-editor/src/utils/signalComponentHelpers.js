@@ -21,7 +21,13 @@ export const getSignalOptionSelected = (option, value) =>
  */
 export const getSignalOptionLabel = (option) =>
   // this label formatting mirrors the Data Tracker formatting
-  `${option.properties.signal_id}: ${option.properties.location_name}`;
+  {
+    debugger;
+    // if (!option?.properties?.signal_id || !option?.properties?.location_name) {
+    //   debugger;
+    // }
+    return `${option.properties.signal_id}: ${option.properties.location_name}`;
+  };
 
 /**
  * Imitate a "drawn point" feature from a traffic signal geojson feature. Sets required

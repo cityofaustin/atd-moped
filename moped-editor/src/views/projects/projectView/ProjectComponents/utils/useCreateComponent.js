@@ -95,6 +95,7 @@ const createReducer = (state, action) => {
       const knackRecord = action.payload;
       const featureSignalRecord =
         knackSignalRecordToFeatureSignalsRecord(knackRecord);
+      debugger;
 
       const draftComponentWithSignal = {
         ...state.draftComponent,
