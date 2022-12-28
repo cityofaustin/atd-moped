@@ -9,6 +9,7 @@ import {
 } from "./makeFeatures";
 import { getDrawId, isDrawnDraftFeature } from "./features";
 import { removeFeatureFromDraftComponent } from "./onMapClick";
+import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 
 const createReducer = (state, action) => {
   switch (action.type) {
@@ -91,7 +92,14 @@ const createReducer = (state, action) => {
 
       return { ...state, draftComponent: draftComponentWithUpdates };
     case "add_signal_features":
-      return { ...state, signalFeatures: action.payload };
+      const knackRecord = action.payload;
+      const featureSignalRecord =
+        knackSignalRecordToFeatureSignalsRecord(knackRecord);
+
+      return {
+        ...state,
+        signalFeatures: [...signalFeatures, featureSignalRecord],
+      };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
 
@@ -130,6 +138,7 @@ export const useCreateComponent = ({
     isCreatingComponent: false,
     showCreateDialog: false,
     draftComponent: null,
+    signalFeatures: [],
   });
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
@@ -157,7 +166,6 @@ export const useCreateComponent = ({
       component_name,
       internal_table,
       features,
-      signalFeatures,
     } = createState.draftComponent;
 
     const subcomponentsArray = moped_subcomponents
