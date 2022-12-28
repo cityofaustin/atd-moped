@@ -78,12 +78,8 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
-  const {
-    data: {
-      component_name: componentName = null,
-      component_subtype: componentSubtype = null,
-    } = {},
-  } = component || {};
+  const { data: { component_name: componentName = null } = {} } =
+    component || {};
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -97,10 +93,6 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
 
   // TODO: Need to add signal record to project component here
-  // TODO: Use reducer for this (pass down as prop) add feature_signals table name here
-  // TODO: Format the record on save just like the others
-  // TODO: if block for feature_signals specifically
-  // TODO: The signals go into createState.featureSignals
 
   return (
     <form onSubmit={handleSubmit(onSave)}>

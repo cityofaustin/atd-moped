@@ -98,7 +98,7 @@ const createReducer = (state, action) => {
 
       return {
         ...state,
-        signalFeatures: [...signalFeatures, featureSignalRecord],
+        signalFeatures: [...state.signalFeatures, featureSignalRecord],
       };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
@@ -177,7 +177,7 @@ export const useCreateComponent = ({
     const featureTable = internal_table;
 
     const featuresToInsert = [];
-    const featureSignalsToInsert = [];
+    const featureSignalsToInsert = createState.featureSignals;
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
 
@@ -204,9 +204,6 @@ export const useCreateComponent = ({
       makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
     }
 
-    // Prepare the signal features
-    // Get them from createState.signalFeatures
-
     const newComponentData = {
       description,
       component_id,
@@ -220,6 +217,7 @@ export const useCreateComponent = ({
       },
       feature_drawn_lines: { data: drawnLinesToInsert },
       feature_drawn_points: { data: drawnPointsToInsert },
+      feature_signals: { data: featureSignalsToInsert },
     };
     /* End data preparation */
 
