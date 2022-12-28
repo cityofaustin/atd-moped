@@ -91,15 +91,20 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithUpdates };
-    case "add_signal_features":
+    case "add_signal_feature":
       const knackRecord = action.payload;
       const featureSignalRecord =
         knackSignalRecordToFeatureSignalsRecord(knackRecord);
 
-      return {
-        ...state,
-        featureSignals: [...state.featureSignals, featureSignalRecord],
+      const draftComponentWithSignal = {
+        ...state.draftComponent,
+        signalFeatures: [
+          ...state.draftComponent.signalFeatures,
+          featureSignalRecord,
+        ],
       };
+
+      return { ...state, draftComponent: draftComponentWithSignal };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
 
@@ -138,7 +143,6 @@ export const useCreateComponent = ({
     isCreatingComponent: false,
     showCreateDialog: false,
     draftComponent: null,
-    featureSignals: [],
   });
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
@@ -154,7 +158,7 @@ export const useCreateComponent = ({
   };
 
   const addSignalToCreateState = (signal) => {
-    createDispatch({ type: "add_signal_features", payload: signal });
+    createDispatch({ type: "add_signal_feature", payload: signal });
   };
 
   const onSaveDraftComponent = () => {
@@ -166,6 +170,7 @@ export const useCreateComponent = ({
       component_name,
       internal_table,
       features,
+      signalFeatures,
     } = createState.draftComponent;
 
     const subcomponentsArray = moped_subcomponents
@@ -177,7 +182,7 @@ export const useCreateComponent = ({
     const featureTable = internal_table;
 
     const featuresToInsert = [];
-    const featureSignalsToInsert = createState.featureSignals;
+    const signalFeaturesToInsert = signalFeatures;
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
 
@@ -217,7 +222,7 @@ export const useCreateComponent = ({
       },
       feature_drawn_lines: { data: drawnLinesToInsert },
       feature_drawn_points: { data: drawnPointsToInsert },
-      feature_signals: { data: featureSignalsToInsert },
+      feature_signals: { data: signalFeaturesToInsert },
     };
     /* End data preparation */
     debugger;
