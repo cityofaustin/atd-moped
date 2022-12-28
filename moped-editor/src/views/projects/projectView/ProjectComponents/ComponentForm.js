@@ -95,6 +95,11 @@ const ComponentForm = ({
 
   const isEditingExistingComponent = initialFormValues !== null;
 
+  // TODO: Need to add signal record to project component here
+  // TODO: Use reducer for this (pass down as prop) add feature_signals table name here
+  // TODO: Format the record on save just like the others
+  // TODO: if block for feature_signals specifically
+
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
