@@ -29,7 +29,8 @@ const SignalComponentAutocomplete = ({
 
   const handleSignalChange = (e, signal) => {
     setSignal(signal);
-    onSignalChange();
+    onSignalChange(signal);
+    console.log(signal);
   };
 
   if (loading) {

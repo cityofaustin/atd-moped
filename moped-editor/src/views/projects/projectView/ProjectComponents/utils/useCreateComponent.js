@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 import {
@@ -98,7 +98,7 @@ const createReducer = (state, action) => {
 
       return {
         ...state,
-        signalFeatures: [...state.signalFeatures, featureSignalRecord],
+        featureSignals: [...state.featureSignals, featureSignalRecord],
       };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
@@ -138,7 +138,7 @@ export const useCreateComponent = ({
     isCreatingComponent: false,
     showCreateDialog: false,
     draftComponent: null,
-    signalFeatures: [],
+    featureSignals: [],
   });
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
@@ -220,6 +220,7 @@ export const useCreateComponent = ({
       feature_signals: { data: featureSignalsToInsert },
     };
     /* End data preparation */
+    debugger;
 
     addProjectComponent({ variables: { object: newComponentData } })
       .then(() => {

@@ -93,6 +93,8 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
 
   // TODO: Need to add signal record to project component here
+  // TODO: Figure out why feature added when saving doesn't show up in map
+  // TODO: Add SourcesAndLayers component for signal features
 
   return (
     <form onSubmit={handleSubmit(onSave)}>

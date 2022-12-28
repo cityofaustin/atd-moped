@@ -19,7 +19,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
+const CreateComponentModal = ({
+  showDialog,
+  setLinkMode,
+  createDispatch,
+  onSignalChange,
+}) => {
   const classes = useStyles();
 
   const onSave = (formData) => {
@@ -73,7 +78,7 @@ const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
         <ComponentForm
           onSave={onSave}
           formButtonText="Continue"
-          dispatch={createDispatch}
+          onSignalChange={onSignalChange}
         />
       </DialogContent>
     </Dialog>
