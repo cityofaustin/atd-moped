@@ -70,7 +70,11 @@ const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        <ComponentForm onSave={onSave} formButtonText="Continue" />
+        <ComponentForm
+          onSave={onSave}
+          formButtonText="Continue"
+          dispatch={createDispatch}
+        />
       </DialogContent>
     </Dialog>
   );

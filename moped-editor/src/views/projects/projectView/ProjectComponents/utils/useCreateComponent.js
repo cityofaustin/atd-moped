@@ -90,7 +90,8 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithUpdates };
-
+    case "add_signal_features":
+      return { ...state, signalFeatures: action.payload };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
 
@@ -141,6 +142,10 @@ export const useCreateComponent = ({
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
     setLinkMode(null);
+  };
+
+  const addSignalToCreateState = (signal) => {
+    createDispatch({ type: "add_signal_features", payload: signal });
   };
 
   const onSaveDraftComponent = () => {
@@ -228,5 +233,6 @@ export const useCreateComponent = ({
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
+    addSignalToCreateState,
   };
 };

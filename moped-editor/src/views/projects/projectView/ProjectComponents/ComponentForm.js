@@ -63,6 +63,7 @@ const ComponentForm = ({
   formButtonText,
   onSave,
   initialFormValues = null,
+  onSignalChange,
 }) => {
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
@@ -123,6 +124,7 @@ const ComponentForm = ({
           <Grid item xs={12}>
             <SignalComponentAutocomplete
               autocompleteProps={{ disabled: isEditingExistingComponent }}
+              onSignalChange={onSignalChange}
             />
           </Grid>
         )}
