@@ -99,6 +99,7 @@ const ComponentForm = ({
   // TODO: Use reducer for this (pass down as prop) add feature_signals table name here
   // TODO: Format the record on save just like the others
   // TODO: if block for feature_signals specifically
+  // TODO: The signals go into createState.featureSignals
 
   return (
     <form onSubmit={handleSubmit(onSave)}>

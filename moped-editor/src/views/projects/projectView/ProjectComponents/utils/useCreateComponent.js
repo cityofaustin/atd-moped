@@ -152,6 +152,7 @@ export const useCreateComponent = ({
       component_name,
       internal_table,
       features,
+      signalFeatures,
     } = createState.draftComponent;
 
     const subcomponentsArray = moped_subcomponents
@@ -163,6 +164,7 @@ export const useCreateComponent = ({
     const featureTable = internal_table;
 
     const featuresToInsert = [];
+    const featureSignalsToInsert = [];
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
 
@@ -180,10 +182,7 @@ export const useCreateComponent = ({
         featuresToInsert
       );
       makeDrawnLinesInsertionData(drawnFeatures, drawnLinesToInsert);
-    } else if (
-      featureTable === "feature_intersections" ||
-      featureTable === "feature_signals"
-    ) {
+    } else if (featureTable === "feature_intersections") {
       makePointFeatureInsertionData(
         featureTable,
         selectedFeatures,
@@ -191,6 +190,9 @@ export const useCreateComponent = ({
       );
       makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
     }
+
+    // Prepare the signal features
+    // Get them from createState.signalFeatures
 
     const newComponentData = {
       description,
