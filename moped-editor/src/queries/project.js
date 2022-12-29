@@ -117,6 +117,12 @@ export const SUMMARY_QUERY = gql`
       project_id
       user_id
     }
+    project_geography(
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+    ) {
+      geometry: geography
+      attributes
+    }
   }
 `;
 

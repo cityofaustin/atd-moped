@@ -5,20 +5,25 @@ import Button from "@material-ui/core/Button";
 import ListItemText from "@material-ui/core/ListItemText";
 import Cancel from "@material-ui/icons/Cancel";
 import CheckCircle from "@material-ui/icons/CheckCircle";
+import { COLORS } from "./mapStyleSettings";
 
-const DraftComponentListItem = ({ component, onSave, onCancel }) => {
+const DraftComponentListItem = ({
+  primaryText,
+  secondaryText,
+  onSave,
+  onCancel,
+  saveButtonText,
+  saveButtonDisabled,
+}) => {
   return (
     <Box
       borderLeft={7}
       style={{
-        borderColor: "#1276D1",
+        borderColor: COLORS.orange,
       }}
     >
       <ListItem dense>
-        <ListItemText
-          primary={component.component_name}
-          secondary={component.component_subtype}
-        />
+        <ListItemText primary={primaryText} secondary={secondaryText} />
       </ListItem>
       <ListItem dense>
         <ListItemText
@@ -41,11 +46,11 @@ const DraftComponentListItem = ({ component, onSave, onCancel }) => {
               size="small"
               color="primary"
               variant="contained"
-              disabled={!component?.features.length > 0}
+              disabled={saveButtonDisabled}
               startIcon={<CheckCircle />}
               onClick={onSave}
             >
-              Save
+              {saveButtonText}
             </Button>
           }
         />

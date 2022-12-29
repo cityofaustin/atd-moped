@@ -14,12 +14,21 @@ export const COLORS = {
   blueLight: "#a1cdf7",
   steel: "#607d8f",
   white: "#fff",
+  orange: "#ffb300",
+  lightOrange: "#ffc94a",
 };
 
 export const pointsCircleRadiusStops = {
   stops: [
     [10, 1],
     [20, 12],
+  ],
+};
+
+export const lineWidthStops = {
+  stops: [
+    [10, 2],
+    [20, 10],
   ],
 };
 
@@ -53,12 +62,7 @@ export const MAP_STYLES = {
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
@@ -94,12 +98,7 @@ export const MAP_STYLES = {
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.mutedGray,
       },
       layout: {
@@ -130,13 +129,8 @@ export const MAP_STYLES = {
       _featureIdProp: "id",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
-        "line-color": COLORS.bluePrimary,
+        "line-width": lineWidthStops,
+        "line-color": COLORS.orange,
       },
       layout: {
         "line-cap": "round",
@@ -151,10 +145,39 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.blueDark,
+        "circle-stroke-color": COLORS.orange,
+        "circle-stroke-width": 2,
+        "circle-color": COLORS.lightOrange,
+      },
+    },
+  },
+  "edit-draft-component-lines": {
+    isInteractive: true,
+    layerProps: {
+      id: "edit-draft-component-lines",
+      _featureIdProp: "id",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": COLORS.orange,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "edit-draft-component-points": {
+    isInteractive: true,
+    layerProps: {
+      id: "edit-draft-component-points",
+      _featureIdProp: "id",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": COLORS.lightOrange,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.blueLight,
+        "circle-color": COLORS.orange,
         "circle-opacity": 0.9,
       },
     },
@@ -211,13 +234,8 @@ export const MAP_STYLES = {
       type: "circle",
       _featureIdProp: "INTERSECTION_ID",
       paint: {
-        "circle-radius": {
-          stops: [
-            [5, 4],
-            [16, 10],
-          ],
-        },
-        "circle-stroke-opacity": 0.9,
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-opacity": 0.4,
         "circle-color": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
@@ -225,6 +243,8 @@ export const MAP_STYLES = {
           COLORS.steel,
         ],
         "circle-opacity": 0.4,
+        "circle-stroke-color": COLORS.steel,
+        "circle-stroke-width": 2,
       },
       minzoom: MIN_SELECT_FEATURE_ZOOM,
     },
@@ -251,12 +271,7 @@ export const MAP_STYLES = {
       featureIdProp: "id",
       type: "line",
       paint: {
-        "line-width": {
-          stops: [
-            [10, 2],
-            [20, 10],
-          ],
-        },
+        "line-width": lineWidthStops,
         "line-color": COLORS.bluePrimary,
       },
       layout: {

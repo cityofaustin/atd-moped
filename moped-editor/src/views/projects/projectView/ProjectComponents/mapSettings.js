@@ -7,7 +7,7 @@ const NEARMAP_KEY = process.env.REACT_APP_NEARMAP_TOKEN;
 export const MIN_SELECT_FEATURE_ZOOM = 15;
 
 export const SOURCES = {
-  "ctn-lines": {
+  "ATD_ADMIN.CTN": {
     id: "ctn-lines",
     featureService: {
       name: "CTN_Segments_MOPED_FS",
@@ -15,8 +15,9 @@ export const SOURCES = {
     },
     _featureIdProp: "CTN_SEGMENT_ID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
+    table: "feature_street_segments",
   },
-  "ctn-points": {
+  "ATD_ADMIN.CTN_Intersections": {
     id: "ctn-points",
     featureService: {
       name: "LOCATION_coa_intersection_points",
@@ -24,6 +25,7 @@ export const SOURCES = {
     },
     _featureIdProp: "INTERSECTION_ID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
+    table: "feature_intersections",
   },
 };
 
@@ -51,6 +53,7 @@ export const fitBoundsOptions = {
 export const mapParameters = {
   touchPitch: false,
   dragRotate: false,
+  boxZoom: false,
   maxBounds: [
     [-99, 29],
     [-96, 32],

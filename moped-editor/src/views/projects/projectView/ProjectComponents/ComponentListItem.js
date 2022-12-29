@@ -24,10 +24,24 @@ export default function ComponentListItem({
   isExpanded,
   setClickedComponent,
   setIsDeletingComponent,
-  onStartEditingComponent,
+  editDispatch,
   onClickZoomToComponent,
+  isEditingComponent,
+  isCreatingComponent,
 }) {
   const classes = useStyles();
+
+  const onListItemClick = () => {
+    // If we are editing a component, clicking on a component should not change the clicked component
+    if (isExpanded) {
+      setClickedComponent(null);
+    } else if (!isEditingComponent && !isCreatingComponent) {
+      setClickedComponent(component);
+    }
+  };
+
+  const onStartEditingComponent = () =>
+    editDispatch({ type: "start_edit", payload: component });
 
   return (
     <Box
@@ -36,17 +50,7 @@ export default function ComponentListItem({
         borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
       }}
     >
-      <ListItem
-        dense
-        button
-        onClick={() => {
-          if (isExpanded) {
-            setClickedComponent(null);
-          } else {
-            setClickedComponent(component);
-          }
-        }}
-      >
+      <ListItem dense button onClick={onListItemClick}>
         <ListItemText
           primary={component.moped_components?.component_name}
           secondary={component.moped_components?.component_subtype}

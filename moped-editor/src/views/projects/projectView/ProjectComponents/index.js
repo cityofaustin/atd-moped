@@ -1,5 +1,5 @@
 import { useState, useRef, useMemo } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
 import { Dialog } from "@material-ui/core";
@@ -13,27 +13,20 @@ import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
-import ComponentEditModal from "./ComponentEditModal";
+import CreateComponentModal from "./CreateComponentModal";
+import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
-import {
-  ADD_PROJECT_COMPONENT,
-  GET_PROJECT_COMPONENTS,
-  DELETE_PROJECT_COMPONENT,
-} from "src/queries/components";
-import {
-  makeDrawnLinesInsertionData,
-  makeDrawnPointsInsertionData,
-  makeLineStringFeatureInsertionData,
-  makePointFeatureInsertionData,
-} from "./utils/makeFeatures";
-import { makeComponentFeatureCollectionsMap } from "./utils/makeData";
-import { getDrawId } from "./utils/features";
+import { GET_PROJECT_COMPONENTS } from "src/queries/components";
+import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
+import { useCreateComponent } from "./utils/useCreateComponent";
+import { useUpdateComponent } from "./utils/useUpdateComponent";
+import { useDeleteComponent } from "./utils/useDeleteComponent";
 
 const drawerWidth = 350;
 
@@ -70,37 +63,22 @@ export default function MapView({ projectName, projectStatuses }) {
   const mapRef = useRef();
   const { projectId } = useParams();
 
+  /* sets the type of geometry to use in component edit mode. allowed values
+  are `points`, `lines`, or `null` */
+  const [linkMode, setLinkMode] = useState(null);
+
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
 
   /* tracks a projectFeature clicked from the map */
   const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
 
-  /* holds the state of a component that's being created */
-  const [draftComponent, setDraftComponent] = useState(null);
-
   /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
-
-  /* sets the type of geometry to use in component edit mode. allowed values
-  are `points`, `lines`, or `null` */
-  const [linkMode, setLinkMode] = useState(null);
-
-  /* if a component is being edited */
-  const [isEditingComponent, setIsEditingComponent] = useState(false);
-
-  /* if a component is being deleted */
-  const [isDeletingComponent, setIsDeletingComponent] = useState(false);
 
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
-  const [showComponentEditDialog, setShowComponentEditDialog] = useState(false);
-
-  const [showEditModeDialog, setShowEditModeDialog] = useState(false);
-
-  const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
-  const [deleteProjectComponent] = useMutation(DELETE_PROJECT_COMPONENT);
   const {
     data,
     refetch: refetchProjectComponents,
@@ -110,8 +88,6 @@ export default function MapView({ projectName, projectStatuses }) {
     fetchPolicy: "no-cache",
   });
 
-  if (error) console.log(error);
-
   /* holds this project's components */
   const components = useMemo(() => {
     if (!data?.moped_proj_components) return [];
@@ -119,11 +95,45 @@ export default function MapView({ projectName, projectStatuses }) {
     return data.moped_proj_components;
   }, [data]);
 
-  const featureCollectionsByComponentId = useMemo(() => {
-    if (!data?.project_geography) return {};
+  const featureCollectionsByComponentId =
+    useComponentFeatureCollectionsMap(data);
 
-    return makeComponentFeatureCollectionsMap(data.project_geography);
-  }, [data]);
+  const {
+    onStartCreatingComponent,
+    onSaveDraftComponent,
+    onCancelComponentCreate,
+    createState,
+    createDispatch,
+  } = useCreateComponent({
+    projectId,
+    setClickedComponent,
+    setLinkMode,
+    refetchProjectComponents,
+  });
+
+  const {
+    editState,
+    editDispatch,
+    onSaveEditedComponent,
+    onCancelComponentMapEdit,
+    onEditFeatures,
+    doesDraftEditComponentHaveFeatures,
+  } = useUpdateComponent({
+    components,
+    clickedComponent,
+    setClickedComponent,
+    setLinkMode,
+    refetchProjectComponents,
+  });
+
+  const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
+    useDeleteComponent({
+      clickedComponent,
+      setClickedComponent,
+      refetchProjectComponents,
+    });
+
+  if (error) console.log(error);
 
   useZoomToExistingComponents(mapRef, data);
 
@@ -140,114 +150,6 @@ export default function MapView({ projectName, projectStatuses }) {
       bbox(featureCollection),
       fitBoundsOptions.zoomToClickedComponent
     );
-  };
-
-  const onSaveComponent = () => {
-    /* Start data preparation */
-    const {
-      component_id,
-      description,
-      moped_subcomponents,
-      component_name,
-      internal_table,
-      features,
-    } = draftComponent;
-
-    const subcomponentsArray = moped_subcomponents
-      ? moped_subcomponents.map((subcomponent) => ({
-          subcomponent_id: subcomponent.value,
-        }))
-      : [];
-
-    const featureTable = internal_table;
-
-    const featuresToInsert = [];
-    const drawnLinesToInsert = [];
-    const drawnPointsToInsert = [];
-
-    const drawnFeatures = features.filter((feature) =>
-      Boolean(getDrawId(feature))
-    );
-    const selectedFeatures = features.filter(
-      (feature) => !Boolean(getDrawId(feature))
-    );
-
-    if (featureTable === "feature_street_segments") {
-      makeLineStringFeatureInsertionData(
-        featureTable,
-        selectedFeatures,
-        featuresToInsert
-      );
-      makeDrawnLinesInsertionData(drawnFeatures, drawnLinesToInsert);
-    } else if (
-      featureTable === "feature_intersections" ||
-      featureTable === "feature_signals"
-    ) {
-      makePointFeatureInsertionData(
-        featureTable,
-        selectedFeatures,
-        featuresToInsert
-      );
-      makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
-    }
-
-    const newComponentData = {
-      description,
-      component_id,
-      name: component_name,
-      project_id: projectId,
-      moped_proj_components_subcomponents: {
-        data: subcomponentsArray,
-      },
-      [featureTable]: {
-        data: featuresToInsert,
-      },
-      feature_drawn_lines: { data: drawnLinesToInsert },
-      feature_drawn_points: { data: drawnPointsToInsert },
-    };
-    /* End data preparation */
-
-    addProjectComponent({ variables: { object: newComponentData } }).then(
-      () => {
-        refetchProjectComponents();
-      }
-    );
-
-    setIsEditingComponent(false);
-    setDraftComponent(null);
-    setLinkMode(null);
-  };
-
-  const onCancelComponentCreate = () => {
-    setIsEditingComponent(!isEditingComponent);
-    setDraftComponent(null);
-    setLinkMode(null);
-  };
-
-  const onStartCreatingComponent = () => {
-    setIsEditingComponent(true);
-    setShowComponentEditDialog(true);
-    setClickedComponent(null);
-  };
-
-  const onStartEditingComponent = () => {
-    setShowEditModeDialog(true);
-  };
-
-  const onCancelComponentEdit = () => {
-    setShowEditModeDialog(false);
-    setIsEditingComponent(false);
-  };
-
-  const onDeleteComponent = () => {
-    deleteProjectComponent({
-      variables: { projectComponentId: clickedComponent.project_component_id },
-    }).then(() => {
-      refetchProjectComponents();
-    });
-
-    setClickedComponent(null);
-    setIsDeletingComponent(false);
   };
 
   return (
@@ -269,45 +171,72 @@ export default function MapView({ projectName, projectStatuses }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!isEditingComponent && (
-                <>
-                  <ListItem dense>
-                    <Button
-                      size="small"
-                      color="primary"
-                      fullWidth
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={onStartCreatingComponent}
-                    >
-                      New Component
-                    </Button>
-                  </ListItem>
-                  <Divider />
-                </>
-              )}
-              {draftComponent && (
+              {!createState.isCreatingComponent &&
+                !editState.isEditingComponent && (
+                  <>
+                    <ListItem dense>
+                      <Button
+                        size="small"
+                        color="primary"
+                        fullWidth
+                        startIcon={<AddCircleOutlineIcon />}
+                        onClick={onStartCreatingComponent}
+                      >
+                        New Component
+                      </Button>
+                    </ListItem>
+                    <Divider />
+                  </>
+                )}
+              {createState.draftComponent &&
+                createState.isCreatingComponent && (
+                  <DraftComponentListItem
+                    primaryText={createState.draftComponent.component_name}
+                    secondaryText={createState.draftComponent.component_subtype}
+                    onSave={onSaveDraftComponent}
+                    onCancel={onCancelComponentCreate}
+                    saveButtonDisabled={
+                      !createState.draftComponent?.features.length > 0
+                    }
+                    saveButtonText="Save"
+                  />
+                )}
+              {editState.draftEditComponent && editState.isEditingComponent && (
                 <DraftComponentListItem
-                  component={draftComponent}
-                  onSave={onSaveComponent}
-                  onCancel={onCancelComponentCreate}
+                  primaryText={
+                    editState.draftEditComponent?.moped_components
+                      ?.component_name
+                  }
+                  secondaryText={
+                    editState.draftEditComponent?.moped_components
+                      ?.component_subtype
+                  }
+                  onSave={onSaveEditedComponent}
+                  onCancel={onCancelComponentMapEdit}
+                  saveButtonDisabled={!doesDraftEditComponentHaveFeatures}
+                  saveButtonText="Save Edit"
                 />
               )}
-              {components.map((component) => {
-                const isExpanded =
-                  clickedComponent?.project_component_id ===
-                  component.project_component_id;
-                return (
-                  <ComponentListItem
-                    key={component.project_component_id}
-                    component={component}
-                    isExpanded={isExpanded}
-                    setClickedComponent={setClickedComponent}
-                    setIsDeletingComponent={setIsDeletingComponent}
-                    onStartEditingComponent={onStartEditingComponent}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                  />
-                );
-              })}
+              {!editState.isEditingComponent &&
+                !createState.isCreatingComponent &&
+                components.map((component) => {
+                  const isExpanded =
+                    clickedComponent?.project_component_id ===
+                    component.project_component_id;
+                  return (
+                    <ComponentListItem
+                      key={component.project_component_id}
+                      component={component}
+                      isExpanded={isExpanded}
+                      setClickedComponent={setClickedComponent}
+                      setIsDeletingComponent={setIsDeletingComponent}
+                      editDispatch={editDispatch}
+                      onClickZoomToComponent={onClickZoomToComponent}
+                      isEditingComponent={editState.isEditingComponent}
+                      isCreatingComponent={createState.isCreatingComponent}
+                    />
+                  );
+                })}
             </List>
           </div>
         </Drawer>
@@ -317,11 +246,14 @@ export default function MapView({ projectName, projectStatuses }) {
             <TheMap
               mapRef={mapRef}
               components={components}
-              draftComponent={draftComponent}
-              setDraftComponent={setDraftComponent}
+              draftComponent={createState.draftComponent}
+              createDispatch={createDispatch}
+              draftEditComponent={editState.draftEditComponent}
+              editDispatch={editDispatch}
               setHoveredOnMapFeature={setHoveredOnMapFeature}
               hoveredOnMapFeature={hoveredOnMapFeature}
-              isEditingComponent={isEditingComponent}
+              isCreatingComponent={createState.isCreatingComponent}
+              isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
               clickedProjectFeature={clickedProjectFeature}
@@ -331,12 +263,10 @@ export default function MapView({ projectName, projectStatuses }) {
               featureCollectionsByComponentId={featureCollectionsByComponentId}
             />
           </div>
-          <ComponentEditModal
-            showDialog={showComponentEditDialog}
-            setShowDialog={setShowComponentEditDialog}
-            setDraftComponent={setDraftComponent}
+          <CreateComponentModal
             setLinkMode={setLinkMode}
-            setIsEditingComponent={setIsEditingComponent}
+            createDispatch={createDispatch}
+            showDialog={createState.showCreateDialog}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}
@@ -347,10 +277,16 @@ export default function MapView({ projectName, projectStatuses }) {
             onDeleteComponent={onDeleteComponent}
           />
           <EditModeDialog
-            setIsEditingComponent={setIsEditingComponent}
-            setShowComponentEditDialog={setShowComponentEditDialog}
-            showDialog={showEditModeDialog}
-            onClose={onCancelComponentEdit}
+            showDialog={editState.showEditModeDialog}
+            editDispatch={editDispatch}
+            onEditFeatures={onEditFeatures}
+          />
+          <EditAttributesModal
+            showDialog={editState.showEditAttributesDialog}
+            editDispatch={editDispatch}
+            componentToEdit={clickedComponent}
+            refetchProjectComponents={refetchProjectComponents}
+            setClickedComponent={setClickedComponent}
           />
         </main>
       </div>
