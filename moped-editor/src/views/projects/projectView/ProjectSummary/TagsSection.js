@@ -65,7 +65,8 @@ const useStyles = makeStyles((theme) => ({
 const TagsSection = ({ projectId }) => {
   const [addTagMode, setAddTagMode] = useState(false);
   const [newTagList, setNewTagList] = useState([]);
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(TAGS_QUERY, {
@@ -156,22 +157,22 @@ const TagsSection = ({ projectId }) => {
           </Button>
         </Toolbar>
         <Box component={"ul"} className={classes.chipContainer}>
-          {data.moped_proj_tags.map((tag) => (
-            <li key={tag.id}>
-              <DeleteConfirmationModal
-                type="tag"
-                submitDelete={() => handleTagDelete(deleteConfirmationId)}
-                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-              >
+          <DeleteConfirmationModal
+            type="tag"
+            submitDelete={() => handleTagDelete(deleteConfirmationId)}
+            isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+            setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+          >
+            {data.moped_proj_tags.map((tag) => (
+              <li key={tag.id}>
                 <Chip
                   label={tag.moped_tag.name}
                   onDelete={() => handleDeleteOpen(tag)}
                   className={classes.chip}
                 />
-              </DeleteConfirmationModal>
-            </li>
-          ))}
+              </li>
+            ))}
+          </DeleteConfirmationModal>
           {addTagMode && (
             <Box
               display="flex"

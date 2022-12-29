@@ -14,8 +14,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_id
         is_current_phase
-        completion_percentage
-        completed
       }
       moped_proj_components {
         moped_proj_features {
@@ -392,8 +390,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_phase_id
         is_current_phase
         project_id
-        completion_percentage
-        completed
       }
     }
   }
@@ -456,6 +452,13 @@ export const PROJECT_ACTIVITY_LOG = gql`
         email
         user_id
       }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
+        user_id
+      }
     }
     moped_users {
       first_name
@@ -489,6 +492,13 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
       moped_user {
         first_name
         last_name
+        user_id
+      }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
         user_id
       }
     }
