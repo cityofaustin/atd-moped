@@ -1,23 +1,23 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
+import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 /**
- * Renders project component draw tools
+ * Renders project component create draw tools
  * @param {Function} createDispatch - dispatch to call create actions
  * @param {String} linkMode - tracks if we are editing "lines" or "points"
  * @param {Function} setCursor - function to update the cursor type
  * @param {Function} setIsDrawing - function to update if we are drawing or not
  * @returns {JSX.Element}
  */
-const ComponentDrawTools = ({
+const CreateComponentDrawTools = ({
   createDispatch,
   linkMode,
   setCursor,
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -57,6 +57,7 @@ const ComponentDrawTools = ({
       type: "delete_drawn_features",
       payload: deletedFeaturesArray,
     });
+    setIsDrawing(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -78,25 +79,18 @@ const ComponentDrawTools = ({
     }
   };
 
-  const initializeExistingDrawFeatures = () => {
-    console.log("initializeExistingDrawFeatures");
-    // TODO: This may be needed when we implement editing existing components
-  };
-
   return (
-    shouldShowDrawControls && (
-      <ComponentsDrawControl
-        ref={drawControlsRef}
-        onCreate={onCreate}
-        onDelete={onDelete}
-        onUpdate={onUpdate}
-        linkMode={linkMode}
-        onModeChange={onModeChange}
-        onSelectionChange={onSelectionChange}
-        initializeExistingDrawFeatures={initializeExistingDrawFeatures}
-      />
-    )
+    <ComponentsDrawControl
+      ref={drawControlsRef}
+      onCreate={onCreate}
+      onDelete={onDelete}
+      onUpdate={onUpdate}
+      linkMode={linkMode}
+      onModeChange={onModeChange}
+      onSelectionChange={onSelectionChange}
+      styleOverrides={mapboxDrawStylesOverrides}
+    />
   );
 };
 
-export default ComponentDrawTools;
+export default CreateComponentDrawTools;

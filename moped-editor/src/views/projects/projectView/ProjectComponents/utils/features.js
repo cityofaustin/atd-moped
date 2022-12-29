@@ -1,18 +1,21 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./map";
+import { getAllComponentFeatures } from "./makeFeatureCollections";
 
 export const useComponentFeatureCollectionFromMap = (
   component,
   featureCollectionsByComponentId
 ) =>
   useMemo(() => {
-    if (!component) return { type: "FeatureCollection", features: [] };
+    const emptyFeatureCollection = { type: "FeatureCollection", features: [] };
+
+    if (!component) return emptyFeatureCollection;
 
     const componentFeatureCollection =
       featureCollectionsByComponentId[component?.project_component_id];
 
-    return componentFeatureCollection;
+    return componentFeatureCollection || emptyFeatureCollection;
   }, [component, featureCollectionsByComponentId]);
 
 /**
@@ -111,8 +114,89 @@ export const makeDrawnFeature = (feature, linkMode) => {
 export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
 
 /**
- * Determine if a feature is drawn by the user
+ * Determine if a draft feature is drawn by the user by the draw ID
+ * that is added when creating a new drawn feature
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnFeature = (feature) => (getDrawId(feature) ? true : false);
+export const isDrawnDraftFeature = (feature) =>
+  getDrawId(feature) ? true : false;
+
+/**
+ * Determine if a feature is drawn by the user by checking that the source is
+ * not CTN
+ * @param {Object} feature - a feature object
+ * @returns {Boolean} - true if feature is drawn by user
+ */
+export const isDrawnExistingFeature = (feature) =>
+  !feature.source.includes("ATD_ADMIN.CTN_Intersections") &&
+  !feature.source.includes("ATD_ADMIN.CTN");
+
+/**
+ * Initialize the draw tools state with existing features of the component being edited
+ * @param {Object} drawControlsRef - ref for the draw controls
+ * @param {Object} draftEditComponent - the component being edited
+ * @param {String} linkMode - tracks if we are editing "lines" or "points"
+ */
+export const useExistingDrawnFeatures = ({
+  drawControlsRef,
+  draftEditComponent,
+  linkMode,
+}) => {
+  useEffect(() => {
+    if (!drawControlsRef.current) return;
+
+    // Mapbox GL Draw requires valid features with properties or else it will throw an error
+    const drawnLinesWithProperties = draftEditComponent.feature_drawn_lines.map(
+      (feature) => ({
+        ...feature,
+        properties: {},
+      })
+    );
+    const drawnPointsWithProperties =
+      draftEditComponent.feature_drawn_points.map((feature) => ({
+        ...feature,
+        properties: {},
+      }));
+
+    if (linkMode === "lines") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: drawnLinesWithProperties,
+      });
+    }
+
+    if (linkMode === "points") {
+      drawControlsRef.current.set({
+        type: "FeatureCollection",
+        features: drawnPointsWithProperties,
+      });
+    }
+  }, [linkMode, draftEditComponent, drawControlsRef]);
+};
+
+/**
+ * Track whether a draft edit component has features or not
+ * @param {Object} draftEditComponent - the draft component storing feature edits
+ * @returns {Boolean} - does the draft component have features
+ */
+export const useDoesDraftEditComponentHaveFeatures = (draftEditComponent) => {
+  const [
+    doesDraftEditComponentHaveFeatures,
+    setDoesDraftEditComponentHaveFeatures,
+  ] = useState(false);
+
+  useEffect(() => {
+    if (draftEditComponent === null) return;
+
+    const allDraftComponentFeatures =
+      getAllComponentFeatures(draftEditComponent);
+    const doesComponentHaveFeatures = Boolean(
+      allDraftComponentFeatures.length > 0
+    );
+
+    setDoesDraftEditComponentHaveFeatures(doesComponentHaveFeatures);
+  }, [draftEditComponent]);
+
+  return doesDraftEditComponentHaveFeatures;
+};

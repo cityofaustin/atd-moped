@@ -136,6 +136,10 @@ export const UPDATE_COMPONENT_FEATURES = gql`
     $streetSegments: [feature_street_segments_insert_input!]!
     $intersections: [feature_intersections_insert_input!]!
     $signals: [feature_signals_insert_input!]!
+    $drawnLines: [feature_drawn_lines_insert_input!]!
+    $drawnPoints: [feature_drawn_points_insert_input!]!
+    $drawnLinesDragUpdates: [feature_drawn_lines_updates!]!
+    $drawnPointsDragUpdates: [feature_drawn_points_updates!]!
   ) {
     insert_feature_street_segments(objects: $streetSegments) {
       affected_rows
@@ -146,7 +150,19 @@ export const UPDATE_COMPONENT_FEATURES = gql`
     insert_feature_signals(objects: $signals) {
       affected_rows
     }
+    insert_feature_drawn_lines(objects: $drawnLines) {
+      affected_rows
+    }
+    insert_feature_drawn_points(objects: $drawnPoints) {
+      affected_rows
+    }
     update_features_many(updates: $updates) {
+      affected_rows
+    }
+    update_feature_drawn_lines_many(updates: $drawnLinesDragUpdates) {
+      affected_rows
+    }
+    update_feature_drawn_points_many(updates: $drawnPointsDragUpdates) {
       affected_rows
     }
   }

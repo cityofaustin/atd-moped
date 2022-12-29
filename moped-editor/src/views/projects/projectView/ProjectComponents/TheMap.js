@@ -4,7 +4,8 @@ import { cloneDeep } from "lodash";
 // import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
-import ComponentDrawTools from "./ComponentDrawTools";
+import CreateComponentDrawTools from "./CreateComponentDrawTools";
+import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
@@ -24,7 +25,8 @@ import {
 } from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  isDrawnFeature,
+  isDrawnDraftFeature,
+  isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
   useComponentFeatureCollectionFromMap,
 } from "./utils/features";
@@ -116,7 +118,7 @@ export default function TheMap({
     );
 
     // If we clicked a drawn feature, we don't need to capture from the CTN layers
-    if (isDrawnFeature(clickedDraftComponentFeature)) return;
+    if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
 
     // If we clicked a feature that's already in the draftComponent, we remove it
     if (clickedDraftComponentFeature) {
@@ -152,6 +154,9 @@ export default function TheMap({
   const handleEditOnClick = (e) => {
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
+
+    // If drawn feature is clicked, the draw tools take over and we don't need to do anything else
+    if (isDrawnExistingFeature(clickedFeature)) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
@@ -196,13 +201,10 @@ export default function TheMap({
             feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
         );
 
-        const isAtLeastOneFeatureRemaining = filteredFeatures.length > 0;
-        return isAtLeastOneFeatureRemaining
-          ? {
-              ...currentComponent,
-              [tableToInsert]: filteredFeatures,
-            }
-          : currentComponent;
+        return {
+          ...currentComponent,
+          [tableToInsert]: filteredFeatures,
+        };
       }
     };
 
@@ -254,6 +256,12 @@ export default function TheMap({
     setBounds(newBounds.flat());
   };
 
+  const shouldShowDrawControls = linkMode === "points" || linkMode === "lines";
+  const shouldShowCreateDrawControls =
+    isCreatingComponent && shouldShowDrawControls;
+  const shouldShowEditDrawControls =
+    isEditingComponent && shouldShowDrawControls;
+
   return (
     <MapGL
       ref={mapRef}
@@ -263,19 +271,29 @@ export default function TheMap({
       onMouseLeave={onMouseLeave}
       onMoveEnd={onMoveEnd}
       onClick={onClick}
-      boxZoom={false}
       cursor={cursor}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <GeocoderControl position="top-left" marker={false} />
-      <ComponentDrawTools
-        createDispatch={createDispatch}
-        linkMode={linkMode}
-        setCursor={setCursor}
-        setIsDrawing={setIsDrawing}
-      />
+      {shouldShowCreateDrawControls && (
+        <CreateComponentDrawTools
+          createDispatch={createDispatch}
+          linkMode={linkMode}
+          setCursor={setCursor}
+          setIsDrawing={setIsDrawing}
+        />
+      )}
+      {shouldShowEditDrawControls && (
+        <EditComponentDrawTools
+          editDispatch={editDispatch}
+          linkMode={linkMode}
+          setCursor={setCursor}
+          setIsDrawing={setIsDrawing}
+          draftEditComponent={draftEditComponent}
+        />
+      )}
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
       <ProjectSourcesAndLayers
         isCreatingComponent={isCreatingComponent}

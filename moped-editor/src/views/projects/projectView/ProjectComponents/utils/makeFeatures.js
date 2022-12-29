@@ -186,3 +186,12 @@ export const makeDrawnPointsInsertionData = (
 
   return featuresToInsert;
 };
+
+/**
+ * Prepare newly selected features created when updating a component for insertion
+ * @param {Array} features - new features
+ * @param {String} componentId - ID of the component to associate the new features with
+ * @returns {Array} - array of features ready to insert
+ */
+export const addComponentIdForUpdate = (features, componentId) =>
+  features.map((feature) => ({ ...feature, component_id: componentId }));
