@@ -14,7 +14,8 @@ def make_update() -> dict:
         url="http://localhost:8080/v1/query",
         headers={
             "Accept": "*/*",
-            "content-type": "application/json"
+            "content-type": "application/json",
+            "X-Hasura-Admin-Secret": "hasurapassword",
         },
         json={
             "type": "run_sql",

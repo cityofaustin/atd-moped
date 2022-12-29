@@ -63,6 +63,7 @@ const ProjectSummaryMap = ({ data }) => {
           style={{ width: "100%", height: "60vh" }}
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
+          cooperativeGestures={true}
         >
           <BasemapSpeedDial
             basemapKey={basemapKey}

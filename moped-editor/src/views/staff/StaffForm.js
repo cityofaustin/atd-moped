@@ -158,6 +158,7 @@ const StaffForm = ({
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
+            autoFocus
             name="first_name"
             id="first-name"
             label="First Name"

@@ -27,6 +27,7 @@ const DefineProjectForm = ({
           {!fromSignalAsset && (
             <TextField
               required
+              autoFocus
               label="Project name"
               name="project_name"
               variant="standard"

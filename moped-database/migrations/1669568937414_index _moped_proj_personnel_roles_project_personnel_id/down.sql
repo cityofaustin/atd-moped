@@ -1,0 +1,1 @@
+DROP INDEX moped_proj_personnel_roles_project_personnel_id_idx;

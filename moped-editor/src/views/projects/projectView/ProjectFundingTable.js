@@ -47,7 +47,7 @@ import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
-import FundingAmountIntegerField from "./FundingAmountIntegerField";
+import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
@@ -509,7 +509,7 @@ const ProjectFundingTable = () => {
       title: "Amount",
       field: "funding_amount",
       render: (row) => currencyFormatter.format(row.funding_amount),
-      editComponent: (props) => <FundingAmountIntegerField {...props} />,
+      editComponent: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
