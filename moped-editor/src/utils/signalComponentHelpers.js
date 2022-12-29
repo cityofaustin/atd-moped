@@ -22,6 +22,7 @@ export const getSignalOptionSelected = (option, value) =>
 export const getSignalOptionLabel = (option) =>
   // this label formatting mirrors the Data Tracker formatting
   {
+    // TODO: Figure out why this is breaking when using RHF
     debugger;
     // if (!option?.properties?.signal_id || !option?.properties?.location_name) {
     //   debugger;
