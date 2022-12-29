@@ -42,6 +42,7 @@ const CommentInputQuill = ({
   useEffect(() => {
     // autofocuses the quill input
     ref?.current.focus();
+    // ref?.current.getEditor();
   }, []);
 
   return (
@@ -69,7 +70,7 @@ const CommentInputQuill = ({
             )}
             <ProjectSaveButton
               // disable save button if no text after removing html tags
-              disabled={!noteText.replace(/(<([^>]+)>)/gi, "")}
+              // disabled={!noteText.replace(/(<([^>]+)>)/gi, "")}
               label={<>Save</>}
               loading={commentAddLoading}
               success={commentAddSuccess}
