@@ -201,13 +201,10 @@ export default function TheMap({
             feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
         );
 
-        const isAtLeastOneFeatureRemaining = filteredFeatures.length > 0;
-        return isAtLeastOneFeatureRemaining
-          ? {
-              ...currentComponent,
-              [tableToInsert]: filteredFeatures,
-            }
-          : currentComponent;
+        return {
+          ...currentComponent,
+          [tableToInsert]: filteredFeatures,
+        };
       }
     };
 
@@ -274,7 +271,6 @@ export default function TheMap({
       onMouseLeave={onMouseLeave}
       onMoveEnd={onMoveEnd}
       onClick={onClick}
-      boxZoom={false}
       cursor={cursor}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}

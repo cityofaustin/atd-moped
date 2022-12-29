@@ -7,6 +7,7 @@ import {
   makeDrawnPointsInsertionData,
   addComponentIdForUpdate,
 } from "./makeFeatures";
+import { useDoesDraftEditComponentHaveFeatures } from "./features";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
 const editReducer = (state, action) => {
@@ -231,6 +232,9 @@ export const useUpdateComponent = ({
     drawnPointFeatureUpdates: [],
   });
 
+  const doesDraftEditComponentHaveFeatures =
+    useDoesDraftEditComponentHaveFeatures(editState.draftEditComponent);
+
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
 
   const onEditFeatures = () => {
@@ -414,5 +418,6 @@ export const useUpdateComponent = ({
     onSaveEditedComponent,
     onCancelComponentMapEdit,
     onEditFeatures,
+    doesDraftEditComponentHaveFeatures,
   };
 };

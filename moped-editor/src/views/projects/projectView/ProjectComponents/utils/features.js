@@ -1,6 +1,7 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./map";
+import { getAllComponentFeatures } from "./makeFeatureCollections";
 
 export const useComponentFeatureCollectionFromMap = (
   component,
@@ -172,4 +173,30 @@ export const useExistingDrawnFeatures = ({
       });
     }
   }, [linkMode, draftEditComponent, drawControlsRef]);
+};
+
+/**
+ * Track whether a draft edit component has features or not
+ * @param {Object} draftEditComponent - the draft component storing feature edits
+ * @returns {Boolean} - does the draft component have features
+ */
+export const useDoesDraftEditComponentHaveFeatures = (draftEditComponent) => {
+  const [
+    doesDraftEditComponentHaveFeatures,
+    setDoesDraftEditComponentHaveFeatures,
+  ] = useState(false);
+
+  useEffect(() => {
+    if (draftEditComponent === null) return;
+
+    const allDraftComponentFeatures =
+      getAllComponentFeatures(draftEditComponent);
+    const doesComponentHaveFeatures = Boolean(
+      allDraftComponentFeatures.length > 0
+    );
+
+    setDoesDraftEditComponentHaveFeatures(doesComponentHaveFeatures);
+  }, [draftEditComponent]);
+
+  return doesDraftEditComponentHaveFeatures;
 };
