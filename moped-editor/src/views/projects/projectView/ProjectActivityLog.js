@@ -35,8 +35,10 @@ import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
-import ProjectActivityEntry from "./ActivityLogComponents/ProjectActivityEntry";
+import ProjectActivityEntry from "./ProjectActivityEntry";
 import TagsActivityEntry from "./ActivityLogComponents/TagsActivityEntry";
+
+import { formatActivityLogEntry } from "../../../utils/activityLogHelpers";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -80,23 +82,6 @@ const ProjectActivityLog = () => {
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
   });
-
-  // const [activityId, setActivityId] = useState(null);
-
-  /**
-   * Closes the details dialog
-   */
-  // const handleDetailsClose = () => {
-  //   setActivityId(null);
-  // };
-
-  /**
-   * Opens the details dialog
-   * @param {string} activityId - The activity uuid
-   */
-  // const handleDetailsOpen = activityId => {
-  //   setActivityId(activityId);
-  // };
 
   if (loading) return <CircularProgress />;
 
@@ -187,17 +172,6 @@ const ProjectActivityLog = () => {
     });
   }
 
-  const selectEntryComponent = (change) => {
-    switch (change.record_type) {
-      case "moped_project":
-        return <ProjectActivityEntry change={change} entityList={entityList}/>;
-      case "moped_proj_tags":
-        return <TagsActivityEntry change={change} tagList={tagList} />;
-      default:
-        return <div>There is no matching component</div>;
-    }
-  };
-
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
@@ -225,6 +199,10 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {getDiffs(data["moped_activity_log"]).map((change) => {
+                  const { changeText, changeIcon } = formatActivityLogEntry(
+                    change,
+                    entityList
+                  );
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell
@@ -273,8 +251,13 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {["moped_project", "moped_proj_tags"].includes(change.record_type) ? (
-                          selectEntryComponent(change)
+                        {["moped_project", "moped_proj_tags"].includes(
+                          change.record_type
+                        ) ? (
+                          <ProjectActivityEntry
+                            changeIcon={changeIcon}
+                            changeText={changeText}
+                          />
                         ) : (
                           <Box display="flex" p={0}>
                             <Box p={0}>

@@ -1,4 +1,68 @@
 export const ProjectActivityLogTableMaps = {
+  moped_project: {
+    label: "Project",
+    fields: {
+      project_name: {
+        label: "name",
+      },
+      project_description: {
+        label: "description",
+      },
+      ecapris_subproject_id: {
+        label: "eCAPRIS subproject ID",
+      },
+      current_status: {
+        label: "current status",
+      },
+      current_phase: {
+        label: "phase",
+      },
+      is_deleted: {
+        label: "soft delete status",
+      },
+      milestone_id: {
+        label: "milestone ID",
+      },
+      status_id: {
+        label: "status ID",
+      },
+      // deprecated column, but keeping because historical activities depend on it
+      contractor: {
+        label: "contractor",
+      },
+      project_sponsor: {
+        label: "project sponsor",
+        lookup: "moped_entity",
+      },
+      project_website: {
+        label: "project website",
+      },
+      knack_project_id: {
+        label: "Knack internal ID",
+      },
+      // deprecated column, but keeping because historical activities depend on it
+      purchase_order_number: {
+        label: "purchase order number",
+      },
+      task_order: {
+        label: "task order",
+      },
+      // deprecated column, but keeping because historical activities depend on it
+      work_assignment_id: {
+        label: "work assignment ID",
+      },
+      parent_project_id: {
+        label: "parent project id",
+      },
+      interim_project_id: {
+        label: "Interim MPD (Access) ID",
+      },
+      project_lead_id: {
+        label: "project lead",
+        lookup: "moped_entity",
+      },
+    },
+  },
   moped_proj_entities: {
     label: "Entity",
     fields: {
@@ -624,10 +688,9 @@ export const ProjectActivityLogTableMaps = {
           fieldLabel: "id",
           fieldValues: ["name"],
         },
-      }
-
-    }
-  }
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
@@ -729,7 +792,7 @@ export const ProjectActivityLogCreateDescriptions = {
     },
   },
   moped_project_files: {
-    label: record =>
+    label: (record) =>
       `New file '${record.record_data.event.data.new.file_name}'`,
   },
   moped_proj_milestones: {
@@ -786,13 +849,11 @@ export const ProjectActivityLogCreateDescriptions = {
   moped_proj_tags: {
     label: (record, userList) => {
       // temporary, I have ideas on how to get the tag name here
-      return (
-        "New tag added"
-      );
+      return "New tag added";
     },
   },
   generic: {
-    label: record => {
+    label: (record) => {
       return "Added";
     },
   },
@@ -837,7 +898,7 @@ export const getMappedValue = (type, field, value) =>
  * @param {string} type - The name of the table
  * @return {string}
  */
-export const getRecordTypeLabel = type => {
+export const getRecordTypeLabel = (type) => {
   return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
 };
 
