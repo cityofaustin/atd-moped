@@ -4,6 +4,9 @@ import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { useState } from "react";
+import { set } from "date-fns";
+import { ConsoleLogger } from "@aws-amplify/core";
+import { parseISO } from "date-fns";
 
 /**
  * DateFieldEditComponent - renders a Date type Calendar select
@@ -14,8 +17,6 @@ import { useState } from "react";
 
 // const DateFieldEditComponent = (props) => (
 //   <TextField
-//     name={props.name}
-//     label={props.label}
 //     type="date"
 //     variant="standard"
 //     value={props.value || ""}
@@ -28,12 +29,15 @@ import { useState } from "react";
 // );
 
 const DateFieldEditComponent = (props) => {
+
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
+        clearable={true}
+        emptyLabel="mm/dd/yyyy"
         format="MM/dd/yyyy"
-        value={props.value || null}
-        onChange={(e) => props.onChange(e.target.value)}
+        value={props.value ? parseISO(props.value) : null}
+        onChange={(e) => props.onChange(e)}
         InputLabelProps={{
           shrink: true,
         }}
