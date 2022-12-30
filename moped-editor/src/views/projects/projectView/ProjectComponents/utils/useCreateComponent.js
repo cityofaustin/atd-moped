@@ -65,7 +65,7 @@ const createReducer = (state, action) => {
 
       // We only want drawn features to be fed into the map draw tools
       const drawToolsFeatureOverrides = featuresWithAdditions.filter(
-        (feature) => getDrawId(feature)
+        (feature) => isDrawnDraftFeature(feature)
       );
       action.callback(drawToolsFeatureOverrides);
 
