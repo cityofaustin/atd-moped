@@ -777,9 +777,6 @@ export const ProjectActivityLogGenericDescriptions = {
 };
 
 export const ProjectActivityLogCreateDescriptions = {
-  moped_project: {
-    label: () => "Created Project",
-  },
   moped_proj_personnel: {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
@@ -844,12 +841,6 @@ export const ProjectActivityLogCreateDescriptions = {
           ? ": " + record.record_data.event.data.new.funding_description
           : "")
       );
-    },
-  },
-  moped_proj_tags: {
-    label: (record, userList) => {
-      // temporary, I have ideas on how to get the tag name here
-      return "New tag added";
     },
   },
   generic: {
