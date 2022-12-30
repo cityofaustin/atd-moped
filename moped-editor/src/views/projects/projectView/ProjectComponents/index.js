@@ -79,6 +79,9 @@ export default function MapView({ projectName, projectStatuses }) {
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
+  /* tracks the drawing state of the map */
+  const [isDrawing, setIsDrawing] = useState(false);
+
   const {
     data,
     refetch: refetchProjectComponents,
@@ -109,6 +112,7 @@ export default function MapView({ projectName, projectStatuses }) {
     setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
+    setIsDrawing,
   });
 
   const {
@@ -124,6 +128,7 @@ export default function MapView({ projectName, projectStatuses }) {
     setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
+    setIsDrawing,
   });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =

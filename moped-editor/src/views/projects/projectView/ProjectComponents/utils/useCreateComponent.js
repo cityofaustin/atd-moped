@@ -129,6 +129,7 @@ export const useCreateComponent = ({
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
+  setIsDrawing,
 }) => {
   const [createState, createDispatch] = useReducer(createReducer, {
     isCreatingComponent: false,
@@ -146,6 +147,7 @@ export const useCreateComponent = ({
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
     setLinkMode(null);
+    setIsDrawing(false);
   };
 
   const onSaveDraftComponent = () => {

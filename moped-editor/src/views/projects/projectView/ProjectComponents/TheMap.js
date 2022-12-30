@@ -61,12 +61,13 @@ export default function TheMap({
   linkMode,
   setIsFetchingFeatures,
   featureCollectionsByComponentId,
+  isDrawing,
+  setIsDrawing,
 }) {
   const [cursor, setCursor] = useState("grab");
 
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
-  const [isDrawing, setIsDrawing] = useState(false);
   const projectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(components);
 
