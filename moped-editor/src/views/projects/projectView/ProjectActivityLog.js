@@ -36,7 +36,6 @@ import typography from "src/theme/typography";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ProjectActivityEntry";
-import TagsActivityEntry from "./ActivityLogComponents/TagsActivityEntry";
 
 import { formatActivityLogEntry } from "../../../utils/activityLogHelpers";
 
@@ -201,7 +200,8 @@ const ProjectActivityLog = () => {
                 {getDiffs(data["moped_activity_log"]).map((change) => {
                   const { changeText, changeIcon } = formatActivityLogEntry(
                     change,
-                    entityList
+                    entityList,
+                    tagList
                   );
                   return (
                     <TableRow key={change.activity_id}>

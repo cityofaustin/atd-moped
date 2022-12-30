@@ -1,9 +1,10 @@
 import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
+import LocalOfferOutlinedIcon from "@material-ui/icons/LocalOfferOutlined";
 import { ProjectActivityLogTableMaps } from "../views/projects/projectView/ProjectActivityLogTableMaps";
 
 const formatProjectActivity = (change, entityList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
-  let changeText = "text";
+  let changeText = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
 
   let changeData = {};
@@ -24,8 +25,6 @@ const formatProjectActivity = (change, entityList) => {
     return { changeText, changeIcon };
   }
 
-  console.log(change, change.description[0]);
-
   // need to use a lookup table
   if (entryMap.fields[change.description[0].field]?.lookup) {
     // adding a new field
@@ -42,14 +41,17 @@ const formatProjectActivity = (change, entityList) => {
 
     // updating a field
     if (legacyVersion) {
-      changeText = 
-          `Changed ${entryMap.fields[change.description[0].field].label} from "
+      changeText = `Changed ${
+        entryMap.fields[change.description[0].field].label
+      } from "
             ${entityList[change.description[0].old]}
-          " to "${entityList[change.description[0].new]}"`
+          " to "${entityList[change.description[0].new]}"`;
     } else {
       changeText = `Changed ${
         entryMap.fields[change.description[0].field].label
-      } from "${entityList[change.description[0].old[change.description[0].field]]}
+      } from "${
+        entityList[change.description[0].old[change.description[0].field]]
+      }
         " to "
         ${entityList[change.description[0].new[change.description[0].field]]}"`;
     }
@@ -70,7 +72,26 @@ const formatProjectActivity = (change, entityList) => {
   return { changeText, changeIcon };
 };
 
-export const formatActivityLogEntry = (change, entityList) => {
+const formatTagsActivity = (change, tagList) => {
+  const changeIcon = <LocalOfferOutlinedIcon />;
+  let changeText = "Project tags updated";
+
+  // Adding a new tag
+  if (change.description.length === 0) {
+    changeText = `Project tagged with "${
+      tagList[change.record_data.data.new.tag_id]
+    }" `;
+  } else {
+    // Soft deleting a tag is the only update a user can do (is_deleted is set to true) can do
+    changeText = `"${
+      tagList[change.record_data.data.new.tag_id]
+    }" removed from tags`;
+  }
+
+  return { changeText, changeIcon };
+};
+
+export const formatActivityLogEntry = (change, entityList, tagList) => {
   // console.log(change.record_type);
   const changeText = "text";
   const changeIcon = "icon";
@@ -78,8 +99,8 @@ export const formatActivityLogEntry = (change, entityList) => {
   switch (change.record_type) {
     case "moped_project":
       return formatProjectActivity(change, entityList);
-    // case "moped_proj_tags":
-    //   return <TagsActivityEntry change={change} tagList={tagList} />;
+    case "moped_proj_tags":
+      return formatTagsActivity(change, tagList);
     default:
       return { changeText, changeIcon };
   }
