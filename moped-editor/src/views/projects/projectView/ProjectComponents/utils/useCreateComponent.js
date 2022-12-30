@@ -53,6 +53,7 @@ const createReducer = (state, action) => {
       };
     case "add_drawn_features":
       const newDrawnFeatures = action.payload;
+
       const featuresWithAdditions = [
         ...state.draftComponent.features,
         ...newDrawnFeatures,
@@ -63,7 +64,11 @@ const createReducer = (state, action) => {
         features: [...state.draftComponent.features, ...newDrawnFeatures],
       };
 
-      action.callback(featuresWithAdditions);
+      // We only want drawn features to be fed into the map draw tools
+      const drawToolsFeatureOverrides = featuresWithAdditions.filter(
+        (feature) => getDrawId(feature)
+      );
+      action.callback(drawToolsFeatureOverrides);
 
       return { ...state, draftComponent: newDraftComponent };
 
