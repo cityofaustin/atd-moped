@@ -79,8 +79,13 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
-  const { data: { component_name: componentName = null } = {} } =
-    component || {};
+  const {
+    data: {
+      component_name: componentName = null,
+      component_subtype: componentSubtype = null,
+    } = {},
+  } = component || {};
+  console.log(component);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -134,6 +139,7 @@ const ComponentForm = ({
                   ref={ref}
                   autocompleteProps={{ disabled: isEditingExistingComponent }}
                   onSignalChange={onSignalChange}
+                  componentSubtype={componentSubtype}
                 />
               )}
             />
