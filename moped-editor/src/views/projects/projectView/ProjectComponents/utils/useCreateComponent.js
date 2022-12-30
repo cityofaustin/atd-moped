@@ -53,7 +53,6 @@ const createReducer = (state, action) => {
       };
     case "add_drawn_features":
       const newDrawnFeatures = action.payload;
-
       const featuresWithAdditions = [
         ...state.draftComponent.features,
         ...newDrawnFeatures,
