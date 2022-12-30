@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import {
@@ -69,47 +69,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectActivityLog = () => {
-  const { projectId } = useParams();
-  const classes = useStyles();
-  // todo: see if this should be moved into a ContextProvider?
-  const userList = {};
-  const phaseList = {};
-  const tagList = {};
-  const entityList = {};
-
-  const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
-    variables: { projectId },
-  });
-
-  if (loading) return <CircularProgress />;
-
-  /**
-   * Get the number of items we retrieved
-   * @return {number}
-   */
-  const getTotalItems = () => {
-    return data?.moped_activity_log?.length ?? 0;
-  };
-
-  /**
-   * Returns True if the field should be a generic type (i.e., maps, objects)
-   * @param {string} field - The field name (column name)
-   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
-   */
-  const isFieldGeneric = (field) =>
-    field in ProjectActivityLogGenericDescriptions;
-
-  /**
-   * if event is from new schema, finds the updated difference and includes in the object
-   * Makes sure the project creation event is the last in the returned Array
-   * @param {Array} eventList - The data object as provided by apollo
-   * @returns {Array}
-   */
-  const getDiffs = (eventList) => {
+/**
+ * if event is from new schema, finds the updated difference and includes in the object
+ * Makes sure the project creation event is the last in the returned Array
+ * @param {Array} eventList - The data object as provided by apollo
+ * @returns {Array}
+ */
+const usePrepareActivityData = (activityData) =>
+  useMemo(() => {
+    if (!activityData) {
+      return [];
+    }
     let outputList = [];
     let createdEvent = {};
-    eventList.forEach((event) => {
+    activityData.forEach((event) => {
       let outputEvent = { ...event };
       // if the description includes "newSchema", we need to manually find the difference in the update
       if (event.description[0]?.newSchema) {
@@ -154,7 +127,40 @@ const ProjectActivityLog = () => {
     }
 
     return outputList;
+  }, [activityData]);
+
+const ProjectActivityLog = () => {
+  const { projectId } = useParams();
+  const classes = useStyles();
+  // todo: see if this should be moved into a ContextProvider?
+  const userList = {};
+  const phaseList = {};
+  const tagList = {};
+  const entityList = {};
+
+  const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
+    variables: { projectId },
+  });
+
+  const activityLogData = usePrepareActivityData(data?.moped_activity_log);
+
+  if (loading) return <CircularProgress />;
+
+  /**
+   * Get the number of items we retrieved
+   * @return {number}
+   */
+  const getTotalItems = () => {
+    return data?.moped_activity_log?.length ?? 0;
   };
+
+  /**
+   * Returns True if the field should be a generic type (i.e., maps, objects)
+   * @param {string} field - The field name (column name)
+   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
+   */
+  const isFieldGeneric = (field) =>
+    field in ProjectActivityLogGenericDescriptions;
 
   if (data) {
     data["moped_users"].forEach((user) => {
@@ -197,7 +203,7 @@ const ProjectActivityLog = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {getDiffs(data["moped_activity_log"]).map((change) => {
+                {activityLogData.map((change) => {
                   const { changeText, changeIcon } = formatActivityLogEntry(
                     change,
                     entityList,
