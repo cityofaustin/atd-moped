@@ -1,12 +1,10 @@
 import React from "react";
-import { useState } from "react";
 import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   getSignalOptionLabel,
   getSignalOptionSelected,
-  renderSignalInput,
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
@@ -16,17 +14,13 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * Socrata dataset and setting it as a project component.
  * @param {Object} classes - MaterialUI style object
  * @param {Object} autocompleteProps - props to pass down to the MUI autocomplete component
- * @param {Function} onSignalChange - callback function to run when the signal is changed
- *  @return {JSX.Element}
+ * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
+ * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
+ * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, autocompleteProps, onSignalChange, onChange, value }, ref) => {
+  ({ classes, autocompleteProps, onChange, value }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
-
-    const handleSignalChange = (e, signal) => {
-      onSignalChange(signal);
-      console.log(signal);
-    };
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;
@@ -48,7 +42,6 @@ const SignalComponentAutocomplete = React.forwardRef(
         loading={loading}
         options={features}
         renderInput={(params) => (
-          // renderSignalInput(params, null, "outlined", "small")
           <TextField
             {...params}
             inputRef={ref}
