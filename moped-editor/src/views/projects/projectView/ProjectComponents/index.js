@@ -266,6 +266,8 @@ export default function MapView({ projectName, projectStatuses }) {
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               featureCollectionsByComponentId={featureCollectionsByComponentId}
+              isDrawing={isDrawing}
+              setIsDrawing={setIsDrawing}
             />
           </div>
           <CreateComponentModal

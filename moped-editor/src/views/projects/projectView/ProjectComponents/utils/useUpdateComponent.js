@@ -222,6 +222,7 @@ export const useUpdateComponent = ({
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
+  setIsDrawing,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -410,6 +411,7 @@ export const useUpdateComponent = ({
   const onCancelComponentMapEdit = () => {
     editDispatch({ type: "cancel_map_edit" });
     setLinkMode(null);
+    setIsDrawing(false);
   };
 
   return {
