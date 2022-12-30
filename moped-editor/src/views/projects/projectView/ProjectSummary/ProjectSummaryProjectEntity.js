@@ -40,7 +40,6 @@ const ProjectSummaryProjectEntity = ({
   tooltipText,
 }) => {
   const entityList = data?.moped_entity ?? [];
-  const noneSponsor = entityList.find((e) => e.entity_id === 0);
 
   const getOriginalSponsor = () => {
     if (entityName === "Lead") {
@@ -53,7 +52,7 @@ const ProjectSummaryProjectEntity = ({
 
   const [editMode, setEditMode] = useState(false);
 
-  const [sponsor, setSponsor] = useState(getOriginalSponsor() ?? noneSponsor);
+  const [sponsor, setSponsor] = useState(getOriginalSponsor());
 
   // The mutation and mutation function
   const [updateProjectEntity] = useMutation(getUpdateMutation(entityName));
@@ -73,7 +72,7 @@ const ProjectSummaryProjectEntity = ({
     updateProjectEntity({
       variables: {
         projectId: projectId,
-        entityId: sponsor.entity_id,
+        entityId: sponsor?.entity_id ?? null,
       },
     })
       .then(() => {
