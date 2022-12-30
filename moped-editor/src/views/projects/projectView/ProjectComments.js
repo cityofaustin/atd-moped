@@ -175,7 +175,6 @@ const ProjectComments = (props) => {
       variables: {
         objects: [
           {
-            added_by: getUserFullName(userSessionData),
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
@@ -342,7 +341,7 @@ const ProjectComments = (props) => {
                                   component={"span"}
                                   className={classes.commentorText}
                                 >
-                                  {item.added_by}
+                                  {getUserFullName(item.moped_user)}
                                 </Typography>
                                 <Typography
                                   component={"span"}
