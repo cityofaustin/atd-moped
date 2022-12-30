@@ -1,7 +1,7 @@
 /**
  * These utilities generate `moped_proj_phases` and `moped_proj_notes` records from the
  * "project_statusupdate" table, which manages both of these entities in the Access DB.
- * 
+ *
  * To determine a project's phases as well as the current phase, we must extract all
  * unique phase occurrences per project and use their timestamps to guess which phase
  * is current.
@@ -56,9 +56,6 @@ const createProjPhases = (projectId, groupedStatusUpdates) => {
       phase_id,
       phase_start: phaseStart,
       is_current_phase: false,
-      // todo: drop these required columns from DB
-      completion_percentage: 0,
-      completed: false,
     };
   });
   // now find the phase that is current
