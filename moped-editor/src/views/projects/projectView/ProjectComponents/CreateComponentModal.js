@@ -60,7 +60,6 @@ const CreateComponentModal = ({
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
     if (isSavingSignalFeature) {
-      // Add the signal feature to the new component
       const newComponentWithSignalFeature = {
         ...newComponent,
         features: [formData.signal],

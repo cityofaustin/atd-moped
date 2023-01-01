@@ -28,6 +28,7 @@ export default function ComponentListItem({
   onClickZoomToComponent,
   isEditingComponent,
   isCreatingComponent,
+  hideEditButton = false,
 }) {
   const classes = useStyles();
 
@@ -86,15 +87,17 @@ export default function ComponentListItem({
             />
             <ListItemText
               primary={
-                <Button
-                  fullWidth
-                  size="small"
-                  color="primary"
-                  startIcon={<EditOutlined />}
-                  onClick={onStartEditingComponent}
-                >
-                  Edit
-                </Button>
+                !hideEditButton && (
+                  <Button
+                    fullWidth
+                    size="small"
+                    color="primary"
+                    startIcon={<EditOutlined />}
+                    onClick={onStartEditingComponent}
+                  >
+                    Edit
+                  </Button>
+                )
               }
             />
           </ListItem>

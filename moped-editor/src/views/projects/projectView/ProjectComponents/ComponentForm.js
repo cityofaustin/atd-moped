@@ -93,16 +93,6 @@ const ComponentForm = ({
 
   const isEditingExistingComponent = initialFormValues !== null;
 
-  // TODO: Need to add signal record to project component here
-  // TODO: Figure out why feature added when saving doesn't show up in map
-  // TODO: Add SourcesAndLayers component for signal features
-  // TODO: Need to make feature collection out of createState.featureSignals array
-  // TODO: UI Flow
-  // TODO: 1. User selects signal component
-  // TODO: 2. Continue button changes text to "Save Signal"
-  // TODO: 2. User selects signal from autocomplete
-  // TODO: 3. User clicks "Save Signal"
-
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>

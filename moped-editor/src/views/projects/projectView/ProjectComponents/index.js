@@ -224,6 +224,9 @@ export default function MapView({ projectName, projectStatuses }) {
                   const isExpanded =
                     clickedComponent?.project_component_id ===
                     component.project_component_id;
+                  const isSignalComponent =
+                    component.moped_components.feature_layer.internal_table ===
+                    "feature_signals";
                   return (
                     <ComponentListItem
                       key={component.project_component_id}
@@ -235,6 +238,7 @@ export default function MapView({ projectName, projectStatuses }) {
                       onClickZoomToComponent={onClickZoomToComponent}
                       isEditingComponent={editState.isEditingComponent}
                       isCreatingComponent={createState.isCreatingComponent}
+                      hideEditButton={isSignalComponent}
                     />
                   );
                 })}
