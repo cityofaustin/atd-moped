@@ -81,7 +81,6 @@ const ComponentForm = ({
   const { component } = watch();
   const { data: { component_name: componentName = null } = {} } =
     component || {};
-  console.log(component);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 

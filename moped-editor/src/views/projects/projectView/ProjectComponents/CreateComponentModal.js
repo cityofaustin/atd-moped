@@ -61,9 +61,12 @@ const CreateComponentModal = ({
 
     if (isSavingSignalFeature) {
       // Add the signal feature to the new component
-      // Save the new component
-      // Update
-      // Add signal to newComponent.features and then
+      const newComponentWithSignalFeature = {
+        ...newComponent,
+        features: [formData.signal],
+      };
+
+      onSaveDraftComponent(newComponentWithSignalFeature);
     } else {
       createDispatch({ type: "store_draft_component", payload: newComponent });
       setLinkMode(linkMode);
