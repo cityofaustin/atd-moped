@@ -266,7 +266,7 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {["moped_project", "moped_proj_tags"].includes(
+                        {["moped_project", "moped_proj_tags", "moped_proj_funding"].includes(
                           change.record_type
                         ) ? (
                           <ProjectActivityEntry

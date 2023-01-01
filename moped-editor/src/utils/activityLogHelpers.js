@@ -11,6 +11,8 @@ export const formatActivityLogEntry = (change, entityList, tagList) => {
       return formatProjectActivity(change, entityList);
     case "moped_proj_tags":
       return formatTagsActivity(change, tagList);
+    case "moped_proj_funding":
+      return formatFundingActivity(change);
     default:
       return { changeText, changeIcon };
   }
