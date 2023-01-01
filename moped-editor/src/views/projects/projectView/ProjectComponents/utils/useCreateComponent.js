@@ -193,7 +193,10 @@ export const useCreateComponent = ({
       );
       makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
     } else if (featureTable === "feature_signals") {
-      console.log("feature signals");
+      features.forEach((feature) => {
+        const signalRecord = knackSignalRecordToFeatureSignalsRecord(feature);
+        signalFeaturesToInsert.push(signalRecord);
+      });
     }
 
     const newComponentData = {
