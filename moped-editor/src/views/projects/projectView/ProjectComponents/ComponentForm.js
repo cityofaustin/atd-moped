@@ -92,6 +92,7 @@ const ComponentForm = ({
   );
 
   const isEditingExistingComponent = initialFormValues !== null;
+  const isSignalComponent = componentName === "Signal";
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -169,7 +170,7 @@ const ComponentForm = ({
             startIcon={<CheckCircle />}
             type="submit"
           >
-            {formButtonText}
+            {isSignalComponent ? "Save Signal Component" : formButtonText}
           </Button>
         </Grid>
       </Grid>
