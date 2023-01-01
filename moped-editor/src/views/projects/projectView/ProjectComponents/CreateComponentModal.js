@@ -24,12 +24,12 @@ const CreateComponentModal = ({
   setLinkMode,
   createDispatch,
   onSignalChange,
+  onSaveDraftComponent,
 }) => {
   const classes = useStyles();
 
   const onSave = (formData) => {
-    // TODO: Check form data for signal value or not
-    const isSavingSignalFeature = true;
+    const isSavingSignalFeature = Boolean(formData.signal);
 
     const {
       component: {
@@ -63,6 +63,7 @@ const CreateComponentModal = ({
       // Add the signal feature to the new component
       // Save the new component
       // Update
+      // Add signal to newComponent.features and then
     } else {
       createDispatch({ type: "store_draft_component", payload: newComponent });
       setLinkMode(linkMode);

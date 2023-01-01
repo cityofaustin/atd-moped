@@ -91,20 +91,6 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithUpdates };
-    case "add_signal_feature":
-      const knackRecord = action.payload;
-      const featureSignalRecord =
-        knackSignalRecordToFeatureSignalsRecord(knackRecord);
-
-      const draftComponentWithSignal = {
-        ...state.draftComponent,
-        signalFeatures: [
-          ...state.draftComponent.signalFeatures,
-          featureSignalRecord,
-        ],
-      };
-
-      return { ...state, draftComponent: draftComponentWithSignal };
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
 
@@ -161,7 +147,7 @@ export const useCreateComponent = ({
     createDispatch({ type: "add_signal_feature", payload: signal });
   };
 
-  const onSaveDraftComponent = () => {
+  const onSaveDraftComponent = (component = null) => {
     /* Start data preparation */
     const {
       component_id,
@@ -170,8 +156,7 @@ export const useCreateComponent = ({
       component_name,
       internal_table,
       features,
-      signalFeatures,
-    } = createState.draftComponent;
+    } = component || createState.draftComponent;
 
     const subcomponentsArray = moped_subcomponents
       ? moped_subcomponents.map((subcomponent) => ({
@@ -182,7 +167,7 @@ export const useCreateComponent = ({
     const featureTable = internal_table;
 
     const featuresToInsert = [];
-    const signalFeaturesToInsert = signalFeatures;
+    const signalFeaturesToInsert = [];
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
 
@@ -207,6 +192,8 @@ export const useCreateComponent = ({
         featuresToInsert
       );
       makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
+    } else if (featureTable === "feature_signals") {
+      console.log("feature signals");
     }
 
     const newComponentData = {

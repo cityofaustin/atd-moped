@@ -269,6 +269,7 @@ export default function MapView({ projectName, projectStatuses }) {
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}
             onSignalChange={addSignalToCreateState}
+            onSaveDraftComponent={onSaveDraftComponent}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}
