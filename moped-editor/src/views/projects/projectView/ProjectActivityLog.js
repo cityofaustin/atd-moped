@@ -214,8 +214,7 @@ const ProjectActivityLog = () => {
                 {activityLogData.map((change) => {
                   const { changeText, changeIcon } = formatActivityLogEntry(
                     change,
-                    lookupData.entityList,
-                    lookupData.tagList
+                    lookupData
                   );
                   return (
                     <TableRow key={change.activity_id}>
