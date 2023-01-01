@@ -38,7 +38,7 @@ const SignalComponentAutocomplete = React.forwardRef(
         getOptionSelected={getSignalOptionSelected}
         // this label formatting mirrors the Data Tracker formatting
         getOptionLabel={getSignalOptionLabel}
-        onChange={onChange}
+        onChange={(_event, option) => onChange(option)}
         loading={loading}
         options={features}
         renderInput={(params) => (
