@@ -19,14 +19,8 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, autocompleteProps, onChange, value, componentSubtype }, ref) => {
+  ({ classes, autocompleteProps, onChange, value }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
-    // TODO: Filter by subtype, figure out if there are RRFB or School Zone Beacon entries in the dataset
-    const featuresFilteredBySubtype = features?.filter(
-      (feature) =>
-        feature.properties.signal_type.toLowerCase() ===
-        componentSubtype.toLowerCase()
-    );
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;
