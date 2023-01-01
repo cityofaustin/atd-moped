@@ -1,6 +1,6 @@
 import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
-import { formatProjectActivity } from "./activityLogFormatters/mopedProjectActivity"
-import { formatTagsActivity } from "./activityLogFormatters/mopedTagsActivity"
+import { formatProjectActivity } from "./activityLogFormatters/mopedProjectActivity";
+import { formatTagsActivity } from "./activityLogFormatters/mopedTagsActivity";
 
 export const formatActivityLogEntry = (change, entityList, tagList) => {
   const changeText = "Project was updated";

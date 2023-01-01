@@ -253,7 +253,7 @@ const ProjectActivityLog = () => {
                           <Box
                             p={0}
                             flexGrow={1}
-                            className={classes.avatarName} 
+                            className={classes.avatarName}
                           >
                             {getUserFullName(
                               change?.moped_user ?? change?.updated_by_user

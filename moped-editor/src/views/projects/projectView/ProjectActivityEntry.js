@@ -12,9 +12,7 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
 
   return (
     <Box display="flex" p={0}>
-      <Box p={0}>
-        {changeIcon}
-      </Box>
+      <Box p={0}>{changeIcon}</Box>
       <Box p={0} flexGrow={1}>
         <Typography variant="body2" className={classes.entryText}>
           {changeText}
