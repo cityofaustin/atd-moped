@@ -73,30 +73,26 @@ const useLookupTables = (data) =>
   useMemo(() => {
     const lookupData = {};
 
-    const userList = {};
-    const phaseList = {};
-    const tagList = {};
-    const entityList = {};
+    lookupData.userList = {};
+    lookupData.phaseList = {};
+    lookupData.tagList = {};
+    lookupData.entityList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
-        userList[`${user.user_id}`] = getUserFullName(user);
+        lookupData.userList[`${user.user_id}`] = getUserFullName(user);
       });
       data["moped_phases"].forEach((phase) => {
-        phaseList[`${phase.phase_id}`] = phase.phase_name;
+        lookupData.phaseList[`${phase.phase_id}`] = phase.phase_name;
       });
       data["moped_tags"].forEach((tag) => {
-        tagList[`${tag.id}`] = tag.name;
+        lookupData.tagList[`${tag.id}`] = tag.name;
       });
       data["moped_entity"].forEach((entity) => {
-        entityList[`${entity.entity_id}`] = entity.entity_name;
+        lookupData.entityList[`${entity.entity_id}`] = entity.entity_name;
       });
     }
 
-    lookupData.userList = userList;
-    lookupData.phaseList = phaseList;
-    lookupData.tagList = tagList;
-    lookupData.entityList = entityList;
     return lookupData;
   }, [data]);
 
@@ -250,13 +246,14 @@ const ProjectActivityLog = () => {
                               initials={getInitials(
                                 change?.moped_user ?? change?.updated_by_user
                               )}
+                              // todo: do we want this to not be always gray if its just the initials?
                               userColor={null}
                             />
                           </Box>
                           <Box
                             p={0}
                             flexGrow={1}
-                            className={classes.avatarName}
+                            className={classes.avatarName} 
                           >
                             {getUserFullName(
                               change?.moped_user ?? change?.updated_by_user
