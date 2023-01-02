@@ -13,7 +13,6 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
  * Socrata dataset and setting it as a project component.
  * @param {Object} classes - MaterialUI style object
- * @param {Object} autocompleteProps - props to pass down to the MUI autocomplete component
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @return {JSX.Element}
@@ -55,7 +54,6 @@ const SignalComponentAutocomplete = React.forwardRef(
           />
         )}
         value={value}
-        {...autocompleteProps}
       />
     );
   }

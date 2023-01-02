@@ -111,7 +111,7 @@ const ComponentForm = ({
           />
         </Grid>
 
-        {componentName === "Signal" && (
+        {isSignalComponent && (
           <Grid item xs={12}>
             <Controller
               id="signal"
@@ -122,7 +122,6 @@ const ComponentForm = ({
                   onChange={onChange}
                   value={value}
                   ref={ref}
-                  autocompleteProps={{ disabled: isEditingExistingComponent }}
                 />
               )}
             />
