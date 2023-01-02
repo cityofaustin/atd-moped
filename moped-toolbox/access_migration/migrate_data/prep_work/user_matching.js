@@ -1,7 +1,8 @@
+const fs = require("fs");
 const { loadJsonFile } = require("../utils/loader");
 
-const FNAME_MOPED_USERS = "./data/moped/moped_users_prod.json";
-const FNAME_ACCESS_USERS = "./data/raw/employees.json";
+const FNAME_MOPED_USERS = "../data/moped/moped_users_prod.json";
+const FNAME_ACCESS_USERS = "../data/raw/employees.json";
 
 const findMopedUser = (name, usersMoped) => {
   const matchLastName = usersMoped.find((user) =>
@@ -23,7 +24,7 @@ function matchPeople() {
     const userName = user.UserName;
     const mopedUser = findMopedUser(name, usersMoped);
     usersMatched.push({
-      access_username: userName,
+      // access_username: userName,
       access_name: user.Name,
       access_workgroup: user.Organization,
       access_title: user.Title,
@@ -35,6 +36,15 @@ function matchPeople() {
   });
   const notFound = usersMatched.filter((user) => !user.moped_email).length;
   console.log(`${notFound} not found out of ${usersMatched.length}`);
+
+  const csvHeader = Object.keys(usersMatched[0]).join(",");
+  const csvRows = usersMatched.map((user) =>
+    Object.keys(user)
+      .map((key) => user[key])
+      .join(",")
+  );
+  const stringyData = [csvHeader, ...csvRows].join("\n");
+  fs.writeFileSync("usermatchresults.csv", stringyData);
 }
 
 matchPeople();
