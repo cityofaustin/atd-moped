@@ -44,7 +44,6 @@ export default function ComponentListItem({
   const onStartEditingComponent = () =>
     editDispatch({ type: "start_edit", payload: component });
 
-  console.log(component);
   const isSignalComponent = Boolean(
     component?.moped_components?.component_name === "Signal"
   );
