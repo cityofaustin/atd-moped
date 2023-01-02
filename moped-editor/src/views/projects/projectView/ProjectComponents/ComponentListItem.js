@@ -44,6 +44,16 @@ export default function ComponentListItem({
   const onStartEditingComponent = () =>
     editDispatch({ type: "start_edit", payload: component });
 
+  console.log(component);
+  const isSignalComponent = Boolean(
+    component?.moped_components?.component_name === "Signal"
+  );
+  const componentName = component?.moped_components?.component_name;
+  const signalLocationName = component?.feature_signals?.[0]?.location_name;
+  const listItemPrimaryText = isSignalComponent
+    ? `${componentName} -${signalLocationName}`
+    : componentName;
+
   return (
     <Box
       borderLeft={7}
@@ -53,7 +63,7 @@ export default function ComponentListItem({
     >
       <ListItem dense button onClick={onListItemClick}>
         <ListItemText
-          primary={component.moped_components?.component_name}
+          primary={listItemPrimaryText}
           secondary={component.moped_components?.component_subtype}
         />
         <ListItemSecondaryAction>
