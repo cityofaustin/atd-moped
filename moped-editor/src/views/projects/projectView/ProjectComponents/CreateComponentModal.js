@@ -58,6 +58,8 @@ const CreateComponentModal = ({
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
+    // Signal components get their geometry from the Knack signal dataset so we save them
+    // immediately. All other components are saved after the user selects or draws their geometry.
     if (isSavingSignalFeature) {
       const newComponentWithSignalFeature = {
         ...newComponent,

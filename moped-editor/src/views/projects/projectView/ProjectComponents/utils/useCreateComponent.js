@@ -143,6 +143,12 @@ export const useCreateComponent = ({
     setLinkMode(null);
   };
 
+  /**
+   * Prepare component and feature data for component creation and call mutation/reset state
+   * @param {Object} component - Optional component object to use instead of draftComponent state
+   * when we are saving a signal component since its geometry comes from a Knack record and does
+   * not need input from the user through the map layer select and feature drawing
+   */
   const onSaveDraftComponent = (component = null) => {
     /* Start data preparation */
     const {
