@@ -55,6 +55,14 @@ fields = [
     in: "ProjectWebsite",
     out: "project_website",
     required: false,
+    transform(row) {
+      const website = row["ProjectWebsite"];
+      if (!website) {
+        return null;
+      }
+      // for whatever reason websites are wrapped in `#`
+      return website.replaceAll("#", "");
+    },
   },
   {
     in: "StatusDate",
@@ -158,7 +166,7 @@ async function main(env) {
 
   const data = loadJsonFile(FNAME);
 
-  const ready = data
+  const projects = data
     .map((row) => {
       const newRow = mapRow(row, fields);
       if (getInvalidFields(newRow)) {
@@ -174,7 +182,7 @@ async function main(env) {
   const projComponents = getComponents();
 
   // attach proj phases to projects
-  ready.forEach((proj) => {
+  projects.forEach((proj) => {
     const { interim_project_id } = proj;
     const phases = projPhases[interim_project_id];
     if (phases?.length) {
@@ -193,9 +201,9 @@ async function main(env) {
     }
   });
 
-  logger.info(`Inserting ${ready.length} projects...`);
+  logger.info(`Inserting ${projects.length} projects...`);
 
-  const projectChunks = chunkArray(ready, 50);
+  const projectChunks = chunkArray(projects, 50);
 
   for (let i = 0; i < projectChunks.length; i++) {
     try {

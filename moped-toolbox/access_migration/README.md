@@ -93,6 +93,5 @@ $ node index.js
 
 ### moped_project
 
-- project_website: parse/cleanup
 
 
