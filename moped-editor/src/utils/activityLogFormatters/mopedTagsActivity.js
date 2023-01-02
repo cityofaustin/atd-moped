@@ -7,12 +7,12 @@ export const formatTagsActivity = (change, tagList) => {
   // Adding a new tag
   if (change.description.length === 0) {
     changeText = `Project tagged with "${
-      tagList[change.record_data.data.new.tag_id]
+      tagList[change.record_data.event.data.new.tag_id]
     }" `;
   } else {
     // Soft deleting a tag is the only update a user can do (is_deleted is set to true) can do
     changeText = `"${
-      tagList[change.record_data.data.new.tag_id]
+      tagList[change.record_data.event.data.new.tag_id]
     }" removed from tags`;
   }
 
