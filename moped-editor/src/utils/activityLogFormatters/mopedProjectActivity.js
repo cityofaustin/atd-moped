@@ -19,6 +19,7 @@ export const formatProjectActivity = (change, entityList) => {
 
   // project creation
   if (change.description.length === 0) {
+    // created project as (bold project name)
     changeText = `${changeData.new.project_name} created`;
     changeIcon = <BeenhereOutlinedIcon />;
     return { changeText, changeIcon };
@@ -47,7 +48,7 @@ export const formatProjectActivity = (change, entityList) => {
       changeText = `Changed ${
         entryMap.fields[change.description[0].field].label
       }
-        " to "
+        to
         ${entityList[change.description[0].new[change.description[0].field]]}"`;
     }
   } else {
@@ -58,7 +59,7 @@ export const formatProjectActivity = (change, entityList) => {
     } else {
       changeText = `
         Changed ${entryMap.fields[change.description[0].field].label} to 
-        "${change.description[0].new[change.description[0].field]}"`;
+        "${change.description[0].new[change.description[0].field]}"`; // have this check if "" and show (blank) instead
     }
   }
 
