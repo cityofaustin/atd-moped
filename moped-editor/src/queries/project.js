@@ -472,6 +472,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
       entity_id
       entity_name
     }
+    moped_fund_sources(order_by: {funding_source_id: asc}) {
+      funding_source_id
+      funding_source_name
+    }
+    moped_fund_programs(order_by: {funding_program_id: asc}) {
+      funding_program_id
+      funding_program_name
+    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type

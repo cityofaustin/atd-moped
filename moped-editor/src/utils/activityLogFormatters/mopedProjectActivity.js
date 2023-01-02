@@ -47,7 +47,7 @@ export const formatProjectActivity = (change, entityList) => {
       changeText = `Changed ${
         entryMap.fields[change.description[0].field].label
       }
-        " to "
+        to "
         ${entityList[change.description[0].new[change.description[0].field]]}"`;
     }
   } else {

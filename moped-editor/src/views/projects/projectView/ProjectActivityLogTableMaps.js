@@ -576,69 +576,45 @@ export const ProjectActivityLogTableMaps = {
     label: "Fund",
     fields: {
       proj_funding_id: {
-        icon: "",
         label: "funding ID",
-        data_type: "integer",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        data_type: "integer",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        data_type: "timestamptz",
       },
       added_by: {
-        icon: "",
         label: "added by",
-        data_type: "integer",
       },
       funding_source_id: {
-        icon: "",
-        label: "source ID",
-        data_type: "integer",
+        label: "funding source",
+        lookup: "fundingSources",
       },
       funding_program_id: {
-        icon: "",
-        label: "program ID",
-        data_type: "integer",
+        label: "funding program",
+        lookup: "fundingPrograms"
       },
       funding_amount: {
-        icon: "",
-        label: "amount",
-        data_type: "integer",
+        label: "funding amount",
       },
       fund_dept_unit: {
-        icon: "",
         label: "department unit",
-        data_type: "text",
       },
       funding_description: {
-        icon: "",
         label: "description",
-        data_type: "text",
       },
       funding_status_id: {
-        icon: "",
         label: "status ID",
-        data_type: "integer",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
       fund: {
-        icon: "",
         label: "fund",
-        data_type: "jsonb",
       },
       dept_unit: {
-        icon: "",
         label: "department unit",
-        data_type: "jsonb",
       },
     },
   },

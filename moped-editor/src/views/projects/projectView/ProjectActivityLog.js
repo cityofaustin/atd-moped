@@ -77,6 +77,8 @@ const useLookupTables = (data) =>
     lookupData.phaseList = {};
     lookupData.tagList = {};
     lookupData.entityList = {};
+    lookupData.fundingSources = {};
+    lookupData.fundingPrograms = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -90,6 +92,12 @@ const useLookupTables = (data) =>
       });
       data["moped_entity"].forEach((entity) => {
         lookupData.entityList[`${entity.entity_id}`] = entity.entity_name;
+      });
+      data["moped_fund_sources"].forEach((fundSource) => {
+        lookupData.fundingSources[`${fundSource.funding_source_id}`] = fundSource.funding_source_name;
+      });
+      data["moped_fund_programs"].forEach((fundProgram) => {
+        lookupData.fundingPrograms[`${fundProgram.funding_program_id}`] = fundProgram.funding_program_name;
       });
     }
 
