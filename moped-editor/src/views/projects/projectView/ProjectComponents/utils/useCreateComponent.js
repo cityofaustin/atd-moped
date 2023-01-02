@@ -143,10 +143,6 @@ export const useCreateComponent = ({
     setLinkMode(null);
   };
 
-  const addSignalToCreateState = (signal) => {
-    createDispatch({ type: "add_signal_feature", payload: signal });
-  };
-
   const onSaveDraftComponent = (component = null) => {
     /* Start data preparation */
     const {
@@ -234,6 +230,5 @@ export const useCreateComponent = ({
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
-    addSignalToCreateState,
   };
 };

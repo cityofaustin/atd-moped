@@ -102,7 +102,6 @@ export default function MapView({ projectName, projectStatuses }) {
     onStartCreatingComponent,
     onSaveDraftComponent,
     onCancelComponentCreate,
-    addSignalToCreateState,
     createState,
     createDispatch,
   } = useCreateComponent({
@@ -272,7 +271,6 @@ export default function MapView({ projectName, projectStatuses }) {
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}
-            onSignalChange={addSignalToCreateState}
             onSaveDraftComponent={onSaveDraftComponent}
           />
           <DeleteComponentModal

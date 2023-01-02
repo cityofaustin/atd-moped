@@ -23,7 +23,6 @@ const CreateComponentModal = ({
   showDialog,
   setLinkMode,
   createDispatch,
-  onSignalChange,
   onSaveDraftComponent,
 }) => {
   const classes = useStyles();
@@ -91,11 +90,7 @@ const CreateComponentModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        <ComponentForm
-          onSave={onSave}
-          formButtonText="Continue"
-          onSignalChange={onSignalChange}
-        />
+        <ComponentForm onSave={onSave} formButtonText="Continue" />
       </DialogContent>
     </Dialog>
   );

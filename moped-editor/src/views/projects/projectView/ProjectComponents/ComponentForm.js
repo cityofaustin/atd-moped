@@ -64,7 +64,6 @@ const ComponentForm = ({
   formButtonText,
   onSave,
   initialFormValues = null,
-  onSignalChange,
 }) => {
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
@@ -124,7 +123,6 @@ const ComponentForm = ({
                   value={value}
                   ref={ref}
                   autocompleteProps={{ disabled: isEditingExistingComponent }}
-                  onSignalChange={onSignalChange}
                 />
               )}
             />
