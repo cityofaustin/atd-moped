@@ -401,6 +401,7 @@ export const useUpdateComponent = ({
         refetchProjectComponents().then(() => {
           setClickedComponent(null);
           editDispatch({ type: "save_edit" });
+          setIsDrawing(false);
         });
       })
       .catch((error) => {

@@ -16,7 +16,6 @@ const createReducer = (state, action) => {
       return {
         ...state,
         showCreateDialog: true,
-        isCreatingComponent: true,
       };
     case "save_create":
       return {
@@ -38,7 +37,11 @@ const createReducer = (state, action) => {
         showCreateDialog: false,
       };
     case "store_draft_component":
-      return { ...state, draftComponent: action.payload };
+      return {
+        ...state,
+        draftComponent: action.payload,
+        isCreatingComponent: true,
+      };
     case "remove_draft_component_feature":
       const clickedDraftComponentFeature = action.payload;
       const draftComponentWithDeselectedFeatureRemoved =
@@ -219,6 +222,7 @@ export const useCreateComponent = ({
         refetchProjectComponents().then(() => {
           createDispatch({ type: "save_create" });
           setLinkMode(null);
+          setIsDrawing(false);
         });
       })
       .catch((error) => {
