@@ -118,8 +118,8 @@ const usePrepareActivityData = (activityData) =>
           outputEvent.description = [];
         } else {
           // otherwise compare the old record to the new record to find the field that was updated
-          const newData = outputEvent.record_data.data.new;
-          const oldData = outputEvent.record_data.data.old;
+          const newData = outputEvent.record_data.event.data.new;
+          const oldData = outputEvent.record_data.event.data.old;
           let changedField = "";
           Object.keys(newData).forEach((key) => {
             if (newData[key] !== oldData[key]) {

@@ -6,16 +6,7 @@ export const formatProjectActivity = (change, entityList) => {
   let changeText = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
 
-  let changeData = {};
-  // the legacy way has the change data in event/data.
-  // In the new schema, event is undefined
-  const legacyVersion = !!change.record_data?.event;
-
-  if (legacyVersion) {
-    changeData = change.record_data.event.data;
-  } else {
-    changeData = change.record_data.data;
-  }
+  const changeData = change.record_data.event.data;
 
   // project creation
   if (change.description.length === 0) {
@@ -29,38 +20,24 @@ export const formatProjectActivity = (change, entityList) => {
   if (entryMap.fields[change.description[0].field]?.lookup) {
     // adding a new field
     if (
-      change.description[0].old === null ||
+      changeData.old === null ||
       // the entity list used to use 0 as an id for null or empty
-      change.description[0].old === 0 ||
-      change.description[0].old[change.description[0].field] === 0
+      changeData.old === 0 ||
+      changeData.old[change.description[0].field] === 0
     ) {
       changeText = `
         Added "${entityList[change.description[0].new]}" as
         ${entryMap.fields[change.description[0].field].label}`;
     }
-
-    // updating a field
-    if (legacyVersion) {
-      changeText = `Changed ${
-        entryMap.fields[change.description[0].field].label
-      } to "${entityList[change.description[0].new]}"`;
-    } else {
-      changeText = `Changed ${
-        entryMap.fields[change.description[0].field].label
-      }
-        to
-        ${entityList[change.description[0].new[change.description[0].field]]}"`;
-    }
+    // use the lookup table
+    changeText = `Changed ${
+      entryMap.fields[change.description[0].field].label
+    } to "${entityList[changeData.new[change.description[0].field]]}"`;
   } else {
-    if (legacyVersion) {
-      changeText = `
+    changeText = `
           Changed ${entryMap.fields[change.description[0].field].label}
-          to "${change.description[0].new}"`;
-    } else {
-      changeText = `
-        Changed ${entryMap.fields[change.description[0].field].label} to 
-        "${change.description[0].new[change.description[0].field]}"`; // have this check if "" and show (blank) instead
-    }
+          to "${changeData.new[change.description[0].field]}"`;
+    // have this check if "" and show (blank) instead
   }
 
   return { changeText, changeIcon };
