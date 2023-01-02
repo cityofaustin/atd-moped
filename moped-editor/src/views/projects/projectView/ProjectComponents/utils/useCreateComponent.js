@@ -168,10 +168,10 @@ export const useCreateComponent = ({
     const drawnPointsToInsert = [];
 
     const drawnFeatures = features.filter((feature) =>
-      Boolean(getDrawId(feature))
+      isDrawnDraftFeature(feature)
     );
     const selectedFeatures = features.filter(
-      (feature) => !Boolean(getDrawId(feature))
+      (feature) => !isDrawnDraftFeature(feature)
     );
 
     if (featureTable === "feature_street_segments") {
