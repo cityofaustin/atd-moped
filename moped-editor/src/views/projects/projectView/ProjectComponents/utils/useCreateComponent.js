@@ -160,6 +160,7 @@ export const useCreateComponent = ({
         refetchProjectComponents().then(() => {
           createDispatch({ type: "save_create" });
           setLinkMode(null);
+          setIsDrawing(false);
         });
       })
       .catch((error) => {
