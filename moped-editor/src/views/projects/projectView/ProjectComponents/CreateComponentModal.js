@@ -72,10 +72,6 @@ const CreateComponentModal = ({
       setLinkMode(linkMode);
       createDispatch({ type: "close_create_dialog" });
     }
-
-    createDispatch({ type: "store_draft_component", payload: newComponent });
-    setLinkMode(linkMode);
-    createDispatch({ type: "close_create_dialog" });
   };
 
   const onClose = () => {
