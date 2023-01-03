@@ -3970,6 +3970,31 @@
         - name: MOPED_API_EVENT_NAME
           value: activity_log
 - table:
+    name: moped_public_process_status
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+- table:
     name: moped_subcomponents
     schema: public
   insert_permissions:

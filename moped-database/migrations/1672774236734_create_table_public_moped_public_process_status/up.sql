@@ -1,0 +1,1 @@
+CREATE TABLE "public"."moped_public_process_status" ("id" serial NOT NULL, "name" text NOT NULL UNIQUE, "slug" text NOT NULL UNIQUE, PRIMARY KEY ("id") );COMMENT ON TABLE "public"."moped_public_process_status" IS E'lookup table of public process statuses';
