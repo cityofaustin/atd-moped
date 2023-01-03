@@ -26,6 +26,12 @@ $ docker build -t moped-migra -t moped-migra:latest .
 $ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/export_data.py
 ```
 
+4. Run the script that downloads facilities (aka components) spatial data from AGOL
+
+```shell
+$ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/get_facilities_geojson.py
+```
+
 ### Transform and Load
 
 1. Start the Hasura cluster and Moped Editor
