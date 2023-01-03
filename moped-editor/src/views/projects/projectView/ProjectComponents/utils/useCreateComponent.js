@@ -61,7 +61,11 @@ const createReducer = (state, action) => {
         features: [...state.draftComponent.features, ...newDrawnFeatures],
       };
 
-      action.callback(featuresWithAdditions);
+      // We only want drawn features to be fed into the map draw tools
+      const drawToolsFeatureOverrides = featuresWithAdditions.filter(
+        (feature) => isDrawnDraftFeature(feature)
+      );
+      action.callback(drawToolsFeatureOverrides);
 
       return { ...state, draftComponent: newDraftComponent };
 
@@ -121,6 +125,7 @@ export const useCreateComponent = ({
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
+  setIsDrawing,
 }) => {
   const [createState, createDispatch] = useReducer(createReducer, {
     isCreatingComponent: false,
@@ -138,6 +143,7 @@ export const useCreateComponent = ({
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
     setLinkMode(null);
+    setIsDrawing(false);
   };
 
   /**
@@ -175,6 +181,7 @@ export const useCreateComponent = ({
         refetchProjectComponents().then(() => {
           createDispatch({ type: "save_create" });
           setLinkMode(null);
+          setIsDrawing(false);
         });
       })
       .catch((error) => {
