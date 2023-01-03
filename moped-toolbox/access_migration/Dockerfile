@@ -6,6 +6,6 @@ RUN apt-get update \
  && apt-get install default-jre -y
 
 # Install python requirement libraries
-RUN pip install requests jaydebeapi
+RUN pip install requests jaydebeapi arcgis
 
 WORKDIR /app
