@@ -78,8 +78,7 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
-  const { data: { component_name: componentName = null } = {} } =
-    component || {};
+  const internalTable = component?.data?.feature_layer?.internal_table;
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -91,7 +90,7 @@ const ComponentForm = ({
   );
 
   const isEditingExistingComponent = initialFormValues !== null;
-  const isSignalComponent = componentName === "Signal";
+  const isSignalComponent = internalTable === "feature_signals";
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
