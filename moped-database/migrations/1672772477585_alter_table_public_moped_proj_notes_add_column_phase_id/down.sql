@@ -1,4 +1,2 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_notes" add column "phase_id" integer
---  null;
+-- drop phase_id from moped_proj_notes table
+alter table "public"."moped_proj_notes" drop column "phase_id" cascade;
