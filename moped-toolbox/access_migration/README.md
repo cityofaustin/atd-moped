@@ -65,7 +65,7 @@ $ node index.js
 
 ### Issues to make
 
-- remove dupe RRFB component
+- clean up/de-dupe RRFB component
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - work authorizations - can we just mirror Data Tracker functionality in SMB?
   - if we must; strive for simplest implementation!
