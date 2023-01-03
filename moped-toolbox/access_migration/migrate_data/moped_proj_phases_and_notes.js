@@ -76,7 +76,7 @@ const getProjNotes = (statusUpdates) =>
     // per NW, we'll merge followup text into note text
     const followup = status.Followup || "";
     if (followup) {
-      project_note = `${project_note} FOLLOWUP: ${followup}`;
+      project_note = `${project_note} Follow-up: ${followup}`;
     }
 
     if (!project_note) {
