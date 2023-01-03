@@ -2503,6 +2503,16 @@
 - table:
     name: moped_proj_notes
     schema: public
+  object_relationships:
+    - name: moped_phases
+      using:
+        manual_configuration:
+          column_mapping:
+            phase_id: phase_id
+          insertion_order: null
+          remote_table:
+            name: moped_phases
+            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
