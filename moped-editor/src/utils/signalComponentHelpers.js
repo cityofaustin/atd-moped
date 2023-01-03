@@ -161,7 +161,6 @@ export const generateProjectComponent = (
 
   return {
     name: componentDef.component_name,
-    description: componentDef.description,
     component_id: componentDef.component_id,
     feature_signals: {
       data: [signalRecord],
