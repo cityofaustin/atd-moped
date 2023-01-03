@@ -3,6 +3,15 @@ const FACILITIES_FNAME = "./data/raw/project_facilities.json";
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { mapRow } = require("./utils/misc");
 
+/**
+ * Facility_Attributes - actuals associated with project facility instances (many to one)
+ * Facility_AttributesTypes - domain/lookup for facility attributes
+ * Facility_AttributeTypeApplicability - defines which facility types apply to which facility attributes
+ * Facility_PhysicalProtectionTypes - lookup for physical protection on project_facilities instances
+ * Project_Facilities - instances of project facilities - effectively moped_proj_components
+ * Project_FacilityTypes - facility domain - effectively moped_components
+ */
+
 const fields = [
   {
     in: "FacilityType",
