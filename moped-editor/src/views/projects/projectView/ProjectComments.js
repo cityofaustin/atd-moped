@@ -27,6 +27,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import "./ProjectComments.css";
 
@@ -364,6 +365,15 @@ const ProjectComments = (props) => {
                                   {` ${
                                     projectNoteTypes[item.project_note_type]
                                   }`}
+                                </Typography>
+                                <Typography
+                                  component={"span"}
+                                >
+                                  <ProjectStatusBadge
+                                    phaseKey={mopedProjNotes[i].moped_phases.phase_key}
+                                    phaseName={mopedProjNotes[i].moped_phases.phase_name}
+                                    comment
+                                  />
                                 </Typography>
                               </>
                             }

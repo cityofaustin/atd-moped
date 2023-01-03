@@ -165,6 +165,16 @@ const useChipStyles = makeStyles((theme) => ({
     backgroundColor: ({ phaseKey }) =>
       getStyle(theme, phaseKey ?? "").background,
   },
+  comment: {
+    marginLeft: "1rem",
+    fontWeight: "500",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
+    // Find background color
+    backgroundColor: ({ phaseKey }) =>
+      getStyle(theme, phaseKey ?? "").background,
+  },
 }));
 
 /**
@@ -179,6 +189,7 @@ const ProjectStatusBadge = ({
   phaseKey,
   phaseName,
   condensed = false,
+  comment = false,
   clickable = false,
 }) => {
   const classes = useStyles();
@@ -199,7 +210,8 @@ const ProjectStatusBadge = ({
       className={clsx(
         iconClasses.root,
         clickable && classes.clickableChip,
-        condensed ? chipClasses.condensed : chipClasses.root
+        condensed ? chipClasses.condensed : chipClasses.root,
+        comment ? chipClasses.comment : chipClasses.root
       )}
       icon={<ChipIcon className={iconClasses.root} />}
       label={phaseName || defaultLabel}

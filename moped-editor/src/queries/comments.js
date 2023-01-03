@@ -15,6 +15,7 @@ export const COMMENTS_QUERY = gql`
       project_note_type
       is_deleted
       moped_phases {
+        phase_key
         phase_name
       }
     }
