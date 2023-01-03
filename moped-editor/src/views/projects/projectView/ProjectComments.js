@@ -370,8 +370,8 @@ const ProjectComments = (props) => {
                                   component={"span"}
                                 >
                                   <ProjectStatusBadge
-                                    phaseKey={mopedProjNotes[i].moped_phases.phase_key}
-                                    phaseName={mopedProjNotes[i].moped_phases.phase_name}
+                                    phaseKey={mopedProjNotes[i]?.moped_phases.phase_key}
+                                    phaseName={mopedProjNotes[i]?.moped_phases.phase_name}
                                     comment
                                   />
                                 </Typography>
