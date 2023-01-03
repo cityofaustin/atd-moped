@@ -69,6 +69,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Memoized object containing lookup tables
+ */
 const useLookupTables = (data) =>
   useMemo(() => {
     const lookupData = {};

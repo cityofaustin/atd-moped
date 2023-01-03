@@ -38,12 +38,14 @@ export const formatProjectActivity = (change, entityList) => {
     changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
     changeValue = entityList[changeData.new[changedField]];
   } else {
+
     // If the update is an object, show just the field name that was updated. 
     if (typeof changeData.new[changedField] === "object") {
       changeDescription = `Changed ${entryMap.fields[changedField].label}`;
       changeValue = "";
-      return { changeIcon, changeDescription, changeValue };
     }
+
+    // the update can be rendered as a string
     changeDescription = `
           Changed ${entryMap.fields[changedField].label}
           to `;

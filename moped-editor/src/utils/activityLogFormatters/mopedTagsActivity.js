@@ -10,7 +10,7 @@ export const formatTagsActivity = (change, tagList) => {
     changeDescription = "Project tagged with "
     changeValue = tagList[change.record_data.event.data.new.tag_id]
   } else {
-    // Soft deleting a tag is the only update a user can do (is_deleted is set to true) can do
+    // Soft deleting a tag is the only update a user can do (is_deleted is set to true)
     changeDescription = "Project tag deleted "
     changeValue = tagList[change.record_data.event.data.new.tag_id]
   }
