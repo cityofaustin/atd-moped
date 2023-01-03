@@ -180,6 +180,9 @@ const ProjectComments = (props) => {
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
             project_note_type: isStatusEditModal ? 2 : 1,
+            phase_id:
+              props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase
+                .phase_id,
           },
         ],
       },

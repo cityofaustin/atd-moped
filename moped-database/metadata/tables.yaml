@@ -2512,6 +2512,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2524,6 +2525,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2536,6 +2538,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2549,6 +2552,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2562,6 +2566,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2576,6 +2581,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2589,6 +2595,7 @@
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id

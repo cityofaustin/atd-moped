@@ -36,6 +36,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         <DashboardStatusModal
           projectId={projectId}
           projectName={projectName}
+          data={data}
           modalParent="summary"
           statusUpdate={statusUpdate}
           queryRefetch={refetch}
