@@ -1,7 +1,7 @@
 /* Count usage of facility_attributestypes */
-const { loadJsonFile } = require("./utils/loader");
-const facilityAttributeTypesFile = "./data/raw/facility_attributestypes.json";
-const facilityAttributesFile = "data/raw/facility_attributes.json";
+const { loadJsonFile } = require("../utils/loader");
+const facilityAttributeTypesFile = "../data/raw/facility_attributestypes.json";
+const facilityAttributesFile = "../data/raw/facility_attributes.json";
 
 function main() {
   // this is the lookup table
@@ -22,10 +22,13 @@ function main() {
     const count = usageCounts[key] || 0;
     counts.push({ key, count });
   });
+
+  // less than 800 facility records use these attributes
+  // const numUniqueFacilities = [
+  //   ...new Set(facilityAttributes.map((row) => row.Project_FacilityID)),
+  // ];
+
   console.log(JSON.stringify(counts, null, 4));
 }
 
 main();
-
-// def test_is_valid(row):
-//     assert all([row[field["out"]] for field in fields if field["required"]])
