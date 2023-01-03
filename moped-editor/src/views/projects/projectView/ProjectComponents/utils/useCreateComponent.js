@@ -143,13 +143,7 @@ export const useCreateComponent = ({
     setLinkMode(null);
   };
 
-  /**
-   * Prepare component and feature data for component creation and call mutation/reset state
-   * @param {Object} component - Optional component object to use instead of draftComponent state
-   * when we are saving a signal component since its geometry comes from a Knack record and does
-   * not need input from the user through the map layer select and feature drawing
-   */
-  const onSaveDraftComponent = (_event, component = null) => {
+  const createComponentInsertData = (component) => {
     /* Start data preparation */
     const {
       component_id,
@@ -201,7 +195,7 @@ export const useCreateComponent = ({
       });
     }
 
-    const newComponentData = {
+    return {
       description,
       component_id,
       name: component_name,
@@ -216,7 +210,33 @@ export const useCreateComponent = ({
       feature_drawn_points: { data: drawnPointsToInsert },
       feature_signals: { data: signalFeaturesToInsert },
     };
-    /* End data preparation */
+  };
+
+  /**
+   * Prepare component and feature data for component creation and call mutation/reset state
+   */
+  const onSaveDraftComponent = () => {
+    const newComponentData = createComponentInsertData(
+      createState.draftComponent
+    );
+
+    addProjectComponent({ variables: { object: newComponentData } })
+      .then(() => {
+        refetchProjectComponents().then(() => {
+          createDispatch({ type: "save_create" });
+          setLinkMode(null);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  /**
+   * Prepare signal component and feature data for component creation and call mutation/reset state
+   */
+  const onSaveDraftSignalComponent = (signalComponent) => {
+    const newComponentData = createComponentInsertData(signalComponent);
 
     addProjectComponent({ variables: { object: newComponentData } })
       .then(() => {
@@ -235,6 +255,7 @@ export const useCreateComponent = ({
     createDispatch,
     onStartCreatingComponent,
     onSaveDraftComponent,
+    onSaveDraftSignalComponent,
     onCancelComponentCreate,
   };
 };

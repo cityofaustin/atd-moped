@@ -23,7 +23,7 @@ const CreateComponentModal = ({
   showDialog,
   setLinkMode,
   createDispatch,
-  onSaveDraftComponent,
+  onSaveDraftSignalComponent,
 }) => {
   const classes = useStyles();
 
@@ -66,7 +66,7 @@ const CreateComponentModal = ({
         features: [formData.signal],
       };
 
-      onSaveDraftComponent(newComponentWithSignalFeature);
+      onSaveDraftSignalComponent(newComponentWithSignalFeature);
     } else {
       createDispatch({ type: "store_draft_component", payload: newComponent });
       setLinkMode(linkMode);

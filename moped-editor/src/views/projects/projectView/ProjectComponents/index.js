@@ -101,6 +101,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const {
     onStartCreatingComponent,
     onSaveDraftComponent,
+    onSaveDraftSignalComponent,
     onCancelComponentCreate,
     createState,
     createDispatch,
@@ -267,7 +268,7 @@ export default function MapView({ projectName, projectStatuses }) {
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}
-            onSaveDraftComponent={onSaveDraftComponent}
+            onSaveDraftSignalComponent={onSaveDraftSignalComponent}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}
