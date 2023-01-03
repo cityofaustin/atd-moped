@@ -1,0 +1,5 @@
+alter table "public"."moped_project"
+  add constraint "moped_project_public_process_status_id_fkey"
+  foreign key ("public_process_status_id")
+  references "public"."moped_public_process_status"
+  ("id") on update set null on delete set null;

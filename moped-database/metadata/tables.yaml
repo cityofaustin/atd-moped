@@ -3345,6 +3345,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
     - role: moped-editor
       permission:
         check: {}
@@ -3376,6 +3377,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -3407,6 +3409,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -3439,6 +3442,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -3471,6 +3475,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -3504,6 +3509,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
     - role: moped-editor
@@ -3536,6 +3542,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
   event_triggers:
