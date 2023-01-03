@@ -28,7 +28,6 @@ export default function ComponentListItem({
   onClickZoomToComponent,
   isEditingComponent,
   isCreatingComponent,
-  hideEditButton = false,
 }) {
   const classes = useStyles();
 
@@ -44,9 +43,9 @@ export default function ComponentListItem({
   const onStartEditingComponent = () =>
     editDispatch({ type: "start_edit", payload: component });
 
-  const isSignalComponent = Boolean(
-    component?.moped_components?.component_name === "Signal"
-  );
+  const isSignalComponent =
+    component?.moped_components?.feature_layer?.internal_table ===
+    "feature_signals";
   const componentName = component?.moped_components?.component_name;
   const signalLocationName = component?.feature_signals?.[0]?.location_name;
   const listItemPrimaryText = isSignalComponent
@@ -96,7 +95,7 @@ export default function ComponentListItem({
             />
             <ListItemText
               primary={
-                !hideEditButton && (
+                !isSignalComponent && (
                   <Button
                     fullWidth
                     size="small"

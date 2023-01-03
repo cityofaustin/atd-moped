@@ -226,6 +226,13 @@ export default function MapView({ projectName, projectStatuses }) {
                   const isSignalComponent =
                     component.moped_components.feature_layer.internal_table ===
                     "feature_signals";
+                  const componentName =
+                    component?.moped_components?.component_name;
+                  const signalLocationName =
+                    component?.feature_signals?.[0]?.location_name;
+                  const listItemPrimaryText = isSignalComponent
+                    ? `${componentName} -${signalLocationName}`
+                    : componentName;
                   return (
                     <ComponentListItem
                       key={component.project_component_id}
