@@ -149,7 +149,7 @@ export const useCreateComponent = ({
    * when we are saving a signal component since its geometry comes from a Knack record and does
    * not need input from the user through the map layer select and feature drawing
    */
-  const onSaveDraftComponent = (component = null) => {
+  const onSaveDraftComponent = (_event, component = null) => {
     /* Start data preparation */
     const {
       component_id,
