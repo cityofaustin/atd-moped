@@ -2,8 +2,11 @@ import { formatProjectActivity } from "./activityLogFormatters/mopedProjectActiv
 import { formatTagsActivity } from "./activityLogFormatters/mopedTagsActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
-  const changeText = "Project was updated";
-  const changeIcon = <span className="material-symbols-outlined">summarize</span>;;
+  const changeDescription = "Project was updated";
+  const changeValue = "";
+  const changeIcon = (
+    <span className="material-symbols-outlined">summarize</span>
+  );
 
   switch (change.record_type) {
     case "moped_project":
@@ -11,6 +14,6 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_tags":
       return formatTagsActivity(change, lookupData.tagList);
     default:
-      return { changeText, changeIcon };
+      return { changeIcon, changeDescription, changeValue };
   }
 };

@@ -3,42 +3,55 @@ import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/Pr
 
 export const formatProjectActivity = (change, entityList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
-  let changeText = "Project updated";
+  let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
+  let changeValue = "";
 
   const changeData = change.record_data.event.data;
 
   // project creation
   if (change.description.length === 0) {
     // created project as (bold project name)
-    changeText = `${changeData.new.project_name} created`;
+    changeDescription = "Created project as ";
+    changeValue = changeData.new.project_name;
     changeIcon = <BeenhereOutlinedIcon />;
-    return { changeText, changeIcon };
+    return { changeIcon, changeDescription, changeValue };
   }
 
+  const changedField = change.description[0].field;
+
   // need to use a lookup table
-  if (entryMap.fields[change.description[0].field]?.lookup) {
-    // adding a new field
+  if (entryMap.fields[changedField]?.lookup) {
+    // adding new information
     if (
       changeData.old === null ||
       // the entity list used to use 0 as an id for null or empty
       changeData.old === 0 ||
-      changeData.old[change.description[0].field] === 0
+      changeData.old[changedField] === 0
     ) {
-      changeText = `
-        Added "${entityList[change.description[0].new]}" as
-        ${entryMap.fields[change.description[0].field].label}`;
+      changeDescription = `Added "${
+        entityList[change.description[0].new]
+      }" as `;
+      changeValue = entryMap.fields[changedField].label;
     }
-    // use the lookup table
-    changeText = `Changed ${
-      entryMap.fields[change.description[0].field].label
-    } to "${entityList[changeData.new[change.description[0].field]]}"`;
+    // Changing a field, but need to use lookup table to display
+    changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
+    changeValue = entityList[changeData.new[changedField]];
   } else {
-    changeText = `
-          Changed ${entryMap.fields[change.description[0].field].label}
-          to "${changeData.new[change.description[0].field]}"`;
-    // have this check if "" and show (blank) instead
+    // If the update is an object, show just the field name that was updated. 
+    if (typeof changeData.new[changedField] === "object") {
+      changeDescription = `Changed ${entryMap.fields[changedField].label}`;
+      changeValue = "";
+      return { changeIcon, changeDescription, changeValue };
+    }
+    changeDescription = `
+          Changed ${entryMap.fields[changedField].label}
+          to `;
+    changeValue =
+      changeData.new[changedField].length > 0
+        ? changeData.new[changedField]
+        : "(blank)";
   }
 
-  return { changeText, changeIcon };
+  return { changeIcon, changeDescription, changeValue };
 };

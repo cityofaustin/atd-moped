@@ -212,7 +212,7 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
-                  const { changeText, changeIcon } = formatActivityLogEntry(
+                  const { changeIcon, changeDescription, changeValue } = formatActivityLogEntry(
                     change,
                     lookupData
                   );
@@ -270,7 +270,8 @@ const ProjectActivityLog = () => {
                         ) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
-                            changeText={changeText}
+                            changeDescription={changeDescription}
+                            changeValue={changeValue}
                           />
                         ) : (
                           <Box display="flex" p={0}>

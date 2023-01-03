@@ -2,19 +2,18 @@ import LocalOfferOutlinedIcon from "@material-ui/icons/LocalOfferOutlined";
 
 export const formatTagsActivity = (change, tagList) => {
   const changeIcon = <LocalOfferOutlinedIcon />;
-  let changeText = "Project tags updated";
+  let changeDescription = "Project tags updated";
+  let changeValue = ""
 
   // Adding a new tag
   if (change.description.length === 0) {
-    changeText = `Project tagged with "${
-      tagList[change.record_data.event.data.new.tag_id]
-    }" `;
+    changeDescription = "Project tagged with "
+    changeValue = tagList[change.record_data.event.data.new.tag_id]
   } else {
     // Soft deleting a tag is the only update a user can do (is_deleted is set to true) can do
-    changeText = `"${
-      tagList[change.record_data.event.data.new.tag_id]
-    }" removed from tags`;
+    changeDescription = "Project tag deleted "
+    changeValue = tagList[change.record_data.event.data.new.tag_id]
   }
 
-  return { changeText, changeIcon };
+  return { changeIcon, changeDescription, changeValue };
 };
