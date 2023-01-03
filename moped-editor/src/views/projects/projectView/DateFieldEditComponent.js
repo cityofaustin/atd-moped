@@ -1,12 +1,7 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import { useState } from "react";
-import { set } from "date-fns";
-import { ConsoleLogger } from "@aws-amplify/core";
-import { parseISO } from "date-fns";
+import { parseISO, format } from "date-fns";
 
 /**
  * DateFieldEditComponent - renders a Date type Calendar select
@@ -15,21 +10,7 @@ import { parseISO } from "date-fns";
  * @constructor
  */
 
-// const DateFieldEditComponent = (props) => (
-//   <TextField
-//     type="date"
-//     variant="standard"
-//     value={props.value || ""}
-//     onChange={(e) => props.onChange(e.target.value)}
-//     onKeyDown={(e) => handleKeyEvent(e)}
-//     InputLabelProps={{
-//       shrink: true,
-//     }}
-//   />
-// );
-
 const DateFieldEditComponent = (props) => {
-
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
@@ -37,7 +18,10 @@ const DateFieldEditComponent = (props) => {
         emptyLabel="mm/dd/yyyy"
         format="MM/dd/yyyy"
         value={props.value ? parseISO(props.value) : null}
-        onChange={(e) => props.onChange(e)}
+        onChange={(e) => {
+          const newDate = e ? format(e, "yyyy-MM-dd") : null;
+          props.onChange(newDate);
+        }}
         InputLabelProps={{
           shrink: true,
         }}
