@@ -120,5 +120,10 @@ export const useZoomToExistingComponents = (mapRef, data) => {
 export const useMapZoom = () => {
   const [zoom, setZoom] = useState(null);
 
-  return [zoom, setZoom];
+  const onZoom = (event) => {
+    const { zoom } = event.viewState;
+    setZoom(zoom);
+  };
+
+  return { zoom, onZoom };
 };

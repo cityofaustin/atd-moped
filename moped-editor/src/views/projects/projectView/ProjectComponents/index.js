@@ -146,7 +146,7 @@ export default function MapView({ projectName, projectStatuses }) {
   if (error) console.log(error);
 
   useZoomToExistingComponents(mapRef, data);
-  const [zoom, setZoom] = useMapZoom();
+  const { zoom, onZoom } = useMapZoom();
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
@@ -274,6 +274,7 @@ export default function MapView({ projectName, projectStatuses }) {
               featureCollectionsByComponentId={featureCollectionsByComponentId}
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
+              onZoom={onZoom}
             />
           </div>
           <CreateComponentModal

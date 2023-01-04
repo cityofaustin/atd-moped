@@ -63,6 +63,7 @@ export default function TheMap({
   featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
+  onZoom,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -274,6 +275,7 @@ export default function TheMap({
       onClick={onClick}
       cursor={cursor}
       mapStyle={basemaps[basemapKey].mapStyle}
+      onZoom={onZoom}
       {...mapParameters}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
