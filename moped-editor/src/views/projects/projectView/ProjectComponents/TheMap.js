@@ -12,11 +12,13 @@ import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
+import MapAlertSnackbar from "./MapAlertSnackbar";
 import {
   basemaps,
   mapParameters,
   initialViewState,
   SOURCES,
+  MIN_SELECT_FEATURE_ZOOM,
 } from "./mapSettings";
 import { interactiveLayerIds } from "./utils/map";
 import {
@@ -265,78 +267,90 @@ export default function TheMap({
     isEditingComponent && shouldShowDrawControls;
 
   return (
-    <MapGL
-      ref={mapRef}
-      initialViewState={initialViewState}
-      interactiveLayerIds={interactiveLayerIds}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      onMoveEnd={onMoveEnd}
-      onClick={onClick}
-      cursor={cursor}
-      mapStyle={basemaps[basemapKey].mapStyle}
-      onZoom={onZoom}
-      {...mapParameters}
-    >
-      <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
-      <GeocoderControl position="top-left" marker={false} />
-      {shouldShowCreateDrawControls && (
-        <CreateComponentDrawTools
-          createDispatch={createDispatch}
-          linkMode={linkMode}
-          setCursor={setCursor}
-          setIsDrawing={setIsDrawing}
+    <>
+      <MapAlertSnackbar
+        isOpen={currentZoom < MIN_SELECT_FEATURE_ZOOM}
+        message="Zoom in to select map features"
+        severity="error"
+      />
+      <MapGL
+        ref={mapRef}
+        initialViewState={initialViewState}
+        interactiveLayerIds={interactiveLayerIds}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        onMoveEnd={onMoveEnd}
+        onClick={onClick}
+        cursor={cursor}
+        mapStyle={basemaps[basemapKey].mapStyle}
+        onZoom={onZoom}
+        {...mapParameters}
+      >
+        <BasemapSpeedDial
+          basemapKey={basemapKey}
+          setBasemapKey={setBasemapKey}
         />
-      )}
-      {shouldShowEditDrawControls && (
-        <EditComponentDrawTools
-          editDispatch={editDispatch}
+        <GeocoderControl position="top-left" marker={false} />
+        {shouldShowCreateDrawControls && (
+          <CreateComponentDrawTools
+            createDispatch={createDispatch}
+            linkMode={linkMode}
+            setCursor={setCursor}
+            setIsDrawing={setIsDrawing}
+          />
+        )}
+        {shouldShowEditDrawControls && (
+          <EditComponentDrawTools
+            editDispatch={editDispatch}
+            linkMode={linkMode}
+            setCursor={setCursor}
+            setIsDrawing={setIsDrawing}
+            draftEditComponent={draftEditComponent}
+          />
+        )}
+        <BaseMapSourceAndLayers basemapKey={basemapKey} />
+        <ProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          isDrawing={isDrawing}
           linkMode={linkMode}
-          setCursor={setCursor}
-          setIsDrawing={setIsDrawing}
+          clickedComponent={clickedComponent}
+          projectComponentsFeatureCollection={
+            projectComponentsFeatureCollection
+          }
           draftEditComponent={draftEditComponent}
         />
-      )}
-      <BaseMapSourceAndLayers basemapKey={basemapKey} />
-      <ProjectSourcesAndLayers
-        isCreatingComponent={isCreatingComponent}
-        isEditingComponent={isEditingComponent}
-        isDrawing={isDrawing}
-        linkMode={linkMode}
-        clickedComponent={clickedComponent}
-        projectComponentsFeatureCollection={projectComponentsFeatureCollection}
-        draftEditComponent={draftEditComponent}
-      />
-      <DraftComponentSourcesAndLayers
-        draftComponentFeatures={draftComponentFeatures}
-        linkMode={linkMode}
-      />
-      <ClickedComponentSourcesAndLayers
-        clickedComponent={clickedComponent}
-        componentFeatureCollection={componentFeatureCollection}
-        isEditingComponent={isEditingComponent}
-      />
-      <EditDraftComponentSourcesAndLayers
-        draftEditComponentFeatureCollection={
-          draftEditComponentFeatureCollection
-        }
-        linkMode={linkMode}
-        isEditingComponent={isEditingComponent}
-      />
-      <CTNSourcesAndLayers
-        isCreatingComponent={isCreatingComponent}
-        isEditingComponent={isEditingComponent}
-        isDrawing={isDrawing}
-        linkMode={linkMode}
-        ctnLinesGeojson={ctnLinesGeojson}
-        ctnPointsGeojson={ctnPointsGeojson}
-      />
-      {/* <FeaturePopup
+        <DraftComponentSourcesAndLayers
+          draftComponentFeatures={draftComponentFeatures}
+          linkMode={linkMode}
+        />
+        <ClickedComponentSourcesAndLayers
+          clickedComponent={clickedComponent}
+          componentFeatureCollection={componentFeatureCollection}
+          isEditingComponent={isEditingComponent}
+        />
+        <EditDraftComponentSourcesAndLayers
+          draftEditComponentFeatureCollection={
+            draftEditComponentFeatureCollection
+          }
+          linkMode={linkMode}
+          isEditingComponent={isEditingComponent}
+        />
+        <CTNSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          isDrawing={isDrawing}
+          linkMode={linkMode}
+          ctnLinesGeojson={ctnLinesGeojson}
+          ctnPointsGeojson={ctnPointsGeojson}
+        />
+        {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
         components={components}
         setClickedComponent={setClickedComponent}
       /> */}
-    </MapGL>
+      </MapGL>
+    </>
   );
 }

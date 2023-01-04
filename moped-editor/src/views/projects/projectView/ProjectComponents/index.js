@@ -20,18 +20,13 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import {
-  useAppBarHeight,
-  useZoomToExistingComponents,
-  useMapZoom,
-} from "./utils/map";
+import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
-import { fitBoundsOptions, MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
+import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
-import MapAlertSnackbar from "./MapAlertSnackbar";
 
 const drawerWidth = 350;
 
@@ -147,7 +142,6 @@ export default function MapView({ projectName, projectStatuses }) {
   if (error) console.log(error);
 
   useZoomToExistingComponents(mapRef, data);
-  const { zoom, onZoom } = useMapZoom();
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
@@ -166,11 +160,6 @@ export default function MapView({ projectName, projectStatuses }) {
 
   return (
     <Dialog fullScreen open={true}>
-      <MapAlertSnackbar
-        isOpen={zoom < MIN_SELECT_FEATURE_ZOOM}
-        message="Zoom in to select map features"
-        severity="error"
-      />
       <div className={classes.root}>
         <CssBaseline />
         <ComponentMapToolbar
@@ -280,7 +269,6 @@ export default function MapView({ projectName, projectStatuses }) {
               featureCollectionsByComponentId={featureCollectionsByComponentId}
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
-              onZoom={onZoom}
             />
           </div>
           <CreateComponentModal
