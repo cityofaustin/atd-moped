@@ -464,6 +464,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
       phase_id
       phase_name
     }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
+    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type

@@ -695,6 +695,7 @@
           - record_project_id
           - record_type
           - updated_by
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -3164,10 +3165,10 @@
           columns: '*'
         update:
           columns:
-            - is_deleted
-            - tag_id
             - id
             - project_id
+            - tag_id
+            - is_deleted
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3188,7 +3189,7 @@
                   "record_type":  {{ $body.table.name }},
                   "activity_id": {{ $body.id }},
                   "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {{ $body.event }},
+                  "record_data": {"event" : {{ $body.event }}},
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3201,6 +3202,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project
     schema: public
@@ -3548,25 +3556,25 @@
           columns: '*'
         update:
           columns:
+            - project_uuid
+            - ecapris_subproject_id
+            - project_id
+            - end_date
+            - capitally_funded
+            - date_added
+            - added_by
+            - is_deleted
             - project_sponsor
             - task_order
             - parent_project_id
             - interim_project_id
-            - work_assignment_id
-            - ecapris_subproject_id
-            - project_uuid
-            - fiscal_year
-            - project_description
-            - project_name
-            - project_id
-            - capitally_funded
-            - project_website
-            - end_date
-            - knack_project_id
-            - date_added
-            - is_deleted
-            - added_by
             - project_lead_id
+            - project_name
+            - project_description
+            - project_website
+            - knack_project_id
+            - fiscal_year
+            - work_assignment_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3587,7 +3595,7 @@
                                     "record_type":  {{ $body.table.name }},
                                     "activity_id": {{ $body.id }},
                                     "record_project_id": {{ $body.event.data.new.project_id }},
-                                    "record_data": {{ $body.event }},
+                                    "record_data": { "event": {{ $body.event }}},
                                     "description": [{"newSchema": "true"}],
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3600,6 +3608,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project_files
     schema: public
