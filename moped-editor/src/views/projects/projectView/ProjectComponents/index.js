@@ -27,7 +27,7 @@ import {
 } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
-import { fitBoundsOptions } from "./mapSettings";
+import { fitBoundsOptions, MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
@@ -166,7 +166,11 @@ export default function MapView({ projectName, projectStatuses }) {
 
   return (
     <Dialog fullScreen open={true}>
-      <MapAlertSnackbar />
+      <MapAlertSnackbar
+        isOpen={zoom < MIN_SELECT_FEATURE_ZOOM}
+        message="Zoom in to select map features"
+        severity="error"
+      />
       <div className={classes.root}>
         <CssBaseline />
         <ComponentMapToolbar
