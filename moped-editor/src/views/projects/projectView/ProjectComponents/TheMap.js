@@ -263,8 +263,6 @@ export default function TheMap({
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
 
-  console.log(shouldShowEditDrawControls);
-
   return (
     <MapGL
       ref={mapRef}
