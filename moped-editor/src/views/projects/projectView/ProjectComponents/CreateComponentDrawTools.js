@@ -69,16 +69,6 @@ const CreateComponentDrawTools = ({
     }
   };
 
-  const onSelectionChange = ({ features: selectedFeaturesArray }) => {
-    const areFeaturesSelected = selectedFeaturesArray.length > 0;
-
-    if (areFeaturesSelected) {
-      setIsDrawing(true);
-    } else {
-      setIsDrawing(false);
-    }
-  };
-
   return (
     <ComponentsDrawControl
       ref={drawControlsRef}
@@ -87,7 +77,6 @@ const CreateComponentDrawTools = ({
       onUpdate={onUpdate}
       linkMode={linkMode}
       onModeChange={onModeChange}
-      onSelectionChange={onSelectionChange}
       styleOverrides={mapboxDrawStylesOverrides}
     />
   );
