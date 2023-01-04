@@ -165,15 +165,8 @@ const useChipStyles = makeStyles((theme) => ({
     backgroundColor: ({ phaseKey }) =>
       getStyle(theme, phaseKey ?? "").background,
   },
-  comment: {
+  leftMargin: {
     marginLeft: "1rem",
-    fontWeight: "500",
-    fontSize: "12px",
-    borderRadius: "2rem",
-    height: "1.75rem",
-    // Find background color
-    backgroundColor: ({ phaseKey }) =>
-      getStyle(theme, phaseKey ?? "").background,
   },
 }));
 
@@ -189,7 +182,7 @@ const ProjectStatusBadge = ({
   phaseKey,
   phaseName,
   condensed = false,
-  comment = false,
+  leftMargin = false,
   clickable = false,
 }) => {
   const classes = useStyles();
@@ -211,7 +204,7 @@ const ProjectStatusBadge = ({
         iconClasses.root,
         clickable && classes.clickableChip,
         condensed ? chipClasses.condensed : chipClasses.root,
-        comment ? chipClasses.comment : chipClasses.root
+        leftMargin && chipClasses.leftMargin
       )}
       icon={<ChipIcon className={iconClasses.root} />}
       label={phaseName || defaultLabel}

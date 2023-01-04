@@ -92,6 +92,9 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = (props) => {
   const isStatusEditModal = props.modal;
+  const currentPhaseId =
+    props.currentPhaseId ??
+    props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
@@ -123,7 +126,6 @@ const ProjectComments = (props) => {
   });
 
   const mopedProjNotes = data?.moped_proj_notes;
-  console.log(mopedProjNotes);
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -182,9 +184,7 @@ const ProjectComments = (props) => {
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
             project_note_type: isStatusEditModal ? 2 : 1,
-            phase_id:
-              props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase
-                .phase_id,
+            phase_id: currentPhaseId,
           },
         ],
       },
@@ -367,15 +367,20 @@ const ProjectComments = (props) => {
                                     projectNoteTypes[item.project_note_type]
                                   }`}
                                 </Typography>
-                                <Typography
-                                  component={"span"}
-                                >
-                                  <ProjectStatusBadge
-                                    phaseKey={mopedProjNotes[i]?.moped_phase?.phase_key}
-                                    phaseName={mopedProjNotes[i]?.moped_phase?.phase_name}
-                                    comment
-                                  />
-                                </Typography>
+                                  <Typography component={"span"}>
+                                    <ProjectStatusBadge
+                                      phaseKey={
+                                        displayNotes[i]?.moped_phase
+                                          ?.phase_key
+                                      }
+                                      phaseName={
+                                        displayNotes[i]?.moped_phase
+                                          ?.phase_name
+                                      }
+                                      condensed
+                                      leftMargin
+                                    />
+                                  </Typography>
                               </>
                             }
                             secondary={
