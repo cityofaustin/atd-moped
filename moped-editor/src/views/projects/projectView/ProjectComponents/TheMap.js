@@ -265,11 +265,15 @@ export default function TheMap({
     isCreatingComponent && shouldShowDrawControls;
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
+  const shouldShowMapAlertSnackbar =
+    currentZoom < MIN_SELECT_FEATURE_ZOOM &&
+    (isCreatingComponent || isEditingComponent) &&
+    isDrawing === false;
 
   return (
     <>
       <MapAlertSnackbar
-        isOpen={currentZoom < MIN_SELECT_FEATURE_ZOOM}
+        isOpen={shouldShowMapAlertSnackbar}
         message="Zoom in to select map features"
         severity="error"
       />
