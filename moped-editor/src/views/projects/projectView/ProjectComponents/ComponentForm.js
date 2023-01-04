@@ -166,7 +166,7 @@ const ComponentForm = ({
             startIcon={<CheckCircle />}
             type="submit"
           >
-            {isSignalComponent ? "Save Signal Component" : formButtonText}
+            {isSignalComponent ? "Save" : formButtonText}
           </Button>
         </Grid>
       </Grid>

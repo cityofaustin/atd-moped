@@ -31,13 +31,6 @@ export const getSignalOptionLabel = (option) =>
  */
 export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
   if (signal && signal?.properties && signal?.geometry) {
-    /* 
-    / preserves the feature's previous UUID if it's being edited. we are **not** preserving
-    / any other feature properties when the feature is edited. so, for example, if the user
-    / edits a signal component and the signal geometry in socrata has since changed, the new
-    / geometry will be saved.
-    */
-    const featureUUID = signal?.id || uuidv4();
     const featureSignalsRecord = {
       // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
       geography: {
@@ -49,10 +42,6 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
       location_name: signal.properties.location_name,
       signal_type: signal.properties.signal_type,
       signal_id: signal.properties.signal_id,
-      // I was considering changing this to be INTERSECTIONID, but since the sourceLayer is being saved
-      // as "drawnByUser" and not "ATD_ADMIN.CTN_Intersections", I've left it as PROJECT_EXTENT_ID
-      project_extent_id: featureUUID,
-      source_layer: "drawnByUser",
     };
 
     return featureSignalsRecord;
