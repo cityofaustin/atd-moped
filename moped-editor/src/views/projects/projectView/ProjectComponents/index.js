@@ -20,7 +20,11 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
+import {
+  useAppBarHeight,
+  useZoomToExistingComponents,
+  useMapZoom,
+} from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
@@ -142,6 +146,7 @@ export default function MapView({ projectName, projectStatuses }) {
   if (error) console.log(error);
 
   useZoomToExistingComponents(mapRef, data);
+  const [zoom, setZoom] = useMapZoom();
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {

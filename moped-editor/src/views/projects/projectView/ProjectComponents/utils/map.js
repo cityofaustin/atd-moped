@@ -116,3 +116,9 @@ export const useZoomToExistingComponents = (mapRef, data) => {
     setHasMapZoomedInitially(true);
   }, [data, hasMapZoomedInitially, mapRef]);
 };
+
+export const useMapZoom = () => {
+  const [zoom, setZoom] = useState(null);
+
+  return [zoom, setZoom];
+};
