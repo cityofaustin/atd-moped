@@ -14,8 +14,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_id
         is_current_phase
-        completion_percentage
-        completed
       }
       moped_proj_components {
         moped_proj_features {
@@ -386,8 +384,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_phase_id
         is_current_phase
         project_id
-        completion_percentage
-        completed
       }
     }
   }
@@ -467,6 +463,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
     moped_phases {
       phase_id
       phase_name
+    }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
