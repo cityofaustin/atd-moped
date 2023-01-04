@@ -11,7 +11,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const MapAlertSnackbar = ({ message, severity, isOpen }) => {
+const MapAlertSnackbar = ({
+  message,
+  severity,
+  isOpen,
+  snackbarProps,
+  alertProps,
+}) => {
   const classes = useStyles();
 
   return (
@@ -20,8 +26,11 @@ const MapAlertSnackbar = ({ message, severity, isOpen }) => {
       anchorOrigin={{ vertical: "top", horizontal: "center" }}
       open={isOpen}
       key={"map-alert-snackbar"}
+      {...snackbarProps}
     >
-      <Alert severity={severity}>{message}</Alert>
+      <Alert severity={severity} {...alertProps}>
+        {message}
+      </Alert>
     </Snackbar>
   );
 };

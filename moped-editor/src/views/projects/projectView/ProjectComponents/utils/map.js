@@ -1,9 +1,9 @@
-import { useMemo, useEffect, useState, useCallback } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { useMediaQuery, useTheme } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 import { MAP_STYLES } from "../mapStyleSettings";
-import { fitBoundsOptions, initialViewState } from "../mapSettings";
+import { fitBoundsOptions } from "../mapSettings";
 import bbox from "@turf/bbox";
 
 /**

@@ -65,7 +65,6 @@ export default function TheMap({
   featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
-  onZoom,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -265,7 +264,7 @@ export default function TheMap({
     isCreatingComponent && shouldShowDrawControls;
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
-  const shouldShowMapAlertSnackbar =
+  const shouldShowZoomAlert =
     currentZoom < MIN_SELECT_FEATURE_ZOOM &&
     (isCreatingComponent || isEditingComponent) &&
     isDrawing === false;
@@ -273,7 +272,7 @@ export default function TheMap({
   return (
     <>
       <MapAlertSnackbar
-        isOpen={shouldShowMapAlertSnackbar}
+        isOpen={shouldShowZoomAlert}
         message="Zoom in to select map features"
         severity="error"
       />
@@ -287,7 +286,6 @@ export default function TheMap({
         onClick={onClick}
         cursor={cursor}
         mapStyle={basemaps[basemapKey].mapStyle}
-        onZoom={onZoom}
         {...mapParameters}
       >
         <BasemapSpeedDial
