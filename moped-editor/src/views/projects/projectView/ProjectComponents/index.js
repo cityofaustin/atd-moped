@@ -31,6 +31,7 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
+import MapAlertSnackbar from "./MapAlertSnackbar";
 
 const drawerWidth = 350;
 
@@ -165,6 +166,7 @@ export default function MapView({ projectName, projectStatuses }) {
 
   return (
     <Dialog fullScreen open={true}>
+      <MapAlertSnackbar />
       <div className={classes.root}>
         <CssBaseline />
         <ComponentMapToolbar

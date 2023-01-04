@@ -2,7 +2,11 @@ import React from "react";
 import { Snackbar } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 
-const MapAlertSnackbar = ({ message, severity, isOpen }) => (
+const MapAlertSnackbar = ({
+  message = "this is a test",
+  severity = "error",
+  isOpen = true,
+}) => (
   <Snackbar
     anchorOrigin={{ vertical: "top", horizontal: "center" }}
     open={isOpen}
