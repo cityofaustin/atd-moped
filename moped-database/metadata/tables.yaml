@@ -695,6 +695,7 @@
           - record_project_id
           - record_type
           - updated_by
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -2948,157 +2949,101 @@
       permission:
         check: {}
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
-          - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
           - is_current_phase
           - is_deleted
           - phase_description
           - phase_end
           - phase_id
-          - phase_order
-          - phase_priority
-          - phase_privacy
           - phase_start
-          - phase_status
           - project_id
           - project_phase_id
-          - started_by_user_id
           - subphase_id
         filter: {}
         check: {}
@@ -3112,24 +3057,16 @@
           columns: '*'
         update:
           columns:
-            - project_id
-            - started_by_user_id
-            - completed_by_user_id
-            - phase_order
-            - phase_start
-            - phase_end
-            - is_deleted
-            - subphase_id
-            - phase_id
-            - completion_percentage
-            - phase_privacy
-            - date_added
-            - phase_description
             - is_current_phase
-            - completed
-            - phase_priority
+            - date_added
+            - subphase_id
+            - phase_description
+            - project_id
+            - phase_start
+            - is_deleted
+            - phase_end
             - project_phase_id
-            - phase_status
+            - phase_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3140,6 +3077,13 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_tags
     schema: public
@@ -3221,10 +3165,10 @@
           columns: '*'
         update:
           columns:
-            - is_deleted
-            - tag_id
             - id
             - project_id
+            - tag_id
+            - is_deleted
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3245,7 +3189,7 @@
                   "record_type":  {{ $body.table.name }},
                   "activity_id": {{ $body.id }},
                   "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {{ $body.event }},
+                  "record_data": {"event" : {{ $body.event }}},
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3258,6 +3202,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project
     schema: public
@@ -3605,25 +3556,25 @@
           columns: '*'
         update:
           columns:
+            - project_uuid
+            - ecapris_subproject_id
+            - project_id
+            - end_date
+            - capitally_funded
+            - date_added
+            - added_by
+            - is_deleted
             - project_sponsor
             - task_order
             - parent_project_id
             - interim_project_id
-            - work_assignment_id
-            - ecapris_subproject_id
-            - project_uuid
-            - fiscal_year
-            - project_description
-            - project_name
-            - project_id
-            - capitally_funded
-            - project_website
-            - end_date
-            - knack_project_id
-            - date_added
-            - is_deleted
-            - added_by
             - project_lead_id
+            - project_name
+            - project_description
+            - project_website
+            - knack_project_id
+            - fiscal_year
+            - work_assignment_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3644,7 +3595,7 @@
                                     "record_type":  {{ $body.table.name }},
                                     "activity_id": {{ $body.id }},
                                     "record_project_id": {{ $body.event.data.new.project_id }},
-                                    "record_data": {{ $body.event }},
+                                    "record_data": { "event": {{ $body.event }}},
                                     "description": [{"newSchema": "true"}],
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3657,6 +3608,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project_files
     schema: public
