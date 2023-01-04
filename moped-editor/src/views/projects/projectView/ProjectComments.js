@@ -123,6 +123,7 @@ const ProjectComments = (props) => {
   });
 
   const mopedProjNotes = data?.moped_proj_notes;
+  console.log(mopedProjNotes);
 
   const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
     onCompleted() {
@@ -370,8 +371,8 @@ const ProjectComments = (props) => {
                                   component={"span"}
                                 >
                                   <ProjectStatusBadge
-                                    phaseKey={mopedProjNotes[i]?.moped_phases.phase_key}
-                                    phaseName={mopedProjNotes[i]?.moped_phases.phase_name}
+                                    phaseKey={mopedProjNotes[i]?.moped_phase?.phase_key}
+                                    phaseName={mopedProjNotes[i]?.moped_phase?.phase_name}
                                     comment
                                   />
                                 </Typography>
