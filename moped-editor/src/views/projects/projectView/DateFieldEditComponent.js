@@ -2,7 +2,6 @@ import React from "react";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { parseISO, format } from "date-fns";
-import { handleKeyEvent } from "src/utils/materialTableHelpers";
 
 /**
  * DateFieldEditComponent - renders a Date type Calendar select
