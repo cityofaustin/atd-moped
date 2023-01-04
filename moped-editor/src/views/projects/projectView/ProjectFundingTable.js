@@ -602,7 +602,7 @@ const ProjectFundingTable = () => {
                 setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
               >
                 {taskOrderData.map((task) => (
-                  <li key={task.id}>
+                  <li key={task.task_order}>
                     <Chip
                       label={task.display_name}
                       onDelete={() => handleDeleteOpen(task)}
