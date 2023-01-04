@@ -92,6 +92,8 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = (props) => {
   const isStatusEditModal = props.modal;
+  // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
+  // otherwise use data passed from ProjectView
   const currentPhaseId =
     props.currentPhaseId ??
     props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
