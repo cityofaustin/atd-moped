@@ -100,7 +100,7 @@ const useLookupTables = (data) =>
   }, [data]);
 
 /**
- * if event is from new schema, finds the updated difference and includes in the object
+ * Updates the description field with newData and oldData
  * Makes sure the project creation event is the last in the returned Array
  * @param {Array} eventList - The data object as provided by apollo
  * @returns {Array}
@@ -159,6 +159,14 @@ const usePrepareActivityData = (activityData) =>
     return outputList;
   }, [activityData]);
 
+/**
+ * Get the number of items retrieved
+ * @return {number}
+ */
+const getTotalItems = (data) => {
+  return data?.moped_activity_log?.length ?? 0;
+};
+
 const ProjectActivityLog = () => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -173,14 +181,6 @@ const ProjectActivityLog = () => {
   if (loading) return <CircularProgress />;
 
   /**
-   * Get the number of items we retrieved
-   * @return {number}
-   */
-  const getTotalItems = () => {
-    return data?.moped_activity_log?.length ?? 0;
-  };
-
-  /**
    * Returns True if the field should be a generic type (i.e., maps, objects)
    * @param {string} field - The field name (column name)
    * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
@@ -192,7 +192,7 @@ const ProjectActivityLog = () => {
     <ApolloErrorHandler error={error}>
       <CardContent>
         <h2 className={classes.projectPageHeader}>Activity feed</h2>
-        {getTotalItems() === 0 ? (
+        {getTotalItems(data) === 0 ? (
           <Alert severity="info">
             There is no activity recorded for this project.
           </Alert>
@@ -215,10 +215,8 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
-                  const { changeIcon, changeDescription, changeValue } = formatActivityLogEntry(
-                    change,
-                    lookupData
-                  );
+                  const { changeIcon, changeDescription, changeValue } =
+                    formatActivityLogEntry(change, lookupData);
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell

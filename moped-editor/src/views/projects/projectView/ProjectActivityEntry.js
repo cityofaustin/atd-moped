@@ -7,13 +7,15 @@ const useStyles = makeStyles((theme) => ({
   },
   boldText: {
     fontWeight: 600,
-  }
+  },
 }));
 
-const ProjectActivityEntry = ({ changeIcon, changeDescription, changeValue }) => {
+const ProjectActivityEntry = ({
+  changeIcon,
+  changeDescription,
+  changeValue,
+}) => {
   const classes = useStyles();
-
-  console.log(changeValue)
 
   return (
     <Box display="flex" p={0}>
@@ -21,7 +23,9 @@ const ProjectActivityEntry = ({ changeIcon, changeDescription, changeValue }) =>
       <Box p={0} flexGrow={1}>
         <Typography variant="body2" className={classes.entryText}>
           {changeDescription}
-          {changeValue && changeValue.length > 0 && <span className={classes.boldText}>{changeValue}</span>}
+          {!!changeValue && (
+            <span className={classes.boldText}>{changeValue}</span>
+          )}
         </Typography>
       </Box>
     </Box>
