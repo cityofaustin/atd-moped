@@ -22,9 +22,7 @@ const DateFieldEditComponent = (props) => {
           const newDate = e ? format(e, "yyyy-MM-dd") : null;
           props.onChange(newDate);
         }}
-        InputLabelProps={{
-          shrink: true,
-        }}
+        InputProps={{ style: { minWidth: "100px" } }}
       />
     </MuiPickersUtilsProvider>
   );
