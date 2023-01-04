@@ -18,7 +18,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, autocompleteProps, onChange, value }, ref) => {
+  ({ classes, onChange, value }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
     if (loading) {
