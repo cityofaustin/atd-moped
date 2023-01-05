@@ -328,6 +328,8 @@ const ProjectComments = (props) => {
                 >
                   {displayNotes.map((item, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
+                    const phaseKey = item.moped_phase?.phase_key;
+                    const phaseName = item.moped_phase?.phase_name;
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
@@ -369,20 +371,16 @@ const ProjectComments = (props) => {
                                     projectNoteTypes[item.project_note_type]
                                   }`}
                                 </Typography>
-                                  <Typography component={"span"}>
+                                <Typography component={"span"}>
+                                  {phaseKey && phaseName && (
                                     <ProjectStatusBadge
-                                      phaseKey={
-                                        displayNotes[i]?.moped_phase
-                                          ?.phase_key
-                                      }
-                                      phaseName={
-                                        displayNotes[i]?.moped_phase
-                                          ?.phase_name
-                                      }
+                                      phaseKey={phaseKey}
+                                      phaseName={phaseName}
                                       condensed
                                       leftMargin
                                     />
-                                  </Typography>
+                                  )}
+                                </Typography>
                               </>
                             }
                             secondary={
