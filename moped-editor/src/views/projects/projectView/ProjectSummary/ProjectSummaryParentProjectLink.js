@@ -10,8 +10,7 @@ import { NavLink as RouterLink } from "react-router-dom";
  * @constructor
  */
 const ProjectSummaryParentProjectLink = ({ data, classes }) => {
-  const parentProjectId =
-    data?.moped_project?.[0]?.parent_project_id;
+  const parentProjectId = data?.moped_project?.[0]?.parent_project_id;
   const parentProjectName = data?.moped_project[0].moped_project.project_name;
 
   return (
@@ -21,13 +20,18 @@ const ProjectSummaryParentProjectLink = ({ data, classes }) => {
         display="flex"
         justifyContent="flex-start"
         className={classes.fieldBox}
+        alignItems="center"
       >
         <RouterLink
           id="projectKnackSyncLink"
           className={"MuiTypography-body1"}
           to={`/moped/projects/${parentProjectId}`}
         >
-          <Typography variant={"inherit"} color={"primary"}>
+          <Typography
+            className={classes.fieldLabelText}
+            variant={"inherit"}
+            color={"primary"}
+          >
             {parentProjectName}
           </Typography>
         </RouterLink>

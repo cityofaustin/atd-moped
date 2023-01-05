@@ -165,6 +165,9 @@ const useChipStyles = makeStyles((theme) => ({
     backgroundColor: ({ phaseKey }) =>
       getStyle(theme, phaseKey ?? "").background,
   },
+  leftMargin: {
+    marginLeft: "1rem",
+  },
 }));
 
 /**
@@ -179,6 +182,7 @@ const ProjectStatusBadge = ({
   phaseKey,
   phaseName,
   condensed = false,
+  leftMargin = false,
   clickable = false,
 }) => {
   const classes = useStyles();
@@ -199,7 +203,8 @@ const ProjectStatusBadge = ({
       className={clsx(
         iconClasses.root,
         clickable && classes.clickableChip,
-        condensed ? chipClasses.condensed : chipClasses.root
+        condensed ? chipClasses.condensed : chipClasses.root,
+        leftMargin && chipClasses.leftMargin
       )}
       icon={<ChipIcon className={iconClasses.root} />}
       label={phaseName || defaultLabel}
