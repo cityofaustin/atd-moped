@@ -372,6 +372,7 @@ const ProjectComments = (props) => {
                                   }`}
                                 </Typography>
                                 <Typography component={"span"}>
+                                  {/* only show note's status badge if the note has a phase_id */}
                                   {phaseKey && phaseName && (
                                     <ProjectStatusBadge
                                       phaseKey={phaseKey}
