@@ -26,7 +26,11 @@ const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
   description: yup.string(),
-  signal: yup.object().optional(),
+  // Signal field is required if the selected component inserts into the feature_signals table
+  signal: yup.object().when("component", {
+    is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
+    then: yup.object().required(),
+  }),
 });
 
 const ComponentForm = ({
