@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
@@ -12,6 +13,7 @@ import {
   useSubcomponentOptions,
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
+import * as yup from "yup";
 
 const defaultFormValues = {
   component: null,
@@ -19,6 +21,13 @@ const defaultFormValues = {
   description: "",
   signal: null,
 };
+
+const validationSchema = yup.object().shape({
+  component: yup.object().required(),
+  subcomponents: yup.array(),
+  description: yup.string(),
+  signal: yup.object(),
+});
 
 const ComponentForm = ({
   formButtonText,
@@ -31,6 +40,7 @@ const ComponentForm = ({
   const { register, handleSubmit, control, watch, setValue, formState } =
     useForm({
       defaultValues: defaultFormValues,
+      resolver: yupResolver(validationSchema),
     });
 
   // Get and format component and subcomponent options
