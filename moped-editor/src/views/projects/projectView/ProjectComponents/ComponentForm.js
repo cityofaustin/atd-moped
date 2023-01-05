@@ -3,7 +3,7 @@ import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
-import { Autocomplete } from "@material-ui/lab";
+import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "../SignalComponentAutocomplete";
 import {
@@ -20,46 +20,6 @@ const defaultFormValues = {
   signal: null,
 };
 
-const ControlledAutocomplete = ({
-  id,
-  options,
-  renderOption,
-  name,
-  control,
-  label,
-  autoFocus = false,
-  multiple = false,
-  disabled,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ onChange, value, ref }) => (
-      <Autocomplete
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        value={value}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-          />
-        )}
-        onChange={(_event, option) => onChange(option)}
-      />
-    )}
-  />
-);
-
 const ComponentForm = ({
   formButtonText,
   onSave,
@@ -68,9 +28,10 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  const { register, handleSubmit, control, watch, setValue } = useForm({
-    defaultValues: defaultFormValues,
-  });
+  const { register, handleSubmit, control, watch, setValue, formState } =
+    useForm({
+      defaultValues: defaultFormValues,
+    });
 
   // Get and format component and subcomponent options
   const { data: optionsData, loading: areOptionsLoading } = useQuery(
@@ -165,6 +126,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
+            disabled={!formState.isValid}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
