@@ -24,9 +24,9 @@ const defaultFormValues = {
 
 const validationSchema = yup.object().shape({
   component: yup.object().required(),
-  subcomponents: yup.array(),
+  subcomponents: yup.array().optional(),
   description: yup.string(),
-  signal: yup.object(),
+  signal: yup.object().optional(),
 });
 
 const ComponentForm = ({
@@ -37,11 +37,18 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  const { register, handleSubmit, control, watch, setValue, formState } =
-    useForm({
-      defaultValues: defaultFormValues,
-      resolver: yupResolver(validationSchema),
-    });
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { isValid },
+  } = useForm({
+    defaultValues: defaultFormValues,
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
+  });
 
   // Get and format component and subcomponent options
   const { data: optionsData, loading: areOptionsLoading } = useQuery(
@@ -136,7 +143,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!formState.isValid}
+            disabled={!isValid}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
