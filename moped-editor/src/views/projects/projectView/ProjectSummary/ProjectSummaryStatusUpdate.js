@@ -18,6 +18,7 @@ import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const statusUpdate = data.moped_project[0].moped_proj_notes[0]?.project_note;
   const projectName = data.moped_project[0].project_name;
+  const currentPhaseId = data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id
   const addedBy = data.moped_project[0].moped_proj_notes[0]?.added_by;
   const dateCreated = makeUSExpandedFormDateFromTimeStampTZ(
     data.moped_project[0].moped_proj_notes[0]?.date_created
@@ -36,6 +37,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         <DashboardStatusModal
           projectId={projectId}
           projectName={projectName}
+          currentPhaseId={currentPhaseId}
           modalParent="summary"
           statusUpdate={statusUpdate}
           queryRefetch={refetch}

@@ -27,6 +27,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import "./ProjectComments.css";
 
@@ -91,6 +92,11 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = (props) => {
   const isStatusEditModal = props.modal;
+  // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
+  // otherwise use data passed from ProjectView
+  const currentPhaseId =
+    props.currentPhaseId ??
+    props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
@@ -180,6 +186,7 @@ const ProjectComments = (props) => {
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
             project_note_type: isStatusEditModal ? 2 : 1,
+            phase_id: currentPhaseId,
           },
         ],
       },
@@ -362,6 +369,20 @@ const ProjectComments = (props) => {
                                     projectNoteTypes[item.project_note_type]
                                   }`}
                                 </Typography>
+                                  <Typography component={"span"}>
+                                    <ProjectStatusBadge
+                                      phaseKey={
+                                        displayNotes[i]?.moped_phase
+                                          ?.phase_key
+                                      }
+                                      phaseName={
+                                        displayNotes[i]?.moped_phase
+                                          ?.phase_name
+                                      }
+                                      condensed
+                                      leftMargin
+                                    />
+                                  </Typography>
                               </>
                             }
                             secondary={

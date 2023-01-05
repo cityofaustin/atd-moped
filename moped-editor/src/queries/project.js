@@ -81,6 +81,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
         moped_phase {
+          phase_id
           phase_name
           phase_key
         }
