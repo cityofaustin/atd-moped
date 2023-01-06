@@ -80,6 +80,18 @@ export const useInitialValuesOnAttributesEdit = (
     });
   }, [componentOptions, initialFormValues, setValue]);
 
+  // Set the selected signal if this is a signal component
+  useEffect(() => {
+    if (!initialFormValues) return;
+    const internalTable =
+      initialFormValues.component?.moped_components?.feature_layer
+        ?.internal_table;
+    const isSignalComponent = internalTable === "feature_signals";
+    if (!isSignalComponent) return;
+
+    // setValue("signal", selectedSubcomponents);
+  }, [initialFormValues]);
+
   // Set the selected subcomponent after the subcomponent options are loaded
   useEffect(() => {
     if (!initialFormValues) return;
