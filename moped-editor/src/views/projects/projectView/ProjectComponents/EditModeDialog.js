@@ -24,12 +24,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditModeDialog = ({ showDialog, editDispatch, onEditFeatures }) => {
+const EditModeDialog = ({
+  showDialog,
+  editDispatch,
+  componentToEdit,
+  onEditFeatures,
+}) => {
   const classes = useStyles();
 
   const onClose = () => editDispatch({ type: "cancel_mode_edit" });
   const onEditAttributes = () =>
     editDispatch({ type: "start_attributes_edit" });
+  const isSignalComponent =
+    componentToEdit?.moped_components?.feature_layer?.internal_table ===
+    "feature_signals";
 
   return (
     <Dialog open={showDialog} onClose={onClose}>
@@ -53,15 +61,17 @@ const EditModeDialog = ({ showDialog, editDispatch, onEditFeatures }) => {
             </Button>
           </Grid>
           <Grid item>
-            <Button
-              variant="outlined"
-              color="primary"
-              className={classes.margin}
-              startIcon={<TimelineIcon />}
-              onClick={onEditFeatures}
-            >
-              Map
-            </Button>
+            {!isSignalComponent && (
+              <Button
+                variant="outlined"
+                color="primary"
+                className={classes.margin}
+                startIcon={<TimelineIcon />}
+                onClick={onEditFeatures}
+              >
+                Map
+              </Button>
+            )}
           </Grid>
         </Grid>
       </DialogContent>
