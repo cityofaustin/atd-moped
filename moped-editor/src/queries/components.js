@@ -73,6 +73,7 @@ export const GET_PROJECT_COMPONENTS = gql`
         geometry: geography
         component_id
         location_name
+        signal_id
       }
       feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
         id

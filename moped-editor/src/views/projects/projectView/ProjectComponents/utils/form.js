@@ -89,6 +89,12 @@ export const useInitialValuesOnAttributesEdit = (
     const isSignalComponent = internalTable === "feature_signals";
     if (!isSignalComponent) return;
 
+    const componentSignal = initialFormValues.component?.feature_signals?.[0];
+
+    // TODO: figure out what format we need here
+    // TODO: or feed the form a value that will make the autocomplete
+    // grab the data that it would normally get when creatin a signal component
+
     // setValue("signal", selectedSubcomponents);
   }, [initialFormValues]);
 
