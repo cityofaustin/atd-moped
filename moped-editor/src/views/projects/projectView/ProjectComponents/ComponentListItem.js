@@ -95,17 +95,15 @@ export default function ComponentListItem({
             />
             <ListItemText
               primary={
-                !isSignalComponent && (
-                  <Button
-                    fullWidth
-                    size="small"
-                    color="primary"
-                    startIcon={<EditOutlined />}
-                    onClick={onStartEditingComponent}
-                  >
-                    Edit
-                  </Button>
-                )
+                <Button
+                  fullWidth
+                  size="small"
+                  color="primary"
+                  startIcon={<EditOutlined />}
+                  onClick={onStartEditingComponent}
+                >
+                  Edit
+                </Button>
               }
             />
           </ListItem>
