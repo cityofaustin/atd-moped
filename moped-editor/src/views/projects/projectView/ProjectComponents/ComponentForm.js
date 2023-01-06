@@ -61,6 +61,7 @@ const ComponentForm = ({
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
+  console.log(component);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 

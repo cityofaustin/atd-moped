@@ -74,8 +74,8 @@ export const useInitialValuesOnAttributesEdit = (
         (option) => option.value === initialFormValues.component.component_id
       ).label,
       data: {
-        moped_subcomponents:
-          initialFormValues.component.moped_components.moped_subcomponents,
+        // Include component subcomponents and metadata about the internal_table needed for the form
+        ...initialFormValues.component.moped_components,
       },
     });
   }, [componentOptions, initialFormValues, setValue]);
