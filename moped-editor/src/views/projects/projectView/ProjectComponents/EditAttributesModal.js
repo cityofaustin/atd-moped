@@ -37,14 +37,13 @@ const EditComponentModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
-  const onComponentSaveSuccess = (description, subcomponentsArray) => {
+  const onComponentSaveSuccess = (updatedClickedComponentState) => {
     // Update component list item and clicked component state to keep UI up to date
     refetchProjectComponents().then(() => onClose());
     // Update clickedComponent with the attributes that were just edited
     setClickedComponent((prevComponent) => ({
       ...prevComponent,
-      description,
-      moped_proj_components_subcomponents: subcomponentsArray,
+      ...updatedClickedComponentState,
     }));
   };
 
@@ -72,6 +71,12 @@ const EditComponentModal = ({
         component_id: projectComponentId,
       };
 
+      const updatedClickedComponentState = {
+        description,
+        moped_proj_components_subcomponents: subcomponentsArray,
+        feature_signals: [signalToInsert],
+      };
+
       updateSignalComponent({
         variables: {
           projectComponentId: projectComponentId,
@@ -80,11 +85,16 @@ const EditComponentModal = ({
           signals: [signalToInsert],
         },
       })
-        .then(() => onComponentSaveSuccess(description, subcomponentsArray))
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
         .catch((error) => {
           console.log(error);
         });
     } else {
+      const updatedClickedComponentState = {
+        description,
+        moped_proj_components_subcomponents: subcomponentsArray,
+      };
+
       updateComponentAttributes({
         variables: {
           projectComponentId: projectComponentId,
@@ -92,7 +102,7 @@ const EditComponentModal = ({
           subcomponents: subcomponentsArray,
         },
       })
-        .then(() => onComponentSaveSuccess(description, subcomponentsArray))
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
         .catch((error) => {
           console.log(error);
         });

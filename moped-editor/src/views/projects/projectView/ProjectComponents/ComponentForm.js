@@ -62,6 +62,7 @@ const ComponentForm = ({
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
+  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -105,7 +106,7 @@ const ComponentForm = ({
                   onChange={onChange}
                   value={value}
                   ref={ref}
-                  setAreOptionsLoaded={setAreSignalOptionsLoaded}
+                  onOptionsLoaded={onOptionsLoaded}
                 />
               )}
             />

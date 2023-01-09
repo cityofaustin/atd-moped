@@ -15,18 +15,19 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} classes - MaterialUI style object
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
+ * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value, setAreOptionsLoaded }, ref) => {
+  ({ classes, onChange, value, onOptionsLoaded }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
     // Let the parent component know that the options are ready to go
     useEffect(() => {
       if (features === null) return;
 
-      setAreOptionsLoaded(true);
-    }, [features, setAreOptionsLoaded]);
+      onOptionsLoaded();
+    }, [features, onOptionsLoaded]);
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;
