@@ -59,7 +59,7 @@ const ComponentForm = ({
     GET_COMPONENTS_FORM_OPTIONS
   );
   const componentOptions = useComponentOptions(optionsData);
-  const { component, signal } = watch();
+  const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
 
