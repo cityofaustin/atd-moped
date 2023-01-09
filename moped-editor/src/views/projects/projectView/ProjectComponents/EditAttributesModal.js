@@ -33,6 +33,8 @@ const EditComponentModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
 
   const onSave = (formData) => {
+    const isSavingSignalFeature = Boolean(formData.signal);
+
     const { description, subcomponents } = formData;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -45,26 +47,30 @@ const EditComponentModal = ({
         }))
       : [];
 
-    updateComponentAttributes({
-      variables: {
-        projectComponentId: projectComponentId,
-        description,
-        subcomponents: subcomponentsArray,
-      },
-    })
-      .then(() => {
-        // Update component list item and clicked component state to keep UI up to date
-        refetchProjectComponents().then(() => onClose());
-        // Update clickedComponent with the attributes that were just edited
-        setClickedComponent((prevComponent) => ({
-          ...prevComponent,
+    if (isSavingSignalFeature) {
+      console.log("saving signal component!");
+    } else {
+      updateComponentAttributes({
+        variables: {
+          projectComponentId: projectComponentId,
           description,
-          moped_proj_components_subcomponents: subcomponentsArray,
-        }));
+          subcomponents: subcomponentsArray,
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then(() => {
+          // Update component list item and clicked component state to keep UI up to date
+          refetchProjectComponents().then(() => onClose());
+          // Update clickedComponent with the attributes that were just edited
+          setClickedComponent((prevComponent) => ({
+            ...prevComponent,
+            description,
+            moped_proj_components_subcomponents: subcomponentsArray,
+          }));
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const onClose = () => {

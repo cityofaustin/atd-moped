@@ -62,7 +62,8 @@ export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
   componentOptions,
-  subcomponentOptions
+  subcomponentOptions,
+  areSignalOptionsLoaded
 ) => {
   // Set the selected component after the component options are loaded
   useEffect(() => {
@@ -89,15 +90,14 @@ export const useInitialValuesOnAttributesEdit = (
         ?.internal_table;
     const isSignalComponent = internalTable === "feature_signals";
     if (!isSignalComponent) return;
+    if (!areSignalOptionsLoaded) return;
 
     const componentSignal = initialFormValues.component?.feature_signals?.[0];
     const knackFormatSignalOption =
       featureSignalsRecordToKnackSignalRecord(componentSignal);
 
-    setTimeout(() => {
-      setValue("signal", knackFormatSignalOption);
-    }, 5000);
-  }, [initialFormValues]);
+    setValue("signal", knackFormatSignalOption);
+  }, [initialFormValues, areSignalOptionsLoaded]);
 
   // Set the selected subcomponent after the subcomponent options are loaded
   useEffect(() => {

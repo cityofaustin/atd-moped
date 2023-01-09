@@ -91,7 +91,6 @@ const ComponentForm = ({
             control={control}
             autoFocus
             disabled={isEditingExistingComponent}
-            setAreOptionsLoaded={setAreSignalOptionsLoaded}
           />
         </Grid>
 
@@ -106,6 +105,7 @@ const ComponentForm = ({
                   onChange={onChange}
                   value={value}
                   ref={ref}
+                  setAreOptionsLoaded={setAreSignalOptionsLoaded}
                 />
               )}
             />
