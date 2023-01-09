@@ -91,11 +91,22 @@ export const useInitialValuesOnAttributesEdit = (
 
     const componentSignal = initialFormValues.component?.feature_signals?.[0];
 
+    console.log(componentSignal);
+    const { geometry, ...restOfFeatureSignalRecord } = componentSignal;
+
     // TODO: figure out what format we need here
     // TODO: or feed the form a value that will make the autocomplete
     // grab the data that it would normally get when creatin a signal component
+    const knackFormatSignalOption = {
+      type: "Feature",
+      geometry,
+      properties: restOfFeatureSignalRecord,
+    };
+    console.log(knackFormatSignalOption);
 
-    // setValue("signal", selectedSubcomponents);
+    setTimeout(() => {
+      setValue("signal", knackFormatSignalOption);
+    }, 5000);
   }, [initialFormValues]);
 
   // Set the selected subcomponent after the subcomponent options are loaded
