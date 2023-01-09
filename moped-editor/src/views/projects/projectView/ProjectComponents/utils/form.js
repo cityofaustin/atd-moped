@@ -97,7 +97,7 @@ export const useInitialValuesOnAttributesEdit = (
       featureSignalsRecordToKnackSignalRecord(componentSignal);
 
     setValue("signal", knackFormatSignalOption);
-  }, [initialFormValues, areSignalOptionsLoaded]);
+  }, [initialFormValues, areSignalOptionsLoaded, setValue]);
 
   // Set the selected subcomponent after the subcomponent options are loaded
   useEffect(() => {

@@ -26,7 +26,7 @@ const SignalComponentAutocomplete = React.forwardRef(
       if (features === null) return;
 
       setAreOptionsLoaded(true);
-    }, [features]);
+    }, [features, setAreOptionsLoaded]);
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;

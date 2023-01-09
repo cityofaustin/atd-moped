@@ -9,7 +9,11 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
+import {
+  UPDATE_COMPONENT_ATTRIBUTES,
+  UPDATE_SIGNAL_COMPONENT,
+} from "src/queries/components";
+import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -31,6 +35,7 @@ const EditComponentModal = ({
   const classes = useStyles();
 
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
+  const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
@@ -48,7 +53,18 @@ const EditComponentModal = ({
       : [];
 
     if (isSavingSignalFeature) {
-      console.log("saving signal component!");
+      const signalFromForm = formData.signal;
+      const signalToInsert =
+        knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+
+      updateSignalComponent({
+        variables: {
+          projectComponentId: projectComponentId,
+          description,
+          subcomponents: subcomponentsArray,
+          signals: [signalToInsert],
+        },
+      });
     } else {
       updateComponentAttributes({
         variables: {
