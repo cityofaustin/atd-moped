@@ -37,6 +37,17 @@ const EditComponentModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
+  const onComponentSaveSuccess = (description, subcomponentsArray) => {
+    // Update component list item and clicked component state to keep UI up to date
+    refetchProjectComponents().then(() => onClose());
+    // Update clickedComponent with the attributes that were just edited
+    setClickedComponent((prevComponent) => ({
+      ...prevComponent,
+      description,
+      moped_proj_components_subcomponents: subcomponentsArray,
+    }));
+  };
+
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
@@ -54,8 +65,12 @@ const EditComponentModal = ({
 
     if (isSavingSignalFeature) {
       const signalFromForm = formData.signal;
-      const signalToInsert =
+      const featureSignalRecord =
         knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+      const signalToInsert = {
+        ...featureSignalRecord,
+        component_id: projectComponentId,
+      };
 
       updateSignalComponent({
         variables: {
@@ -64,7 +79,11 @@ const EditComponentModal = ({
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
         },
-      });
+      })
+        .then(() => onComponentSaveSuccess(description, subcomponentsArray))
+        .catch((error) => {
+          console.log(error);
+        });
     } else {
       updateComponentAttributes({
         variables: {
@@ -73,16 +92,7 @@ const EditComponentModal = ({
           subcomponents: subcomponentsArray,
         },
       })
-        .then(() => {
-          // Update component list item and clicked component state to keep UI up to date
-          refetchProjectComponents().then(() => onClose());
-          // Update clickedComponent with the attributes that were just edited
-          setClickedComponent((prevComponent) => ({
-            ...prevComponent,
-            description,
-            moped_proj_components_subcomponents: subcomponentsArray,
-          }));
-        })
+        .then(() => onComponentSaveSuccess(description, subcomponentsArray))
         .catch((error) => {
           console.log(error);
         });
