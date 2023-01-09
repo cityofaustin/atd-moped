@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -61,7 +61,7 @@ const ComponentForm = ({
   const componentOptions = useComponentOptions(optionsData);
   const { component, signal } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
-  console.log(signal);
+  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -69,7 +69,8 @@ const ComponentForm = ({
     initialFormValues,
     setValue,
     componentOptions,
-    subcomponentOptions
+    subcomponentOptions,
+    areSignalOptionsLoaded
   );
 
   const isEditingExistingComponent = initialFormValues !== null;
@@ -90,6 +91,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             disabled={isEditingExistingComponent}
+            setAreOptionsLoaded={setAreSignalOptionsLoaded}
           />
         </Grid>
 

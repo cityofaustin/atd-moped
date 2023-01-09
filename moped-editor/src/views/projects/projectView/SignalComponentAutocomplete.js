@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
@@ -18,8 +18,15 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value }, ref) => {
+  ({ classes, onChange, value, setAreOptionsLoaded }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+
+    // Let the parent component know that the options are ready to go
+    useEffect(() => {
+      if (features === null) return;
+
+      setAreOptionsLoaded(true);
+    }, [features]);
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;
