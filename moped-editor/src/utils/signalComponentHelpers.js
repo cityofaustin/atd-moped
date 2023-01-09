@@ -23,8 +23,7 @@ export const getSignalOptionLabel = (option) =>
   `${option.properties.signal_id}: ${option.properties.location_name}`;
 
 /**
- * Imitate a "drawn point" feature from a traffic signal geojson feature. Sets required
- * fields so that a Knack feature can be inserted into the feature_signals table
+ * Sets required fields so that a Knack traffic signal record can be inserted into the feature_signals table
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
@@ -45,6 +44,25 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
 
     return featureSignalsRecord;
   }
+};
+
+/**
+ * Format a feature_signals table record to the format of options in the SignalComponentAutocomplete
+ * @param {Object} featureSignalsRecord - A feature_signals table record
+ * @return {Object} A record in the format of options in the SignalComponentAutocomplete
+ */
+export const featureSignalsRecordToKnackSignalRecord = (
+  featureSignalsRecord
+) => {
+  const { geometry, ...restOfFeatureSignalRecord } = featureSignalsRecord;
+
+  const knackFormatSignalOption = {
+    type: "Feature",
+    geometry,
+    properties: restOfFeatureSignalRecord,
+  };
+
+  return knackFormatSignalOption;
 };
 
 /*

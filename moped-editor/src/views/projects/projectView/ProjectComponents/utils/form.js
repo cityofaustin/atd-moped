@@ -2,6 +2,7 @@ import { useMemo, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller } from "react-hook-form";
 import { Icon, makeStyles, TextField } from "@material-ui/core";
+import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
@@ -90,19 +91,8 @@ export const useInitialValuesOnAttributesEdit = (
     if (!isSignalComponent) return;
 
     const componentSignal = initialFormValues.component?.feature_signals?.[0];
-
-    console.log(componentSignal);
-    const { geometry, ...restOfFeatureSignalRecord } = componentSignal;
-
-    // TODO: figure out what format we need here
-    // TODO: or feed the form a value that will make the autocomplete
-    // grab the data that it would normally get when creatin a signal component
-    const knackFormatSignalOption = {
-      type: "Feature",
-      geometry,
-      properties: restOfFeatureSignalRecord,
-    };
-    console.log(knackFormatSignalOption);
+    const knackFormatSignalOption =
+      featureSignalsRecordToKnackSignalRecord(componentSignal);
 
     setTimeout(() => {
       setValue("signal", knackFormatSignalOption);
