@@ -5,34 +5,42 @@ export const formatFundingActivity = (change, lookupData) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
   const changeIcon = <MonetizationOnOutlinedIcon />;
-  let changeText = "Project funding updated";
+  let changeDescription = "Project funding updated";
+  let changeValue = "";
 
   // add a new funding source
   if (change.description.length === 0) {
-    changeText = `New funding source added:  ${
-      lookupData.fundingSources[change.record_data.data.new.funding_source_id]
-    }`;
-    return { changeText, changeIcon };
+    changeDescription = "New funding source added: ";
+    changeValue =
+      lookupData.fundingSources[
+        change.record_data.event.data.new.funding_source_id
+      ];
+    return { changeIcon, changeDescription, changeValue };
   }
 
   const lookupDataName = entryMap.fields[change.description[0].field]?.lookup;
 
-  // // edit existing record
-  // need to use a lookup table
-  if (lookupDataName) {
-    changeText = `Changed ${entryMap.fields[change.description[0].field].label}
-        to "${
-          lookupData[lookupDataName][
-            change.description[0].new[change.description[0].field]
-          ]
-        }"`;
-  } else {
-    changeText = `
-    Changed ${entryMap.fields[change.description[0].field].label} to 
-    "${change.description[0].new[change.description[0].field]}"`;
+  // delete existing record
+  if (change.description[0].field === "is_deleted") {
+    changeDescription = "Funding source was deleted";
+    return { changeIcon, changeDescription, changeValue };
   }
 
-  // delete existing record
+  // editing an existing record
+  if (lookupDataName) {
+    changeDescription = `Changed ${
+      entryMap.fields[change.description[0].field].label
+    } to `;
+    changeValue =
+      lookupData[lookupDataName][
+        change.description[0].new[change.description[0].field]
+      ];
+  } else {
+    changeDescription = `Changed ${
+      entryMap.fields[change.description[0].field].label
+    } to `;
+    changeValue = change.description[0].new[change.description[0].field];
+  }
 
-  return { changeText, changeIcon };
+  return { changeIcon, changeDescription, changeValue };
 };
