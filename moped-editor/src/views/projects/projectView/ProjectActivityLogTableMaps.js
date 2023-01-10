@@ -608,19 +608,22 @@ export const ProjectActivityLogTableMaps = {
         label: "department unit",
       },
       funding_description: {
-        label: "description",
+        label: "fund description",
       },
       funding_status_id: {
-        label: "status ID",
+        label: "funding status",
+        lookup: "fundingStatus"
       },
       is_deleted: {
         label: "is deleted",
       },
       fund: {
         label: "fund",
+        objectKey: "fund_name",
       },
       dept_unit: {
         label: "department unit",
+        objectKey: "unit_long_name"
       },
     },
   },

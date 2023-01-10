@@ -19,6 +19,9 @@ export const formatFundingActivity = (change, lookupData) => {
   }
 
   const lookupDataName = entryMap.fields[change.description[0].field]?.lookup;
+  // checks config to see if change is stored in an object, as opposed to a string
+  const displayObjectKey =
+    entryMap.fields[change.description[0].field]?.objectKey;
 
   // delete existing record
   if (change.description[0].field === "is_deleted") {
@@ -27,6 +30,7 @@ export const formatFundingActivity = (change, lookupData) => {
   }
 
   // editing an existing record
+  // is change stored as an id?
   if (lookupDataName) {
     changeDescription = `Changed ${
       entryMap.fields[change.description[0].field].label
@@ -35,11 +39,27 @@ export const formatFundingActivity = (change, lookupData) => {
       lookupData[lookupDataName][
         change.description[0].new[change.description[0].field]
       ];
-  } else {
+    return { changeIcon, changeDescription, changeValue };
+  }
+
+  // is change stored as an object?
+  if (displayObjectKey) {
     changeDescription = `Changed ${
       entryMap.fields[change.description[0].field].label
     } to `;
-    changeValue = change.description[0].new[change.description[0].field];
+    changeValue =
+      change.description[0].new[change.description[0].field][displayObjectKey];
+  } else {
+    if (change.description[0].new[change.description[0].field] === "") {
+      changeDescription = `Removed ${
+        entryMap.fields[change.description[0].field].label
+      }`
+    } else {
+      changeDescription = `Changed ${
+        entryMap.fields[change.description[0].field].label
+      } to `;
+      changeValue = change.description[0].new[change.description[0].field];
+    }
   }
 
   return { changeIcon, changeDescription, changeValue };
