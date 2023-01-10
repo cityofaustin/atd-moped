@@ -52,6 +52,7 @@ import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -189,6 +190,9 @@ const ProjectFundingTable = () => {
   const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
   const [newTaskOrderList, setNewTaskOrderList] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -516,6 +520,11 @@ const ProjectFundingTable = () => {
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
+  const handleDeleteOpen = (task) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(task);
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
@@ -586,15 +595,22 @@ const ProjectFundingTable = () => {
             />
             <Box component={"ul"} className={classes.chipContainer}>
               <Typography className={classes.fieldLabel}>Task order</Typography>
-              {taskOrderData.map((task) => (
-                <li key={task.id}>
-                  <Chip
-                    label={task.display_name}
-                    onDelete={() => handleTaskOrderDelete(task)}
-                    className={classes.chip}
-                  />
-                </li>
-              ))}
+              <DeleteConfirmationModal
+                type="tag"
+                submitDelete={() => handleTaskOrderDelete(deleteConfirmationId)}
+                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+              >
+                {taskOrderData.map((task) => (
+                  <li key={task.task_order}>
+                    <Chip
+                      label={task.display_name}
+                      onDelete={() => handleDeleteOpen(task)}
+                      className={classes.chip}
+                    />
+                  </li>
+                ))}
+              </DeleteConfirmationModal>
               {!addTaskOrderMode && (
                 <li key={`add-task-order`}>
                   <Tooltip title="Add New Task Order">

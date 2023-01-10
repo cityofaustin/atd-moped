@@ -14,6 +14,10 @@ export const COMMENTS_QUERY = gql`
       project_note_id
       project_note_type
       is_deleted
+      moped_phase {
+        phase_key
+        phase_name
+      }
     }
   }
 `;

@@ -3,64 +3,66 @@ import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/Pr
 
 export const formatProjectActivity = (change, entityList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
-  let changeText = "Project updated";
+  let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
+  let changeValue = "";
 
-  let changeData = {};
-  // the legacy way has the change data in event/data.
-  // In the new schema, event is undefined
-  const legacyVersion = !!change.record_data?.event;
+  const changeData = change.record_data.event.data;
 
-  if (legacyVersion) {
-    changeData = change.record_data.event.data;
-  } else {
-    changeData = change.record_data.data;
-  }
-
-  // project creation
+  // Project creation
   if (change.description.length === 0) {
-    changeText = `${changeData.new.project_name} created`;
+    changeDescription = "Created project as ";
+    changeValue = changeData.new.project_name;
     changeIcon = <BeenhereOutlinedIcon />;
-    return { changeText, changeIcon };
+    return { changeIcon, changeDescription, changeValue };
   }
+
+  // the field that was changed in the activity
+  const changedField = change.description[0].field;
 
   // need to use a lookup table
-  if (entryMap.fields[change.description[0].field]?.lookup) {
-    // adding a new field
+  if (entryMap.fields[changedField]?.lookup) {
+    // adding new information
     if (
-      change.description[0].old === null ||
+      changeData.old === null ||
       // the entity list used to use 0 as an id for null or empty
-      change.description[0].old === 0 ||
-      change.description[0].old[change.description[0].field] === 0
+      changeData.old === 0 ||
+      changeData.old[changedField] === 0
     ) {
-      changeText = `
-        Added "${entityList[change.description[0].new]}" as
-        ${entryMap.fields[change.description[0].field].label}`;
+      changeDescription = `Added "${
+        entityList[change.description[0].new]
+      }" as `;
+      changeValue = entryMap.fields[changedField].label;
+      return { changeIcon, changeDescription, changeValue };
     }
 
-    // updating a field
-    if (legacyVersion) {
-      changeText = `Changed ${
-        entryMap.fields[change.description[0].field].label
-      } to "${entityList[change.description[0].new]}"`;
-    } else {
-      changeText = `Changed ${
-        entryMap.fields[change.description[0].field].label
-      }
-        to "
-        ${entityList[change.description[0].new[change.description[0].field]]}"`;
+    // if the new field is null or undefined, its because something was removed
+    if (!entityList[changeData.new[changedField]]) {
+      changeDescription = `Removed ${entryMap.fields[changedField].label} `;
+      changeValue = "";
+      return { changeIcon, changeDescription, changeValue };
     }
+
+    // Changing a field, but need to use lookup table to display
+    changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
+    changeValue = entityList[changeData.new[changedField]];
   } else {
-    if (legacyVersion) {
-      changeText = `
-          Changed ${entryMap.fields[change.description[0].field].label}
-          to "${change.description[0].new}"`;
-    } else {
-      changeText = `
-        Changed ${entryMap.fields[change.description[0].field].label} to 
-        "${change.description[0].new[change.description[0].field]}"`;
+    // If the update is an object, show just the field name that was updated.
+    if (typeof changeData.new[changedField] === "object") {
+      changeDescription = `Changed ${entryMap.fields[changedField].label}`;
+      changeValue = "";
+      return { changeIcon, changeDescription, changeValue };
     }
+
+    // the update can be rendered as a string
+    changeDescription = `
+          Changed ${entryMap.fields[changedField].label}
+          to `;
+    changeValue =
+      changeData.new[changedField].length > 0
+        ? changeData.new[changedField]
+        : "(none)";
   }
 
-  return { changeText, changeIcon };
+  return { changeIcon, changeDescription, changeValue };
 };

@@ -3,7 +3,8 @@ import { formatTagsActivity } from "./activityLogFormatters/mopedTagsActivity";
 import { formatFundingActivity } from "./activityLogFormatters/mopedFundingActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
-  const changeText = "Project was updated";
+  const changeDescription = "Project was updated";
+  const changeValue = "";
   const changeIcon = (
     <span className="material-symbols-outlined">summarize</span>
   );
@@ -16,6 +17,6 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_funding":
       return formatFundingActivity(change, lookupData);
     default:
-      return { changeText, changeIcon };
+      return { changeIcon, changeDescription, changeValue };
   }
 };

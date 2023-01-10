@@ -61,6 +61,12 @@ export const ProjectActivityLogTableMaps = {
         label: "project lead",
         lookup: "moped_entity",
       },
+      capitally_funded: {
+        label: "capitally funded"
+      },
+      is_retired: {
+        label: "is retired"
+      }
     },
   },
   moped_proj_entities: {
