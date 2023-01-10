@@ -39,12 +39,14 @@ const EditComponentModal = ({
 
   const onComponentSaveSuccess = (updatedClickedComponentState) => {
     // Update component list item and clicked component state to keep UI up to date
-    refetchProjectComponents().then(() => onClose());
-    // Update clickedComponent with the attributes that were just edited
-    setClickedComponent((prevComponent) => ({
-      ...prevComponent,
-      ...updatedClickedComponentState,
-    }));
+    refetchProjectComponents().then(() => {
+      onClose();
+      // Update clickedComponent with the attributes that were just edited
+      setClickedComponent((prevComponent) => ({
+        ...prevComponent,
+        ...updatedClickedComponentState,
+      }));
+    });
   };
 
   const onSave = (formData) => {
@@ -74,7 +76,9 @@ const EditComponentModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
-        feature_signals: [signalToInsert],
+        feature_signals: [
+          { ...featureSignalRecord, geometry: featureSignalRecord.geography },
+        ],
       };
 
       updateSignalComponent({

@@ -74,6 +74,8 @@ export const GET_PROJECT_COMPONENTS = gql`
         component_id
         location_name
         signal_id
+        signal_type
+        knack_id
       }
       feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
         id

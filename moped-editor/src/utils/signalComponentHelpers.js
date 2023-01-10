@@ -55,11 +55,12 @@ export const featureSignalsRecordToKnackSignalRecord = (
   featureSignalsRecord
 ) => {
   const { geometry, ...restOfFeatureSignalRecord } = featureSignalsRecord;
+  const { knack_id } = restOfFeatureSignalRecord;
 
   const knackFormatSignalOption = {
     type: "Feature",
-    geometry,
-    properties: restOfFeatureSignalRecord,
+    geometry: { ...geometry, coordinates: geometry.coordinates.flat() },
+    properties: { ...restOfFeatureSignalRecord, id: knack_id },
   };
 
   return knackFormatSignalOption;
