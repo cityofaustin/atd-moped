@@ -92,6 +92,9 @@ $ node index.js
   - PerfMeasureType
   - Categories
 
+- review facilityattributetypes with NW—map to subcomponents
+- physical protection type ("Protection Type"): can we move this to subcomponents?
+
 ### Todo
 
 - dedupe existing projects with interim_project_id
