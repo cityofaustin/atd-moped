@@ -12,7 +12,6 @@ import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
-import MapAlertSnackbar from "./MapAlertSnackbar";
 import {
   basemaps,
   mapParameters,
@@ -271,11 +270,6 @@ export default function TheMap({
 
   return (
     <>
-      <MapAlertSnackbar
-        isOpen={shouldShowZoomAlert}
-        message="Zoom in to select map features"
-        severity="error"
-      />
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
