@@ -40,6 +40,8 @@ export default function ComponentMapToolbar({
             projectStatuses={projectStatuses}
             condensed
           />
+        </Box>
+        <Box mr={2}>
           <MapAlert message={message} severity={severity} isOpen={isOpen} />
         </Box>
         <Box color="primary" display="flex" flexGrow={1}>
