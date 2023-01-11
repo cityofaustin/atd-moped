@@ -1,3 +1,5 @@
+import { SOURCES } from "../mapSettings";
+
 export const getClickedFeatureFromMap = (e) =>
   e.features.find((feature) => feature.layer.id.includes("project"));
 
@@ -12,15 +14,19 @@ export const removeFeatureFromDraftComponent = (
   draftComponent,
   clickedDraftComponentFeature
 ) => {
-  // remove project feature, ignore underlying CTN features
+  const { internal_table } = draftComponent;
+  const ctnUniqueIdentifier = Object.values(SOURCES).find(
+    (source) => source.table === internal_table
+  )._featureIdProp;
+
+  // Filter out feature by its unique identifier
   const filteredFeatures = draftComponent.features.filter((compFeature) => {
-    return !(
-      compFeature.properties.id ===
-        clickedDraftComponentFeature.properties.id &&
-      compFeature.properties._layerId ===
-        clickedDraftComponentFeature.properties._layerId
+    return (
+      compFeature.properties[ctnUniqueIdentifier] !==
+      clickedDraftComponentFeature.properties[ctnUniqueIdentifier]
     );
   });
+  console.log(filteredFeatures);
 
   return { ...draftComponent, features: filteredFeatures };
 };

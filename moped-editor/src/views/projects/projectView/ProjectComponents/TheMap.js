@@ -116,22 +116,22 @@ export default function TheMap({
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
-    const clickedDraftComponentFeature = e.features.find(
-      (feature) => feature.layer.id === draftLayerId
-    );
 
+    // Get the details we need to see if the feature is already in the draftComponent or not
     const { internal_table } = newDraftComponent;
     const ctnUniqueIdentifier = Object.values(SOURCES).find(
       (source) => source.table === internal_table
     )._featureIdProp;
-    console.log(ctnUniqueIdentifier);
-    // TODO: Find the ID for the layer that was clicked from SOURCES
-    // TODO: Check if the feature is already in newDraftComponent.features by that ID
-    // TODO: If it is, remove it
-    // TODO: If not, add it
-    console.log(e.features);
-    // Lines CTN_SEGMENT_ID
-    // Points INTERSECTION_ID
+
+    // Get the IDs of the features already in the draftComponent
+    const existingDraftIds = newDraftComponent.features.map(
+      (feature) => feature.properties[ctnUniqueIdentifier]
+    );
+
+    // Find the feature that was clicked that's already in the draftComponent
+    const clickedDraftComponentFeature = e.features.find((feature) =>
+      existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
+    );
 
     // If we clicked a drawn feature, we don't need to capture from the CTN layers
     if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;

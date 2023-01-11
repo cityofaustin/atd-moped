@@ -44,6 +44,7 @@ const createReducer = (state, action) => {
           state.draftComponent,
           clickedDraftComponentFeature
         );
+      console.log(draftComponentWithDeselectedFeatureRemoved);
 
       return {
         ...state,
