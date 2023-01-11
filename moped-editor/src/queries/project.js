@@ -60,8 +60,10 @@ export const SUMMARY_QUERY = gql`
       ) {
         project_note_id
         project_note
-        added_by
-        added_by_user_id
+        moped_user {
+          first_name
+          last_name
+        }
         date_created
       }
       moped_project_types(where: { is_deleted: { _eq: false } }) {
@@ -81,6 +83,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
         moped_phase {
+          phase_id
           phase_name
           phase_key
         }
@@ -470,6 +473,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
       phase_id
       phase_name
     }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
+    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type
@@ -698,28 +709,6 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
     insert_moped_proj_notes(objects: $statusUpdate) {
       affected_rows
       __typename
-    }
-  }
-`;
-
-/**
- * Updates the status update
- */
-export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
-  mutation ProjectStatusUpdateUpdate(
-    $project_note_id: Int_comparison_exp = {}
-    $project_note: String = ""
-    $added_by: bpchar = ""
-  ) {
-    update_moped_proj_notes(
-      where: { project_note_id: $project_note_id }
-      _set: {
-        project_note: $project_note
-        added_by: $added_by
-        project_note_type: 2
-      }
-    ) {
-      affected_rows
     }
   }
 `;
