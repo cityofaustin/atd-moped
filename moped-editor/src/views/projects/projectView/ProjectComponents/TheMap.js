@@ -99,8 +99,8 @@ export default function TheMap({
 
     if (shouldShowZoomAlert) {
       errorMessageDispatch({
-        type: "add_drawn_line",
-        payload: { message: "Zoom in to select features", type: "warning" },
+        type: "show_error",
+        payload: { message: "Zoom in to select features", severity: "error" },
       });
     } else {
       errorMessageDispatch({ type: "hide_error" });

@@ -4,10 +4,10 @@ const errorMessageReducer = (state, action) => {
   switch (action.type) {
     case "show_error":
       const { message, severity } = action.payload;
-      return { ...state, showError: true, message, severity };
+      return { ...state, isOpen: true, message, severity };
     case "hide_error":
       return {
-        showError: false,
+        isOpen: false,
         message: null,
         severity: null,
       };
@@ -19,7 +19,7 @@ export const useToolbarErrorMessage = () => {
   const [errorMessageState, errorMessageDispatch] = useReducer(
     errorMessageReducer,
     {
-      showError: false,
+      isOpen: false,
       message: null,
       severity: null,
     }

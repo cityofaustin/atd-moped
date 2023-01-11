@@ -6,7 +6,7 @@ const useStyles = makeStyles(() => ({
   root: {
     // ComponentMapToolbar is 64 px tall and the alert is 48 px tall
     // Set alert 8px from top to center vertically
-    top: "8px",
+    // top: "8px",
   },
 }));
 
@@ -14,9 +14,11 @@ const MapAlert = ({ message, severity, isOpen, alertProps }) => {
   const classes = useStyles();
 
   return (
-    <Alert className={classes} severity={severity} {...alertProps}>
-      {message}
-    </Alert>
+    isOpen && (
+      <Alert className={classes.root} severity={severity} {...alertProps}>
+        {message}
+      </Alert>
+    )
   );
 };
 
