@@ -120,6 +120,15 @@ export default function TheMap({
       (feature) => feature.layer.id === draftLayerId
     );
 
+    const { internal_table } = newDraftComponent;
+    // TODO: Find the ID for the layer that was clicked from SOURCES
+    // TODO: Check if the feature is already in newDraftComponent.features by that ID
+    // TODO: If it is, remove it
+    // TODO: If not, add it
+    console.log(e.features);
+    // Lines CTN_SEGMENT_ID
+    // Points INTERSECTION_ID
+
     // If we clicked a drawn feature, we don't need to capture from the CTN layers
     if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
 
