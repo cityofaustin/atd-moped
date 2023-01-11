@@ -6,14 +6,20 @@ export const COMMENTS_QUERY = gql`
       where: $projectNoteConditions
       order_by: { date_created: desc }
     ) {
-      added_by
-      added_by_user_id
+      moped_user {
+        first_name
+        last_name
+      }
       project_note
       project_id
       date_created
       project_note_id
       project_note_type
       is_deleted
+      moped_phase {
+        phase_key
+        phase_name
+      }
     }
   }
 `;
