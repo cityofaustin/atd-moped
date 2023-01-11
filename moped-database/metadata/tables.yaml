@@ -405,12 +405,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
     - role: moped-editor
       permission:
@@ -421,12 +419,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
   select_permissions:
     - role: moped-admin
@@ -437,12 +433,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -454,12 +448,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -471,12 +463,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -489,12 +479,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}
@@ -506,12 +494,10 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}

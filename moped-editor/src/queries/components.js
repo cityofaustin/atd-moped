@@ -71,8 +71,8 @@ export const GET_PROJECT_COMPONENTS = gql`
       feature_signals(where: { is_deleted: { _eq: false } }) {
         id
         geometry: geography
-        source_layer
         component_id
+        location_name
       }
       feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
         id

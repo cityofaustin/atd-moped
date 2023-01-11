@@ -17,7 +17,6 @@ export const DrawControl = React.forwardRef((props, ref) => {
         // This override prevents the introduction of line midpoints and vertices into line string geometries
         props.overrideDirectSelect();
       });
-      map.on("draw.selectionchange", props.onSelectionChange);
 
       return new MapboxDraw(props);
     },
@@ -83,7 +82,6 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
  * @param {function} onDelete - fires after a feature is selected and deleted with the trash icon
  * @param {string} linkMode - tracks if we are editing "lines" or "points"
  * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
- * @param {function} onSelectionChange - fires when a feature is selected
  * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
  * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads
  * @return {JSX.Element} The whole map draw UI
@@ -91,15 +89,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 const ComponentsDrawControl = React.forwardRef(
   (
-    {
-      onCreate,
-      onUpdate,
-      onDelete,
-      linkMode,
-      onModeChange,
-      onSelectionChange,
-      styleOverrides,
-    },
+    { onCreate, onUpdate, onDelete, linkMode, onModeChange, styleOverrides },
     ref
   ) => {
     const shouldDrawLines = linkMode === "lines";
@@ -124,7 +114,6 @@ const ComponentsDrawControl = React.forwardRef(
       onUpdate,
       onDelete,
       onModeChange,
-      onSelectionChange,
       overrideDirectSelect,
       styles: styleOverrides,
     };

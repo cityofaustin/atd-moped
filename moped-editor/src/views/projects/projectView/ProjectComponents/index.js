@@ -27,6 +27,7 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
+import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 
 const drawerWidth = 350;
 
@@ -79,6 +80,9 @@ export default function MapView({ projectName, projectStatuses }) {
   /* tracks the loading state of AGOL feature service fetching */
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
+  /* tracks the drawing state of the map */
+  const [isDrawing, setIsDrawing] = useState(false);
+
   const {
     data,
     refetch: refetchProjectComponents,
@@ -101,6 +105,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const {
     onStartCreatingComponent,
     onSaveDraftComponent,
+    onSaveDraftSignalComponent,
     onCancelComponentCreate,
     createState,
     createDispatch,
@@ -109,6 +114,7 @@ export default function MapView({ projectName, projectStatuses }) {
     setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
+    setIsDrawing,
   });
 
   const {
@@ -124,6 +130,7 @@ export default function MapView({ projectName, projectStatuses }) {
     setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
+    setIsDrawing,
   });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
@@ -132,6 +139,8 @@ export default function MapView({ projectName, projectStatuses }) {
       setClickedComponent,
       refetchProjectComponents,
     });
+
+  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
 
   if (error) console.log(error);
 
@@ -160,6 +169,7 @@ export default function MapView({ projectName, projectStatuses }) {
           isFetchingFeatures={isFetchingFeatures}
           projectName={projectName}
           projectStatuses={projectStatuses}
+          errorMessageState={errorMessageState}
         />
         <Drawer
           className={classes.drawer}
@@ -261,12 +271,16 @@ export default function MapView({ projectName, projectStatuses }) {
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               featureCollectionsByComponentId={featureCollectionsByComponentId}
+              isDrawing={isDrawing}
+              setIsDrawing={setIsDrawing}
+              errorMessageDispatch={errorMessageDispatch}
             />
           </div>
           <CreateComponentModal
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}
+            onSaveDraftSignalComponent={onSaveDraftSignalComponent}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}

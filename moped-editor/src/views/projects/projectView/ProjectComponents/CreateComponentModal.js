@@ -19,10 +19,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
+const CreateComponentModal = ({
+  showDialog,
+  setLinkMode,
+  createDispatch,
+  onSaveDraftSignalComponent,
+}) => {
   const classes = useStyles();
 
   const onSave = (formData) => {
+    const isSavingSignalFeature = Boolean(formData.signal);
+
     const {
       component: {
         data: {
@@ -51,9 +58,20 @@ const CreateComponentModal = ({ showDialog, setLinkMode, createDispatch }) => {
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
-    createDispatch({ type: "store_draft_component", payload: newComponent });
-    setLinkMode(linkMode);
-    createDispatch({ type: "close_create_dialog" });
+    // Signal components get their geometry from the Knack signal dataset so we save them
+    // immediately. All other components are saved after the user selects or draws their geometry.
+    if (isSavingSignalFeature) {
+      const newComponentWithSignalFeature = {
+        ...newComponent,
+        features: [formData.signal],
+      };
+
+      onSaveDraftSignalComponent(newComponentWithSignalFeature);
+    } else {
+      createDispatch({ type: "store_draft_component", payload: newComponent });
+      setLinkMode(linkMode);
+      createDispatch({ type: "close_create_dialog" });
+    }
   };
 
   const onClose = () => {
