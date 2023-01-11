@@ -11,12 +11,14 @@ const errorMessageReducer = (state, action) => {
   }
 };
 export const useToolbarErrorMessage = () => {
-  const [errorToolbarState, errorToolbarDispatch] = useReducer(
+  const [errorMessageState, errorMessageDispatch] = useReducer(
     errorMessageReducer,
     {
       showError: false,
-      message: false,
+      message: null,
       severity: null,
     }
   );
+
+  return { errorMessageState, errorMessageDispatch };
 };

@@ -14,7 +14,7 @@ const MapAlert = ({ message, severity, isOpen, alertProps }) => {
   const classes = useStyles();
 
   return (
-    <Alert severity={severity} {...alertProps}>
+    <Alert className={classes} severity={severity} {...alertProps}>
       {message}
     </Alert>
   );
