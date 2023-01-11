@@ -12,7 +12,7 @@ import { useMutation } from "@apollo/client";
  * @param {String} nameColumnName - The name of the name column to be displayed
  * @param {Object} initialValue - The initial value returned from the query
  * @param {Array} optionList - The list of options for the autocomplete
- * @param {Query} updateMuation - The mutation to update the field
+ * @param {String} updateMuation - The mutation to update the field
  * @param {String} tooltipText -  The text to be displayed in the tooltip
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
