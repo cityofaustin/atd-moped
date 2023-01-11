@@ -3,9 +3,14 @@ import { useReducer } from "react";
 const errorMessageReducer = (state, action) => {
   switch (action.type) {
     case "show_error":
-      return null;
+      const { message, severity } = action.payload;
+      return { ...state, showError: true, message, severity };
     case "hide_error":
-      return null;
+      return {
+        showError: false,
+        message: null,
+        severity: null,
+      };
     default:
       throw Error(`Unknown action. ${action.type}`);
   }

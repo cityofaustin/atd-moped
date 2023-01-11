@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
 // import FeaturePopup from "./FeaturePopup";
@@ -64,6 +64,7 @@ export default function TheMap({
   featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
+  errorMessageDispatch,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -89,6 +90,22 @@ export default function TheMap({
     currentZoom,
     bounds
   );
+
+  useEffect(() => {
+    const shouldShowZoomAlert =
+      currentZoom < MIN_SELECT_FEATURE_ZOOM &&
+      (isCreatingComponent || isEditingComponent) &&
+      isDrawing === false;
+
+    if (shouldShowZoomAlert) {
+      errorMessageDispatch({
+        type: "add_drawn_line",
+        payload: { message: "Zoom in to select features", type: "warning" },
+      });
+    } else {
+      errorMessageDispatch({ type: "hide_error" });
+    }
+  }, [currentZoom, isCreatingComponent, isEditingComponent, isDrawing]);
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
@@ -263,10 +280,6 @@ export default function TheMap({
     isCreatingComponent && shouldShowDrawControls;
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
-  const shouldShowZoomAlert =
-    currentZoom < MIN_SELECT_FEATURE_ZOOM &&
-    (isCreatingComponent || isEditingComponent) &&
-    isDrawing === false;
 
   return (
     <>
