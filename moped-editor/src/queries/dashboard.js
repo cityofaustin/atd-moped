@@ -18,6 +18,7 @@ export const DASHBOARD_QUERY = gql`
           moped_phase {
             phase_name
             phase_key
+            phase_id
           }
         }
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
@@ -50,6 +51,7 @@ export const DASHBOARD_QUERY = gql`
           moped_phase {
             phase_name
             phase_key
+            phase_id
           }
         }
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {

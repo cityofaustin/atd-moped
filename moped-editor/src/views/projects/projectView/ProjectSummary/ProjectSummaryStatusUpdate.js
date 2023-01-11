@@ -21,6 +21,8 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const projectName = data.moped_project[0].project_name;
   const addedByUser = data.moped_project[0].moped_proj_notes[0]?.moped_user;
   const addedBy = getUserFullName(addedByUser);
+  const currentPhaseId =
+    data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id;
 
   const dateCreated = makeUSExpandedFormDateFromTimeStampTZ(
     data.moped_project[0].moped_proj_notes[0]?.date_created
@@ -39,6 +41,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
         <DashboardStatusModal
           projectId={projectId}
           projectName={projectName}
+          currentPhaseId={currentPhaseId}
           modalParent="summary"
           statusUpdate={statusUpdate}
           queryRefetch={refetch}

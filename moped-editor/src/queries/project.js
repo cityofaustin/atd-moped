@@ -83,6 +83,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
         moped_phase {
+          phase_id
           phase_name
           phase_key
         }
@@ -465,6 +466,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
     moped_phases {
       phase_id
       phase_name
+    }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
