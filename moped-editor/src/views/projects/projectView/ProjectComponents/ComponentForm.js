@@ -1,62 +1,37 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
-import { Autocomplete } from "@material-ui/lab";
+import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
+import SignalComponentAutocomplete from "../SignalComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
+import * as yup from "yup";
 
 const defaultFormValues = {
   component: null,
   subcomponents: [],
   description: "",
+  signal: null,
 };
 
-const ControlledAutocomplete = ({
-  id,
-  options,
-  renderOption,
-  name,
-  control,
-  label,
-  autoFocus = false,
-  multiple = false,
-  disabled,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ onChange, value, ref }) => (
-      <Autocomplete
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        value={value}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-          />
-        )}
-        onChange={(_event, option) => onChange(option)}
-      />
-    )}
-  />
-);
+const validationSchema = yup.object().shape({
+  component: yup.object().required(),
+  subcomponents: yup.array().optional(),
+  description: yup.string(),
+  // Signal field is required if the selected component inserts into the feature_signals table
+  signal: yup.object().when("component", {
+    is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
+    then: yup.object().required(),
+  }),
+});
 
 const ComponentForm = ({
   formButtonText,
@@ -66,8 +41,17 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  const { register, handleSubmit, control, watch, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { isValid },
+  } = useForm({
     defaultValues: defaultFormValues,
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
   });
 
   // Get and format component and subcomponent options
@@ -76,6 +60,8 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
+  const internalTable = component?.data?.feature_layer?.internal_table;
+
   const subcomponentOptions = useSubcomponentOptions(component);
 
   useInitialValuesOnAttributesEdit(
@@ -84,6 +70,9 @@ const ComponentForm = ({
     componentOptions,
     subcomponentOptions
   );
+
+  const isEditingExistingComponent = initialFormValues !== null;
+  const isSignalComponent = internalTable === "feature_signals";
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -99,9 +88,27 @@ const ComponentForm = ({
             name="component"
             control={control}
             autoFocus
-            disabled={initialFormValues !== null}
+            disabled={isEditingExistingComponent}
           />
         </Grid>
+
+        {isSignalComponent && (
+          <Grid item xs={12}>
+            <Controller
+              id="signal"
+              name="signal"
+              control={control}
+              render={({ onChange, value, ref }) => (
+                <SignalComponentAutocomplete
+                  onChange={onChange}
+                  value={value}
+                  ref={ref}
+                />
+              )}
+            />
+          </Grid>
+        )}
+
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
           doesInitialValueHaveSubcomponents) && (
@@ -140,8 +147,9 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
+            disabled={!isValid}
           >
-            {formButtonText}
+            {isSignalComponent ? "Save" : formButtonText}
           </Button>
         </Grid>
       </Grid>

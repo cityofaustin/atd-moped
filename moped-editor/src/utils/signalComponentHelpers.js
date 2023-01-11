@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { TextField } from "@material-ui/core";
 
 /*
@@ -19,95 +18,33 @@ export const getSignalOptionSelected = (option, value) =>
  * MUI autocomplete getOptionLabel function to which formats the value rendered in
  * the select option menu
  */
-export const getSignalOptionLabel = option =>
+export const getSignalOptionLabel = (option) =>
   // this label formatting mirrors the Data Tracker formatting
   `${option.properties.signal_id}: ${option.properties.location_name}`;
 
 /**
  * Imitate a "drawn point" feature from a traffic signal geojson feature. Sets required
- * fields so that featureCollection can be used in the DB mutation on submit
+ * fields so that a Knack feature can be inserted into the feature_signals table
  * @param {Object} signal - A GeoJSON feature or a falsey object (e.g. "" from empty input)
  * @return {Object} A geojson feature collection with the signal feature or 0 features
  */
-export const signalToFeatureCollection = signal => {
-  let featureCollection = {
-    type: "FeatureCollection",
-    features: [],
-  };
+export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
   if (signal && signal?.properties && signal?.geometry) {
-    /* 
-    / preserves the feature's previous UUID if it's being edited. we are **not** preserving
-    / any other feature properties when the feature is edited. so, for example, if the user
-    / edits a signal component and the signal geometry in socrata has since changed, the new
-    / geometry will be saved.
-    */
-    const featureUUID = signal?.id || uuidv4();
-    const feature = {
-      type: "Feature",
-      properties: {
-        ...signal?.properties,
-        renderType: "Point",
-        // I was considering changing this to be INTERSECTIONID, but since the sourceLayer is being saved
-        // as "drawnByUser" and not "ATD_ADMIN.CTN_Intersections", I've left it as PROJECT_EXTENT_ID
-        PROJECT_EXTENT_ID: featureUUID,
-        sourceLayer: "drawnByUser",
+    const featureSignalsRecord = {
+      // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+      geography: {
+        ...signal.geometry,
+        type: "MultiPoint",
+        coordinates: [signal.geometry.coordinates],
       },
-      geometry: signal.geometry,
-      id: featureUUID,
+      knack_id: signal.properties.id,
+      location_name: signal.properties.location_name,
+      signal_type: signal.properties.signal_type,
+      signal_id: signal.properties.signal_id,
     };
-    featureCollection.features.push(feature);
+
+    return featureSignalsRecord;
   }
-  return featureCollection;
-};
-
-export const useInitialSignalComponentValue = (
-  editFeatureCollection,
-  setSignal
-) => {
-  /*
-  / initializes the selected signal value - handles case of editing existing component
-  / tests for signal_id prop to ensure we're not handing a non-signal component (which happens
-  / e.g. when an existing component's type is changed)
-  */
-  useEffect(() => {
-    if (
-      !editFeatureCollection ||
-      editFeatureCollection.features.length === 0 ||
-      !editFeatureCollection.features[0].properties.signal_id
-    ) {
-      setSignal(null);
-      return;
-    } else if (editFeatureCollection.features.length > 1) {
-      /*
-      / If a non-signal component is edited, all previously-defined feature geometries
-      / will be dropped.
-      */
-      console.warn(
-        "Found signal component with multiple feature geometries. All but one feature will be removed."
-      );
-    }
-    setSignal(editFeatureCollection.features[0]);
-    // only fire on init
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-};
-
-/*
-/ Hook which updates the component editor state based on the selected signal
-*/
-export const useSignalChangeEffect = (
-  signal,
-  setSelectedComponentSubtype,
-  setEditFeatureCollection
-) => {
-  useEffect(() => {
-    const signalSubtype = signal
-      ? signal.properties.signal_type.toLowerCase()
-      : "";
-    const featureCollection = signalToFeatureCollection(signal);
-    setSelectedComponentSubtype(signalSubtype);
-    setEditFeatureCollection(featureCollection);
-  }, [signal, setSelectedComponentSubtype, setEditFeatureCollection]);
 };
 
 /*
@@ -116,7 +53,8 @@ export const useSignalChangeEffect = (
 export const renderSignalInput = (
   params,
   signalError = false,
-  variant = "standard"
+  variant = "standard",
+  size = "medium"
 ) => {
   return (
     <TextField
@@ -127,6 +65,7 @@ export const renderSignalInput = (
       required
       helperText="Required"
       variant={variant}
+      size={size}
     />
   );
 };
@@ -134,26 +73,24 @@ export const renderSignalInput = (
 /**
  * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Object[]} componentData - Array of moped_components from DB
  * @return {Object} - The component definition of the component
  */
 export const getComponentDef = (
-  featureCollection,
+  signalRecord,
   fromSignalAsset,
   componentData
 ) => {
   // try to extract a signal_type from the component
-  const signalType = fromSignalAsset
-    ? featureCollection?.features?.[0].properties?.signal_type
-    : null;
+  const signalType = fromSignalAsset ? signalRecord?.signal_type : null;
 
   let componentDef;
 
   if (signalType) {
     // try to locate a matching component def
     componentDef = componentData.find(
-      component =>
+      (component) =>
         component.component_subtype.toLowerCase() === signalType.toLowerCase()
     );
     // we must destructure to append a description prop
@@ -175,51 +112,46 @@ export const getComponentDef = (
 };
 
 /**
- * Resets featureCollection and signal when fromSignalAsset toggle changes. Ensures we keep
+ * Resets signal when fromSignalAsset toggle changes. Ensures we keep
  * form state clean in new project view.
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {func} setSignal - signal state setter
- * @param {Object} setFeatureCollection - featureCollection state setter
+ * @param {Function} setSignalRecord - signal record state setter
  */
 export const useSignalStateManager = (
   fromSignal,
   setSignal,
-  setFeatureCollection
+  setSignalRecord
 ) => {
   useEffect(() => {
-    setFeatureCollection({
-      type: "FeatureCollection",
-      features: [],
-    });
     setSignal("");
-  }, [setFeatureCollection, fromSignal, setSignal]);
+    setSignalRecord(null);
+  }, [fromSignal, setSignal, setSignalRecord]);
 };
 
 /**
  * Generates a project component object that can be used in mutation.
+ * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {Object} featureCollection - The final GeoJSON to be inserted into a component
+ * @param {Array} componentData - Array of moped_components from DB
  * @return {Object} - The component mutation object
  */
 export const generateProjectComponent = (
-  featureCollection,
+  signalRecord,
   fromSignalAsset,
   componentData
 ) => {
   const componentDef = getComponentDef(
-    featureCollection,
+    signalRecord,
     fromSignalAsset,
     componentData
   );
 
   return {
     name: componentDef.component_name,
-    description: componentDef.description,
     component_id: componentDef.component_id,
-    moped_proj_features: {
-      data: featureCollection.features.map(feature => ({
-        feature: feature,
-      })),
+    feature_signals: {
+      data: [signalRecord],
     },
   };
 };

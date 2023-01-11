@@ -27,6 +27,7 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
+import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 
 const drawerWidth = 350;
 
@@ -104,6 +105,7 @@ export default function MapView({ projectName, projectStatuses }) {
   const {
     onStartCreatingComponent,
     onSaveDraftComponent,
+    onSaveDraftSignalComponent,
     onCancelComponentCreate,
     createState,
     createDispatch,
@@ -138,6 +140,8 @@ export default function MapView({ projectName, projectStatuses }) {
       refetchProjectComponents,
     });
 
+  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
+
   if (error) console.log(error);
 
   useZoomToExistingComponents(mapRef, data);
@@ -165,6 +169,7 @@ export default function MapView({ projectName, projectStatuses }) {
           isFetchingFeatures={isFetchingFeatures}
           projectName={projectName}
           projectStatuses={projectStatuses}
+          errorMessageState={errorMessageState}
         />
         <Drawer
           className={classes.drawer}
@@ -268,12 +273,14 @@ export default function MapView({ projectName, projectStatuses }) {
               featureCollectionsByComponentId={featureCollectionsByComponentId}
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
+              errorMessageDispatch={errorMessageDispatch}
             />
           </div>
           <CreateComponentModal
             setLinkMode={setLinkMode}
             createDispatch={createDispatch}
             showDialog={createState.showCreateDialog}
+            onSaveDraftSignalComponent={onSaveDraftSignalComponent}
           />
           <DeleteComponentModal
             showDialog={isDeletingComponent}

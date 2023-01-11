@@ -1,12 +1,7 @@
 import { useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_PROJECT_COMPONENT } from "src/queries/components";
-import {
-  makeDrawnLinesInsertionData,
-  makeDrawnPointsInsertionData,
-  makeLineStringFeatureInsertionData,
-  makePointFeatureInsertionData,
-} from "./makeFeatures";
+import { makeComponentInsertData } from "./makeComponentData";
 import { getDrawId, isDrawnDraftFeature } from "./features";
 import { removeFeatureFromDraftComponent } from "./onMapClick";
 
@@ -97,7 +92,6 @@ const createReducer = (state, action) => {
       };
 
       return { ...state, draftComponent: draftComponentWithUpdates };
-
     case "delete_drawn_features":
       const deletedFeatures = action.payload;
 
@@ -152,70 +146,36 @@ export const useCreateComponent = ({
     setIsDrawing(false);
   };
 
+  /**
+   * Prepare component and feature data for component creation and call mutation/reset state
+   */
   const onSaveDraftComponent = () => {
-    /* Start data preparation */
-    const {
-      component_id,
-      description,
-      moped_subcomponents,
-      component_name,
-      internal_table,
-      features,
-    } = createState.draftComponent;
-
-    const subcomponentsArray = moped_subcomponents
-      ? moped_subcomponents.map((subcomponent) => ({
-          subcomponent_id: subcomponent.value,
-        }))
-      : [];
-
-    const featureTable = internal_table;
-
-    const featuresToInsert = [];
-    const drawnLinesToInsert = [];
-    const drawnPointsToInsert = [];
-
-    const drawnFeatures = features.filter((feature) =>
-      Boolean(getDrawId(feature))
-    );
-    const selectedFeatures = features.filter(
-      (feature) => !Boolean(getDrawId(feature))
+    const newComponentData = makeComponentInsertData(
+      projectId,
+      createState.draftComponent
     );
 
-    if (featureTable === "feature_street_segments") {
-      makeLineStringFeatureInsertionData(
-        featureTable,
-        selectedFeatures,
-        featuresToInsert
-      );
-      makeDrawnLinesInsertionData(drawnFeatures, drawnLinesToInsert);
-    } else if (
-      featureTable === "feature_intersections" ||
-      featureTable === "feature_signals"
-    ) {
-      makePointFeatureInsertionData(
-        featureTable,
-        selectedFeatures,
-        featuresToInsert
-      );
-      makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
-    }
+    addProjectComponent({ variables: { object: newComponentData } })
+      .then(() => {
+        refetchProjectComponents().then(() => {
+          createDispatch({ type: "save_create" });
+          setLinkMode(null);
+          setIsDrawing(false);
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
-    const newComponentData = {
-      description,
-      component_id,
-      name: component_name,
-      project_id: projectId,
-      moped_proj_components_subcomponents: {
-        data: subcomponentsArray,
-      },
-      [featureTable]: {
-        data: featuresToInsert,
-      },
-      feature_drawn_lines: { data: drawnLinesToInsert },
-      feature_drawn_points: { data: drawnPointsToInsert },
-    };
-    /* End data preparation */
+  /**
+   * Prepare signal component and feature data for component creation and call mutation/reset state
+   */
+  const onSaveDraftSignalComponent = (signalComponent) => {
+    const newComponentData = makeComponentInsertData(
+      projectId,
+      signalComponent
+    );
 
     addProjectComponent({ variables: { object: newComponentData } })
       .then(() => {
@@ -235,6 +195,7 @@ export const useCreateComponent = ({
     createDispatch,
     onStartCreatingComponent,
     onSaveDraftComponent,
+    onSaveDraftSignalComponent,
     onCancelComponentCreate,
   };
 };

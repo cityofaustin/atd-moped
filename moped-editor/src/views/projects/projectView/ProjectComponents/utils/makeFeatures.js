@@ -23,15 +23,9 @@ export const featureTableFieldMap = {
     // name: NULL
   },
   feature_signals: {
-    // TODO: Update when signal autocomplete is added
-    // See https://github.com/cityofaustin/atd-data-tech/issues/10511
-    // location_name: undefined,
-    // knack_id: undefined,
-    // project_extent_id: undefined,
+    // Transform of signal records happens in knackSignalRecordToFeatureSignalsRecord
     // render_type: undefined,
     // name: undefined
-    // signal_type: undefined
-    // signal_id: undefined
   },
   feature_drawn_lines: {
     // name: NULL
