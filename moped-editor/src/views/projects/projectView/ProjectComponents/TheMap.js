@@ -105,7 +105,13 @@ export default function TheMap({
     } else {
       errorMessageDispatch({ type: "hide_error" });
     }
-  }, [currentZoom, isCreatingComponent, isEditingComponent, isDrawing]);
+  }, [
+    currentZoom,
+    isCreatingComponent,
+    isEditingComponent,
+    isDrawing,
+    errorMessageDispatch,
+  ]);
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
