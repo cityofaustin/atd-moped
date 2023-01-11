@@ -47,6 +47,7 @@ export const formatFundingActivity = (change, lookupData) => {
     changeDescription = `Changed ${
       entryMap.fields[change.description[0].field].label
     } to `;
+    console.log(change.description[0].new[change.description[0].field])
     changeValue =
       change.description[0].new[change.description[0].field][displayObjectKey];
   } else {
