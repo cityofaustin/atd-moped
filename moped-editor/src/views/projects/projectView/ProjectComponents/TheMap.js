@@ -121,6 +121,10 @@ export default function TheMap({
     );
 
     const { internal_table } = newDraftComponent;
+    const ctnUniqueIdentifier = Object.values(SOURCES).find(
+      (source) => source.table === internal_table
+    )._featureIdProp;
+    console.log(ctnUniqueIdentifier);
     // TODO: Find the ID for the layer that was clicked from SOURCES
     // TODO: Check if the feature is already in newDraftComponent.features by that ID
     // TODO: If it is, remove it
