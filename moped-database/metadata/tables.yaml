@@ -3223,6 +3223,9 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
+    - name: moped_public_process_status
+      using:
+        foreign_key_constraint_on: public_process_status_id
     - name: moped_user
       using:
         foreign_key_constraint_on: added_by

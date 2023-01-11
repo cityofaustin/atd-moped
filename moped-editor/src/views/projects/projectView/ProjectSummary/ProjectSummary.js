@@ -13,7 +13,7 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 */
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import { ErrorBoundary } from "react-error-boundary";
-import ProjectSummaryProjectEntity from "./ProjectSummaryProjectEntity";
+import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import makeStyles from "@material-ui/core/styles/makeStyles";
@@ -30,6 +30,12 @@ import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import { countFeatures } from "../../../../utils/mapHelpers";
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
+
+import {
+  PROJECT_UPDATE_SPONSOR,
+  PROJECT_UPDATE_LEAD,
+  PROJECT_UPDATE_PUBLIC_PROCESS,
+} from "../../../../queries/project";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -197,25 +203,37 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 classes={classes}
               />
               <Grid item xs={12}>
-                <ProjectSummaryProjectEntity
+                <ProjectSummaryAutocomplete
+                  fieldName="Lead"
+                  idColumnName={"entity_id"}
+                  nameColumnName={"entity_name"}
+                  initialValue={
+                    data?.moped_project[0]?.moped_project_lead
+                  }
+                  optionList={data?.moped_entity ?? []}
+                  updateMutation={PROJECT_UPDATE_LEAD}
+                  tooltipText="Division, department, or organization responsible for successful project implementation"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
-                  entityName="Lead"
-                  tooltipText="Division, department, or organization responsible for successful project implementation"
                 />
               </Grid>
               <Grid item xs={12}>
-                <ProjectSummaryProjectEntity
+                <ProjectSummaryAutocomplete
+                  fieldName="Sponsor"
+                  idColumnName={"entity_id"}
+                  nameColumnName={"entity_name"}
+                  initialValue={data?.moped_project[0]?.moped_entity}
+                  optionList={data?.moped_entity ?? []}
+                  updateMutation={PROJECT_UPDATE_SPONSOR}
+                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
-                  entityName="Sponsor"
-                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -230,6 +248,24 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryProjectTypes
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ProjectSummaryAutocomplete
+                  fieldName="Public process"
+                  idColumnName={"id"}
+                  nameColumnName={"name"}
+                  initialValue={
+                    data?.moped_project[0]?.moped_public_process_status
+                  }
+                  optionList={data?.moped_public_process_status ?? []}
+                  updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
+                  tooltipText="Current public phase of a project"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
