@@ -1,5 +1,7 @@
 import { useMemo, useEffect } from "react";
-import { Icon, makeStyles } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
+import { Controller } from "react-hook-form";
+import { Icon, makeStyles, TextField } from "@material-ui/core";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
@@ -135,3 +137,43 @@ export const ComponentOptionWithIcon = ({ option }) => {
     </>
   );
 };
+
+export const ControlledAutocomplete = ({
+  id,
+  options,
+  renderOption,
+  name,
+  control,
+  label,
+  autoFocus = false,
+  multiple = false,
+  disabled,
+}) => (
+  <Controller
+    id={id}
+    name={name}
+    control={control}
+    render={({ onChange, value, ref }) => (
+      <Autocomplete
+        options={options}
+        multiple={multiple}
+        getOptionLabel={(option) => option?.label || ""}
+        getOptionSelected={(option, value) => option?.value === value?.value}
+        renderOption={renderOption}
+        value={value}
+        disabled={disabled}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            inputRef={ref}
+            size="small"
+            label={label}
+            variant="outlined"
+            autoFocus={autoFocus}
+          />
+        )}
+        onChange={(_event, option) => onChange(option)}
+      />
+    )}
+  />
+);

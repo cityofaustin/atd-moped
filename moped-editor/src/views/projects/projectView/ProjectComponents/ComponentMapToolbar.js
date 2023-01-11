@@ -7,6 +7,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Button from "@material-ui/core/Button";
 import ProjectStatusBadge from "../ProjectStatusBadge";
 import ProjectName from "./ProjectName";
+import MapAlert from "./MapAlert";
 import { useNavigate, useParams } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
@@ -19,10 +20,12 @@ export default function ComponentMapToolbar({
   isFetchingFeatures,
   projectName,
   projectStatuses,
+  errorMessageState,
 }) {
   const classes = useStyles();
   const navigate = useNavigate();
   const { projectId } = useParams();
+  const { message, severity, isOpen } = errorMessageState;
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -37,6 +40,9 @@ export default function ComponentMapToolbar({
             projectStatuses={projectStatuses}
             condensed
           />
+        </Box>
+        <Box mr={2}>
+          <MapAlert message={message} severity={severity} isOpen={isOpen} />
         </Box>
         <Box color="primary" display="flex" flexGrow={1}>
           {isFetchingFeatures && <CircularProgress />}

@@ -1,9 +1,10 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
-import { Autocomplete } from "@material-ui/lab";
+import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "../SignalComponentAutocomplete";
 import {
@@ -12,6 +13,7 @@ import {
   useSubcomponentOptions,
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
+import * as yup from "yup";
 
 const defaultFormValues = {
   component: null,
@@ -20,45 +22,16 @@ const defaultFormValues = {
   signal: null,
 };
 
-const ControlledAutocomplete = ({
-  id,
-  options,
-  renderOption,
-  name,
-  control,
-  label,
-  autoFocus = false,
-  multiple = false,
-  disabled,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ onChange, value, ref }) => (
-      <Autocomplete
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        value={value}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-          />
-        )}
-        onChange={(_event, option) => onChange(option)}
-      />
-    )}
-  />
-);
+const validationSchema = yup.object().shape({
+  component: yup.object().required(),
+  subcomponents: yup.array().optional(),
+  description: yup.string(),
+  // Signal field is required if the selected component inserts into the feature_signals table
+  signal: yup.object().when("component", {
+    is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
+    then: yup.object().required(),
+  }),
+});
 
 const ComponentForm = ({
   formButtonText,
@@ -68,8 +41,17 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  const { register, handleSubmit, control, watch, setValue } = useForm({
+  const {
+    register,
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { isValid },
+  } = useForm({
     defaultValues: defaultFormValues,
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
   });
 
   // Get and format component and subcomponent options
@@ -165,6 +147,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
+            disabled={!isValid}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
