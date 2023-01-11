@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
 // import FeaturePopup from "./FeaturePopup";
@@ -12,7 +12,6 @@ import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
-import MapAlertSnackbar from "./MapAlertSnackbar";
 import {
   basemaps,
   mapParameters,
@@ -65,6 +64,7 @@ export default function TheMap({
   featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
+  errorMessageDispatch,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -89,6 +89,22 @@ export default function TheMap({
     currentZoom,
     bounds
   );
+
+  useEffect(() => {
+    const shouldShowZoomAlert =
+      currentZoom < MIN_SELECT_FEATURE_ZOOM &&
+      (isCreatingComponent || isEditingComponent) &&
+      isDrawing === false;
+
+    if (shouldShowZoomAlert) {
+      errorMessageDispatch({
+        type: "show_error",
+        payload: { message: "Zoom in to select features", severity: "error" },
+      });
+    } else {
+      errorMessageDispatch({ type: "hide_error" });
+    }
+  }, [currentZoom, isCreatingComponent, isEditingComponent, isDrawing]);
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
@@ -276,18 +292,9 @@ export default function TheMap({
     isCreatingComponent && shouldShowDrawControls;
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
-  const shouldShowZoomAlert =
-    currentZoom < MIN_SELECT_FEATURE_ZOOM &&
-    (isCreatingComponent || isEditingComponent) &&
-    isDrawing === false;
 
   return (
     <>
-      <MapAlertSnackbar
-        isOpen={shouldShowZoomAlert}
-        message="Zoom in to select map features"
-        severity="error"
-      />
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}

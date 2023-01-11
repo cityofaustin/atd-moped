@@ -27,6 +27,7 @@ import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import CommentInputQuill from "./CommentInputQuill";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import "./ProjectComments.css";
 
@@ -91,6 +92,11 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
 const ProjectComments = (props) => {
   const isStatusEditModal = props.modal;
+  // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
+  // otherwise use data passed from ProjectView
+  const currentPhaseId =
+    props.currentPhaseId ??
+    props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
@@ -175,11 +181,11 @@ const ProjectComments = (props) => {
       variables: {
         objects: [
           {
-            added_by: getUserFullName(userSessionData),
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
             project_note_type: isStatusEditModal ? 2 : 1,
+            phase_id: currentPhaseId,
           },
         ],
       },
@@ -321,6 +327,8 @@ const ProjectComments = (props) => {
                 >
                   {displayNotes.map((item, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
+                    const phaseKey = item.moped_phase?.phase_key;
+                    const phaseName = item.moped_phase?.phase_name;
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
@@ -342,7 +350,7 @@ const ProjectComments = (props) => {
                                   component={"span"}
                                   className={classes.commentorText}
                                 >
-                                  {item.added_by}
+                                  {getUserFullName(item.moped_user)}
                                 </Typography>
                                 <Typography
                                   component={"span"}
@@ -361,6 +369,17 @@ const ProjectComments = (props) => {
                                   {` ${
                                     projectNoteTypes[item.project_note_type]
                                   }`}
+                                </Typography>
+                                <Typography component={"span"}>
+                                  {/* only show note's status badge if the note has a phase_id */}
+                                  {phaseKey && phaseName && (
+                                    <ProjectStatusBadge
+                                      phaseKey={phaseKey}
+                                      phaseName={phaseName}
+                                      condensed
+                                      leftMargin
+                                    />
+                                  )}
                                 </Typography>
                               </>
                             }
