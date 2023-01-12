@@ -1,67 +1,42 @@
 import MonetizationOnOutlinedIcon from "@material-ui/icons/MonetizationOnOutlined";
+import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatFundingActivity = (change, lookupData) => {
+export const formatFundingActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
-  const changeIcon = <MonetizationOnOutlinedIcon />;
+  let changeIcon = <MonetizationOnOutlinedIcon />;
   let changeDescription = "Project funding updated";
   let changeValue = "";
 
   // add a new funding source
   if (change.description.length === 0) {
-    changeDescription = "New funding source added: ";
-    changeValue =
-      lookupData.fundingSources[
-        change.record_data.event.data.new.funding_source_id
-      ];
+    changeDescription = "Added a new funding source ";
     return { changeIcon, changeDescription, changeValue };
   }
 
-  const lookupDataName = entryMap.fields[change.description[0].field]?.lookup;
-  // checks config to see if change is stored in an object, as opposed to a string
-  const displayObjectKey =
-    entryMap.fields[change.description[0].field]?.objectKey;
-
   // delete existing record
   if (change.description[0].field === "is_deleted") {
+    changeIcon = <DeleteOutlineIcon />;
     changeDescription = "Funding source was deleted";
     return { changeIcon, changeDescription, changeValue };
   }
 
-  // editing an existing record
-  // is change stored as an id?
-  if (lookupDataName) {
-    changeDescription = `Changed ${
-      entryMap.fields[change.description[0].field].label
-    } to `;
-    changeValue =
-      lookupData[lookupDataName][
-        change.description[0].new[change.description[0].field]
-      ];
-    return { changeIcon, changeDescription, changeValue };
-  }
+  // Multiple fields in the moped_proj_funding table can be updated at once
+  // We list the fields changed in the activity log, this gathers the fields changed
+  const newRecord = change.record_data.event.data.new;
+  const oldRecord = change.record_data.event.data.old;
 
-  // is change stored as an object?
-  if (displayObjectKey) {
-    changeDescription = `Changed ${
-      entryMap.fields[change.description[0].field].label
-    } to `;
-    console.log(change.description[0].new[change.description[0].field])
-    changeValue =
-      change.description[0].new[change.description[0].field][displayObjectKey];
-  } else {
-    if (change.description[0].new[change.description[0].field] === "") {
-      changeDescription = `Removed ${
-        entryMap.fields[change.description[0].field].label
-      }`
-    } else {
-      changeDescription = `Changed ${
-        entryMap.fields[change.description[0].field].label
-      } to `;
-      changeValue = change.description[0].new[change.description[0].field];
+  let changes = [];
+
+  Object.keys(newRecord).forEach((field) => {
+    if (newRecord[field] !== oldRecord[field]) {
+      changes.push(entryMap.fields[field].label);
     }
-  }
+  });
+
+  changeDescription = "Edited a funding source ";
+  changeValue = changes.join(", ");
 
   return { changeIcon, changeDescription, changeValue };
 };

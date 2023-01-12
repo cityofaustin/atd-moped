@@ -619,11 +619,9 @@ export const ProjectActivityLogTableMaps = {
       },
       fund: {
         label: "fund",
-        objectKey: "fund_name",
       },
       dept_unit: {
         label: "department unit",
-        objectKey: "unit_long_name"
       },
     },
   },
