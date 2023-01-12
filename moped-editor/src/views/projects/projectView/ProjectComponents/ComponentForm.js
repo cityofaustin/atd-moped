@@ -107,6 +107,7 @@ const ComponentForm = ({
                   value={value}
                   ref={ref}
                   onOptionsLoaded={onOptionsLoaded}
+                  signalType={component?.data?.component_subtype}
                 />
               )}
             />

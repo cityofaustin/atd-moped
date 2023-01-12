@@ -19,8 +19,15 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value, onOptionsLoaded }, ref) => {
+  ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+
+    // Filter returned results to the signal type chosen - PHB or TRAFFIC
+    const featuresFilteredToType = features?.filter(
+      (feature) =>
+        feature.properties.signal_type.toLowerCase() ===
+        signalType.toLowerCase()
+    );
 
     // Let the parent component know that the options are ready to go
     useEffect(() => {
@@ -47,7 +54,7 @@ const SignalComponentAutocomplete = React.forwardRef(
         getOptionLabel={getSignalOptionLabel}
         onChange={(_event, option) => onChange(option)}
         loading={loading}
-        options={features}
+        options={featuresFilteredToType}
         renderInput={(params) => (
           <TextField
             {...params}
