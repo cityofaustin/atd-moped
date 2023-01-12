@@ -605,7 +605,7 @@ export const ProjectActivityLogTableMaps = {
         label: "funding amount",
       },
       fund_dept_unit: {
-        label: "department unit",
+        label: "fund department unit",
       },
       funding_description: {
         label: "fund description",
