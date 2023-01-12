@@ -26,7 +26,6 @@ export const removeFeatureFromDraftComponent = (
       clickedDraftComponentFeature.properties[ctnUniqueIdentifier]
     );
   });
-  console.log(filteredFeatures);
 
   return { ...draftComponent, features: filteredFeatures };
 };
