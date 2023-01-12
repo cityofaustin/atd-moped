@@ -717,13 +717,6 @@ const ProjectFundingTable = () => {
             updateProjectFundingData.funding_amount = Number(
               newData.funding_amount
             );
-            // add fallback of empty strings instead of null value
-            updateProjectFundingData.fund_dept_unit =
-              newData.fund_dept_unit || "";
-            updateProjectFundingData.funding_description =
-              newData.funding_description || "";
-            updateProjectFundingData.funding_program_id =
-              newData.funding_program_id || 0;
 
             return updateProjectFunding({
               variables: updateProjectFundingData,
