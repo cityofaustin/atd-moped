@@ -1,11 +1,10 @@
 import MonetizationOnOutlinedIcon from "@material-ui/icons/MonetizationOnOutlined";
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatFundingActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
-  let changeIcon = <MonetizationOnOutlinedIcon />;
+  const changeIcon = <MonetizationOnOutlinedIcon />;
   let changeDescription = "Project funding updated";
   let changeValue = "";
 
@@ -17,8 +16,7 @@ export const formatFundingActivity = (change) => {
 
   // delete existing record
   if (change.description[0].field === "is_deleted") {
-    changeIcon = <DeleteOutlineIcon />;
-    changeDescription = "Funding source was deleted";
+    changeDescription = "Deleted a funding source";
     return { changeIcon, changeDescription, changeValue };
   }
 
