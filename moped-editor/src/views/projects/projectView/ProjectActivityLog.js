@@ -98,13 +98,16 @@ const useLookupTables = (data) =>
         lookupData.entityList[`${entity.entity_id}`] = entity.entity_name;
       });
       data["moped_fund_sources"].forEach((fundSource) => {
-        lookupData.fundingSources[`${fundSource.funding_source_id}`] = fundSource.funding_source_name;
+        lookupData.fundingSources[`${fundSource.funding_source_id}`] =
+          fundSource.funding_source_name;
       });
       data["moped_fund_programs"].forEach((fundProgram) => {
-        lookupData.fundingPrograms[`${fundProgram.funding_program_id}`] = fundProgram.funding_program_name;
+        lookupData.fundingPrograms[`${fundProgram.funding_program_id}`] =
+          fundProgram.funding_program_name;
       });
       data["moped_fund_status"].forEach((fundStatus) => {
-        lookupData.fundingStatus[`${fundStatus.funding_status_id}`] = fundStatus.funding_status_name;
+        lookupData.fundingStatus[`${fundStatus.funding_status_id}`] =
+          fundStatus.funding_status_name;
       });
     }
 
@@ -185,7 +188,6 @@ const ProjectActivityLog = () => {
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
-    fetchPolicy: "no-cache",
   });
 
   const activityLogData = usePrepareActivityData(data?.moped_activity_log);
@@ -279,9 +281,11 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {["moped_project", "moped_proj_tags", "moped_proj_funding"].includes(
-                          change.record_type
-                        ) ? (
+                        {[
+                          "moped_project",
+                          "moped_proj_tags",
+                          "moped_proj_funding",
+                        ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
                             changeDescription={changeDescription}
