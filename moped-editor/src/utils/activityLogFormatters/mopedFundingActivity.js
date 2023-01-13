@@ -1,5 +1,6 @@
 import MonetizationOnOutlinedIcon from "@material-ui/icons/MonetizationOnOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
+import { isEqual } from "lodash";
 
 export const formatFundingActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
@@ -28,7 +29,12 @@ export const formatFundingActivity = (change) => {
   let changes = [];
 
   Object.keys(newRecord).forEach((field) => {
-    if (newRecord[field] !== oldRecord[field]) {
+    // typeof(null) === "object"
+    if (!!newRecord[field] && typeof newRecord[field] === "object") {
+      if (!isEqual(newRecord[field], oldRecord[field])) {
+        changes.push(entryMap.fields[field].label);
+      }
+    } else if (newRecord[field] !== oldRecord[field]) {
       changes.push(entryMap.fields[field].label);
     }
   });

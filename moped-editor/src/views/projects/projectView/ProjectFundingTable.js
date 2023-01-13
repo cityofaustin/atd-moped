@@ -713,10 +713,6 @@ const ProjectFundingTable = () => {
             delete updateProjectFundingData.__typename;
             delete updateProjectFundingData.added_by;
             delete updateProjectFundingData.date_added;
-            // Format edited funding values to number value
-            updateProjectFundingData.funding_amount = Number(
-              newData.funding_amount
-            );
 
             return updateProjectFunding({
               variables: updateProjectFundingData,
