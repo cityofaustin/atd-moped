@@ -185,6 +185,7 @@ const ProjectActivityLog = () => {
 
   const { loading, error, data } = useQuery(PROJECT_ACTIVITY_LOG, {
     variables: { projectId },
+    fetchPolicy: "no-cache",
   });
 
   const activityLogData = usePrepareActivityData(data?.moped_activity_log);
