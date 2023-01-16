@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+#  docker run -it --rm -v "$(pwd)":/app geomtransform /bin/bash
 
 from operator import truediv
 import os
@@ -26,12 +27,14 @@ def remove_leading_underscore(arg):
     else:
         return arg
 
+
 def check_keys(obj, keys):
     target_keys = set(keys)
     provided_keys = set(obj.keys())
-    if (target_keys == provided_keys):
+    if target_keys == provided_keys:
         return True
     return False
+
 
 def execute(sql, values, get_result=False):
     try:
@@ -52,6 +55,26 @@ def execute(sql, values, get_result=False):
         return result
     else:
         return True
+
+
+def remove_deprecated_fields(fields, values):
+    deprecated_fields = [
+        "source_layer",
+        "project_extent_id",
+        # "symbol",
+        # "line_type",
+        # "ctn_segment_id",
+        # "to_address_max",
+        # "from_address_min",
+        # "full_street_name"
+    ]
+    for f in deprecated_fields:
+        try:
+            idx = fields.index(f)
+        except ValueError:
+            continue
+        del fields[idx]
+        del values[idx]
 
 
 def moped_proj_features():
@@ -85,6 +108,7 @@ def moped_proj_features():
     join moped_components on (moped_proj_components.component_id = moped_components.component_id)
     left join feature_layers on (feature_layers.id = moped_components.feature_layer_id)
     where true
+      and moped_proj_features.is_deleted = false
     --and feature_layers.internal_table in ('feature_signals')
     --and feature_layers.internal_table in ('feature_street_segments')
     --and moped_proj_components.project_id = 228
@@ -117,10 +141,13 @@ def moped_proj_features():
 
         feature_id = None
 
-        if (check_keys(
-            feature["properties"],
-            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"])
-            and feature["properties"]["renderType"] == "Point"):
+        if (
+            check_keys(
+                feature["properties"],
+                ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"],
+            )
+            and feature["properties"]["renderType"] == "Point"
+        ):
 
             print("Found a drawn point layer!")
             pp.pprint(feature["properties"])
@@ -129,7 +156,12 @@ def moped_proj_features():
             insert into feature_drawn_points
             """
 
-            fields = ["component_id", "project_extent_id", "render_type", "source_layer"]
+            fields = [
+                "component_id",
+                "project_extent_id",
+                "render_type",
+                "source_layer",
+            ]
             values = [
                 record["project_component_id"],
                 feature["properties"]["PROJECT_EXTENT_ID"],
@@ -155,10 +187,13 @@ def moped_proj_features():
             print(sql, values)
             execute(sql, values, get_result=False)
 
-        elif (check_keys(
-            feature["properties"],
-            ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"])
-            and feature["properties"]["renderType"] == "LineString"):
+        elif (
+            check_keys(
+                feature["properties"],
+                ["PROJECT_EXTENT_ID", "renderType", "sourceLayer"],
+            )
+            and feature["properties"]["renderType"] == "LineString"
+        ):
 
             print("Found a drawn line layer!")
             pp.pprint(feature["properties"])
@@ -167,7 +202,12 @@ def moped_proj_features():
             insert into feature_drawn_lines
             """
 
-            fields = ["component_id", "project_extent_id", "render_type", "source_layer"]
+            fields = [
+                "component_id",
+                "project_extent_id",
+                "render_type",
+                "source_layer",
+            ]
             values = [
                 record["project_component_id"],
                 feature["properties"]["PROJECT_EXTENT_ID"],
@@ -192,7 +232,6 @@ def moped_proj_features():
 
             print(sql, values)
             execute(sql, values, get_result=False)
-
 
         elif (
             record["component_name"] == "Project Extent - Generic"
@@ -277,6 +316,8 @@ def moped_proj_features():
                 fields.append(key)
                 values.append(value)
 
+            remove_deprecated_fields(fields, values)
+
             sql += "(" + ",\n".join(fields) + ") values ("
             sql += ",\n".join(["%s"] * len(values)) + ")"
             sql += "\nreturning id"
@@ -317,6 +358,9 @@ def moped_proj_features():
 
                 fields.append(key)
                 values.append(value)
+
+            if record["internal_table"] == "feature_signals":
+                remove_deprecated_fields(fields, values)
 
             sql += "(" + ",\n".join(fields) + ") values ("
             sql += ",\n".join(["%s"] * len(values)) + ")"
