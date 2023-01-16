@@ -12,11 +12,6 @@ $ docker build -t geomtransform .
 
 3. Run the script, mounting your local copy of this directory into the container.
 
-`DB_HOST`
-`DB_USER`
-`DB_PASSWORD`
-`DB_NAME`
-
 ```
 $ docker run -it --rm -v "$(pwd)":/app geomtransform python3 transpose_geometry.py
 ```
