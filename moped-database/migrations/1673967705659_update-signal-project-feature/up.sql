@@ -52,7 +52,7 @@ AS WITH project_person_list_lookup AS (
     mel.entity_name AS project_lead,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    (SELECT JSON_AGG(feature.attributes) -- this query finds any components and those component's features and rolls them up in a JSON blob
+    (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
         LEFT JOIN uniform_features feature
           ON (feature.component_id = components.project_component_id)
