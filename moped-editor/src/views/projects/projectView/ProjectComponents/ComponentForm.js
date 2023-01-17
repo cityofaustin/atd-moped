@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -73,6 +73,11 @@ const ComponentForm = ({
     subcomponentOptions,
     areSignalOptionsLoaded
   );
+
+  // Reset signal field when component changes so signal matches component signal type
+  useEffect(() => {
+    setValue("signal", null);
+  }, [component, setValue]);
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
