@@ -4,20 +4,9 @@ export const SIGNAL_PROJECTS_QUERY = gql`
   query SignalProjectsQuery {
     moped_project(
       where: {
-        is_deleted: { _eq: false }
-        _or: [
-          {
-            moped_proj_components: {
-              moped_components: { component_name: { _ilike: "signal" } }
-              is_deleted: { _eq: false }
-            }
-          }
-          {
-            moped_proj_components: {
-              moped_components: { component_name: { _ilike: "signal" } }
-              is_deleted: { _eq: false }
-            }
-          }
+        _and: [
+          { is_deleted: { _eq: false } }
+          { moped_proj_components: { feature_signals: {} } }
         ]
       }
       order_by: { updated_at: desc_nulls_last }
@@ -44,9 +33,9 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         }
       }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        moped_proj_features(where: { is_deleted: { _eq: false } }) {
-          feature_id
-          feature
+        feature_signals {
+          signal_id
+          knack_id
         }
       }
       moped_proj_funding(where: { is_deleted: { _eq: false } }) {
