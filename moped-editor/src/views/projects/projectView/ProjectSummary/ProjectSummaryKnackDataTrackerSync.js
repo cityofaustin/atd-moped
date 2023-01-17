@@ -84,14 +84,14 @@ const getCurrentPhase = (project) =>
  * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
  * because if you update the project number field, even with the same, extant number, Knack returns an error.
  * @param {object} project - project data as returned from our SUMMARY_QUERY
- * @param {[string]} signal_ids - array of knack signal record IDs
+ * @param {[object]} signals - array of from the feature_signals table
  * @returns string
  */
-const buildBody = (project, signalIds) => {
+const buildBody = (project, signals) => {
   process.env.REACT_APP_HASURA_ENV !== "production" &&
     console.warn(`
     Warning: It's not possible to test this feature outside of a produciton environment,
-    because our signal's unique knack record identifiers only exist in production.
+    because our signals' unique knack record identifiers only exist in production.
     To test, you can patch in a valid knack ID by uncommenting the line below that sets
     body.signals_connection.
   `);
@@ -118,10 +118,11 @@ const buildBody = (project, signalIds) => {
 
   body.current_phase_name = getCurrentPhase(project);
 
-  // uncomment this line to test this request in staging.
-  // this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
-  // body.signals_connection = ["62195eedf538d8072b16a0f6"];
+  
+  const signalIds = signals.map((signal) => signal.knack_id);
   body.signals_connection = signalIds;
+  // uncomment this line to test this request against the Knack test env - this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
+  // body.signals_connection = ["62195eedf538d8072b16a0f6"];
 
   // payload is ready - replace keys with knack fieldnames
   Object.keys(fieldMap).forEach((key) => {
@@ -158,11 +159,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
     // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
     console.log("HTTP method: " + knackHttpMethod);
     // POST (create) or PUT (update) a project record in Knack
-    const signalIds = signals.map((signal) => signal.knack_id);
     return fetch(knackProjectEndpointUrl, {
       method: knackHttpMethod,
       headers: REQUEST_HEADERS,
-      body: buildBody(project, signalIds),
+      body: buildBody(project, signals),
     })
       .then((response) => response.json())
       .then((result) => {
