@@ -15,7 +15,7 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_tags":
       return formatTagsActivity(change, lookupData.tagList);
     case "moped_proj_funding":
-      return formatFundingActivity(change);
+      return formatFundingActivity(change, lookupData.fundingSources, lookupData.fundingPrograms);
     default:
       return { changeIcon, changeDescription, changeValue };
   }

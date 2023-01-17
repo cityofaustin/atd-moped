@@ -2,7 +2,11 @@ import MonetizationOnOutlinedIcon from "@material-ui/icons/MonetizationOnOutline
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 import { isEqual } from "lodash";
 
-export const formatFundingActivity = (change) => {
+export const formatFundingActivity = (
+  change,
+  fundingSources,
+  fundingPrograms
+) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
   const changeIcon = <MonetizationOnOutlinedIcon />;
@@ -12,6 +16,13 @@ export const formatFundingActivity = (change) => {
   // add a new funding source
   if (change.description.length === 0) {
     changeDescription = "Added a new funding source ";
+    if (change.record_data.event.data.new.funding_source_id) {
+      changeValue =
+        fundingSources[change.record_data.event.data.new.funding_source_id];
+    } else if (change.record_data.event.data.new.funding_program_id) {
+      changeValue =
+        fundingPrograms[change.record_data.event.data.new.funding_program_id];
+    }
     return { changeIcon, changeDescription, changeValue };
   }
 
