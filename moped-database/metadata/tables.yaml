@@ -2522,6 +2522,12 @@
     name: moped_proj_notes
     schema: public
   object_relationships:
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: added_by_user_id
     - name: moped_phase
       using:
         foreign_key_constraint_on: phase_id
