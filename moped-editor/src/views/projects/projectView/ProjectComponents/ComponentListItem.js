@@ -40,9 +40,6 @@ export default function ComponentListItem({
     }
   };
 
-  const onStartEditingComponent = () =>
-    editDispatch({ type: "start_edit", payload: component });
-
   const isSignalComponent =
     component?.moped_components?.feature_layer?.internal_table ===
     "feature_signals";
@@ -51,6 +48,14 @@ export default function ComponentListItem({
   const listItemPrimaryText = isSignalComponent
     ? `${componentName} -${signalLocationName}`
     : componentName;
+
+  const onStartEditingComponent = () => {
+    if (isSignalComponent) {
+      editDispatch({ type: "start_attributes_edit" });
+    } else {
+      editDispatch({ type: "start_edit", payload: component });
+    }
+  };
 
   return (
     <Box
