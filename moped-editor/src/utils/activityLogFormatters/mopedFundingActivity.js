@@ -16,13 +16,16 @@ export const formatFundingActivity = (
   // add a new funding source
   if (change.description.length === 0) {
     changeDescription = "Added a new funding source ";
+    // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
       changeValue =
         fundingSources[change.record_data.event.data.new.funding_source_id];
+    // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
       changeValue =
         fundingPrograms[change.record_data.event.data.new.funding_program_id];
     }
+    // if there isnt a funding source or program added, then default to ""
     return { changeIcon, changeDescription, changeValue };
   }
 
@@ -39,8 +42,9 @@ export const formatFundingActivity = (
 
   let changes = [];
 
+  // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-    // typeof(null) === "object"
+    // typeof(null) === "object", check that field is not null before checking if object
     if (!!newRecord[field] && typeof newRecord[field] === "object") {
       if (!isEqual(newRecord[field], oldRecord[field])) {
         changes.push(entryMap.fields[field].label);
