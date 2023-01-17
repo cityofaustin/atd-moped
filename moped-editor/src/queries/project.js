@@ -48,10 +48,12 @@ export const SUMMARY_QUERY = gql`
       moped_project {
         project_name
       }
-      moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        moped_proj_features(where: { is_deleted: { _eq: false } }) {
-          feature_id
-          feature
+      moped_proj_components(
+        where: { is_deleted: { _eq: false }, feature_signals: {} }
+      ) {
+        feature_signals {
+          signal_id
+          knack_id
         }
       }
       moped_proj_notes(
