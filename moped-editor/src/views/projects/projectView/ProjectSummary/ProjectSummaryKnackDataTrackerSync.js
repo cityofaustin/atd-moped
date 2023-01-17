@@ -119,6 +119,7 @@ const buildBody = (project, signalIds) => {
   body.current_phase_name = getCurrentPhase(project);
 
   // uncomment this line to test this request in staging.
+  // this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
   // body.signals_connection = ["62195eedf538d8072b16a0f6"];
   body.signals_connection = signalIds;
 
