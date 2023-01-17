@@ -58,7 +58,6 @@ const FIELD_MAP = {
     project_name: "field_3857",
     current_phase_name: "field_4136",
     signals_connection: "field_3861",
-    moped_url_text: "field_4161",
     moped_url_object: "field_4162",
   },
   other: {
@@ -66,9 +65,17 @@ const FIELD_MAP = {
     project_name: "field_3857",
     current_phase_name: "field_4136",
     signals_connection: "field_3861",
-    moped_url_text: "field_4161",
     moped_url_object: "field_4162",
   },
+};
+
+const getUrlObject = (project) => {
+  const url =
+    process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+  return {
+    url: url,
+    label: project.project_name,
+  };
 };
 
 /**
@@ -104,21 +111,11 @@ const buildBody = (project, signals) => {
   // make a copy of it to use as our payload
   const body = { ...fieldMap };
 
-  const url =
-    process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
-
-  const url_object = {
-    url: url,
-    label: project.project_name,
-  };
-
-  // yes, these two URLs seem redundant, but this is how the knack app is configured
-  body.moped_url_text = url;
-  body.moped_url_object = url_object;
-
+  body.project_id = project.project_id;
+  body.project_name = project.project_name;
+  body.moped_url_object = getUrlObject(project);
   body.current_phase_name = getCurrentPhase(project);
 
-  
   const signalIds = signals.map((signal) => signal.knack_id);
   body.signals_connection = signalIds;
   // uncomment this line to test this request against the Knack test env - this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
