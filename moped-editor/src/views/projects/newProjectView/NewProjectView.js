@@ -165,7 +165,7 @@ const NewProjectView = () => {
             : {}),
         },
       };
-
+      debugger;
       /**
        * Persist the new project to database
        */
