@@ -293,7 +293,6 @@ export default function MapView({ projectName, projectStatuses }) {
           <EditModeDialog
             showDialog={editState.showEditModeDialog}
             editDispatch={editDispatch}
-            componentToEdit={clickedComponent}
             onEditFeatures={onEditFeatures}
           />
           <EditAttributesModal
