@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
@@ -24,10 +24,14 @@ const SignalComponentAutocomplete = React.forwardRef(
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
     // Filter returned results to the signal type chosen - PHB or TRAFFIC
-    const featuresFilteredByType = features?.filter(
-      (feature) =>
-        feature.properties.signal_type.toLowerCase() ===
-        signalType.toLowerCase()
+    const featuresFilteredByType = useMemo(
+      () =>
+        features?.filter(
+          (feature) =>
+            feature.properties.signal_type.toLowerCase() ===
+            signalType.toLowerCase()
+        ),
+      [features, signalType]
     );
 
     // Let the parent component know that the options are ready to go
