@@ -1,5 +1,6 @@
 import { formatProjectActivity } from "./activityLogFormatters/mopedProjectActivity";
 import { formatTagsActivity } from "./activityLogFormatters/mopedTagsActivity";
+import { formatFundingActivity } from "./activityLogFormatters/mopedFundingActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeDescription = "Project was updated";
@@ -13,6 +14,8 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatProjectActivity(change, lookupData.entityList);
     case "moped_proj_tags":
       return formatTagsActivity(change, lookupData.tagList);
+    case "moped_proj_funding":
+      return formatFundingActivity(change, lookupData.fundingSources, lookupData.fundingPrograms);
     default:
       return { changeIcon, changeDescription, changeValue };
   }
