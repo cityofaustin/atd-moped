@@ -19,7 +19,8 @@ const useStyles = makeStyles((theme) => ({
 export default function ComponentMapToolbar({
   isFetchingFeatures,
   projectName,
-  projectStatuses,
+  phaseKey,
+  phaseName,
   errorMessageState,
 }) {
   const classes = useStyles();
@@ -35,9 +36,8 @@ export default function ComponentMapToolbar({
         </Box>
         <Box mr={2}>
           <ProjectStatusBadge
-            phase="Construction"
-            status={1}
-            projectStatuses={projectStatuses}
+            phaseKey={phaseKey}
+            phaseName={phaseName}
             condensed
           />
         </Box>
