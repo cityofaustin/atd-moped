@@ -582,7 +582,7 @@ export const ProjectActivityLogTableMaps = {
     label: "Fund",
     fields: {
       proj_funding_id: {
-        label: "funding ID",
+        label: "ID",
       },
       project_id: {
         label: "project ID",
@@ -594,15 +594,15 @@ export const ProjectActivityLogTableMaps = {
         label: "added by",
       },
       funding_source_id: {
-        label: "funding source",
+        label: "source",
         lookup: "fundingSources",
       },
       funding_program_id: {
-        label: "funding program",
+        label: "program",
         lookup: "fundingPrograms"
       },
       funding_amount: {
-        label: "funding amount",
+        label: "amount",
       },
       fund_dept_unit: {
         label: "fund department unit",
@@ -611,7 +611,7 @@ export const ProjectActivityLogTableMaps = {
         label: "fund description",
       },
       funding_status_id: {
-        label: "funding status",
+        label: "status",
         lookup: "fundingStatus"
       },
       is_deleted: {
