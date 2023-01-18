@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 #  docker run -it --rm -v "$(pwd)":/app geomtransform /bin/bash
 
-from operator import truediv
 import os
 
 import psycopg2
@@ -61,12 +60,6 @@ def remove_deprecated_fields(fields, values):
     deprecated_fields = [
         "source_layer",
         "project_extent_id",
-        # "symbol",
-        # "line_type",
-        # "ctn_segment_id",
-        # "to_address_max",
-        # "from_address_min",
-        # "full_street_name"
     ]
     for f in deprecated_fields:
         try:
