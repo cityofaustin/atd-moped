@@ -139,6 +139,7 @@ const SubprojectsTable = ({ projectId = null }) => {
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
           tableLayout: "fixed",
+          addRowPosition: "first",
         }}
         localization={{
           header: {
