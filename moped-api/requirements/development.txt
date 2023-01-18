@@ -22,7 +22,7 @@ Flask==1.1.2
 Flask-Cognito==1.16
 Flask-Cors==3.0.9
 fsspec==2021.11.0
-future==0.18.2
+future==0.18.3
 HeapDict==1.0.1
 hjson==3.0.2
 idna==2.10
