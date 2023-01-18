@@ -52,15 +52,16 @@ AS WITH project_person_list_lookup AS (
     mel.entity_name AS project_lead,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
+    COALESCE( -- coalesce because this subquery can come back 'null' if there are no component assets
+      ( SELECT JSON_AGG(features.feature) -- this query finds any components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
-        LEFT JOIN uniform_features feature
-          ON (feature.component_id = components.project_component_id)
+        LEFT JOIN moped_proj_features features 
+          ON (features.project_component_id = components.project_component_id)
         WHERE TRUE
           AND components.is_deleted = false
           AND components.project_id = mp.project_id
-          AND feature.table = 'feature_signals'
-        ) as project_feature,
+        ),
+      '{}'::json) as project_feature, -- close out that coalesce; if null, give us a empty json object
     fsl.funding_source_name,
     ptl.type_name,
     ( -- get the most recent status_update (project note type 2)

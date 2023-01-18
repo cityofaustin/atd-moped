@@ -1,7 +1,7 @@
 import {
   filterNullValues,
   filterProjectTeamMembers,
-  filterProjectFeatures,
+  filterProjectSignals,
   filterTaskOrderName,
 } from "./helpers.js";
 
@@ -60,7 +60,7 @@ export const ProjectsListViewExportConf = {
   },
   project_feature: {
     label: "signal_ids",
-    filter: filterProjectFeatures,
+    filter: filterProjectSignals,
   },
   type_name: {
     label: "type_name",
