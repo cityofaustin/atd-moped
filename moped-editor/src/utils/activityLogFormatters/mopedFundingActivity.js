@@ -15,23 +15,40 @@ export const formatFundingActivity = (
 
   // add a new funding source
   if (change.description.length === 0) {
-    changeDescription = "Added a new funding source ";
+    changeDescription = "Added a new funding source";
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
       changeValue =
         fundingSources[change.record_data.event.data.new.funding_source_id];
-    // if not, then check if theres a funding program
+      // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
       changeValue =
         fundingPrograms[change.record_data.event.data.new.funding_program_id];
+    }
+    // if we have a change value, tack on a : at the end
+    if (changeValue) {
+      changeDescription = "Added a new funding source: ";
     }
     // if there isnt a funding source or program added, then default to ""
     return { changeIcon, changeDescription, changeValue };
   }
 
-  // delete existing record
+  // delete an existing record
   if (change.description[0].field === "is_deleted") {
     changeDescription = "Deleted a funding source";
+    // if the added record has a funding source, use that as the change value
+    if (change.record_data.event.data.new.funding_source_id) {
+      changeValue =
+        fundingSources[change.record_data.event.data.new.funding_source_id];
+      // if not, then check if theres a funding program
+    } else if (change.record_data.event.data.new.funding_program_id) {
+      changeValue =
+        fundingPrograms[change.record_data.event.data.new.funding_program_id];
+    }
+    // if we have a change value, tack on a : at the end
+    if (changeValue) {
+      changeDescription = "Deleted a funding source: ";
+    }
     return { changeIcon, changeDescription, changeValue };
   }
 
