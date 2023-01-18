@@ -6,7 +6,12 @@ export const SIGNAL_PROJECTS_QUERY = gql`
       where: {
         _and: [
           { is_deleted: { _eq: false } }
-          { moped_proj_components: { feature_signals: {} } }
+          {
+            moped_proj_components: {
+              is_deleted: { _eq: false }
+              feature_signals: { is_deleted: { _eq: false } }
+            }
+          }
         ]
       }
       order_by: { updated_at: desc_nulls_last }
@@ -33,7 +38,7 @@ export const SIGNAL_PROJECTS_QUERY = gql`
         }
       }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        feature_signals {
+        feature_signals(where: { is_deleted: { _eq: false } }) {
           signal_id
           knack_id
         }
