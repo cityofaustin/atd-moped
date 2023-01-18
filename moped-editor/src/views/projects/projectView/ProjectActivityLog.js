@@ -80,6 +80,9 @@ const useLookupTables = (data) =>
     lookupData.phaseList = {};
     lookupData.tagList = {};
     lookupData.entityList = {};
+    lookupData.fundingSources = {};
+    lookupData.fundingPrograms = {};
+    lookupData.fundingStatus = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -93,6 +96,18 @@ const useLookupTables = (data) =>
       });
       data["moped_entity"].forEach((entity) => {
         lookupData.entityList[`${entity.entity_id}`] = entity.entity_name;
+      });
+      data["moped_fund_sources"].forEach((fundSource) => {
+        lookupData.fundingSources[`${fundSource.funding_source_id}`] =
+          fundSource.funding_source_name;
+      });
+      data["moped_fund_programs"].forEach((fundProgram) => {
+        lookupData.fundingPrograms[`${fundProgram.funding_program_id}`] =
+          fundProgram.funding_program_name;
+      });
+      data["moped_fund_status"].forEach((fundStatus) => {
+        lookupData.fundingStatus[`${fundStatus.funding_status_id}`] =
+          fundStatus.funding_status_name;
       });
     }
 
@@ -266,9 +281,11 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {["moped_project", "moped_proj_tags"].includes(
-                          change.record_type
-                        ) ? (
+                        {[
+                          "moped_project",
+                          "moped_proj_tags",
+                          "moped_proj_funding",
+                        ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
                             changeDescription={changeDescription}
