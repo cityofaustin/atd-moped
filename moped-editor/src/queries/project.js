@@ -49,9 +49,12 @@ export const SUMMARY_QUERY = gql`
         project_name
       }
       moped_proj_components(
-        where: { is_deleted: { _eq: false }, feature_signals: {} }
+        where: {
+          is_deleted: { _eq: false }
+          feature_signals: { is_deleted: { _eq: false } }
+        }
       ) {
-        feature_signals {
+        feature_signals(where: { is_deleted: { _eq: false } }) {
           signal_id
           knack_id
         }
