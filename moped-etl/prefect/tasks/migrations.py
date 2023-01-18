@@ -62,14 +62,6 @@ insert_seed_data = ShellTask(name="Insert Seed Data", stream_output=True)
 
 check_for_consistent_metadata = ShellTask(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
 
-# this does not work
-#@task(name="Check for consistent metadata", max_retries=12, retry_delay=timedelta(seconds=10))
-#def check_for_consistent_metadata(migrate_token):
-    #output_stream = os.popen("(cd /tmp/atd-moped/moped-database; hasura --skip-update-check metadata inconsistency status;)")
-    #output = output_stream.read()
-    #logger.info(output)
-    #return True
-
 @task(name="sleep for 15 seconds")
 def sleep_fifteen_seconds(consistent_metadata):
     time.sleep(15)

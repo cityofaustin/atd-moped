@@ -48,10 +48,7 @@ def netlify_check_build(slug, build_token):
         if deployment["branch"] == branch:
             id = deployment["id"]
             state = deployment["state"]
-            # pprint(deployment)
             break
-
-    # print("State: " + str(state))
 
     if state != "ready":
         raise Exception("Build is not ready")
@@ -90,9 +87,5 @@ def trigger_netlify_build(slug, api_endpoint_url):
     response = requests.request(
         "POST", NETLIFY_BUILD_HOOK, params=HTTP_parameters, data=environment
     )
-
-    # pprint(response.status_code)
-    # pprint(response.headers)
-    # pprint(response.text)
 
     return response

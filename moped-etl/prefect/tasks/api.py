@@ -275,5 +275,3 @@ def check_if_api_is_deployed(slug):
     logger.info("Lambda function exists")
     logger.info(response)
     return True
-
-    # TODO FIXME

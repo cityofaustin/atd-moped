@@ -346,7 +346,6 @@ def create_task_definition(slug, api_endpoint):
             {
                 "name": "graphql-engine",
                 "image": "hasura/graphql-engine:v2.16.0",
-                # "image": "mendhak/http-https-echo:latest",
                 "cpu": 256,
                 "memory": 512,
                 "portMappings": [
