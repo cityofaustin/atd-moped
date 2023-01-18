@@ -129,6 +129,20 @@ const buildBody = (project, signals) => {
   return JSON.stringify(body);
 };
 
+/**
+ * This feature enables the user to create a "project" record in Arterial Management
+ * Data Tracker app - a knack application used for asset management.
+ *
+ * Any Moped user can push any project to the Data Tracker. If the project has signal
+ * components, the project created in Knack will have ties to the signal records in
+ * Knack. These linkages are formed by including the signal's knack record ID, which
+ * acts a foreign key to the signals table in the Data Tracker. If the project does not
+ * have signal components, that's fine.
+ *
+ * Although this component has logic to *update* (instead of create) a project record
+ * in Knack (with a PUT request) — we currently do not provide the users with this
+ * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
+ */
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   project,
