@@ -73,6 +73,9 @@ export const GET_PROJECT_COMPONENTS = gql`
         geometry: geography
         component_id
         location_name
+        signal_id
+        signal_type
+        knack_id
       }
       feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
         id
@@ -125,6 +128,48 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
         update_columns: [is_deleted]
       }
     ) {
+      affected_rows
+    }
+  }
+`;
+
+// This mutation updates component subcomponents in same way as UPDATE_COMPONENT_ATTRIBUTES.
+// It also updates all component feature_signals to is_deleted = true and then inserts the new signal.
+export const UPDATE_SIGNAL_COMPONENT = gql`
+  mutation UpdateSignalComponent(
+    $projectComponentId: Int!
+    $description: String!
+    $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
+    $signals: [feature_signals_insert_input!]!
+  ) {
+    update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_feature_signals(
+      where: { component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_components_by_pk(
+      pk_columns: { project_component_id: $projectComponentId }
+      _set: { description: $description }
+    ) {
+      project_component_id
+    }
+    insert_moped_proj_components_subcomponents(
+      objects: $subcomponents
+      on_conflict: {
+        constraint: unique_component_and_subcomponent
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
+    }
+    insert_feature_signals(objects: $signals) {
       affected_rows
     }
   }

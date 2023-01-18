@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
@@ -15,11 +15,31 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} classes - MaterialUI style object
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
+ * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
+ * @param {String} signalType - either PHB or TRAFFIC
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value }, ref) => {
+  ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
     const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+
+    // Filter returned results to the signal type chosen - PHB or TRAFFIC
+    const featuresFilteredByType = useMemo(
+      () =>
+        features?.filter(
+          (feature) =>
+            feature.properties.signal_type.toLowerCase() ===
+            signalType.toLowerCase()
+        ),
+      [features, signalType]
+    );
+
+    // Let the parent component know that the options are ready to go
+    useEffect(() => {
+      if (features === null) return;
+
+      onOptionsLoaded();
+    }, [features, onOptionsLoaded]);
 
     if (loading) {
       return <CircularProgress color="primary" size={20} />;
@@ -39,7 +59,7 @@ const SignalComponentAutocomplete = React.forwardRef(
         getOptionLabel={getSignalOptionLabel}
         onChange={(_event, option) => onChange(option)}
         loading={loading}
-        options={features}
+        options={featuresFilteredByType}
         renderInput={(params) => (
           <TextField
             {...params}

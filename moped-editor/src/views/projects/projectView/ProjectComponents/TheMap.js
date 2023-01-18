@@ -76,7 +76,6 @@ export default function TheMap({
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
     useComponentFeatureCollection(draftEditComponent);
-  const draftLayerId = `draft-component-${linkMode}`;
 
   const componentFeatureCollection = useComponentFeatureCollectionFromMap(
     clickedComponent,
@@ -105,7 +104,13 @@ export default function TheMap({
     } else {
       errorMessageDispatch({ type: "hide_error" });
     }
-  }, [currentZoom, isCreatingComponent, isEditingComponent, isDrawing]);
+  }, [
+    currentZoom,
+    isCreatingComponent,
+    isEditingComponent,
+    isDrawing,
+    errorMessageDispatch,
+  ]);
 
   const onMouseEnter = (e) => {
     // hover states conflict! the first feature to reach hover state wins
@@ -132,8 +137,21 @@ export default function TheMap({
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
-    const clickedDraftComponentFeature = e.features.find(
-      (feature) => feature.layer.id === draftLayerId
+
+    // Get the details we need to see if the feature is already in the draftComponent or not
+    const { internal_table } = newDraftComponent;
+    const ctnUniqueIdentifier = Object.values(SOURCES).find(
+      (source) => source.table === internal_table
+    )._featureIdProp;
+
+    // Get the IDs of the features already in the draftComponent
+    const existingDraftIds = newDraftComponent.features.map(
+      (feature) => feature.properties[ctnUniqueIdentifier]
+    );
+
+    // Find the feature that was clicked that's already in the draftComponent
+    const clickedDraftComponentFeature = e.features.find((feature) =>
+      existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
     // If we clicked a drawn feature, we don't need to capture from the CTN layers

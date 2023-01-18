@@ -2,6 +2,7 @@ import { useMemo, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller } from "react-hook-form";
 import { Icon, makeStyles, TextField } from "@material-ui/core";
+import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
@@ -61,7 +62,8 @@ export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
   componentOptions,
-  subcomponentOptions
+  subcomponentOptions,
+  areSignalOptionsLoaded
 ) => {
   // Set the selected component after the component options are loaded
   useEffect(() => {
@@ -74,11 +76,28 @@ export const useInitialValuesOnAttributesEdit = (
         (option) => option.value === initialFormValues.component.component_id
       ).label,
       data: {
-        moped_subcomponents:
-          initialFormValues.component.moped_components.moped_subcomponents,
+        // Include component subcomponents and metadata about the internal_table needed for the form
+        ...initialFormValues.component.moped_components,
       },
     });
   }, [componentOptions, initialFormValues, setValue]);
+
+  // Set the selected signal if this is a signal component
+  useEffect(() => {
+    if (!initialFormValues) return;
+    const internalTable =
+      initialFormValues.component?.moped_components?.feature_layer
+        ?.internal_table;
+    const isSignalComponent = internalTable === "feature_signals";
+    if (!isSignalComponent) return;
+    if (!areSignalOptionsLoaded) return;
+
+    const componentSignal = initialFormValues.component?.feature_signals?.[0];
+    const knackFormatSignalOption =
+      featureSignalsRecordToKnackSignalRecord(componentSignal);
+
+    setValue("signal", knackFormatSignalOption);
+  }, [initialFormValues, areSignalOptionsLoaded, setValue]);
 
   // Set the selected subcomponent after the subcomponent options are loaded
   useEffect(() => {

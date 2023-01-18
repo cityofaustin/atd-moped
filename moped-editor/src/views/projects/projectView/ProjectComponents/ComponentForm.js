@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -61,6 +61,8 @@ const ComponentForm = ({
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
+  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
+  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
 
   const subcomponentOptions = useSubcomponentOptions(component);
 
@@ -68,8 +70,14 @@ const ComponentForm = ({
     initialFormValues,
     setValue,
     componentOptions,
-    subcomponentOptions
+    subcomponentOptions,
+    areSignalOptionsLoaded
   );
+
+  // Reset signal field when component changes so signal matches component signal type
+  useEffect(() => {
+    setValue("signal", null);
+  }, [component, setValue]);
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
@@ -103,6 +111,8 @@ const ComponentForm = ({
                   onChange={onChange}
                   value={value}
                   ref={ref}
+                  onOptionsLoaded={onOptionsLoaded}
+                  signalType={component?.data?.component_subtype}
                 />
               )}
             />

@@ -9,7 +9,11 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
-import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
+import {
+  UPDATE_COMPONENT_ATTRIBUTES,
+  UPDATE_SIGNAL_COMPONENT,
+} from "src/queries/components";
+import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -31,8 +35,23 @@ const EditComponentModal = ({
   const classes = useStyles();
 
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
+  const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
+
+  const onComponentSaveSuccess = (updatedClickedComponentState) => {
+    // Update component list item and clicked component state to keep UI up to date
+    refetchProjectComponents().then(() => {
+      onClose();
+      // Update clickedComponent with the attributes that were just edited
+      setClickedComponent((prevComponent) => ({
+        ...prevComponent,
+        ...updatedClickedComponentState,
+      }));
+    });
+  };
 
   const onSave = (formData) => {
+    const isSavingSignalFeature = Boolean(formData.signal);
+
     const { description, subcomponents } = formData;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -45,26 +64,53 @@ const EditComponentModal = ({
         }))
       : [];
 
-    updateComponentAttributes({
-      variables: {
-        projectComponentId: projectComponentId,
+    if (isSavingSignalFeature) {
+      const signalFromForm = formData.signal;
+      const featureSignalRecord =
+        knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+      const signalToInsert = {
+        ...featureSignalRecord,
+        component_id: projectComponentId,
+      };
+
+      const updatedClickedComponentState = {
         description,
-        subcomponents: subcomponentsArray,
-      },
-    })
-      .then(() => {
-        // Update component list item and clicked component state to keep UI up to date
-        refetchProjectComponents().then(() => onClose());
-        // Update clickedComponent with the attributes that were just edited
-        setClickedComponent((prevComponent) => ({
-          ...prevComponent,
+        moped_proj_components_subcomponents: subcomponentsArray,
+        feature_signals: [
+          { ...featureSignalRecord, geometry: featureSignalRecord.geography },
+        ],
+      };
+
+      updateSignalComponent({
+        variables: {
+          projectComponentId: projectComponentId,
           description,
-          moped_proj_components_subcomponents: subcomponentsArray,
-        }));
+          subcomponents: subcomponentsArray,
+          signals: [signalToInsert],
+        },
       })
-      .catch((error) => {
-        console.log(error);
-      });
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      const updatedClickedComponentState = {
+        description,
+        moped_proj_components_subcomponents: subcomponentsArray,
+      };
+
+      updateComponentAttributes({
+        variables: {
+          projectComponentId: projectComponentId,
+          description,
+          subcomponents: subcomponentsArray,
+        },
+      })
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const onClose = () => {
