@@ -11,7 +11,6 @@ import { useDoesDraftEditComponentHaveFeatures } from "./features";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
 
 const editReducer = (state, action) => {
-  console.log("STATE", state, action)
   switch (action.type) {
     case "start_edit":
       const draftEditComponent = action.payload;
