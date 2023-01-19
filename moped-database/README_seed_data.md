@@ -16,9 +16,14 @@ $ docker run -it --rm --network host \
   pg_dump --column-inserts --data-only --schema public \
     -t moped_proj_components \
     -t moped_proj_components_subcomponents \
+    -t moped_proj_features \
+    -t feature_signals \
+    -t feature_street_segments \git 
+    -t feature_intersections \
+    -t feature_drawn_points \
+    -t feature_drawn_lines \
     -t moped_proj_contract \
     -t moped_proj_entities \
-    -t moped_proj_features \
     -t moped_proj_financials \
     -t moped_proj_fiscal_years \
     -t moped_proj_funding \
@@ -36,10 +41,17 @@ $ docker run -it --rm --network host \
     postgres://moped:moped@localhost:5432/moped > seeds/1602292389297_initial_seed_staging.sql
 ```
 
-6. At the top of the updated seed file (), check make sure the search path configuration looks like this - change it if necessary:
+6. You will need to make two changes to the updated seed field. At the top of the seed file, the first line may have a warning message that you need to delete:
+
+```
+pg_dump: warning: there are circular foreign-key constraints on this table
+```
+
+
+7. Next, few rows down the seed file check make sure the search path configuration looks like this - change it if necessary:
 
 ```sql
 SELECT pg_catalog.set_config('search_path', 'public', false);
 ```
 
-7. Restart the hasura cluster
+8. Save the updated seed file. Restart the hasura cluster
