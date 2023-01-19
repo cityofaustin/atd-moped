@@ -173,9 +173,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               />
               <Grid item xs={12}>
                 <ProjectSummaryAutocomplete
-                  fieldName="Lead"
-                  idColumnName={"entity_id"}
-                  nameColumnName={"entity_name"}
+                  field="Lead"
+                  idColumn={"entity_id"}
+                  nameColumn={"entity_name"}
                   initialValue={
                     data?.moped_project[0]?.moped_project_lead
                   }
@@ -191,9 +191,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryAutocomplete
-                  fieldName="Sponsor"
-                  idColumnName={"entity_id"}
-                  nameColumnName={"entity_name"}
+                  field="Sponsor"
+                  idColumn={"entity_id"}
+                  nameColumn={"entity_name"}
                   initialValue={data?.moped_project[0]?.moped_entity}
                   optionList={data?.moped_entity ?? []}
                   updateMutation={PROJECT_UPDATE_SPONSOR}
@@ -226,9 +226,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryAutocomplete
-                  fieldName="Public process"
-                  idColumnName={"id"}
-                  nameColumnName={"name"}
+                  field="Public process"
+                  idColumn={"id"}
+                  nameColumn={"name"}
                   initialValue={
                     data?.moped_project[0]?.moped_public_process_statuses
                   }

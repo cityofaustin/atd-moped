@@ -7,9 +7,9 @@ import { useMutation } from "@apollo/client";
 
 /**
  * ProjectSummaryAutocomplete Component
- * @param {String} fieldName - The name of the field to be displayed
- * @param {String} idColumnName - The name of the id column to be used in the mutation
- * @param {String} nameColumnName - The name of the name column to be displayed
+ * @param {String} field - The name of the field to be displayed
+ * @param {String} idColumn - The name of the id column to be used in the mutation
+ * @param {String} nameColumn - The name of the name column to be displayed
  * @param {Object} initialValue - The initial value returned from the query
  * @param {Array} optionList - The list of options for the autocomplete
  * @param {String} updateMuation - The mutation to update the field
@@ -23,9 +23,9 @@ import { useMutation } from "@apollo/client";
  * @constructor
  */
 const ProjectSummaryAutocomplete = ({
-  fieldName,
-  idColumnName,
-  nameColumnName,
+  field,
+  idColumn,
+  nameColumn,
   initialValue,
   optionList,
   updateMutation,
@@ -56,13 +56,13 @@ const ProjectSummaryAutocomplete = ({
     updateFieldValue({
       variables: {
         projectId: projectId,
-        fieldValueId: fieldValue?.[idColumnName] ?? null,
+        fieldValueId: fieldValue?.[idColumn] ?? null,
       },
     })
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, `${fieldName} updated!`, "success");
+        snackbarHandle(true, `${field} updated!`, "success");
       })
       .catch((err) => {
         snackbarHandle(true, "Failed to update: " + String(err), "error");
@@ -72,7 +72,7 @@ const ProjectSummaryAutocomplete = ({
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>{fieldName}</Typography>
+      <Typography className={classes.fieldLabel}>{field}</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -85,9 +85,9 @@ const ProjectSummaryAutocomplete = ({
               className={classes.fieldSelectItem}
               id={`moped-project-summary-autocomplete-${projectId}`}
               options={optionList}
-              getOptionLabel={(e) => e[nameColumnName]}
+              getOptionLabel={(e) => e[nameColumn]}
               getOptionSelected={(option, value) =>
-                option[nameColumnName] === value[nameColumnName]
+                option[nameColumn] === value[nameColumn]
               }
               onChange={(event, newValue) => {
                 setFieldValue(newValue);
@@ -115,7 +115,7 @@ const ProjectSummaryAutocomplete = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={fieldValue?.[nameColumnName] || ""}
+            text={fieldValue?.[nameColumn] || ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
             tooltipText={tooltipText}
