@@ -2,163 +2,71 @@ export const ProjectActivityLogTableMaps = {
   moped_project: {
     label: "Project",
     fields: {
-      project_uuid: {
-        icon: "",
-        label: "unique ID",
-        data_type: "uuid",
-      },
       project_name: {
-        icon: "",
         label: "name",
-        data_type: "text",
       },
       project_description: {
-        icon: "",
         label: "description",
-        data_type: "text",
-      },
-      project_description_public: {
-        icon: "",
-        label: "public description",
-        data_type: "text",
       },
       ecapris_subproject_id: {
         label: "eCAPRIS subproject ID",
-        icon: "",
-        data_type: "text",
-      },
-      project_importance: {
-        icon: "",
-        label: "importance",
-        data_type: "integer",
-      },
-      project_order: {
-        icon: "",
-        label: "order",
-        data_type: "integer",
       },
       current_status: {
-        icon: "",
         label: "current status",
-        data_type: "text",
-      },
-      project_id: {
-        icon: "",
-        label: "ID",
-        data_type: "integer",
-      },
-      timeline_id: {
-        icon: "",
-        label: "timeline",
-        data_type: "integer",
       },
       current_phase: {
-        icon: "",
         label: "phase",
-        data_type: "text",
-      },
-      end_date: {
-        icon: "",
-        label: "end date",
-        data_type: "date",
-      },
-      project_length: {
-        label: "length",
-        icon: "",
-        data_type: "integer",
-      },
-      fiscal_year: {
-        icon: "",
-        label: "fiscal year",
-        data_type: "text",
-      },
-      capitally_funded: {
-        icon: "",
-        label: "capitally funded",
-        data_type: "boolean",
-      },
-      project_priority: {
-        icon: "",
-        label: "priority",
-        data_type: "text",
-      },
-      date_added: {
-        label: "date added",
-        icon: "",
-        data_type: "timestamp with time zone",
-      },
-      added_by: {
-        icon: "",
-        label: "added by",
-        data_type: "integer",
-        lookup: {
-          table: "moped_users",
-          fieldLabel: "user_id",
-          fieldValues: ["first_name", "last_name"],
-        },
       },
       is_deleted: {
-        icon: "",
         label: "soft delete status",
-        data_type: "bool",
       },
       milestone_id: {
-        icon: "",
         label: "milestone ID",
-        data_type: "integer",
       },
       status_id: {
-        icon: "",
         label: "status ID",
-        data_type: "integer",
-      },
-      updated_at: {
-        icon: "",
-        label: "updated timestamp",
-        data_type: "timestamp with time zone",
       },
       // deprecated column, but keeping because historical activities depend on it
       contractor: {
-        icon: "",
         label: "contractor",
-        data_type: "text",
       },
       project_sponsor: {
-        icon: "",
-        label: "sponsor ID",
-        data_type: "integer",
+        label: "project sponsor",
+        lookup: "moped_entity",
       },
       project_website: {
-        icon: "",
         label: "project website",
-        data_type: "text",
       },
       knack_project_id: {
-        icon: "",
-        label: "knack internal ID",
-        data_type: "text",
+        label: "Knack internal ID",
       },
       // deprecated column, but keeping because historical activities depend on it
       purchase_order_number: {
-        icon: "",
         label: "purchase order number",
-        data_type: "text",
       },
       task_order: {
-        icon: "",
         label: "task order",
-        data_type: "jsonb",
       },
+      // deprecated column, but keeping because historical activities depend on it
       work_assignment_id: {
-        icon: "",
         label: "work assignment ID",
-        data_type: "text",
       },
       parent_project_id: {
-        icon: "",
         label: "parent project id",
-        data_type: "integer",
       },
+      interim_project_id: {
+        label: "Interim MPD (Access) ID",
+      },
+      project_lead_id: {
+        label: "project lead",
+        lookup: "moped_entity",
+      },
+      capitally_funded: {
+        label: "capitally funded"
+      },
+      is_retired: {
+        label: "is retired"
+      }
     },
   },
   moped_proj_entities: {
@@ -314,6 +222,7 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_notes: {
     label: "Note",
     fields: {
+      // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
         icon: "",
         label: "added by",
@@ -674,69 +583,46 @@ export const ProjectActivityLogTableMaps = {
     label: "Fund",
     fields: {
       proj_funding_id: {
-        icon: "",
-        label: "funding ID",
-        data_type: "integer",
+        label: "ID",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        data_type: "integer",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        data_type: "timestamptz",
       },
       added_by: {
-        icon: "",
         label: "added by",
-        data_type: "integer",
       },
       funding_source_id: {
-        icon: "",
-        label: "source ID",
-        data_type: "integer",
+        label: "source",
+        lookup: "fundingSources",
       },
       funding_program_id: {
-        icon: "",
-        label: "program ID",
-        data_type: "integer",
+        label: "program",
+        lookup: "fundingPrograms"
       },
       funding_amount: {
-        icon: "",
         label: "amount",
-        data_type: "integer",
       },
       fund_dept_unit: {
-        icon: "",
-        label: "department unit",
-        data_type: "text",
+        label: "fund department unit",
       },
       funding_description: {
-        icon: "",
-        label: "description",
-        data_type: "text",
+        label: "fund description",
       },
       funding_status_id: {
-        icon: "",
-        label: "status ID",
-        data_type: "integer",
+        label: "status",
+        lookup: "fundingStatus"
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
       fund: {
-        icon: "",
         label: "fund",
-        data_type: "jsonb",
       },
       dept_unit: {
-        icon: "",
         label: "department unit",
-        data_type: "jsonb",
       },
     },
   },
@@ -786,10 +672,9 @@ export const ProjectActivityLogTableMaps = {
           fieldLabel: "id",
           fieldValues: ["name"],
         },
-      }
-
-    }
-  }
+      },
+    },
+  },
 };
 
 export const ProjectActivityLogOperationMaps = {
@@ -876,9 +761,6 @@ export const ProjectActivityLogGenericDescriptions = {
 };
 
 export const ProjectActivityLogCreateDescriptions = {
-  moped_project: {
-    label: () => "Created Project",
-  },
   moped_proj_personnel: {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
@@ -891,7 +773,7 @@ export const ProjectActivityLogCreateDescriptions = {
     },
   },
   moped_project_files: {
-    label: record =>
+    label: (record) =>
       `New file '${record.record_data.event.data.new.file_name}'`,
   },
   moped_proj_milestones: {
@@ -945,16 +827,8 @@ export const ProjectActivityLogCreateDescriptions = {
       );
     },
   },
-  moped_proj_tags: {
-    label: (record, userList) => {
-      // temporary, I have ideas on how to get the tag name here
-      return (
-        "New tag added"
-      );
-    },
-  },
   generic: {
-    label: record => {
+    label: (record) => {
       return "Added";
     },
   },
@@ -999,7 +873,7 @@ export const getMappedValue = (type, field, value) =>
  * @param {string} type - The name of the table
  * @return {string}
  */
-export const getRecordTypeLabel = type => {
+export const getRecordTypeLabel = (type) => {
   return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
 };
 

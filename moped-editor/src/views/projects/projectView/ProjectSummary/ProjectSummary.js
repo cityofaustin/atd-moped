@@ -3,7 +3,6 @@ import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
-import { createProjectFeatureCollection } from "src/utils/projectComponentHelpers";
 
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -27,7 +26,6 @@ import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTracker
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 
-import { countFeatures } from "../../../../utils/mapHelpers";
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
 
@@ -128,7 +126,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
-  const [mapError, setMapError] = useState(false);
   const [snackbarState, setSnackbarState] = useState(false);
 
   /**
@@ -146,28 +143,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
-
-  const projectComponents = data?.moped_project[0]?.moped_proj_components || [];
-  const projectFeatureCollection =
-    createProjectFeatureCollection(projectComponents);
-
-  const renderMap = () => {
-    if (countFeatures(projectFeatureCollection) < 1) {
-      return (
-        <ProjectSummaryMapFallback
-          projectId={projectId}
-          refetchProjectDetails={refetch}
-          mapData={projectFeatureCollection}
-        />
-      );
-    } else {
-      return (
-        <ProjectSummaryMap
-          projectFeatureCollection={projectFeatureCollection}
-        />
-      );
-    }
-  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -321,23 +296,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                {projectFeatureCollection && (
-                  <ErrorBoundary
-                    FallbackComponent={({ error, resetErrorBoundary }) => (
-                      <ProjectSummaryMapFallback
-                        error={error}
-                        resetErrorBoundary={resetErrorBoundary}
-                        projectId={projectId}
-                        refetchProjectDetails={refetch}
-                        mapData={projectFeatureCollection}
-                      />
-                    )}
-                    onReset={() => setMapError(false)}
-                    resetKeys={[mapError]}
-                  >
-                    {renderMap()}
-                  </ErrorBoundary>
-                )}
+                <ProjectSummaryMap data={data} />
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />

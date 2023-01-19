@@ -66,6 +66,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -77,6 +78,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -88,6 +90,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -100,6 +103,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -112,6 +116,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -125,6 +130,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -137,6 +143,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -161,6 +168,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -172,6 +180,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -183,6 +192,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -195,6 +205,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -207,6 +218,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -220,6 +232,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -232,6 +245,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -257,6 +271,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -269,6 +284,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -281,6 +297,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -294,6 +311,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -307,6 +325,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -321,6 +340,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -334,6 +354,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -384,12 +405,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -399,12 +419,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -414,12 +433,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -430,12 +448,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -446,12 +463,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -463,12 +479,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -479,12 +494,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -516,6 +530,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -534,6 +549,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -552,6 +568,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -571,6 +588,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -590,6 +608,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -610,6 +629,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -629,6 +649,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -648,6 +669,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -656,6 +678,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -664,8 +687,22 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: {}
 - table:
     name: moped_activity_log
     schema: public
@@ -695,6 +732,7 @@
           - record_project_id
           - record_type
           - updated_by
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -795,6 +833,10 @@
 - table:
     name: moped_components
     schema: public
+  object_relationships:
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
     - name: moped_subcomponents
       using:
@@ -813,6 +855,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
     - role: moped-editor
       permission:
         check: {}
@@ -822,6 +865,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -831,6 +875,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-editor
       permission:
@@ -840,6 +885,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-viewer
       permission:
@@ -849,6 +895,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -859,6 +906,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
         check: {}
     - role: moped-editor
@@ -869,6 +917,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
         check: {}
 - table:
@@ -1416,6 +1465,51 @@
       using:
         foreign_key_constraint_on: component_id
   array_relationships:
+    - name: feature_drawn_lines
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_lines
+            schema: public
+    - name: feature_drawn_points
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_points
+            schema: public
+    - name: feature_intersections
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_intersections
+            schema: public
+    - name: feature_signals
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_signals
+            schema: public
+    - name: feature_street_segments
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_street_segments
+            schema: public
     - name: moped_proj_components_subcomponents
       using:
         foreign_key_constraint_on:
@@ -2261,30 +2355,47 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - added_by
-            - funding_amount
-            - funding_program_id
-            - funding_source_id
-            - funding_status_id
-            - project_id
-            - proj_funding_id
-            - dept_unit
-            - fund
-            - fund_dept_unit
-            - funding_description
-            - date_added
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+                            "variables": {
+                                "object": {
+                                    "record_id": {{ $body.event.data.new.project_id }},
+                                    "record_type":  {{ $body.table.name }},
+                                    "activity_id": {{ $body.id }},
+                                    "record_project_id": {{ $body.event.data.new.project_id }},
+                                    "record_data": {"event": {{ $body.event }}},
+                                    "description": [{"newSchema": "true"}],
+                                    "operation_type": {{ $body.event.op }},
+                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                                },
+                                "updated_at": {{$body.created_at}},
+                                "project_id": {{$body.event.data.new.project_id}}
+                            }
+                        }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_milestones
     schema: public
@@ -2503,15 +2614,25 @@
 - table:
     name: moped_proj_notes
     schema: public
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: phase_id
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: added_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2520,10 +2641,10 @@
       permission:
         check: {}
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2532,10 +2653,10 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2545,10 +2666,10 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2558,10 +2679,10 @@
     - role: moped-viewer
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2572,10 +2693,10 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2585,10 +2706,10 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2605,12 +2726,11 @@
           columns: '*'
         update:
           columns:
-            - added_by
-            - added_by_user_id
-            - project_id
-            - project_note_id
-            - project_note_type
             - project_note
+            - project_note_id
+            - project_id
+            - project_note_type
+            - added_by_user_id
             - date_created
             - is_deleted
       retry_conf:
@@ -2623,6 +2743,13 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_partners
     schema: public
@@ -3164,10 +3291,10 @@
           columns: '*'
         update:
           columns:
-            - is_deleted
-            - tag_id
             - id
             - project_id
+            - tag_id
+            - is_deleted
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3188,7 +3315,7 @@
                   "record_type":  {{ $body.table.name }},
                   "activity_id": {{ $body.id }},
                   "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {{ $body.event }},
+                  "record_data": {"event" : {{ $body.event }}},
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3201,6 +3328,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project
     schema: public
@@ -3558,25 +3692,25 @@
           columns: '*'
         update:
           columns:
+            - project_uuid
+            - ecapris_subproject_id
+            - project_id
+            - end_date
+            - capitally_funded
+            - date_added
+            - added_by
+            - is_deleted
             - project_sponsor
             - task_order
             - parent_project_id
             - interim_project_id
-            - work_assignment_id
-            - ecapris_subproject_id
-            - project_uuid
-            - fiscal_year
-            - project_description
-            - project_name
-            - project_id
-            - capitally_funded
-            - project_website
-            - end_date
-            - knack_project_id
-            - date_added
-            - is_deleted
-            - added_by
             - project_lead_id
+            - project_name
+            - project_description
+            - project_website
+            - knack_project_id
+            - fiscal_year
+            - work_assignment_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3597,7 +3731,7 @@
                                     "record_type":  {{ $body.table.name }},
                                     "activity_id": {{ $body.id }},
                                     "record_project_id": {{ $body.event.data.new.project_id }},
-                                    "record_data": {{ $body.event }},
+                                    "record_data": { "event": {{ $body.event }}},
                                     "description": [{"newSchema": "true"}],
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3610,6 +3744,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project_files
     schema: public

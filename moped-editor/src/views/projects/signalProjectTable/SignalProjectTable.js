@@ -92,22 +92,9 @@ const SignalProjectTable = () => {
     }
 
     // Signal IDs
-    const signal_ids = [];
-    if (project?.moped_proj_components.length) {
-      project.moped_proj_components.forEach((projectComponent) => {
-        projectComponent.moped_proj_features.forEach((projectFeature) => {
-          const signal = projectFeature?.feature?.properties?.signal_id;
-          if (signal) {
-            signal_ids.push({
-              signal_id: signal,
-              knack_id: projectFeature.feature.properties.id,
-            });
-          }
-        });
-      });
-    }
-
-    project["signal_ids"] = signal_ids;
+    project["signal_ids"] = project.moped_proj_components
+      .map((component) => component.feature_signals)
+      .flat();
 
     // moped project types
     const project_types = [];

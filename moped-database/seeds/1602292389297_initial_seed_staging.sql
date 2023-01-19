@@ -132,7 +132,7 @@ INSERT INTO public.moped_proj_features (feature_id, feature, project_component_i
 
 INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, date_added, added_by, funding_source_id, funding_program_id, funding_amount, fund_dept_unit, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (2, 227, '2022-11-12 18:12:47.295511+00', 10, 4, 7, 0, '', 'cha ching', 2, '{"fund_id": "8400", "fund_name": "GCP-TPSD GENERAL IMPROVEMENTS"}', '{"dept": "2507", "unit": "9024", "dept_id": "180775091", "dept_unit_id": "359318059", "unit_long_name": "Pay Station Parking Meter Replacement", "unit_short_name": "8400-2507", "dept_unit_status": "Active"}', false);
 INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, date_added, added_by, funding_source_id, funding_program_id, funding_amount, fund_dept_unit, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (4, 227, '2022-11-12 18:12:47.295689+00', 10, 9, 11, 0, '', '', 1, '{"fund_id": "4730", "fund_name": "PARKING CIP"}', '{"dept": "2507", "unit": "9040", "dept_id": "180775091", "dept_unit_id": "207413510", "unit_long_name": "Parking Initiatives", "unit_short_name": "8400-2507", "dept_unit_status": "Active"}', false);
-INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, date_added, added_by, funding_source_id, funding_program_id, funding_amount, fund_dept_unit, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (3, 227, '2022-11-12 18:12:47.295683+00', 10, NULL, NULL, NULL, NULL, NULL, 2, '{"fund_id": "4730", "fund_name": "PARKING CIP"}', '{"dept": "2507", "unit": "9042", "dept_id": "180775091", "dept_unit_id": "153705858", "unit_long_name": "New & Repair Parking Stations", "unit_short_name": "4730-2507", "dept_unit_status": "Active"}', true);
+INSERT INTO public.moped_proj_funding (proj_funding_id, project_id, date_added, added_by, funding_source_id, funding_program_id, funding_amount, fund_dept_unit, funding_description, funding_status_id, fund, dept_unit, is_deleted) VALUES (3, 229, '2022-11-12 18:12:47.295683+00', 10, NULL, NULL, NULL, NULL, NULL, 2, '{"fund_id": "4730", "fund_name": "PARKING CIP"}', '{"dept": "2507", "unit": "9042", "dept_id": "180775091", "dept_unit_id": "153705858", "unit_long_name": "New & Repair Parking Stations", "unit_short_name": "4730-2507", "dept_unit_status": "Active"}', false);
 
 
 --
@@ -166,8 +166,8 @@ INSERT INTO public.moped_proj_milestones (project_milestone_id, project_id, mile
 -- Data for Name: moped_proj_notes; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_notes (project_note_id, project_note, added_by, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (2, '<p>This is a status update</p>', 'JD Maccombs', '2022-11-12 18:08:55.845376+00', 227, 1, 2, false);
-INSERT INTO public.moped_proj_notes (project_note_id, project_note, added_by, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (3, '<p>This is an internal note</p>', 'JD Maccombs', '2022-11-12 18:14:16.640873+00', 227, 1, 1, false);
+INSERT INTO public.moped_proj_notes (project_note_id, project_note, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (2, '<p>This is a status update</p>', '2022-11-12 18:08:55.845376+00', 227, 1, 2, false);
+INSERT INTO public.moped_proj_notes (project_note_id, project_note, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (3, '<p>This is an internal note</p>', '2022-11-12 18:14:16.640873+00', 227, 1, 1, false);
 
 
 --

@@ -144,6 +144,8 @@ const DashboardView = () => {
         project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
       project["phase_key"] =
         project.project.moped_proj_phases?.[0]?.moped_phase.phase_key;
+      project["current_phase_id"] =
+        project.project.moped_proj_phases?.[0]?.moped_phase.phase_id;
       /**
        * Get percentage of milestones completed
        */
@@ -231,6 +233,7 @@ const DashboardView = () => {
         <DashboardStatusModal
           projectId={entry.project_id}
           projectName={entry.project.project_name}
+          currentPhaseId={entry.current_phase_id}
           modalParent="dashboard"
           statusUpdate={entry.status_update}
           queryRefetch={refetch}
