@@ -166,8 +166,8 @@ INSERT INTO public.moped_proj_milestones (project_milestone_id, project_id, mile
 -- Data for Name: moped_proj_notes; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_notes (project_note_id, project_note, added_by, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (2, '<p>This is a status update</p>', 'JD Maccombs', '2022-11-12 18:08:55.845376+00', 227, 1, 2, false);
-INSERT INTO public.moped_proj_notes (project_note_id, project_note, added_by, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (3, '<p>This is an internal note</p>', 'JD Maccombs', '2022-11-12 18:14:16.640873+00', 227, 1, 1, false);
+INSERT INTO public.moped_proj_notes (project_note_id, project_note, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (2, '<p>This is a status update</p>', '2022-11-12 18:08:55.845376+00', 227, 1, 2, false);
+INSERT INTO public.moped_proj_notes (project_note_id, project_note, date_created, project_id, added_by_user_id, project_note_type, is_deleted) VALUES (3, '<p>This is an internal note</p>', '2022-11-12 18:14:16.640873+00', 227, 1, 1, false);
 
 
 --

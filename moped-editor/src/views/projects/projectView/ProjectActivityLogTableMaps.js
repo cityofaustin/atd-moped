@@ -222,6 +222,7 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_notes: {
     label: "Note",
     fields: {
+      // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
         icon: "",
         label: "added by",
