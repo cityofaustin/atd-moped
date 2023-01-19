@@ -48,10 +48,15 @@ export const SUMMARY_QUERY = gql`
       moped_project {
         project_name
       }
-      moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        moped_proj_features(where: { is_deleted: { _eq: false } }) {
-          feature_id
-          feature
+      moped_proj_components(
+        where: {
+          is_deleted: { _eq: false }
+          feature_signals: { is_deleted: { _eq: false } }
+        }
+      ) {
+        feature_signals(where: { is_deleted: { _eq: false } }) {
+          signal_id
+          knack_id
         }
       }
       moped_proj_notes(
@@ -117,6 +122,12 @@ export const SUMMARY_QUERY = gql`
     ) {
       project_id
       user_id
+    }
+    project_geography(
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+    ) {
+      geometry: geography
+      attributes
     }
   }
 `;

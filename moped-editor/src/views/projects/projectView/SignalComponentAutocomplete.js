@@ -1,14 +1,10 @@
-import React from "react";
-import { useState } from "react";
-import { CircularProgress } from "@material-ui/core";
+import React, { useEffect, useMemo } from "react";
+import { CircularProgress, TextField } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
-  useSignalChangeEffect,
   getSignalOptionLabel,
   getSignalOptionSelected,
-  useInitialSignalComponentValue,
-  renderSignalInput,
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
@@ -16,54 +12,71 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
 /**
  * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
  * Socrata dataset and setting it as a project component.
- * * @param {Object} setSelectedComponentSubtype - sets the selectedComponentSubtype from parent state
- * * @param {Object} setEditFeatureCollection - sets the editFeatureCollection from parent state
- * * @param {Boolean} editFeatureCollection - the geoJSON generated for all the the features in this component
- * * @param {Object} classes - MaterialUI style object
- *  @return {JSX.Element}
+ * @param {Object} classes - MaterialUI style object
+ * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
+ * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
+ * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
+ * @param {String} signalType - either PHB or TRAFFIC
+ * @return {JSX.Element}
  */
-const SignalComponentAutocomplete = ({
-  classes,
-  setSelectedComponentSubtype,
-  setEditFeatureCollection,
-  editFeatureCollection,
-}) => {
-  const [signal, setSignal] = useState(null);
-  const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+const SignalComponentAutocomplete = React.forwardRef(
+  ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
+    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
 
-  useInitialSignalComponentValue(editFeatureCollection, setSignal);
+    // Filter returned results to the signal type chosen - PHB or TRAFFIC
+    const featuresFilteredByType = useMemo(
+      () =>
+        features?.filter(
+          (feature) =>
+            feature.properties.signal_type.toLowerCase() ===
+            signalType.toLowerCase()
+        ),
+      [features, signalType]
+    );
 
-  useSignalChangeEffect(
-    signal,
-    setSelectedComponentSubtype,
-    setEditFeatureCollection
-  );
+    // Let the parent component know that the options are ready to go
+    useEffect(() => {
+      if (features === null) return;
 
-  if (loading) {
-    return <CircularProgress color="primary" size={20} />;
-  } else if (error) {
+      onOptionsLoaded();
+    }, [features, onOptionsLoaded]);
+
+    if (loading) {
+      return <CircularProgress color="primary" size={20} />;
+    } else if (error) {
+      return (
+        <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+      );
+    }
+
     return (
-      <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+      <Autocomplete
+        className={classes}
+        id="signal-id"
+        filterOptions={filterOptions}
+        getOptionSelected={getSignalOptionSelected}
+        // this label formatting mirrors the Data Tracker formatting
+        getOptionLabel={getSignalOptionLabel}
+        onChange={(_event, option) => onChange(option)}
+        loading={loading}
+        options={featuresFilteredByType}
+        renderInput={(params) => (
+          <TextField
+            {...params}
+            inputRef={ref}
+            error={error}
+            InputLabelProps={{ required: false }}
+            label="Signal"
+            required
+            helperText="Required"
+            variant="outlined"
+            size="small"
+          />
+        )}
+        value={value}
+      />
     );
   }
-
-  return (
-    <Autocomplete
-      className={classes}
-      id="signal-id"
-      filterOptions={filterOptions}
-      getOptionSelected={getSignalOptionSelected}
-      // this label formatting mirrors the Data Tracker formatting
-      getOptionLabel={getSignalOptionLabel}
-      onChange={(e, signal) => {
-        setSignal(signal ? signal : null);
-      }}
-      loading={loading}
-      options={features}
-      renderInput={params => renderSignalInput(params, null, "outlined")}
-      value={signal || null}
-    />
-  );
-};
+);
 
 export default SignalComponentAutocomplete;
