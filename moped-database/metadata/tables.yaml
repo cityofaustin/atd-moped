@@ -3357,7 +3357,7 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
-    - name: moped_public_process_status
+    - name: moped_public_process_statuses
       using:
         foreign_key_constraint_on: public_process_status_id
     - name: moped_user
@@ -4121,7 +4121,7 @@
         - name: MOPED_API_EVENT_NAME
           value: activity_log
 - table:
-    name: moped_public_process_status
+    name: moped_public_process_statuses
     schema: public
   select_permissions:
     - role: moped-admin

@@ -1,1 +1,1 @@
-DELETE FROM moped_public_process_status where 1=1;
+DELETE FROM moped_public_process_statuses where 1=1;

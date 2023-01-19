@@ -7,14 +7,6 @@ import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-/*
-  Error Handler and Fallback Component
-*/
-import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
-import { ErrorBoundary } from "react-error-boundary";
-import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
-import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
-
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
@@ -25,6 +17,8 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
+import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
+import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
@@ -236,9 +230,9 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   idColumnName={"id"}
                   nameColumnName={"name"}
                   initialValue={
-                    data?.moped_project[0]?.moped_public_process_status
+                    data?.moped_project[0]?.moped_public_process_statuses
                   }
-                  optionList={data?.moped_public_process_status ?? []}
+                  optionList={data?.moped_public_process_statuses ?? []}
                   updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
                   tooltipText="Current public phase of a project"
                   projectId={projectId}

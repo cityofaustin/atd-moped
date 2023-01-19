@@ -93,7 +93,7 @@ export const SUMMARY_QUERY = gql`
           phase_key
         }
       }
-      moped_public_process_status {
+      moped_public_process_statuses {
         id
         name
       }
@@ -117,7 +117,7 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
-    moped_public_process_status(order_by: { id: asc }) {
+    moped_public_process_statuses(order_by: { id: asc }) {
       id
       name
     }
