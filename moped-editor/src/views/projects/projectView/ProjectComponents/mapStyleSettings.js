@@ -47,10 +47,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.pinkBright,
+        "circle-stroke-color": COLORS.bluePrimary,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.pinkLight,
+        "circle-color": COLORS.blueLight,
         "circle-opacity": 0.9,
       },
     },
@@ -67,7 +67,7 @@ export const MAP_STYLES = {
           "case",
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
-          COLORS.pinkBright,
+          COLORS.bluePrimary,
         ],
       },
       layout: {
