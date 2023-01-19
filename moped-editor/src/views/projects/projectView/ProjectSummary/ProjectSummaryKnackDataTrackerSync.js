@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Box, Grid, Link, Typography } from "@material-ui/core";
 import { Autorenew } from "@material-ui/icons";
 import { useMutation } from "@apollo/client";
@@ -25,7 +25,7 @@ const buildProjectUrl = (scene, view, knackProjectId) => {
  * Function to determine the HTTP method to use base on if there will be an update or initial post to Knack
  * @returns string
  */
-const getHttpMethod = knackProjectId => {
+const getHttpMethod = (knackProjectId) => {
   return knackProjectId ?? false ? "PUT" : "POST";
 };
 
@@ -33,32 +33,116 @@ const getHttpMethod = knackProjectId => {
  * Function to map the signal IDs from a project object into an array and return the array length.
  * @returns integer
  */
-const getProjectSignals = project => {
-  const allProjectFeatures = project.moped_proj_components
-    .map(projectComponent => {
-      // for each component, extract feature geojson from each project feature (moped_proj_features.feature)
-      // every feature must have a feature.feature jsonb, but we'll nullish chain just to be safe
-      return projectComponent.moped_proj_features.map(
-        feature => feature?.feature
-      );
-    })
-    // then flatten this array of feature arrays
-    .flat()
-    // and filter any undefined components, which should never happen
-    .filter(feature => feature);
-  // now filter our features for only those with a `signal_id` property
-  const allProjectSignals = allProjectFeatures.filter(
-    feature => feature.properties?.signal_id
+const useProjectSignals = (project) =>
+  useMemo(
+    () =>
+      project.moped_proj_components
+        .map((component) => component.feature_signals)
+        .flat()
+        .filter((signal) => !!signal),
+    [project]
   );
-  // and shape the object we need to render links and such
-  return allProjectSignals.map(signal => {
-    return {
-      signal_id: signal.properties.signal_id,
-      knack_id: signal.properties.id,
-    };
-  });
+
+/**
+ * Object to hold headers which need to be sent as part of the a Knack API call
+ */
+const REQUEST_HEADERS = {
+  "Content-Type": "application/json",
+  "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
+  "X-Knack-REST-API-Key": "knack",
 };
 
+const FIELD_MAP = {
+  production: {
+    project_id: "field_4133",
+    project_name: "field_3857",
+    current_phase_name: "field_4136",
+    signals_connection: "field_3861",
+    moped_url_object: "field_4162",
+  },
+  other: {
+    project_id: "field_4133",
+    project_name: "field_3857",
+    current_phase_name: "field_4136",
+    signals_connection: "field_3861",
+    moped_url_object: "field_4162",
+  },
+};
+
+const getUrlObject = (project) => {
+  const url =
+    process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+  return {
+    url: url,
+    label: project.project_name,
+  };
+};
+
+/**
+ * Exract project's current phase name from projet data - assumes the 0-index project phase
+ * is the project's current phase
+ * @param {object} project - project as returned from our SUMMARY_QUERY
+ * @returns
+ */
+const getCurrentPhase = (project) =>
+  project.moped_proj_phases?.[0].moped_phase.phase_name || null;
+
+/**
+ * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
+ * because if you update the project number field, even with the same, extant number, Knack returns an error.
+ * @param {object} project - project data as returned from our SUMMARY_QUERY
+ * @param {[object]} signals - array of from the feature_signals table
+ * @returns string
+ */
+const buildBody = (project, signals) => {
+  process.env.REACT_APP_HASURA_ENV !== "production" &&
+    console.warn(`
+    Warning: It's not possible to test this feature outside of a produciton environment,
+    because our signals' unique knack record identifiers only exist in production.
+    To test, you can patch in a valid knack ID by uncommenting the line below that sets
+    body.signals_connection.
+  `);
+  // get the field map
+  const fieldMap =
+    process.env.REACT_APP_HASURA_ENV === "production"
+      ? FIELD_MAP.production
+      : FIELD_MAP.other;
+
+  // make a copy of it to use as our payload
+  const body = { ...fieldMap };
+
+  body.project_id = project.project_id;
+  body.project_name = project.project_name;
+  body.moped_url_object = getUrlObject(project);
+  body.current_phase_name = getCurrentPhase(project);
+
+  const signalIds = signals.map((signal) => signal.knack_id);
+  body.signals_connection = signalIds;
+  // uncomment this line to test this request against the Knack test env - this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
+  // body.signals_connection = ["62195eedf538d8072b16a0f6"];
+
+  // payload is ready - replace keys with knack fieldnames
+  Object.keys(fieldMap).forEach((key) => {
+    body[fieldMap[key]] = body[key];
+    delete body[key];
+  });
+  return JSON.stringify(body);
+};
+
+/**
+ * This feature enables the user to create a "project" record in Arterial Management
+ * Data Tracker app - a knack application used for asset management.
+ *
+ * Any Moped user can push any project to the Data Tracker. If the project has signal
+ * components, the project created in Knack will have ties to the signal records in
+ * Knack. These linkages are formed by including the signal's knack record ID, which
+ * acts a foreign key to the signals table in the Data Tracker. If the project does not
+ * have signal components, that's fine.
+ *
+ * Although this component has logic to *update* (instead of create) a project record
+ * in Knack (with a PUT request) — we currently do not provide the users with this
+ * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
+ */
 const ProjectSummaryKnackDataTrackerSync = ({
   classes,
   project,
@@ -74,64 +158,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
   const [mutateProjectKnackId] = useMutation(UPDATE_PROJECT_KNACK_ID);
 
   // Array of signals in project
-  const signals = getProjectSignals(project);
-
+  const signals = useProjectSignals(project);
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
-
-  /**
-   * Object to hold headers which need to be sent as part of the a Knack API call
-   */
-  const buildHeaders = {
-    "Content-Type": "application/json",
-    "X-Knack-Application-Id": process.env.REACT_APP_KNACK_DATA_TRACKER_APP_ID,
-    "X-Knack-REST-API-Key": "knack",
-  };
-
-  /**
-   * Function to build up a JSON object of the fields which need to be updated in a call to Knack. This is needed
-   * because if you update the project number field, even with the same, extant number, Knack returns an error.
-   * @returns string
-   */
-  const buildBody = signalIds => {
-    let body = {};
-
-    const knackFieldsRegEx = /REACT_APP_KNACK_DATA_TRACKER_(\w+)_FIELD/;
-    const fieldMap = {};
-
-    Object.keys(process.env)
-      .filter(envVariable => envVariable.match(knackFieldsRegEx))
-      .map(envVariable => envVariable.match(knackFieldsRegEx))
-      .forEach(
-        regExResult =>
-          (fieldMap[process.env[regExResult[0]]] = regExResult[1].toLowerCase())
-      );
-
-    const url =
-      process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
-
-    const url_payload = {
-      url: url,
-      label: project.project_name,
-    };
-
-    body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_URL] = url;
-    body[process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL] =
-      project.project_name;
-    body[
-      process.env.REACT_APP_KNACK_DATA_TRACKER_MOPED_LINK_LABEL
-    ] = url_payload;
-
-    Object.keys(fieldMap).forEach(element => {
-      body[element] = project[fieldMap[element]];
-    });
-    // REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION contains the signalId connection field to the signals table
-    // it's ok if the signalIds array is empty
-    body[
-      process.env.REACT_APP_KNACK_DATA_TRACKER_SIGNAL_CONNECTION
-    ] = signalIds;
-
-    return JSON.stringify(body);
-  };
 
   /**
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
@@ -142,21 +170,20 @@ const ProjectSummaryKnackDataTrackerSync = ({
     // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
     console.log("HTTP method: " + knackHttpMethod);
     // POST (create) or PUT (update) a project record in Knack
-    const signalIds = signals.map(signal => signal.knack_id);
     return fetch(knackProjectEndpointUrl, {
       method: knackHttpMethod,
-      headers: buildHeaders,
-      body: buildBody(signalIds),
+      headers: REQUEST_HEADERS,
+      body: buildBody(project, signals),
     })
-      .then(response => response.json())
-      .then(result => {
+      .then((response) => response.json())
+      .then((result) => {
         if (result.errors) {
           // Successful HTTP request, but knack indicates an error with the query, such as non-existent ID
           throw result;
         }
         return result;
       })
-      .then(knackRecord => {
+      .then((knackRecord) => {
         // We've got an ID from the Knack endpoint for this project, so record it in our database
         // This ID will not have changed as we were merely updating a project
         mutateProjectKnackId({
@@ -175,7 +202,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
           "success"
         );
       })
-      .catch(error => {
+      .catch((error) => {
         // Failure, alert the user that we've encountered an error
         console.error(error);
         snackbarHandle(true, "Error: Data Tracker sync failed.", "warning");
@@ -188,7 +215,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
         <Typography className={classes.fieldLabel}>Signal IDs</Typography>
         <Box display="flex" justifyContent="flex-start">
           <ProjectSummaryLabel
-          className={classes.fieldLabelDataTrackerLink}
+            className={classes.fieldLabelDataTrackerLink}
             text={
               // if a project has been synced with Knack and has signals associated, link to signals
               (project.knack_project_id && signals.length > 0 && (

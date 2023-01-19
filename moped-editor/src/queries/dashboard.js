@@ -29,7 +29,10 @@ export const DASHBOARD_QUERY = gql`
           where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
           order_by: { date_created: desc }
         ) {
-          added_by
+          moped_user {
+            first_name
+            last_name
+          }
           project_note_type
           project_note
         }
@@ -59,7 +62,6 @@ export const DASHBOARD_QUERY = gql`
           where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
           order_by: { date_created: desc }
         ) {
-          added_by
           project_note_type
           project_note
         }

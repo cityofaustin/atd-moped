@@ -688,6 +688,9 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: userId,
+                  // preventing empty strings from being saved
+                  funding_description: newData.funding_description || null,
+                  funding_amount: newData.funding_amount || null,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
@@ -713,17 +716,11 @@ const ProjectFundingTable = () => {
             delete updateProjectFundingData.__typename;
             delete updateProjectFundingData.added_by;
             delete updateProjectFundingData.date_added;
-            // Format edited funding values to number value
-            updateProjectFundingData.funding_amount = Number(
-              newData.funding_amount
-            );
-            // add fallback of empty strings instead of null value
-            updateProjectFundingData.fund_dept_unit =
-              newData.fund_dept_unit || "";
+
+            updateProjectFundingData.funding_amount =
+              updateProjectFundingData.funding_amount || null;
             updateProjectFundingData.funding_description =
-              newData.funding_description || "";
-            updateProjectFundingData.funding_program_id =
-              newData.funding_program_id || 0;
+              updateProjectFundingData.funding_description || null;
 
             return updateProjectFunding({
               variables: updateProjectFundingData,

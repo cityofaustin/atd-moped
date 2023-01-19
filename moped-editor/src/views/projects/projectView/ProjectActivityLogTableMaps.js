@@ -222,6 +222,7 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_notes: {
     label: "Note",
     fields: {
+      // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
         icon: "",
         label: "added by",
@@ -582,69 +583,46 @@ export const ProjectActivityLogTableMaps = {
     label: "Fund",
     fields: {
       proj_funding_id: {
-        icon: "",
-        label: "funding ID",
-        data_type: "integer",
+        label: "ID",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        data_type: "integer",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        data_type: "timestamptz",
       },
       added_by: {
-        icon: "",
         label: "added by",
-        data_type: "integer",
       },
       funding_source_id: {
-        icon: "",
-        label: "source ID",
-        data_type: "integer",
+        label: "source",
+        lookup: "fundingSources",
       },
       funding_program_id: {
-        icon: "",
-        label: "program ID",
-        data_type: "integer",
+        label: "program",
+        lookup: "fundingPrograms"
       },
       funding_amount: {
-        icon: "",
         label: "amount",
-        data_type: "integer",
       },
       fund_dept_unit: {
-        icon: "",
-        label: "department unit",
-        data_type: "text",
+        label: "fund department unit",
       },
       funding_description: {
-        icon: "",
-        label: "description",
-        data_type: "text",
+        label: "fund description",
       },
       funding_status_id: {
-        icon: "",
-        label: "status ID",
-        data_type: "integer",
+        label: "status",
+        lookup: "fundingStatus"
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
       fund: {
-        icon: "",
         label: "fund",
-        data_type: "jsonb",
       },
       dept_unit: {
-        icon: "",
         label: "department unit",
-        data_type: "jsonb",
       },
     },
   },
