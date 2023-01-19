@@ -37,6 +37,7 @@ const editReducer = (state, action) => {
         ...state,
         showEditModeDialog: false,
         isEditingComponent: false,
+        draftEditComponent: null,
       };
     case "cancel_attributes_edit":
       return {
