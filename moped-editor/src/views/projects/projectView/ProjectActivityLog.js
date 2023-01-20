@@ -83,6 +83,7 @@ const useLookupTables = (data) =>
     lookupData.fundingSources = {};
     lookupData.fundingPrograms = {};
     lookupData.fundingStatus = {};
+    lookupData.publicProcessStatustList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -108,6 +109,9 @@ const useLookupTables = (data) =>
       data["moped_fund_status"].forEach((fundStatus) => {
         lookupData.fundingStatus[`${fundStatus.funding_status_id}`] =
           fundStatus.funding_status_name;
+      });
+      data["moped_public_process_statuses"].forEach((publicProcessStatus) => {
+        lookupData.publicProcessStatustList[`${publicProcessStatus.id}`] = publicProcessStatus.name;
       });
     }
 

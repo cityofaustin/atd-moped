@@ -506,6 +506,10 @@ export const PROJECT_ACTIVITY_LOG = gql`
       funding_status_id
       funding_status_name
     }
+    moped_public_process_statuses(order_by: {id: asc}) {
+      id
+      name
+    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type
