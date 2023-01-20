@@ -35,7 +35,7 @@ export const ProjectActivityLogTableMaps = {
         lookup: "moped_entity",
       },
       public_process_status_id: {
-        label: "project status",
+        label: "public process status",
         lookup: "moped_public_process_statuses"
       },
       project_website: {
