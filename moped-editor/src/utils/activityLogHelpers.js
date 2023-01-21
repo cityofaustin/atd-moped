@@ -8,6 +8,9 @@ import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersAct
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeDescription = "Project was updated";
   const changeValue = "";
+  const changeText = [
+      {text: "Project was updated", textClassname: null}
+    ];
   const changeIcon = (
     <span className="material-symbols-outlined">summarize</span>
   );
@@ -24,6 +27,6 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_partners":
       return formatPartnersActivity(change, lookupData.entityList);
     default:
-      return { changeIcon, changeDescription, changeValue };
+      return { changeIcon, changeDescription, changeValue, changeText };
   }
 };

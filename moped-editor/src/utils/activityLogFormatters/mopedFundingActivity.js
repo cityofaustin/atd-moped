@@ -64,10 +64,10 @@ export const formatFundingActivity = (
     // typeof(null) === "object", check that field is not null before checking if object
     if (!!newRecord[field] && typeof newRecord[field] === "object") {
       if (!isEqual(newRecord[field], oldRecord[field])) {
-        changes.push(entryMap.fields[field].label);
+        changes.push(entryMap.fields[field]?.label);
       }
     } else if (newRecord[field] !== oldRecord[field]) {
-      changes.push(entryMap.fields[field].label);
+      changes.push(entryMap.fields[field]?.label);
     }
   });
 

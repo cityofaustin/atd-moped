@@ -1,30 +1,37 @@
-import EventNoteIcon from '@material-ui/icons/EventNote';
+import EventNoteIcon from "@material-ui/icons/EventNote";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatMilestonesActivity = (
-  change,
-  milestoneList
-) => {
+export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
   const changeIcon = <EventNoteIcon />;
-  let changeDescription = "Project milestone updated";
-  let changeValue = "";
+  let changeText = [{ text: "Project milestone updated", style: null }];
 
   // add a new milestone
   if (change.description.length === 0) {
-    changeDescription = "Added a new milestone: ";
-    changeValue = milestoneList[change.record_data.event.data.new.milestone_id]
+    changeText = [
+      { text: "Added ", style: null },
+      {
+        text: milestoneList[change.record_data.event.data.new.milestone_id],
+        style: "boldText",
+      },
+      { text: " as a new milestone.", style: null },
+    ];
 
-    return { changeIcon, changeDescription, changeValue };
+    return { changeIcon, changeText };
   }
 
   // delete an existing milestone
   if (change.description[0].field === "is_deleted") {
-    changeDescription = "Deleted the milestone: ";
-    changeValue = milestoneList[change.record_data.event.data.new.milestone_id];
+    changeText = [
+      { text: "Deleted the milestone ", style: null },
+      {
+        text: milestoneList[change.record_data.event.data.new.milestone_id],
+        style: "boldText",
+      },
+    ];
 
-    return { changeIcon, changeDescription, changeValue };
+    return { changeIcon, changeText };
   }
 
   // Multiple fields in the moped_proj_funding table can be updated at once
@@ -32,18 +39,27 @@ export const formatMilestonesActivity = (
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
 
-  console.log(newRecord, oldRecord)
-
   let changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-      changes.push(entryMap.fields[field].label);
-    })
+    if (newRecord[field] !== oldRecord[field]) {
+      changes.push(entryMap.fields[field]?.label);
+    }
+  });
 
-  // todo: add the milestone name
-  changeDescription = "Edited a milestone's ";
-  changeValue = changes.join(", ");
+  changeText = [
+    { text: "Edited the milestone ", style: null },
+    {
+      text: milestoneList[change.record_data.event.data.new.milestone_id],
+      style: "boldText",
+    },
+    { text: " by updating the ", style: null },
+    {
+      text: changes.join(", "),
+      style: "boldText",
+    },
+  ];
 
-  return { changeIcon, changeDescription, changeValue };
+  return { changeIcon, changeText };
 };

@@ -123,6 +123,9 @@ export const ProjectActivityLogTableMaps = {
       project_id: {
         label: "project ID",
       },
+      milestone_id: {
+        label: "id"
+      },
       project_milestone_id: {
         label: "ID",
       },
