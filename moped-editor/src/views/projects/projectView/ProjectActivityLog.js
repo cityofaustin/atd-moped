@@ -83,6 +83,7 @@ const useLookupTables = (data) =>
     lookupData.fundingSources = {};
     lookupData.fundingPrograms = {};
     lookupData.fundingStatus = {};
+    lookupData.milestoneList ={};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -109,6 +110,9 @@ const useLookupTables = (data) =>
         lookupData.fundingStatus[`${fundStatus.funding_status_id}`] =
           fundStatus.funding_status_name;
       });
+      data["moped_milestones"].forEach((milestone) => {
+        lookupData.milestoneList[`${milestone.milestone_id}`] = milestone.milestone_name;
+      })
     }
 
     return lookupData;
@@ -285,6 +289,7 @@ const ProjectActivityLog = () => {
                           "moped_project",
                           "moped_proj_tags",
                           "moped_proj_funding",
+                          "moped_proj_milestones"
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
