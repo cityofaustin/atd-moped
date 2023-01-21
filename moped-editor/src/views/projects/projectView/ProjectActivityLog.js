@@ -285,6 +285,7 @@ const ProjectActivityLog = () => {
                           "moped_project",
                           "moped_proj_tags",
                           "moped_proj_funding",
+                          "moped_proj_partners"
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
