@@ -14,7 +14,6 @@ export const formatFundingActivity = (
 
   // add a new funding source
   if (change.description.length === 0) {
-    changeText = [{ text: "Added a new funding source", style: null }];
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
       changeText.push({ text: "Added ", style: null });
@@ -35,13 +34,15 @@ export const formatFundingActivity = (
         style: "boldText",
       });
       changeText.push({ text: " as a new funding source.", style: null });
+    } else {
+      changeText.push({ text: "Added a new funding source", style: null });
     }
+
     return { changeIcon, changeText };
   }
 
   // delete an existing record
   if (change.description[0].field === "is_deleted") {
-    changeText = [{ text: "Deleted a funding source", style: null }];
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
       changeText.push({ text: "Deleted a funding source: ", style: null });
@@ -60,6 +61,8 @@ export const formatFundingActivity = (
         ],
         style: "boldText",
       });
+    } else {
+          changeText.push({ text: "Deleted a funding source", style: null });
     }
     return { changeIcon, changeText };
   }
