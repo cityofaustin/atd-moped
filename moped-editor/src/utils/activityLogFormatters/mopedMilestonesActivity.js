@@ -18,6 +18,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
       { text: " as a new milestone.", style: null },
     ];
 
+
     return { changeIcon, changeText };
   }
 
