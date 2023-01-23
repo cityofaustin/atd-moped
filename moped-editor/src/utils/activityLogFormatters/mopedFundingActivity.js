@@ -10,35 +10,31 @@ export const formatFundingActivity = (
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
   const changeIcon = <MonetizationOnOutlinedIcon />;
-  let changeText = [{ text: "Project funding updated", style: null }];
+  const changeText = [];
 
   // add a new funding source
   if (change.description.length === 0) {
     changeText = [{ text: "Added a new funding source", style: null }];
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeText = [
-        { text: "Added ", style: null },
-        {
-          text: fundingSources[
-            change.record_data.event.data.new.funding_source_id
-          ],
-          style: "boldText",
-        },
-        { text: " as a new funding source." },
-      ];
+      changeText.push({ text: "Added ", style: null });
+      changeText.push({
+        text: fundingSources[
+          change.record_data.event.data.new.funding_source_id
+        ],
+        style: "boldText",
+      });
+      changeText.push({ text: " as a new funding source.", style: null });
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeText = [
-        { text: "Added ", style: null },
-        {
-          text: fundingPrograms[
-            change.record_data.event.data.new.funding_program_id
-          ],
-          style: "boldText",
-        },
-        { text: " as a new funding source." },
-      ];
+      changeText.push({ text: "Added ", style: null });
+      changeText.push({
+        text: fundingPrograms[
+          change.record_data.event.data.new.funding_program_id
+        ],
+        style: "boldText",
+      });
+      changeText.push({ text: " as a new funding source.", style: null });
     }
     return { changeIcon, changeText };
   }
@@ -48,26 +44,22 @@ export const formatFundingActivity = (
     changeText = [{ text: "Deleted a funding source", style: null }];
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeText = [
-        { text: "Deleted a funding source: ", style: null },
-        {
-          text: fundingSources[
-            change.record_data.event.data.new.funding_source_id
-          ],
-          style: "boldText",
-        },
-      ];
+      changeText.push({ text: "Deleted a funding source: ", style: null });
+      changeText.push({
+        text: fundingSources[
+          change.record_data.event.data.new.funding_source_id
+        ],
+        style: "boldText",
+      });
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeText = [
-        { text: "Deleted a funding source: ", style: null },
-        {
-          text: fundingPrograms[
-            change.record_data.event.data.new.funding_program_id
-          ],
-          style: "boldText",
-        },
-      ];
+      changeText.push({ text: "Deleted a funding source: ", style: null });
+      changeText.push({
+        text: fundingPrograms[
+          change.record_data.event.data.new.funding_program_id
+        ],
+        style: "boldText",
+      });
     }
     return { changeIcon, changeText };
   }
@@ -91,13 +83,14 @@ export const formatFundingActivity = (
     }
   });
 
-  changeText = [
-    { text: "Edited a funding source by updating the ", style: null },
-    {
-      text: changes.join(", "),
-      style: "boldText",
-    },
-  ];
+  changeText.push({
+    text: "Edited a funding source by updating the ",
+    style: null,
+  });
+  changeText.push({
+    text: changes.join(", "),
+    style: "boldText",
+  });
 
   return { changeIcon, changeText };
 };
