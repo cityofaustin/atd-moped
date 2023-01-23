@@ -3,7 +3,6 @@ import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/Pr
 
 export const formatProjectActivity = (change, entityList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
-  let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
   let changeText = [{ text: "Project updated", style: null }];
 
