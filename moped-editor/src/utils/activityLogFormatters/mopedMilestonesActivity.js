@@ -1,10 +1,7 @@
-import EventNoteIcon from '@material-ui/icons/EventNote';
+import EventNoteIcon from "@material-ui/icons/EventNote";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatMilestonesActivity = (
-  change,
-  milestoneList
-) => {
+export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
   const changeIcon = <EventNoteIcon />;
@@ -14,7 +11,7 @@ export const formatMilestonesActivity = (
   // add a new milestone
   if (change.description.length === 0) {
     changeDescription = "Added a new milestone: ";
-    changeValue = milestoneList[change.record_data.event.data.new.milestone_id]
+    changeValue = milestoneList[change.record_data.event.data.new.milestone_id];
 
     return { changeIcon, changeDescription, changeValue };
   }
@@ -32,14 +29,14 @@ export const formatMilestonesActivity = (
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
 
-  console.log(newRecord, oldRecord)
-
   let changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-      changes.push(entryMap.fields[field].label);
-    })
+    if (newRecord[field] !== oldRecord[field]) {
+      changes.push(entryMap.fields[field]?.label);
+    }
+  });
 
   // todo: add the milestone name
   changeDescription = "Edited a milestone's ";
