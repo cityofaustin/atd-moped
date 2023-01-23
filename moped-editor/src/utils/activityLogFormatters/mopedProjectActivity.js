@@ -5,20 +5,26 @@ export const formatProjectActivity = (change, entityList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
   let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
-  let changeValue = "";
+  let changeText = [{ text: "Project updated", style: null }];
 
   const changeData = change.record_data.event.data;
 
   // Project creation
   if (change.description.length === 0) {
-    changeDescription = "Created project as ";
-    changeValue = changeData.new.project_name;
+    changeText = [
+      { text: "Created project as ", style: null },
+      { text: changeData.new.project_name, style: "boldText" },
+    ];
     changeIcon = <BeenhereOutlinedIcon />;
-    return { changeIcon, changeDescription, changeValue };
+    return { changeIcon, changeText };
   }
 
   // the field that was changed in the activity
   const changedField = change.description[0].field;
+
+  if (!changedField) {
+    return { changeIcon, changeText };
+  }
 
   // need to use a lookup table
   if (entryMap.fields[changedField]?.lookup) {
@@ -29,40 +35,68 @@ export const formatProjectActivity = (change, entityList) => {
       changeData.old === 0 ||
       changeData.old[changedField] === 0
     ) {
-      changeDescription = `Added "${
-        entityList[change.description[0].new]
-      }" as `;
-      changeValue = entryMap.fields[changedField].label;
-      return { changeIcon, changeDescription, changeValue };
+      changeText = [
+        {
+          text: `Added "${entityList[change.description[0].new]}" as `,
+          style: null,
+        },
+        { text: entryMap.fields[changedField].label, style: "boldText" },
+      ];
+
+      return { changeIcon, changeText };
     }
 
     // if the new field is null or undefined, its because something was removed
     if (!entityList[changeData.new[changedField]]) {
-      changeDescription = `Removed ${entryMap.fields[changedField].label} `;
-      changeValue = "";
-      return { changeIcon, changeDescription, changeValue };
+      changeText = [
+        {
+          text: `Removed ${entryMap.fields[changedField].label} `,
+          style: null,
+        },
+      ];
+      return { changeIcon, changeText };
     }
 
     // Changing a field, but need to use lookup table to display
-    changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
-    changeValue = entityList[changeData.new[changedField]];
-  } else {
+    changeText = [
+      {
+        text: `Changed "${entryMap.fields[changedField].label}" to `,
+        style: null,
+      },
+      { text: entityList[changeData.new[changedField]], style: "boldText" },
+    ];
+  }
+  // we dont need the lookup table
+  else {
     // If the update is an object, show just the field name that was updated.
     if (typeof changeData.new[changedField] === "object") {
-      changeDescription = `Changed ${entryMap.fields[changedField].label}`;
-      changeValue = "";
-      return { changeIcon, changeDescription, changeValue };
+      changeText = [
+        {
+          text: `Changed ${entryMap.fields[changedField].label} `,
+          style: null,
+        },
+      ];
+      return { changeIcon, changeText };
     }
 
     // the update can be rendered as a string
-    changeDescription = `
-          Changed ${entryMap.fields[changedField].label}
-          to `;
-    changeValue =
-      changeData.new[changedField].length > 0
+    const changeValue =
+      String(changeData.new[changedField]).length > 0
         ? changeData.new[changedField]
         : "(none)";
-  }
 
-  return { changeIcon, changeDescription, changeValue };
+    changeText = [
+      {
+        text: `
+          Changed ${entryMap.fields[changedField].label}
+          to `,
+        style: null,
+      },
+      {
+        text: changeValue,
+        style: "boldText",
+      },
+    ];
+  }
+  return { changeIcon, changeText };
 };
