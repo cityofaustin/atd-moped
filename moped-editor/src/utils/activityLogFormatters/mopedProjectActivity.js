@@ -42,7 +42,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: `Added "${lookupList[change.description[0].new]}" as `,
+            text: `Added ${lookupList[change.description[0].new]} as `,
             style: null,
           },
           {
@@ -71,7 +71,7 @@ export const formatProjectActivity = (change, lookupList) => {
       changeIcon,
       changeText: [
         {
-          text: `Changed "${entryMap.fields[changedField].label}" to `,
+          text: `Changed ${entryMap.fields[changedField].label} to `,
           style: null,
         },
         {
