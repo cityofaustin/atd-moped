@@ -84,6 +84,7 @@ const useLookupTables = (data) =>
     lookupData.fundingPrograms = {};
     lookupData.fundingStatus = {};
     lookupData.milestoneList ={};
+    lookupData.publicProcessStatusList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -113,6 +114,9 @@ const useLookupTables = (data) =>
       data["moped_milestones"].forEach((milestone) => {
         lookupData.milestoneList[`${milestone.milestone_id}`] = milestone.milestone_name;
       })
+      data["moped_public_process_statuses"].forEach((publicProcessStatus) => {
+        lookupData.publicProcessStatusList[`${publicProcessStatus.id}`] = publicProcessStatus.name;
+      });
     }
 
     return lookupData;

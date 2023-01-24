@@ -1,7 +1,7 @@
 import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatProjectActivity = (change, entityList) => {
+export const formatProjectActivity = (change, lookupList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
   let changeText = [];
