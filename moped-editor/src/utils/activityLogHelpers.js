@@ -12,11 +12,11 @@ export const formatActivityLogEntry = (change, lookupData) => {
   switch (change.record_type) {
     case "moped_project":
       // if the user is changing the public process status id field,
-      // provide the publicProcessStatustList lookup object
+      // provide the publicProcessStatusList lookup object
       if (change?.description[0]?.field === "public_process_status_id") {
         return formatProjectActivity(
           change,
-          lookupData.publicProcessStatustList
+          lookupData.publicProcessStatusList
         );
       }
       // otherwise, provide the entityList lookup object
