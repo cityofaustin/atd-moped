@@ -34,7 +34,7 @@ export const formatProjectActivity = (change, lookupList) => {
       changeData.old[changedField] === 0
     ) {
       changeText.push({
-        text: `Added "${entityList[change.description[0].new]}" as `,
+        text: `Added "${lookupList[change.description[0].new]}" as `,
         style: null,
       });
       changeText.push({
@@ -46,7 +46,7 @@ export const formatProjectActivity = (change, lookupList) => {
     }
 
     // if the new field is null or undefined, its because something was removed
-    if (!entityList[changeData.new[changedField]]) {
+    if (!lookupList[changeData.new[changedField]]) {
       changeText.push({
         text: `Removed ${entryMap.fields[changedField].label} `,
         style: null,
@@ -60,7 +60,7 @@ export const formatProjectActivity = (change, lookupList) => {
       style: null,
     });
     changeText.push({
-      text: entityList[changeData.new[changedField]],
+      text: lookupList[changeData.new[changedField]],
       style: "boldText",
     });
   }
