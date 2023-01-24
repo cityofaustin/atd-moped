@@ -24,7 +24,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
     return { changeIcon, changeDescription, changeValue };
   }
 
-  // Multiple fields in the moped_proj_funding table can be updated at once
+  // Multiple fields in the milestones table can be updated at once
   // We list the fields changed in the activity log, this gathers the fields changed
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
