@@ -5,29 +5,34 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
   const changeIcon = <EventNoteIcon />;
-  const changeText = [];
 
   // add a new milestone
   if (change.description.length === 0) {
-    changeText.push({ text: "Added ", style: null });
-    changeText.push({
-      text: milestoneList[change.record_data.event.data.new.milestone_id],
-      style: "boldText",
-    });
-    changeText.push({ text: " as a new milestone.", style: null });
-
-    return { changeIcon, changeText };
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Added ", style: null },
+        {
+          text: milestoneList[change.record_data.event.data.new.milestone_id],
+          style: "boldText",
+        },
+        { text: " as a new milestone.", style: null },
+      ],
+    };
   }
 
   // delete an existing milestone
   if (change.description[0].field === "is_deleted") {
-    changeText.push({ text: "Deleted the milestone ", style: null });
-    changeText.push({
-      text: milestoneList[change.record_data.event.data.new.milestone_id],
-      style: "boldText",
-    });
-
-    return { changeIcon, changeText };
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Deleted the milestone ", style: null },
+        {
+          text: milestoneList[change.record_data.event.data.new.milestone_id],
+          style: "boldText",
+        },
+      ],
+    };
   }
 
   // Multiple fields in the moped_proj_funding table can be updated at once
@@ -44,16 +49,19 @@ export const formatMilestonesActivity = (change, milestoneList) => {
     }
   });
 
-  changeText.push({ text: "Edited the milestone ", style: null });
-  changeText.push({
-    text: milestoneList[change.record_data.event.data.new.milestone_id],
-    style: "boldText",
-  });
-  changeText.push({ text: " by updating the ", style: null });
-  changeText.push({
-    text: changes.join(", "),
-    style: "boldText",
-  });
-
-  return { changeIcon, changeText };
+  return {
+    changeIcon,
+    changeText: [
+      { text: "Edited the milestone ", style: null },
+      {
+        text: milestoneList[change.record_data.event.data.new.milestone_id],
+        style: "boldText",
+      },
+      { text: " by updating the ", style: null },
+      {
+        text: changes.join(", "),
+        style: "boldText",
+      },
+    ],
+  };
 };
