@@ -3711,6 +3711,7 @@
             - knack_project_id
             - fiscal_year
             - work_assignment_id
+            - public_process_status_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
