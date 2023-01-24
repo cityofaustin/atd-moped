@@ -7,9 +7,6 @@ import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 import { Grid, CardContent, CircularProgress } from "@material-ui/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-import ProjectSummaryProjectEntity from "./ProjectSummaryProjectEntity";
-import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
-
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
@@ -20,9 +17,17 @@ import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
+import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
+import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
+
+import {
+  PROJECT_UPDATE_SPONSOR,
+  PROJECT_UPDATE_LEAD,
+  PROJECT_UPDATE_PUBLIC_PROCESS,
+} from "../../../../queries/project";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -167,25 +172,37 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 classes={classes}
               />
               <Grid item xs={12}>
-                <ProjectSummaryProjectEntity
+                <ProjectSummaryAutocomplete
+                  field="Lead"
+                  idColumn={"entity_id"}
+                  nameColumn={"entity_name"}
+                  initialValue={
+                    data?.moped_project[0]?.moped_project_lead
+                  }
+                  optionList={data?.moped_entity ?? []}
+                  updateMutation={PROJECT_UPDATE_LEAD}
+                  tooltipText="Division, department, or organization responsible for successful project implementation"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
-                  entityName="Lead"
-                  tooltipText="Division, department, or organization responsible for successful project implementation"
                 />
               </Grid>
               <Grid item xs={12}>
-                <ProjectSummaryProjectEntity
+                <ProjectSummaryAutocomplete
+                  field="Sponsor"
+                  idColumn={"entity_id"}
+                  nameColumn={"entity_name"}
+                  initialValue={data?.moped_project[0]?.moped_entity}
+                  optionList={data?.moped_entity ?? []}
+                  updateMutation={PROJECT_UPDATE_SPONSOR}
+                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   snackbarHandle={snackbarHandle}
-                  entityName="Sponsor"
-                  tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                 />
               </Grid>
               <Grid item xs={12}>
@@ -200,6 +217,24 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={12}>
                 <ProjectSummaryProjectTypes
+                  projectId={projectId}
+                  data={data}
+                  refetch={refetch}
+                  classes={classes}
+                  snackbarHandle={snackbarHandle}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ProjectSummaryAutocomplete
+                  field="Public process"
+                  idColumn={"id"}
+                  nameColumn={"name"}
+                  initialValue={
+                    data?.moped_project[0]?.moped_public_process_statuses
+                  }
+                  optionList={data?.moped_public_process_statuses ?? []}
+                  updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
+                  tooltipText="Current public phase of a project"
                   projectId={projectId}
                   data={data}
                   refetch={refetch}
