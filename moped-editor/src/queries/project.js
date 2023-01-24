@@ -486,6 +486,10 @@ export const PROJECT_ACTIVITY_LOG = gql`
       phase_id
       phase_name
     }
+    moped_milestones {
+      milestone_id
+      milestone_name
+    }
     moped_tags(order_by: { name: asc }) {
       name
       id

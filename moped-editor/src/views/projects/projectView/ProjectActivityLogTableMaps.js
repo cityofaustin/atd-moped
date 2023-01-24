@@ -122,104 +122,64 @@ export const ProjectActivityLogTableMaps = {
     label: "Milestone",
     fields: {
       milestone_end: {
-        icon: "",
         label: "end date",
-        type: "date",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       project_milestone_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       completed: {
-        icon: "",
         label: "completion",
-        type: "bool",
       },
       is_current_milestone: {
-        icon: "",
         label: "current milestone marker",
-        type: "bool",
       },
       milestone_order: {
-        icon: "",
         label: "order",
-        type: "int4",
       },
       milestone_description: {
-        icon: "",
         label: "description",
-        type: "text",
       },
       milestone_name: {
-        icon: "",
         label: "name",
-        type: "text",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       milestone_privacy: {
-        icon: "",
         label: "privacy flag",
-        type: "bool",
       },
       milestone_start: {
-        icon: "",
         label: "start date",
-        type: "date",
       },
       completion_percentage: {
-        icon: "",
         label: "completion percentage",
-        type: "integer",
       },
       milestone_status: {
-        icon: "",
         label: "status",
-        type: "text",
       },
       milestone_priority: {
-        icon: "",
         label: "priority",
-        type: "integer",
       },
       milestone_date_type: {
-        icon: "",
         label: "date type",
-        type: "text",
       },
       milestone_related_phase_id: {
-        icon: "",
         label: "related phase ID",
-        type: "integer",
       },
       started_by_user_id: {
-        icon: "",
         label: "started by user ID",
-        type: "integer",
       },
       completed_by_user_id: {
-        icon: "",
         label: "completed by user ID",
-        type: "integer",
       },
       milestone_estimate: {
-        icon: "",
-        label: "milestone estimate",
-        type: "timestampz",
+        label: "completion estimate",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
     },
   },
