@@ -10,6 +10,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * One row/entry in the project activity log
+ * @param {changeIcon} Material UI icon component
+ * @param {changeText} - Array of objects of the shape:
+ *  {text: String to display, style: String name of style or null}
+ */
 const ProjectActivityEntry = ({ changeIcon, changeText }) => {
   const classes = useStyles();
   return (
@@ -17,11 +23,14 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
       <Box p={0}>{changeIcon}</Box>
       <Box p={0} flexGrow={1}>
         <Typography variant="body2" className={classes.entryText}>
-          {changeText.map((changeObject) => (
-            <span className={classes[changeObject.style]}>
-              {changeObject.text}
-            </span>
-          ))}
+          {
+            // maps through the array of objects and applies specified style to the text
+            changeText.map((changeObject) => (
+              <span className={classes[changeObject.style]}>
+                {changeObject.text}
+              </span>
+            ))
+          }
         </Typography>
       </Box>
     </Box>
