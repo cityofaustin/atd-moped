@@ -10,61 +10,83 @@ export const formatFundingActivity = (
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
   const changeIcon = <MonetizationOnOutlinedIcon />;
-  const changeText = [];
 
   // add a new funding source
   if (change.description.length === 0) {
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeText.push({ text: "Added ", style: null });
-      changeText.push({
-        text: fundingSources[
-          change.record_data.event.data.new.funding_source_id
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Added ", style: null },
+          {
+            text: fundingSources[
+              change.record_data.event.data.new.funding_source_id
+            ],
+            style: "boldText",
+          },
+          { text: " as a new funding source.", style: null },
         ],
-        style: "boldText",
-      });
-      changeText.push({ text: " as a new funding source.", style: null });
+      };
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeText.push({ text: "Added ", style: null });
-      changeText.push({
-        text: fundingPrograms[
-          change.record_data.event.data.new.funding_program_id
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Added ", style: null },
+          {
+            text: fundingPrograms[
+              change.record_data.event.data.new.funding_program_id
+            ],
+            style: "boldText",
+          },
+          { text: " as a new funding source.", style: null },
         ],
-        style: "boldText",
-      });
-      changeText.push({ text: " as a new funding source.", style: null });
+      };
     } else {
-      changeText.push({ text: "Added a new funding source", style: null });
+      return {
+        changeIcon,
+        changeText: [{ text: "Added a new funding source", style: null }],
+      };
     }
-
-    return { changeIcon, changeText };
   }
 
   // delete an existing record
   if (change.description[0].field === "is_deleted") {
-    // if the added record has a funding source, use that as the change value
+    // if the deleted record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeText.push({ text: "Deleted a funding source: ", style: null });
-      changeText.push({
-        text: fundingSources[
-          change.record_data.event.data.new.funding_source_id
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Deleted a funding source: ", style: null },
+          {
+            text: fundingSources[
+              change.record_data.event.data.new.funding_source_id
+            ],
+            style: "boldText",
+          },
         ],
-        style: "boldText",
-      });
+      };
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeText.push({ text: "Deleted a funding source: ", style: null });
-      changeText.push({
-        text: fundingPrograms[
-          change.record_data.event.data.new.funding_program_id
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Deleted a funding source: ", style: null },
+          {
+            text: fundingPrograms[
+              change.record_data.event.data.new.funding_program_id
+            ],
+            style: "boldText",
+          },
         ],
-        style: "boldText",
-      });
+      };
     } else {
-          changeText.push({ text: "Deleted a funding source", style: null });
+      return {
+        changeIcon,
+        changeText: [{ text: "Deleted a funding source.", style: null }],
+      };
     }
-    return { changeIcon, changeText };
   }
 
   // Multiple fields in the moped_proj_funding table can be updated at once
@@ -86,14 +108,17 @@ export const formatFundingActivity = (
     }
   });
 
-  changeText.push({
-    text: "Edited a funding source by updating the ",
-    style: null,
-  });
-  changeText.push({
-    text: changes.join(", "),
-    style: "boldText",
-  });
-
-  return { changeIcon, changeText };
+  return {
+    changeIcon,
+    changeText: [
+      {
+        text: "Edited a funding source by updating the ",
+        style: null,
+      },
+      {
+        text: changes.join(", "),
+        style: "boldText",
+      },
+    ],
+  };
 };
