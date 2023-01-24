@@ -79,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "25px",
   },
   editDeleteButtons: {
-    color: theme.palette.text.secondary,
+    color: theme.palette.text.primary,
   },
   chip: {
     margin: theme.spacing(0.5),
