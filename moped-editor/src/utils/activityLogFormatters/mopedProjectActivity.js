@@ -1,7 +1,7 @@
 import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatProjectActivity = (change, entityList) => {
+export const formatProjectActivity = (change, lookupList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
   let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
@@ -30,14 +30,14 @@ export const formatProjectActivity = (change, entityList) => {
       changeData.old[changedField] === 0
     ) {
       changeDescription = `Added "${
-        entityList[change.description[0].new]
+        lookupList[change.description[0].new]
       }" as `;
       changeValue = entryMap.fields[changedField].label;
       return { changeIcon, changeDescription, changeValue };
     }
 
     // if the new field is null or undefined, its because something was removed
-    if (!entityList[changeData.new[changedField]]) {
+    if (!lookupList[changeData.new[changedField]]) {
       changeDescription = `Removed ${entryMap.fields[changedField].label} `;
       changeValue = "";
       return { changeIcon, changeDescription, changeValue };
@@ -45,7 +45,7 @@ export const formatProjectActivity = (change, entityList) => {
 
     // Changing a field, but need to use lookup table to display
     changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
-    changeValue = entityList[changeData.new[changedField]];
+    changeValue = lookupList[changeData.new[changedField]];
   } else {
     // If the update is an object, show just the field name that was updated.
     if (typeof changeData.new[changedField] === "object") {

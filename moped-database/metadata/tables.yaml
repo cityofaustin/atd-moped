@@ -3380,6 +3380,9 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
+    - name: moped_public_process_statuses
+      using:
+        foreign_key_constraint_on: public_process_status_id
     - name: moped_user
       using:
         foreign_key_constraint_on: added_by
@@ -3502,6 +3505,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
     - role: moped-editor
       permission:
         check: {}
@@ -3533,6 +3537,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -3564,6 +3569,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -3596,6 +3602,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -3628,6 +3635,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -3661,6 +3669,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
     - role: moped-editor
@@ -3693,6 +3702,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
   event_triggers:
@@ -3724,6 +3734,7 @@
             - knack_project_id
             - fiscal_year
             - work_assignment_id
+            - public_process_status_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -4133,6 +4144,31 @@
           value_from_env: MOPED_API_APIKEY
         - name: MOPED_API_EVENT_NAME
           value: activity_log
+- table:
+    name: moped_public_process_statuses
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
 - table:
     name: moped_subcomponents
     schema: public
