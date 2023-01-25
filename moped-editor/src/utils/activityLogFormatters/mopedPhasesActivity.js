@@ -6,6 +6,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
 
   const changeIcon = <EventNoteIcon />;
 
+  const subphaseObject = {
+    text: ` - ${subphaseList[change.record_data.event.data.new.subphase_id]}`,
+    style: "boldText",
+  };
+
   // add a new phase
   if (change.description.length === 0) {
     return {
@@ -16,16 +21,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
           text: phaseList[change.record_data.event.data.new.phase_id],
           style: "boldText",
         },
-        // include subphase name if a subphase exists
+        // include subphase name if one exists
         ...(subphaseList[change.record_data.event.data.new.subphase_id]
-          ? [
-              {
-                text: ` - ${
-                  subphaseList[change.record_data.event.data.new.subphase_id]
-                }`,
-                style: "boldText",
-              },
-            ]
+          ? [subphaseObject]
           : []),
         { text: " as a new phase.", style: null },
       ],
@@ -42,16 +40,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
           text: phaseList[change.record_data.event.data.new.phase_id],
           style: "boldText",
         },
-        // include subphase name if a subphase exists
+        // include subphase name if one exists
         ...(subphaseList[change.record_data.event.data.new.subphase_id]
-          ? [
-              {
-                text: ` - ${
-                  subphaseList[change.record_data.event.data.new.subphase_id]
-                }`,
-                style: "boldText",
-              },
-            ]
+          ? [subphaseObject]
           : []),
       ],
     };
@@ -79,16 +70,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
         text: phaseList[change.record_data.event.data.new.phase_id],
         style: "boldText",
       },
-      // include subphase name if a subphase exists
+      // include subphase name if one exists
       ...(subphaseList[change.record_data.event.data.new.subphase_id]
-        ? [
-            {
-              text: ` - ${
-                subphaseList[change.record_data.event.data.new.subphase_id]
-              }`,
-              style: "boldText",
-            },
-          ]
+        ? [subphaseObject]
         : []),
       { text: " by updating the ", style: null },
       {
