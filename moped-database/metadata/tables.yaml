@@ -3216,17 +3216,7 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - is_current_phase
-            - date_added
-            - subphase_id
-            - phase_description
-            - project_id
-            - phase_start
-            - is_deleted
-            - phase_end
-            - project_phase_id
-            - phase_id
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
