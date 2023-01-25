@@ -25,7 +25,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
         phaseText,
         // include subphase name if one exists
         ...(subphase ? [subphaseText] : []),
-        { text: " as a new phase.", style: null },
+        { text: " as a new phase", style: null },
       ],
     };
   }

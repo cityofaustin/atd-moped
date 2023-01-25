@@ -394,34 +394,22 @@ export const ProjectActivityLogTableMaps = {
     label: "Component",
     fields: {
       project_id: {
-        icon: "",
         label: "ID",
-        data_type: "int4",
       },
       project_component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "int4",
       },
       component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "integer",
       },
       name: {
-        icon: "",
         label: "name",
-        data_type: "text",
       },
       description: {
-        icon: "",
         label: "description",
-        data_type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
     },
   },
