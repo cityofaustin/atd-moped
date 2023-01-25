@@ -5,7 +5,6 @@ import { formatPhasesActivity } from "./activityLogFormatters/mopedPhasesActivit
 import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestonesActivity";
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
 
-
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeText = [
       {text: "Project was updated", style: null}
@@ -31,7 +30,7 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_tags":
       return formatTagsActivity(change, lookupData.tagList);
     case "moped_proj_funding":
-      return formatFundingActivity(change, lookupData.fundingSources, lookupData.fundingPrograms, "phase");
+      return formatFundingActivity(change, lookupData.fundingSources, lookupData.fundingPrograms);
     case "moped_proj_phases":
       return formatPhasesActivity(change, lookupData.phaseList, lookupData.subphaseList);
     case "moped_proj_milestones":
