@@ -87,6 +87,7 @@ const useLookupTables = (data) =>
     lookupData.milestoneList = {};
     lookupData.publicProcessStatusList = {};
     lookupData.componentList = {};
+    lookupData.projectTypeList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -128,6 +129,10 @@ const useLookupTables = (data) =>
       data["moped_components"].forEach((component) => {
         lookupData.componentList[`${component.component_id}`] =
           component.component_name;
+      });
+      data["moped_types"].forEach((projectType) => {
+        lookupData.projectTypeList[`${projectType.type_id}`] =
+          projectType.type_name;
       });
     }
 
@@ -310,7 +315,8 @@ const ProjectActivityLog = () => {
                           "moped_proj_phases",
                           "moped_proj_milestones",
                           "moped_proj_partners",
-                          "moped_proj_components"
+                          "moped_proj_components",
+                          "moped_project_types",
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
