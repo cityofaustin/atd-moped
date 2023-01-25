@@ -5,11 +5,14 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_phases"];
 
   const changeIcon = <EventNoteIcon />;
-  const phaseId = change.record_data.event.data.new.phase_id
-  const subphaseId = change.record_data.event.data.new.subphase_id
-
-  const subphaseObject = {
-    text: ` - ${subphaseList[subphaseId]}`,
+  const phase = phaseList[change.record_data.event.data.new.phase_id];
+  const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
+  const phaseText = {
+    text: phase,
+    style: "boldText",
+  };
+  const subphaseText = {
+    text: ` - ${subphase}`,
     style: "boldText",
   };
 
@@ -19,14 +22,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
       changeIcon,
       changeText: [
         { text: "Added ", style: null },
-        {
-          text: phaseList[phaseId],
-          style: "boldText",
-        },
+        phaseText,
         // include subphase name if one exists
-        ...(subphaseList[subphaseId]
-          ? [subphaseObject]
-          : []),
+        ...(subphase ? [subphaseText] : []),
         { text: " as a new phase.", style: null },
       ],
     };
@@ -38,14 +36,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
       changeIcon,
       changeText: [
         { text: "Deleted the phase ", style: null },
-        {
-          text: phaseList[phaseId],
-          style: "boldText",
-        },
+        phaseText,
         // include subphase name if one exists
-        ...(subphaseList[subphaseId]
-          ? [subphaseObject]
-          : []),
+        ...(subphase ? [subphaseText] : []),
       ],
     };
   }
@@ -68,14 +61,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     changeIcon,
     changeText: [
       { text: "Edited the phase ", style: null },
-      {
-        text: phaseList[phaseId],
-        style: "boldText",
-      },
+      phaseText,
       // include subphase name if one exists
-      ...(subphaseList[subphaseId]
-        ? [subphaseObject]
-        : []),
+      ...(subphase ? [subphaseText] : []),
       { text: " by updating the ", style: null },
       {
         text: changes.join(", "),
