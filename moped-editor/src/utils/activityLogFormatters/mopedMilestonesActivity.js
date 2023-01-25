@@ -5,23 +5,34 @@ export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
   const changeIcon = <EventNoteIcon />;
-  let changeDescription = "Project milestone updated";
-  let changeValue = "";
 
   // add a new milestone
   if (change.description.length === 0) {
-    changeDescription = "Added a new milestone: ";
-    changeValue = milestoneList[change.record_data.event.data.new.milestone_id];
-
-    return { changeIcon, changeDescription, changeValue };
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Added ", style: null },
+        {
+          text: milestoneList[change.record_data.event.data.new.milestone_id],
+          style: "boldText",
+        },
+        { text: " as a new milestone.", style: null },
+      ],
+    };
   }
 
   // delete an existing milestone
   if (change.description[0].field === "is_deleted") {
-    changeDescription = "Deleted the milestone: ";
-    changeValue = milestoneList[change.record_data.event.data.new.milestone_id];
-
-    return { changeIcon, changeDescription, changeValue };
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Deleted the milestone ", style: null },
+        {
+          text: milestoneList[change.record_data.event.data.new.milestone_id],
+          style: "boldText",
+        },
+      ],
+    };
   }
 
   // Multiple fields in the milestones table can be updated at once
@@ -38,9 +49,19 @@ export const formatMilestonesActivity = (change, milestoneList) => {
     }
   });
 
-  // todo: add the milestone name
-  changeDescription = "Edited a milestone's ";
-  changeValue = changes.join(", ");
-
-  return { changeIcon, changeDescription, changeValue };
+  return {
+    changeIcon,
+    changeText: [
+      { text: "Edited the milestone ", style: null },
+      {
+        text: milestoneList[change.record_data.event.data.new.milestone_id],
+        style: "boldText",
+      },
+      { text: " by updating the ", style: null },
+      {
+        text: changes.join(", "),
+        style: "boldText",
+      },
+    ],
+  };
 };

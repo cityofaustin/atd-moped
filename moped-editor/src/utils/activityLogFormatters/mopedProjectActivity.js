@@ -3,22 +3,31 @@ import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/Pr
 
 export const formatProjectActivity = (change, lookupList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project"];
-  let changeDescription = "Project updated";
   let changeIcon = <span className="material-symbols-outlined">summarize</span>;
-  let changeValue = "";
 
   const changeData = change.record_data.event.data;
 
   // Project creation
   if (change.description.length === 0) {
-    changeDescription = "Created project as ";
-    changeValue = changeData.new.project_name;
     changeIcon = <BeenhereOutlinedIcon />;
-    return { changeIcon, changeDescription, changeValue };
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Created project as ", style: null },
+        { text: changeData.new.project_name, style: "boldText" },
+      ],
+    };
   }
 
   // the field that was changed in the activity
   const changedField = change.description[0].field;
+
+  if (!changedField) {
+    return {
+      changeIcon,
+      changeText: [{ text: "Project updated", style: null }],
+    };
+  }
 
   // need to use a lookup table
   if (entryMap.fields[changedField]?.lookup) {
@@ -29,40 +38,86 @@ export const formatProjectActivity = (change, lookupList) => {
       changeData.old === 0 ||
       changeData.old[changedField] === 0
     ) {
-      changeDescription = `Added "${
-        lookupList[change.description[0].new]
-      }" as `;
-      changeValue = entryMap.fields[changedField].label;
-      return { changeIcon, changeDescription, changeValue };
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: `Added ${lookupList[change.description[0].new]} as `,
+            style: null,
+          },
+          {
+            text: entryMap.fields[changedField].label,
+            style: "boldText",
+          },
+        ],
+      };
     }
 
     // if the new field is null or undefined, its because something was removed
     if (!lookupList[changeData.new[changedField]]) {
-      changeDescription = `Removed ${entryMap.fields[changedField].label} `;
-      changeValue = "";
-      return { changeIcon, changeDescription, changeValue };
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: `Removed ${entryMap.fields[changedField].label} `,
+            style: null,
+          },
+        ],
+      };
     }
 
     // Changing a field, but need to use lookup table to display
-    changeDescription = `Changed ${entryMap.fields[changedField].label} to `;
-    changeValue = lookupList[changeData.new[changedField]];
-  } else {
+    return {
+      changeIcon,
+      changeText: [
+        {
+          text: `Changed ${entryMap.fields[changedField].label} to `,
+          style: null,
+        },
+        {
+          text: lookupList[changeData.new[changedField]],
+          style: "boldText",
+        },
+      ],
+    };
+  }
+  // we dont need the lookup table
+  else {
     // If the update is an object, show just the field name that was updated.
     if (typeof changeData.new[changedField] === "object") {
-      changeDescription = `Changed ${entryMap.fields[changedField].label}`;
-      changeValue = "";
-      return { changeIcon, changeDescription, changeValue };
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: `Changed ${entryMap.fields[changedField].label} `,
+            style: null,
+          },
+        ],
+      };
     }
+    console.log(changeData.new[changedField])
 
     // the update can be rendered as a string
-    changeDescription = `
-          Changed ${entryMap.fields[changedField].label}
-          to `;
-    changeValue =
-      changeData.new[changedField].length > 0
+    const changeValue =
+      // check truthiness to prevent rendering String(null) as "null"
+      !!changeData.new[changedField] &&
+      String(changeData.new[changedField]).length > 0
         ? changeData.new[changedField]
         : "(none)";
+    return {
+      changeIcon,
+      changeText: [
+        {
+          text: `
+          Changed ${entryMap.fields[changedField].label}
+          to `,
+          style: null,
+        },
+        {
+          text: changeValue,
+          style: "boldText",
+        },
+      ],
+    };
   }
-
-  return { changeIcon, changeDescription, changeValue };
 };

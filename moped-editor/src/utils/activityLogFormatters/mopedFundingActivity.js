@@ -10,46 +10,83 @@ export const formatFundingActivity = (
   const entryMap = ProjectActivityLogTableMaps["moped_proj_funding"];
 
   const changeIcon = <MonetizationOnOutlinedIcon />;
-  let changeDescription = "Project funding updated";
-  let changeValue = "";
 
   // add a new funding source
   if (change.description.length === 0) {
-    changeDescription = "Added a new funding source";
     // if the added record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeValue =
-        fundingSources[change.record_data.event.data.new.funding_source_id];
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Added ", style: null },
+          {
+            text: fundingSources[
+              change.record_data.event.data.new.funding_source_id
+            ],
+            style: "boldText",
+          },
+          { text: " as a new funding source.", style: null },
+        ],
+      };
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeValue =
-        fundingPrograms[change.record_data.event.data.new.funding_program_id];
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Added ", style: null },
+          {
+            text: fundingPrograms[
+              change.record_data.event.data.new.funding_program_id
+            ],
+            style: "boldText",
+          },
+          { text: " as a new funding source.", style: null },
+        ],
+      };
+    } else {
+      return {
+        changeIcon,
+        changeText: [{ text: "Added a new funding source", style: null }],
+      };
     }
-    // if we have a change value, tack on a : at the end
-    if (changeValue) {
-      changeDescription = "Added a new funding source: ";
-    }
-    // if there isnt a funding source or program added, then default to ""
-    return { changeIcon, changeDescription, changeValue };
   }
 
   // delete an existing record
   if (change.description[0].field === "is_deleted") {
-    changeDescription = "Deleted a funding source";
-    // if the added record has a funding source, use that as the change value
+    // if the deleted record has a funding source, use that as the change value
     if (change.record_data.event.data.new.funding_source_id) {
-      changeValue =
-        fundingSources[change.record_data.event.data.new.funding_source_id];
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Deleted a funding source: ", style: null },
+          {
+            text: fundingSources[
+              change.record_data.event.data.new.funding_source_id
+            ],
+            style: "boldText",
+          },
+        ],
+      };
       // if not, then check if theres a funding program
     } else if (change.record_data.event.data.new.funding_program_id) {
-      changeValue =
-        fundingPrograms[change.record_data.event.data.new.funding_program_id];
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Deleted a funding source: ", style: null },
+          {
+            text: fundingPrograms[
+              change.record_data.event.data.new.funding_program_id
+            ],
+            style: "boldText",
+          },
+        ],
+      };
+    } else {
+      return {
+        changeIcon,
+        changeText: [{ text: "Deleted a funding source.", style: null }],
+      };
     }
-    // if we have a change value, tack on a : at the end
-    if (changeValue) {
-      changeDescription = "Deleted a funding source: ";
-    }
-    return { changeIcon, changeDescription, changeValue };
   }
 
   // Multiple fields in the moped_proj_funding table can be updated at once
@@ -64,15 +101,24 @@ export const formatFundingActivity = (
     // typeof(null) === "object", check that field is not null before checking if object
     if (!!newRecord[field] && typeof newRecord[field] === "object") {
       if (!isEqual(newRecord[field], oldRecord[field])) {
-        changes.push(entryMap.fields[field].label);
+        changes.push(entryMap.fields[field]?.label);
       }
     } else if (newRecord[field] !== oldRecord[field]) {
-      changes.push(entryMap.fields[field].label);
+      changes.push(entryMap.fields[field]?.label);
     }
   });
 
-  changeDescription = "Edited a funding source ";
-  changeValue = changes.join(", ");
-
-  return { changeIcon, changeDescription, changeValue };
+  return {
+    changeIcon,
+    changeText: [
+      {
+        text: "Edited a funding source by updating the ",
+        style: null,
+      },
+      {
+        text: changes.join(", "),
+        style: "boldText",
+      },
+    ],
+  };
 };
