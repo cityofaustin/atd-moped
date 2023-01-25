@@ -5,9 +5,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_phases"];
 
   const changeIcon = <EventNoteIcon />;
+  const phaseId = change.record_data.event.data.new.phase_id
+  const subphaseId = change.record_data.event.data.new.subphase_id
 
   const subphaseObject = {
-    text: ` - ${subphaseList[change.record_data.event.data.new.subphase_id]}`,
+    text: ` - ${subphaseList[subphaseId]}`,
     style: "boldText",
   };
 
@@ -18,11 +20,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
       changeText: [
         { text: "Added ", style: null },
         {
-          text: phaseList[change.record_data.event.data.new.phase_id],
+          text: phaseList[phaseId],
           style: "boldText",
         },
         // include subphase name if one exists
-        ...(subphaseList[change.record_data.event.data.new.subphase_id]
+        ...(subphaseList[subphaseId]
           ? [subphaseObject]
           : []),
         { text: " as a new phase.", style: null },
@@ -37,11 +39,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
       changeText: [
         { text: "Deleted the phase ", style: null },
         {
-          text: phaseList[change.record_data.event.data.new.phase_id],
+          text: phaseList[phaseId],
           style: "boldText",
         },
         // include subphase name if one exists
-        ...(subphaseList[change.record_data.event.data.new.subphase_id]
+        ...(subphaseList[subphaseId]
           ? [subphaseObject]
           : []),
       ],
@@ -67,11 +69,11 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     changeText: [
       { text: "Edited the phase ", style: null },
       {
-        text: phaseList[change.record_data.event.data.new.phase_id],
+        text: phaseList[phaseId],
         style: "boldText",
       },
       // include subphase name if one exists
-      ...(subphaseList[change.record_data.event.data.new.subphase_id]
+      ...(subphaseList[subphaseId]
         ? [subphaseObject]
         : []),
       { text: " by updating the ", style: null },
