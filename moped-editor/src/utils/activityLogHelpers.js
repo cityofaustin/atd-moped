@@ -6,6 +6,7 @@ import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestone
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
 import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
 import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProjectTypesActivity";
+import { formatFilesActivity } from "./activityLogFormatters/mopedFilesActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeText = [
@@ -43,6 +44,8 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatComponentsActivity(change, lookupData.componentList);
     case "moped_project_types":
       return formatProjectTypesActivity(change, lookupData.projectTypeList);
+    case "moped_project_files":
+      return formatFilesActivity(change, lookupData.fileList);
     default:
       return { changeIcon, changeText };
   }
