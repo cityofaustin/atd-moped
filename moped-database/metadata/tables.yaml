@@ -704,6 +704,31 @@
         filter: {}
         check: {}
 - table:
+    name: layer_council_district
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
+- table:
     name: moped_activity_log
     schema: public
   object_relationships:
