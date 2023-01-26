@@ -206,7 +206,7 @@ export const ProjectActivityLogTableMaps = {
         label: "note",
       },
       is_deleted: {
-        label: "is deleted",,
+        label: "is deleted",
       },
       added_by_user_id: {
         label: "added by user ID",
@@ -615,35 +615,13 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_tags: {
     fields: {
       tag_id: {
-        icon: "",
         label: "Tag ID",
-        data_type: "integer",
-        lookup: {
-          table: "moped_tags",
-          fieldLabel: "id",
-          fieldValues: ["name"],
-        },
       },
     },
   },
 };
 
 export const ProjectActivityLogOperationMaps = {
-  moped_project: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Created",
-      icon: "beenhere",
-    },
-    UPDATE: {
-      label: "Update",
-      icon: "create",
-    },
-  },
-
   moped_proj_personnel: {
     DELETE: {
       label: "Removed",
@@ -658,22 +636,6 @@ export const ProjectActivityLogOperationMaps = {
       icon: "create",
     },
   },
-
-  moped_proj_phases: {
-    DELETE: {
-      label: "Removed",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "event",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-
   moped_project_files: {
     DELETE: {
       label: "Deleted",
@@ -688,7 +650,6 @@ export const ProjectActivityLogOperationMaps = {
       icon: "create",
     },
   },
-
   generic: {
     DELETE: {
       label: "Deleted",
@@ -716,67 +677,9 @@ export const ProjectActivityLogCreateDescriptions = {
     label: (record, userList) =>
       userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
   },
-  moped_proj_phases: {
-    label: (record, userList, phaseList) => {
-      const recordData = record.record_data.event.data.new;
-      const phaseName = phaseList[recordData?.phase_id] ?? "";
-      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
-    },
-  },
   moped_project_files: {
     label: (record) =>
       `New file '${record.record_data.event.data.new.file_name}'`,
-  },
-  moped_proj_milestones: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(
-          record.record_data.event.data.new.milestone_description,
-          true
-        ) + " as a new milestone"
-      );
-    },
-  },
-  moped_proj_notes: {
-    label: (record, userList) => {
-      // remove HTML tags
-      const note = record.record_data.event.data.new.project_note.replace(
-        /(<([^>]+)>)/gi,
-        ""
-      );
-
-      const shortNote =
-        note.length > 30 ? note.substr(0, 30).trim() + "..." : note.trim();
-
-      return fieldFormat(shortNote, true) + " as a new note";
-    },
-  },
-  moped_proj_partners: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.partner_name, true) +
-        " as a new partner"
-      );
-    },
-  },
-  moped_proj_components: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.description, true) +
-        " as a new component"
-      );
-    },
-  },
-  moped_proj_funding: {
-    label: (record, userList) => {
-      //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
-      return (
-        "A new funding source" +
-        (record.record_data.event.data.new.funding_description
-          ? ": " + record.record_data.event.data.new.funding_description
-          : "")
-      );
-    },
   },
   generic: {
     label: (record) => {
