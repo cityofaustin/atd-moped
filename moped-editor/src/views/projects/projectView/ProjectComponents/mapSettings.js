@@ -23,7 +23,7 @@ export const SOURCES = {
       name: "CTN_Intersections_MOPED_FS",
       layerId: 0,
     },
-    _featureIdProp: "INTERSECTION_ID",
+    _featureIdProp: "INTERSECTIONID",
     minZoom: MIN_SELECT_FEATURE_ZOOM,
     table: "feature_intersections",
   },
