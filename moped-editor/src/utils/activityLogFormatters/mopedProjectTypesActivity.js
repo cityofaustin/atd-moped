@@ -1,8 +1,6 @@
 import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
-import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatProjectTypesActivity = (change, projectTypeList) => {
-  const entryMap = ProjectActivityLogTableMaps["moped_project_types"];
 
   const changeIcon = <BeenhereOutlinedIcon />;
   const projectType =
