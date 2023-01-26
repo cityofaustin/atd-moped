@@ -22,6 +22,19 @@ export const formatNotesActivity = (change, entityList) => {
     };
   }
 
+  if (change.description[0].field === "is_deleted") {
+    return {
+      changeIcon,
+      changeText: [
+        {
+          text:
+            noteType === 2 ? "Deleted a status update " : "Deleted a comment ",
+          style: null,
+        },
+      ],
+    };
+  }
+
   return {
     changeIcon,
     changeText: [
