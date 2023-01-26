@@ -238,7 +238,6 @@ export default function TheMap({
             feature?.[databaseTableId] !== featureUniqueId && // Already in database
             feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
         );
-        console.log({ clickedFeature, tableToInsert, filteredFeatures });
 
         return {
           ...currentComponent,
