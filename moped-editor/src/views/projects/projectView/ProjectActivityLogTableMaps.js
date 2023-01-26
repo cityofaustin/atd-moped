@@ -191,44 +191,28 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
-        icon: "",
         label: "added by",
-        type: "bpchar",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       project_note_id: {
-        icon: "",
         label: "note ID",
-        type: "int4",
       },
       date_created: {
-        icon: "",
         label: "date created",
-        type: "timestamptz",
       },
       project_note: {
-        icon: "",
         label: "note",
-        type: "text",
       },
       is_deleted: {
-        icon: "",
-        label: "is deleted",
-        type: "boolean",
+        label: "is deleted",,
       },
       added_by_user_id: {
-        icon: "",
         label: "added by user ID",
-        type: "integer",
       },
       project_note_type: {
-        icon: "",
         label: "note type",
-        type: "integer",
       },
     },
   },
