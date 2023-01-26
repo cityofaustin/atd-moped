@@ -126,8 +126,11 @@ const useLookupTables = (data) =>
           publicProcessStatus.name;
       });
       data["moped_components"].forEach((component) => {
-        lookupData.componentList[`${component.component_id}`] =
-          component.component_name;
+        lookupData.componentList[`${component.component_id}`] = `${
+          component.component_name
+        }${
+          component.component_subtype ? ` - ${component.component_subtype}` : ""
+        }`;
       });
     }
 
@@ -310,7 +313,7 @@ const ProjectActivityLog = () => {
                           "moped_proj_phases",
                           "moped_proj_milestones",
                           "moped_proj_partners",
-                          "moped_proj_components"
+                          "moped_proj_components",
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
