@@ -20,7 +20,7 @@ export const SOURCES = {
   "ATD_ADMIN.CTN_Intersections": {
     id: "ctn-points",
     featureService: {
-      name: "LOCATION_coa_intersection_points",
+      name: "CTN_Intersections_MOPED_FS",
       layerId: 0,
     },
     _featureIdProp: "INTERSECTION_ID",
