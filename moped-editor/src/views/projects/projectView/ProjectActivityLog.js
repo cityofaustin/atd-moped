@@ -25,6 +25,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
@@ -33,7 +34,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import { formatRelativeDate } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ProjectActivityEntry";
 
@@ -232,13 +233,13 @@ const ProjectActivityLog = () => {
               <TableHead>
                 <TableRow>
                   <TableCell align="left" className={classes.boldText}>
-                    Date
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
                     User
                   </TableCell>
                   <TableCell align="left" className={classes.boldText}>
                     Change
+                  </TableCell>
+                  <TableCell align="left" className={classes.boldText}>
+                    Date
                   </TableCell>
                   <TableCell align="left" />
                 </TableRow>
@@ -251,15 +252,6 @@ const ProjectActivityLog = () => {
                   );
                   return (
                     <TableRow key={change.activity_id}>
-                      <TableCell
-                        align="left"
-                        component="th"
-                        scope="row"
-                        width="5%"
-                        className={classes.tableCell}
-                      >
-                        {formatTimeStampTZType(change.created_at)}
-                      </TableCell>
                       <TableCell
                         align="left"
                         width="15%"
@@ -400,6 +392,20 @@ const ProjectActivityLog = () => {
                             </Box>
                           </Box>
                         )}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        width="5%"
+                        className={classes.tableCell}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        <Tooltip
+                          title={new Date(change.created_at).toLocaleString()}
+                        >
+                          <span>{formatRelativeDate(change.created_at)}</span>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );
