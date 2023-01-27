@@ -9,7 +9,7 @@ $ npm install
 
 2. Save `secrets_template.js` as `secrets.js`. Optional add secrets for `staging` or `prod`
 
-3. Download the latest council districts
+3. Download the latest council districts - they will be saved to data/council_districts.geojson
 
 ```shell
 $ node process_districts.js
