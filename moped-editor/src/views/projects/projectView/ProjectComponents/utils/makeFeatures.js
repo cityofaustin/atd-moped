@@ -18,7 +18,7 @@ export const featureTableFieldMap = {
     // name: NULL
   },
   feature_intersections: {
-    intersection_id: "COA_INTERSECTION_POINTS_ID",
+    intersection_id: "INTERSECTIONID",
     // project_extent_id: NULL,
     // name: NULL
   },
