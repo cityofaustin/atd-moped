@@ -43,7 +43,7 @@ export const MAP_STYLES = {
     isInteractive: true,
     layerProps: {
       id: "project-points",
-      _featureIdProp: "INTERSECTION_ID",
+      _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
@@ -79,7 +79,7 @@ export const MAP_STYLES = {
     isInteractive: false,
     layerProps: {
       id: "project-points-muted",
-      _featureIdProp: "INTERSECTION_ID",
+      _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
@@ -232,7 +232,7 @@ export const MAP_STYLES = {
     layerProps: {
       id: "ctn-points",
       type: "circle",
-      _featureIdProp: "INTERSECTION_ID",
+      _featureIdProp: "INTERSECTIONID",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-opacity": 0.4,
@@ -254,7 +254,7 @@ export const MAP_STYLES = {
     layerProps: {
       id: "ctn-points-underlay",
       type: "circle",
-      _featureIdProp: "INTERSECTION_ID",
+      _featureIdProp: "INTERSECTIONID",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
         "circle-stroke-opacity": 0,

@@ -335,104 +335,58 @@ export const ProjectActivityLogTableMaps = {
     label: "Phases",
     fields: {
       phase_order: {
-        icon: "",
         label: "order",
-        type: "int4",
       },
       phase_id: {
-        icon: "",
         label: "phase",
-        type: "integer",
-        lookup: {
-          table: "moped_phases",
-          fieldLabel: "phase_id",
-          fieldValues: ["phase_name"],
-        },
       },
       phase_description: {
-        icon: "",
         label: "description",
-        type: "text",
       },
       completion_percentage: {
-        icon: "",
         label: "completion percentage",
-        type: "int4",
       },
       phase_status: {
-        icon: "",
         label: "status",
-        type: "text",
       },
       phase_privacy: {
-        icon: "",
         label: "privacy",
-        type: "bool",
       },
       phase_start: {
-        icon: "",
         label: "start date",
-        type: "date",
       },
       phase_end: {
-        icon: "",
         label: "end date",
-        type: "date",
       },
       phase_priority: {
-        icon: "",
         label: "priority",
-        type: "int4",
       },
       is_current_phase: {
-        icon: "",
         label: "current phase marker",
-        type: "bool",
       },
       completed: {
-        icon: "",
         label: "completed",
-        type: "bool",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       started_by_user_id: {
-        icon: "",
         label: "started by user ID",
-        type: "int4",
       },
       completed_by_user_id: {
-        icon: "",
         label: "completed by user ID",
-        type: "int4",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       project_phase_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
       subphase_id: {
-        icon: "",
-        label: "subphase ID",
-        type: "integer",
-        lookup: {
-          table: "moped_subphases",
-          fieldLabel: "subphase_id",
-          fieldValues: ["subphase_name"],
-        },
+        label: "subphase",
       },
     },
   },

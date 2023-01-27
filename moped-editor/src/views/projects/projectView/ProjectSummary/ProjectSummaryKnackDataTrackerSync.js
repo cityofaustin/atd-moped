@@ -191,16 +191,17 @@ const ProjectSummaryKnackDataTrackerSync = ({
             project_id: project.project_id,
             knack_id: knackRecord.record.id,
           },
-        });
-      })
-      .then(() => refetch()) // ask the application to update its status from our graphql endpoint
-      .then(() => {
-        // End of the chain; advise the user of success
-        snackbarHandle(
-          true,
-          "Success: Project data synchronized with Data Tracker",
-          "success"
-        );
+        })
+          // ask the application to update its status from our graphql endpoint
+          .then(() => refetch())
+          .then(() =>
+            // End of the chain; advise the user of success
+            snackbarHandle(
+              true,
+              "Success: Project data synchronized with Data Tracker",
+              "success"
+            )
+          );
       })
       .catch((error) => {
         // Failure, alert the user that we've encountered an error
