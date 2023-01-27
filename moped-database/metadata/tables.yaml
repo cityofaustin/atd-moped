@@ -3030,7 +3030,7 @@
         timeout_sec: 60
       webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
+        - name: x-hasura-admin-secret
           value_from_env: ACTIVITY_LOG_API_SECRET
       request_transform:
         body:
