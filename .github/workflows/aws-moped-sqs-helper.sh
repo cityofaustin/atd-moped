@@ -178,4 +178,3 @@ function deploy_event_function {
   cd $MAIN_DIR;
   echo "Exit, current path: ${PWD}";
 }
-
