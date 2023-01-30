@@ -276,38 +276,26 @@ export const ProjectActivityLogTableMaps = {
     label: "Team",
     fields: {
       added_by: {
-        icon: "",
         label: "added by",
-        type: "int4",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       project_personnel_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       notes: {
-        icon: "",
         label: "notes",
-        type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        type: "boolean",
         map: {
           true: "Inactive",
           false: "Active",
         },
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       role_id: {
         icon: "",

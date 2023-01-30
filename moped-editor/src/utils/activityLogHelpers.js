@@ -39,7 +39,7 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_partners":
       return formatPartnersActivity(change, lookupData.entityList);
     case "moped_proj_personnel":
-      return formatPersonnelActivity(change);
+      return formatPersonnelActivity(change, lookupData.userList);
     default:
       return { changeIcon, changeText };
   }
