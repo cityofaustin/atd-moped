@@ -24,7 +24,6 @@ import tasks.ecs as ecs
 import tasks.api as api
 import tasks.database as db
 import tasks.netlify as netlify
-import tasks.activity_log as activity_log
 import tasks.migrations as migrations
 
 from prefect.executors import DaskExecutor
@@ -267,15 +266,6 @@ with Flow("Moped Test Instance Commission") as test_commission:
     build = netlify.trigger_netlify_build(slug=slug, api_endpoint_url=api_endpoint)
     netlify_is_ready = netlify.netlify_check_build(slug=slug, build_token=build)
 
-    ## Commission the Activity Log
-
-    # commission_activity_log_command = activity_log.create_activity_log_command(
-    #     slug=slug, upstream_tasks=[git_repo_checked_out]
-    # )
-    # deploy_activity_log = activity_log.create_activity_log_task(
-    #     command=commission_activity_log_command
-    # )
-
     ## Apply Migrations, metadata and optional seed data
     graphql_endpoint = "https://" + migrations.get_graphql_engine_hostname(slug=slug)
 
@@ -323,14 +313,6 @@ with Flow("Moped Test Instance Commission") as test_commission:
 with Flow("Moped Test Instance Decommission") as test_decommission:
     branch = Parameter("branch")
     slug = slug_branch_name(branch)
-
-    # Reap Activity Log
-
-    remove_activity_log_sqs = activity_log.remove_activity_log_sqs(slug=slug)
-
-    remove_activity_log_lambda = activity_log.remove_activity_log_lambda(
-        slug=slug, upstream_tasks=[remove_activity_log_sqs]
-    )
 
     # Reap ECS
 
