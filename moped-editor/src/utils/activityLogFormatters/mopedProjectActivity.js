@@ -95,9 +95,12 @@ export const formatProjectActivity = (change, lookupList) => {
         ],
       };
     }
+    console.log(changeData.new[changedField])
 
     // the update can be rendered as a string
     const changeValue =
+      // check truthiness to prevent rendering String(null) as "null"
+      !!changeData.new[changedField] &&
       String(changeData.new[changedField]).length > 0
         ? changeData.new[changedField]
         : "(none)";

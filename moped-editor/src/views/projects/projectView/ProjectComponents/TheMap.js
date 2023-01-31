@@ -196,6 +196,7 @@ export default function TheMap({
     if (isDrawnExistingFeature(clickedFeature)) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
+    const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
 
     const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
@@ -219,7 +220,7 @@ export default function TheMap({
       const isFeatureAlreadyInComponent = Boolean(
         currentComponent[tableToInsert].find(
           (feature) =>
-            feature?.[sourceFeatureId.toLowerCase()] === featureUniqueId || // Already in database
+            feature?.[databaseTableId] === featureUniqueId || // Already in database
             feature?.properties?.[sourceFeatureId] === featureUniqueId // From CTN layers
         )
       );
@@ -234,7 +235,7 @@ export default function TheMap({
       } else if (isFeatureAlreadyInComponent) {
         const filteredFeatures = currentComponent[tableToInsert].filter(
           (feature) =>
-            feature?.[sourceFeatureId.toLowerCase()] !== featureUniqueId && // Already in database
+            feature?.[databaseTableId] !== featureUniqueId && // Already in database
             feature?.properties?.[sourceFeatureId] !== featureUniqueId // From CTN layers
         );
 

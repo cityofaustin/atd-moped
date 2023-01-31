@@ -127,8 +127,11 @@ const useLookupTables = (data) =>
           publicProcessStatus.name;
       });
       data["moped_components"].forEach((component) => {
-        lookupData.componentList[`${component.component_id}`] =
-          component.component_name;
+        lookupData.componentList[`${component.component_id}`] = `${
+          component.component_name
+        }${
+          component.component_subtype ? ` - ${component.component_subtype}` : ""
+        }`;
       });
       data["moped_types"].forEach((projectType) => {
         lookupData.projectTypeList[`${projectType.type_id}`] =
