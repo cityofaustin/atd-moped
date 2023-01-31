@@ -402,7 +402,6 @@ def set_sponsor_and_partners(projects, entities_index):
         if partner:
             entity = entities_index[partner]
             new_partner = {}
-            new_partner["partner_name"] = entity["entity_name"]
             new_partner["entity_id"] = entity["entity_id"]
             new_partner["status_id"] = 1
             project["moped_proj_partners"] = [new_partner]
