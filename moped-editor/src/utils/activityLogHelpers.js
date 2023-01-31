@@ -5,6 +5,7 @@ import { formatPhasesActivity } from "./activityLogFormatters/mopedPhasesActivit
 import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestonesActivity";
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
 import { formatNotesActivity } from "./activityLogFormatters/mopedNotesActivity";
+import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeText = [{ text: "Project was updated", style: null }];
@@ -46,6 +47,8 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatPartnersActivity(change, lookupData.entityList);
     case "moped_proj_notes":
       return formatNotesActivity(change);
+    case "moped_proj_components":
+      return formatComponentsActivity(change, lookupData.componentList);
     default:
       return { changeIcon, changeText };
   }
