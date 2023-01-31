@@ -710,12 +710,6 @@ export const ProjectActivityLogCreateDescriptions = {
       return fieldFormat(shortNote, true) + " as a new note";
     },
   },
-  moped_proj_partners: {
-    label: (record, userList) => {
-      // temporary, need to determine a way to display new partner id
-      return "New partner added";
-    },
-  },
   moped_proj_components: {
     label: (record, userList) => {
       return (
