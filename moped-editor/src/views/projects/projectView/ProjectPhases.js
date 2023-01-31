@@ -173,9 +173,7 @@ const ProjectPhases = ({
         rowData.phase_start
           ? format(parseISO(rowData.phase_start), "MM/dd/yyyy")
           : undefined,
-      editComponent: (props) => (
-        <DateFieldEditComponent {...props} name="phase_start" label="Start" />
-      ),
+      editComponent: (props) => <DateFieldEditComponent {...props} />,
       width: "10%",
     },
     {
@@ -185,9 +183,7 @@ const ProjectPhases = ({
         rowData.phase_end
           ? format(parseISO(rowData.phase_end), "MM/dd/yyyy")
           : undefined,
-      editComponent: (props) => (
-        <DateFieldEditComponent {...props} name="phase_end" label="End" />
-      ),
+      editComponent: (props) => <DateFieldEditComponent {...props} />,
       width: "10%",
     },
     {
@@ -262,8 +258,6 @@ const ProjectPhases = ({
 
           const newPhasePayload = {
             project_id: projectId,
-            completion_percentage: 0,
-            completed: false,
             phase_id: moped_phase.phase_id,
             ...rest,
           };

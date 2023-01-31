@@ -4,4 +4,4 @@ RUN apt-get install -y python3 python3-pip aptitude magic-wormhole vim python3-p
 WORKDIR /tmp
 COPY ./requirements.txt /tmp/requirements.txt
 RUN pip install -r requirements.txt
-WORKDIR /root/app
+WORKDIR /app

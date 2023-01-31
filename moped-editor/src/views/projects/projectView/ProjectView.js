@@ -35,7 +35,7 @@ import { Alert } from "@material-ui/lab";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
-import ProjectComponents from "./ProjectComponents";
+import MapView from "./ProjectComponents/index";
 import ProjectFunding from "./ProjectFunding";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
@@ -130,7 +130,7 @@ function useQueryParams() {
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
-  { label: "Map", Component: ProjectComponents, param: "map" },
+  { label: "Map", Component: MapView, param: "map" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Funding", Component: ProjectFunding, param: "funding" },
@@ -534,6 +534,9 @@ const ProjectView = () => {
                           data={data}
                           error={error}
                           refetch={refetch}
+                          projectName={data.moped_project[0].project_name}
+                          phaseKey={currentPhase?.phase_key}
+                          phaseName={currentPhase?.phase_name}
                         />
                       </TabPanel>
                     );
