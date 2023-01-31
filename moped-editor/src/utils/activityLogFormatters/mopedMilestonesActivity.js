@@ -16,7 +16,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
           text: milestoneList[change.record_data.event.data.new.milestone_id],
           style: "boldText",
         },
-        { text: " as a new milestone.", style: null },
+        { text: " as a new milestone", style: null },
       ],
     };
   }
