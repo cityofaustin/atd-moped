@@ -521,6 +521,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
     moped_components(order_by: {component_id: asc}) {
       component_id
       component_name
+      component_subtype
     }
     moped_types(order_by: {type_id: asc}) {
       type_id

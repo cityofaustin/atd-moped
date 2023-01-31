@@ -25,8 +25,8 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
         <Typography variant="body2" className={classes.entryText}>
           {
             // maps through the array of objects and applies specified style to the text
-            changeText.map((changeObject) => (
-              <span className={classes[changeObject.style]}>
+            changeText.map((changeObject, index) => (
+              <span className={classes[changeObject.style]} key={index}>
                 {changeObject.text}
               </span>
             ))

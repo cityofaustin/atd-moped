@@ -1,8 +1,6 @@
-import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
-
 export const formatProjectTypesActivity = (change, projectTypeList) => {
 
-  const changeIcon = <BeenhereOutlinedIcon />;
+  const changeIcon = <span className="material-symbols-outlined">summarize</span>
   const projectType =
     projectTypeList[change.record_data.event.data.new.project_type_id];
   const displayText = {
@@ -22,7 +20,7 @@ export const formatProjectTypesActivity = (change, projectTypeList) => {
     };
   }
 
-  // delete an existing component
+  // delete an existing project type
   if (change.description[0].field === "is_deleted") {
     return {
       changeIcon,
