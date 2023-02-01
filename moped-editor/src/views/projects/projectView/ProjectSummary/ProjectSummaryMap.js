@@ -1,6 +1,7 @@
 import React, { useCallback, useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
+import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
 import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
@@ -73,7 +74,9 @@ const ProjectSummaryMap = ({ data }) => {
             projectFeatureCollection={projectFeatureCollection}
           />
         </MapGL>
-      ) : null}
+      ) : (
+        <ProjectSummaryMapFallback />
+      )}
     </Box>
   );
 };
