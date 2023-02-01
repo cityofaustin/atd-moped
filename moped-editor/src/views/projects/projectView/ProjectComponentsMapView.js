@@ -2,7 +2,6 @@ import React, { useCallback, useRef, useState } from "react";
 import Map, { NavigationControl } from "react-map-gl";
 import { Box, Button, Divider, Grid, makeStyles } from "@material-ui/core";
 import "mapbox-gl/dist/mapbox-gl.css";
-import GeocoderControl from "src/components/Maps/GeocoderControl";
 
 import {
   createSummaryMapLayers,
@@ -167,13 +166,6 @@ const ProjectComponentsMapView = ({
         {/* Draw Navigation controls */}
         <NavigationControl showCompass={false} position="bottom-right" />
 
-        {/* GEOCODER */}
-        <GeocoderControl
-          marker={false}
-          mapboxAccessToken={MAPBOX_TOKEN}
-          position="top-left"
-          flyTo={true}
-        />
         {/*
           If there is GeoJSON data, create sources and layers for
           each source layer in the project's GeoJSON FeatureCollection

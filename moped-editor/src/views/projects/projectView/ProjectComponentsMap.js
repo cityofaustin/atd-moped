@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import Map, { Layer, NavigationControl, Source } from "react-map-gl";
-import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
-import booleanIntersects from "@turf/boolean-intersects";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import {
@@ -141,7 +139,7 @@ const handleSelectedFeatureUpdate = (
 
     const bbox = map.getBounds().toArray().flat();
     const bboxLine = null;
-    const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
+    const intersectsWithBounds = null;
 
     if (intersectsWithBounds) {
       // this feature is rendered to the edge of the viewport and may (still) be fragmented.
@@ -368,14 +366,6 @@ const ProjectComponentsMap = ({
           showCompass={false}
           position="bottom-right"
           captureClick={false}
-        />
-
-        {/* GEOCODER */}
-        <GeocoderControl
-          marker={false}
-          mapboxAccessToken={MAPBOX_TOKEN}
-          position="top-left"
-          flyTo={true}
         />
 
         {/* RENDER LAYERS */}

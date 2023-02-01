@@ -502,19 +502,19 @@ export const PROJECT_ACTIVITY_LOG = gql`
       entity_id
       entity_name
     }
-    moped_fund_sources(order_by: {funding_source_id: asc}) {
+    moped_fund_sources(order_by: { funding_source_id: asc }) {
       funding_source_id
       funding_source_name
     }
-    moped_fund_programs(order_by: {funding_program_id: asc}) {
+    moped_fund_programs(order_by: { funding_program_id: asc }) {
       funding_program_id
       funding_program_name
     }
-    moped_fund_status(order_by: {funding_status_id: asc}) {
+    moped_fund_status(order_by: { funding_status_id: asc }) {
       funding_status_id
       funding_status_name
     }
-    moped_public_process_statuses(order_by: {id: asc}) {
+    moped_public_process_statuses(order_by: { id: asc }) {
       id
       name
     }
@@ -697,45 +697,6 @@ export const SIGNAL_COMPONENTS_QUERY = gql`
   }
 `;
 
-export const UPDATE_MOPED_COMPONENT = gql`
-  mutation UpdateMopedComponent(
-    $objects: [moped_proj_components_insert_input!]!
-  ) {
-    insert_moped_proj_components(
-      objects: $objects
-      on_conflict: {
-        constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, is_deleted]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const DELETE_MOPED_COMPONENT = gql`
-  mutation DeleteMopedComponent($projComponentId: Int!) {
-    update_moped_proj_components(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_components_subcomponents(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_features(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 /**
  * Inserts a project summary status update
  */
@@ -779,7 +740,7 @@ export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
       _set: { public_process_status_id: $fieldValueId }
     ) {
       public_process_status_id
-    }    
+    }
   }
 `;
 

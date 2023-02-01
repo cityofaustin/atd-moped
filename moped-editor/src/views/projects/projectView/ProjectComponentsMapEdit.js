@@ -14,10 +14,6 @@ import {
   TextField,
 } from "@material-ui/core";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {
-  UPDATE_MOPED_COMPONENT,
-  DELETE_MOPED_COMPONENT,
-} from "../../../queries/project";
 import ProjectComponentsMap from "./ProjectComponentsMap";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
@@ -134,10 +130,6 @@ const ProjectComponentsMapEdit = ({
   const [editPanelCollapsedShow, setEditPanelCollapsedShow] = useState(false);
 
   const projComponentId = selectedProjectComponent?.project_component_id;
-
-  const [updateProjectComponents] = useMutation(UPDATE_MOPED_COMPONENT);
-
-  const [deleteProjectComponent] = useMutation(DELETE_MOPED_COMPONENT);
 
   /**
    * saveActionState contains the current save state
@@ -418,24 +410,12 @@ const ProjectComponentsMapEdit = ({
         },
       },
     };
-    // Finally we must run the graphql query and refetch
-    updateProjectComponents({
-      variables: {
-        objects: variablePayload,
-      },
-    }).then(() => saveActionDispatch({ type: "componentSaved" }));
   };
 
   /**
    * Handles the deletion of the component from database
    */
-  const handleComponentDelete = () => {
-    deleteProjectComponent({
-      variables: {
-        projComponentId: projComponentId,
-      },
-    }).then(() => exitAndReload());
-  };
+  const handleComponentDelete = () => {};
 
   /**
    * Tracks any changes made to selectedComponentId
