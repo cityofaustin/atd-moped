@@ -40,8 +40,6 @@ import {
 
 import { useMapDrawTools } from "../../../utils/mapDrawHelpers";
 
-import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
-
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
 mapboxgl.workerClass =
@@ -386,14 +384,6 @@ const ProjectComponentsMap = ({
           showCompass={false}
           position="bottom-right"
           captureClick={false}
-        />
-        {/***************************************************************************
-         BaseMap Speed Dial
-         ***************************************************************************/}
-        <ProjectComponentsBaseMap
-          containerRef={mapBasemapContainerRef}
-          handleBasemapChange={handleBasemapChange}
-          mapStyle={mapStyle}
         />
 
         {/* GEOCODER */}

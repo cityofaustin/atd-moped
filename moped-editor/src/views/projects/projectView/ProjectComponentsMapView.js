@@ -18,7 +18,6 @@ import {
   mapConfig,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowUp } from "@material-ui/icons";
-import ProjectComponentsBaseMap from "./ProjectComponentsBaseMap";
 import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -199,10 +198,6 @@ const ProjectComponentsMapView = ({
 
         {/* Draw tooltip on feature hover */}
         {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-        <ProjectComponentsBaseMap
-          handleBasemapChange={handleBasemapChange}
-          mapStyle={mapStyle}
-        />
       </Map>
     </Box>
   );
