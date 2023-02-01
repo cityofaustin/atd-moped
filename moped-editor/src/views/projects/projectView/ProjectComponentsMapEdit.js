@@ -19,7 +19,6 @@ import {
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
 import ProjectComponentsMap from "./ProjectComponentsMap";
-import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 import { Alert, Autocomplete } from "@material-ui/lab";
 import {
   countFeatures,
@@ -603,180 +602,169 @@ const ProjectComponentsMapEdit = ({
         drawLines={drawLines}
         componentEditorPanel={
           <>
-            <MapToolsCollapse
-              transitionInEditTools={editPanelCollapsed}
-              onExitedEditTools={() => setEditPanelCollapsedShow(true)}
-              transitionInShowTools={editPanelCollapsedShow}
-              onShowToolsClick={() => setEditPanelCollapsedShow(false)}
-              onExitShowTools={() => setEditPanelCollapsed(true)}
-              showButtonText={"Show Component Details"}
-            >
-              <Grid container spacing={2}>
-                <Grid item xs className={classes.layerSelectBox}>
-                  <Grid container spacing={2}>
-                    <Grid item xs>
-                      <Autocomplete
-                        id="moped-project-select"
-                        className={classes.formSelect}
-                        value={
-                          availableTypes.find(
-                            (type) =>
-                              type.toLowerCase() === selectedComponentType
-                          ) || ""
-                        }
-                        options={[...availableTypes, ""]}
-                        getOptionLabel={(component) => component}
-                        renderInput={(params) => (
-                          <TextField
-                            {...params}
-                            label="Type"
-                            variant="outlined"
-                          />
-                        )}
-                        onChange={handleComponentTypeSelect}
-                      />
-                    </Grid>
-                    {availableSubtypes.length > 0 && (
-                      <Grid item xs={12}>
-                        {!isSignalComponent && (
-                          <Autocomplete
-                            id="moped-project-subtype-select"
-                            className={classes.formSelect}
-                            value={
-                              availableSubtypes.find(
-                                (subtype) =>
-                                  subtype.toLowerCase() ===
-                                  selectedComponentSubtype
-                              ) ?? null
-                            }
-                            options={[...new Set(availableSubtypes)].sort()}
-                            getOptionLabel={(component) => component}
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                label="Subtype"
-                                variant="outlined"
-                              />
-                            )}
-                            onChange={handleComponentSubtypeSelect}
-                          />
-                        )}
-                      </Grid>
-                    )}
-                    <Grid item xs={12}>
-                      <TextField
-                        className={classes.formTextField}
-                        id="moped-component-description"
-                        label="Description"
-                        multiline
-                        minRows={4}
-                        variant="filled"
-                        value={componentDescription ?? ""}
-                        onChange={(e) => handleDescriptionKeyDown(e)}
-                        fullWidth
-                      />
-                    </Grid>
-                    {!areMinimumFeaturesSet && (
-                      <Grid item xs={12}>
-                        <Alert className={classes.mapAlert} severity="error">
-                          You must select at least one feature for this
-                          component.
-                        </Alert>
-                      </Grid>
-                    )}
-                    <Grid item xs={12}>
-                      <Button
-                        className={classes.formButton}
-                        variant="contained"
-                        color="primary"
-                        onClick={() =>
-                          saveActionDispatch({ type: "initiateFeatureSave" })
-                        }
-                        // onClick={handleSaveButtonClick}
-                        disabled={
-                          !areMinimumFeaturesSet || selectedComponentId === null
-                        }
-                        startIcon={<Icon>save</Icon>}
-                        size="small"
-                      >
-                        Save
-                      </Button>
-                      <Button
-                        className={classes.formButton}
-                        onClick={handleCancelEdit}
-                        variant="contained"
-                        color="secondary"
-                        startIcon={<Icon>cancel</Icon>}
-                        size="small"
-                      >
-                        Cancel
-                      </Button>
-                      {selectedProjectComponent && (
-                        <Button
-                          className={classes.formButton}
-                          onClick={handleDeleteDialogClickOpen}
+            <Grid container spacing={2}>
+              <Grid item xs className={classes.layerSelectBox}>
+                <Grid container spacing={2}>
+                  <Grid item xs>
+                    <Autocomplete
+                      id="moped-project-select"
+                      className={classes.formSelect}
+                      value={
+                        availableTypes.find(
+                          (type) => type.toLowerCase() === selectedComponentType
+                        ) || ""
+                      }
+                      options={[...availableTypes, ""]}
+                      getOptionLabel={(component) => component}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          label="Type"
                           variant="outlined"
-                          color="default"
-                          startIcon={<Icon>delete</Icon>}
-                          size="small"
-                        >
-                          Delete
-                        </Button>
+                        />
+                      )}
+                      onChange={handleComponentTypeSelect}
+                    />
+                  </Grid>
+                  {availableSubtypes.length > 0 && (
+                    <Grid item xs={12}>
+                      {!isSignalComponent && (
+                        <Autocomplete
+                          id="moped-project-subtype-select"
+                          className={classes.formSelect}
+                          value={
+                            availableSubtypes.find(
+                              (subtype) =>
+                                subtype.toLowerCase() ===
+                                selectedComponentSubtype
+                            ) ?? null
+                          }
+                          options={[...new Set(availableSubtypes)].sort()}
+                          getOptionLabel={(component) => component}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Subtype"
+                              variant="outlined"
+                            />
+                          )}
+                          onChange={handleComponentSubtypeSelect}
+                        />
                       )}
                     </Grid>
+                  )}
+                  <Grid item xs={12}>
+                    <TextField
+                      className={classes.formTextField}
+                      id="moped-component-description"
+                      label="Description"
+                      multiline
+                      minRows={4}
+                      variant="filled"
+                      value={componentDescription ?? ""}
+                      onChange={(e) => handleDescriptionKeyDown(e)}
+                      fullWidth
+                    />
+                  </Grid>
+                  {!areMinimumFeaturesSet && (
+                    <Grid item xs={12}>
+                      <Alert className={classes.mapAlert} severity="error">
+                        You must select at least one feature for this component.
+                      </Alert>
+                    </Grid>
+                  )}
+                  <Grid item xs={12}>
+                    <Button
+                      className={classes.formButton}
+                      variant="contained"
+                      color="primary"
+                      onClick={() =>
+                        saveActionDispatch({ type: "initiateFeatureSave" })
+                      }
+                      // onClick={handleSaveButtonClick}
+                      disabled={
+                        !areMinimumFeaturesSet || selectedComponentId === null
+                      }
+                      startIcon={<Icon>save</Icon>}
+                      size="small"
+                    >
+                      Save
+                    </Button>
+                    <Button
+                      className={classes.formButton}
+                      onClick={handleCancelEdit}
+                      variant="contained"
+                      color="secondary"
+                      startIcon={<Icon>cancel</Icon>}
+                      size="small"
+                    >
+                      Cancel
+                    </Button>
+                    {selectedProjectComponent && (
+                      <Button
+                        className={classes.formButton}
+                        onClick={handleDeleteDialogClickOpen}
+                        variant="outlined"
+                        color="default"
+                        startIcon={<Icon>delete</Icon>}
+                        size="small"
+                      >
+                        Delete
+                      </Button>
+                    )}
                   </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <Divider
-                    variant="fullWidth"
-                    className={classes.mapToolsDivider}
-                  />
-                  <Button
-                    onClick={() => setEditPanelCollapsed(false)}
-                    startIcon={<KeyboardArrowUp />}
-                    fullWidth
-                  >
-                    Hide All
-                  </Button>
-                </Grid>
               </Grid>
+              <Grid item xs={12}>
+                <Divider
+                  variant="fullWidth"
+                  className={classes.mapToolsDivider}
+                />
+                <Button
+                  onClick={() => setEditPanelCollapsed(false)}
+                  startIcon={<KeyboardArrowUp />}
+                  fullWidth
+                >
+                  Hide All
+                </Button>
+              </Grid>
+            </Grid>
 
-              <Dialog
-                open={deleteDialogOpen}
-                onClose={handleDeleteDialogClickClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-              >
-                <DialogTitle id="alert-dialog-title">
-                  <div>
-                    <h2>{"Delete Component?"}</h2>
-                  </div>
-                </DialogTitle>
-                <DialogContent>
-                  <DialogContentText id="alert-dialog-description">
-                    You cannot undo this operation, any subcomponents and
-                    features will be lost.
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    onClick={handleComponentDelete}
-                    color="primary"
-                    startIcon={<Icon>delete</Icon>}
-                  >
-                    Delete
-                  </Button>
-                  <Button
-                    onClick={handleDeleteDialogClickClose}
-                    color="default"
-                    autoFocus
-                    startIcon={<Icon>cancel</Icon>}
-                  >
-                    Cancel
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </MapToolsCollapse>
+            <Dialog
+              open={deleteDialogOpen}
+              onClose={handleDeleteDialogClickClose}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                <div>
+                  <h2>{"Delete Component?"}</h2>
+                </div>
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  You cannot undo this operation, any subcomponents and features
+                  will be lost.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={handleComponentDelete}
+                  color="primary"
+                  startIcon={<Icon>delete</Icon>}
+                >
+                  Delete
+                </Button>
+                <Button
+                  onClick={handleDeleteDialogClickClose}
+                  color="default"
+                  autoFocus
+                  startIcon={<Icon>cancel</Icon>}
+                >
+                  Cancel
+                </Button>
+              </DialogActions>
+            </Dialog>
           </>
         }
       />

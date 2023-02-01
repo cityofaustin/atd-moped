@@ -18,7 +18,6 @@ import {
   mapConfig,
 } from "../../../utils/mapHelpers";
 import { KeyboardArrowUp } from "@material-ui/icons";
-import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -119,33 +118,24 @@ const ProjectComponentsMapView = ({
    */
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      <MapToolsCollapse
-        transitionInEditTools={editPanelCollapsed}
-        onExitedEditTools={() => setEditPanelCollapsedShow(true)}
-        transitionInShowTools={editPanelCollapsedShow}
-        onShowToolsClick={() => setEditPanelCollapsedShow(false)}
-        onExitShowTools={() => setEditPanelCollapsed(true)}
-        showButtonText={"Show Components"}
-      >
-        <Grid>
-          <Grid
-            id={"moped-component-editor-container"}
-            className={classes.layerSelectBox}
-          >
-            {children}
-          </Grid>
-          <Grid item xs={12}>
-            <Divider className={classes.mapToolsDivider} />
-            <Button
-              onClick={() => setEditPanelCollapsed(false)}
-              startIcon={<KeyboardArrowUp />}
-              fullWidth
-            >
-              Hide All
-            </Button>
-          </Grid>
+      <Grid>
+        <Grid
+          id={"moped-component-editor-container"}
+          className={classes.layerSelectBox}
+        >
+          {children}
         </Grid>
-      </MapToolsCollapse>
+        <Grid item xs={12}>
+          <Divider className={classes.mapToolsDivider} />
+          <Button
+            onClick={() => setEditPanelCollapsed(false)}
+            startIcon={<KeyboardArrowUp />}
+            fullWidth
+          >
+            Hide All
+          </Button>
+        </Grid>
+      </Grid>
 
       {renderLayerSelect(false)}
 
