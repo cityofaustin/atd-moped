@@ -59,7 +59,7 @@ describe("makeFullTimeFromTimeStampTZ()", () => {
 describe("formatRelativeDate()", () => {
   it("formats millesconds ago to a human description relative to now", () => {
     const nowMills = new Date().getTime();
-    const oneMinute30sAgoMills = nowMills - 1000 * 90;
+    const oneMinute20sAgoMills = nowMills - 1000 * 70;
     const twoSecondsAgoMills = nowMills - 1000 * 2;
     const twoMinutesAgoMills = nowMills - 1000 * 60 * 2;
     const twoHoursAgoMills = nowMills - 1000 * 60 * 60 * 2;
@@ -69,7 +69,7 @@ describe("formatRelativeDate()", () => {
     let formattedTime = formatRelativeDate(twoSecondsAgoMills);
     expect(formattedTime).toBe("Just now");
 
-    formattedTime = formatRelativeDate(oneMinute30sAgoMills);
+    formattedTime = formatRelativeDate(oneMinute20sAgoMills);
     expect(formattedTime).toBe("1 minute ago");
 
     formattedTime = formatRelativeDate(twoMinutesAgoMills);
