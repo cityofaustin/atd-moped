@@ -3,7 +3,6 @@ import Map, { Layer, NavigationControl, Source } from "react-map-gl";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
 import booleanIntersects from "@turf/boolean-intersects";
-import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import {
