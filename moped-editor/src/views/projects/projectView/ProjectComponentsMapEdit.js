@@ -18,7 +18,6 @@ import {
   UPDATE_MOPED_COMPONENT,
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
-import ProjectComponentSubcomponents from "./ProjectComponentSubcomponents";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import ProjectComponentsMap from "./ProjectComponentsMap";
 import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
@@ -675,12 +674,6 @@ const ProjectComponentsMapEdit = ({
                         )}
                       </Grid>
                     )}
-                    <ProjectComponentSubcomponents
-                      componentId={selectedComponentId}
-                      subcomponentList={mopedSubcomponents}
-                      selectedSubcomponents={selectedSubcomponents}
-                      setSelectedSubcomponents={setSelectedSubcomponents}
-                    />
                     <Grid item xs={12}>
                       <TextField
                         className={classes.formTextField}
