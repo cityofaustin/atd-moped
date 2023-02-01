@@ -8,11 +8,6 @@ import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 import {
-  NewProjectDrawnLinesInvisibleStyle,
-  NewProjectDrawnPointsInvisibleStyle,
-} from "../../../styles/NewProjectDrawnFeatures";
-
-import {
   combineLineGeometries,
   createProjectSelectLayerConfig,
   createProjectViewLayerConfig,
@@ -333,14 +328,6 @@ const ProjectComponentsMap = ({
 
   return (
     <Box className={noPadding ? classes.mapBoxNoPadding : classes.mapBox}>
-      {/* These two lines act as a conditional global override of MapBox. */}
-      {!visibleLayerIds.includes("drawnByUser") && (
-        <NewProjectDrawnPointsInvisibleStyle />
-      )}
-      {!visibleLayerIds.includes("drawnByUserLine") && (
-        <NewProjectDrawnLinesInvisibleStyle />
-      )}
-
       <div
         ref={mapEditToolsContainerRef}
         className={classes.mapBoxEditButtonGroup}
