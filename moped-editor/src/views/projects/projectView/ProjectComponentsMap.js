@@ -6,7 +6,6 @@ import bboxPolygon from "@turf/bbox-polygon";
 import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
-import "./ProjectComponentsMap.css";
 
 import {
   NewProjectDrawnLinesInvisibleStyle,
