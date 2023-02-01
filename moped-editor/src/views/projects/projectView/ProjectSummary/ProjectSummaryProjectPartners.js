@@ -93,7 +93,6 @@ const ProjectSummaryProjectPartners = ({
     // We need a final list of objects to insert
     const partnerObjectsToInsert = partnerIdsToInsert.map((id) => ({
       project_id: projectId,
-      partner_name: entityDict[id],
       entity_id: id,
     }));
     // We need a final list of primary keys to delete

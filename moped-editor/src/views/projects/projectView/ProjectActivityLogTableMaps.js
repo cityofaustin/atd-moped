@@ -34,6 +34,10 @@ export const ProjectActivityLogTableMaps = {
         label: "project sponsor",
         lookup: "moped_entity",
       },
+      public_process_status_id: {
+        label: "public process status",
+        lookup: "moped_public_process_statuses"
+      },
       project_website: {
         label: "project website",
       },
@@ -118,110 +122,74 @@ export const ProjectActivityLogTableMaps = {
     label: "Milestone",
     fields: {
       milestone_end: {
-        icon: "",
         label: "end date",
-        type: "date",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
+      },
+      milestone_id: {
+        label: "id"
       },
       project_milestone_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       completed: {
-        icon: "",
         label: "completion",
-        type: "bool",
       },
       is_current_milestone: {
-        icon: "",
         label: "current milestone marker",
-        type: "bool",
       },
       milestone_order: {
-        icon: "",
         label: "order",
-        type: "int4",
       },
       milestone_description: {
-        icon: "",
         label: "description",
-        type: "text",
       },
       milestone_name: {
-        icon: "",
         label: "name",
-        type: "text",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       milestone_privacy: {
-        icon: "",
         label: "privacy flag",
-        type: "bool",
       },
       milestone_start: {
-        icon: "",
         label: "start date",
-        type: "date",
       },
       completion_percentage: {
-        icon: "",
         label: "completion percentage",
-        type: "integer",
       },
       milestone_status: {
-        icon: "",
         label: "status",
-        type: "text",
       },
       milestone_priority: {
-        icon: "",
         label: "priority",
-        type: "integer",
       },
       milestone_date_type: {
-        icon: "",
         label: "date type",
-        type: "text",
       },
       milestone_related_phase_id: {
-        icon: "",
         label: "related phase ID",
-        type: "integer",
       },
       started_by_user_id: {
-        icon: "",
         label: "started by user ID",
-        type: "integer",
       },
       completed_by_user_id: {
-        icon: "",
         label: "completed by user ID",
-        type: "integer",
       },
       milestone_estimate: {
-        icon: "",
-        label: "milestone estimate",
-        type: "timestampz",
+        label: "completion estimate",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
     },
   },
   moped_proj_notes: {
     label: "Note",
     fields: {
+      // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
         icon: "",
         label: "added by",
@@ -282,6 +250,7 @@ export const ProjectActivityLogTableMaps = {
         label: "partner ID",
         type: "int4",
       },
+      // deprecated column, but keeping because historical activities depend on it
       partner_name: {
         icon: "",
         label: "name",
@@ -367,104 +336,58 @@ export const ProjectActivityLogTableMaps = {
     label: "Phases",
     fields: {
       phase_order: {
-        icon: "",
         label: "order",
-        type: "int4",
       },
       phase_id: {
-        icon: "",
         label: "phase",
-        type: "integer",
-        lookup: {
-          table: "moped_phases",
-          fieldLabel: "phase_id",
-          fieldValues: ["phase_name"],
-        },
       },
       phase_description: {
-        icon: "",
         label: "description",
-        type: "text",
       },
       completion_percentage: {
-        icon: "",
         label: "completion percentage",
-        type: "int4",
       },
       phase_status: {
-        icon: "",
         label: "status",
-        type: "text",
       },
       phase_privacy: {
-        icon: "",
         label: "privacy",
-        type: "bool",
       },
       phase_start: {
-        icon: "",
         label: "start date",
-        type: "date",
       },
       phase_end: {
-        icon: "",
         label: "end date",
-        type: "date",
       },
       phase_priority: {
-        icon: "",
         label: "priority",
-        type: "int4",
       },
       is_current_phase: {
-        icon: "",
         label: "current phase marker",
-        type: "bool",
       },
       completed: {
-        icon: "",
         label: "completed",
-        type: "bool",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       started_by_user_id: {
-        icon: "",
         label: "started by user ID",
-        type: "int4",
       },
       completed_by_user_id: {
-        icon: "",
         label: "completed by user ID",
-        type: "int4",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       project_phase_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
       subphase_id: {
-        icon: "",
-        label: "subphase ID",
-        type: "integer",
-        lookup: {
-          table: "moped_subphases",
-          fieldLabel: "subphase_id",
-          fieldValues: ["subphase_name"],
-        },
+        label: "subphase",
       },
     },
   },
@@ -472,34 +395,22 @@ export const ProjectActivityLogTableMaps = {
     label: "Component",
     fields: {
       project_id: {
-        icon: "",
         label: "ID",
-        data_type: "int4",
       },
       project_component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "int4",
       },
       component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "integer",
       },
       name: {
-        icon: "",
         label: "name",
-        data_type: "text",
       },
       description: {
-        icon: "",
         label: "description",
-        data_type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
     },
   },
@@ -797,14 +708,6 @@ export const ProjectActivityLogCreateDescriptions = {
         note.length > 30 ? note.substr(0, 30).trim() + "..." : note.trim();
 
       return fieldFormat(shortNote, true) + " as a new note";
-    },
-  },
-  moped_proj_partners: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.partner_name, true) +
-        " as a new partner"
-      );
     },
   },
   moped_proj_components: {
