@@ -81,7 +81,7 @@ const MILLS_CONVERSION = {
  */
 const formatRelativeTime = (millsElapsed, unitName) => {
   const factor = MILLS_CONVERSION[unitName];
-  const millsConverted = Math.floor(millsElapsed / factor);
+  const millsConverted = Math.round(millsElapsed / factor);
   const singular = millsConverted === 1;
   return `${millsConverted} ${unitName}${singular ? "" : "s"} ago`;
 };
@@ -104,9 +104,9 @@ export const formatRelativeDate = (timeStampTZString) => {
     return targetDate.toLocaleDateString("en-US");
   } else if (millsElapsed < MILLS_CONVERSION.minute) {
     return "Just now";
-  } else if (millsElapsed < MILLS_CONVERSION.hour) {
+  } else if (millsElapsed < MILLS_CONVERSION.hour - MILLS_CONVERSION.minute) {
     return formatRelativeTime(millsElapsed, "minute");
-  } else if (millsElapsed < MILLS_CONVERSION.day) {
+  } else if (millsElapsed < MILLS_CONVERSION.day - MILLS_CONVERSION.hour) {
     return formatRelativeTime(millsElapsed, "hour");
   } else {
     return formatRelativeTime(millsElapsed, "day");
