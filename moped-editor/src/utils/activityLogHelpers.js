@@ -5,6 +5,8 @@ import { formatPhasesActivity } from "./activityLogFormatters/mopedPhasesActivit
 import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestonesActivity";
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
 import { formatPersonnelActivity } from "./activityLogFormatters/mopedPersonnelActivity";
+import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
+import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProjectTypesActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
   const changeText = [
@@ -40,6 +42,10 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatPartnersActivity(change, lookupData.entityList);
     case "moped_proj_personnel":
       return formatPersonnelActivity(change, lookupData.userList);
+    case "moped_proj_components":
+      return formatComponentsActivity(change, lookupData.componentList);
+    case "moped_project_types":
+      return formatProjectTypesActivity(change, lookupData.projectTypeList);
     default:
       return { changeIcon, changeText };
   }

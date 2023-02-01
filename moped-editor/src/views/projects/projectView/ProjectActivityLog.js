@@ -86,6 +86,8 @@ const useLookupTables = (data) =>
     lookupData.fundingStatus = {};
     lookupData.milestoneList = {};
     lookupData.publicProcessStatusList = {};
+    lookupData.componentList = {};
+    lookupData.projectTypeList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -123,6 +125,17 @@ const useLookupTables = (data) =>
       data["moped_public_process_statuses"].forEach((publicProcessStatus) => {
         lookupData.publicProcessStatusList[`${publicProcessStatus.id}`] =
           publicProcessStatus.name;
+      });
+      data["moped_components"].forEach((component) => {
+        lookupData.componentList[`${component.component_id}`] = `${
+          component.component_name
+        }${
+          component.component_subtype ? ` - ${component.component_subtype}` : ""
+        }`;
+      });
+      data["moped_types"].forEach((projectType) => {
+        lookupData.projectTypeList[`${projectType.type_id}`] =
+          projectType.type_name;
       });
     }
 
@@ -305,6 +318,8 @@ const ProjectActivityLog = () => {
                           "moped_proj_phases",
                           "moped_proj_milestones",
                           "moped_proj_partners",
+                          "moped_proj_components",
+                          "moped_project_types",
                           "moped_proj_personnel"
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
