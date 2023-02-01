@@ -12,11 +12,11 @@ export const formatNotesActivity = (change, entityList) => {
       changeText: [
         {
           text: noteType === 2 ? "Added a status update " : "Added a comment ",
-          style: "boldText",
+          style: null,
         },
         {
           text: parse(change.record_data.event.data.new.project_note),
-          style: null,
+          style: "indentText",
         },
       ],
     };
