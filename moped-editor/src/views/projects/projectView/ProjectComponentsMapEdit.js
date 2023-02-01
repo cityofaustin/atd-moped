@@ -18,7 +18,6 @@ import {
   UPDATE_MOPED_COMPONENT,
   DELETE_MOPED_COMPONENT,
 } from "../../../queries/project";
-import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import ProjectComponentsMap from "./ProjectComponentsMap";
 import MapToolsCollapse from "src/components/Maps/MapToolsCollapse";
 import { Alert, Autocomplete } from "@material-ui/lab";
@@ -660,16 +659,6 @@ const ProjectComponentsMapEdit = ({
                               />
                             )}
                             onChange={handleComponentSubtypeSelect}
-                          />
-                        )}
-                        {isSignalComponent && (
-                          <SignalComponentAutocomplete
-                            setEditFeatureCollection={setEditFeatureCollection}
-                            editFeatureCollection={editFeatureCollection}
-                            setSelectedComponentSubtype={
-                              setSelectedComponentSubtype
-                            }
-                            className={classes.formSelect}
                           />
                         )}
                       </Grid>
