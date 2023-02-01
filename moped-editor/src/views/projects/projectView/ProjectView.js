@@ -137,7 +137,7 @@ const TABS = [
   { label: "Comments", Component: ProjectComments, param: "comments" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   {
-    label: "Activity Log",
+    label: "Activity",
     Component: ProjectActivityLog,
     param: "activity_log",
   },

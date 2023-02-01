@@ -222,7 +222,6 @@ const ProjectActivityLog = () => {
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
-        <h2 className={classes.projectPageHeader}>Activity feed</h2>
         {getTotalItems(data) === 0 ? (
           <Alert severity="info">
             There is no activity recorded for this project.
