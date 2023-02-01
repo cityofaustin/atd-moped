@@ -1,8 +1,6 @@
 import React, { useState } from "react";
-import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import { COMPONENTS_QUERY } from "../../../queries/project";
 import {
   CircularProgress,
   ClickAwayListener,
@@ -72,12 +70,6 @@ const ProjectComponents = () => {
   const [mapError, setMapError] = useState(false);
   const [componentEditMode, setComponentEditMode] = useState(false);
 
-  const { error, loading, data, refetch } = useQuery(COMPONENTS_QUERY, {
-    variables: {
-      projectId: Number.parseInt(projectId),
-    },
-  });
-
   const projectFeatureCollection = data?.moped_proj_components
     ? createProjectFeatureCollection(data.moped_proj_components)
     : null;
@@ -142,10 +134,8 @@ const ProjectComponents = () => {
   // If loading, return loading icon
   if (loading) return <CircularProgress />;
 
-  if (error) return <div>{JSON.stringify(error)}</div>;
-
   return (
-    <ApolloErrorHandler errors={error}>
+    <ApolloErrorHandler>
       {componentEditMode && (
         <ProjectComponentsMapEdit
           selectedProjectComponent={selectedProjectComponent}

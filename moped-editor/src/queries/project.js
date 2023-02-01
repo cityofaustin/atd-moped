@@ -640,52 +640,6 @@ export const PROJECT_ARCHIVE = gql`
   }
 `;
 
-export const COMPONENTS_QUERY = gql`
-  query GetComponents($projectId: Int) {
-    moped_proj_components(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-    ) {
-      component_id
-      description
-      name
-      project_component_id
-      project_id
-      moped_components {
-        component_name
-        component_id
-        component_subtype
-        line_representation
-      }
-      moped_proj_components_subcomponents(
-        where: { is_deleted: { _eq: false } }
-      ) {
-        component_subcomponent_id
-        project_component_id
-        subcomponent_id
-        moped_subcomponent {
-          subcomponent_id
-          subcomponent_name
-        }
-      }
-      moped_proj_features(where: { is_deleted: { _eq: false } }) {
-        feature
-        feature_id
-      }
-    }
-    moped_subcomponents {
-      subcomponent_name
-      subcomponent_id
-      component_id
-    }
-    moped_components {
-      component_name
-      component_subtype
-      component_id
-      line_representation
-    }
-  }
-`;
-
 export const SIGNAL_COMPONENTS_QUERY = gql`
   query GetSignalComponents {
     moped_components(where: { component_name: { _ilike: "signal" } }) {
