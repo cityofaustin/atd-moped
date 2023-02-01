@@ -54,7 +54,6 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/user-event": "^14.4.3",
     "@turf/bbox": "^6.5.0",
-    "@turf/bbox-polygon": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",
     "@turf/buffer": "^6.5.0",
     "@turf/center": "^6.5.0",

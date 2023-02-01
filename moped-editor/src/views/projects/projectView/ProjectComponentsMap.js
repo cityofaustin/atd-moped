@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import Map, { Layer, NavigationControl, Source } from "react-map-gl";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import { Box, makeStyles } from "@material-ui/core";
-import bboxPolygon from "@turf/bbox-polygon";
 import booleanIntersects from "@turf/boolean-intersects";
 import polygonToLine from "@turf/polygon-to-line";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -142,7 +141,7 @@ const handleSelectedFeatureUpdate = (
     }
 
     const bbox = map.getBounds().toArray().flat();
-    const bboxLine = polygonToLine(bboxPolygon(bbox));
+    const bboxLine = null;
     const intersectsWithBounds = booleanIntersects(bboxLine, selectedFeature);
 
     if (intersectsWithBounds) {
