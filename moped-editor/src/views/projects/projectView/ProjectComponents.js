@@ -16,7 +16,6 @@ import {
 } from "@material-ui/core";
 
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ProjectComponentsMapView from "./ProjectComponentsMapView";
 import { createFeatureCollectionFromProjectFeatures } from "../../../utils/mapHelpers";
 import {
   useAvailableTypes,
@@ -24,7 +23,6 @@ import {
   createProjectFeatureCollection,
 } from "../../../utils/projectComponentHelpers";
 
-import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
 import Alert from "@material-ui/lab/Alert";
 import { ArrowForwardIos } from "@material-ui/icons";
 
@@ -134,124 +132,7 @@ const ProjectComponents = () => {
   // If loading, return loading icon
   if (loading) return <CircularProgress />;
 
-  return (
-    <ApolloErrorHandler>
-      {componentEditMode && (
-        <ProjectComponentsMapEdit
-          selectedProjectComponent={selectedProjectComponent}
-          selectedComponentFeatureCollection={
-            selectedComponentFeatureCollection
-          }
-          handleCancelEdit={handleCancelEdit}
-          projectFeatureCollection={projectFeatureCollection}
-          mopedComponents={data?.moped_components || []}
-          mopedSubcomponents={data?.moped_subcomponents || []}
-          lineRepresentable={lineRepresentable}
-          availableTypes={availableTypes}
-        />
-      )}
-      {!componentEditMode && (
-        <ProjectComponentsMapView
-          projectFeatureCollection={
-            selectedProjectComponent
-              ? selectedComponentFeatureCollection
-              : projectFeatureCollection
-          }
-          noPadding
-        >
-          <Button
-            className={classes.componentButtonAddNew}
-            onClick={handleAddNewComponentClick}
-            variant="outlined"
-            color="default"
-            size={"large"}
-            startIcon={<Icon>add</Icon>}
-            fullWidth
-          >
-            Add new component
-          </Button>
-          {componentsAvailable && (
-            <ClickAwayListener onClickAway={handleComponentClickAway}>
-              <List className={classes.root}>
-                {data.moped_proj_components.map(
-                  (projectComponent, compIndex) => {
-                    const projComponentId =
-                      projectComponent.project_component_id;
-                    return (
-                      <ListItem
-                        key={"mcListItem-" + projComponentId}
-                        role={undefined}
-                        dense
-                        button
-                        onClick={() => handleComponentClick(projectComponent)}
-                        className={
-                          projComponentId ===
-                          selectedProjectComponent?.project_component_id
-                            ? classes.componentItemBlue
-                            : classes.componentItem
-                        }
-                      >
-                        <ListItemIcon>
-                          <Checkbox
-                            edge="start"
-                            className={classes.listItemCheckbox}
-                            checked={
-                              projComponentId ===
-                              selectedProjectComponent?.project_component_id
-                            }
-                            tabIndex={-1}
-                            disableRipple
-                            inputProps={{ "aria-labelledby": null }}
-                          />
-                        </ListItemIcon>
-                        <ListItemText
-                          id={"mcListItemText-" + projComponentId}
-                          primary={
-                            projectComponent?.moped_components?.component_name
-                          }
-                          secondary={
-                            (projectComponent?.moped_components
-                              ?.component_subtype ?? "") +
-                            [
-                              ...new Set(
-                                projectComponent.moped_proj_components_subcomponents.map(
-                                  (mpcs) =>
-                                    mpcs.moped_subcomponent.subcomponent_name
-                                )
-                              ),
-                            ]
-                              .sort()
-                              .join(", ")
-                          }
-                        />
-                        <ListItemSecondaryAction
-                          onClick={() => {
-                            handleComponentClick(projectComponent);
-                            handleComponentDetailsClick();
-                          }}
-                        >
-                          <IconButton edge="end" aria-label="comments">
-                            <ArrowForwardIos
-                              className={classes.listItemSecondaryAction}
-                            />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    );
-                  }
-                )}
-              </List>
-            </ClickAwayListener>
-          )}
-          {!componentsAvailable && (
-            <Alert severity="info">
-              There aren't any components for this project.
-            </Alert>
-          )}
-        </ProjectComponentsMapView>
-      )}
-    </ApolloErrorHandler>
-  );
+  return <ApolloErrorHandler></ApolloErrorHandler>;
 };
 
 export default ProjectComponents;
