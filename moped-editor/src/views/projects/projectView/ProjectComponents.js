@@ -26,7 +26,6 @@ import {
   createProjectFeatureCollection,
 } from "../../../utils/projectComponentHelpers";
 
-import ProjectSummaryMapFallback from "./ProjectSummary/ProjectSummaryMapFallback";
 import ProjectComponentsMapEdit from "./ProjectComponentsMapEdit";
 import Alert from "@material-ui/lab/Alert";
 import { ArrowForwardIos } from "@material-ui/icons";
