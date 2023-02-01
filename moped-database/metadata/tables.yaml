@@ -2826,7 +2826,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
     - role: moped-editor
@@ -2837,7 +2836,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
   select_permissions:
@@ -2848,7 +2846,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2859,7 +2856,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2870,7 +2866,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2882,7 +2877,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2894,7 +2888,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
