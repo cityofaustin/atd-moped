@@ -8,6 +8,10 @@ const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: 600,
   },
+  indentText: {
+    paddingLeft: "16px",
+    display: "block",
+  }
 }));
 
 /**

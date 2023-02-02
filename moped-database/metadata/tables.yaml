@@ -2785,24 +2785,38 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - project_note
-            - project_note_id
-            - project_id
-            - project_note_type
-            - added_by_user_id
-            - date_created
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_note_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        template_engine: Kriti
+        version: 2
       cleanup_config:
         batch_size: 10000
         clean_invocation_logs: false
