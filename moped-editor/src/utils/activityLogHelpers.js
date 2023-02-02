@@ -5,13 +5,12 @@ import { formatPhasesActivity } from "./activityLogFormatters/mopedPhasesActivit
 import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestonesActivity";
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
 import { formatPersonnelActivity } from "./activityLogFormatters/mopedPersonnelActivity";
+import { formatNotesActivity } from "./activityLogFormatters/mopedNotesActivity";
 import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
 import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProjectTypesActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
-  const changeText = [
-      {text: "Project was updated", style: null}
-    ];
+  const changeText = [{ text: "Project was updated", style: null }];
   const changeIcon = (
     <span className="material-symbols-outlined">summarize</span>
   );
@@ -33,15 +32,25 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_tags":
       return formatTagsActivity(change, lookupData.tagList);
     case "moped_proj_funding":
-      return formatFundingActivity(change, lookupData.fundingSources, lookupData.fundingPrograms);
+      return formatFundingActivity(
+        change,
+        lookupData.fundingSources,
+        lookupData.fundingPrograms
+      );
     case "moped_proj_phases":
-      return formatPhasesActivity(change, lookupData.phaseList, lookupData.subphaseList);
+      return formatPhasesActivity(
+        change,
+        lookupData.phaseList,
+        lookupData.subphaseList
+      );
     case "moped_proj_milestones":
       return formatMilestonesActivity(change, lookupData.milestoneList);
     case "moped_proj_partners":
       return formatPartnersActivity(change, lookupData.entityList);
     case "moped_proj_personnel":
       return formatPersonnelActivity(change, lookupData.userList);
+    case "moped_proj_notes":
+      return formatNotesActivity(change);
     case "moped_proj_components":
       return formatComponentsActivity(change, lookupData.componentList);
     case "moped_project_types":
