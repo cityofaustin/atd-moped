@@ -3462,9 +3462,9 @@
         update:
           columns:
             - id
-            - is_deleted
             - project_id
             - tag_id
+            - is_deleted
       retry_conf:
         interval_sec: 10
         num_retries: 0
