@@ -234,6 +234,7 @@ export const ProjectActivityLogTableMaps = {
         label: "partner ID",
         type: "int4",
       },
+      // deprecated column, but keeping because historical activities depend on it
       partner_name: {
         icon: "",
         label: "name",
