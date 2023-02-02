@@ -289,33 +289,15 @@ export const ProjectActivityLogTableMaps = {
       },
       is_deleted: {
         label: "is deleted",
-        map: {
-          true: "Inactive",
-          false: "Active",
-        },
       },
       project_id: {
         label: "project ID",
       },
       role_id: {
-        icon: "",
         label: "role",
-        type: "int4",
-        lookup: {
-          table: "moped_project_roles",
-          fieldLabel: "project_role_id",
-          fieldValues: ["project_role_name"],
-        },
       },
       user_id: {
-        icon: "",
         label: "user",
-        type: "int4",
-        lookup: {
-          table: "moped_users",
-          fieldLabel: "user_id",
-          fieldValues: ["first_name", "last_name"],
-        },
       },
     },
   },
