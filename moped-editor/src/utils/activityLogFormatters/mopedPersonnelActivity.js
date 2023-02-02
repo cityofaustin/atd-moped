@@ -1,9 +1,7 @@
-import PeopleAltOutlinedIcon from "@material-ui/icons/PeopleAltOutlined";
-// import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
+import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 
 export const formatPersonnelActivity = (change, userList) => {
-  let changeIcon = <PeopleAltOutlinedIcon />;
-  // const entryMap = ProjectActivityLogTableMaps["moped_project"];
+  let changeIcon = <PeopleOutlineIcon />;
 
   const changeData = change.record_data.event.data;
 
@@ -30,15 +28,24 @@ export const formatPersonnelActivity = (change, userList) => {
       ],
     };
   }
-  // updates to notes?
 
-  // deleting a person??
-
-  return {
+  // remove a person from the team
+  if (change.description[0].field === "is_deleted") {
+    return {
       changeIcon,
       changeText: [
-        { text: "Updated " },
-        { text: userList[changeData.new.user_id], style: "boldText" },
+        { text: "Removed ", style: null },
+        { text: userList[changeData.old.user_id], style: "boldText" },
+        { text: " from the team", style: null },
       ],
     };
+  }
+
+  return {
+    changeIcon,
+    changeText: [
+      { text: "Updated " },
+      { text: userList[changeData.new.user_id], style: "boldText" },
+    ],
+  };
 };
