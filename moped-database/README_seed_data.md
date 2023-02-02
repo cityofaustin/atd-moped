@@ -18,7 +18,7 @@ $ docker run -it --rm --network host \
     -t moped_proj_components_subcomponents \
     -t moped_proj_features \
     -t feature_signals \
-    -t feature_street_segments \git 
+    -t feature_street_segments \
     -t feature_intersections \
     -t feature_drawn_points \
     -t feature_drawn_lines \
