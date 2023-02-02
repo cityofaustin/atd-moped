@@ -4,6 +4,7 @@ import { formatFundingActivity } from "./activityLogFormatters/mopedFundingActiv
 import { formatPhasesActivity } from "./activityLogFormatters/mopedPhasesActivity";
 import { formatMilestonesActivity } from "./activityLogFormatters/mopedMilestonesActivity";
 import { formatPartnersActivity } from "./activityLogFormatters/mopedPartnersActivity";
+import { formatPersonnelActivity } from "./activityLogFormatters/mopedPersonnelActivity";
 import { formatNotesActivity } from "./activityLogFormatters/mopedNotesActivity";
 import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
 import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProjectTypesActivity";
@@ -46,6 +47,8 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatMilestonesActivity(change, lookupData.milestoneList);
     case "moped_proj_partners":
       return formatPartnersActivity(change, lookupData.entityList);
+    case "moped_proj_personnel":
+      return formatPersonnelActivity(change, lookupData.userList);
     case "moped_proj_notes":
       return formatNotesActivity(change);
     case "moped_proj_components":

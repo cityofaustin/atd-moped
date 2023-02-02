@@ -261,58 +261,28 @@ export const ProjectActivityLogTableMaps = {
     label: "Team",
     fields: {
       added_by: {
-        icon: "",
         label: "added by",
-        type: "int4",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       project_personnel_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       notes: {
-        icon: "",
         label: "notes",
-        type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        type: "boolean",
-        map: {
-          true: "Inactive",
-          false: "Active",
-        },
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       role_id: {
-        icon: "",
         label: "role",
-        type: "int4",
-        lookup: {
-          table: "moped_project_roles",
-          fieldLabel: "project_role_id",
-          fieldValues: ["project_role_name"],
-        },
       },
       user_id: {
-        icon: "",
         label: "user",
-        type: "int4",
-        lookup: {
-          table: "moped_users",
-          fieldLabel: "user_id",
-          fieldValues: ["first_name", "last_name"],
-        },
       },
     },
   },
@@ -565,20 +535,6 @@ export const ProjectActivityLogTableMaps = {
 };
 
 export const ProjectActivityLogOperationMaps = {
-  moped_proj_personnel: {
-    DELETE: {
-      label: "Removed",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "personadd",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
   moped_project_files: {
     DELETE: {
       label: "Deleted",
@@ -616,10 +572,6 @@ export const ProjectActivityLogGenericDescriptions = {
 };
 
 export const ProjectActivityLogCreateDescriptions = {
-  moped_proj_personnel: {
-    label: (record, userList) =>
-      userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
-  },
   moped_project_files: {
     label: (record) =>
       `New file '${record.record_data.event.data.new.file_name}'`,
