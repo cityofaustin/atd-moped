@@ -78,11 +78,16 @@ const useLookupTables = (data) =>
 
     lookupData.userList = {};
     lookupData.phaseList = {};
+    lookupData.subphaseList = {};
     lookupData.tagList = {};
     lookupData.entityList = {};
     lookupData.fundingSources = {};
     lookupData.fundingPrograms = {};
     lookupData.fundingStatus = {};
+    lookupData.milestoneList = {};
+    lookupData.publicProcessStatusList = {};
+    lookupData.componentList = {};
+    lookupData.projectTypeList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -90,6 +95,10 @@ const useLookupTables = (data) =>
       });
       data["moped_phases"].forEach((phase) => {
         lookupData.phaseList[`${phase.phase_id}`] = phase.phase_name;
+      });
+      data["moped_subphases"].forEach((subphase) => {
+        lookupData.subphaseList[`${subphase.subphase_id}`] =
+          subphase.subphase_name;
       });
       data["moped_tags"].forEach((tag) => {
         lookupData.tagList[`${tag.id}`] = tag.name;
@@ -108,6 +117,25 @@ const useLookupTables = (data) =>
       data["moped_fund_status"].forEach((fundStatus) => {
         lookupData.fundingStatus[`${fundStatus.funding_status_id}`] =
           fundStatus.funding_status_name;
+      });
+      data["moped_milestones"].forEach((milestone) => {
+        lookupData.milestoneList[`${milestone.milestone_id}`] =
+          milestone.milestone_name;
+      });
+      data["moped_public_process_statuses"].forEach((publicProcessStatus) => {
+        lookupData.publicProcessStatusList[`${publicProcessStatus.id}`] =
+          publicProcessStatus.name;
+      });
+      data["moped_components"].forEach((component) => {
+        lookupData.componentList[`${component.component_id}`] = `${
+          component.component_name
+        }${
+          component.component_subtype ? ` - ${component.component_subtype}` : ""
+        }`;
+      });
+      data["moped_types"].forEach((projectType) => {
+        lookupData.projectTypeList[`${projectType.type_id}`] =
+          projectType.type_name;
       });
     }
 
@@ -230,8 +258,10 @@ const ProjectActivityLog = () => {
               </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
-                  const { changeIcon, changeDescription, changeValue } =
-                    formatActivityLogEntry(change, lookupData);
+                  const { changeIcon, changeText } = formatActivityLogEntry(
+                    change,
+                    lookupData
+                  );
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell
@@ -285,11 +315,17 @@ const ProjectActivityLog = () => {
                           "moped_project",
                           "moped_proj_tags",
                           "moped_proj_funding",
+                          "moped_proj_phases",
+                          "moped_proj_milestones",
+                          "moped_proj_partners",
+                          "moped_proj_notes",
+                          "moped_proj_components",
+                          "moped_project_types",
+                          "moped_proj_personnel"
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
-                            changeDescription={changeDescription}
-                            changeValue={changeValue}
+                            changeText={changeText}
                           />
                         ) : (
                           <Box display="flex" p={0}>

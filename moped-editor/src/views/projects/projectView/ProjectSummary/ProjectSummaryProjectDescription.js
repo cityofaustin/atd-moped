@@ -114,7 +114,7 @@ const ProjectSummaryProjectDescription = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={description || " - "}
+            text={description.trim().length > 0 ? description : " - "}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

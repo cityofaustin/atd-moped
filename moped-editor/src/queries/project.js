@@ -93,6 +93,10 @@ export const SUMMARY_QUERY = gql`
           phase_key
         }
       }
+      moped_public_process_statuses {
+        id
+        name
+      }
     }
     moped_proj_partners(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -112,6 +116,10 @@ export const SUMMARY_QUERY = gql`
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
       entity_name
+    }
+    moped_public_process_statuses(order_by: { id: asc }) {
+      id
+      name
     }
     moped_types(order_by: { type_name: asc }) {
       type_id
@@ -478,6 +486,14 @@ export const PROJECT_ACTIVITY_LOG = gql`
       phase_id
       phase_name
     }
+    moped_subphases {
+      subphase_id
+      subphase_name
+    }
+    moped_milestones {
+      milestone_id
+      milestone_name
+    }
     moped_tags(order_by: { name: asc }) {
       name
       id
@@ -497,6 +513,19 @@ export const PROJECT_ACTIVITY_LOG = gql`
     moped_fund_status(order_by: {funding_status_id: asc}) {
       funding_status_id
       funding_status_name
+    }
+    moped_public_process_statuses(order_by: {id: asc}) {
+      id
+      name
+    }
+    moped_components(order_by: {component_id: asc}) {
+      component_id
+      component_name
+      component_subtype
+    }
+    moped_types(order_by: {type_id: asc}) {
+      type_id
+      type_name
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
@@ -731,10 +760,10 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
 `;
 
 export const PROJECT_UPDATE_SPONSOR = gql`
-  mutation ProjectUpdateSponsor($projectId: Int!, $entityId: Int!) {
+  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_sponsor: $entityId }
+      _set: { project_sponsor: $fieldValueId }
     ) {
       project_sponsor
     }
@@ -742,13 +771,24 @@ export const PROJECT_UPDATE_SPONSOR = gql`
 `;
 
 export const PROJECT_UPDATE_LEAD = gql`
-  mutation ProjectUpdateLead($projectId: Int!, $entityId: Int!) {
+  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_lead_id: $entityId }
+      _set: { project_lead_id: $fieldValueId }
     ) {
       project_lead_id
     }
+  }
+`;
+
+export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
+  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int!) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { public_process_status_id: $fieldValueId }
+    ) {
+      public_process_status_id
+    }    
   }
 `;
 
