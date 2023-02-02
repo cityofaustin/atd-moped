@@ -571,22 +571,6 @@ export const ProjectActivityLogOperationMaps = {
       icon: "create",
     },
   },
-
-  moped_proj_personnel: {
-    DELETE: {
-      label: "Removed",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "personadd",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-
   moped_proj_phases: {
     DELETE: {
       label: "Removed",
@@ -601,7 +585,6 @@ export const ProjectActivityLogOperationMaps = {
       icon: "create",
     },
   },
-
   moped_project_files: {
     DELETE: {
       label: "Deleted",
@@ -616,7 +599,6 @@ export const ProjectActivityLogOperationMaps = {
       icon: "create",
     },
   },
-
   generic: {
     DELETE: {
       label: "Deleted",
@@ -640,10 +622,6 @@ export const ProjectActivityLogGenericDescriptions = {
 };
 
 export const ProjectActivityLogCreateDescriptions = {
-  moped_proj_personnel: {
-    label: (record, userList) =>
-      userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
-  },
   moped_proj_phases: {
     label: (record, userList, phaseList) => {
       const recordData = record.record_data.event.data.new;
