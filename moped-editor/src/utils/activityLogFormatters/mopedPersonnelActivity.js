@@ -21,7 +21,7 @@ export const formatPersonnelActivity = (change, userList) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Replaced " },
+        { text: "Replaced team member " },
         { text: userList[changeData.old.user_id], style: "boldText" },
         { text: " with ", style: null },
         { text: userList[changeData.new.user_id], style: "boldText" },
@@ -41,10 +41,11 @@ export const formatPersonnelActivity = (change, userList) => {
     };
   }
 
+  // currently 'notes' is the only other editable field on this table
   return {
     changeIcon,
     changeText: [
-      { text: "Updated " },
+      { text: "Updated team member notes for " },
       { text: userList[changeData.new.user_id], style: "boldText" },
     ],
   };
