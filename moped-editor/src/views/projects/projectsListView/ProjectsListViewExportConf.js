@@ -20,11 +20,11 @@ export const ProjectsListViewExportConf = {
     filter: filterNullValues,
   },
   project_description: {
-    label: "project_description",
+    label: "Project Description",
     filter: filterNullValues,
   },
   current_phase_key: {
-    label: "current_phase_key",
+    label: "Current Phase Key",
     filter: filterNullValues,
   },
   current_phase: {
