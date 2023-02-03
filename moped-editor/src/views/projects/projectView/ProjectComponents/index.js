@@ -146,6 +146,8 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
 
   useZoomToExistingComponents(mapRef, data);
 
+  // TODO: Make a helper that takes a mapRef and a component and then zooms to it
+  // TODO: We need a feature collection the signal geometry needs to be converted
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
     const componentId = component.project_component_id;
