@@ -1,27 +1,19 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
-
+import { Grid, Box, Typography, Icon, TextField } from "@material-ui/core";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
-
 import { Autocomplete } from "@material-ui/lab";
 
 import { useMutation } from "@apollo/client";
-import {
-  PROJECT_UPDATE_SPONSOR,
-  PROJECT_UPDATE_LEAD,
-} from "../../../../queries/project";
-
-const getUpdateMutation = (entityName) => {
-  if (entityName === "Sponsor") {
-    return PROJECT_UPDATE_SPONSOR;
-  }
-  if (entityName === "Lead") {
-    return PROJECT_UPDATE_LEAD;
-  }
-};
 
 /**
- * ProjectSummaryStatusUpdate Component
+ * ProjectSummaryAutocomplete Component
+ * @param {String} field - The name of the field to be displayed
+ * @param {String} idColumn - The name of the id column to be used in the mutation
+ * @param {String} nameColumn - The name of the name column to be displayed
+ * @param {Object} initialValue - The initial value returned from the query
+ * @param {Array} optionList - The list of options for the autocomplete
+ * @param {String} updateMuation - The mutation to update the field
+ * @param {String} tooltipText -  The text to be displayed in the tooltip
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
@@ -30,66 +22,57 @@ const getUpdateMutation = (entityName) => {
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryProjectEntity = ({
+const ProjectSummaryAutocomplete = ({
+  field,
+  idColumn,
+  nameColumn,
+  initialValue,
+  optionList,
+  updateMutation,
+  tooltipText,
   projectId,
-  data,
   refetch,
   classes,
   snackbarHandle,
-  entityName,
-  tooltipText,
 }) => {
-  const entityList = data?.moped_entity ?? [];
-  const noneSponsor = entityList.find((e) => e.entity_id === 0);
-
-  const getOriginalSponsor = () => {
-    if (entityName === "Lead") {
-      return data?.moped_project?.[0]?.moped_project_lead;
-    }
-    if (entityName === "Sponsor") {
-      return data?.moped_project?.[0]?.moped_entity;
-    }
-  };
-
   const [editMode, setEditMode] = useState(false);
-
-  const [sponsor, setSponsor] = useState(getOriginalSponsor() ?? noneSponsor);
+  const [fieldValue, setFieldValue] = useState(initialValue);
 
   // The mutation and mutation function
-  const [updateProjectEntity] = useMutation(getUpdateMutation(entityName));
+  const [updateFieldValue] = useMutation(updateMutation);
 
   /**
-   * Resets the sponsor back to its original state, closes edit mode
+   * Resets the field value back to its original state, closes edit mode
    */
-  const handleProjectSponsorClose = () => {
-    setSponsor(getOriginalSponsor());
+  const handleFieldClose = () => {
+    setFieldValue(initialValue);
     setEditMode(false);
   };
 
   /**
-   * Saves the new project sponsor
+   * Saves the new field value
    */
-  const handleProjectSponsorSave = () => {
-    updateProjectEntity({
+  const handleFieldSave = () => {
+    updateFieldValue({
       variables: {
         projectId: projectId,
-        entityId: sponsor.entity_id,
+        fieldValueId: fieldValue?.[idColumn] ?? null,
       },
     })
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, "Sponsor updated!", "success");
+        snackbarHandle(true, `${field} updated!`, "success");
       })
       .catch((err) => {
         snackbarHandle(true, "Failed to update: " + String(err), "error");
-        handleProjectSponsorClose();
+        handleFieldClose();
       });
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
-      <Typography className={classes.fieldLabel}>{entityName}</Typography>
+      <Typography className={classes.fieldLabel}>{field}</Typography>
       <Box
         display="flex"
         justifyContent="flex-start"
@@ -98,16 +81,16 @@ const ProjectSummaryProjectEntity = ({
         {editMode && (
           <>
             <Autocomplete
-              value={sponsor}
+              value={fieldValue}
               className={classes.fieldSelectItem}
               id={`moped-project-summary-autocomplete-${projectId}`}
-              options={entityList}
-              getOptionLabel={(e) => e.entity_name}
+              options={optionList}
+              getOptionLabel={(e) => e[nameColumn]}
               getOptionSelected={(option, value) =>
-                option.entity_name === value.entity_name
+                option[nameColumn] === value[nameColumn]
               }
               onChange={(event, newValue) => {
-                setSponsor(newValue);
+                setFieldValue(newValue);
               }}
               renderInput={(params) => (
                 <TextField
@@ -117,16 +100,14 @@ const ProjectSummaryProjectEntity = ({
                   autoFocus
                 />
               )}
-            />
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectSponsorSave}
-            >
+              openOnFocus={true}
+            ></Autocomplete>
+            <Icon className={classes.editIconConfirm} onClick={handleFieldSave}>
               check
             </Icon>
             <Icon
               className={classes.editIconConfirm}
-              onClick={handleProjectSponsorClose}
+              onClick={handleFieldClose}
             >
               close
             </Icon>
@@ -134,7 +115,7 @@ const ProjectSummaryProjectEntity = ({
         )}
         {!editMode && (
           <ProjectSummaryLabel
-            text={sponsor?.entity_name || ""}
+            text={fieldValue?.[nameColumn] || ""}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
             tooltipText={tooltipText}
@@ -145,4 +126,4 @@ const ProjectSummaryProjectEntity = ({
   );
 };
 
-export default ProjectSummaryProjectEntity;
+export default ProjectSummaryAutocomplete;

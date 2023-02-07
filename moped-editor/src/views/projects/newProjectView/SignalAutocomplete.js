@@ -3,7 +3,7 @@ import { CircularProgress } from "@material-ui/core";
 import { Autocomplete, Alert } from "@material-ui/lab";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
-  signalToFeatureCollection,
+  knackSignalRecordToFeatureSignalsRecord,
   getSignalOptionLabel,
   getSignalOptionSelected,
   renderSignalInput,
@@ -18,7 +18,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {func} setSignal - signal state setter
  * @param {Object} projectDetails - The parent view's project details object
  * @param {Object} setProjectDetails - The projectDetails state setter
- * @param {Object} setFeatureCollection - The parent view's featureCollection state setter
+ * @param {Object} setSignalRecord - The parent view's signal record state setter
  * @param {Boolean} signalError - If the current signal value is in validation error
  *  @return {JSX.Element}
  */
@@ -27,10 +27,10 @@ const SignalAutocomplete = ({
   setSignal,
   projectDetails,
   setProjectDetails,
-  setFeatureCollection,
+  setSignalRecord,
   signalError,
 }) => {
-  const handleFieldChange = signal => {
+  const handleFieldChange = (signal) => {
     const projectName = signal?.properties?.location_name || "";
     const updatedProjectDetails = {
       ...projectDetails,
@@ -38,8 +38,8 @@ const SignalAutocomplete = ({
     };
     setProjectDetails(updatedProjectDetails);
     setSignal(signal);
-    const featureCollection = signalToFeatureCollection(signal);
-    setFeatureCollection(featureCollection);
+    const signalRecord = knackSignalRecordToFeatureSignalsRecord(signal);
+    setSignalRecord(signalRecord);
   };
 
   const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
@@ -65,7 +65,7 @@ const SignalAutocomplete = ({
       }}
       loading={loading}
       options={features}
-      renderInput={params => renderSignalInput(params, signalError)}
+      renderInput={(params) => renderSignalInput(params, signalError)}
       value={signal || null}
     />
   );

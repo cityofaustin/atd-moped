@@ -1,107 +1,82 @@
-import React, { useRef, useCallback, useState } from "react";
-import Map, { NavigationControl } from "react-map-gl";
-import { Box, makeStyles } from "@material-ui/core";
+import React, { useCallback, useState, useMemo } from "react";
+import MapGL from "react-map-gl";
+import { Box } from "@material-ui/core";
+import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
+import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
+import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
+import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
+import {
+  basemaps,
+  mapParameters,
+  initialViewState,
+} from "../ProjectComponents/mapSettings";
+import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
+import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import {
-  createSummaryMapLayers,
-  getSummaryMapInteractiveIds,
-  MAPBOX_TOKEN,
-  mapStyles,
-  renderTooltip,
-  countFeatures,
-  useHoverLayer,
-  useFeatureCollectionToFitBounds,
-  basemaps,
-  mapConfig,
-} from "../../../../utils/mapHelpers";
+/**
+ * Use a callback ref to get the map instance and store it in state so we can watch it with useEffect
+ * @see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
+ * @returns {Array} - [mapRef, mapRefState] - mapRef is a callback ref, mapRefState is a state variable
+ */
+const useMapRef = () => {
+  const [mapRefState, setMapRefState] = useState(null);
+  const mapRef = useCallback((mapInstance) => {
+    if (mapInstance !== null) {
+      // Store instance as the value of current just like a ref would
+      setMapRefState({ current: mapInstance });
+    }
+  }, []);
+  return [mapRef, mapRefState];
+};
 
-const useStyles = makeStyles({
-  locationCountText: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-  },
-  toolTip: mapStyles.toolTipStyles,
-});
+const ProjectSummaryMap = ({ data }) => {
+  const [mapRef, mapRefState] = useMapRef();
+  const [basemapKey, setBasemapKey] = useState("streets");
 
-const ProjectSummaryMap = ({ projectFeatureCollection }) => {
-  const classes = useStyles();
-  const mapRef = useRef();
-  const featureCount = countFeatures(projectFeatureCollection);
+  const projectFeatureCollection = useMemo(() => {
+    const featureCollection = {
+      type: "FeatureCollection",
+      features: [],
+    };
 
-  /**
-   * Make use of a custom hook that returns a vector tile layer hover event handler
-   * and the details to place and populate a tooltip.
-   */
-  const { handleLayerHover, featureText, hoveredCoords } = useHoverLayer();
+    if (!data?.project_geography) return featureCollection;
 
-  const [viewport, setViewport] = useState(mapConfig.mapInit);
-  /**
-   * Make use of a custom hook that fits to a provided feature collection.
-   */
-  const { fitMapToFeatureCollectionOnRender } = useFeatureCollectionToFitBounds(
-    mapRef,
-    projectFeatureCollection,
-    true,
-    100
-  );
+    const projectGeographyGeoJSONFeatures = data.project_geography.map(
+      (feature) => makeFeatureFromProjectGeographyRecord(feature)
+    );
 
-  /**
-   * Updates viewport on zoom, scroll, and other events
-   * @param {Object} updatedViewPort - Mapbox object that stores properties of the map view
-   */
-  const handleViewportChange = useCallback(
-    (viewport) =>
-      setViewport((prevViewport) => ({ ...prevViewport, ...viewport })),
-    [setViewport]
-  );
+    return { ...featureCollection, features: projectGeographyGeoJSONFeatures };
+  }, [data]);
 
-  /**
-   * Let's throw an error intentionally if there are no features for a project.
-   */
-  if (featureCount < 1) {
-    // Throw an error if this component was called without features to render.
-    throw Error("Map error: Cannot render or edit maps with no features");
-  }
+  useZoomToExistingComponents(mapRefState, data);
 
-  /**
-   * If we do have features, proceed to render map.
-   */
+  const areThereComponentFeatures =
+    projectFeatureCollection.features.length > 0;
+
   return (
     <Box>
-      <Map
-        /* Current state of viewport */
-        {...viewport}
-        /* Object reference to this object */
-        ref={mapRef}
-        maxZoom={20}
-        style={{ width: "100%", height: "60vh" }}
-        /* Access Key */
-        mapboxAccessToken={MAPBOX_TOKEN}
-        onRender={fitMapToFeatureCollectionOnRender}
-        /* Get the IDs from the layerConfigs object to set as interactive in the summary map */
-        /* If specified: Pointer event callbacks will only query the features under the pointer of these layers.
-              The getCursor callback will receive isHovering: true when hover over features of these layers */
-        interactiveLayerIds={getSummaryMapInteractiveIds(
-          projectFeatureCollection
-        )}
-        /* Gets and sets data from a map feature used to populate and place a tooltip */
-        onMouseMove={handleLayerHover}
-        /* Updates state of viewport on zoom, scroll, and other events */
-        onMove={(e) => handleViewportChange(e.viewState)}
-        mapStyle={basemaps.streets}
-      >
-        {/* Draw Navigation controls with specific styles */}
-        <NavigationControl showCompass={false} position="bottom-right" />
-        {/*
-          If there is GeoJSON data, create sources and layers for
-          each source layer in the project's GeoJSON FeatureCollection
-        */}
-        {projectFeatureCollection &&
-          createSummaryMapLayers(projectFeatureCollection)}
-        {/* Draw tooltip on feature hover */}
-        {renderTooltip(featureText, hoveredCoords, classes.toolTip)}
-      </Map>
+      {areThereComponentFeatures ? (
+        <MapGL
+          ref={mapRef}
+          initialViewState={initialViewState}
+          style={{ width: "100%", height: "60vh" }}
+          mapStyle={basemaps.streets.mapStyle}
+          {...mapParameters}
+          cooperativeGestures={true}
+        >
+          <BasemapSpeedDial
+            basemapKey={basemapKey}
+            setBasemapKey={setBasemapKey}
+          />
+          <BaseMapSourceAndLayers basemapKey={basemapKey} />
+          <ProjectSummaryMapSourcesAndLayers
+            projectFeatureCollection={projectFeatureCollection}
+          />
+        </MapGL>
+      ) : (
+        <ProjectSummaryMapFallback />
+      )}
     </Box>
   );
 };

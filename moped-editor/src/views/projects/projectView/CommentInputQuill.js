@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { Box, Button, Container, Grid } from "@material-ui/core";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
@@ -14,7 +14,7 @@ const quillModules = {
   ],
 };
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
     backgroundColor: theme.palette.background.paper,
@@ -23,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(1),
     position: "relative",
     color: theme.palette.secondary.dark,
+  },
+  quillText: {
+    color: theme.palette.text.primary,
   },
 }));
 
@@ -37,17 +40,24 @@ const CommentInputQuill = ({
   cancelCommentEdit,
 }) => {
   const classes = useStyles();
+  const ref = useRef();
+
+  useEffect(() => {
+    // autofocuses the quill input
+    ref?.current.focus();
+  }, []);
 
   return (
     <Container>
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
-          <Box pt={2}>
+          <Box className={classes.quillText} pt={2}>
             <ReactQuill
               theme="snow"
               value={noteText}
               onChange={setNoteText}
               modules={quillModules}
+              ref={ref}
             />
           </Box>
         </Grid>
@@ -61,6 +71,8 @@ const CommentInputQuill = ({
               </div>
             )}
             <ProjectSaveButton
+              // disable save button if no text after removing html tags
+              disabled={!noteText.replace(/<[^>]*>/g, "")}
               label={<>Save</>}
               loading={commentAddLoading}
               success={commentAddSuccess}

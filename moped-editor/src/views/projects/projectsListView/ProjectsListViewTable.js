@@ -318,7 +318,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => renderProjectTeamMembers(entry.project_team_members),
+      render: (entry) =>
+        renderProjectTeamMembers(
+          entry.project_team_members,
+          "projectsListView"
+        ),
     },
     {
       title: "Lead",
@@ -375,21 +379,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       hidden: hiddenColumns["project_feature"],
       sorting: false,
       render: (entry) => {
-        // if there are no features, project_feature is [null]
-        if (!entry?.project_feature[0]) {
+        if (!entry?.project_feature) {
           return "-";
         } else {
-          const signalIds = [];
-          entry.project_feature.forEach((projectFeature) => {
-            const signal = projectFeature?.properties?.signal_id;
-            if (signal) {
-              signalIds.push({
-                signal_id: signal,
-                knack_id: projectFeature.properties.id,
-              });
-            }
-          });
-          return <RenderSignalLink signals={signalIds} />;
+          const signals = entry.project_feature.filter(
+            (signal) => signal.signal_id && signal.knack_id
+          );
+          return <RenderSignalLink signals={signals} />;
         }
       },
     },
@@ -537,6 +533,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     // Before anything, let's clear all current conditions
     query.clearOrderBy();
     const columnName = columns[columnId]?.field;
+
+    // Resets pagination to 0 when user clicks a header to display most relevant results
+    setPagination({
+      limit: query.limit,
+      offset: query.offset,
+      page: 0,
+    });
 
     if (sort.column === columnName) {
       // If the current sortColumn is the same as the new

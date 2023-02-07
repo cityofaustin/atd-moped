@@ -14,8 +14,6 @@ export const ADD_PROJECT = gql`
       moped_proj_phases {
         phase_id
         is_current_phase
-        completion_percentage
-        completed
       }
       moped_proj_components {
         moped_proj_features {
@@ -50,10 +48,15 @@ export const SUMMARY_QUERY = gql`
       moped_project {
         project_name
       }
-      moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        moped_proj_features(where: { is_deleted: { _eq: false } }) {
-          feature_id
-          feature
+      moped_proj_components(
+        where: {
+          is_deleted: { _eq: false }
+          feature_signals: { is_deleted: { _eq: false } }
+        }
+      ) {
+        feature_signals(where: { is_deleted: { _eq: false } }) {
+          signal_id
+          knack_id
         }
       }
       moped_proj_notes(
@@ -62,8 +65,10 @@ export const SUMMARY_QUERY = gql`
       ) {
         project_note_id
         project_note
-        added_by
-        added_by_user_id
+        moped_user {
+          first_name
+          last_name
+        }
         date_created
       }
       moped_project_types(where: { is_deleted: { _eq: false } }) {
@@ -83,9 +88,14 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
         moped_phase {
+          phase_id
           phase_name
           phase_key
         }
+      }
+      moped_public_process_statuses {
+        id
+        name
       }
     }
     moped_proj_partners(
@@ -107,6 +117,10 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_public_process_statuses(order_by: { id: asc }) {
+      id
+      name
+    }
     moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
@@ -116,6 +130,12 @@ export const SUMMARY_QUERY = gql`
     ) {
       project_id
       user_id
+    }
+    project_geography(
+      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+    ) {
+      geometry: geography
+      attributes
     }
   }
 `;
@@ -386,8 +406,6 @@ export const ADD_PROJECT_PHASE = gql`
         project_phase_id
         is_current_phase
         project_id
-        completion_percentage
-        completed
       }
     }
   }
@@ -450,6 +468,13 @@ export const PROJECT_ACTIVITY_LOG = gql`
         email
         user_id
       }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
+        user_id
+      }
     }
     moped_users {
       first_name
@@ -460,6 +485,47 @@ export const PROJECT_ACTIVITY_LOG = gql`
     moped_phases {
       phase_id
       phase_name
+    }
+    moped_subphases {
+      subphase_id
+      subphase_name
+    }
+    moped_milestones {
+      milestone_id
+      milestone_name
+    }
+    moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_entity(order_by: { entity_id: asc }) {
+      entity_id
+      entity_name
+    }
+    moped_fund_sources(order_by: {funding_source_id: asc}) {
+      funding_source_id
+      funding_source_name
+    }
+    moped_fund_programs(order_by: {funding_program_id: asc}) {
+      funding_program_id
+      funding_program_name
+    }
+    moped_fund_status(order_by: {funding_status_id: asc}) {
+      funding_status_id
+      funding_status_name
+    }
+    moped_public_process_statuses(order_by: {id: asc}) {
+      id
+      name
+    }
+    moped_components(order_by: {component_id: asc}) {
+      component_id
+      component_name
+      component_subtype
+    }
+    moped_types(order_by: {type_id: asc}) {
+      type_id
+      type_name
     }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
@@ -483,6 +549,13 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
       moped_user {
         first_name
         last_name
+        user_id
+      }
+      updated_by_user {
+        first_name
+        last_name
+        picture
+        email
         user_id
       }
     }
@@ -686,33 +759,11 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
   }
 `;
 
-/**
- * Updates the status update
- */
-export const PROJECT_SUMMARY_STATUS_UPDATE_UPDATE = gql`
-  mutation ProjectStatusUpdateUpdate(
-    $project_note_id: Int_comparison_exp = {}
-    $project_note: String = ""
-    $added_by: bpchar = ""
-  ) {
-    update_moped_proj_notes(
-      where: { project_note_id: $project_note_id }
-      _set: {
-        project_note: $project_note
-        added_by: $added_by
-        project_note_type: 2
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_UPDATE_SPONSOR = gql`
-  mutation ProjectUpdateSponsor($projectId: Int!, $entityId: Int!) {
+  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_sponsor: $entityId }
+      _set: { project_sponsor: $fieldValueId }
     ) {
       project_sponsor
     }
@@ -720,13 +771,24 @@ export const PROJECT_UPDATE_SPONSOR = gql`
 `;
 
 export const PROJECT_UPDATE_LEAD = gql`
-  mutation ProjectUpdateLead($projectId: Int!, $entityId: Int!) {
+  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int!) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_lead_id: $entityId }
+      _set: { project_lead_id: $fieldValueId }
     ) {
       project_lead_id
     }
+  }
+`;
+
+export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
+  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int!) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { public_process_status_id: $fieldValueId }
+    ) {
+      public_process_status_id
+    }    
   }
 `;
 

@@ -92,7 +92,11 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
   const [showDiffOnly, setShowDiffOnly] = useState(true);
 
   const getEventData = (data, mode) => {
-    return data["moped_activity_log"][0]["record_data"]["event"]["data"][mode];
+    // the original schema
+    if (data["moped_activity_log"][0]["record_data"]["event"]) {
+      return data["moped_activity_log"][0]["record_data"]["event"]["data"][mode];
+    }
+    return data["moped_activity_log"][0]["record_data"]["data"][mode];
   };
 
   const getEventAttribute = (data, field) => {
@@ -101,7 +105,7 @@ const ProjectActivityLogDialog = ({ activity_id, handleClose }) => {
 
   const getUser = data => {
     try {
-      const moped_user = data.moped_activity_log[0].moped_user
+      const moped_user = data.moped_activity_log[0].moped_user ?? data.moped_activity_log[0].updated_by_user
       return getUserFullName(moped_user);
     } catch {
       return null;
