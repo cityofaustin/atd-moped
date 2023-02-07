@@ -4,6 +4,8 @@ import { ADD_PROJECT_COMPONENT } from "src/queries/components";
 import { makeComponentInsertData } from "./makeComponentData";
 import { getDrawId, isDrawnDraftFeature } from "./features";
 import { removeFeatureFromDraftComponent } from "./onMapClick";
+import { zoomMapToFeatureCollection } from "./map";
+import { fitBoundsOptions } from "../mapSettings";
 
 const createReducer = (state, action) => {
   switch (action.type) {
@@ -126,6 +128,7 @@ export const useCreateComponent = ({
   setLinkMode,
   refetchProjectComponents,
   setIsDrawing,
+  mapRef,
 }) => {
   const [createState, createDispatch] = useReducer(createReducer, {
     isCreatingComponent: false,
@@ -150,10 +153,8 @@ export const useCreateComponent = ({
    * Prepare component and feature data for component creation and call mutation/reset state
    */
   const onSaveDraftComponent = () => {
-    const newComponentData = makeComponentInsertData(
-      projectId,
-      createState.draftComponent
-    );
+    const { draftComponent } = createState;
+    const newComponentData = makeComponentInsertData(projectId, draftComponent);
 
     addProjectComponent({ variables: { object: newComponentData } })
       .then(() => {
@@ -161,6 +162,14 @@ export const useCreateComponent = ({
           createDispatch({ type: "save_create" });
           setLinkMode(null);
           setIsDrawing(false);
+          zoomMapToFeatureCollection(
+            mapRef,
+            {
+              type: "FeatureCollection",
+              features: draftComponent.features,
+            },
+            fitBoundsOptions.zoomToClickedComponent
+          );
         });
       })
       .catch((error) => {

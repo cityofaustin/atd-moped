@@ -93,7 +93,11 @@ export function useAppBarHeight() {
  * @param {Object} featureCollection - GeoJSON feature collection
  * @param {Object} fitBoundsOptions - Mapbox fitBounds options
  */
-const zoomMapToBoundingBox = (mapRef, featureCollection, fitBoundsOptions) => {
+export const zoomMapToFeatureCollection = (
+  mapRef,
+  featureCollection,
+  fitBoundsOptions
+) => {
   if (!mapRef?.current) return;
 
   const bboxOfFeatureCollection = bbox(featureCollection);
@@ -123,7 +127,7 @@ export const useZoomToExistingComponents = (mapRef, data) => {
       features: data.project_geography,
     };
 
-    zoomMapToBoundingBox(
+    zoomMapToFeatureCollection(
       mapRef,
       featureCollection,
       fitBoundsOptions.zoomToExtent
