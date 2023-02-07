@@ -192,6 +192,14 @@ export const useCreateComponent = ({
           createDispatch({ type: "save_create" });
           setLinkMode(null);
           setIsDrawing(false);
+          zoomMapToFeatureCollection(
+            mapRef,
+            {
+              type: "FeatureCollection",
+              features: signalComponent.features,
+            },
+            fitBoundsOptions.zoomToClickedComponent
+          );
         });
       })
       .catch((error) => {
