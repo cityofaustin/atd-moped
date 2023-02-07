@@ -88,6 +88,19 @@ export function useAppBarHeight() {
 }
 
 /**
+ * Zoom to a feature collection using Mapbox fitBounds on a map instance
+ * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
+ * @param {Object} featureCollection - GeoJSON feature collection
+ * @param {Object} fitBoundsOptions - Mapbox fitBounds options
+ */
+const zoomMapToBoundingBox = (mapRef, featureCollection, fitBoundsOptions) => {
+  if (!mapRef?.current) return;
+
+  const bboxOfFeatureCollection = bbox(featureCollection);
+  mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
+};
+
+/**
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
  * @param {Object} data - Data returned from the moped_components query
@@ -110,8 +123,11 @@ export const useZoomToExistingComponents = (mapRef, data) => {
       features: data.project_geography,
     };
 
-    const bboxOfAllFeatures = bbox(featureCollection);
-    mapRef.current.fitBounds(bboxOfAllFeatures, fitBoundsOptions.zoomToExtent);
+    zoomMapToBoundingBox(
+      mapRef,
+      featureCollection,
+      fitBoundsOptions.zoomToExtent
+    );
 
     setHasMapZoomedInitially(true);
   }, [data, hasMapZoomedInitially, mapRef]);
