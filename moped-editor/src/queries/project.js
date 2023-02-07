@@ -527,10 +527,6 @@ export const PROJECT_ACTIVITY_LOG = gql`
       type_id
       type_name
     }
-    moped_project_files(order_by: {project_file_id: asc}) {
-      project_file_id
-      file_name
-    }
     activity_log_lookup_tables: moped_activity_log(
       where: { record_project_id: { _eq: $projectId } }
       distinct_on: record_type

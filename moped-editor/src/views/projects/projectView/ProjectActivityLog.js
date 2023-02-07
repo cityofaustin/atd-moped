@@ -88,7 +88,6 @@ const useLookupTables = (data) =>
     lookupData.publicProcessStatusList = {};
     lookupData.componentList = {};
     lookupData.projectTypeList = {};
-    lookupData.fileList = {};
 
     if (data) {
       data["moped_users"].forEach((user) => {
@@ -137,10 +136,6 @@ const useLookupTables = (data) =>
       data["moped_types"].forEach((projectType) => {
         lookupData.projectTypeList[`${projectType.type_id}`] =
           projectType.type_name;
-      });
-      data["moped_project_files"].forEach((projectFile) => {
-        lookupData.fileList[`${projectFile.project_file_id}`] =
-          projectFile.file_name;
       });
     }
 

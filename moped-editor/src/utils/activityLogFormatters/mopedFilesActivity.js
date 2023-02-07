@@ -1,7 +1,7 @@
 import AttachFileOutlined from "@material-ui/icons/AttachFileOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatFilesActivity = (change, fileList) => {
+export const formatFilesActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project_files"];
 
   const changeIcon = <AttachFileOutlined />;
