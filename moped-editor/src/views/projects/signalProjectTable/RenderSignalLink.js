@@ -3,7 +3,7 @@ import Link from "@material-ui/core/Link";
 import OpenInNewIcon from "@material-ui/icons/OpenInNew";
 import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   openInNewIcon: {
     fontSize: "16px",
     verticalAlign: "middle",
@@ -24,7 +24,6 @@ const RenderSignalLink = ({ signals }) => {
               rel="noopener noreferrer"
             >
               {signal.signal_id}
-              <OpenInNewIcon className={classes.openInNewIcon} />
             </Link>
           ) : (
             signal.signal_id

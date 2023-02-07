@@ -158,7 +158,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     project_partner: false,
     ecapris_subproject_id: false,
     updated_at: false,
-    project_feature: false, // signal_ids
+    project_feature: true, // signal_ids
     task_order: true,
     type_name: true,
     funding_source_name: true,
@@ -299,7 +299,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
         position: "sticky",
         left: 0,
         backgroundColor: "white",
-        whiteSpace: "noWrap",
+        minWidth: "20rem",
+        // whiteSpace: "noWrap",
         zIndex: 1,
       },
     },
@@ -378,6 +379,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_feature",
       hidden: hiddenColumns["project_feature"],
       sorting: false,
+      cellStyle: { maxWidth: "20rem" },
       render: (entry) => {
         if (!entry?.project_feature) {
           return "-";
@@ -443,7 +445,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
-      cellStyle: { minWidth: 300 },
+      cellStyle: { maxWidth: "30rem" },
       render: (entry) => parse(String(entry.project_note)),
     },
     {
