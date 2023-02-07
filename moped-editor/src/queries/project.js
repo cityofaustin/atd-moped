@@ -502,19 +502,19 @@ export const PROJECT_ACTIVITY_LOG = gql`
       entity_id
       entity_name
     }
-    moped_fund_sources(order_by: {funding_source_id: asc}) {
+    moped_fund_sources(order_by: { funding_source_id: asc }) {
       funding_source_id
       funding_source_name
     }
-    moped_fund_programs(order_by: {funding_program_id: asc}) {
+    moped_fund_programs(order_by: { funding_program_id: asc }) {
       funding_program_id
       funding_program_name
     }
-    moped_fund_status(order_by: {funding_status_id: asc}) {
+    moped_fund_status(order_by: { funding_status_id: asc }) {
       funding_status_id
       funding_status_name
     }
-    moped_public_process_statuses(order_by: {id: asc}) {
+    moped_public_process_statuses(order_by: { id: asc }) {
       id
       name
     }
@@ -649,52 +649,6 @@ export const PROJECT_ARCHIVE = gql`
   }
 `;
 
-export const COMPONENTS_QUERY = gql`
-  query GetComponents($projectId: Int) {
-    moped_proj_components(
-      where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-    ) {
-      component_id
-      description
-      name
-      project_component_id
-      project_id
-      moped_components {
-        component_name
-        component_id
-        component_subtype
-        line_representation
-      }
-      moped_proj_components_subcomponents(
-        where: { is_deleted: { _eq: false } }
-      ) {
-        component_subcomponent_id
-        project_component_id
-        subcomponent_id
-        moped_subcomponent {
-          subcomponent_id
-          subcomponent_name
-        }
-      }
-      moped_proj_features(where: { is_deleted: { _eq: false } }) {
-        feature
-        feature_id
-      }
-    }
-    moped_subcomponents {
-      subcomponent_name
-      subcomponent_id
-      component_id
-    }
-    moped_components {
-      component_name
-      component_subtype
-      component_id
-      line_representation
-    }
-  }
-`;
-
 export const SIGNAL_COMPONENTS_QUERY = gql`
   query GetSignalComponents {
     moped_components(where: { component_name: { _ilike: "signal" } }) {
@@ -702,45 +656,6 @@ export const SIGNAL_COMPONENTS_QUERY = gql`
       component_subtype
       component_id
       line_representation
-    }
-  }
-`;
-
-export const UPDATE_MOPED_COMPONENT = gql`
-  mutation UpdateMopedComponent(
-    $objects: [moped_proj_components_insert_input!]!
-  ) {
-    insert_moped_proj_components(
-      objects: $objects
-      on_conflict: {
-        constraint: moped_proj_components_pkey
-        update_columns: [component_id, description, is_deleted]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const DELETE_MOPED_COMPONENT = gql`
-  mutation DeleteMopedComponent($projComponentId: Int!) {
-    update_moped_proj_components(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_components_subcomponents(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_features(
-      where: { project_component_id: { _eq: $projComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
     }
   }
 `;
@@ -788,7 +703,7 @@ export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
       _set: { public_process_status_id: $fieldValueId }
     ) {
       public_process_status_id
-    }    
+    }
   }
 `;
 

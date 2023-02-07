@@ -6,7 +6,7 @@ import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
-import SignalComponentAutocomplete from "../SignalComponentAutocomplete";
+import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   useComponentOptions,

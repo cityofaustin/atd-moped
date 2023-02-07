@@ -47,7 +47,7 @@ describe("ProjectListView", () => {
 
     // Click the 'Field' dropdown and click an option that uses a lookup table
     await user.click(screen.getByLabelText("Field"));
-    await user.click(screen.getByText("Project type"));
+    await user.click(screen.getByText("Type"));
 
     // Click the 'Operator' dropdown and click 'is' option
     await user.click(
