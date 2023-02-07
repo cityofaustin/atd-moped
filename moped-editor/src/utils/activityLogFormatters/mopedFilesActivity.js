@@ -5,16 +5,19 @@ export const formatFilesActivity = (change, fileList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_project_files"];
 
   const changeIcon = <AttachFileOutlined />;
-  const file = fileList[change.record_data.event.data.new.project_file_id];
+  const oldFileName = change.record_data.event.data.old?.file_name;
+  const newFileName = change.record_data.event.data.new.file_name;
   const fileText = {
-    text: file,
+    // if there is no old file name (previous state where file name did not exist),
+    // display current file name, otherwise displays old file name that was changed
+    text: !oldFileName ? newFileName : oldFileName,
     style: "boldText",
   };
 
   // add a new file
   if (change.description.length === 0) {
     return {
-        changeIcon,
+      changeIcon,
       changeText: [
         { text: "Added ", style: null },
         fileText,
@@ -27,10 +30,7 @@ export const formatFilesActivity = (change, fileList) => {
   if (change.description[0].field === "is_deleted") {
     return {
       changeIcon,
-      changeText: [
-        { text: "Deleted the file ", style: null },
-        fileText,
-      ],
+      changeText: [{ text: "Deleted the file ", style: null }, fileText],
     };
   }
 
