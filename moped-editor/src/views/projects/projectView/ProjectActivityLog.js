@@ -323,9 +323,11 @@ const ProjectActivityLog = () => {
                           "moped_proj_phases",
                           "moped_proj_milestones",
                           "moped_proj_partners",
+                          "moped_proj_notes",
                           "moped_proj_components",
                           "moped_project_types",
-                          "moped_project_files"
+                          "moped_project_files",
+                          "moped_proj_personnel",
                         ].includes(change.record_type) ? (
                           <ProjectActivityEntry
                             changeIcon={changeIcon}

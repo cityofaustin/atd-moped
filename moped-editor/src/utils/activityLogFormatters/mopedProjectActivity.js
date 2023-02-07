@@ -95,7 +95,22 @@ export const formatProjectActivity = (change, lookupList) => {
         ],
       };
     }
-    console.log(changeData.new[changedField])
+
+    if (changedField === "knack_project_id") {
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Synchronized this project with the ",
+            style: null,
+          },
+          {
+            text: "Data Tracker",
+            style: "boldText",
+          },
+        ],
+      };
+    }
 
     // the update can be rendered as a string
     const changeValue =
