@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, Typography, makeStyles } from "@material-ui/core";
-
+import { formatRelativeDate } from "src/utils/dateAndTime";
 const useStyles = makeStyles((theme) => ({
   entryText: {
     padding: "0 0 0 .5rem",
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {changeText} - Array of objects of the shape:
  *  {text: String to display, style: String name of style or null}
  */
-const ProjectActivityEntry = ({ changeIcon, changeText }) => {
+const ProjectActivityEntry = ({ changeIcon, changeText, changeDate }) => {
   const classes = useStyles();
   return (
     <Box display="flex" p={0}>
@@ -31,6 +31,9 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
               </span>
             ))
           }
+        </Typography>
+        <Typography variant="caption" className={classes.entryText}>
+        {formatRelativeDate(changeDate)}
         </Typography>
       </Box>
     </Box>
