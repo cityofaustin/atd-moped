@@ -65,6 +65,12 @@ $ node index.js
 
 ### Issues to make
 
+
+---> we cna drop the project facility attribute detail. the rest are subcomponents. john to copy to component description with subcomponent type (facility attribute). 
+--->
+
+
+
 - clean up/de-dupe RRFB component
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - work authorizations - can we just mirror Data Tracker functionality in SMB?
