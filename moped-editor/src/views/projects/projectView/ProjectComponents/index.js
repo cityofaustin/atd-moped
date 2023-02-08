@@ -11,7 +11,6 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
@@ -28,6 +27,7 @@ import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
+import { zoomMapToFeatureCollection } from "./utils/map";
 
 const drawerWidth = 350;
 
@@ -148,8 +148,6 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
 
   useZoomToExistingComponents(mapRef, data);
 
-  // TODO: Make a helper that takes a mapRef and a component and then zooms to it
-  // TODO: We need a feature collection the signal geometry needs to be converted
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
     const componentId = component.project_component_id;
@@ -159,8 +157,9 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(
-      bbox(featureCollection),
+    zoomMapToFeatureCollection(
+      mapRef,
+      featureCollection,
       fitBoundsOptions.zoomToClickedComponent
     );
   };
