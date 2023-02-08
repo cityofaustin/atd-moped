@@ -305,6 +305,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
             componentToEdit={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
             setClickedComponent={setClickedComponent}
+            mapRef={mapRef}
           />
         </main>
       </div>
