@@ -132,6 +132,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
+    mapRef,
   });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
