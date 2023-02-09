@@ -1940,34 +1940,6 @@
           - date_added
         filter: {}
         check: null
-  event_triggers:
-    - name: activity_log_moped_proj_entities
-      definition:
-        delete:
-          columns: '*'
-        enable_manual: false
-        insert:
-          columns: '*'
-        update:
-          columns:
-            - project_groups
-            - entity_list_id
-            - project_id
-            - workgroups
-            - partners
-            - project_personnel
-            - project_sponsors
-            - date_added
-      retry_conf:
-        interval_sec: 10
-        num_retries: 0
-        timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
-      headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
 - table:
     name: moped_proj_features
     schema: public
