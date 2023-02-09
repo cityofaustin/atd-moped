@@ -72,7 +72,7 @@ function deploy_cognito_function() {
 }
 
 #
-# Deploys all functions in the events directory
+# Deploys all cognito functions
 #
 function deploy_cognito_functions() {
   MAIN_DIR=$PWD

@@ -68,7 +68,7 @@ function update_lambda_api() {
 }
 
 #
-# Deploys all functions in the events directory
+# Deploys all functions in the moped-api directory
 #
 function deploy_moped_api() {
   echo "Updating MOPED API: ${WORKING_STAGE^^} @ ${PWD})";
