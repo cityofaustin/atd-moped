@@ -133,48 +133,6 @@ INSERT INTO public.moped_proj_contract (id, contractor, contract_number, descrip
 INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, NULL, NULL, NULL, 229, false, 'WA - 10 Unity', 1224);
 
 
---
--- Data for Name: moped_proj_entities; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-
-
---
--- Data for Name: moped_proj_features; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (2, '{"id": 1761, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72869357839227, 30.253303915208974], [-97.72825721651316, 30.254210981073953]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 102140, "TO_ADDRESS_MAX": 59, "FROM_ADDRESS_MIN": 50, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (3, '{"id": 31407, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72825721651316, 30.254210981073953], [-97.72790785878897, 30.255067357091647]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 136040, "TO_ADDRESS_MAX": 69, "FROM_ADDRESS_MIN": 60, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (4, '{"id": 33527, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72790785878897, 30.255067357091647], [-97.72746378555894, 30.25602653570455]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 137839, "TO_ADDRESS_MAX": 79, "FROM_ADDRESS_MIN": 70, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (5, '{"id": 59339, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72746378555894, 30.25602653570455], [-97.72708157077432, 30.25692083389619]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 126745, "TO_ADDRESS_MAX": 89, "FROM_ADDRESS_MIN": 80, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (6, '{"id": 29573, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72708157077432, 30.25692083389619], [-97.72664504125714, 30.25783611997062]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 133661, "TO_ADDRESS_MAX": 98, "FROM_ADDRESS_MIN": 90, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (7, '{"id": 27082, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72664504125714, 30.25783611997062], [-97.726237680763, 30.25872721611117]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 131137, "TO_ADDRESS_MAX": 117, "FROM_ADDRESS_MIN": 100, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (8, '{"id": 32344, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.72619107738137, 30.258826258471856], [-97.72580064833164, 30.259656096315354]], [[-97.726237680763, 30.25872721611117], [-97.72596443071961, 30.259308147363043]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 136700, "TO_ADDRESS_MAX": 217, "FROM_ADDRESS_MIN": 200, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (9, '{"id": 62, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72580064833164, 30.259656096315354], [-97.7248308621347, 30.259317414433937]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 100181, "TO_ADDRESS_MAX": 1724, "FROM_ADDRESS_MIN": 1700, "FULL_STREET_NAME": "E 3RD ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (10, '{"id": 28183, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.7248308621347, 30.259317414433937], [-97.72378295660019, 30.258932975055757]], [[-97.72480554878712, 30.259308147363043], [-97.72378295660019, 30.258932975055757]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 131873, "TO_ADDRESS_MAX": 1824, "FROM_ADDRESS_MIN": 1800, "FULL_STREET_NAME": "E 3RD ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (11, '{"id": 58736, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.72378295660019, 30.258932975055757], [-97.72337224334478, 30.259832169888895]], [[-97.72366762161255, 30.259185503389375], [-97.72337224334478, 30.259832169888895]], [[-97.72378295660019, 30.258932975055757], [-97.72361163049936, 30.259308147363043]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 153152, "TO_ADDRESS_MAX": 322, "FROM_ADDRESS_MIN": 300, "FULL_STREET_NAME": "CHICON ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (12, '{"id": 58604, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72337224334478, 30.259832169888895], [-97.72296437993646, 30.260737003528646]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 147368, "TO_ADDRESS_MAX": 416, "FROM_ADDRESS_MIN": 400, "FULL_STREET_NAME": "CHICON ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (13, '{"id": 31688, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72746378555894, 30.25602653570455]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225460}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (14, '{"id": 31750, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72708157077432, 30.25692083389619]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225769}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (15, '{"id": 31605, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72790785878897, 30.255067357091647]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225135}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (16, '{"id": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88", "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72068, 30.255787]}, "properties": {"id": "5817c088e052e0422be6c6c2", "signal_id": "365", "renderType": "Point", "signal_type": "TRAFFIC", "sourceLayer": "drawnByUser", "location_name": " CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST", "PROJECT_EXTENT_ID": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88"}}', 4, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (17, '{"id": 28834, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74212155491114, 30.26991055253903]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225873}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (18, '{"id": 28546, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.7434235997498, 30.270272362977707]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224868}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (19, '{"id": 28475, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74378100410104, 30.269352704539784]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224814}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (20, '{"id": 28759, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74247946217656, 30.26897163447613]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225554}}', 5, false);
-
-
---
--- Data for Name: moped_proj_financials; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-
-
---
--- Data for Name: moped_proj_fiscal_years; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-
 
 --
 -- Data for Name: moped_proj_funding; Type: TABLE DATA; Schema: public; Owner: moped
@@ -339,12 +297,6 @@ SELECT pg_catalog.setval('public.moped_proj_components_subcomponen_component_sub
 
 SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, true);
 
-
---
--- Name: moped_proj_features_feature_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_features_feature_id_seq', 20, true);
 
 
 --
