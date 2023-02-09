@@ -8,6 +8,7 @@ import { formatPersonnelActivity } from "./activityLogFormatters/mopedPersonnelA
 import { formatNotesActivity } from "./activityLogFormatters/mopedNotesActivity";
 import { formatComponentsActivity } from "./activityLogFormatters/mopedComponentsActivity";
 import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProjectTypesActivity";
+import { formatFilesActivity } from "./activityLogFormatters/mopedFilesActivity";
 import { formatContractsActivity } from "./activityLogFormatters/mopedContractsActivity";
 
 export const formatActivityLogEntry = (change, lookupData) => {
@@ -56,6 +57,8 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatComponentsActivity(change, lookupData.componentList);
     case "moped_project_types":
       return formatProjectTypesActivity(change, lookupData.projectTypeList);
+    case "moped_project_files":
+      return formatFilesActivity(change);
     case "moped_proj_contract":
       return formatContractsActivity(change);
     default:
