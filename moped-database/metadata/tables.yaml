@@ -1980,7 +1980,6 @@
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1988,7 +1987,6 @@
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1996,7 +1994,6 @@
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -2004,7 +2001,6 @@
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -2012,7 +2008,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -2021,7 +2016,6 @@
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -2030,7 +2024,6 @@
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
