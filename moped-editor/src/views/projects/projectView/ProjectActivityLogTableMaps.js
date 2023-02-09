@@ -597,27 +597,6 @@ export const getHumanReadableField = (type, field) => {
 };
 
 /**
- * Returns true if a specific field is mapped
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @return {boolean}
- */
-export const isFieldMapped = (type, field) =>
-  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map ?? null) !== null;
-
-/**
- * Returns the mapped value within the configuration
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @param {*} value - Usually an integer but it can be a string
- * @return {string}
- */
-export const getMappedValue = (type, field, value) =>
-  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map[value];
-
-/**
  * Returns the
  * @param {string} type - The name of the table
  * @return {string}
@@ -672,25 +651,3 @@ export const getCreationLabel = (record, userList, phaseList) => {
   return label ? label(record, userList, phaseList) : "Created";
 };
 
-/**
- * Attempts to represent a number of possible data types from the database as a string
- * @param {string} the javascript variable (whatever type) you want represented as a string.
- * @return {string}
- */
-export const fieldFormat = (changeItem, capitalize = false) => {
-  let result = "";
-  if (changeItem === null) {
-    result = "a null value";
-  } else if (String(changeItem).length === 0) {
-    result = "an empty value";
-  } else if (typeof changeItem === "object") {
-    result = "a JavaScript object";
-  } else if (typeof changeItem === "boolean") {
-    result = String(changeItem);
-  } else if (parseFloat(changeItem)) {
-    result = String(changeItem);
-  } else {
-    result = '"' + changeItem + '"';
-  }
-  return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result;
-};

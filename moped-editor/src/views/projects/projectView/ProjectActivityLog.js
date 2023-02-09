@@ -2,13 +2,10 @@ import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import {
-  fieldFormat,
   getCreationLabel,
   getChangeIcon,
   getRecordTypeLabel,
   getHumanReadableField,
-  getMappedValue,
-  isFieldMapped,
   ProjectActivityLogGenericDescriptions,
 } from "./ProjectActivityLogTableMaps";
 
@@ -385,29 +382,9 @@ const ProjectActivityLog = () => {
                                           </span>
                                           &nbsp;from&nbsp;
                                           <span className={classes.boldText}>
-                                            {isFieldMapped(
-                                              change.record_type,
-                                              changeItem.field
-                                            )
-                                              ? getMappedValue(
-                                                  change.record_type,
-                                                  changeItem.field,
-                                                  String(changeItem.old)
-                                                )
-                                              : fieldFormat(changeItem.old)}
                                           </span>
                                           &nbsp;to&nbsp;
                                           <span className={classes.boldText}>
-                                            {isFieldMapped(
-                                              change.record_type,
-                                              changeItem.field
-                                            )
-                                              ? getMappedValue(
-                                                  change.record_type,
-                                                  changeItem.field,
-                                                  String(changeItem.new)
-                                                )
-                                              : fieldFormat(changeItem.new)}
                                           </span>
                                         </>
                                       )}
