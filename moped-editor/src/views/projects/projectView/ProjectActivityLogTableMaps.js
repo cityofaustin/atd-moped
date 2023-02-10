@@ -36,7 +36,7 @@ export const ProjectActivityLogTableMaps = {
       },
       public_process_status_id: {
         label: "public process status",
-        lookup: "moped_public_process_statuses"
+        lookup: "moped_public_process_statuses",
       },
       project_website: {
         label: "project website",
@@ -66,11 +66,11 @@ export const ProjectActivityLogTableMaps = {
         lookup: "moped_entity",
       },
       capitally_funded: {
-        label: "capitally funded"
+        label: "capitally funded",
       },
       is_retired: {
-        label: "is retired"
-      }
+        label: "is retired",
+      },
     },
   },
   moped_proj_entities: {
@@ -128,7 +128,7 @@ export const ProjectActivityLogTableMaps = {
         label: "project ID",
       },
       milestone_id: {
-        label: "id"
+        label: "id",
       },
       project_milestone_id: {
         label: "ID",
@@ -464,7 +464,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_program_id: {
         label: "program",
-        lookup: "fundingPrograms"
+        lookup: "fundingPrograms",
       },
       funding_amount: {
         label: "amount",
@@ -477,7 +477,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_status_id: {
         label: "status",
-        lookup: "fundingStatus"
+        lookup: "fundingStatus",
       },
       is_deleted: {
         label: "is deleted",
@@ -529,6 +529,35 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       tag_id: {
         label: "Tag ID",
+      },
+    },
+  },
+  moped_proj_contract: {
+    label: "Contract",
+    fields: {
+      id: {
+        label: "ID",
+      },
+      contractor: {
+        label: "contractor",
+      },
+      contract_number: {
+        label: "contract number",
+      },
+      description: {
+        label: "description",
+      },
+      project_id: {
+        label: "project ID",
+      },
+      work_assignment_id: {
+        label: "work assignment ID",
+      },
+      contract_amount: {
+        label: "contract amount",
+      },
+      is_deleted: {
+        label: "is deleted",
       },
     },
   },
