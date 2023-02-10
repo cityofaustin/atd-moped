@@ -862,14 +862,6 @@
     - name: feature_layer
       using:
         foreign_key_constraint_on: feature_layer_id
-  array_relationships:
-    - name: moped_subcomponents
-      using:
-        foreign_key_constraint_on:
-          column: component_id
-          table:
-            name: moped_subcomponents
-            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
@@ -945,6 +937,9 @@
           - feature_layer_id
         filter: {}
         check: {}
+- table:
+    name: moped_components_subcomponents
+    schema: public
 - table:
     name: moped_department
     schema: public
@@ -4402,60 +4397,25 @@
 - table:
     name: moped_subcomponents
     schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - subcomponent_id
-          - subcomponent_name
-          - component_id
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - subcomponent_id
-          - subcomponent_name
-          - component_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - component_id
           - subcomponent_id
           - subcomponent_name
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - component_id
           - subcomponent_id
           - subcomponent_name
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - component_id
           - subcomponent_id
           - subcomponent_name
         filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - component_id
-          - subcomponent_id
-          - subcomponent_name
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - component_id
-          - subcomponent_id
-          - subcomponent_name
-        filter: {}
-        check: null
 - table:
     name: moped_subphases
     schema: public

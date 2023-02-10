@@ -121,7 +121,7 @@ INSERT INTO public.moped_proj_components (project_component_id, project_id, comp
 -- Data for Name: moped_proj_components_subcomponents; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_id, project_component_id, subcomponent_id, is_deleted) VALUES (2, 2, 10, false);
+INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_id, project_component_id, subcomponent_id, is_deleted) VALUES (2, 2, 4, false);
 
 
 --
