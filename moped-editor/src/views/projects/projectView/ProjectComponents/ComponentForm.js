@@ -2,16 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import DateFnsUtils from "@date-io/date-fns";
-import {
-  Button,
-  Grid,
-  TextField,
-  Switch,
-  FormControlLabel,
-  FormHelperText,
-} from "@material-ui/core";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { Button, Grid, TextField } from "@material-ui/core";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -91,8 +82,6 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
-  const [useComponentPhase, setUseComponentPhase] = useState(false);
-
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
@@ -149,7 +138,7 @@ const ComponentForm = ({
             inputRef={register}
             fullWidth
             size="small"
-            name="phase"
+            name="description"
             id="description"
             label={"Description"}
             InputLabelProps={{
@@ -160,72 +149,7 @@ const ComponentForm = ({
             minRows={4}
           />
         </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={useComponentPhase}
-                onChange={() => setUseComponentPhase(!useComponentPhase)}
-                name="checkedB"
-                color="primary"
-              />
-            }
-            labelPlacement="start"
-            label="Use component phase"
-            style={{ color: "gray", marginLeft: 0 }}
-          />
-          {useComponentPhase && (
-            <FormHelperText>
-              Assign a phase to the component to differentiate it from the
-              overall phase of this project
-            </FormHelperText>
-          )}
-        </Grid>
-        {useComponentPhase && (
-          <>
-            <Grid item xs={12}>
-              <ControlledAutocomplete
-                id="component"
-                label="Phase"
-                options={[]}
-                renderOption={(option) => <option>Hello</option>}
-                name="phase"
-                autoFocus
-                disabled={false}
-                control={control}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ControlledAutocomplete
-                id="subphase"
-                label="Subphase"
-                options={[]}
-                renderOption={(option) => <option>Hello</option>}
-                name="subphase"
-                autoFocus
-                disabled={false}
-                control={control}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DatePicker
-                  clearable={true}
-                  emptyLabel="mm/dd/yyyy"
-                  format="MM/dd/yyyy"
-                  variant="outlined"
-                  label="Phase end"
-                  value="2023-01-01"
-                  // value={props.value ? parseISO(props.value) : null}
-                  // onChange={handleDateChange}
-                  // InputProps={{ style: { minWidth: "100px" } }}
-                />
-              </MuiPickersUtilsProvider>
-            </Grid>
-          </>
-        )}
       </Grid>
-
       <Grid container spacing={4} display="flex" justifyContent="flex-end">
         <Grid item style={{ margin: 5 }}>
           <Button
@@ -233,7 +157,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            // disabled={!isValid}
+            disabled={!isValid}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
