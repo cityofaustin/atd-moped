@@ -1,21 +1,19 @@
 import React, { useCallback, useState, useMemo } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
-import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
-import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
-import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
-import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
+import ProjectSummaryMapFallback from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMapFallback";
+import BaseMapSourceAndLayers from "src/views/projects/projectView/ProjectComponents/BaseMapSourceAndLayers";
+import BasemapSpeedDial from "src/views/projects/projectView/ProjectComponents/BasemapSpeedDial";
+import ProjectSummaryMapSourcesAndLayers from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMapSourcesAndLayers";
 
 import {
   basemaps,
   mapParameters,
   initialViewState,
-} from "../ProjectComponents/mapSettings";
-import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
-import {
-  useZoomToExistingComponents,
-  interactiveLayerIds,
-} from "../ProjectComponents/utils/map";
+} from "src/views/projects/projectView/ProjectComponents/mapSettings";
+import { makeFeatureFromProjectGeographyRecord } from "src/views/projects/projectView/ProjectComponents/utils/makeFeatureCollections";
+import { useZoomToExistingComponents } from "src/views/projects/projectView/ProjectComponents/utils/map";
+
 import "mapbox-gl/dist/mapbox-gl.css";
 
 /**
@@ -34,10 +32,9 @@ const useMapRef = () => {
   return [mapRef, mapRefState];
 };
 
-const ProjectSummaryMap = ({ data }) => {
+const ProjectMap = ({ data }) => {
   const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
-  const [clickedFeatures, setClickedFeatures] = useState([]);
 
   const projectFeatureCollection = useMemo(() => {
     const featureCollection = {
@@ -59,16 +56,6 @@ const ProjectSummaryMap = ({ data }) => {
   const areThereComponentFeatures =
     projectFeatureCollection.features.length > 0;
 
-  const onClick = (e) => {
-    if (!e.features || e.features?.length === 0) {
-      if (clickedFeatures) {
-        setClickedFeatures([]);
-      }
-    }
-    setClickedFeatures([...e.features]);
-  };
-
-  // console.log(interactiveLayerIds)
   return (
     <Box>
       {areThereComponentFeatures ? (
@@ -79,8 +66,6 @@ const ProjectSummaryMap = ({ data }) => {
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
-          onClick={onClick}
-          interactiveLayerIds={["project-points", "project-lines"]}
         >
           <BasemapSpeedDial
             basemapKey={basemapKey}
@@ -98,4 +83,4 @@ const ProjectSummaryMap = ({ data }) => {
   );
 };
 
-export default ProjectSummaryMap;
+export default ProjectMap;
