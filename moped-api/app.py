@@ -11,7 +11,6 @@ MOPED_API_CURRENT_ENVIRONMENT = os.getenv("MOPED_API_CURRENT_ENVIRONMENT", "STAG
 #
 from auth.auth import auth_blueprint
 from users.users import users_blueprint
-from events.events import events_blueprint
 from files.files import files_blueprint
 
 app = Flask(__name__)
