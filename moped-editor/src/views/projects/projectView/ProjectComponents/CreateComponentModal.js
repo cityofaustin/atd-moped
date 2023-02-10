@@ -17,6 +17,14 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  dialog: {
+    position: "absolute",
+    top: 20,
+    marginLeft: "auto",
+    marginRight: "auto",
+    left: 0,
+    right: 0,
+  },
 }));
 
 const CreateComponentModal = ({
@@ -80,7 +88,13 @@ const CreateComponentModal = ({
   };
 
   return (
-    <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
+    <Dialog
+      open={showDialog}
+      onClose={onClose}
+      fullWidth
+      scroll="body"
+      classes={{ paper: classes.dialog }}
+    >
       <DialogTitle disableTypography className={classes.dialogTitle}>
         <h3>New component</h3>
         <IconButton onClick={onClose}>

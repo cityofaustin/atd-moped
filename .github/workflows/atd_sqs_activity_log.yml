@@ -19,13 +19,13 @@ jobs:
     name: Build
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Then install the AWC CLI tools & boto3
       - name: "Install AWS Cli"
         run: |

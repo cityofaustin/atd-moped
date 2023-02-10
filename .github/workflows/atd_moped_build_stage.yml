@@ -17,8 +17,8 @@ jobs:
     steps:
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
@@ -56,13 +56,13 @@ jobs:
     name: Build Database
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Then install the AWC CLI tools & boto3
       - name: "Install CLI Requirements: Heroku, Hasura"
         run: |
@@ -94,13 +94,13 @@ jobs:
     name: Build Activity Log SQS
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Then install the AWC CLI tools & boto3
       - name: "Install CLI Requirements: AWS Cli"
         run: |
@@ -128,13 +128,13 @@ jobs:
     name: Build Moped Test API
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Then install the AWC CLI tools & boto3
       - name: "Install AWS Cli"
         run: |
@@ -160,13 +160,13 @@ jobs:
     name: Build Moped cognito-at-edge
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: "3.8"
           architecture: "x64"
       # Get the code first
       - name: "Checkout"
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       # Then install the AWC CLI tools & boto3
       - name: "Install AWS Cli"
         run: |
