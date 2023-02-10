@@ -1,5 +1,5 @@
 #
-# Builds Cognito Triggers for Moped Authentication
+# Builds Moped API
 #
 name: "Build & Publish Moped API"
 
