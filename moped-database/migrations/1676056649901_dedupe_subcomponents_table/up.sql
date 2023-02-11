@@ -6,19 +6,16 @@ SELECT
 FROM
     public.moped_subcomponents;
 
--- Audible push button
+-- update references to dupe subcomponents (except raised pavement marker)
 update public.moped_proj_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 4;
-update public.moped_proj_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 7;
--- bicycle signal
 update public.moped_proj_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 5;
-update public.moped_proj_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 8;
--- leading pedestrian interval
 update public.moped_proj_components_subcomponents set subcomponent_id = 3 where subcomponent_id = 6;
+update public.moped_proj_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 7;
+update public.moped_proj_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 8;
 update public.moped_proj_components_subcomponents set subcomponent_id = 3 where subcomponent_id = 9;
--- copy the "raised pavement makers" component into subcomponent ID #4
+-- copy the "raised pavement markers" component into subcomponent ID #4
 update public.moped_subcomponents set subcomponent_name = 'Raised pavement markers' where subcomponent_id = 4;
-
--- update all that refeference another raised pavement marker subcomponent
+-- update all refeference to dupe raised pavement marker subcomponent
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 10;
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 11;
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 12;
@@ -28,13 +25,12 @@ update public.moped_proj_components_subcomponents set subcomponent_id = 4 where 
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 16;
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 17;
 update public.moped_proj_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 18;
-
 -- and now we need to do this for our new moped_components_subcomponents table
 update public.moped_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 4;
-update public.moped_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 7;
 update public.moped_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 5;
-update public.moped_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 8;
 update public.moped_components_subcomponents set subcomponent_id = 3 where subcomponent_id = 6;
+update public.moped_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 7;
+update public.moped_components_subcomponents set subcomponent_id = 2 where subcomponent_id = 8;
 update public.moped_components_subcomponents set subcomponent_id = 3 where subcomponent_id = 9;
 update public.moped_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 10;
 update public.moped_components_subcomponents set subcomponent_id = 4 where subcomponent_id = 11;
@@ -48,7 +44,7 @@ update public.moped_components_subcomponents set subcomponent_id = 4 where subco
 
 -- ok, now delete all those redundant subcomponents
 DELETE FROM public.moped_subcomponents WHERE subcomponent_id > 4;
--- and reset its sequence
+-- and reset the table ID sequence
 SELECT setval('moped_subcomponents_subcomponent_id_seq', 5, TRUE);
 
 -- and add a unique constraint on the name for good measure
