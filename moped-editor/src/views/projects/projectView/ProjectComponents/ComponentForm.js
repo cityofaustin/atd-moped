@@ -55,16 +55,24 @@ const ComponentForm = ({
   });
 
   // Get and format component and subcomponent options
-  const { data: optionsData, loading: areOptionsLoading } = useQuery(
-    GET_COMPONENTS_FORM_OPTIONS
-  );
+  const {
+    data: optionsData,
+    loading: areOptionsLoading,
+    error,
+  } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
+
+  error && console.error(error);
+
   const componentOptions = useComponentOptions(optionsData);
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
 
-  const subcomponentOptions = useSubcomponentOptions(component);
+  const subcomponentOptions = useSubcomponentOptions(
+    component?.value,
+    optionsData?.moped_components
+  );
 
   useInitialValuesOnAttributesEdit(
     initialFormValues,

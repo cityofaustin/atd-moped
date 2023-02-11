@@ -41,22 +41,27 @@ export const useComponentOptions = (data) =>
 /**
  * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
  * for a MUI autocomplete
- * @param {Object} component Data stored in the currently selected component record
- * @returns {Array} The options with value and label
+ * @param {Integer} componentId The unique ID of the moped_component
+ * @param {Object[]} optionsData And array of moped_components records
+ * @returns {Array} The subcompnent options with value and label
  */
-export const useSubcomponentOptions = (component) =>
+export const useSubcomponentOptions = (componentId, optionsData) =>
   useMemo(() => {
-    const subcomponents = component?.data?.moped_subcomponents;
+    if (!componentId || !optionsData) return [];
+
+    const subcomponents = optionsData.find(
+      (option) => option.component_id === componentId
+    )?.moped_components_subcomponents;
 
     if (!subcomponents) return [];
 
     const options = subcomponents.map((subComp) => ({
-      value: subComp.subcomponent_id,
-      label: subComp.subcomponent_name,
+      value: subComp.moped_subcomponent.subcomponent_id,
+      label: subComp.moped_subcomponent.subcomponent_name,
     }));
 
     return options;
-  }, [component]);
+  }, [componentId, optionsData]);
 
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
@@ -66,10 +71,10 @@ export const useInitialValuesOnAttributesEdit = (
   areSignalOptionsLoaded
 ) => {
   // Set the selected component after the component options are loaded
+
   useEffect(() => {
     if (!initialFormValues) return;
     if (componentOptions.length === 0) return;
-
     setValue("component", {
       value: initialFormValues.component.component_id,
       label: componentOptions.find(
