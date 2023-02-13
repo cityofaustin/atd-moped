@@ -71,10 +71,10 @@ export const useInitialValuesOnAttributesEdit = (
   areSignalOptionsLoaded
 ) => {
   // Set the selected component after the component options are loaded
-
   useEffect(() => {
     if (!initialFormValues) return;
     if (componentOptions.length === 0) return;
+
     setValue("component", {
       value: initialFormValues.component.component_id,
       label: componentOptions.find(
