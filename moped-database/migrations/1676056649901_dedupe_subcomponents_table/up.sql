@@ -50,5 +50,4 @@ SELECT setval('moped_subcomponents_subcomponent_id_seq', 5, TRUE);
 -- and add a unique constraint on the name for good measure
 ALTER table public.moped_subcomponents add constraint subcomponent_name_unique UNIQUE (subcomponent_name);
 -- and drop the component_id column, which has moved to moped_components_subcomponents
--- todo: make metadata match
 ALTER table public.moped_subcomponents drop column component_id;
