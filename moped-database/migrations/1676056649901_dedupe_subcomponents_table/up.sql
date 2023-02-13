@@ -4,7 +4,7 @@ SELECT
     component_id,
     subcomponent_id
 FROM
-    public.moped_subcomponents;
+    public.moped_subcomponents ORDER BY subcomponent_id asc;
 
 -- update references to dupe subcomponents (except raised pavement marker)
 update public.moped_proj_components_subcomponents set subcomponent_id = 1 where subcomponent_id = 4;
