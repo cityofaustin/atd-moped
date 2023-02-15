@@ -8,6 +8,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+import PlaceOutlinedIcon from "@material-ui/icons/PlaceOutlined";
 import Button from "@material-ui/core/Button";
 import { EditOutlined } from "@material-ui/icons";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -65,6 +66,7 @@ export default function ComponentListItem({
       }}
     >
       <ListItem dense button onClick={onListItemClick}>
+        <PlaceOutlinedIcon color="primary" />
         <ListItemText
           primary={listItemPrimaryText}
           secondary={component.moped_components?.component_subtype}
