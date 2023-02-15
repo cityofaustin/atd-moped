@@ -26,6 +26,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// TODO: Create a ListItem that can be shared between
+// DraftComponentListItemm, ComponentListItem, and the controls
+// TODO: Create new SourcesAndLayers component for shared components
+// TODO: Create a component for the controls that use the shared ListItem
+// but also has spaces for the related projects control and future ones
+// TODO: Show parent and children components in the list
+// TODO: Related components show by default
+// TODO: If it is related, show "Part of project #123 (project # is a link)"
+// TODO: Parent and sibling components are not editable
+// ?: Should we have a button to refresh the data? It could get stale if going
+// to another project, editing that component, and then going back to the other tab
+// TODO: Another useMemo to create data structure of parent and children components
+
 export default function ComponentListItem({
   component,
   isExpanded,
