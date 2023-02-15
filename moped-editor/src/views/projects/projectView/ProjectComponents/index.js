@@ -11,6 +11,7 @@ import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "@material-ui/core/Button";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
+import SettingsIcon from "@material-ui/icons/Settings";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
@@ -194,6 +195,17 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                         onClick={onStartCreatingComponent}
                       >
                         New Component
+                      </Button>
+                      <Button
+                        size="small"
+                        color="primary"
+                        fullWidth
+                        endIcon={<SettingsIcon />}
+                        onClick={() => {
+                          console.log("settings");
+                        }}
+                      >
+                        Settings
                       </Button>
                     </ListItem>
                     <Divider />
