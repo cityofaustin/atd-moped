@@ -10,8 +10,9 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Button from "@material-ui/core/Button";
+import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import SettingsIcon from "@material-ui/icons/Settings";
+import TuneIcon from "@material-ui/icons/Tune";
 import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
@@ -53,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
   },
   margin: {
     margin: theme.spacing(1),
+  },
+  buttonTextLeft: {
+    justifyContent: "flex-start",
   },
 }));
 
@@ -188,6 +192,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                   <>
                     <ListItem dense>
                       <Button
+                        className={classes.buttonTextLeft}
                         size="small"
                         color="primary"
                         fullWidth
@@ -196,17 +201,9 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                       >
                         New Component
                       </Button>
-                      <Button
-                        size="small"
-                        color="primary"
-                        fullWidth
-                        endIcon={<SettingsIcon />}
-                        onClick={() => {
-                          console.log("settings");
-                        }}
-                      >
-                        Settings
-                      </Button>
+                      <IconButton aria-label="settings">
+                        <TuneIcon />
+                      </IconButton>
                     </ListItem>
                     <Divider />
                   </>
