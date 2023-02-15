@@ -18,6 +18,12 @@ const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
+  listItem: {
+    paddingLeft: theme.spacing(1),
+  },
+  listItemText: {
+    marginLeft: theme.spacing(1),
+  },
 }));
 
 export default function ComponentListItem({
@@ -65,11 +71,17 @@ export default function ComponentListItem({
         borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
       }}
     >
-      <ListItem dense button onClick={onListItemClick}>
+      <ListItem
+        dense
+        button
+        onClick={onListItemClick}
+        className={classes.listItem}
+      >
         <PlaceOutlinedIcon color="primary" />
         <ListItemText
           primary={listItemPrimaryText}
           secondary={component.moped_components?.component_subtype}
+          className={classes.listItemText}
         />
         <ListItemSecondaryAction>
           <IconButton
