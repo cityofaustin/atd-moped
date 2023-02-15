@@ -202,7 +202,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                         New Component
                       </Button>
                       <IconButton aria-label="settings">
-                        <TuneIcon />
+                        <TuneIcon fontSize="small" />
                       </IconButton>
                     </ListItem>
                     <Divider />
