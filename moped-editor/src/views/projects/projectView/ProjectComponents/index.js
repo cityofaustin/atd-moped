@@ -9,7 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
-import Grow from "@material-ui/core/Grow";
+import Collapse from "@material-ui/core/Collapse";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -211,7 +211,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                         <TuneIcon fontSize="small" />
                       </IconButton>
                     </ListItem>
-                    <Grow in={areSettingsOpen}>
+                    <Collapse in={areSettingsOpen}>
                       <ListItem>
                         <Button
                           className={classes.buttonTextLeft}
@@ -222,7 +222,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                           I just grew in!
                         </Button>
                       </ListItem>
-                    </Grow>
+                    </Collapse>
                     <Divider />
                   </>
                 )}
