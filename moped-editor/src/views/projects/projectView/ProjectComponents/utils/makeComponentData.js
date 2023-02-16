@@ -18,6 +18,7 @@ export const makeComponentInsertData = (projectId, component) => {
     component_id,
     description,
     moped_subcomponents,
+    phase_id,
     component_name,
     internal_table,
     features,
@@ -75,6 +76,7 @@ export const makeComponentInsertData = (projectId, component) => {
     [featureTable]: {
       data: featuresToInsert,
     },
+    phase_id,
     feature_drawn_lines: { data: drawnLinesToInsert },
     feature_drawn_points: { data: drawnPointsToInsert },
     feature_signals: { data: signalFeaturesToInsert },

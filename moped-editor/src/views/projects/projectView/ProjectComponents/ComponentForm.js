@@ -2,7 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Button, Grid, TextField } from "@material-ui/core";
+import DateFnsUtils from "@date-io/date-fns";
+import {
+  Button,
+  Grid,
+  TextField,
+  Switch,
+  FormControlLabel,
+  FormHelperText,
+} from "@material-ui/core";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -11,6 +20,7 @@ import {
   ComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
+  usePhaseOptions,
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
@@ -18,6 +28,7 @@ import * as yup from "yup";
 const defaultFormValues = {
   component: null,
   subcomponents: [],
+  phase: null,
   description: "",
   signal: null,
 };
@@ -25,6 +36,7 @@ const defaultFormValues = {
 const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
+  phase: yup.object().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().when("component", {
@@ -59,19 +71,25 @@ const ComponentForm = ({
     GET_COMPONENTS_FORM_OPTIONS
   );
   const componentOptions = useComponentOptions(optionsData);
+  const phaseOptions = usePhaseOptions(optionsData);
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
 
   const subcomponentOptions = useSubcomponentOptions(component);
+  const [useComponentPhase, setUseComponentPhase] = useState(
+    !!initialFormValues?.component.moped_phase
+  );
 
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
     componentOptions,
     subcomponentOptions,
-    areSignalOptionsLoaded
+    phaseOptions,
+    areSignalOptionsLoaded,
+    useComponentPhase,
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -149,6 +167,68 @@ const ComponentForm = ({
             minRows={4}
           />
         </Grid>
+        <Grid item xs={12}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={useComponentPhase}
+                onChange={() => setUseComponentPhase(!useComponentPhase)}
+                name="checkedB"
+                color="primary"
+              />
+            }
+            labelPlacement="start"
+            label="Use component phase"
+            style={{ color: "gray", marginLeft: 0 }}
+          />
+          {useComponentPhase && (
+            <FormHelperText>
+              Assign a phase to the component to differentiate it from the
+              overall phase of this project
+            </FormHelperText>
+          )}
+        </Grid>
+        {useComponentPhase && (
+          <>
+            <Grid item xs={12}>
+              <ControlledAutocomplete
+                id="phase"
+                label="Phase"
+                options={areOptionsLoading ? [] : phaseOptions}
+                name="phase"
+                control={control}
+                autoFocus
+              />
+            </Grid>
+            {/* <Grid item xs={12}>
+              <ControlledAutocomplete
+                id="subphase"
+                label="Subphase"
+                options={[]}
+                renderOption={(option) => <option>Hello</option>}
+                name="subphase"
+                autoFocus
+                disabled={false}
+                control={control}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <DatePicker
+                  clearable={true}
+                  emptyLabel="mm/dd/yyyy"
+                  format="MM/dd/yyyy"
+                  variant="outlined"
+                  label="Phase end"
+                  value="2023-01-01"
+                  // value={props.value ? parseISO(props.value) : null}
+                  // onChange={handleDateChange}
+                  // InputProps={{ style: { minWidth: "100px" } }}
+                />
+              </MuiPickersUtilsProvider>
+            </Grid> */}
+          </>
+        )}
       </Grid>
       <Grid container spacing={4} display="flex" justifyContent="flex-end">
         <Grid item style={{ margin: 5 }}>

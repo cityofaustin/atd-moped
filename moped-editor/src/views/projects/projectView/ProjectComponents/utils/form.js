@@ -58,12 +58,32 @@ export const useSubcomponentOptions = (component) =>
     return options;
   }, [component]);
 
+/**
+ * Take the moped_components records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_components records
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
+export const usePhaseOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_phases.map((phase) => ({
+      value: phase.phase_id,
+      label: phase.phase_name,
+      data: phase,
+    }));
+
+    return options;
+  }, [data]);
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
   componentOptions,
   subcomponentOptions,
-  areSignalOptionsLoaded
+  phaseOptions,
+  areSignalOptionsLoaded,
+  useComponentPhase,
 ) => {
   // Set the selected component after the component options are loaded
   useEffect(() => {
@@ -117,6 +137,26 @@ export const useInitialValuesOnAttributesEdit = (
     setValue("subcomponents", selectedSubcomponents);
   }, [subcomponentOptions, initialFormValues, setValue]);
 
+    // Set the selected phase after the phase options are loaded
+    useEffect(() => {
+      if (!initialFormValues) return;
+      if (phaseOptions.length === 0) return;
+      if (!useComponentPhase) return;
+
+      console.log(initialFormValues);
+  
+      setValue("phase", {
+        value: initialFormValues.component?.moped_phase.phase_id,
+        label: phaseOptions.find(
+          (option) => option.value === initialFormValues.component?.moped_phase.phase_id
+        ).label,
+        data: {
+          // Include component subcomponents and metadata about the internal_table needed for the form
+          ...initialFormValues.component?.moped_phase,
+        },
+      });
+    }, [phaseOptions, initialFormValues, setValue, useComponentPhase]);
+
   // Set the description once
   useEffect(() => {
     if (!initialFormValues) return;
@@ -167,32 +207,40 @@ export const ControlledAutocomplete = ({
   autoFocus = false,
   multiple = false,
   disabled,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ onChange, value, ref }) => (
-      <Autocomplete
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        value={value}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
+}) => {
+  // console.log(options);
+  return (
+    <Controller
+      id={id}
+      name={name}
+      control={control}
+      render={({ onChange, value, ref }) => {
+        // console.log(value);
+        return (
+          <Autocomplete
+            options={options}
+            multiple={multiple}
+            getOptionLabel={(option) => option?.label || ""}
+            getOptionSelected={(option, value) =>
+              option?.value === value?.value
+            }
+            renderOption={renderOption}
+            value={value}
+            disabled={disabled}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                inputRef={ref}
+                size="small"
+                label={label}
+                variant="outlined"
+                autoFocus={autoFocus}
+              />
+            )}
+            onChange={(_event, option) => onChange(option)}
           />
-        )}
-        onChange={(_event, option) => onChange(option)}
-      />
-    )}
-  />
-);
+        );
+      }}
+    />
+  );
+};

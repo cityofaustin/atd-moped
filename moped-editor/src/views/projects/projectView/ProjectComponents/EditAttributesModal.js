@@ -52,7 +52,7 @@ const EditComponentModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents } = formData;
+    const { description, subcomponents, phase } = formData;
     const { project_component_id: projectComponentId } = componentToEdit;
 
     // Prepare the subcomponent data for the mutation
@@ -79,6 +79,7 @@ const EditComponentModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
+        moped_phase: phase.data,
       };
 
       updateSignalComponent({
@@ -87,6 +88,7 @@ const EditComponentModal = ({
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
+          phaseId: phase.data.phase_id,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -97,6 +99,7 @@ const EditComponentModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
+        moped_phase: phase.data,
       };
 
       updateComponentAttributes({
@@ -104,6 +107,7 @@ const EditComponentModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
+          phaseId: phase.data.phase_id,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -121,6 +125,7 @@ const EditComponentModal = ({
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
     description: componentToEdit?.description,
+    phase: componentToEdit?.moped_phase,
   };
 
   return (

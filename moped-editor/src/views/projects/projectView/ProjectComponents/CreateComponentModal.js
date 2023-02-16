@@ -42,6 +42,7 @@ const CreateComponentModal = ({
       },
       subcomponents,
       description,
+      phase,
     } = formData;
 
     const newComponent = {
@@ -52,6 +53,7 @@ const CreateComponentModal = ({
       internal_table,
       moped_subcomponents: subcomponents,
       description: description.length > 0 ? description : null,
+      phase_id: phase.data.phase_id,
       label: component_name,
       features: [],
     };
