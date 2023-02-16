@@ -9,6 +9,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
+import Grow from "@material-ui/core/Grow";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -166,6 +167,8 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
     );
   };
 
+  const [areSettingsOpen, setAreSettingsOpen] = useState(false);
+
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -201,10 +204,25 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                       >
                         New Component
                       </Button>
-                      <IconButton aria-label="settings">
+                      <IconButton
+                        onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+                        aria-label="settings"
+                      >
                         <TuneIcon fontSize="small" />
                       </IconButton>
                     </ListItem>
+                    <Grow in={areSettingsOpen}>
+                      <ListItem>
+                        <Button
+                          className={classes.buttonTextLeft}
+                          size="small"
+                          color="primary"
+                          fullWidth
+                        >
+                          I just grew in!
+                        </Button>
+                      </ListItem>
+                    </Grow>
                     <Divider />
                   </>
                 )}
