@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, useMemo } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
 import List from "@material-ui/core/List";
@@ -24,20 +24,21 @@ const useStyles = makeStyles((theme) => ({
  * @param {object} component - the moped_component object
  * @returns {object} the component props for <ListItemText> as { primary, secondary }
  */
-const componentListItemText = (component) => {
-  const listItemText = { primary: undefined, secondary: undefined };
-  const componentName = component?.moped_components?.component_name;
-  const componentSubtype = component?.moped_components?.component_subtype;
-  const signalLocationName = component?.feature_signals?.[0]?.location_name;
-  const signalId = component?.feature_signals?.[0]?.signal_id;
-  listItemText.primary = componentSubtype
-    ? `${componentName} - ${componentSubtype}`
-    : componentName;
-  listItemText.secondary = isSignalComponent(component)
-    ? `${signalId}: ${signalLocationName}`
-    : "";
-  return listItemText;
-};
+const useComponentListItemText = (component) =>
+  useMemo(() => {
+    const listItemText = { primary: undefined, secondary: undefined };
+    const componentName = component?.moped_components?.component_name;
+    const componentSubtype = component?.moped_components?.component_subtype;
+    const signalLocationName = component?.feature_signals?.[0]?.location_name;
+    const signalId = component?.feature_signals?.[0]?.signal_id;
+    listItemText.primary = componentSubtype
+      ? `${componentName} - ${componentSubtype}`
+      : componentName;
+    listItemText.secondary = isSignalComponent(component)
+      ? `${signalId}: ${signalLocationName}`
+      : "";
+    return listItemText;
+  }, [component]);
 
 const isSignalComponent = (component) =>
   component?.moped_components?.feature_layer?.internal_table ===
@@ -72,7 +73,7 @@ export default function ComponentListItem({
     }
   };
 
-  const listItemText = componentListItemText(component);
+  const listItemText = useComponentListItemText(component);
 
   return (
     <Box
