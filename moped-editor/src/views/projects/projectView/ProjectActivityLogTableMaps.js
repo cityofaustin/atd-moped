@@ -36,7 +36,7 @@ export const ProjectActivityLogTableMaps = {
       },
       public_process_status_id: {
         label: "public process status",
-        lookup: "moped_public_process_statuses"
+        lookup: "moped_public_process_statuses",
       },
       project_website: {
         label: "project website",
@@ -66,11 +66,11 @@ export const ProjectActivityLogTableMaps = {
         lookup: "moped_entity",
       },
       capitally_funded: {
-        label: "capitally funded"
+        label: "capitally funded",
       },
       is_retired: {
-        label: "is retired"
-      }
+        label: "is retired",
+      },
     },
   },
   moped_proj_entities: {
@@ -128,7 +128,7 @@ export const ProjectActivityLogTableMaps = {
         label: "project ID",
       },
       milestone_id: {
-        label: "id"
+        label: "id",
       },
       project_milestone_id: {
         label: "ID",
@@ -464,7 +464,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_program_id: {
         label: "program",
-        lookup: "fundingPrograms"
+        lookup: "fundingPrograms",
       },
       funding_amount: {
         label: "amount",
@@ -477,7 +477,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_status_id: {
         label: "status",
-        lookup: "fundingStatus"
+        lookup: "fundingStatus",
       },
       is_deleted: {
         label: "is deleted",
@@ -532,165 +532,34 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-};
-
-export const ProjectActivityLogOperationMaps = {
-  moped_project_files: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "description",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-  generic: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Created",
-      icon: "addcircle",
-    },
-    UPDATE: {
-      label: "Update",
-      icon: "create",
+  moped_proj_contract: {
+    label: "Contract",
+    fields: {
+      id: {
+        label: "ID",
+      },
+      contractor: {
+        label: "contractor",
+      },
+      contract_number: {
+        label: "contract number",
+      },
+      description: {
+        label: "description",
+      },
+      project_id: {
+        label: "project ID",
+      },
+      work_assignment_id: {
+        label: "work assignment ID",
+      },
+      contract_amount: {
+        label: "contract amount",
+      },
+      is_deleted: {
+        label: "is deleted",
+      },
     },
   },
 };
 
-export const ProjectActivityLogGenericDescriptions = {
-  project_extent_geojson: {
-    label: "Project GeoJSON updated",
-  },
-};
-
-export const ProjectActivityLogCreateDescriptions = {
-  moped_project_files: {
-    label: (record) =>
-      `New file '${record.record_data.event.data.new.file_name}'`,
-  },
-  generic: {
-    label: (record) => {
-      return "Added";
-    },
-  },
-};
-
-/**
- * Returns a human-readable field name (translates the column into a readable label)
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @return {string}
- */
-export const getHumanReadableField = (type, field) => {
-  return (
-    ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-      ?.label ?? field
-  );
-};
-
-/**
- * Returns true if a specific field is mapped
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @return {boolean}
- */
-export const isFieldMapped = (type, field) =>
-  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map ?? null) !== null;
-
-/**
- * Returns the mapped value within the configuration
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @param {*} value - Usually an integer but it can be a string
- * @return {string}
- */
-export const getMappedValue = (type, field, value) =>
-  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map[value];
-
-/**
- * Returns the
- * @param {string} type - The name of the table
- * @return {string}
- */
-export const getRecordTypeLabel = (type) => {
-  return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
-};
-
-/**
- * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
- * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
- * @param {string} record_type - The name of the table
- * @return {string}
- */
-export const getChangeIcon = (event_type, record_type = "moped_project") => {
-  const recordType =
-    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
-  return (
-    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
-      ?.icon ?? "create"
-  );
-};
-
-/**
- * Translates the operation type value into friendly label
- * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
- * @param {string} record_type - The name of the table
- * @return {string}
- */
-export const getOperationName = (event_type, record_type = "moped_project") => {
-  const recordType =
-    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
-  return (
-    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
-      ?.label ?? "Unknown"
-  );
-};
-
-/**
- * Translates the operation type value into friendly label when there is no specified difference
- * @param {string} record - The event record
- * @return {string}
- */
-export const getCreationLabel = (record, userList, phaseList) => {
-  const recordType =
-    record.record_type in ProjectActivityLogCreateDescriptions
-      ? record.record_type
-      : "generic";
-
-  const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
-
-  return label ? label(record, userList, phaseList) : "Created";
-};
-
-/**
- * Attempts to represent a number of possible data types from the database as a string
- * @param {string} the javascript variable (whatever type) you want represented as a string.
- * @return {string}
- */
-export const fieldFormat = (changeItem, capitalize = false) => {
-  let result = "";
-  if (changeItem === null) {
-    result = "a null value";
-  } else if (String(changeItem).length === 0) {
-    result = "an empty value";
-  } else if (typeof changeItem === "object") {
-    result = "a JavaScript object";
-  } else if (typeof changeItem === "boolean") {
-    result = String(changeItem);
-  } else if (parseFloat(changeItem)) {
-    result = String(changeItem);
-  } else {
-    result = '"' + changeItem + '"';
-  }
-  return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result;
-};

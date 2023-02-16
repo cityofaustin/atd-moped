@@ -1,10 +1,10 @@
-import EventNoteIcon from "@material-ui/icons/EventNote";
+import EventNoteOutlinedIcon from '@material-ui/icons/EventNoteOutlined';
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_phases"];
 
-  const changeIcon = <EventNoteIcon />;
+  const changeIcon = <EventNoteOutlinedIcon />;
   const phase = phaseList[change.record_data.event.data.new.phase_id];
   const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
   const phaseText = {
@@ -43,7 +43,7 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     };
   }
 
-  // Multiple fields in the moped_proj_funding table can be updated at once
+  // Multiple fields in the moped_proj_phases table can be updated at once
   // We list the fields changed in the activity log, this gathers the fields changed
   const newRecord = change.record_data.event.data.new;
   const oldRecord = change.record_data.event.data.old;
