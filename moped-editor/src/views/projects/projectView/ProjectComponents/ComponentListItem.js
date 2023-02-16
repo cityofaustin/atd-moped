@@ -19,6 +19,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Format the list item's primary and secondary text
+ * @param {object} component - the moped_component object
+ * @returns {object} the component props for <ListItemText> as { primary, secondary }
+ */
+const componentListItemText = (component) => {
+  const listItemText = { primary: undefined, secondary: undefined };
+  const componentName = component?.moped_components?.component_name;
+  const componentSubtype = component?.moped_components?.component_subtype;
+  const signalLocationName = component?.feature_signals?.[0]?.location_name;
+  const signalId = component?.feature_signals?.[0]?.signal_id;
+  listItemText.primary = componentSubtype
+    ? `${componentName} - ${componentSubtype}`
+    : componentName;
+  listItemText.secondary = isSignalComponent(component)
+    ? `${signalId}: ${signalLocationName}`
+    : "";
+  return listItemText;
+};
+
+const isSignalComponent = (component) =>
+  component?.moped_components?.feature_layer?.internal_table ===
+  "feature_signals";
+
 export default function ComponentListItem({
   component,
   isExpanded,
@@ -40,22 +64,15 @@ export default function ComponentListItem({
     }
   };
 
-  const isSignalComponent =
-    component?.moped_components?.feature_layer?.internal_table ===
-    "feature_signals";
-  const componentName = component?.moped_components?.component_name;
-  const signalLocationName = component?.feature_signals?.[0]?.location_name;
-  const listItemPrimaryText = isSignalComponent
-    ? `${componentName} -${signalLocationName}`
-    : componentName;
-
   const onStartEditingComponent = () => {
-    if (isSignalComponent) {
+    if (isSignalComponent(component)) {
       editDispatch({ type: "start_attributes_edit" });
     } else {
       editDispatch({ type: "start_edit", payload: component });
     }
   };
+
+  const listItemText = componentListItemText(component);
 
   return (
     <Box
@@ -65,10 +82,7 @@ export default function ComponentListItem({
       }}
     >
       <ListItem dense button onClick={onListItemClick}>
-        <ListItemText
-          primary={listItemPrimaryText}
-          secondary={component.moped_components?.component_subtype}
-        />
+        <ListItemText {...listItemText} />
         <ListItemSecondaryAction>
           <IconButton
             color="primary"
