@@ -58,6 +58,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Default column display (if no config in local storage)
+ */
+const DEFAULT_HIDDEN_COLS = {
+  project_id: false,
+  project_name: false,
+  current_phase: false,
+  project_team_members: true,
+  project_lead: false,
+  project_sponsor: false,
+  project_partner: true,
+  ecapris_subproject_id: false,
+  updated_at: false,
+  project_feature: true, // signal_ids
+  task_order: true,
+  type_name: true,
+  funding_source_name: true,
+  project_note: true,
+  construction_start_date: false,
+  completion_end_date: false,
+  project_inspector: true,
+  project_designer: true,
+  contractors: true,
+  contract_numbers: true,
+  project_tags: false,
+  added_by: true,
+};
+
+/**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
@@ -148,34 +176,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
-  const defaultHiddenColumns = {
-    project_id: false,
-    project_name: false,
-    current_phase: false,
-    project_team_members: false,
-    project_lead: false,
-    project_sponsor: false,
-    project_partner: false,
-    ecapris_subproject_id: false,
-    updated_at: false,
-    project_feature: true, // signal_ids
-    task_order: true,
-    type_name: true,
-    funding_source_name: true,
-    project_note: true,
-    construction_start_date: false,
-    completion_end_date: false,
-    project_inspector: true,
-    project_designer: true,
-    contractors: false,
-    contract_numbers: false,
-    project_tags: false,
-    added_by: true,
-  };
-
   const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
-      defaultHiddenColumns
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
   const toggleColumnConfig = (field, hiddenState) => {
@@ -300,7 +302,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
         left: 0,
         backgroundColor: "white",
         minWidth: "20rem",
-        // whiteSpace: "noWrap",
         zIndex: 1,
       },
     },
