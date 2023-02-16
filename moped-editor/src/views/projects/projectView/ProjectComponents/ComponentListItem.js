@@ -19,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const isSignalComponent = (component) =>
+  component?.moped_components?.feature_layer?.internal_table ===
+  "feature_signals";
+
 /**
  * Format the list item's primary and secondary text
  * @param {object} component - the moped_component object
@@ -39,10 +43,6 @@ const useComponentListItemText = (component) =>
       : "";
     return listItemText;
   }, [component]);
-
-const isSignalComponent = (component) =>
-  component?.moped_components?.feature_layer?.internal_table ===
-  "feature_signals";
 
 export default function ComponentListItem({
   component,
