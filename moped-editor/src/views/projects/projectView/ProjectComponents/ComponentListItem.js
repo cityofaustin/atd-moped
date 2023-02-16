@@ -30,17 +30,17 @@ const isSignalComponent = (component) =>
  */
 const useComponentListItemText = (component) =>
   useMemo(() => {
-    const listItemText = { primary: undefined, secondary: undefined };
+    const listItemText = { primary: "", secondary: "" };
     const componentName = component?.moped_components?.component_name;
     const componentSubtype = component?.moped_components?.component_subtype;
-    const signalLocationName = component?.feature_signals?.[0]?.location_name;
-    const signalId = component?.feature_signals?.[0]?.signal_id;
     listItemText.primary = componentSubtype
       ? `${componentName} - ${componentSubtype}`
       : componentName;
-    listItemText.secondary = isSignalComponent(component)
-      ? `${signalId}: ${signalLocationName}`
-      : "";
+    if (isSignalComponent(component)) {
+      const signalLocationName = component?.feature_signals?.[0]?.location_name;
+      const signalId = component?.feature_signals?.[0]?.signal_id;
+      listItemText.secondary = `${signalId}: ${signalLocationName}`;
+    }
     return listItemText;
   }, [component]);
 
