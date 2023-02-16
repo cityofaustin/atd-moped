@@ -10,6 +10,8 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
@@ -168,6 +170,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
   };
 
   const [areSettingsOpen, setAreSettingsOpen] = useState(false);
+  const [showRelatedProjects, setShowRelatedProjects] = useState(true);
 
   return (
     <Dialog fullScreen open={true}>
@@ -213,14 +216,20 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                     </ListItem>
                     <Collapse in={areSettingsOpen}>
                       <ListItem>
-                        <Button
-                          className={classes.buttonTextLeft}
-                          size="small"
-                          color="primary"
-                          fullWidth
-                        >
-                          I just grew in!
-                        </Button>
+                        <FormControlLabel
+                          control={
+                            <Switch
+                              checked={showRelatedProjects}
+                              onChange={() =>
+                                setShowRelatedProjects(!showRelatedProjects)
+                              }
+                              name="showRelatedProjects"
+                              color="primary"
+                            />
+                          }
+                          label="Show related projects"
+                          labelPlacement="start"
+                        />
                       </ListItem>
                     </Collapse>
                     <Divider />
