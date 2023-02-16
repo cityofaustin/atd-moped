@@ -380,7 +380,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_feature",
       hidden: hiddenColumns["project_feature"],
       sorting: false,
-      cellStyle: { maxWidth: "20rem" },
       render: (entry) => {
         if (!entry?.project_feature) {
           return "-";
