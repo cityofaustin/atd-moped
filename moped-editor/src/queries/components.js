@@ -34,6 +34,7 @@ export const GET_PROJECT_COMPONENTS = gql`
     project_component_id
     component_id
     description
+    project_id
     moped_components {
       component_name
       component_subtype

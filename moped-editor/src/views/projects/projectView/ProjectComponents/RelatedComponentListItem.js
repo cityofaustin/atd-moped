@@ -1,17 +1,14 @@
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
-import Collapse from "@material-ui/core/Collapse";
-import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import IconButton from "@material-ui/core/IconButton";
-import DeleteIcon from "@material-ui/icons/Delete";
 import PlaceOutlinedIcon from "@material-ui/icons/PlaceOutlined";
-import Button from "@material-ui/core/Button";
-import { EditOutlined } from "@material-ui/icons";
 import ListItemText from "@material-ui/core/ListItemText";
+import Typography from "@material-ui/core/Typography";
+import Link from "@material-ui/core/Link";
 import { COLORS } from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,8 +66,16 @@ export default function RelatedComponentListItem({
       >
         <PlaceOutlinedIcon color="primary" />
         <ListItemText
-          primary={listItemPrimaryText}
-          secondary={component.moped_components?.component_subtype}
+          primary={`${listItemPrimaryText} - ${component.moped_components?.component_subtype}`}
+          secondary={
+            <Typography>
+              Part of project{" "}
+              <Link
+                href={`/moped/projects/${component.project_id}?tab=map`}
+                target="blank"
+              >{`#${component.project_id}`}</Link>
+            </Typography>
+          }
           className={classes.listItemText}
         />
         <ListItemSecondaryAction>

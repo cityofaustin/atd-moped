@@ -16,7 +16,6 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import TuneIcon from "@material-ui/icons/Tune";
-import bbox from "@turf/bbox";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
@@ -34,6 +33,7 @@ import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
+import { zoomMapToFeatureCollection } from "./utils/map";
 
 const drawerWidth = 350;
 
@@ -149,6 +149,7 @@ export default function MapView({
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
+    mapRef,
   });
 
   const {
@@ -165,6 +166,7 @@ export default function MapView({
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
+    mapRef,
   });
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
@@ -189,8 +191,9 @@ export default function MapView({
     // close the map projectFeature map popup
     setClickedProjectFeature(null);
     // move the map
-    mapRef.current?.fitBounds(
-      bbox(featureCollection),
+    zoomMapToFeatureCollection(
+      mapRef,
+      featureCollection,
       fitBoundsOptions.zoomToClickedComponent
     );
   };
@@ -416,6 +419,7 @@ export default function MapView({
             componentToEdit={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
             setClickedComponent={setClickedComponent}
+            mapRef={mapRef}
           />
         </main>
       </div>

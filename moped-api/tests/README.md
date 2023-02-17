@@ -1,7 +1,7 @@
 # MOPED API - Testing
 
 We are following a very basic pattern to write and make tests. We use pytest
-with a combination of whatever packages you are running in your SQS event.
+with a combination of whatever packages you are using.
 
 To get started:
 

@@ -1,5 +1,5 @@
 #
-# Builds Cognito Triggers for Moped Authentication
+# Builds Moped API
 #
 name: "Build & Publish Moped API"
 
@@ -17,6 +17,10 @@ on:
       - ".github/workflows/atd_moped_api.yml"
       - ".github/workflows/aws-moped-api-helper.sh"
       - "moped-api/**"
+  workflow_dispatch:
+    inputs:
+      description:
+        default: ""
 jobs:
   build:
     name: Build

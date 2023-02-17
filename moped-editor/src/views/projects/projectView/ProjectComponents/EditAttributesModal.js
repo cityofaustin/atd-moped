@@ -14,6 +14,8 @@ import {
   UPDATE_SIGNAL_COMPONENT,
 } from "src/queries/components";
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
+import { zoomMapToFeatureCollection } from "./utils/map";
+import { fitBoundsOptions } from "./mapSettings";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -25,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditComponentModal = ({
+const EditAttributesModal = ({
   showDialog,
   editDispatch,
   componentToEdit,
   refetchProjectComponents,
   setClickedComponent,
+  mapRef,
 }) => {
   const classes = useStyles();
 
@@ -68,6 +71,7 @@ const EditComponentModal = ({
       const signalFromForm = formData.signal;
       const featureSignalRecord =
         knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+
       const signalToInsert = {
         ...featureSignalRecord,
         component_id: projectComponentId,
@@ -89,7 +93,15 @@ const EditComponentModal = ({
           signals: [signalToInsert],
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .then(() => {
+          onComponentSaveSuccess(updatedClickedComponentState);
+          // Zoom to the new or existing signal
+          zoomMapToFeatureCollection(
+            mapRef,
+            { type: "FeatureCollection", features: [signalFromForm] },
+            fitBoundsOptions.zoomToClickedComponent
+          );
+        })
         .catch((error) => {
           console.log(error);
         });
@@ -142,4 +154,4 @@ const EditComponentModal = ({
   );
 };
 
-export default EditComponentModal;
+export default EditAttributesModal;
