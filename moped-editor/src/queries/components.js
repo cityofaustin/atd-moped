@@ -106,7 +106,7 @@ export const GET_PROJECT_COMPONENTS = gql`
     ) {
       ...projectComponentFields
     }
-    siblingProjectComponents: moped_project(
+    siblingProjects: moped_project(
       where: { parent_project_id: { _eq: $parentProjectId } }
     ) {
       moped_proj_components(

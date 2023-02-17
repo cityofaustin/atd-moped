@@ -125,9 +125,9 @@ export default function MapView({
   }, [data]);
 
   const siblingComponents = useMemo(() => {
-    if (!data?.siblingProjectComponents) return [];
+    if (!data?.siblingProjects) return [];
 
-    const allSiblingComponents = data.siblingProjectComponents.reduce(
+    const allSiblingComponents = data.siblingProjects.reduce(
       (acc, sibling) => [...acc, ...sibling.moped_proj_components],
       []
     );
