@@ -25,6 +25,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
+import RelatedComponentListItem from "./RelatedComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
@@ -194,7 +195,7 @@ export default function MapView({
     );
   };
 
-  const [areSettingsOpen, setAreSettingsOpen] = useState(false);
+  const [areSettingsOpen, setAreSettingsOpen] = useState(true);
   const [shouldShowRelatedProjects, setShouldShowRelatedProjects] =
     useState(true);
 
@@ -320,9 +321,11 @@ export default function MapView({
               {!editState.isEditingComponent &&
                 !createState.isCreatingComponent &&
                 parentComponents.map((component) => {
-                  const isExpanded = false;
+                  const isExpanded =
+                    clickedComponent?.project_component_id ===
+                    component.project_component_id;
                   return (
-                    <ComponentListItem
+                    <RelatedComponentListItem
                       key={component.project_component_id}
                       component={component}
                       isExpanded={isExpanded}
@@ -339,9 +342,11 @@ export default function MapView({
               {!editState.isEditingComponent &&
                 !createState.isCreatingComponent &&
                 siblingComponents.map((component) => {
-                  const isExpanded = false;
+                  const isExpanded =
+                    clickedComponent?.project_component_id ===
+                    component.project_component_id;
                   return (
-                    <ComponentListItem
+                    <RelatedComponentListItem
                       key={component.project_component_id}
                       component={component}
                       isExpanded={isExpanded}
