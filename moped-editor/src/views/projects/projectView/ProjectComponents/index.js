@@ -2,7 +2,7 @@ import { useState, useRef, useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
-import { Dialog } from "@material-ui/core";
+import { Dialog, Typography } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -227,7 +227,11 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
                               color="primary"
                             />
                           }
-                          label="Show related projects"
+                          label={
+                            <Typography variant="subtitle2">
+                              Show related projects
+                            </Typography>
+                          }
                           labelPlacement="start"
                         />
                       </ListItem>
