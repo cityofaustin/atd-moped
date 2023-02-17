@@ -66,7 +66,12 @@ const useStyles = makeStyles((theme) => ({
 /* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */
 const PlaceholderToolbar = () => <Toolbar />;
 
-export default function MapView({ projectName, phaseKey, phaseName }) {
+export default function MapView({
+  projectName,
+  phaseKey,
+  phaseName,
+  parentProjectId,
+}) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
@@ -96,7 +101,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
     refetch: refetchProjectComponents,
     error,
   } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: { projectId },
+    variables: { projectId, parentProjectId },
     fetchPolicy: "no-cache",
   });
 
@@ -109,6 +114,12 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
 
   const featureCollectionsByComponentId =
     useComponentFeatureCollectionsMap(data);
+
+  const parentProjectComponents = useMemo(() => {
+    if (parentProjectId === null) return [];
+
+    console.log(data, parentProjectId);
+  }, [data, parentProjectId]);
 
   const {
     onStartCreatingComponent,

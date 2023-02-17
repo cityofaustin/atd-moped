@@ -537,6 +537,9 @@ const ProjectView = () => {
                           projectName={data.moped_project[0].project_name}
                           phaseKey={currentPhase?.phase_key}
                           phaseName={currentPhase?.phase_name}
+                          parentProjectId={
+                            data.moped_project[0].parent_project_id
+                          }
                         />
                       </TabPanel>
                     );
