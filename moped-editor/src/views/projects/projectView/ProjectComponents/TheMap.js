@@ -48,6 +48,7 @@ export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
   components,
+  parentComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -72,6 +73,8 @@ export default function TheMap({
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(components);
+  const parentProjectComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(parentComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
@@ -348,6 +351,13 @@ export default function TheMap({
           }
           draftEditComponent={draftEditComponent}
         />
+        {/* <ParentProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          parentProjectComponentsFeatureCollection={
+            projectComponentsFeatureCollection
+          }
+        /> */}
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}
           linkMode={linkMode}

@@ -115,11 +115,11 @@ export default function MapView({
   const featureCollectionsByComponentId =
     useComponentFeatureCollectionsMap(data);
 
-  const parentProjectComponents = useMemo(() => {
-    if (parentProjectId === null) return [];
+  const parentComponents = useMemo(() => {
+    if (!data?.parentProjectComponents) return [];
 
-    console.log(data, parentProjectId);
-  }, [data, parentProjectId]);
+    return data.parentProjectComponents;
+  }, [data]);
 
   const {
     onStartCreatingComponent,
@@ -308,6 +308,7 @@ export default function MapView({
             <TheMap
               mapRef={mapRef}
               components={components}
+              parentComponents={parentComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
               draftEditComponent={editState.draftEditComponent}
