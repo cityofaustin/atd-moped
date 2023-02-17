@@ -134,7 +134,6 @@ export default function MapView({
 
     return allSiblingComponents;
   }, [data]);
-  console.log(siblingComponents);
 
   const {
     onStartCreatingComponent,
@@ -303,6 +302,44 @@ export default function MapView({
                   const isExpanded =
                     clickedComponent?.project_component_id ===
                     component.project_component_id;
+                  return (
+                    <ComponentListItem
+                      key={component.project_component_id}
+                      component={component}
+                      isExpanded={isExpanded}
+                      setClickedComponent={setClickedComponent}
+                      setIsDeletingComponent={setIsDeletingComponent}
+                      editDispatch={editDispatch}
+                      onClickZoomToComponent={onClickZoomToComponent}
+                      isEditingComponent={editState.isEditingComponent}
+                      isCreatingComponent={createState.isCreatingComponent}
+                    />
+                  );
+                })}
+              {/* TODO: Create parent list items component */}
+              {!editState.isEditingComponent &&
+                !createState.isCreatingComponent &&
+                parentComponents.map((component) => {
+                  const isExpanded = false;
+                  return (
+                    <ComponentListItem
+                      key={component.project_component_id}
+                      component={component}
+                      isExpanded={isExpanded}
+                      setClickedComponent={setClickedComponent}
+                      setIsDeletingComponent={setIsDeletingComponent}
+                      editDispatch={editDispatch}
+                      onClickZoomToComponent={onClickZoomToComponent}
+                      isEditingComponent={editState.isEditingComponent}
+                      isCreatingComponent={createState.isCreatingComponent}
+                    />
+                  );
+                })}
+              {/* TODO: Create sibling list items component */}
+              {!editState.isEditingComponent &&
+                !createState.isCreatingComponent &&
+                siblingComponents.map((component) => {
+                  const isExpanded = false;
                   return (
                     <ComponentListItem
                       key={component.project_component_id}

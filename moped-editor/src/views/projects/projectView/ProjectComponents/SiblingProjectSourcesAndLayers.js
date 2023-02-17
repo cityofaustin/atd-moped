@@ -25,7 +25,6 @@ const SiblingProjectSourcesAndLayers = ({
     siblingProjectComponentsFeatureCollection,
     "point"
   );
-  console.log(siblingProjectComponentsFeatureCollection);
 
   //   const isViewingComponents =
   //     !isCreatingComponent && !clickedComponent && !isEditingComponent;
