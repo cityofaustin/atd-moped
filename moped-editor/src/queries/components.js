@@ -85,7 +85,7 @@ export const GET_PROJECT_COMPONENTS = gql`
       component_id
     }
   }
-  query GetProjectComponents($projectId: Int!, $parentProjectId: Int!) {
+  query GetProjectComponents($projectId: Int!, $parentProjectId: Int = 0) {
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {

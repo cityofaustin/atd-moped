@@ -67,6 +67,7 @@ export default function TheMap({
   isDrawing,
   setIsDrawing,
   errorMessageDispatch,
+  shouldShowRelatedProjects,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -358,6 +359,7 @@ export default function TheMap({
           parentProjectComponentsFeatureCollection={
             parentProjectComponentsFeatureCollection
           }
+          shouldShowRelatedProjects={shouldShowRelatedProjects}
         />
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}

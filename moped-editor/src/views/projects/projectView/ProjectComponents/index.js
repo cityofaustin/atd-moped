@@ -101,7 +101,10 @@ export default function MapView({
     refetch: refetchProjectComponents,
     error,
   } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: { projectId, parentProjectId },
+    variables: {
+      projectId,
+      ...(parentProjectId && { parentProjectId }),
+    },
     fetchPolicy: "no-cache",
   });
 
@@ -181,7 +184,8 @@ export default function MapView({
   };
 
   const [areSettingsOpen, setAreSettingsOpen] = useState(false);
-  const [showRelatedProjects, setShowRelatedProjects] = useState(true);
+  const [shouldShowRelatedProjects, setShouldShowRelatedProjects] =
+    useState(true);
 
   return (
     <Dialog fullScreen open={true}>
@@ -230,9 +234,11 @@ export default function MapView({
                         <FormControlLabel
                           control={
                             <Switch
-                              checked={showRelatedProjects}
+                              checked={shouldShowRelatedProjects}
                               onChange={() =>
-                                setShowRelatedProjects(!showRelatedProjects)
+                                setShouldShowRelatedProjects(
+                                  !shouldShowRelatedProjects
+                                )
                               }
                               name="showRelatedProjects"
                               color="primary"
@@ -327,6 +333,7 @@ export default function MapView({
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
+              shouldShowRelatedProjects={shouldShowRelatedProjects}
             />
           </div>
           <CreateComponentModal

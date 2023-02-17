@@ -8,12 +8,14 @@ import { useFeatureTypes } from "./utils/map";
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {Object} parentProjectComponentsFeatureCollection - GeoJSON feature collection with all project features
+ * @param {Boolean} shouldShowRelatedProjects - should we show related projects
  * @returns JSX.Element
  */
 const ParentProjectSourcesAndLayers = ({
   isCreatingComponent,
   isEditingComponent,
   parentProjectComponentsFeatureCollection,
+  shouldShowRelatedProjects,
 }) => {
   const projectLines = useFeatureTypes(
     parentProjectComponentsFeatureCollection,
@@ -46,33 +48,23 @@ const ParentProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["project-lines-underlay"].layerProps,
-            layout: {
-              ...MAP_STYLES["project-lines-underlay"].layerProps.layout,
-              // visibility: isEditingLines ? "visible" : "none",
-            },
-          }}
-        />
-        <Layer
-          beforeId="street-labels"
-          {...{
             ...MAP_STYLES["parent-project-lines"].layerProps,
             layout: {
               ...MAP_STYLES["parent-project-lines"].layerProps.layout,
-              // visibility: isViewingComponents ? "visible" : "none",
+              visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}
         />
-        <Layer
+        {/* <Layer
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
               ...MAP_STYLES["project-lines-muted"].layerProps.layout,
-              // visibility: shouldShowMutedFeatures ? "visible" : "none",
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
-        />
+        /> */}
       </Source>
 
       <Source
@@ -87,19 +79,19 @@ const ParentProjectSourcesAndLayers = ({
             ...MAP_STYLES["parent-project-points"].layerProps,
             layout: {
               ...MAP_STYLES["parent-project-points"].layerProps.layout,
-              // visibility: isViewingComponents ? "visible" : "none",
+              visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}
         />
-        <Layer
+        {/* <Layer
           beforeId="street-labels"
           {...{
             ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {
-              // visibility: shouldShowMutedFeatures ? "visible" : "none",
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
-        />
+        /> */}
       </Source>
     </>
   );
