@@ -9,6 +9,7 @@ import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import ParentProjectSourcesAndLayers from "./ParentProjectSourcesAndLayers";
+import SiblingProjectSourcesAndLayers from "./SiblingProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
@@ -50,6 +51,7 @@ export default function TheMap({
   hoveredOnMapFeature,
   components,
   parentComponents,
+  siblingComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -77,6 +79,8 @@ export default function TheMap({
     useAllComponentsFeatureCollection(components);
   const parentProjectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(parentComponents);
+  const siblingProjectComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(siblingComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
@@ -358,6 +362,14 @@ export default function TheMap({
           isEditingComponent={isEditingComponent}
           parentProjectComponentsFeatureCollection={
             parentProjectComponentsFeatureCollection
+          }
+          shouldShowRelatedProjects={shouldShowRelatedProjects}
+        />
+        <SiblingProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          siblingProjectComponentsFeatureCollection={
+            siblingProjectComponentsFeatureCollection
           }
           shouldShowRelatedProjects={shouldShowRelatedProjects}
         />

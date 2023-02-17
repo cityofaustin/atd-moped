@@ -124,6 +124,18 @@ export default function MapView({
     return data.parentProjectComponents;
   }, [data]);
 
+  const siblingComponents = useMemo(() => {
+    if (!data?.siblingProjectComponents) return [];
+
+    const allSiblingComponents = data.siblingProjectComponents.reduce(
+      (acc, sibling) => [...acc, ...sibling.moped_proj_components],
+      []
+    );
+
+    return allSiblingComponents;
+  }, [data]);
+  console.log(siblingComponents);
+
   const {
     onStartCreatingComponent,
     onSaveDraftComponent,
@@ -315,6 +327,7 @@ export default function MapView({
               mapRef={mapRef}
               components={components}
               parentComponents={parentComponents}
+              siblingComponents={siblingComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
               draftEditComponent={editState.draftEditComponent}
