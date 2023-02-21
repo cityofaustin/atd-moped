@@ -7,7 +7,6 @@ import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import IconButton from "@material-ui/core/IconButton";
 import PlaceOutlinedIcon from "@material-ui/icons/PlaceOutlined";
 import ListItemText from "@material-ui/core/ListItemText";
-import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import { COLORS } from "./mapStyleSettings";
 
@@ -28,13 +27,11 @@ const useStyles = makeStyles((theme) => ({
 // TODO: Create new SourcesAndLayers component for shared components
 // TODO: Create a component for the controls that use the shared ListItem
 // but also has spaces for the related projects control and future ones
-// TODO: Show parent and children components in the list
-// TODO: Related components show by default
 // TODO: If it is related, show "Part of project #123 (project # is a link)"
 // TODO: Parent and sibling components are not editable
 // ?: Should we have a button to refresh the data? It could get stale if going
 // to another project, editing that component, and then going back to the other tab
-// TODO: Another useMemo to create data structure of parent and children components
+// TODO: Another useMemo to create data structure of parent and children components?
 
 export default function RelatedComponentListItem({
   component,
@@ -68,13 +65,13 @@ export default function RelatedComponentListItem({
         <ListItemText
           primary={`${listItemPrimaryText} - ${component.moped_components?.component_subtype}`}
           secondary={
-            <Typography>
+            <>
               Part of project{" "}
               <Link
                 href={`/moped/projects/${component.project_id}?tab=map`}
                 target="blank"
               >{`#${component.project_id}`}</Link>
-            </Typography>
+            </>
           }
           className={classes.listItemText}
         />
