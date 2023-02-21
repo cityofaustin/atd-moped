@@ -35,7 +35,7 @@ const groupByProjectAndPhase = (statusUpdates) =>
     return grouped;
   }, {});
 
-const createProjPhases = (projectId, groupedStatusUpdates) => {
+const createProjPhases = (groupedStatusUpdates) => {
   let currentPhaseDate = { phase_id: null, date: null };
   const projPhases = Object.keys(groupedStatusUpdates).map((phase_id) => {
     // find the earliest date of all status updates with this phase
@@ -102,7 +102,7 @@ function getProjPhasesAndNotes() {
   statusUpdates.forEach((statusUpdate) => setPhaseId(statusUpdate));
   const grouped = groupByProjectAndPhase(statusUpdates);
   const projPhases = Object.keys(grouped).reduce((index, projectId) => {
-    index[projectId] = createProjPhases(projectId, grouped[projectId]);
+    index[projectId] = createProjPhases(grouped[projectId]);
     return index;
   }, {});
   const projNotes = getProjNotes(statusUpdates);
