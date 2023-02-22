@@ -87,6 +87,12 @@ const ComponentForm = ({
     setValue("signal", null);
   }, [component, setValue]);
 
+  // reset subcomponent selections when component to ensure only allowed subcomponents
+  // todo: preserve allowed subcomponents when switching b/t component types
+  useEffect(() => {
+    setValue("subcomponents", []);
+  }, [subcomponentOptions, setValue]);
+
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
