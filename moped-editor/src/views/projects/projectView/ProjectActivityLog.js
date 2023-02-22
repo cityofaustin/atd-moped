@@ -26,8 +26,6 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-  Link,
-  Typography,
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
@@ -231,6 +229,20 @@ const ProjectActivityLog = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell align="left" className={classes.boldText}>
+                    User
+                  </TableCell>
+                  <TableCell align="left" className={classes.boldText}>
+                    Change
+                  </TableCell>
+                  <TableCell align="left" className={classes.boldText}>
+                    Date
+                  </TableCell>
+                  <TableCell align="left" />
+                </TableRow>
+              </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
@@ -239,23 +251,10 @@ const ProjectActivityLog = () => {
                   );
                   return (
                     <TableRow key={change.activity_id}>
-                      {/* <TableCell
-                        align="left"
-                        component="th"
-                        scope="row"
-                        width="5%"
-                        className={classes.tableCell}
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        <Tooltip
-                          title={new Date(change.created_at).toLocaleString()}
-                        ></Tooltip>
-                      </TableCell> */}
                       <TableCell
                         align="left"
                         width="15%"
                         className={classes.tableCell}
-                        style={{ whiteSpace: "nowrap" }}
                       >
                         <Box display="flex" p={0}>
                           <Box p={0}>
@@ -301,7 +300,6 @@ const ProjectActivityLog = () => {
                           <ProjectActivityEntry
                             changeIcon={changeIcon}
                             changeText={changeText}
-                            changeDate={change.created_at}
                           />
                         ) : (
                           <Box display="flex" p={0}>
@@ -393,6 +391,20 @@ const ProjectActivityLog = () => {
                             </Box>
                           </Box>
                         )}
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        width="5%"
+                        className={classes.tableCell}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        <Tooltip
+                          title={new Date(change.created_at).toLocaleString()}
+                        >
+                          <span>{formatRelativeDate(change.created_at)}</span>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   );
