@@ -3,7 +3,7 @@
 --
 
 -- Dumped from database version 12.9 (Debian 12.9-1.pgdg110+1)
--- Dumped by pg_dump version 14.4
+-- Dumped by pg_dump version 15.0 (Ubuntu 15.0-1.pgdg20.04+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,6 +15,55 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Data for Name: feature_drawn_lines; Type: TABLE DATA; Schema: public; Owner: moped
+--
+
+
+
+--
+-- Data for Name: feature_drawn_points; Type: TABLE DATA; Schema: public; Owner: moped
+--
+
+
+
+--
+-- Data for Name: feature_intersections; Type: TABLE DATA; Schema: public; Owner: moped
+--
+
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (12, 3, NULL, 225460, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E61000000100000001010000001C412AC58E6E58C09BE447FC8A413E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (13, 3, NULL, 225769, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E6100000010000000101000000A8E0F082886E58C0D6A71C93C5413E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (14, 3, NULL, 225135, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E6100000010000000101000000CB9F6F0B966E58C0F14927124C413E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (16, 5, NULL, 225873, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E610000001000000010100000018E945ED7E6F58C0A6D425E318453E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (17, 5, NULL, 224868, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E6100000010000000101000000F0C34142946F58C04606B98B30453E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (18, 5, NULL, 224814, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E6100000010000000101000000B7989F1B9A6F58C059147651F4443E40', false);
+INSERT INTO public.feature_intersections (id, component_id, name, intersection_id, project_extent_id, source_layer, render_type, geography, is_deleted) VALUES (19, 5, NULL, 225554, NULL, 'ATD_ADMIN.CTN_Intersections', NULL, '0104000020E6100000010000000101000000E0BDA3C6846F58C02B8A5759DB443E40', false);
+
+
+--
+-- Data for Name: feature_signals; Type: TABLE DATA; Schema: public; Owner: moped
+--
+
+INSERT INTO public.feature_signals (id, component_id, name, signal_id, knack_id, location_name, render_type, signal_type, geography, is_deleted) VALUES (15, 4, NULL, 365, '5817c088e052e0422be6c6c2', ' CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST', 'Point', 'TRAFFIC', '0104000020E610000001000000010100000067B8019F1F6E58C0F1BDBF417B413E40', false);
+
+
+--
+-- Data for Name: feature_street_segments; Type: TABLE DATA; Schema: public; Owner: moped
+--
+
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (1, 2, NULL, NULL, 102140, NULL, 50, NULL, 59, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000001000000010200000002000000A7B228ECA26E58C02CF2EB87D8403E4051853FC39B6E58C09148DBF813413E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (2, 2, NULL, NULL, 136040, NULL, 60, NULL, 69, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E61000000100000001020000000200000051853FC39B6E58C09148DBF813413E40CB9F6F0B966E58C0F14927124C413E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (3, 2, NULL, NULL, 137839, NULL, 70, NULL, 79, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000001000000010200000002000000CB9F6F0B966E58C0F14927124C413E401C412AC58E6E58C09BE447FC8A413E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (4, 2, NULL, NULL, 126745, NULL, 80, NULL, 89, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E6100000010000000102000000020000001C412AC58E6E58C09BE447FC8A413E40A8E0F082886E58C0D6A71C93C5413E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (5, 2, NULL, NULL, 133661, NULL, 90, NULL, 98, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000001000000010200000002000000A8E0F082886E58C0D6A71C93C5413E4053B3075A816E58C041BB438A01423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (6, 2, NULL, NULL, 131137, NULL, 100, NULL, 117, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E61000000100000001020000000200000053B3075A816E58C041BB438A01423E4032C7F2AE7A6E58C09A97C3EE3B423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (7, 2, NULL, NULL, 136700, NULL, 200, NULL, 217, 'CHALMERS AVE', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E61000000200000001020000000200000092E9D0E9796E58C0C05AB56B42423E40DD990986736E58C0CE35CCD078423E4001020000000200000032C7F2AE7A6E58C09A97C3EE3B423E40B284B531766E58C05797530262423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (8, 2, NULL, NULL, 100181, NULL, 1700, NULL, 1724, 'E 3RD ST', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000001000000010200000002000000DD990986736E58C0CE35CCD078423E40200890A1636E58C0FD4B529962423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (9, 2, NULL, NULL, 131873, NULL, 1800, NULL, 1824, 'E 3RD ST', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000002000000010200000002000000200890A1636E58C0FD4B529962423E40A699EE75526E58C0ECDADE6E49423E40010200000002000000747CB438636E58C05797530262423E40A699EE75526E58C0ECDADE6E49423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (10, 2, NULL, NULL, 153152, NULL, 300, NULL, 322, 'CHICON ST', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000003000000010200000002000000A699EE75526E58C0ECDADE6E49423E40E5B512BA4B6E58C04B74965984423E400102000000020000005A4A9693506E58C0C09481035A423E40E5B512BA4B6E58C04B74965984423E40010200000002000000A699EE75526E58C0ECDADE6E49423E4090BFB4A84F6E58C05797530262423E40', false);
+INSERT INTO public.feature_street_segments (id, component_id, name, knack_id, ctn_segment_id, project_extent_id, from_address_min, render_type, to_address_max, full_street_name, line_type, symbol, source_layer, geography, is_deleted) VALUES (11, 2, NULL, NULL, 147368, NULL, 400, NULL, 416, 'CHICON ST', 'On-Street', 2, 'ATD_ADMIN.CTN', '0105000020E610000001000000010200000002000000E5B512BA4B6E58C04B74965984423E40DD0BCC0A456E58C06EDBF7A8BF423E40', false);
+
 
 --
 -- Data for Name: moped_users; Type: TABLE DATA; Schema: public; Owner: moped
@@ -53,9 +102,9 @@ INSERT INTO public.moped_users (staff_uuid, first_name, last_name, title, workgr
 -- Data for Name: moped_project; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('05dad987-acbf-4543-a623-fbc9c6f1e877', 'Demo Project #1', 'This is a demo project for demonstration purposes', NULL, 7333.001, NULL, NULL, 227, NULL, NULL, NULL, NULL, true, NULL, '2022-11-12 18:07:30.266299+00', 1, false, NULL, '2022-11-12 18:07:30.264117+00', 3, 'https://austinmobility.io', NULL, NULL, 'ABC123', NULL, 1, 1);
-INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('4bc62a02-a75d-4ac8-9354-f74358428c5a', ' CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST', 'It''s a fake signal project', NULL, NULL, NULL, NULL, 228, NULL, NULL, NULL, NULL, NULL, NULL, '2022-11-12 18:16:37.450157+00', 1, false, NULL, '2022-11-12 18:16:37.445531+00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('f4298b3e-4393-4433-89f8-c13b4ecf3c74', 'Demo Project #2', 'Best project ever', NULL, 123.455, NULL, NULL, 229, NULL, NULL, NULL, NULL, true, NULL, '2022-11-15 16:47:15.440396+00', 1, false, NULL, '2022-11-15 16:47:15.438683+00', 11, 'https://austintexas.gov', NULL, '[{"dept": "6000", "name": "johnny Morris/Hwy 290 Water Line Extension", "status": "Active", "balance": "-1997.78", "tk_type": "Memo", "task_order": "60M7242QMD", "display_name": "60M7242QMD | johnny Morris/Hwy 290 Water Line Extension", "chargedamount": "1997.78", "current_estimate": "0"}, {"dept": "2400", "name": "FY17 Parking Mgmt. ROW", "status": "Inactive", "balance": "0", "tk_type": "Internal Billed", "buyer_fdus": "5610 2400 4200", "task_order": "24ROW51000", "display_name": "24ROW51000 | FY17 Parking Mgmt. ROW", "chargedamount": "119095.09", "current_estimate": "119095.09"}]', NULL, NULL, NULL, 10);
+INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('4bc62a02-a75d-4ac8-9354-f74358428c5a', ' CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST', 'It''s a fake signal project', NULL, NULL, NULL, NULL, 228, NULL, NULL, NULL, NULL, NULL, NULL, '2022-11-12 18:16:37.450157+00', 1, false, NULL, '2023-01-19 03:36:08.502913+00', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('f4298b3e-4393-4433-89f8-c13b4ecf3c74', 'Demo Project #2', 'Best project ever', NULL, 123.455, NULL, NULL, 229, NULL, NULL, NULL, NULL, true, NULL, '2022-11-15 16:47:15.440396+00', 1, false, NULL, '2023-01-19 03:36:08.502913+00', 11, 'https://austintexas.gov', NULL, '[{"dept": "6000", "name": "johnny Morris/Hwy 290 Water Line Extension", "status": "Active", "balance": "-1997.78", "tk_type": "Memo", "task_order": "60M7242QMD", "display_name": "60M7242QMD | johnny Morris/Hwy 290 Water Line Extension", "chargedamount": "1997.78", "current_estimate": "0"}, {"dept": "2400", "name": "FY17 Parking Mgmt. ROW", "status": "Inactive", "balance": "0", "tk_type": "Internal Billed", "buyer_fdus": "5610 2400 4200", "task_order": "24ROW51000", "display_name": "24ROW51000 | FY17 Parking Mgmt. ROW", "chargedamount": "119095.09", "current_estimate": "119095.09"}]', NULL, NULL, NULL, 10);
+INSERT INTO public.moped_project (project_uuid, project_name, project_description, project_description_public, ecapris_subproject_id, project_importance, project_order, project_id, timeline_id, end_date, project_length, fiscal_year, capitally_funded, project_priority, date_added, added_by, is_deleted, milestone_id, updated_at, project_sponsor, project_website, knack_project_id, task_order, work_assignment_id, parent_project_id, interim_project_id, project_lead_id) VALUES ('05dad987-acbf-4543-a623-fbc9c6f1e877', 'Demo Project #1', 'This is a demo project for demonstration purposes', NULL, 7333.001, NULL, NULL, 227, NULL, NULL, NULL, NULL, true, NULL, '2022-11-12 18:07:30.266299+00', 1, false, NULL, '2023-01-19 03:36:08.502913+00', 3, 'https://austinmobility.io', NULL, NULL, 'ABC123', NULL, 1, 1);
 
 
 --
@@ -79,50 +128,9 @@ INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_i
 -- Data for Name: moped_proj_contract; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false, null, 889);
-INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false, 'GCS 12', null);
-INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, null, null, null, 229, false, 'WA - 10 Unity', 1224);
-
---
--- Data for Name: moped_proj_entities; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-
-
---
--- Data for Name: moped_proj_features; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (2, '{"id": 1761, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72869357839227, 30.253303915208974], [-97.72825721651316, 30.254210981073953]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 102140, "TO_ADDRESS_MAX": 59, "FROM_ADDRESS_MIN": 50, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (3, '{"id": 31407, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72825721651316, 30.254210981073953], [-97.72790785878897, 30.255067357091647]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 136040, "TO_ADDRESS_MAX": 69, "FROM_ADDRESS_MIN": 60, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (4, '{"id": 33527, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72790785878897, 30.255067357091647], [-97.72746378555894, 30.25602653570455]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 137839, "TO_ADDRESS_MAX": 79, "FROM_ADDRESS_MIN": 70, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (5, '{"id": 59339, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72746378555894, 30.25602653570455], [-97.72708157077432, 30.25692083389619]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 126745, "TO_ADDRESS_MAX": 89, "FROM_ADDRESS_MIN": 80, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (6, '{"id": 29573, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72708157077432, 30.25692083389619], [-97.72664504125714, 30.25783611997062]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 133661, "TO_ADDRESS_MAX": 98, "FROM_ADDRESS_MIN": 90, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (7, '{"id": 27082, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72664504125714, 30.25783611997062], [-97.726237680763, 30.25872721611117]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 131137, "TO_ADDRESS_MAX": 117, "FROM_ADDRESS_MIN": 100, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (8, '{"id": 32344, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.72619107738137, 30.258826258471856], [-97.72580064833164, 30.259656096315354]], [[-97.726237680763, 30.25872721611117], [-97.72596443071961, 30.259308147363043]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 136700, "TO_ADDRESS_MAX": 217, "FROM_ADDRESS_MIN": 200, "FULL_STREET_NAME": "CHALMERS AVE"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (9, '{"id": 62, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72580064833164, 30.259656096315354], [-97.7248308621347, 30.259317414433937]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 100181, "TO_ADDRESS_MAX": 1724, "FROM_ADDRESS_MIN": 1700, "FULL_STREET_NAME": "E 3RD ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (10, '{"id": 28183, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.7248308621347, 30.259317414433937], [-97.72378295660019, 30.258932975055757]], [[-97.72480554878712, 30.259308147363043], [-97.72378295660019, 30.258932975055757]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 131873, "TO_ADDRESS_MAX": 1824, "FROM_ADDRESS_MIN": 1800, "FULL_STREET_NAME": "E 3RD ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (11, '{"id": 58736, "type": "Feature", "geometry": {"type": "MultiLineString", "coordinates": [[[-97.72378295660019, 30.258932975055757], [-97.72337224334478, 30.259832169888895]], [[-97.72366762161255, 30.259185503389375], [-97.72337224334478, 30.259832169888895]], [[-97.72378295660019, 30.258932975055757], [-97.72361163049936, 30.259308147363043]]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 153152, "TO_ADDRESS_MAX": 322, "FROM_ADDRESS_MIN": 300, "FULL_STREET_NAME": "CHICON ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (12, '{"id": 58604, "type": "Feature", "geometry": {"type": "LineString", "coordinates": [[-97.72337224334478, 30.259832169888895], [-97.72296437993646, 30.260737003528646]]}, "_isPresent": false, "properties": {"_symbol": 2, "LINE_TYPE": "On-Street", "sourceLayer": "ATD_ADMIN.CTN", "CTN_SEGMENT_ID": 147368, "TO_ADDRESS_MAX": 416, "FROM_ADDRESS_MIN": 400, "FULL_STREET_NAME": "CHICON ST"}}', 2, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (13, '{"id": 31688, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72746378555894, 30.25602653570455]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225460}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (14, '{"id": 31750, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72708157077432, 30.25692083389619]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225769}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (15, '{"id": 31605, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72790785878897, 30.255067357091647]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225135}}', 3, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (16, '{"id": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88", "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.72068, 30.255787]}, "properties": {"id": "5817c088e052e0422be6c6c2", "signal_id": "365", "renderType": "Point", "signal_type": "TRAFFIC", "sourceLayer": "drawnByUser", "location_name": " CESAR CHAVEZ ST / ROBERT T MARTINEZ JR ST", "PROJECT_EXTENT_ID": "7cb11a36-9f59-46d5-ba31-66b7d1cd5f88"}}', 4, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (17, '{"id": 28834, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74212155491114, 30.26991055253903]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225873}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (18, '{"id": 28546, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.7434235997498, 30.270272362977707]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224868}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (19, '{"id": 28475, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74378100410104, 30.269352704539784]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 224814}}', 5, false);
-INSERT INTO public.moped_proj_features (feature_id, feature, project_component_id, is_deleted) VALUES (20, '{"id": 28759, "type": "Feature", "geometry": {"type": "Point", "coordinates": [-97.74247946217656, 30.26897163447613]}, "_isPresent": false, "properties": {"sourceLayer": "ATD_ADMIN.CTN_Intersections", "INTERSECTIONID": 225554}}', 5, false);
-
-
---
--- Data for Name: moped_proj_financials; Type: TABLE DATA; Schema: public; Owner: moped
---
-
-
-
---
--- Data for Name: moped_proj_fiscal_years; Type: TABLE DATA; Schema: public; Owner: moped
---
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false, NULL, 889);
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false, 'GCS 12', NULL);
+INSERT INTO public.moped_proj_contract (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, NULL, NULL, NULL, 229, false, 'WA - 10 Unity', 1224);
 
 
 
@@ -174,16 +182,16 @@ INSERT INTO public.moped_proj_notes (project_note_id, project_note, date_created
 -- Data for Name: moped_proj_partners; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD', 1, 2, 227, '2022-11-12 18:09:10.83628+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Active Transportation & Street Design', 2, 3, 227, '2022-11-12 18:09:10.836658+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Signs & Markings', 6, 4, 227, '2022-11-12 18:09:10.836667+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Traffic Impact Analysis Fiscal', 12, 5, 227, '2022-11-12 18:09:10.836672+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA Aviation', 14, 6, 227, '2022-11-12 18:09:10.836677+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Development Review', 4, 7, 229, '2022-11-15 16:47:43.293093+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Systems Development', 7, 8, 229, '2022-11-15 16:47:43.293178+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Transportation Engineering', 8, 9, 229, '2022-11-15 16:47:43.293185+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA ATD Traffic Impact Analysis Fiscal', 12, 10, 229, '2022-11-15 16:47:43.29319+00', NULL, false);
-INSERT INTO public.moped_proj_partners (partner_name, entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES ('COA PWD Neighborhood Partnering', 21, 11, 229, '2022-11-15 16:47:43.293194+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (1, 2, 227, '2022-11-12 18:09:10.83628+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (2, 3, 227, '2022-11-12 18:09:10.836658+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (6, 4, 227, '2022-11-12 18:09:10.836667+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (12, 5, 227, '2022-11-12 18:09:10.836672+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (14, 6, 227, '2022-11-12 18:09:10.836677+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (4, 7, 229, '2022-11-15 16:47:43.293093+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (7, 8, 229, '2022-11-15 16:47:43.293178+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (8, 9, 229, '2022-11-15 16:47:43.293185+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (12, 10, 229, '2022-11-15 16:47:43.29319+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (21, 11, 229, '2022-11-15 16:47:43.293194+00', NULL, false);
 
 
 --
@@ -290,12 +298,6 @@ SELECT pg_catalog.setval('public.moped_proj_components_subcomponen_component_sub
 SELECT pg_catalog.setval('public.moped_proj_entities_entity_list_id_seq', 1, true);
 
 
---
--- Name: moped_proj_features_feature_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
---
-
-SELECT pg_catalog.setval('public.moped_proj_features_feature_id_seq', 20, true);
-
 
 --
 -- Name: moped_proj_fiscal_years_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
@@ -391,3 +393,4 @@ SELECT pg_catalog.setval('public.moped_users_user_id_seq', 56, true);
 --
 -- PostgreSQL database dump complete
 --
+

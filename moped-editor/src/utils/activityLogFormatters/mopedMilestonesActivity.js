@@ -1,10 +1,10 @@
-import EventNoteIcon from "@material-ui/icons/EventNote";
+import EventNoteOutlinedIcon from '@material-ui/icons/EventNoteOutlined';
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
 
-  const changeIcon = <EventNoteIcon />;
+  const changeIcon = <EventNoteOutlinedIcon />;
 
   // add a new milestone
   if (change.description.length === 0) {
@@ -16,7 +16,7 @@ export const formatMilestonesActivity = (change, milestoneList) => {
           text: milestoneList[change.record_data.event.data.new.milestone_id],
           style: "boldText",
         },
-        { text: " as a new milestone.", style: null },
+        { text: " as a new milestone", style: null },
       ],
     };
   }

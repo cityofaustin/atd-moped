@@ -8,6 +8,10 @@ const useStyles = makeStyles((theme) => ({
   boldText: {
     fontWeight: 600,
   },
+  indentText: {
+    paddingLeft: "16px",
+    display: "block",
+  },
 }));
 
 /**
@@ -22,7 +26,11 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
     <Box display="flex" p={0}>
       <Box p={0}>{changeIcon}</Box>
       <Box p={0} flexGrow={1}>
-        <Typography variant="body2" className={classes.entryText}>
+        <Typography
+          variant="body2"
+          className={classes.entryText}
+          component="span"
+        >
           {
             // maps through the array of objects and applies specified style to the text
             changeText.map((changeObject, index) => (

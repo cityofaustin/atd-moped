@@ -3,9 +3,9 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
-// Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here
-// so that we can assign the draw instance draw instance that exposes mapbox-gl-draw methods
-// that is returned from useControl as its current value
+// Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
+// We need to drill it down here so that we can assign the draw instance that exposes the
+// mapbox-gl-draw methods that are returned from useControl as its current value.
 export const DrawControl = React.forwardRef((props, ref) => {
   ref.current = useControl(
     ({ map }) => {
@@ -74,7 +74,7 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 /**
  * This component defines common DrawControl props and also conditionally renders point or line controls
- * The ref that is forwarded is defined in useMapDrawTools and passes through
+ * The ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools and passes through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned
  * @param {function} onCreate - fires after drawing is complete and a feature is created

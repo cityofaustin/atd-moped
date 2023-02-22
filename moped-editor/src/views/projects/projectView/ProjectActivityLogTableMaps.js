@@ -36,7 +36,7 @@ export const ProjectActivityLogTableMaps = {
       },
       public_process_status_id: {
         label: "public process status",
-        lookup: "moped_public_process_statuses"
+        lookup: "moped_public_process_statuses",
       },
       project_website: {
         label: "project website",
@@ -66,11 +66,11 @@ export const ProjectActivityLogTableMaps = {
         lookup: "moped_entity",
       },
       capitally_funded: {
-        label: "capitally funded"
+        label: "capitally funded",
       },
       is_retired: {
-        label: "is retired"
-      }
+        label: "is retired",
+      },
     },
   },
   moped_proj_entities: {
@@ -128,7 +128,7 @@ export const ProjectActivityLogTableMaps = {
         label: "project ID",
       },
       milestone_id: {
-        label: "id"
+        label: "id",
       },
       project_milestone_id: {
         label: "ID",
@@ -191,44 +191,28 @@ export const ProjectActivityLogTableMaps = {
     fields: {
       // todo: this column has been deprecated. we should remove it from here and use a gracefull fallback handler
       added_by: {
-        icon: "",
         label: "added by",
-        type: "bpchar",
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       project_note_id: {
-        icon: "",
         label: "note ID",
-        type: "int4",
       },
       date_created: {
-        icon: "",
         label: "date created",
-        type: "timestamptz",
       },
       project_note: {
-        icon: "",
         label: "note",
-        type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        type: "boolean",
       },
       added_by_user_id: {
-        icon: "",
         label: "added by user ID",
-        type: "integer",
       },
       project_note_type: {
-        icon: "",
         label: "note type",
-        type: "integer",
       },
     },
   },
@@ -250,6 +234,7 @@ export const ProjectActivityLogTableMaps = {
         label: "partner ID",
         type: "int4",
       },
+      // deprecated column, but keeping because historical activities depend on it
       partner_name: {
         icon: "",
         label: "name",
@@ -276,58 +261,28 @@ export const ProjectActivityLogTableMaps = {
     label: "Team",
     fields: {
       added_by: {
-        icon: "",
         label: "added by",
-        type: "int4",
       },
       date_added: {
-        icon: "",
         label: "date added",
-        type: "timestamptz",
       },
       project_personnel_id: {
-        icon: "",
         label: "ID",
-        type: "int4",
       },
       notes: {
-        icon: "",
         label: "notes",
-        type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        type: "boolean",
-        map: {
-          true: "Inactive",
-          false: "Active",
-        },
       },
       project_id: {
-        icon: "",
         label: "project ID",
-        type: "int4",
       },
       role_id: {
-        icon: "",
         label: "role",
-        type: "int4",
-        lookup: {
-          table: "moped_project_roles",
-          fieldLabel: "project_role_id",
-          fieldValues: ["project_role_name"],
-        },
       },
       user_id: {
-        icon: "",
         label: "user",
-        type: "int4",
-        lookup: {
-          table: "moped_users",
-          fieldLabel: "user_id",
-          fieldValues: ["first_name", "last_name"],
-        },
       },
     },
   },
@@ -394,34 +349,22 @@ export const ProjectActivityLogTableMaps = {
     label: "Component",
     fields: {
       project_id: {
-        icon: "",
         label: "ID",
-        data_type: "int4",
       },
       project_component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "int4",
       },
       component_id: {
-        icon: "",
         label: "component ID",
-        data_type: "integer",
       },
       name: {
-        icon: "",
         label: "name",
-        data_type: "text",
       },
       description: {
-        icon: "",
         label: "description",
-        data_type: "text",
       },
       is_deleted: {
-        icon: "",
         label: "is deleted",
-        data_type: "boolean",
       },
     },
   },
@@ -521,7 +464,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_program_id: {
         label: "program",
-        lookup: "fundingPrograms"
+        lookup: "fundingPrograms",
       },
       funding_amount: {
         label: "amount",
@@ -534,7 +477,7 @@ export const ProjectActivityLogTableMaps = {
       },
       funding_status_id: {
         label: "status",
-        lookup: "fundingStatus"
+        lookup: "fundingStatus",
       },
       is_deleted: {
         label: "is deleted",
@@ -585,284 +528,38 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_tags: {
     fields: {
       tag_id: {
-        icon: "",
         label: "Tag ID",
-        data_type: "integer",
-        lookup: {
-          table: "moped_tags",
-          fieldLabel: "id",
-          fieldValues: ["name"],
-        },
+      },
+    },
+  },
+  moped_proj_contract: {
+    label: "Contract",
+    fields: {
+      id: {
+        label: "ID",
+      },
+      contractor: {
+        label: "contractor",
+      },
+      contract_number: {
+        label: "contract number",
+      },
+      description: {
+        label: "description",
+      },
+      project_id: {
+        label: "project ID",
+      },
+      work_assignment_id: {
+        label: "work assignment ID",
+      },
+      contract_amount: {
+        label: "contract amount",
+      },
+      is_deleted: {
+        label: "is deleted",
       },
     },
   },
 };
 
-export const ProjectActivityLogOperationMaps = {
-  moped_project: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Created",
-      icon: "beenhere",
-    },
-    UPDATE: {
-      label: "Update",
-      icon: "create",
-    },
-  },
-
-  moped_proj_personnel: {
-    DELETE: {
-      label: "Removed",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "personadd",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-
-  moped_proj_phases: {
-    DELETE: {
-      label: "Removed",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "event",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-
-  moped_project_files: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Added",
-      icon: "description",
-    },
-    UPDATE: {
-      label: "Updated",
-      icon: "create",
-    },
-  },
-
-  generic: {
-    DELETE: {
-      label: "Deleted",
-      icon: "close",
-    },
-    INSERT: {
-      label: "Created",
-      icon: "addcircle",
-    },
-    UPDATE: {
-      label: "Update",
-      icon: "create",
-    },
-  },
-};
-
-export const ProjectActivityLogGenericDescriptions = {
-  project_extent_geojson: {
-    label: "Project GeoJSON updated",
-  },
-};
-
-export const ProjectActivityLogCreateDescriptions = {
-  moped_proj_personnel: {
-    label: (record, userList) =>
-      userList[`${record.record_data.event.data.new.user_id}`] + " to the team",
-  },
-  moped_proj_phases: {
-    label: (record, userList, phaseList) => {
-      const recordData = record.record_data.event.data.new;
-      const phaseName = phaseList[recordData?.phase_id] ?? "";
-      return `'${phaseName}' as Project Phase with start date as '${recordData.phase_start}' and end date as '${recordData.phase_end}'`;
-    },
-  },
-  moped_project_files: {
-    label: (record) =>
-      `New file '${record.record_data.event.data.new.file_name}'`,
-  },
-  moped_proj_milestones: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(
-          record.record_data.event.data.new.milestone_description,
-          true
-        ) + " as a new milestone"
-      );
-    },
-  },
-  moped_proj_notes: {
-    label: (record, userList) => {
-      // remove HTML tags
-      const note = record.record_data.event.data.new.project_note.replace(
-        /(<([^>]+)>)/gi,
-        ""
-      );
-
-      const shortNote =
-        note.length > 30 ? note.substr(0, 30).trim() + "..." : note.trim();
-
-      return fieldFormat(shortNote, true) + " as a new note";
-    },
-  },
-  moped_proj_partners: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.partner_name, true) +
-        " as a new partner"
-      );
-    },
-  },
-  moped_proj_components: {
-    label: (record, userList) => {
-      return (
-        fieldFormat(record.record_data.event.data.new.description, true) +
-        " as a new component"
-      );
-    },
-  },
-  moped_proj_funding: {
-    label: (record, userList) => {
-      //return '"' + record.record_data.event.data.new.funding_description + "\" as a new funding source";
-      return (
-        "A new funding source" +
-        (record.record_data.event.data.new.funding_description
-          ? ": " + record.record_data.event.data.new.funding_description
-          : "")
-      );
-    },
-  },
-  generic: {
-    label: (record) => {
-      return "Added";
-    },
-  },
-};
-
-/**
- * Returns a human-readable field name (translates the column into a readable label)
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @return {string}
- */
-export const getHumanReadableField = (type, field) => {
-  return (
-    ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-      ?.label ?? field
-  );
-};
-
-/**
- * Returns true if a specific field is mapped
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @return {boolean}
- */
-export const isFieldMapped = (type, field) =>
-  (ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map ?? null) !== null;
-
-/**
- * Returns the mapped value within the configuration
- * @param {string} type - The table name
- * @param {string} field - The column name
- * @param {*} value - Usually an integer but it can be a string
- * @return {string}
- */
-export const getMappedValue = (type, field, value) =>
-  ProjectActivityLogTableMaps[type.toLowerCase()]?.fields[field.toLowerCase()]
-    ?.map[value];
-
-/**
- * Returns the
- * @param {string} type - The name of the table
- * @return {string}
- */
-export const getRecordTypeLabel = (type) => {
-  return ProjectActivityLogTableMaps[type.toLowerCase()]?.label ?? type;
-};
-
-/**
- * Returns the icon to be used for a specific line, if the field is empty, it defaults to the table's icon
- * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
- * @param {string} record_type - The name of the table
- * @return {string}
- */
-export const getChangeIcon = (event_type, record_type = "moped_project") => {
-  const recordType =
-    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
-  return (
-    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
-      ?.icon ?? "create"
-  );
-};
-
-/**
- * Translates the operation type value into friendly label
- * @param {string} event_type - The operation type: INSERT, UPDATE, DELETE
- * @param {string} record_type - The name of the table
- * @return {string}
- */
-export const getOperationName = (event_type, record_type = "moped_project") => {
-  const recordType =
-    record_type in ProjectActivityLogOperationMaps ? record_type : "generic";
-  return (
-    ProjectActivityLogOperationMaps[recordType][event_type.toUpperCase()]
-      ?.label ?? "Unknown"
-  );
-};
-
-/**
- * Translates the operation type value into friendly label when there is no specified difference
- * @param {string} record - The event record
- * @return {string}
- */
-export const getCreationLabel = (record, userList, phaseList) => {
-  const recordType =
-    record.record_type in ProjectActivityLogCreateDescriptions
-      ? record.record_type
-      : "generic";
-
-  const label = ProjectActivityLogCreateDescriptions[recordType]?.label ?? null;
-
-  return label ? label(record, userList, phaseList) : "Created";
-};
-
-/**
- * Attempts to represent a number of possible data types from the database as a string
- * @param {string} the javascript variable (whatever type) you want represented as a string.
- * @return {string}
- */
-export const fieldFormat = (changeItem, capitalize = false) => {
-  let result = "";
-  if (changeItem === null) {
-    result = "a null value";
-  } else if (String(changeItem).length === 0) {
-    result = "an empty value";
-  } else if (typeof changeItem === "object") {
-    result = "a JavaScript object";
-  } else if (typeof changeItem === "boolean") {
-    result = String(changeItem);
-  } else if (parseFloat(changeItem)) {
-    result = String(changeItem);
-  } else {
-    result = '"' + changeItem + '"';
-  }
-  return capitalize ? result.charAt(0).toUpperCase() + result.slice(1) : result;
-};
