@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import {
@@ -23,9 +23,7 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
-  Tooltip,
 } from "@material-ui/core";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
@@ -199,6 +197,7 @@ const getTotalItems = (data) => {
 };
 
 const ProjectActivityLog = () => {
+  const [hoverRowId, setHoverRowId] = useState(null);
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -208,6 +207,14 @@ const ProjectActivityLog = () => {
 
   const activityLogData = usePrepareActivityData(data?.moped_activity_log);
   const lookupData = useLookupTables(data);
+
+  const onMouseEnter = (activityId) => {
+    setHoverRowId(activityId);
+  };
+
+  const onMouseLeave = () => {
+    setHoverRowId(null);
+  };
 
   if (loading) return <CircularProgress />;
 
@@ -229,28 +236,17 @@ const ProjectActivityLog = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" className={classes.boldText}>
-                    User
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    Change
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    Date
-                  </TableCell>
-                  <TableCell align="left" />
-                </TableRow>
-              </TableHead>
-              <TableBody>
+              <TableBody onMouseLeave={onMouseLeave}>
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
                     change,
                     lookupData
                   );
                   return (
-                    <TableRow key={change.activity_id}>
+                    <TableRow
+                      key={change.activity_id}
+                      onMouseEnter={() => onMouseEnter(change.activity_id)}
+                    >
                       <TableCell
                         align="left"
                         width="15%"
@@ -400,11 +396,20 @@ const ProjectActivityLog = () => {
                         className={classes.tableCell}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        <Tooltip
-                          title={new Date(change.created_at).toLocaleString()}
+                        <span>{formatRelativeDate(change.created_at)}</span>
+
+                        <span
+                          style={{
+                            display: "block",
+                            fontSize: ".75rem",
+                            color:
+                              hoverRowId === change.activity_id
+                                ? "gray"
+                                : "white",
+                          }}
                         >
-                          <span>{formatRelativeDate(change.created_at)}</span>
-                        </Tooltip>
+                          {new Date(change.created_at).toLocaleString()}
+                        </span>
                       </TableCell>
                     </TableRow>
                   );
