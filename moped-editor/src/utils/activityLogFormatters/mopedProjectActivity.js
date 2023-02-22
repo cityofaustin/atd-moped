@@ -95,7 +95,6 @@ export const formatProjectActivity = (change, lookupList) => {
         ],
       };
     }
-    console.log(changeData.new[changedField])
 
     // the update can be rendered as a string
     const changeValue =
