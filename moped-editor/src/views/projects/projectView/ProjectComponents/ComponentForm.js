@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import DateFnsUtils from "@date-io/date-fns";
+// import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   Grid,
@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@material-ui/core";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+// import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -21,6 +21,7 @@ import {
   useComponentOptions,
   useSubcomponentOptions,
   usePhaseOptions,
+  useSubphaseOptions,
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
@@ -29,6 +30,7 @@ const defaultFormValues = {
   component: null,
   subcomponents: [],
   phase: null,
+  subphase: null,
   description: "",
   signal: null,
 };
@@ -37,6 +39,7 @@ const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
   phase: yup.object().optional(),
+  subphase: yup.object().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().when("component", {
@@ -72,6 +75,9 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
+  const subphaseOptions = useSubphaseOptions(
+    initialFormValues?.phase?.moped_subphases
+  );
   const { component } = watch();
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
@@ -88,8 +94,8 @@ const ComponentForm = ({
     componentOptions,
     subcomponentOptions,
     phaseOptions,
+    subphaseOptions,
     areSignalOptionsLoaded,
-    useComponentPhase,
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -200,19 +206,17 @@ const ComponentForm = ({
                 autoFocus
               />
             </Grid>
-            {/* <Grid item xs={12}>
+            <Grid item xs={12}>
               <ControlledAutocomplete
                 id="subphase"
                 label="Subphase"
-                options={[]}
-                renderOption={(option) => <option>Hello</option>}
+                options={areOptionsLoading ? [] : subphaseOptions}
                 name="subphase"
                 autoFocus
-                disabled={false}
                 control={control}
               />
             </Grid>
-            <Grid item xs={12}>
+            {/* <Grid item xs={12}>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DatePicker
                   clearable={true}

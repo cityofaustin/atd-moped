@@ -18,11 +18,13 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
         subcomponent_name
       }
     }
-    moped_phases(
-      order_by: { phase_order: asc }
-    ) {
+    moped_phases(order_by: { phase_order: asc }) {
       phase_name
       phase_id
+      moped_subphases {
+        subphase_id
+        subphase_name
+      }
     }
   }
 `;
@@ -44,6 +46,7 @@ export const GET_PROJECT_COMPONENTS = gql`
       component_id
       description
       phase_id
+      subphase_id
       moped_components {
         component_name
         component_subtype
@@ -64,6 +67,10 @@ export const GET_PROJECT_COMPONENTS = gql`
       moped_phase {
         phase_id
         phase_name
+        moped_subphases {
+          subphase_id
+          subphase_name
+        }
       }
       moped_subphase {
         subphase_id
@@ -124,6 +131,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $phaseId: Int!
+    $subphaseId: Int!
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -133,7 +141,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description, phase_id: $phaseId }
+      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId }
     ) {
       project_component_id
     }
@@ -158,6 +166,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $signals: [feature_signals_insert_input!]!
     $phaseId: Int!
+    $subphaseId: Int!
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -173,7 +182,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description, phase_id: $phaseId }
+      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId }
     ) {
       project_component_id
     }
