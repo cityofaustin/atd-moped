@@ -38,7 +38,7 @@ const isSignalComponent = (component) =>
  */
 const useComponentListItemText = (component) =>
   useMemo(() => {
-    const listItemText = { primary: "", secondary: "" };
+    const listItemText = { primary: "", secondary: "-" };
     const componentName = component?.moped_components?.component_name;
     const componentSubtype = component?.moped_components?.component_subtype;
     listItemText.primary = componentSubtype
@@ -90,8 +90,14 @@ export default function ComponentListItem({
         borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
       }}
     >
-      <ListItem dense button onClick={onListItemClick}>
-        <ListItemText {...listItemText} />
+      <ListItem
+        dense
+        button
+        onClick={onListItemClick}
+        className={classes.listItem}
+      >
+        <PlaceOutlinedIcon color="primary" />
+        <ListItemText className={classes.listItemText} {...listItemText} />
         <ListItemSecondaryAction>
           <IconButton
             color="primary"
