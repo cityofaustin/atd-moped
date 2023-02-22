@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Box from "@material-ui/core/Box";
 import Collapse from "@material-ui/core/Collapse";
@@ -26,6 +27,31 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const isSignalComponent = (component) =>
+  component?.moped_components?.feature_layer?.internal_table ===
+  "feature_signals";
+
+/**
+ * Format the list item's primary and secondary text
+ * @param {object} component - the moped_component object
+ * @returns {object} the component props for <ListItemText> as { primary, secondary }
+ */
+const useComponentListItemText = (component) =>
+  useMemo(() => {
+    const listItemText = { primary: "", secondary: "" };
+    const componentName = component?.moped_components?.component_name;
+    const componentSubtype = component?.moped_components?.component_subtype;
+    listItemText.primary = componentSubtype
+      ? `${componentName} - ${componentSubtype}`
+      : componentName;
+    if (isSignalComponent(component)) {
+      const signalLocationName = component?.feature_signals?.[0]?.location_name;
+      const signalId = component?.feature_signals?.[0]?.signal_id;
+      listItemText.secondary = `${signalId}: ${signalLocationName}`;
+    }
+    return listItemText;
+  }, [component]);
+
 export default function ComponentListItem({
   component,
   isExpanded,
@@ -47,22 +73,15 @@ export default function ComponentListItem({
     }
   };
 
-  const isSignalComponent =
-    component?.moped_components?.feature_layer?.internal_table ===
-    "feature_signals";
-  const componentName = component?.moped_components?.component_name;
-  const signalLocationName = component?.feature_signals?.[0]?.location_name;
-  const listItemPrimaryText = isSignalComponent
-    ? `${componentName} -${signalLocationName}`
-    : componentName;
-
   const onStartEditingComponent = () => {
-    if (isSignalComponent) {
+    if (isSignalComponent(component)) {
       editDispatch({ type: "start_attributes_edit" });
     } else {
       editDispatch({ type: "start_edit", payload: component });
     }
   };
+
+  const listItemText = useComponentListItemText(component);
 
   return (
     <Box
@@ -71,18 +90,8 @@ export default function ComponentListItem({
         borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
       }}
     >
-      <ListItem
-        dense
-        button
-        onClick={onListItemClick}
-        className={classes.listItem}
-      >
-        <PlaceOutlinedIcon color="primary" />
-        <ListItemText
-          primary={listItemPrimaryText}
-          secondary={component.moped_components?.component_subtype}
-          className={classes.listItemText}
-        />
+      <ListItem dense button onClick={onListItemClick}>
+        <ListItemText {...listItemText} />
         <ListItemSecondaryAction>
           <IconButton
             color="primary"
