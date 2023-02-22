@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
@@ -46,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
   boldText: {
     fontWeight: 700,
+  },
+  mutedDate: {
+    display: "block",
+    fontSize: ".75rem",
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -191,7 +196,6 @@ const getTotalItems = (data) => {
 };
 
 const ProjectActivityLog = () => {
-  const [hoverRowId, setHoverRowId] = useState(null);
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -201,14 +205,6 @@ const ProjectActivityLog = () => {
 
   const activityLogData = usePrepareActivityData(data?.moped_activity_log);
   const lookupData = useLookupTables(data);
-
-  const onMouseEnter = (activityId) => {
-    setHoverRowId(activityId);
-  };
-
-  const onMouseLeave = () => {
-    setHoverRowId(null);
-  };
 
   if (loading) return <CircularProgress />;
 
@@ -222,17 +218,14 @@ const ProjectActivityLog = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-              <TableBody onMouseLeave={onMouseLeave}>
+              <TableBody>
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
                     change,
                     lookupData
                   );
                   return (
-                    <TableRow
-                      key={change.activity_id}
-                      onMouseEnter={() => onMouseEnter(change.activity_id)}
-                    >
+                    <TableRow key={change.activity_id}>
                       <TableCell
                         align="left"
                         width="15%"
@@ -285,17 +278,7 @@ const ProjectActivityLog = () => {
                         style={{ whiteSpace: "nowrap" }}
                       >
                         <span>{formatRelativeDate(change.created_at)}</span>
-
-                        <span
-                          style={{
-                            display: "block",
-                            fontSize: ".75rem",
-                            color:
-                              hoverRowId === change.activity_id
-                                ? "gray"
-                                : "white",
-                          }}
-                        >
+                        <span className={classes.mutedDate}>
                           {new Date(change.created_at).toLocaleString()}
                         </span>
                       </TableCell>
