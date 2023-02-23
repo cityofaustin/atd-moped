@@ -48,7 +48,7 @@ mapboxgl.workerClass =
 export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
-  components,
+  projectComponents,
   parentComponents,
   siblingComponents,
   childComponents,
@@ -76,7 +76,7 @@ export default function TheMap({
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(components);
+    useAllComponentsFeatureCollection(projectComponents);
   const parentProjectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(parentComponents);
   const siblingProjectComponentsFeatureCollection =

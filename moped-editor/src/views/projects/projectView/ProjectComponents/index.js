@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -34,6 +34,7 @@ import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
+import { useProjectComponents } from "./utils/useProjectComponents";
 
 const drawerWidth = 350;
 
@@ -109,43 +110,21 @@ export default function MapView({
     fetchPolicy: "no-cache",
   });
 
-  /* holds this project's components */
-  const components = useMemo(() => {
-    if (!data?.moped_proj_components) return [];
+  const {
+    projectComponents,
+    parentComponents,
+    siblingComponents,
+    childComponents,
+  } = useProjectComponents(data);
 
-    return data.moped_proj_components;
-  }, [data]);
+  const allRelatedComponents = [
+    ...parentComponents,
+    ...siblingComponents,
+    ...childComponents,
+  ];
 
   const featureCollectionsByComponentId =
     useComponentFeatureCollectionsMap(data);
-
-  const parentComponents = useMemo(() => {
-    if (!data?.parentProjectComponents) return [];
-
-    return data.parentProjectComponents;
-  }, [data]);
-
-  const siblingComponents = useMemo(() => {
-    if (!data?.siblingProjects) return [];
-
-    const allSiblingComponents = data.siblingProjects.reduce(
-      (acc, sibling) => [...acc, ...sibling.moped_proj_components],
-      []
-    );
-
-    return allSiblingComponents;
-  }, [data]);
-
-  const childComponents = useMemo(() => {
-    if (!data?.childProjects) return [];
-
-    const allChildComponents = data.childProjects.reduce(
-      (acc, child) => [...acc, ...child.moped_proj_components],
-      []
-    );
-
-    return allChildComponents;
-  }, [data]);
 
   const {
     onStartCreatingComponent,
@@ -171,7 +150,7 @@ export default function MapView({
     onEditFeatures,
     doesDraftEditComponentHaveFeatures,
   } = useUpdateComponent({
-    components,
+    projectComponents,
     clickedComponent,
     setClickedComponent,
     setLinkMode,
@@ -313,7 +292,7 @@ export default function MapView({
               )}
               {!editState.isEditingComponent &&
                 !createState.isCreatingComponent &&
-                components.map((component) => {
+                projectComponents.map((component) => {
                   const isExpanded =
                     clickedComponent?.project_component_id ===
                     component.project_component_id;
@@ -334,28 +313,8 @@ export default function MapView({
               {/* TODO: Create parent list items component */}
               {!editState.isEditingComponent &&
                 !createState.isCreatingComponent &&
-                parentComponents.map((component) => {
-                  const isExpanded =
-                    clickedComponent?.project_component_id ===
-                    component.project_component_id;
-                  return (
-                    <RelatedComponentListItem
-                      key={component.project_component_id}
-                      component={component}
-                      isExpanded={isExpanded}
-                      setClickedComponent={setClickedComponent}
-                      setIsDeletingComponent={setIsDeletingComponent}
-                      editDispatch={editDispatch}
-                      onClickZoomToComponent={onClickZoomToComponent}
-                      isEditingComponent={editState.isEditingComponent}
-                      isCreatingComponent={createState.isCreatingComponent}
-                    />
-                  );
-                })}
-              {/* TODO: Create sibling list items component */}
-              {!editState.isEditingComponent &&
-                !createState.isCreatingComponent &&
-                siblingComponents.map((component) => {
+                shouldShowRelatedProjects &&
+                allRelatedComponents.map((component) => {
                   const isExpanded =
                     clickedComponent?.project_component_id ===
                     component.project_component_id;
@@ -381,7 +340,7 @@ export default function MapView({
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
-              components={components}
+              projectComponents={projectComponents}
               parentComponents={parentComponents}
               siblingComponents={siblingComponents}
               childComponents={childComponents}
