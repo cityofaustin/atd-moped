@@ -52,6 +52,7 @@ export default function TheMap({
   components,
   parentComponents,
   siblingComponents,
+  childComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -81,6 +82,8 @@ export default function TheMap({
     useAllComponentsFeatureCollection(parentComponents);
   const siblingProjectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(siblingComponents);
+  const childProjectComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(childComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
@@ -370,6 +373,14 @@ export default function TheMap({
           isEditingComponent={isEditingComponent}
           siblingProjectComponentsFeatureCollection={
             siblingProjectComponentsFeatureCollection
+          }
+          shouldShowRelatedProjects={shouldShowRelatedProjects}
+        />
+        <SiblingProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          childProjectComponentsFeatureCollection={
+            childProjectComponentsFeatureCollection
           }
           shouldShowRelatedProjects={shouldShowRelatedProjects}
         />

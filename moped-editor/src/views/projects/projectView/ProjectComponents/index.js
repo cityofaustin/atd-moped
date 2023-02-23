@@ -136,6 +136,17 @@ export default function MapView({
     return allSiblingComponents;
   }, [data]);
 
+  const childComponents = useMemo(() => {
+    if (!data?.childProjects) return [];
+
+    const allChildComponents = data.childProjects.reduce(
+      (acc, child) => [...acc, ...child.moped_proj_components],
+      []
+    );
+
+    return allChildComponents;
+  }, [data]);
+
   const {
     onStartCreatingComponent,
     onSaveDraftComponent,
@@ -373,6 +384,7 @@ export default function MapView({
               components={components}
               parentComponents={parentComponents}
               siblingComponents={siblingComponents}
+              childComponents={childComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
               draftEditComponent={editState.draftEditComponent}
