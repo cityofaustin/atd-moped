@@ -40,7 +40,7 @@ const ChildProjectSourcesAndLayers = ({
   return (
     <>
       <Source
-        id="sibling-project-lines"
+        id="child-project-lines"
         type="geojson"
         data={projectLines}
         promoteId="id"
@@ -48,9 +48,9 @@ const ChildProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["sibling-project-lines"].layerProps,
+            ...MAP_STYLES["child-project-lines"].layerProps,
             layout: {
-              ...MAP_STYLES["sibling-project-lines"].layerProps.layout,
+              ...MAP_STYLES["child-project-lines"].layerProps.layout,
               visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}
@@ -68,7 +68,7 @@ const ChildProjectSourcesAndLayers = ({
       </Source>
 
       <Source
-        id="sibling-project-points"
+        id="child-project-points"
         type="geojson"
         data={projectPoints}
         promoteId="id"
@@ -76,9 +76,9 @@ const ChildProjectSourcesAndLayers = ({
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["sibling-project-points"].layerProps,
+            ...MAP_STYLES["child-project-points"].layerProps,
             layout: {
-              ...MAP_STYLES["sibling-project-points"].layerProps.layout,
+              ...MAP_STYLES["child-project-points"].layerProps.layout,
               visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}

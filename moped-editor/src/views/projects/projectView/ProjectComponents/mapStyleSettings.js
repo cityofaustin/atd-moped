@@ -16,6 +16,8 @@ export const COLORS = {
   white: "#fff",
   orange: "#ffb300",
   lightOrange: "#ffc94a",
+  greenDark: "#034732",
+  greenLight: "#008148",
 };
 
 export const pointsCircleRadiusStops = {
@@ -140,6 +142,42 @@ export const MAP_STYLES = {
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
           COLORS.orange,
+        ],
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "child-project-points": {
+    isInteractive: true,
+    layerProps: {
+      id: "child-project-points",
+      _featureIdProp: "INTERSECTIONID",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": COLORS.greenDark,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": COLORS.greenLight,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
+  "child-project-lines": {
+    isInteractive: true,
+    layerProps: {
+      id: "child-project-lines",
+      _featureIdProp: "CTN_SEGMENT_ID",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          COLORS.pinkDark,
+          COLORS.greenDark,
         ],
       },
       layout: {

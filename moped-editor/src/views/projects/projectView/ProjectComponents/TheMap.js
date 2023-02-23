@@ -10,6 +10,7 @@ import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import ParentProjectSourcesAndLayers from "./ParentProjectSourcesAndLayers";
 import SiblingProjectSourcesAndLayers from "./SiblingProjectSourcesAndLayers";
+import ChildProjectSourcesAndLayers from "./ChildProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
@@ -376,7 +377,7 @@ export default function TheMap({
           }
           shouldShowRelatedProjects={shouldShowRelatedProjects}
         />
-        <SiblingProjectSourcesAndLayers
+        <ChildProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
           isEditingComponent={isEditingComponent}
           childProjectComponentsFeatureCollection={

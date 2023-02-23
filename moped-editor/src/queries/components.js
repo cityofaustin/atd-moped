@@ -116,6 +116,13 @@ export const GET_PROJECT_COMPONENTS = gql`
         ...projectComponentFields
       }
     }
+    childProjects: moped_project(
+      where: { parent_project_id: { _eq: $projectId } }
+    ) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        ...projectComponentFields
+      }
+    }
   }
 `;
 
