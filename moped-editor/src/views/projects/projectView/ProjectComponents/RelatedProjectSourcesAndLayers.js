@@ -3,28 +3,24 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import { useFeatureTypes } from "./utils/map";
 
 /**
- * Component that renders feature collection of parent project component features
+ * Component that renders feature collection of related project component features
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?
- * @param {Object} parentProjectComponentsFeatureCollection - GeoJSON feature collection with all project features
+ * @param {Object} featureCollection - GeoJSON feature collection with all project features
  * @param {Boolean} shouldShowRelatedProjects - should we show related projects
  * @returns JSX.Element
  */
-const ParentProjectSourcesAndLayers = ({
+const RelatedProjectSourcesAndLayers = ({
   isCreatingComponent,
   isEditingComponent,
-  parentProjectComponentsFeatureCollection,
+  featureCollection,
   shouldShowRelatedProjects,
+  linesId,
+  pointsId,
 }) => {
-  const projectLines = useFeatureTypes(
-    parentProjectComponentsFeatureCollection,
-    "line"
-  );
-  const projectPoints = useFeatureTypes(
-    parentProjectComponentsFeatureCollection,
-    "point"
-  );
+  const projectLines = useFeatureTypes(featureCollection, "line");
+  const projectPoints = useFeatureTypes(featureCollection, "point");
 
   //   const isViewingComponents =
   //     !isCreatingComponent && !clickedComponent && !isEditingComponent;
@@ -39,18 +35,13 @@ const ParentProjectSourcesAndLayers = ({
 
   return (
     <>
-      <Source
-        id="parent-project-lines"
-        type="geojson"
-        data={projectLines}
-        promoteId="id"
-      >
+      <Source id={linesId} type="geojson" data={projectLines} promoteId="id">
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["parent-project-lines"].layerProps,
+            ...MAP_STYLES[linesId].layerProps,
             layout: {
-              ...MAP_STYLES["parent-project-lines"].layerProps.layout,
+              ...MAP_STYLES[linesId].layerProps.layout,
               visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}
@@ -67,18 +58,13 @@ const ParentProjectSourcesAndLayers = ({
         /> */}
       </Source>
 
-      <Source
-        id="parent-project-points"
-        type="geojson"
-        data={projectPoints}
-        promoteId="id"
-      >
+      <Source id={pointsId} type="geojson" data={projectPoints} promoteId="id">
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES["parent-project-points"].layerProps,
+            ...MAP_STYLES[pointsId].layerProps,
             layout: {
-              ...MAP_STYLES["parent-project-points"].layerProps.layout,
+              ...MAP_STYLES[pointsId].layerProps.layout,
               visibility: shouldShowRelatedProjects ? "visible" : "none",
             },
           }}
@@ -97,4 +83,4 @@ const ParentProjectSourcesAndLayers = ({
   );
 };
 
-export default ParentProjectSourcesAndLayers;
+export default RelatedProjectSourcesAndLayers;

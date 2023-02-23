@@ -8,7 +8,7 @@ import CreateComponentDrawTools from "./CreateComponentDrawTools";
 import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
-import ParentProjectSourcesAndLayers from "./ParentProjectSourcesAndLayers";
+import RelatedProjectSourcesAndLayers from "./RelatedProjectSourcesAndLayers";
 import SiblingProjectSourcesAndLayers from "./SiblingProjectSourcesAndLayers";
 import ChildProjectSourcesAndLayers from "./ChildProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
@@ -361,13 +361,13 @@ export default function TheMap({
           }
           draftEditComponent={draftEditComponent}
         />
-        <ParentProjectSourcesAndLayers
+        <RelatedProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
           isEditingComponent={isEditingComponent}
-          parentProjectComponentsFeatureCollection={
-            parentProjectComponentsFeatureCollection
-          }
+          featureCollection={parentProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
+          linesId={"parent-project-lines"}
+          pointsId={"parent-project-points"}
         />
         <SiblingProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
