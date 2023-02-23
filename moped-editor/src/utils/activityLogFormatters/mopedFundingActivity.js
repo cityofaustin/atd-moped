@@ -7,9 +7,9 @@ const getFundingSourceIdText = (newRecord, fundingSources, fundingPrograms) => {
     return;
   }
   if (newRecord.funding_source_id) {
-    return fundingSources[newRecord.funding_source_id];
+    return fundingSources?.[newRecord.funding_source_id];
   } else if (newRecord.funding_program_id) {
-    return fundingPrograms[newRecord.funding_program_id];
+    return fundingPrograms?.[newRecord.funding_program_id];
   } else {
     return;
   }
@@ -78,7 +78,6 @@ export const formatFundingActivity = (
 
   // Multiple fields in the moped_proj_funding table can be updated at once
   // We list the fields changed in the activity log, this gathers the fields changed
-
   let changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
