@@ -5,15 +5,13 @@ import { useFeatureTypes } from "./utils/map";
 /**
  * Component that renders feature collection of related project component features
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
- * @param {Boolean} isCreatingComponent - are we creating a component?
- * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {Object} featureCollection - GeoJSON feature collection with all project features
  * @param {Boolean} shouldShowRelatedProjects - should we show related projects
+ * @param {String} linesId - id of layer to render lines also used to determine styles to apply
+ * * @param {String} pointsId - id of layer to render points also used to determine styles to apply
  * @returns JSX.Element
  */
 const RelatedProjectSourcesAndLayers = ({
-  isCreatingComponent,
-  isEditingComponent,
   featureCollection,
   shouldShowRelatedProjects,
   linesId,
@@ -21,17 +19,6 @@ const RelatedProjectSourcesAndLayers = ({
 }) => {
   const projectLines = useFeatureTypes(featureCollection, "line");
   const projectPoints = useFeatureTypes(featureCollection, "point");
-
-  //   const isViewingComponents =
-  //     !isCreatingComponent && !clickedComponent && !isEditingComponent;
-
-  //   const isEditingLines =
-  //     (isCreatingComponent || isEditingComponent) &&
-  //     linkMode === "lines" &&
-  //     !isDrawing;
-
-  //   const shouldShowMutedFeatures =
-  //     clickedComponent || isCreatingComponent || isEditingComponent;
 
   return (
     <>
@@ -46,16 +33,6 @@ const RelatedProjectSourcesAndLayers = ({
             },
           }}
         />
-        {/* <Layer
-          beforeId="street-labels"
-          {...{
-            ...MAP_STYLES["project-lines-muted"].layerProps,
-            layout: {
-              ...MAP_STYLES["project-lines-muted"].layerProps.layout,
-              visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        /> */}
       </Source>
 
       <Source id={pointsId} type="geojson" data={projectPoints} promoteId="id">
@@ -69,15 +46,6 @@ const RelatedProjectSourcesAndLayers = ({
             },
           }}
         />
-        {/* <Layer
-          beforeId="street-labels"
-          {...{
-            ...MAP_STYLES["project-points-muted"].layerProps,
-            layout: {
-              visibility: shouldShowMutedFeatures ? "visible" : "none",
-            },
-          }}
-        /> */}
       </Source>
     </>
   );

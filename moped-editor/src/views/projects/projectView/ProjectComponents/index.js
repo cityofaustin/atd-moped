@@ -2,29 +2,17 @@ import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
-import { Dialog, Typography } from "@material-ui/core";
+import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Collapse from "@material-ui/core/Collapse";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import TuneIcon from "@material-ui/icons/Tune";
+import ComponentList from "./ComponentList";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
-import ComponentListItem from "./ComponentListItem";
-import DraftComponentListItem from "./DraftComponentListItem";
-import RelatedComponentListItem from "./RelatedComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
@@ -212,127 +200,29 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <List>
-              {!createState.isCreatingComponent &&
-                !editState.isEditingComponent && (
-                  <>
-                    <ListItem dense>
-                      <Button
-                        className={classes.buttonTextLeft}
-                        size="small"
-                        color="primary"
-                        fullWidth
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={onStartCreatingComponent}
-                      >
-                        New Component
-                      </Button>
-                      <IconButton
-                        onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-                        aria-label="settings"
-                      >
-                        <TuneIcon fontSize="small" />
-                      </IconButton>
-                    </ListItem>
-                    <Collapse in={areSettingsOpen}>
-                      <ListItem>
-                        <FormControlLabel
-                          control={
-                            <Switch
-                              checked={shouldShowRelatedProjects}
-                              onChange={() =>
-                                setShouldShowRelatedProjects(
-                                  !shouldShowRelatedProjects
-                                )
-                              }
-                              name="showRelatedProjects"
-                              color="primary"
-                            />
-                          }
-                          label={
-                            <Typography variant="subtitle2">
-                              Show related projects
-                            </Typography>
-                          }
-                          labelPlacement="start"
-                        />
-                      </ListItem>
-                    </Collapse>
-                    <Divider />
-                  </>
-                )}
-              {createState.draftComponent &&
-                createState.isCreatingComponent && (
-                  <DraftComponentListItem
-                    primaryText={createState.draftComponent.component_name}
-                    secondaryText={createState.draftComponent.component_subtype}
-                    onSave={onSaveDraftComponent}
-                    onCancel={onCancelComponentCreate}
-                    saveButtonDisabled={
-                      !createState.draftComponent?.features.length > 0
-                    }
-                    saveButtonText="Save"
-                  />
-                )}
-              {editState.draftEditComponent && editState.isEditingComponent && (
-                <DraftComponentListItem
-                  primaryText={
-                    editState.draftEditComponent?.moped_components
-                      ?.component_name
-                  }
-                  secondaryText={
-                    editState.draftEditComponent?.moped_components
-                      ?.component_subtype
-                  }
-                  onSave={onSaveEditedComponent}
-                  onCancel={onCancelComponentMapEdit}
-                  saveButtonDisabled={!doesDraftEditComponentHaveFeatures}
-                  saveButtonText="Save Edit"
-                />
-              )}
-              {!editState.isEditingComponent &&
-                !createState.isCreatingComponent &&
-                projectComponents.map((component) => {
-                  const isExpanded =
-                    clickedComponent?.project_component_id ===
-                    component.project_component_id;
-                  return (
-                    <ComponentListItem
-                      key={component.project_component_id}
-                      component={component}
-                      isExpanded={isExpanded}
-                      setClickedComponent={setClickedComponent}
-                      setIsDeletingComponent={setIsDeletingComponent}
-                      editDispatch={editDispatch}
-                      onClickZoomToComponent={onClickZoomToComponent}
-                      isEditingComponent={editState.isEditingComponent}
-                      isCreatingComponent={createState.isCreatingComponent}
-                    />
-                  );
-                })}
-              {/* TODO: Create parent list items component */}
-              {!editState.isEditingComponent &&
-                !createState.isCreatingComponent &&
-                shouldShowRelatedProjects &&
-                allRelatedComponents.map((component) => {
-                  const isExpanded =
-                    clickedComponent?.project_component_id ===
-                    component.project_component_id;
-                  return (
-                    <RelatedComponentListItem
-                      key={component.project_component_id}
-                      component={component}
-                      isExpanded={isExpanded}
-                      setClickedComponent={setClickedComponent}
-                      setIsDeletingComponent={setIsDeletingComponent}
-                      editDispatch={editDispatch}
-                      onClickZoomToComponent={onClickZoomToComponent}
-                      isEditingComponent={editState.isEditingComponent}
-                      isCreatingComponent={createState.isCreatingComponent}
-                    />
-                  );
-                })}
-            </List>
+            <ComponentList
+              createState={createState}
+              editState={editState}
+              editDispatch={editDispatch}
+              shouldShowRelatedProjects={shouldShowRelatedProjects}
+              setShouldShowRelatedProjects={setShouldShowRelatedProjects}
+              onStartCreatingComponent={onStartCreatingComponent}
+              areSettingsOpen={areSettingsOpen}
+              setAreSettingsOpen={setAreSettingsOpen}
+              clickedComponent={clickedComponent}
+              setClickedComponent={setClickedComponent}
+              onCancelComponentCreate={onCancelComponentCreate}
+              onCancelComponentMapEdit={onCancelComponentMapEdit}
+              onClickZoomToComponent={onClickZoomToComponent}
+              allRelatedComponents={allRelatedComponents}
+              projectComponents={projectComponents}
+              setIsDeletingComponent={setIsDeletingComponent}
+              doesDraftEditComponentHaveFeatures={
+                doesDraftEditComponentHaveFeatures
+              }
+              onSaveDraftComponent={onSaveDraftComponent}
+              onSaveEditedComponent={onSaveEditedComponent}
+            />
           </div>
         </Drawer>
         <main className={classes.content}>
