@@ -9,8 +9,6 @@ import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
 import RelatedProjectSourcesAndLayers from "./RelatedProjectSourcesAndLayers";
-import SiblingProjectSourcesAndLayers from "./SiblingProjectSourcesAndLayers";
-import ChildProjectSourcesAndLayers from "./ChildProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
@@ -369,21 +367,21 @@ export default function TheMap({
           linesId={"parent-project-lines"}
           pointsId={"parent-project-points"}
         />
-        <SiblingProjectSourcesAndLayers
+        <RelatedProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
           isEditingComponent={isEditingComponent}
-          siblingProjectComponentsFeatureCollection={
-            siblingProjectComponentsFeatureCollection
-          }
+          featureCollection={siblingProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
+          linesId={"sibling-project-lines"}
+          pointsId={"sibling-project-points"}
         />
-        <ChildProjectSourcesAndLayers
+        <RelatedProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
           isEditingComponent={isEditingComponent}
-          childProjectComponentsFeatureCollection={
-            childProjectComponentsFeatureCollection
-          }
+          featureCollection={childProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
+          linesId={"child-project-lines"}
+          pointsId={"child-project-points"}
         />
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}
