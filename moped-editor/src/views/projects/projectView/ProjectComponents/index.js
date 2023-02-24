@@ -15,7 +15,10 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
+import {
+  useComponentFeatureCollectionsMap,
+  getAllComponentFeatures,
+} from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
@@ -157,8 +160,8 @@ export default function MapView({
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
-    const componentId = component.project_component_id;
-    const featureCollection = featureCollectionsByComponentId[componentId];
+    const features = getAllComponentFeatures(component);
+    const featureCollection = { type: "FeatureCollection", features };
 
     setClickedComponent(component);
     // close the map projectFeature map popup
