@@ -16,9 +16,14 @@ const RelatedProjectSourcesAndLayers = ({
   shouldShowRelatedProjects,
   linesId,
   pointsId,
+  clickedComponent,
 }) => {
   const projectLines = useFeatureTypes(featureCollection, "line");
   const projectPoints = useFeatureTypes(featureCollection, "point");
+
+  const shouldShowNonMutedFeatures =
+    shouldShowRelatedProjects && !clickedComponent;
+  const shouldShowMutedFeatures = !!clickedComponent;
 
   return (
     <>
@@ -29,7 +34,18 @@ const RelatedProjectSourcesAndLayers = ({
             ...MAP_STYLES[linesId].layerProps,
             layout: {
               ...MAP_STYLES[linesId].layerProps.layout,
-              visibility: shouldShowRelatedProjects ? "visible" : "none",
+              visibility: shouldShowNonMutedFeatures ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          id={`${linesId}-muted`}
+          {...{
+            ...MAP_STYLES["project-lines-muted"].layerProps,
+            layout: {
+              ...MAP_STYLES["project-lines-muted"].layerProps.layout,
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
         />
@@ -42,7 +58,17 @@ const RelatedProjectSourcesAndLayers = ({
             ...MAP_STYLES[pointsId].layerProps,
             layout: {
               ...MAP_STYLES[pointsId].layerProps.layout,
-              visibility: shouldShowRelatedProjects ? "visible" : "none",
+              visibility: shouldShowNonMutedFeatures ? "visible" : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          id={`${pointsId}-muted`}
+          {...{
+            ...MAP_STYLES["project-points-muted"].layerProps,
+            layout: {
+              visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
         />

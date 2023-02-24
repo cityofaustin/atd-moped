@@ -84,6 +84,7 @@ const ProjectSourcesAndLayers = ({
         />
         <Layer
           beforeId="street-labels"
+          id="project-lines-muted"
           {...{
             ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
@@ -112,6 +113,7 @@ const ProjectSourcesAndLayers = ({
         />
         <Layer
           beforeId="street-labels"
+          id="project-points-muted"
           {...{
             ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {

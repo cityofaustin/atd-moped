@@ -188,7 +188,7 @@ export const MAP_STYLES = {
   "project-points-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-points-muted",
+      // id: "project-points-muted",
       _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
@@ -204,7 +204,7 @@ export const MAP_STYLES = {
   "project-lines-muted": {
     isInteractive: false,
     layerProps: {
-      id: "project-lines-muted",
+      // id: "project-lines-muted",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {

@@ -30,7 +30,6 @@ import {
   isDrawnDraftFeature,
   isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
-  useComponentFeatureCollectionFromMap,
 } from "./utils/features";
 import {
   useComponentFeatureCollection,
@@ -88,10 +87,8 @@ export default function TheMap({
   const draftEditComponentFeatureCollection =
     useComponentFeatureCollection(draftEditComponent);
 
-  const componentFeatureCollection = useComponentFeatureCollectionFromMap(
-    clickedComponent,
-    featureCollectionsByComponentId
-  );
+  const componentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
@@ -360,28 +357,25 @@ export default function TheMap({
           draftEditComponent={draftEditComponent}
         />
         <RelatedProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
           featureCollection={parentProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
           linesId={"parent-project-lines"}
           pointsId={"parent-project-points"}
+          clickedComponent={clickedComponent}
         />
         <RelatedProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
           featureCollection={siblingProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
           linesId={"sibling-project-lines"}
           pointsId={"sibling-project-points"}
+          clickedComponent={clickedComponent}
         />
         <RelatedProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
           featureCollection={childProjectComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
           linesId={"child-project-lines"}
           pointsId={"child-project-points"}
+          clickedComponent={clickedComponent}
         />
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}
