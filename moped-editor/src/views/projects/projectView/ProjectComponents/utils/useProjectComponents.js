@@ -36,10 +36,17 @@ export const useProjectComponents = (data) => {
     return allChildComponents;
   }, [data]);
 
+  const allRelatedComponents = [
+    ...parentComponents,
+    ...siblingComponents,
+    ...childComponents,
+  ];
+
   return {
     projectComponents,
     parentComponents,
     siblingComponents,
     childComponents,
+    allRelatedComponents,
   };
 };

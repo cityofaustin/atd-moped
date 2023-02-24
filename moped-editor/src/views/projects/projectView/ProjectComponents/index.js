@@ -103,13 +103,8 @@ export default function MapView({
     parentComponents,
     siblingComponents,
     childComponents,
+    allRelatedComponents,
   } = useProjectComponents(data);
-
-  const allRelatedComponents = [
-    ...parentComponents,
-    ...siblingComponents,
-    ...childComponents,
-  ];
 
   const featureCollectionsByComponentId =
     useComponentFeatureCollectionsMap(data);
