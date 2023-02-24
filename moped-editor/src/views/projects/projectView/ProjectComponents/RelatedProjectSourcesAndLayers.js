@@ -23,7 +23,8 @@ const RelatedProjectSourcesAndLayers = ({
 
   const shouldShowNonMutedFeatures =
     shouldShowRelatedProjects && !clickedComponent;
-  const shouldShowMutedFeatures = !!clickedComponent;
+  const shouldShowMutedFeatures =
+    shouldShowRelatedProjects && !!clickedComponent;
 
   return (
     <>
