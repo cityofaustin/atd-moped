@@ -11,9 +11,6 @@ import Link from "@material-ui/core/Link";
 import { COLORS } from "./mapStyleSettings";
 
 const useStyles = makeStyles((theme) => ({
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
   listItem: {
     paddingLeft: theme.spacing(1),
   },
@@ -21,11 +18,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
 }));
-
-// TODO: Create a ListItem that can be shared between
-// DraftComponentListItemm, ComponentListItem, RelatedComponentListItem, and the controls
-// TODO: Create a component for the controls that use the shared ListItem
-// but also has spaces for the related projects control and future ones
 
 export default function RelatedComponentListItem({
   component,

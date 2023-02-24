@@ -1,6 +1,8 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { ListItemText } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import List from "@material-ui/core/List";
+import Icon from "@material-ui/core/Icon";
+import ListItemText from "@material-ui/core/ListItemText";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
@@ -14,9 +16,16 @@ import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
 import RelatedComponentListItem from "./RelatedComponentListItem";
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
   buttonTextLeft: {
     justifyContent: "flex-start",
+  },
+  listItem: {
+    paddingLeft: theme.spacing(1),
+    paddingTop: 0,
+  },
+  listItemText: {
+    marginLeft: theme.spacing(1),
   },
 }));
 
@@ -72,19 +81,25 @@ const ComponentList = ({
             </IconButton>
           </ListItem>
           <Collapse in={areSettingsOpen}>
-            <ListItem>
-              <ListItemText secondary="Show related projects" />
-              <ListItemSecondaryAction>
-                <Switch
-                  checked={shouldShowRelatedProjects}
-                  onChange={() =>
-                    setShouldShowRelatedProjects(!shouldShowRelatedProjects)
-                  }
-                  name="showRelatedProjects"
-                  color="primary"
+            <Box borderLeft={7} borderColor="white">
+              <ListItem className={classes.listItem}>
+                <Icon />
+                <ListItemText
+                  className={classes.listItemText}
+                  secondary="Show related projects"
                 />
-              </ListItemSecondaryAction>
-            </ListItem>
+                <ListItemSecondaryAction>
+                  <Switch
+                    checked={shouldShowRelatedProjects}
+                    onChange={() =>
+                      setShouldShowRelatedProjects(!shouldShowRelatedProjects)
+                    }
+                    name="showRelatedProjects"
+                    color="primary"
+                  />
+                </ListItemSecondaryAction>
+              </ListItem>
+            </Box>
           </Collapse>
           <Divider />
         </>
