@@ -130,8 +130,8 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $projectComponentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
-    $phaseId: Int!
-    $subphaseId: Int!
+    $phaseId: Int
+    $subphaseId: Int
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -165,8 +165,8 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $signals: [feature_signals_insert_input!]!
-    $phaseId: Int!
-    $subphaseId: Int!
+    $phaseId: Int
+    $subphaseId: Int
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }

@@ -39,7 +39,7 @@ const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
   phase: yup.object().optional(),
-  subphase: yup.object().optional(),
+  subphase: yup.object().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().when("component", {
@@ -75,10 +75,8 @@ const ComponentForm = ({
   );
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
-  const subphaseOptions = useSubphaseOptions(
-    initialFormValues?.phase?.moped_subphases
-  );
-  const { component } = watch();
+  const { component, phase } = watch();
+  const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
@@ -95,13 +93,22 @@ const ComponentForm = ({
     subcomponentOptions,
     phaseOptions,
     subphaseOptions,
-    areSignalOptionsLoaded,
+    areSignalOptionsLoaded
   );
 
   // Reset signal field when component changes so signal matches component signal type
   useEffect(() => {
     setValue("signal", null);
   }, [component, setValue]);
+
+  // Reset subphases field when component changes so signal matches component signal type
+  useEffect(() => {
+    if (!phase?.value) return;
+    if (!initialFormValues) return;
+    if (initialFormValues.phase?.phase_id !== phase?.value) {
+      setValue("subphase", null);
+    }
+  }, [phase, setValue]);
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
@@ -203,19 +210,21 @@ const ComponentForm = ({
                 options={areOptionsLoading ? [] : phaseOptions}
                 name="phase"
                 control={control}
+                required
                 autoFocus
               />
             </Grid>
-            <Grid item xs={12}>
-              <ControlledAutocomplete
-                id="subphase"
-                label="Subphase"
-                options={areOptionsLoading ? [] : subphaseOptions}
-                name="subphase"
-                autoFocus
-                control={control}
-              />
-            </Grid>
+            {subphaseOptions.length !== 0 && (
+              <Grid item xs={12}>
+                <ControlledAutocomplete
+                  id="subphase"
+                  label="Subphase"
+                  options={areOptionsLoading ? [] : subphaseOptions}
+                  name="subphase"
+                  control={control}
+                />
+              </Grid>
+            )}
             {/* <Grid item xs={12}>
               <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <DatePicker

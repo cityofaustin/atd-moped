@@ -79,8 +79,8 @@ const EditComponentModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
-        moped_phase: phase.data,
-        moped_subphase: subphase.data
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data
       };
 
       updateSignalComponent({
@@ -89,8 +89,8 @@ const EditComponentModal = ({
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
-          phaseId: phase.data.phase_id,
-          subphaseId: subphase.data.subphase_id,
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -101,8 +101,8 @@ const EditComponentModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
-        moped_phase: phase.data,
-        moped_subphase: subphase.data
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data
       };
 
       updateComponentAttributes({
@@ -110,8 +110,8 @@ const EditComponentModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
-          phaseId: phase.data.phase_id,
-          subphaseId: subphase.data.subphase_id,
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))

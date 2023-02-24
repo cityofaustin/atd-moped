@@ -83,6 +83,8 @@ export const usePhaseOptions = (data) =>
  */
 export const useSubphaseOptions = (subphases) =>
   useMemo(() => {
+    if (!subphases) return [];
+
     const options = subphases.map((subphase) => ({
       value: subphase.subphase_id,
       label: subphase.subphase_name,
@@ -178,11 +180,12 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("subphase", {
       value: initialFormValues.component?.moped_subphase?.subphase_id,
+      // if there is no matching subphase (e.g., you changed the phase), return null
       label: subphaseOptions.find(
         (option) =>
           option.value ===
           initialFormValues.component?.moped_subphase.subphase_id
-      ).label,
+      )?.label,
       data: {
         // Include component subcomponents and metadata about the internal_table needed for the form
         ...initialFormValues.component?.moped_subphase,
