@@ -87,7 +87,7 @@ export default function TheMap({
   const draftEditComponentFeatureCollection =
     useComponentFeatureCollection(draftEditComponent);
 
-  const componentFeatureCollection =
+  const clickedComponentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
   const currentZoom = mapRef?.current?.getZoom();
@@ -383,7 +383,7 @@ export default function TheMap({
         />
         <ClickedComponentSourcesAndLayers
           clickedComponent={clickedComponent}
-          componentFeatureCollection={componentFeatureCollection}
+          componentFeatureCollection={clickedComponentFeatureCollection}
           isEditingComponent={isEditingComponent}
         />
         <EditDraftComponentSourcesAndLayers

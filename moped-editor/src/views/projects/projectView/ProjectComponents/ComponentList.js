@@ -86,7 +86,6 @@ const ComponentList = ({
                 }
                 label={
                   // TODO: Make this look like list item text secondary text (Patrick's design)
-                  // TODO: Get the selected component highlighting working
                   <Typography variant="subtitle2">
                     Show related projects
                   </Typography>
