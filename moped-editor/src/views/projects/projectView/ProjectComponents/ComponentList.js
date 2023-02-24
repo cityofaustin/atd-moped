@@ -1,10 +1,10 @@
 import { makeStyles } from "@material-ui/core/styles";
-import { Typography } from "@material-ui/core";
+import { ListItemText } from "@material-ui/core";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import ListItem from "@material-ui/core/ListItem";
 import Collapse from "@material-ui/core/Collapse";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Switch from "@material-ui/core/Switch";
 import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
@@ -73,25 +73,17 @@ const ComponentList = ({
           </ListItem>
           <Collapse in={areSettingsOpen}>
             <ListItem>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={shouldShowRelatedProjects}
-                    onChange={() =>
-                      setShouldShowRelatedProjects(!shouldShowRelatedProjects)
-                    }
-                    name="showRelatedProjects"
-                    color="primary"
-                  />
-                }
-                label={
-                  // TODO: Make this look like list item text secondary text (Patrick's design)
-                  <Typography variant="subtitle2">
-                    Show related projects
-                  </Typography>
-                }
-                labelPlacement="start"
-              />
+              <ListItemText secondary="Show related projects" />
+              <ListItemSecondaryAction>
+                <Switch
+                  checked={shouldShowRelatedProjects}
+                  onChange={() =>
+                    setShouldShowRelatedProjects(!shouldShowRelatedProjects)
+                  }
+                  name="showRelatedProjects"
+                  color="primary"
+                />
+              </ListItemSecondaryAction>
             </ListItem>
           </Collapse>
           <Divider />
