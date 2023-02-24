@@ -47,7 +47,6 @@ export default function RelatedComponentListItem({
 
   const componentName = component?.moped_components?.component_name;
   const listItemPrimaryText = componentName;
-  console.log(component);
 
   return (
     <Box

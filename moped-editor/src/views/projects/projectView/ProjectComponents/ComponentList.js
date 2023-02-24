@@ -42,10 +42,16 @@ const ComponentList = ({
   onSaveEditedComponent,
 }) => {
   const classes = useStyles();
+  const isNotCreatingOrEditing =
+    !createState.isCreatingComponent && !editState.isEditingComponent;
+  const shouldShowCreateListItem =
+    createState.draftComponent && createState.isCreatingComponent;
+  const shouldShowEditListItem =
+    editState.draftEditComponent && editState.isEditingComponent;
 
   return (
     <List>
-      {!createState.isCreatingComponent && !editState.isEditingComponent && (
+      {isNotCreatingOrEditing && (
         <>
           <ListItem dense>
             <Button
@@ -90,7 +96,7 @@ const ComponentList = ({
           <Divider />
         </>
       )}
-      {createState.draftComponent && createState.isCreatingComponent && (
+      {shouldShowCreateListItem && (
         <DraftComponentListItem
           primaryText={createState.draftComponent.component_name}
           secondaryText={createState.draftComponent.component_subtype}
@@ -100,7 +106,7 @@ const ComponentList = ({
           saveButtonText="Save"
         />
       )}
-      {editState.draftEditComponent && editState.isEditingComponent && (
+      {shouldShowEditListItem && (
         <DraftComponentListItem
           primaryText={
             editState.draftEditComponent?.moped_components?.component_name
@@ -114,8 +120,7 @@ const ComponentList = ({
           saveButtonText="Save Edit"
         />
       )}
-      {!editState.isEditingComponent &&
-        !createState.isCreatingComponent &&
+      {isNotCreatingOrEditing &&
         projectComponents.map((component) => {
           const isExpanded =
             clickedComponent?.project_component_id ===
@@ -135,8 +140,7 @@ const ComponentList = ({
           );
         })}
       {/* TODO: Create parent list items component */}
-      {!editState.isEditingComponent &&
-        !createState.isCreatingComponent &&
+      {isNotCreatingOrEditing &&
         shouldShowRelatedProjects &&
         allRelatedComponents.map((component) => {
           const isExpanded =
