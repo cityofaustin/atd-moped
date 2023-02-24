@@ -139,7 +139,6 @@ const ComponentList = ({
             />
           );
         })}
-      {/* TODO: Create parent list items component */}
       {isNotCreatingOrEditing &&
         shouldShowRelatedProjects &&
         allRelatedComponents.map((component) => {
