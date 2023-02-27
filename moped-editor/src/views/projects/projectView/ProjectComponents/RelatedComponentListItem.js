@@ -30,6 +30,7 @@ export default function RelatedComponentListItem({
 
   const onListItemClick = () => {
     setClickedComponent(component);
+    setIsClickedComponentRelated(true);
   };
 
   const onZoomClick = () => {
