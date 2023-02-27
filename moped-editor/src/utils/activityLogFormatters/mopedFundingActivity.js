@@ -45,7 +45,7 @@ export const formatFundingActivity = (
             text: fundingSourceText,
             style: "boldText",
           },
-          { text: " as a new funding source.", style: null },
+          { text: " as a new funding source", style: null },
         ],
       };
     } else {
@@ -71,7 +71,7 @@ export const formatFundingActivity = (
     } else {
       return {
         changeIcon,
-        changeText: [{ text: "Deleted a funding source.", style: null }],
+        changeText: [{ text: "Deleted a funding source", style: null }],
       };
     }
   }
