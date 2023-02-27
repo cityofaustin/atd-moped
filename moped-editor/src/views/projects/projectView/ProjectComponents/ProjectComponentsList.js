@@ -49,7 +49,7 @@ const ProjectComponentsList = ({
           isExpanded={isExpanded(component)}
           onZoomClick={() => onClickZoomToComponent(component)}
           onListItemClick={() => onListItemClick(component)}
-          additionalListItems={
+          additionalCollapseListItems={
             <ListItem dense disableGutters>
               <ListItemText
                 primary={

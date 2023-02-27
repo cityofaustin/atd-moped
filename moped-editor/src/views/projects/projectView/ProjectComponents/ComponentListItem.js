@@ -12,7 +12,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import { useComponentListItemText } from "./utils/componentList";
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
@@ -29,7 +29,8 @@ export default function ComponentListItem({
   isExpanded,
   onZoomClick,
   onListItemClick,
-  additionalListItems,
+  additionalListItemText,
+  additionalCollapseListItems,
 }) {
   const classes = useStyles();
 
@@ -50,6 +51,7 @@ export default function ComponentListItem({
       >
         <PlaceOutlinedIcon color="primary" />
         <ListItemText className={classes.listItemText} {...listItemText} />
+        {additionalListItemText}
         <ListItemSecondaryAction>
           <IconButton color="primary" onClick={onZoomClick}>
             <ZoomInIcon />
@@ -63,7 +65,7 @@ export default function ComponentListItem({
               <ListItemText secondary={component.description} />
             </ListItem>
           )}
-          {additionalListItems}
+          {additionalCollapseListItems}
         </List>
       </Collapse>
       <Divider />
