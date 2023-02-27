@@ -350,6 +350,8 @@ export default function TheMap({
           draftEditComponent={draftEditComponent}
         />
         <RelatedProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
           featureCollection={allRelatedComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
           linesId={"related-project-lines"}

@@ -1,4 +1,3 @@
-import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
 import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
