@@ -22,6 +22,7 @@ const RelatedComponentsList = ({
         component.project_component_id;
       return (
         <RelatedComponentListItem
+          key={component.project_component_id}
           component={component}
           isExpanded={isExpanded}
           setClickedComponent={setClickedComponent}
