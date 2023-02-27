@@ -48,9 +48,7 @@ export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
   projectComponents,
-  parentComponents,
-  siblingComponents,
-  childComponents,
+  allRelatedComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -64,7 +62,6 @@ export default function TheMap({
   setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
-  featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
   errorMessageDispatch,
@@ -76,12 +73,8 @@ export default function TheMap({
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(projectComponents);
-  const parentProjectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(parentComponents);
-  const siblingProjectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(siblingComponents);
-  const childProjectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(childComponents);
+  const allRelatedComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(allRelatedComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
@@ -357,24 +350,10 @@ export default function TheMap({
           draftEditComponent={draftEditComponent}
         />
         <RelatedProjectSourcesAndLayers
-          featureCollection={parentProjectComponentsFeatureCollection}
+          featureCollection={allRelatedComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
-          linesId={"parent-project-lines"}
-          pointsId={"parent-project-points"}
-          clickedComponent={clickedComponent}
-        />
-        <RelatedProjectSourcesAndLayers
-          featureCollection={siblingProjectComponentsFeatureCollection}
-          shouldShowRelatedProjects={shouldShowRelatedProjects}
-          linesId={"sibling-project-lines"}
-          pointsId={"sibling-project-points"}
-          clickedComponent={clickedComponent}
-        />
-        <RelatedProjectSourcesAndLayers
-          featureCollection={childProjectComponentsFeatureCollection}
-          shouldShowRelatedProjects={shouldShowRelatedProjects}
-          linesId={"child-project-lines"}
-          pointsId={"child-project-points"}
+          linesId={"related-project-lines"}
+          pointsId={"related-project-points"}
           clickedComponent={clickedComponent}
         />
         <DraftComponentSourcesAndLayers

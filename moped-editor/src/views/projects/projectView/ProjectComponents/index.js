@@ -15,10 +15,7 @@ import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import {
-  useComponentFeatureCollectionsMap,
-  getAllComponentFeatures,
-} from "./utils/makeFeatureCollections";
+import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
@@ -126,9 +123,6 @@ export default function MapView({
     childComponents,
     allRelatedComponents,
   } = useProjectComponents(data);
-
-  const featureCollectionsByComponentId =
-    useComponentFeatureCollectionsMap(data);
 
   const {
     onStartCreatingComponent,
@@ -247,6 +241,7 @@ export default function MapView({
               parentComponents={parentComponents}
               siblingComponents={siblingComponents}
               childComponents={childComponents}
+              allRelatedComponents={allRelatedComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
               draftEditComponent={editState.draftEditComponent}
@@ -261,7 +256,6 @@ export default function MapView({
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
-              featureCollectionsByComponentId={featureCollectionsByComponentId}
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}

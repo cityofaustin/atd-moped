@@ -7,15 +7,11 @@ import { useFeatureTypes } from "./utils/map";
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} featureCollection - GeoJSON feature collection with all project features
  * @param {Boolean} shouldShowRelatedProjects - should we show related projects
- * @param {String} linesId - id of layer to render lines also used to determine styles to apply
- * * @param {String} pointsId - id of layer to render points also used to determine styles to apply
  * @returns JSX.Element
  */
 const RelatedProjectSourcesAndLayers = ({
   featureCollection,
   shouldShowRelatedProjects,
-  linesId,
-  pointsId,
   clickedComponent,
 }) => {
   const projectLines = useFeatureTypes(featureCollection, "line");
@@ -28,20 +24,25 @@ const RelatedProjectSourcesAndLayers = ({
 
   return (
     <>
-      <Source id={linesId} type="geojson" data={projectLines} promoteId="id">
+      <Source
+        id="related-project-lines"
+        type="geojson"
+        data={projectLines}
+        promoteId="id"
+      >
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES[linesId].layerProps,
+            ...MAP_STYLES["related-project-lines"].layerProps,
             layout: {
-              ...MAP_STYLES[linesId].layerProps.layout,
+              ...MAP_STYLES["related-project-lines"].layerProps.layout,
               visibility: shouldShowNonMutedFeatures ? "visible" : "none",
             },
           }}
         />
         <Layer
           beforeId="street-labels"
-          id={`${linesId}-muted`}
+          id="related-lines-muted"
           {...{
             ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
@@ -52,20 +53,25 @@ const RelatedProjectSourcesAndLayers = ({
         />
       </Source>
 
-      <Source id={pointsId} type="geojson" data={projectPoints} promoteId="id">
+      <Source
+        id="related-project-points"
+        type="geojson"
+        data={projectPoints}
+        promoteId="id"
+      >
         <Layer
           beforeId="street-labels"
           {...{
-            ...MAP_STYLES[pointsId].layerProps,
+            ...MAP_STYLES["related-project-points"].layerProps,
             layout: {
-              ...MAP_STYLES[pointsId].layerProps.layout,
+              ...MAP_STYLES["related-project-points"].layerProps.layout,
               visibility: shouldShowNonMutedFeatures ? "visible" : "none",
             },
           }}
         />
         <Layer
           beforeId="street-labels"
-          id={`${pointsId}-muted`}
+          id="related-points-muted"
           {...{
             ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {

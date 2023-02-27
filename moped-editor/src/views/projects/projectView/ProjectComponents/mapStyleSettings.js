@@ -16,8 +16,6 @@ export const COLORS = {
   white: "#fff",
   orange: "#ffb300",
   lightOrange: "#ffc94a",
-  greenDark: "#00E07B",
-  greenLight: "#33FFA3",
 };
 
 export const pointsCircleRadiusStops = {
@@ -77,26 +75,24 @@ export const MAP_STYLES = {
       },
     },
   },
-  "parent-project-points": {
+  "related-project-points": {
     isInteractive: true,
     layerProps: {
-      id: "parent-project-points",
       _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.pinkBright,
+        "circle-stroke-color": COLORS.bluePrimary,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.pinkLight,
+        "circle-color": COLORS.blueLight,
         "circle-opacity": 0.9,
       },
     },
   },
-  "parent-project-lines": {
+  "related-project-lines": {
     isInteractive: true,
     layerProps: {
-      id: "parent-project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
@@ -105,79 +101,7 @@ export const MAP_STYLES = {
           "case",
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
-          COLORS.pinkBright,
-        ],
-      },
-      layout: {
-        "line-cap": "round",
-      },
-    },
-  },
-  "sibling-project-points": {
-    isInteractive: true,
-    layerProps: {
-      id: "sibling-project-points",
-      _featureIdProp: "INTERSECTIONID",
-      type: "circle",
-      paint: {
-        "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.orange,
-        "circle-stroke-width": 2,
-        "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.lightOrange,
-        "circle-opacity": 0.9,
-      },
-    },
-  },
-  "sibling-project-lines": {
-    isInteractive: true,
-    layerProps: {
-      id: "sibling-project-lines",
-      _featureIdProp: "CTN_SEGMENT_ID",
-      type: "line",
-      paint: {
-        "line-width": lineWidthStops,
-        "line-color": [
-          "case",
-          ["boolean", ["feature-state", "hover"], false],
-          COLORS.pinkDark,
-          COLORS.orange,
-        ],
-      },
-      layout: {
-        "line-cap": "round",
-      },
-    },
-  },
-  "child-project-points": {
-    isInteractive: true,
-    layerProps: {
-      id: "child-project-points",
-      _featureIdProp: "INTERSECTIONID",
-      type: "circle",
-      paint: {
-        "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.greenDark,
-        "circle-stroke-width": 2,
-        "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.greenLight,
-        "circle-opacity": 0.9,
-      },
-    },
-  },
-  "child-project-lines": {
-    isInteractive: true,
-    layerProps: {
-      id: "child-project-lines",
-      _featureIdProp: "CTN_SEGMENT_ID",
-      type: "line",
-      paint: {
-        "line-width": lineWidthStops,
-        "line-color": [
-          "case",
-          ["boolean", ["feature-state", "hover"], false],
-          COLORS.pinkDark,
-          COLORS.greenDark,
+          COLORS.bluePrimary,
         ],
       },
       layout: {
@@ -188,7 +112,6 @@ export const MAP_STYLES = {
   "project-points-muted": {
     isInteractive: false,
     layerProps: {
-      // id: "project-points-muted",
       _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
@@ -204,7 +127,6 @@ export const MAP_STYLES = {
   "project-lines-muted": {
     isInteractive: false,
     layerProps: {
-      // id: "project-lines-muted",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
