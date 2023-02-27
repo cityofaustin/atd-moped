@@ -23,6 +23,7 @@ import { useDeleteComponent } from "./utils/useDeleteComponent";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
+import NewComponentToolbar from "./NewComponentToolbar";
 
 const drawerWidth = 350;
 
@@ -229,7 +230,17 @@ export default function MapView({
               onSaveDraftComponent={onSaveDraftComponent}
               onSaveEditedComponent={onSaveEditedComponent}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
-            />
+            >
+              <NewComponentToolbar
+                createState={createState}
+                editState={editState}
+                shouldShowRelatedProjects={shouldShowRelatedProjects}
+                toggleShowRelatedProjects={toggleShowRelatedProjects}
+                onStartCreatingComponent={onStartCreatingComponent}
+                areSettingsOpen={areSettingsOpen}
+                setAreSettingsOpen={setAreSettingsOpen}
+              />
+            </ComponentList>
           </div>
         </Drawer>
         <main className={classes.content}>
