@@ -7,6 +7,7 @@ import { useFeatureTypes } from "./utils/map";
  * All layers are set to show below basemap street labels using beforeId = "street-labels"
  * @param {Object} featureCollection - GeoJSON feature collection with all project features
  * @param {Boolean} shouldShowRelatedProjects - should we show related projects
+ * @param {Object} clickedComponent - Details of the component that was clicked
  * @returns JSX.Element
  */
 const RelatedProjectSourcesAndLayers = ({
