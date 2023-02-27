@@ -33,6 +33,7 @@ const RelatedProjectSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
+          id="related-project-lines"
           {...{
             ...MAP_STYLES["related-project-lines"].layerProps,
             layout: {
@@ -62,6 +63,7 @@ const RelatedProjectSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
+          id="related-project-points"
           {...{
             ...MAP_STYLES["related-project-points"].layerProps,
             layout: {
