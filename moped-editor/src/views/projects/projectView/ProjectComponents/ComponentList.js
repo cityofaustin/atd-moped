@@ -1,29 +1,16 @@
 import List from "@material-ui/core/List";
-import ComponentListItem from "./ComponentListItem";
 import DraftComponentListItem from "./DraftComponentListItem";
-import RelatedComponentListItem from "./RelatedComponentListItem";
 
 const ComponentList = ({
   createState,
   editState,
-  editDispatch,
-  shouldShowRelatedProjects,
-  clickedComponent,
-  setClickedComponent,
   onCancelComponentCreate,
   onCancelComponentMapEdit,
-  onClickZoomToComponent,
-  allRelatedComponents,
-  projectComponents,
-  setIsDeletingComponent,
   doesDraftEditComponentHaveFeatures,
   onSaveDraftComponent,
   onSaveEditedComponent,
-  setIsClickedComponentRelated,
   children,
 }) => {
-  const isNotCreatingOrEditing =
-    !createState.isCreatingComponent && !editState.isEditingComponent;
   const shouldShowCreateListItem =
     createState.draftComponent && createState.isCreatingComponent;
   const shouldShowEditListItem =
@@ -56,46 +43,6 @@ const ComponentList = ({
           saveButtonText="Save Edit"
         />
       )}
-      {isNotCreatingOrEditing &&
-        projectComponents.map((component) => {
-          const isExpanded =
-            clickedComponent?.project_component_id ===
-            component.project_component_id;
-          return (
-            <ComponentListItem
-              key={component.project_component_id}
-              component={component}
-              isExpanded={isExpanded}
-              setClickedComponent={setClickedComponent}
-              setIsDeletingComponent={setIsDeletingComponent}
-              editDispatch={editDispatch}
-              onClickZoomToComponent={onClickZoomToComponent}
-              isEditingComponent={editState.isEditingComponent}
-              isCreatingComponent={createState.isCreatingComponent}
-            />
-          );
-        })}
-      {isNotCreatingOrEditing &&
-        shouldShowRelatedProjects &&
-        allRelatedComponents.map((component) => {
-          const isExpanded =
-            clickedComponent?.project_component_id ===
-            component.project_component_id;
-          return (
-            <RelatedComponentListItem
-              key={component.project_component_id}
-              component={component}
-              isExpanded={isExpanded}
-              setClickedComponent={setClickedComponent}
-              setIsDeletingComponent={setIsDeletingComponent}
-              editDispatch={editDispatch}
-              onClickZoomToComponent={onClickZoomToComponent}
-              isEditingComponent={editState.isEditingComponent}
-              isCreatingComponent={createState.isCreatingComponent}
-              setIsClickedComponentRelated={setIsClickedComponentRelated}
-            />
-          );
-        })}
     </List>
   );
 };
