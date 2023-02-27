@@ -6,7 +6,7 @@ import { Dialog } from "@material-ui/core";
 import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
-import ComponentList from "./ComponentList";
+import List from "@material-ui/core/List";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
@@ -26,6 +26,7 @@ import { useProjectComponents } from "./utils/useProjectComponents";
 import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
+import DraftComponentList from "./DraftComponentList";
 
 const drawerWidth = 350;
 
@@ -209,30 +210,7 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <ComponentList
-              createState={createState}
-              editState={editState}
-              editDispatch={editDispatch}
-              shouldShowRelatedProjects={shouldShowRelatedProjects}
-              toggleShowRelatedProjects={toggleShowRelatedProjects}
-              onStartCreatingComponent={onStartCreatingComponent}
-              areSettingsOpen={areSettingsOpen}
-              setAreSettingsOpen={setAreSettingsOpen}
-              clickedComponent={clickedComponent}
-              setClickedComponent={setClickedComponent}
-              onCancelComponentCreate={onCancelComponentCreate}
-              onCancelComponentMapEdit={onCancelComponentMapEdit}
-              onClickZoomToComponent={onClickZoomToComponent}
-              allRelatedComponents={allRelatedComponents}
-              projectComponents={projectComponents}
-              setIsDeletingComponent={setIsDeletingComponent}
-              doesDraftEditComponentHaveFeatures={
-                doesDraftEditComponentHaveFeatures
-              }
-              onSaveDraftComponent={onSaveDraftComponent}
-              onSaveEditedComponent={onSaveEditedComponent}
-              setIsClickedComponentRelated={setIsClickedComponentRelated}
-            >
+            <List>
               <NewComponentToolbar
                 createState={createState}
                 editState={editState}
@@ -241,6 +219,17 @@ export default function MapView({
                 onStartCreatingComponent={onStartCreatingComponent}
                 areSettingsOpen={areSettingsOpen}
                 setAreSettingsOpen={setAreSettingsOpen}
+              />
+              <DraftComponentList
+                createState={createState}
+                editState={editState}
+                onCancelComponentCreate={onCancelComponentCreate}
+                onCancelComponentMapEdit={onCancelComponentMapEdit}
+                doesDraftEditComponentHaveFeatures={
+                  doesDraftEditComponentHaveFeatures
+                }
+                onSaveDraftComponent={onSaveDraftComponent}
+                onSaveEditedComponent={onSaveEditedComponent}
               />
               <ProjectComponentsList
                 createState={createState}
@@ -262,7 +251,7 @@ export default function MapView({
                 allRelatedComponents={allRelatedComponents}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
               />
-            </ComponentList>
+            </List>
           </div>
         </Drawer>
         <main className={classes.content}>

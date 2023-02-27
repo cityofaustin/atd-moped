@@ -1,7 +1,6 @@
-import List from "@material-ui/core/List";
 import DraftComponentListItem from "./DraftComponentListItem";
 
-const ComponentList = ({
+const DraftComponentList = ({
   createState,
   editState,
   onCancelComponentCreate,
@@ -9,7 +8,6 @@ const ComponentList = ({
   doesDraftEditComponentHaveFeatures,
   onSaveDraftComponent,
   onSaveEditedComponent,
-  children,
 }) => {
   const shouldShowCreateListItem =
     createState.draftComponent && createState.isCreatingComponent;
@@ -17,8 +15,7 @@ const ComponentList = ({
     editState.draftEditComponent && editState.isEditingComponent;
 
   return (
-    <List>
-      {children}
+    <>
       {shouldShowCreateListItem && (
         <DraftComponentListItem
           primaryText={createState.draftComponent.component_name}
@@ -43,8 +40,8 @@ const ComponentList = ({
           saveButtonText="Save Edit"
         />
       )}
-    </List>
+    </>
   );
 };
 
-export default ComponentList;
+export default DraftComponentList;
