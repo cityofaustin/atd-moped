@@ -24,11 +24,17 @@ export default function RelatedComponentListItem({
   isExpanded,
   setClickedComponent,
   onClickZoomToComponent,
+  setIsClickedComponentRelated,
 }) {
   const classes = useStyles();
 
   const onListItemClick = () => {
     setClickedComponent(component);
+  };
+
+  const onZoomClick = () => {
+    onClickZoomToComponent(component);
+    setIsClickedComponentRelated(true);
   };
 
   const componentName = component?.moped_components?.component_name;
@@ -62,10 +68,7 @@ export default function RelatedComponentListItem({
           className={classes.listItemText}
         />
         <ListItemSecondaryAction>
-          <IconButton
-            color="primary"
-            onClick={() => onClickZoomToComponent(component)}
-          >
+          <IconButton color="primary" onClick={onZoomClick}>
             <ZoomInIcon />
           </IconButton>
         </ListItemSecondaryAction>

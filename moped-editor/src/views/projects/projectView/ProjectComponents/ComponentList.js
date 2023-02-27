@@ -34,7 +34,7 @@ const ComponentList = ({
   editState,
   editDispatch,
   shouldShowRelatedProjects,
-  setShouldShowRelatedProjects,
+  toggleShowRelatedProjects,
   onStartCreatingComponent,
   areSettingsOpen,
   setAreSettingsOpen,
@@ -49,6 +49,7 @@ const ComponentList = ({
   doesDraftEditComponentHaveFeatures,
   onSaveDraftComponent,
   onSaveEditedComponent,
+  setIsClickedComponentRelated,
 }) => {
   const classes = useStyles();
   const isNotCreatingOrEditing =
@@ -91,9 +92,7 @@ const ComponentList = ({
                 <ListItemSecondaryAction>
                   <Switch
                     checked={shouldShowRelatedProjects}
-                    onChange={() =>
-                      setShouldShowRelatedProjects(!shouldShowRelatedProjects)
-                    }
+                    onChange={toggleShowRelatedProjects}
                     name="showRelatedProjects"
                     color="primary"
                   />
@@ -164,6 +163,7 @@ const ComponentList = ({
               onClickZoomToComponent={onClickZoomToComponent}
               isEditingComponent={editState.isEditingComponent}
               isCreatingComponent={createState.isCreatingComponent}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
             />
           );
         })}

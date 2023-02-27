@@ -89,6 +89,24 @@ export default function MapView({
   /* tracks the drawing state of the map */
   const [isDrawing, setIsDrawing] = useState(false);
 
+  /* track settings state and whether we show parent, sibling, and child projects */
+  const [areSettingsOpen, setAreSettingsOpen] = useState(true);
+  const [shouldShowRelatedProjects, setShouldShowRelatedProjects] =
+    useState(true);
+  const [isClickedComponentRelated, setIsClickedComponentRelated] =
+    useState(false);
+
+  const toggleShowRelatedProjects = () => {
+    setShouldShowRelatedProjects(!shouldShowRelatedProjects);
+
+    // If the clicked component is a related component, we need to clear clicked component state
+    // so it is no longer highlighted on the map.
+    if (isClickedComponentRelated) {
+      setClickedComponent(null);
+      setIsClickedComponentRelated(false);
+    }
+  };
+
   const {
     data,
     refetch: refetchProjectComponents,
@@ -174,10 +192,6 @@ export default function MapView({
     );
   };
 
-  const [areSettingsOpen, setAreSettingsOpen] = useState(true);
-  const [shouldShowRelatedProjects, setShouldShowRelatedProjects] =
-    useState(true);
-
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -203,7 +217,7 @@ export default function MapView({
               editState={editState}
               editDispatch={editDispatch}
               shouldShowRelatedProjects={shouldShowRelatedProjects}
-              setShouldShowRelatedProjects={setShouldShowRelatedProjects}
+              toggleShowRelatedProjects={toggleShowRelatedProjects}
               onStartCreatingComponent={onStartCreatingComponent}
               areSettingsOpen={areSettingsOpen}
               setAreSettingsOpen={setAreSettingsOpen}
@@ -220,6 +234,7 @@ export default function MapView({
               }
               onSaveDraftComponent={onSaveDraftComponent}
               onSaveEditedComponent={onSaveEditedComponent}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
             />
           </div>
         </Drawer>
