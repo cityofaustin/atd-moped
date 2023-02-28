@@ -39,10 +39,10 @@ mutation UpdateActivityUserId($activity_id: uuid!, $updated_by_user_id: Int!) {
 """
 
 prod_cognito_ids = {
-    "5bef10e5-66c2-4c0b-aee2-cc28c90e3d31": 80, # Tom G
-    "cad0d3cc-07ab-479f-9f5f-fe7a8e950f0e": 57, # Mateo
-    "52871f6b-ebf8-42ed-9bf7-87d917f0bc86": 187, # Rebecca B
-    "078a2136-4930-45a8-9f70-ec4cd04547c0": 5, # John C
+    "5bef10e5-66c2-4c0b-aee2-cc28c90e3d31": 80,  # Tom G
+    "cad0d3cc-07ab-479f-9f5f-fe7a8e950f0e": 57,  # Mateo
+    "52871f6b-ebf8-42ed-9bf7-87d917f0bc86": 187,  # Rebecca B
+    "078a2136-4930-45a8-9f70-ec4cd04547c0": 5,  # John C
 }
 
 
@@ -86,9 +86,9 @@ def make_user_dict(users):
 
 
 def main(env):
-    activities = make_hasura_request(query=ACTIVITY_LOG_TODO_QUERY, env=env, variables=None)[
-        "moped_activity_log"
-    ]
+    activities = make_hasura_request(
+        query=ACTIVITY_LOG_TODO_QUERY, env=env, variables=None
+    )["moped_activity_log"]
     users = make_hasura_request(query=MOPED_USERS_QUERY, env=env, variables=None)[
         "moped_users"
     ]
@@ -107,16 +107,25 @@ def main(env):
             ready.append({"activity_id": activity_id, "updated_by_user_id": user_id})
         except KeyError:
             # if the cognito id is not in our pool, and we are not in prod, add to unable_to_process
-            if env != 'prod':
-                unable_to_process.append({"activity_id": activity_id, "cognito_id": updated_by_cognito_id})
+            if env != "prod":
+                unable_to_process.append(
+                    {"activity_id": activity_id, "cognito_id": updated_by_cognito_id}
+                )
             else:
                 # if we are in prod, check to see if cognito ID is in known list of deleted users
                 try:
                     user_id = prod_cognito_ids[updated_by_cognito_id]
-                    ready.append({"activity_id": activity_id, "updated_by_user_id": user_id})
+                    ready.append(
+                        {"activity_id": activity_id, "updated_by_user_id": user_id}
+                    )
                 except KeyError:
-                    print(f'cognito ID not found {updated_by_cognito_id}')
-                    unable_to_process.append({"activity_id": activity_id, "cognito_id": updated_by_cognito_id})
+                    print(f"cognito ID not found {updated_by_cognito_id}")
+                    unable_to_process.append(
+                        {
+                            "activity_id": activity_id,
+                            "cognito_id": updated_by_cognito_id,
+                        }
+                    )
 
     counts = {
         "updated": 0,
@@ -129,7 +138,10 @@ def main(env):
     for entry in ready:
         make_hasura_request(
             query=UPDATE_ACTIVITY_USER_MUTATION,
-            variables={"activity_id": entry["activity_id"], "updated_by_user_id": entry["updated_by_user_id"]},
+            variables={
+                "activity_id": entry["activity_id"],
+                "updated_by_user_id": entry["updated_by_user_id"],
+            },
             env=env,
         )
         counts["updated"] += 1
