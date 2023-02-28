@@ -36,8 +36,14 @@ mutation UpdateActivityUserId($activity_id: uuid!, $updated_by_user_id: Int!) {
     updated_by_user_id
   }
 }
-
 """
+
+prod_cognito_ids = {
+    "5bef10e5-66c2-4c0b-aee2-cc28c90e3d31": 80, # Tom G
+    "cad0d3cc-07ab-479f-9f5f-fe7a8e950f0e": 57, # Mateo
+    "52871f6b-ebf8-42ed-9bf7-87d917f0bc86": 187, # Rebecca B
+    "078a2136-4930-45a8-9f70-ec4cd04547c0": 5, # John C
+}
 
 
 def make_hasura_request(*, query, variables, env):
@@ -100,11 +106,17 @@ def main(env):
             user_id = cognito_lookup[updated_by_cognito_id]
             ready.append({"activity_id": activity_id, "updated_by_user_id": user_id})
         except KeyError:
-            unable_to_process.append({"activity_id": activity_id, "cognito_id": updated_by_cognito_id})
-            if updated_by_cognito_id not in missing_ids:
-                missing_ids.append(updated_by_cognito_id)
-
-    print(unable_to_process)
+            # if the cognito id is not in our pool, and we are not in prod, add to unable_to_process
+            if env != 'prod':
+                unable_to_process.append({"activity_id": activity_id, "cognito_id": updated_by_cognito_id})
+            else:
+                # if we are in prod, check to see if cognito ID is in known list of deleted users
+                try:
+                    user_id = prod_cognito_ids[updated_by_cognito_id]
+                    ready.append({"activity_id": activity_id, "updated_by_user_id": user_id})
+                except KeyError:
+                    print(f'cognito ID not found {updated_by_cognito_id}')
+                    unable_to_process.append({"activity_id": activity_id, "cognito_id": updated_by_cognito_id})
 
     counts = {
         "updated": 0,
@@ -124,10 +136,10 @@ def main(env):
         counts["todo"] -= 1
         print(counts)
 
-    # print("Writing inoperable projects to 'log.json'")
+    print("Writing inoperable projects to 'log.json'")
 
-    # with open("log.json", "w") as fout:
-    #     json.dump(unable_to_process, fout, indent=2)
+    with open("log.json", "w") as fout:
+        json.dump(unable_to_process, fout, indent=2)
 
 
 if __name__ == "__main__":

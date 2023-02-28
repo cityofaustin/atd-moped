@@ -461,13 +461,6 @@ export const PROJECT_ACTIVITY_LOG = gql`
       description
       operation_type
       record_data
-      moped_user {
-        first_name
-        last_name
-        picture
-        email
-        user_id
-      }
       updated_by_user {
         first_name
         last_name
