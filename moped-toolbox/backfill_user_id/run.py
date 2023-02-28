@@ -1,4 +1,6 @@
-"""Updates the `added_by` column of moped_project records based on the `moped_activity_log`.
+"""
+Updates activity log entries that are missing user IDs.
+Checks the cognito ID and updates with corresponding user ID.
 This script can safely be run repeatedly as needed."""
 
 import argparse
@@ -77,6 +79,9 @@ def make_hasura_request(*, query, variables, env):
 
 
 def make_user_dict(users):
+    """
+    Makes a dictionary of users, key is cognito ID, value is user ID
+    """
     user_dict = {}
     for u in users:
         if u["cognito_user_id"] is None:
@@ -97,7 +102,6 @@ def main(env):
 
     ready = []
     unable_to_process = []
-    missing_ids = []
 
     for activity in activities:
         activity_id = activity["activity_id"]
