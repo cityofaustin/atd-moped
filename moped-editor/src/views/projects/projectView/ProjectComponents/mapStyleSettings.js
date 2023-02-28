@@ -78,6 +78,7 @@ export const MAP_STYLES = {
   "related-project-points": {
     isInteractive: true,
     layerProps: {
+      id: "related-project-points",
       _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
@@ -93,6 +94,7 @@ export const MAP_STYLES = {
   "related-project-lines": {
     isInteractive: true,
     layerProps: {
+      id: "related-project-lines",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
@@ -112,6 +114,7 @@ export const MAP_STYLES = {
   "project-points-muted": {
     isInteractive: false,
     layerProps: {
+      id: "project-points-muted",
       _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
@@ -127,6 +130,7 @@ export const MAP_STYLES = {
   "project-lines-muted": {
     isInteractive: false,
     layerProps: {
+      id: "project-lines-muted",
       _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {

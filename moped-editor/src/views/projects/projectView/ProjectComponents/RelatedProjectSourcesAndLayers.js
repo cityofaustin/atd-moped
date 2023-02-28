@@ -39,7 +39,6 @@ const RelatedProjectSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          id="related-project-lines"
           {...{
             ...MAP_STYLES["related-project-lines"].layerProps,
             layout: {
@@ -50,7 +49,6 @@ const RelatedProjectSourcesAndLayers = ({
         />
         <Layer
           beforeId="street-labels"
-          id="related-lines-muted"
           {...{
             ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
@@ -58,6 +56,8 @@ const RelatedProjectSourcesAndLayers = ({
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
+          // Override the id set in the config above so we have distinct muted layers
+          id="related-lines-muted"
         />
       </Source>
 
@@ -69,7 +69,6 @@ const RelatedProjectSourcesAndLayers = ({
       >
         <Layer
           beforeId="street-labels"
-          id="related-project-points"
           {...{
             ...MAP_STYLES["related-project-points"].layerProps,
             layout: {
@@ -80,13 +79,14 @@ const RelatedProjectSourcesAndLayers = ({
         />
         <Layer
           beforeId="street-labels"
-          id="related-points-muted"
           {...{
             ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {
               visibility: shouldShowMutedFeatures ? "visible" : "none",
             },
           }}
+          // Override the id set in layerProps config above so we have distinct muted layers
+          id="related-points-muted"
         />
       </Source>
     </>
