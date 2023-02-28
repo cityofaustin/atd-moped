@@ -12,7 +12,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import { useComponentListItemText } from "./utils/componentList";
 
-export const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
@@ -34,7 +34,7 @@ export default function ComponentListItem({
 }) {
   const classes = useStyles();
 
-  const listItemText = useComponentListItemText(component);
+  const { primary, secondary } = useComponentListItemText(component);
 
   return (
     <Box
@@ -50,8 +50,16 @@ export default function ComponentListItem({
         className={classes.listItem}
       >
         <PlaceOutlinedIcon color="primary" />
-        <ListItemText className={classes.listItemText} {...listItemText} />
-        {additionalListItemText}
+        <ListItemText
+          className={classes.listItemText}
+          primary={primary}
+          secondary={
+            <div>
+              <div>{secondary}</div>
+              <div>{additionalListItemText}</div>
+            </div>
+          }
+        />
         <ListItemSecondaryAction>
           <IconButton color="primary" onClick={onZoomClick}>
             <ZoomInIcon />

@@ -1,8 +1,5 @@
 import ComponentListItem from "./ComponentListItem";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import Link from "@material-ui/core/Link";
-import { useStyles } from "./ComponentListItem";
 
 const RelatedComponentsList = ({
   createState,
@@ -14,8 +11,6 @@ const RelatedComponentsList = ({
   allRelatedComponents,
   setIsClickedComponentRelated,
 }) => {
-  const classes = useStyles();
-
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
@@ -44,18 +39,13 @@ const RelatedComponentsList = ({
           onZoomClick={() => onZoomClick(component)}
           onListItemClick={() => onListItemClick(component)}
           additionalListItemText={
-            <ListItemText
-              secondary={
-                <>
-                  Part of project{" "}
-                  <Link
-                    href={`/moped/projects/${component.project_id}?tab=map`}
-                    target="blank"
-                  >{`#${component.project_id}`}</Link>
-                </>
-              }
-              className={classes.listItemText}
-            />
+            <>
+              Part of project{" "}
+              <Link
+                href={`/moped/projects/${component.project_id}?tab=map`}
+                target="blank"
+              >{`#${component.project_id}`}</Link>
+            </>
           }
         />
       );
