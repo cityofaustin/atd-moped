@@ -52,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
   },
-  buttonTextLeft: {
-    justifyContent: "flex-start",
-  },
 }));
 
 /* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */

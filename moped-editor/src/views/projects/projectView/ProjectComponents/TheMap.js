@@ -354,8 +354,6 @@ export default function TheMap({
           isEditingComponent={isEditingComponent}
           featureCollection={allRelatedComponentsFeatureCollection}
           shouldShowRelatedProjects={shouldShowRelatedProjects}
-          linesId={"related-project-lines"}
-          pointsId={"related-project-points"}
           clickedComponent={clickedComponent}
         />
         <DraftComponentSourcesAndLayers
