@@ -47,6 +47,7 @@ export const GET_PROJECT_COMPONENTS = gql`
       description
       phase_id
       subphase_id
+      phase_end
       moped_components {
         component_name
         component_subtype
@@ -132,6 +133,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $phaseId: Int
     $subphaseId: Int
+    $phaseEnd: timestamptz
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -141,7 +143,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId }
+      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId, phase_end: $phaseEnd }
     ) {
       project_component_id
     }
@@ -167,6 +169,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $signals: [feature_signals_insert_input!]!
     $phaseId: Int
     $subphaseId: Int
+    $phaseEnd: timestamptz
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -182,7 +185,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId }
+      _set: { description: $description, phase_id: $phaseId, subphase_id: $subphaseId, phase_end: $phaseEnd }
     ) {
       project_component_id
     }

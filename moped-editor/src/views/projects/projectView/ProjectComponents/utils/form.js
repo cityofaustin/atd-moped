@@ -1,5 +1,7 @@
 import { useMemo, useEffect } from "react";
 import { Autocomplete } from "@material-ui/lab";
+// import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+// import DateFnsUtils from "@date-io/date-fns";
 import { Controller } from "react-hook-form";
 import { Icon, makeStyles, TextField } from "@material-ui/core";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
@@ -198,6 +200,13 @@ export const useInitialValuesOnAttributesEdit = (
     if (!initialFormValues) return;
 
     setValue("description", initialFormValues.description);
+  }, [initialFormValues, setValue]);
+
+  // Set the datepicker value
+  useEffect(() => {
+    if (!initialFormValues) return;
+
+    setValue("phaseEnd", initialFormValues?.component?.phase_end);
   }, [initialFormValues, setValue]);
 };
 

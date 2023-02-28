@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-// import DateFnsUtils from "@date-io/date-fns";
 import {
   Button,
   Grid,
@@ -11,7 +10,8 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@material-ui/core";
-// import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
 import { CheckCircle } from "@material-ui/icons";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -31,6 +31,7 @@ const defaultFormValues = {
   subcomponents: [],
   phase: null,
   subphase: null,
+  phaseEnd: null,
   description: "",
   signal: null,
 };
@@ -38,8 +39,9 @@ const defaultFormValues = {
 const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
-  phase: yup.object().optional(),
+  phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
+  phaseEnd: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().when("component", {
@@ -225,21 +227,27 @@ const ComponentForm = ({
                 />
               </Grid>
             )}
-            {/* <Grid item xs={12}>
-              <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <DatePicker
-                  clearable={true}
-                  emptyLabel="mm/dd/yyyy"
-                  format="MM/dd/yyyy"
-                  variant="outlined"
-                  label="Phase end"
-                  value="2023-01-01"
-                  // value={props.value ? parseISO(props.value) : null}
-                  // onChange={handleDateChange}
-                  // InputProps={{ style: { minWidth: "100px" } }}
-                />
-              </MuiPickersUtilsProvider>
-            </Grid> */}
+            <Grid item xs={12}>
+              <Controller
+                id="phase-end"
+                name="phaseEnd"
+                control={control}
+                render={({ onChange, value, ref }) => (
+                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DatePicker
+                      inputRef={ref}
+                      value={value}
+                      onChange={onChange}
+                      clearable={true}
+                      emptyLabel="mm/dd/yyyy"
+                      format="MM/dd/yyyy"
+                      variant="outlined"
+                      label={"Phase end"}
+                    />
+                  </MuiPickersUtilsProvider>
+                )}
+              />
+            </Grid>
           </>
         )}
       </Grid>
