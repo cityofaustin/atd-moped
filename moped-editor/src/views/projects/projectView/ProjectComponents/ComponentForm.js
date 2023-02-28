@@ -31,7 +31,7 @@ const defaultFormValues = {
   subcomponents: [],
   phase: null,
   subphase: null,
-  phaseEnd: null,
+  completionDate: null,
   description: "",
   signal: null,
 };
@@ -41,7 +41,7 @@ const validationSchema = yup.object().shape({
   subcomponents: yup.array().optional(),
   phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
-  phaseEnd: yup.date().nullable().optional(),
+  completionDate: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().when("component", {
@@ -229,8 +229,8 @@ const ComponentForm = ({
             )}
             <Grid item xs={12}>
               <Controller
-                id="phase-end"
-                name="phaseEnd"
+                id="completion-date"
+                name="completionDate"
                 control={control}
                 render={({ onChange, value, ref }) => (
                   <MuiPickersUtilsProvider utils={DateFnsUtils}>
@@ -242,7 +242,7 @@ const ComponentForm = ({
                       emptyLabel="mm/dd/yyyy"
                       format="MM/dd/yyyy"
                       variant="outlined"
-                      label={"Phase end"}
+                      label={"Completion date"}
                     />
                   </MuiPickersUtilsProvider>
                 )}

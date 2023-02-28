@@ -206,7 +206,7 @@ export const useInitialValuesOnAttributesEdit = (
   useEffect(() => {
     if (!initialFormValues) return;
 
-    setValue("phaseEnd", initialFormValues?.component?.phase_end);
+    setValue("completionDate", initialFormValues?.component?.completion_date);
   }, [initialFormValues, setValue]);
 };
 

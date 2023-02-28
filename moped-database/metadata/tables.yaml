@@ -1566,7 +1566,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1581,7 +1581,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1596,7 +1596,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1611,7 +1611,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1626,7 +1626,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1642,7 +1642,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1658,7 +1658,7 @@
           - interim_project_component_id
           - is_deleted
           - name
-          - phase_end
+          - completion_date
           - phase_id
           - project_component_id
           - project_id
