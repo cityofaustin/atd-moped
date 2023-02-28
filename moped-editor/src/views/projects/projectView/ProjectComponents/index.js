@@ -120,13 +120,8 @@ export default function MapView({
     fetchPolicy: "no-cache",
   });
 
-  const {
-    projectComponents,
-    parentComponents,
-    siblingComponents,
-    childComponents,
-    allRelatedComponents,
-  } = useProjectComponents(data);
+  const { projectComponents, allRelatedComponents } =
+    useProjectComponents(data);
 
   const {
     onStartCreatingComponent,
@@ -260,9 +255,6 @@ export default function MapView({
             <TheMap
               mapRef={mapRef}
               projectComponents={projectComponents}
-              parentComponents={parentComponents}
-              siblingComponents={siblingComponents}
-              childComponents={childComponents}
               allRelatedComponents={allRelatedComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
