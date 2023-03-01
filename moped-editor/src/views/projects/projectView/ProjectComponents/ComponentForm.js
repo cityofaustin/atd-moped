@@ -188,7 +188,7 @@ const ComponentForm = ({
               <Switch
                 checked={useComponentPhase}
                 onChange={() => setUseComponentPhase(!useComponentPhase)}
-                name="checkedB"
+                name="useComponentPhase"
                 color="primary"
               />
             }
