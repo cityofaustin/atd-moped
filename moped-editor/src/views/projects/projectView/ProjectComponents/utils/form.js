@@ -135,6 +135,13 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
   },
 }));
 
+export const ComponentOptionIcon = ({ lineRepresentation }) => {
+  if (lineRepresentation === true) return <TimelineIcon />;
+  if (lineRepresentation === false) return <RoomOutlinedIcon />;
+  /* Fall back to a blank icon to keep labels lined up */
+  if (lineRepresentation === null) return <Icon />;
+};
+
 /**
  * Renders an option with icon based on the type of geometry (if it exists) and component type label
  * @param {Object} option - Autocomplete option object with label, value, and data about component type
@@ -147,10 +154,7 @@ export const ComponentOptionWithIcon = ({ option }) => {
   return (
     <>
       <span className={classes.iconContainer}>
-        {line_representation === true && <TimelineIcon />}
-        {line_representation === false && <RoomOutlinedIcon />}
-        {/* Fall back to a blank icon to keep labels lined up */}
-        {line_representation === null && <Icon />}
+        <ComponentOptionIcon lineRepresentation={line_representation} />
       </span>{" "}
       {option.label}
     </>
