@@ -108,7 +108,10 @@ export const GET_PROJECT_COMPONENTS = gql`
       ...projectComponentFields
     }
     siblingProjects: moped_project(
-      where: { parent_project_id: { _eq: $parentProjectId } }
+      where: {
+        parent_project_id: { _eq: $parentProjectId }
+        is_deleted: { _eq: false }
+      }
     ) {
       moped_proj_components(
         where: { project_id: { _neq: $projectId }, is_deleted: { _eq: false } }
@@ -117,7 +120,10 @@ export const GET_PROJECT_COMPONENTS = gql`
       }
     }
     childProjects: moped_project(
-      where: { parent_project_id: { _eq: $projectId } }
+      where: {
+        parent_project_id: { _eq: $projectId }
+        is_deleted: { _eq: false }
+      }
     ) {
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         ...projectComponentFields
