@@ -110,7 +110,7 @@ const ComponentForm = ({
     if (initialFormValues.phase?.phase_id !== phase?.value) {
       setValue("subphase", null);
     }
-  }, [phase, setValue]);
+  }, [phase, setValue, initialFormValues]);
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
