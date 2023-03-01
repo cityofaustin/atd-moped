@@ -5,6 +5,8 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import { isSignalComponent } from "./utils/componentList";
+import { ComponentIconByLineRepresentation } from "./utils/form";
+import theme from "src/theme/index";
 
 const ProjectComponentsList = ({
   createState,
@@ -44,6 +46,8 @@ const ProjectComponentsList = ({
   return (
     isNotCreatingOrEditing &&
     projectComponents.map((component) => {
+      const lineRepresentation =
+        component?.moped_components?.line_representation;
       return (
         <ComponentListItem
           key={component.project_component_id}
@@ -51,6 +55,12 @@ const ProjectComponentsList = ({
           isExpanded={isExpanded(component)}
           onZoomClick={() => onClickZoomToComponent(component)}
           onListItemClick={() => onListItemClick(component)}
+          Icon={
+            <ComponentIconByLineRepresentation
+              lineRepresentation={lineRepresentation}
+              color={theme.palette.primary.main}
+            />
+          }
           additionalCollapseListItems={
             <ListItem dense disableGutters>
               <ListItemText

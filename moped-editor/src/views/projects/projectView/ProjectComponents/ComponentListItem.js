@@ -10,7 +10,6 @@ import IconButton from "@material-ui/core/IconButton";
 import ListItemText from "@material-ui/core/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import { useComponentListItemText } from "./utils/componentList";
-import { ComponentIconByLineRepresentation } from "./utils/form";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -29,13 +28,13 @@ export default function ComponentListItem({
   isExpanded,
   onZoomClick,
   onListItemClick,
+  Icon,
   additionalListItemText,
   additionalCollapseListItems,
 }) {
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
-  const lineRepresentation = component?.moped_components?.line_representation;
 
   return (
     <Box
@@ -50,10 +49,7 @@ export default function ComponentListItem({
         onClick={onListItemClick}
         className={classes.listItem}
       >
-        <ComponentIconByLineRepresentation
-          lineRepresentation={lineRepresentation}
-          color="primary"
-        />
+        {Icon}
         <ListItemText
           className={classes.listItemText}
           primary={primary}

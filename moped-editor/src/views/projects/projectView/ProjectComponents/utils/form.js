@@ -125,6 +125,26 @@ export const useInitialValuesOnAttributesEdit = (
   }, [initialFormValues, setValue]);
 };
 
+const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
+  icon: (props) => ({
+    color: props.color,
+  }),
+}));
+
+export const ComponentIconByLineRepresentation = ({
+  lineRepresentation,
+  color,
+}) => {
+  const classes = useComponentIconByLineRepresentationStyles({ color });
+
+  if (lineRepresentation === true)
+    return <TimelineIcon className={classes.icon} />;
+  if (lineRepresentation === false)
+    return <RoomOutlinedIcon className={classes.icon} />;
+  /* Fall back to a blank icon to keep labels lined up */
+  if (lineRepresentation === null) return <Icon className={classes.icon} />;
+};
+
 const useComponentOptionWithIconStyles = makeStyles((theme) => ({
   iconContainer: {
     display: "flex",
@@ -133,16 +153,6 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
   },
 }));
-
-export const ComponentIconByLineRepresentation = ({
-  lineRepresentation,
-  color,
-}) => {
-  if (lineRepresentation === true) return <TimelineIcon color={color} />;
-  if (lineRepresentation === false) return <RoomOutlinedIcon color={color} />;
-  /* Fall back to a blank icon to keep labels lined up */
-  if (lineRepresentation === null) return <Icon color={color} />;
-};
 
 /**
  * Renders an option with icon based on the type of geometry (if it exists) and component type label

@@ -1,5 +1,7 @@
 import ComponentListItem from "./ComponentListItem";
 import Link from "@material-ui/core/Link";
+import { ComponentIconByLineRepresentation } from "./utils/form";
+import theme from "src/theme/index";
 
 const RelatedComponentsList = ({
   createState,
@@ -28,6 +30,8 @@ const RelatedComponentsList = ({
     isNotCreatingOrEditing &&
     shouldShowRelatedProjects &&
     allRelatedComponents.map((component) => {
+      const lineRepresentation =
+        component?.moped_components?.line_representation;
       const isExpanded =
         clickedComponent?.project_component_id ===
         component.project_component_id;
@@ -38,6 +42,12 @@ const RelatedComponentsList = ({
           isExpanded={isExpanded}
           onZoomClick={() => onZoomClick(component)}
           onListItemClick={() => onListItemClick(component)}
+          Icon={
+            <ComponentIconByLineRepresentation
+              lineRepresentation={lineRepresentation}
+              color={theme.palette.map.green}
+            />
+          }
           additionalListItemText={
             <>
               Part of project{" "}
