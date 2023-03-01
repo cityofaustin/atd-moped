@@ -61,6 +61,7 @@ const ProjectComponentsList = ({
               color={theme.palette.primary.main}
             />
           }
+          selectedBorderColor={theme.palette.primary.main}
           additionalCollapseListItems={
             <ListItem dense disableGutters>
               <ListItemText

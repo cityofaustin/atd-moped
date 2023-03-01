@@ -48,6 +48,7 @@ const RelatedComponentsList = ({
               color={theme.palette.map.green}
             />
           }
+          selectedBorderColor={theme.palette.map.green}
           additionalListItemText={
             <>
               Part of project{" "}

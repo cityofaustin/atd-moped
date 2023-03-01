@@ -32,6 +32,7 @@ export default function ComponentListItem({
   onZoomClick,
   onListItemClick,
   Icon,
+  selectedBorderColor,
   additionalListItemText,
   additionalCollapseListItems,
 }) {
@@ -43,7 +44,7 @@ export default function ComponentListItem({
     <Box
       borderLeft={7}
       style={{
-        borderColor: isExpanded ? COLORS.bluePrimary : COLORS.white,
+        borderColor: isExpanded ? selectedBorderColor : COLORS.white,
       }}
     >
       <ListItem
