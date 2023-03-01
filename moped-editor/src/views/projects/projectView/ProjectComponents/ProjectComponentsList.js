@@ -43,6 +43,11 @@ const ProjectComponentsList = ({
     }
   };
 
+  const onZoomClick = (component) => {
+    onClickZoomToComponent(component);
+    setIsClickedComponentRelated(false);
+  };
+
   return (
     isNotCreatingOrEditing &&
     projectComponents.map((component) => {
@@ -53,7 +58,7 @@ const ProjectComponentsList = ({
           key={component.project_component_id}
           component={component}
           isExpanded={isExpanded(component)}
-          onZoomClick={() => onClickZoomToComponent(component)}
+          onZoomClick={() => onZoomClick(component)}
           onListItemClick={() => onListItemClick(component)}
           Icon={
             <ComponentIconByLineRepresentation
