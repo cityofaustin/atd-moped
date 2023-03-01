@@ -7,6 +7,7 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
+import theme from "src/theme/index";
 
 /**
  * Not all component type records have a value in the subtype column but let's concatenate them if they do
@@ -168,7 +169,7 @@ export const ComponentOptionWithIcon = ({ option }) => {
       <span className={classes.iconContainer}>
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}
-          color="primary"
+          color={theme.palette.primary.main}
         />
       </span>{" "}
       {option.label}
