@@ -265,6 +265,7 @@ export default function MapView({
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
               isClickedComponentRelated={isClickedComponentRelated}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
               clickedProjectFeature={clickedProjectFeature}
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}

@@ -67,6 +67,7 @@ export default function TheMap({
   errorMessageDispatch,
   shouldShowRelatedProjects,
   isClickedComponentRelated,
+  setIsClickedComponentRelated,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -260,6 +261,7 @@ export default function TheMap({
       // clear clickedComponent to collapse list item
       if (clickedComponent) {
         setClickedComponent(null);
+        setIsClickedComponentRelated(false);
       }
       // clear clickedProjectFeature to close FeaturePopup
       if (clickedProjectFeature) {

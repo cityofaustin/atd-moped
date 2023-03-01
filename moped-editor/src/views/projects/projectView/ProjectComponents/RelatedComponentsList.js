@@ -16,9 +16,17 @@ const RelatedComponentsList = ({
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
+  const isExpanded = (component) =>
+    clickedComponent?.project_component_id === component.project_component_id;
+
   const onListItemClick = (component) => {
-    setClickedComponent(component);
-    setIsClickedComponentRelated(true);
+    if (isExpanded(component)) {
+      setClickedComponent(null);
+      setIsClickedComponentRelated(false);
+    } else if (isNotCreatingOrEditing) {
+      setClickedComponent(component);
+      setIsClickedComponentRelated(true);
+    }
   };
 
   const onZoomClick = (component) => {
@@ -32,14 +40,11 @@ const RelatedComponentsList = ({
     allRelatedComponents.map((component) => {
       const lineRepresentation =
         component?.moped_components?.line_representation;
-      const isExpanded =
-        clickedComponent?.project_component_id ===
-        component.project_component_id;
       return (
         <ComponentListItem
           key={component.project_component_id}
           component={component}
-          isExpanded={isExpanded}
+          isExpanded={isExpanded(component)}
           onZoomClick={() => onZoomClick(component)}
           onListItemClick={() => onListItemClick(component)}
           Icon={
