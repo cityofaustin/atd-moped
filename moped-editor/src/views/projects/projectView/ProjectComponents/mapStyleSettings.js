@@ -1,4 +1,5 @@
 import { MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
+import theme from "src/theme/index";
 
 export const MAPBOX_PADDING_PIXELS = 10;
 export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
@@ -83,10 +84,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.bluePrimary,
+        "circle-stroke-color": theme.palette.map.green,
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.blueLight,
+        "circle-color": theme.palette.map.greenLight,
         "circle-opacity": 0.9,
       },
     },
@@ -103,7 +104,7 @@ export const MAP_STYLES = {
           "case",
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
-          COLORS.bluePrimary,
+          theme.palette.map.green,
         ],
       },
       layout: {
