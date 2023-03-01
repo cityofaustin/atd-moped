@@ -7,10 +7,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ZoomInIcon from "@material-ui/icons/ZoomIn";
 import IconButton from "@material-ui/core/IconButton";
-import PlaceOutlinedIcon from "@material-ui/icons/PlaceOutlined";
 import ListItemText from "@material-ui/core/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import { useComponentListItemText } from "./utils/componentList";
+import { ComponentIconByLineRepresentation } from "./utils/form";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -35,6 +35,7 @@ export default function ComponentListItem({
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
+  const lineRepresentation = component?.moped_components?.line_representation;
 
   return (
     <Box
@@ -49,7 +50,10 @@ export default function ComponentListItem({
         onClick={onListItemClick}
         className={classes.listItem}
       >
-        <PlaceOutlinedIcon color="primary" />
+        <ComponentIconByLineRepresentation
+          lineRepresentation={lineRepresentation}
+          color="primary"
+        />
         <ListItemText
           className={classes.listItemText}
           primary={primary}

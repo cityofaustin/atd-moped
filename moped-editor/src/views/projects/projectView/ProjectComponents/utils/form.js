@@ -131,15 +131,17 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
     justifyContent: "center",
     alignItems: "center",
     marginRight: theme.spacing(1),
-    color: theme.palette.primary.main,
   },
 }));
 
-export const ComponentOptionIcon = ({ lineRepresentation }) => {
-  if (lineRepresentation === true) return <TimelineIcon />;
-  if (lineRepresentation === false) return <RoomOutlinedIcon />;
+export const ComponentIconByLineRepresentation = ({
+  lineRepresentation,
+  color,
+}) => {
+  if (lineRepresentation === true) return <TimelineIcon color={color} />;
+  if (lineRepresentation === false) return <RoomOutlinedIcon color={color} />;
   /* Fall back to a blank icon to keep labels lined up */
-  if (lineRepresentation === null) return <Icon />;
+  if (lineRepresentation === null) return <Icon color={color} />;
 };
 
 /**
@@ -154,7 +156,10 @@ export const ComponentOptionWithIcon = ({ option }) => {
   return (
     <>
       <span className={classes.iconContainer}>
-        <ComponentOptionIcon lineRepresentation={line_representation} />
+        <ComponentIconByLineRepresentation
+          lineRepresentation={line_representation}
+          color="primary"
+        />
       </span>{" "}
       {option.label}
     </>
