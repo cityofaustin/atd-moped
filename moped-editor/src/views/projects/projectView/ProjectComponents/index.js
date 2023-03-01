@@ -263,6 +263,7 @@ export default function MapView({
               isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
+              isClickedComponentRelated={isClickedComponentRelated}
               clickedProjectFeature={clickedProjectFeature}
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}

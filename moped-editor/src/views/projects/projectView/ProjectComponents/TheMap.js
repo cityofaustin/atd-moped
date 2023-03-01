@@ -66,6 +66,7 @@ export default function TheMap({
   setIsDrawing,
   errorMessageDispatch,
   shouldShowRelatedProjects,
+  isClickedComponentRelated,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -364,6 +365,7 @@ export default function TheMap({
           clickedComponent={clickedComponent}
           componentFeatureCollection={clickedComponentFeatureCollection}
           isEditingComponent={isEditingComponent}
+          isClickedComponentRelated={isClickedComponentRelated}
         />
         <EditDraftComponentSourcesAndLayers
           draftEditComponentFeatureCollection={
