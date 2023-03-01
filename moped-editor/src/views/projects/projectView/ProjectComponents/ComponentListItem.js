@@ -21,6 +21,9 @@ const useStyles = makeStyles((theme) => ({
   listItemText: {
     marginLeft: theme.spacing(1),
   },
+  additionalListItemText: {
+    display: "block",
+  },
 }));
 
 export default function ComponentListItem({
@@ -54,10 +57,12 @@ export default function ComponentListItem({
           className={classes.listItemText}
           primary={primary}
           secondary={
-            <div>
-              <div>{secondary}</div>
-              <div>{additionalListItemText}</div>
-            </div>
+            <>
+              <>{secondary}</>
+              <span className={classes.additionalListItemText}>
+                {additionalListItemText}
+              </span>
+            </>
           }
         />
         <ListItemSecondaryAction>
