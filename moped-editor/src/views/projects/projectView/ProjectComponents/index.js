@@ -232,6 +232,7 @@ export default function MapView({
                 onClickZoomToComponent={onClickZoomToComponent}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
+                setIsClickedComponentRelated={setIsClickedComponentRelated}
               />
               <RelatedComponentsList
                 createState={createState}

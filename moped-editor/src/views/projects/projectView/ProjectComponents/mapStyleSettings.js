@@ -332,4 +332,35 @@ export const MAP_STYLES = {
       },
     },
   },
+  "clicked-related-features-lines": {
+    isInteractive: false,
+    layerProps: {
+      id: "clicked-related-features-lines",
+      featureIdProp: "id",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": theme.palette.map.green,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "clicked-related-features-points": {
+    isInteractive: false,
+    layerProps: {
+      id: "clicked-related-features-points",
+      featureIdProp: "id",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": theme.palette.map.green,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": theme.palette.map.greenLight,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
 };

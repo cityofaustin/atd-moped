@@ -42,7 +42,23 @@ const ClickedComponentSourcesAndLayers = ({
             layout: {
               ...MAP_STYLES["clicked-component-features-lines"].layerProps
                 .layout,
-              visibility: shouldHighlightLineComponent ? "visible" : "none",
+              visibility:
+                shouldHighlightLineComponent && !isClickedComponentRelated
+                  ? "visible"
+                  : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...MAP_STYLES["clicked-related-features-lines"].layerProps,
+            layout: {
+              ...MAP_STYLES["clicked-related-features-lines"].layerProps.layout,
+              visibility:
+                shouldHighlightLineComponent && isClickedComponentRelated
+                  ? "visible"
+                  : "none",
             },
           }}
         />
@@ -51,7 +67,22 @@ const ClickedComponentSourcesAndLayers = ({
           {...{
             ...MAP_STYLES["clicked-component-features-points"].layerProps,
             layout: {
-              visibility: shouldHighlightPointComponent ? "visible" : "none",
+              visibility:
+                shouldHighlightPointComponent && !isClickedComponentRelated
+                  ? "visible"
+                  : "none",
+            },
+          }}
+        />
+        <Layer
+          beforeId="street-labels"
+          {...{
+            ...MAP_STYLES["clicked-related-features-points"].layerProps,
+            layout: {
+              visibility:
+                shouldHighlightPointComponent && isClickedComponentRelated
+                  ? "visible"
+                  : "none",
             },
           }}
         />

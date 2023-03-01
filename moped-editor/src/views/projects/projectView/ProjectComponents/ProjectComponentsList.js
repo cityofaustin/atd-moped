@@ -15,6 +15,7 @@ const ProjectComponentsList = ({
   onClickZoomToComponent,
   projectComponents,
   setIsDeletingComponent,
+  setIsClickedComponentRelated,
 }) => {
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
@@ -23,6 +24,7 @@ const ProjectComponentsList = ({
     clickedComponent?.project_component_id === component.project_component_id;
 
   const onListItemClick = (component) => {
+    setIsClickedComponentRelated(false);
     // If we are editing a component, clicking on a component should not change the clicked component
     if (isExpanded(component)) {
       setClickedComponent(null);
