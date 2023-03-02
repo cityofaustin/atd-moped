@@ -9,7 +9,7 @@ const theme = createTheme({
       paper: "#ffffff",
       mapControls: "#FFFFFF",
       mapControlsHover: "#e6e6e6",
-      summaryHover: "#f2f2f2"
+      summaryHover: "#f2f2f2",
     },
     primary: {
       main: "#1276D1",
@@ -31,7 +31,8 @@ const theme = createTheme({
     },
     map: {
       transparent: "rgba(0,0,0,0)",
-      trail: "#4caf50",
+      green: "#4caf50",
+      greenLight: "#80e27e",
       draw: {
         activeLineVertices: "#7ac943",
         orange: "#fbb03b",

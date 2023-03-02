@@ -1,29 +1,16 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import {
-  fieldFormat,
-  getCreationLabel,
-  getChangeIcon,
-  getRecordTypeLabel,
-  getHumanReadableField,
-  getMappedValue,
-  isFieldMapped,
-  ProjectActivityLogGenericDescriptions,
-} from "./ProjectActivityLogTableMaps";
 
 import {
   Box,
   CardContent,
   CircularProgress,
-  Grid,
-  Icon,
   Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
 } from "@material-ui/core";
 
@@ -33,7 +20,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import { formatRelativeDate } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ProjectActivityEntry";
 
@@ -45,13 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tableCell: {
     verticalAlign: "top",
-  },
-  updateGridEntries: {
-    display: "block",
-    padding: "0 0 0 .5rem",
-  },
-  tableChangeItem: {
-    padding: "0 .5rem 0 0",
   },
   avatarSmall: {
     width: theme.spacing(4),
@@ -66,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
   boldText: {
     fontWeight: 700,
+  },
+  mutedDate: {
+    display: "block",
+    fontSize: ".75rem",
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -223,18 +208,9 @@ const ProjectActivityLog = () => {
 
   if (loading) return <CircularProgress />;
 
-  /**
-   * Returns True if the field should be a generic type (i.e., maps, objects)
-   * @param {string} field - The field name (column name)
-   * @return {boolean} - True if the field is contained in the ProjectActivityLogGenericDescriptions object
-   */
-  const isFieldGeneric = (field) =>
-    field in ProjectActivityLogGenericDescriptions;
-
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
-        <h2 className={classes.projectPageHeader}>Activity feed</h2>
         {getTotalItems(data) === 0 ? (
           <Alert severity="info">
             There is no activity recorded for this project.
@@ -242,20 +218,6 @@ const ProjectActivityLog = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" className={classes.boldText}>
-                    Date
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    User
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    Change
-                  </TableCell>
-                  <TableCell align="left" />
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
@@ -264,15 +226,6 @@ const ProjectActivityLog = () => {
                   );
                   return (
                     <TableRow key={change.activity_id}>
-                      <TableCell
-                        align="left"
-                        component="th"
-                        scope="row"
-                        width="5%"
-                        className={classes.tableCell}
-                      >
-                        {formatTimeStampTZType(change.created_at)}
-                      </TableCell>
                       <TableCell
                         align="left"
                         width="15%"
@@ -311,114 +264,23 @@ const ProjectActivityLog = () => {
                         width="80%"
                         className={classes.tableCell}
                       >
-                        {[
-                          "moped_project",
-                          "moped_proj_tags",
-                          "moped_proj_funding",
-                          "moped_proj_phases",
-                          "moped_proj_milestones",
-                          "moped_proj_partners",
-                          "moped_proj_notes",
-                          "moped_proj_components",
-                          "moped_project_types",
-                          "moped_proj_personnel",
-                          "moped_project_files",
-                          "moped_proj_contract",
-                        ].includes(change.record_type) ? (
-                          <ProjectActivityEntry
-                            changeIcon={changeIcon}
-                            changeText={changeText}
-                          />
-                        ) : (
-                          <Box display="flex" p={0}>
-                            <Box p={0}>
-                              <Icon>
-                                {getChangeIcon(
-                                  change.operation_type,
-                                  change.record_type
-                                )}
-                              </Icon>
-                            </Box>
-                            <Box p={0} flexGrow={1}>
-                              <Grid
-                                container
-                                className={classes.updateGridEntries}
-                              >
-                                {Array.isArray(change.description) &&
-                                  change.description.length === 0 && (
-                                    <Grid
-                                      item
-                                      className={classes.tableChangeItem}
-                                    >
-                                      <span className={classes.boldText}>
-                                        {getCreationLabel(
-                                          change,
-                                          lookupData.userList,
-                                          lookupData.phaseList
-                                        )}
-                                      </span>
-                                    </Grid>
-                                  )}
-                                {change.description.map((changeItem) => {
-                                  return (
-                                    <Grid
-                                      item
-                                      className={classes.tableChangeItem}
-                                    >
-                                      {isFieldGeneric(changeItem.field) ? (
-                                        <span className={classes.boldText}>
-                                          {
-                                            ProjectActivityLogGenericDescriptions[
-                                              changeItem.field
-                                            ]?.label
-                                          }
-                                        </span>
-                                      ) : (
-                                        <>
-                                          <span className={classes.boldText}>
-                                            {getRecordTypeLabel(
-                                              change.record_type
-                                            )}{" "}
-                                            {getHumanReadableField(
-                                              change.record_type,
-                                              changeItem.field
-                                            )}
-                                          </span>
-                                          &nbsp;from&nbsp;
-                                          <span className={classes.boldText}>
-                                            {isFieldMapped(
-                                              change.record_type,
-                                              changeItem.field
-                                            )
-                                              ? getMappedValue(
-                                                  change.record_type,
-                                                  changeItem.field,
-                                                  String(changeItem.old)
-                                                )
-                                              : fieldFormat(changeItem.old)}
-                                          </span>
-                                          &nbsp;to&nbsp;
-                                          <span className={classes.boldText}>
-                                            {isFieldMapped(
-                                              change.record_type,
-                                              changeItem.field
-                                            )
-                                              ? getMappedValue(
-                                                  change.record_type,
-                                                  changeItem.field,
-                                                  String(changeItem.new)
-                                                )
-                                              : fieldFormat(changeItem.new)}
-                                          </span>
-                                        </>
-                                      )}
-                                    </Grid>
-                                  );
-                                })}
-                              </Grid>
-                            </Box>
-                          </Box>
-                        )}
+                        <ProjectActivityEntry
+                          changeIcon={changeIcon}
+                          changeText={changeText}
+                        />
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        width="5%"
+                        className={classes.tableCell}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        <span>{formatRelativeDate(change.created_at)}</span>
+                        <span className={classes.mutedDate}>
+                          {new Date(change.created_at).toLocaleString()}
+                        </span>
                       </TableCell>
                     </TableRow>
                   );
