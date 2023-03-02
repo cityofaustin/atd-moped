@@ -235,15 +235,8 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <CDNAvatar
                               className={classes.avatarSmall}
-                              // until we update the events in the activity log to use the user id
-                              // instead of the cognito id, we have to check both places
-                              src={
-                                change?.moped_user?.picture ??
-                                change?.updated_by_user?.picture
-                              }
-                              initials={getInitials(
-                                change?.moped_user ?? change?.updated_by_user
-                              )}
+                              src={change?.updated_by_user?.picture}
+                              initials={getInitials(change?.updated_by_user)}
                               // todo: do we want this to not be always gray if its just the initials?
                               userColor={null}
                             />
@@ -253,9 +246,7 @@ const ProjectActivityLog = () => {
                             flexGrow={1}
                             className={classes.avatarName}
                           >
-                            {getUserFullName(
-                              change?.moped_user ?? change?.updated_by_user
-                            )}
+                            {getUserFullName(change?.updated_by_user)}
                           </Box>
                         </Box>
                       </TableCell>
