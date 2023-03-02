@@ -24,8 +24,8 @@ const relatedPhaseHandler = (phase) => phase?.phase_name;
 const subComponentHandler = (subcomponents) =>
   subcomponents &&
   subcomponents.map((subcomponent) => (
-    <div key={subcomponent.subcomponent_id}>
-      {subcomponent.subcomponent_name}
+    <div key={subcomponent.moped_subcomponent.subcomponent_id}>
+      {subcomponent.moped_subcomponent.subcomponent_name}
     </div>
   ));
 
@@ -134,7 +134,7 @@ export const SETTINGS = [
           lineRepresentation ? "Line" : "Point",
       },
       {
-        key: "moped_subcomponents",
+        key: "moped_components_subcomponents",
         label: "Subcomponents",
         handler: subComponentHandler,
       },

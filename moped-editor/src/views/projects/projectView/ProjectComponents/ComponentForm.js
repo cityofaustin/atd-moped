@@ -72,9 +72,14 @@ const ComponentForm = ({
   });
 
   // Get and format component and subcomponent options
-  const { data: optionsData, loading: areOptionsLoading } = useQuery(
-    GET_COMPONENTS_FORM_OPTIONS
-  );
+  const {
+    data: optionsData,
+    loading: areOptionsLoading,
+    error,
+  } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
+
+  error && console.error(error);
+
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
   const { component, phase } = watch();
@@ -83,7 +88,9 @@ const ComponentForm = ({
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
 
-  const subcomponentOptions = useSubcomponentOptions(component);
+  const subcomponentOptions = useSubcomponentOptions(
+    component?.value,
+    optionsData?.moped_components);
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -102,6 +109,13 @@ const ComponentForm = ({
   useEffect(() => {
     setValue("signal", null);
   }, [component, setValue]);
+
+
+  // reset subcomponent selections when component to ensure only allowed subcomponents
+  // todo: preserve allowed subcomponents when switching b/t component types
+  useEffect(() => {
+    setValue("subcomponents", []);
+  }, [subcomponentOptions, setValue]);
 
   // Reset subphases field when phase changes so subphase options match phase
   useEffect(() => {

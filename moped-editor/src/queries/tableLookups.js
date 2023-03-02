@@ -23,14 +23,20 @@ export const TABLE_LOOKUPS_QUERY = gql`
         phase_name
       }
     }
-    moped_components {
+    moped_components(
+      order_by: [{ component_name: asc }, { component_subtype: asc }]
+    ) {
       component_name
       component_subtype
       component_id
       line_representation
-      moped_subcomponents {
-        subcomponent_name
-        subcomponent_id
+      moped_components_subcomponents(
+        order_by: { moped_subcomponent: { subcomponent_name: asc } }
+      ) {
+        moped_subcomponent {
+          subcomponent_id
+          subcomponent_name
+        }
       }
     }
     moped_tags(where: { is_deleted: { _eq: false } }, order_by: { name: asc }) {
@@ -41,7 +47,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
     }
     moped_entity(order_by: { entity_name: asc }) {
       entity_id
-      entity_name     
+      entity_name
     }
   }
 `;

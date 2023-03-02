@@ -13,9 +13,13 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       feature_layer {
         internal_table
       }
-      moped_subcomponents(order_by: { subcomponent_name: asc }) {
-        subcomponent_id
-        subcomponent_name
+      moped_components_subcomponents(
+        order_by: { moped_subcomponent: { subcomponent_name: asc } }
+      ) {
+        moped_subcomponent {
+          subcomponent_id
+          subcomponent_name
+        }
       }
     }
     moped_phases(order_by: { phase_order: asc }) {
@@ -50,10 +54,6 @@ export const GET_PROJECT_COMPONENTS = gql`
         internal_table
       }
       line_representation
-      moped_subcomponents {
-        subcomponent_id
-        subcomponent_name
-      }
     }
     moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
       subcomponent_id
