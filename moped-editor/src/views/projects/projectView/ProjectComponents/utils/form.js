@@ -58,11 +58,49 @@ export const useSubcomponentOptions = (component) =>
     return options;
   }, [component]);
 
+/**
+ * Take the moped_phases records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_phases records
+ * @returns {Array} The options with value, label, and full data object to produce the phases options
+ */
+export const usePhaseOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_phases.map((phase) => ({
+      value: phase.phase_id,
+      label: phase.phase_name,
+      data: phase,
+    }));
+
+    return options;
+  }, [data]);
+
+/**
+ * Take the moped_subphases records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_subphases records
+ * @returns {Array} The options with value, label, and full data object to produce the phases options
+ */
+export const useSubphaseOptions = (subphases) =>
+  useMemo(() => {
+    if (!subphases) return [];
+
+    const options = subphases.map((subphase) => ({
+      value: subphase.subphase_id,
+      label: subphase.subphase_name,
+      data: subphase,
+    }));
+
+    return options;
+  }, [subphases]);
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
   componentOptions,
   subcomponentOptions,
+  phaseOptions,
+  subphaseOptions,
   areSignalOptionsLoaded
 ) => {
   // Set the selected component after the component options are loaded
@@ -117,11 +155,56 @@ export const useInitialValuesOnAttributesEdit = (
     setValue("subcomponents", selectedSubcomponents);
   }, [subcomponentOptions, initialFormValues, setValue]);
 
+  // Set the selected phase after the phase options are loaded
+  useEffect(() => {
+    if (!initialFormValues?.component?.moped_phase) return;
+    if (phaseOptions.length === 0) return;
+
+    setValue("phase", {
+      value: initialFormValues.component?.moped_phase.phase_id,
+      label: phaseOptions.find(
+        (option) =>
+          option.value === initialFormValues.component?.moped_phase.phase_id
+      ).label,
+      data: {
+        // Include component subcomponents and metadata about the internal_table needed for the form
+        ...initialFormValues.component?.moped_phase,
+      },
+    });
+  }, [phaseOptions, initialFormValues, setValue]);
+
+  // Set the selected subphase after the subphase options are loaded
+  useEffect(() => {
+    if (!initialFormValues?.component?.moped_subphase) return;
+    if (subphaseOptions.length === 0) return;
+
+    setValue("subphase", {
+      value: initialFormValues.component?.moped_subphase?.subphase_id,
+      // if there is no matching subphase (e.g., you changed the phase), return null
+      label: subphaseOptions.find(
+        (option) =>
+          option.value ===
+          initialFormValues.component?.moped_subphase.subphase_id
+      )?.label,
+      data: {
+        // Include component subcomponents and metadata about the internal_table needed for the form
+        ...initialFormValues.component?.moped_subphase,
+      },
+    });
+  }, [subphaseOptions, initialFormValues, setValue]);
+
   // Set the description once
   useEffect(() => {
     if (!initialFormValues) return;
 
     setValue("description", initialFormValues.description);
+  }, [initialFormValues, setValue]);
+
+  // Set the datepicker value
+  useEffect(() => {
+    if (!initialFormValues) return;
+
+    setValue("completionDate", initialFormValues?.component?.completion_date);
   }, [initialFormValues, setValue]);
 };
 

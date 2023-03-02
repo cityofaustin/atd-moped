@@ -55,7 +55,8 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents } = formData;
+    const { description, subcomponents, phase, subphase } = formData;
+    const completionDate = !!phase ? formData.completionDate : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
     // Prepare the subcomponent data for the mutation
@@ -83,6 +84,9 @@ const EditAttributesModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data,
+        completion_date: completionDate,
       };
 
       updateSignalComponent({
@@ -91,6 +95,9 @@ const EditAttributesModal = ({
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id,
+          completionDate,
         },
       })
         .then(() => {
@@ -109,6 +116,9 @@ const EditAttributesModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data,
+        completion_date: completionDate,
       };
 
       updateComponentAttributes({
@@ -116,6 +126,9 @@ const EditAttributesModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id,
+          completionDate,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -133,6 +146,9 @@ const EditAttributesModal = ({
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
     description: componentToEdit?.description,
+    phase: componentToEdit?.moped_phase,
+    subphase: componentToEdit?.moped_subphase,
+    completionDate: componentToEdit?.completion_date,
   };
 
   return (
