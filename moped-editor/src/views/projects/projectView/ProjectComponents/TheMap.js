@@ -8,6 +8,7 @@ import CreateComponentDrawTools from "./CreateComponentDrawTools";
 import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
+import RelatedProjectSourcesAndLayers from "./RelatedProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
@@ -29,7 +30,6 @@ import {
   isDrawnDraftFeature,
   isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
-  useComponentFeatureCollectionFromMap,
 } from "./utils/features";
 import {
   useComponentFeatureCollection,
@@ -47,7 +47,8 @@ mapboxgl.workerClass =
 export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
-  components,
+  projectComponents,
+  allRelatedComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -61,26 +62,28 @@ export default function TheMap({
   setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
-  featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
   errorMessageDispatch,
+  shouldShowRelatedProjects,
+  isClickedComponentRelated,
+  setIsClickedComponentRelated,
 }) {
   const [cursor, setCursor] = useState("grab");
 
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(components);
+    useAllComponentsFeatureCollection(projectComponents);
+  const allRelatedComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(allRelatedComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
     useComponentFeatureCollection(draftEditComponent);
 
-  const componentFeatureCollection = useComponentFeatureCollectionFromMap(
-    clickedComponent,
-    featureCollectionsByComponentId
-  );
+  const clickedComponentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
@@ -258,6 +261,7 @@ export default function TheMap({
       // clear clickedComponent to collapse list item
       if (clickedComponent) {
         setClickedComponent(null);
+        setIsClickedComponentRelated(false);
       }
       // clear clickedProjectFeature to close FeaturePopup
       if (clickedProjectFeature) {
@@ -348,14 +352,22 @@ export default function TheMap({
           }
           draftEditComponent={draftEditComponent}
         />
+        <RelatedProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          featureCollection={allRelatedComponentsFeatureCollection}
+          shouldShowRelatedProjects={shouldShowRelatedProjects}
+          clickedComponent={clickedComponent}
+        />
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}
           linkMode={linkMode}
         />
         <ClickedComponentSourcesAndLayers
           clickedComponent={clickedComponent}
-          componentFeatureCollection={componentFeatureCollection}
+          componentFeatureCollection={clickedComponentFeatureCollection}
           isEditingComponent={isEditingComponent}
+          isClickedComponentRelated={isClickedComponentRelated}
         />
         <EditDraftComponentSourcesAndLayers
           draftEditComponentFeatureCollection={

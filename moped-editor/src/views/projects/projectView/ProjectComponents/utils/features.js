@@ -1,22 +1,7 @@
-import { useMemo, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { getIntersectionLabel } from "./map";
 import { getAllComponentFeatures } from "./makeFeatureCollections";
-
-export const useComponentFeatureCollectionFromMap = (
-  component,
-  featureCollectionsByComponentId
-) =>
-  useMemo(() => {
-    const emptyFeatureCollection = { type: "FeatureCollection", features: [] };
-
-    if (!component) return emptyFeatureCollection;
-
-    const componentFeatureCollection =
-      featureCollectionsByComponentId[component?.project_component_id];
-
-    return componentFeatureCollection || emptyFeatureCollection;
-  }, [component, featureCollectionsByComponentId]);
 
 /**
  * Captured from feature object example

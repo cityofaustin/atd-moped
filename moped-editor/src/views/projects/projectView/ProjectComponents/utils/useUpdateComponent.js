@@ -221,7 +221,7 @@ const editReducer = (state, action) => {
 };
 
 export const useUpdateComponent = ({
-  components,
+  projectComponents,
   clickedComponent,
   setClickedComponent,
   setLinkMode,
@@ -263,7 +263,7 @@ export const useUpdateComponent = ({
 
     const editedComponentId = editState.draftEditComponent.project_component_id;
 
-    const originalComponent = components.find(
+    const originalComponent = projectComponents.find(
       (component) => component.project_component_id === editedComponentId
     );
 
