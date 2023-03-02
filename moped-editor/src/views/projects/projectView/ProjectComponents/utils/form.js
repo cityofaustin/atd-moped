@@ -7,6 +7,7 @@ import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
 } from "@material-ui/icons";
+import theme from "src/theme/index";
 
 /**
  * Not all component type records have a value in the subtype column but let's concatenate them if they do
@@ -125,13 +126,32 @@ export const useInitialValuesOnAttributesEdit = (
   }, [initialFormValues, setValue]);
 };
 
+const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
+  icon: (props) => ({
+    color: props.color,
+  }),
+}));
+
+export const ComponentIconByLineRepresentation = ({
+  lineRepresentation,
+  color,
+}) => {
+  const classes = useComponentIconByLineRepresentationStyles({ color });
+
+  if (lineRepresentation === true)
+    return <TimelineIcon className={classes.icon} />;
+  if (lineRepresentation === false)
+    return <RoomOutlinedIcon className={classes.icon} />;
+  /* Fall back to a blank icon to keep labels lined up */
+  if (lineRepresentation === null) return <Icon className={classes.icon} />;
+};
+
 const useComponentOptionWithIconStyles = makeStyles((theme) => ({
   iconContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginRight: theme.spacing(1),
-    color: theme.palette.primary.main,
   },
 }));
 
@@ -147,10 +167,10 @@ export const ComponentOptionWithIcon = ({ option }) => {
   return (
     <>
       <span className={classes.iconContainer}>
-        {line_representation === true && <TimelineIcon />}
-        {line_representation === false && <RoomOutlinedIcon />}
-        {/* Fall back to a blank icon to keep labels lined up */}
-        {line_representation === null && <Icon />}
+        <ComponentIconByLineRepresentation
+          lineRepresentation={line_representation}
+          color={theme.palette.primary.main}
+        />
       </span>{" "}
       {option.label}
     </>

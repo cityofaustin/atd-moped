@@ -1,4 +1,4 @@
-import { useState, useRef, useMemo } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import { makeStyles } from "@material-ui/core/styles";
@@ -7,27 +7,26 @@ import Drawer from "@material-ui/core/Drawer";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Toolbar from "@material-ui/core/Toolbar";
 import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
-import ComponentListItem from "./ComponentListItem";
-import DraftComponentListItem from "./DraftComponentListItem";
 import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
-import { useComponentFeatureCollectionsMap } from "./utils/makeFeatureCollections";
+import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
+import { useProjectComponents } from "./utils/useProjectComponents";
+import NewComponentToolbar from "./NewComponentToolbar";
+import RelatedComponentsList from "./RelatedComponentsList";
+import ProjectComponentsList from "./ProjectComponentsList";
+import DraftComponentList from "./DraftComponentList";
 
 const drawerWidth = 350;
 
@@ -58,7 +57,12 @@ const useStyles = makeStyles((theme) => ({
 /* per MUI suggestion - this empty toolbar pushes the list content below the main app toolbar  */
 const PlaceholderToolbar = () => <Toolbar />;
 
-export default function MapView({ projectName, phaseKey, phaseName }) {
+export default function MapView({
+  projectName,
+  phaseKey,
+  phaseName,
+  parentProjectId,
+}) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
   const mapRef = useRef();
@@ -83,24 +87,38 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
   /* tracks the drawing state of the map */
   const [isDrawing, setIsDrawing] = useState(false);
 
+  /* track settings state and whether we show parent, sibling, and child projects */
+  const [areSettingsOpen, setAreSettingsOpen] = useState(true);
+  const [shouldShowRelatedProjects, setShouldShowRelatedProjects] =
+    useState(true);
+  const [isClickedComponentRelated, setIsClickedComponentRelated] =
+    useState(false);
+
+  const toggleShowRelatedProjects = () => {
+    setShouldShowRelatedProjects(!shouldShowRelatedProjects);
+
+    // If the clicked component is a related component, we need to clear clicked component state
+    // so it is no longer highlighted on the map.
+    if (isClickedComponentRelated) {
+      setClickedComponent(null);
+      setIsClickedComponentRelated(false);
+    }
+  };
+
   const {
     data,
     refetch: refetchProjectComponents,
     error,
   } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: { projectId },
+    variables: {
+      projectId,
+      ...(parentProjectId && { parentProjectId }),
+    },
     fetchPolicy: "no-cache",
   });
 
-  /* holds this project's components */
-  const components = useMemo(() => {
-    if (!data?.moped_proj_components) return [];
-
-    return data.moped_proj_components;
-  }, [data]);
-
-  const featureCollectionsByComponentId =
-    useComponentFeatureCollectionsMap(data);
+  const { projectComponents, allRelatedComponents } =
+    useProjectComponents(data);
 
   const {
     onStartCreatingComponent,
@@ -126,7 +144,7 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
     onEditFeatures,
     doesDraftEditComponentHaveFeatures,
   } = useUpdateComponent({
-    components,
+    projectComponents,
     clickedComponent,
     setClickedComponent,
     setLinkMode,
@@ -150,8 +168,8 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
-    const componentId = component.project_component_id;
-    const featureCollection = featureCollectionsByComponentId[componentId];
+    const features = getAllComponentFeatures(component);
+    const featureCollection = { type: "FeatureCollection", features };
 
     setClickedComponent(component);
     // close the map projectFeature map popup
@@ -185,72 +203,47 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
             <List>
-              {!createState.isCreatingComponent &&
-                !editState.isEditingComponent && (
-                  <>
-                    <ListItem dense>
-                      <Button
-                        size="small"
-                        color="primary"
-                        fullWidth
-                        startIcon={<AddCircleOutlineIcon />}
-                        onClick={onStartCreatingComponent}
-                      >
-                        New Component
-                      </Button>
-                    </ListItem>
-                    <Divider />
-                  </>
-                )}
-              {createState.draftComponent &&
-                createState.isCreatingComponent && (
-                  <DraftComponentListItem
-                    primaryText={createState.draftComponent.component_name}
-                    secondaryText={createState.draftComponent.component_subtype}
-                    onSave={onSaveDraftComponent}
-                    onCancel={onCancelComponentCreate}
-                    saveButtonDisabled={
-                      !createState.draftComponent?.features.length > 0
-                    }
-                    saveButtonText="Save"
-                  />
-                )}
-              {editState.draftEditComponent && editState.isEditingComponent && (
-                <DraftComponentListItem
-                  primaryText={
-                    editState.draftEditComponent?.moped_components
-                      ?.component_name
-                  }
-                  secondaryText={
-                    editState.draftEditComponent?.moped_components
-                      ?.component_subtype
-                  }
-                  onSave={onSaveEditedComponent}
-                  onCancel={onCancelComponentMapEdit}
-                  saveButtonDisabled={!doesDraftEditComponentHaveFeatures}
-                  saveButtonText="Save Edit"
-                />
-              )}
-              {!editState.isEditingComponent &&
-                !createState.isCreatingComponent &&
-                components.map((component) => {
-                  const isExpanded =
-                    clickedComponent?.project_component_id ===
-                    component.project_component_id;
-                  return (
-                    <ComponentListItem
-                      key={component.project_component_id}
-                      component={component}
-                      isExpanded={isExpanded}
-                      setClickedComponent={setClickedComponent}
-                      setIsDeletingComponent={setIsDeletingComponent}
-                      editDispatch={editDispatch}
-                      onClickZoomToComponent={onClickZoomToComponent}
-                      isEditingComponent={editState.isEditingComponent}
-                      isCreatingComponent={createState.isCreatingComponent}
-                    />
-                  );
-                })}
+              <NewComponentToolbar
+                createState={createState}
+                editState={editState}
+                shouldShowRelatedProjects={shouldShowRelatedProjects}
+                toggleShowRelatedProjects={toggleShowRelatedProjects}
+                onStartCreatingComponent={onStartCreatingComponent}
+                areSettingsOpen={areSettingsOpen}
+                setAreSettingsOpen={setAreSettingsOpen}
+              />
+              <DraftComponentList
+                createState={createState}
+                editState={editState}
+                onCancelComponentCreate={onCancelComponentCreate}
+                onCancelComponentMapEdit={onCancelComponentMapEdit}
+                doesDraftEditComponentHaveFeatures={
+                  doesDraftEditComponentHaveFeatures
+                }
+                onSaveDraftComponent={onSaveDraftComponent}
+                onSaveEditedComponent={onSaveEditedComponent}
+              />
+              <ProjectComponentsList
+                createState={createState}
+                editState={editState}
+                editDispatch={editDispatch}
+                clickedComponent={clickedComponent}
+                setClickedComponent={setClickedComponent}
+                onClickZoomToComponent={onClickZoomToComponent}
+                projectComponents={projectComponents}
+                setIsDeletingComponent={setIsDeletingComponent}
+                setIsClickedComponentRelated={setIsClickedComponentRelated}
+              />
+              <RelatedComponentsList
+                createState={createState}
+                editState={editState}
+                shouldShowRelatedProjects={shouldShowRelatedProjects}
+                clickedComponent={clickedComponent}
+                setClickedComponent={setClickedComponent}
+                onClickZoomToComponent={onClickZoomToComponent}
+                allRelatedComponents={allRelatedComponents}
+                setIsClickedComponentRelated={setIsClickedComponentRelated}
+              />
             </List>
           </div>
         </Drawer>
@@ -259,7 +252,8 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
-              components={components}
+              projectComponents={projectComponents}
+              allRelatedComponents={allRelatedComponents}
               draftComponent={createState.draftComponent}
               createDispatch={createDispatch}
               draftEditComponent={editState.draftEditComponent}
@@ -270,14 +264,16 @@ export default function MapView({ projectName, phaseKey, phaseName }) {
               isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
               setClickedComponent={setClickedComponent}
+              isClickedComponentRelated={isClickedComponentRelated}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
               clickedProjectFeature={clickedProjectFeature}
               setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
-              featureCollectionsByComponentId={featureCollectionsByComponentId}
               isDrawing={isDrawing}
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
+              shouldShowRelatedProjects={shouldShowRelatedProjects}
             />
           </div>
           <CreateComponentModal
