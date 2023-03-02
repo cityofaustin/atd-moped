@@ -103,7 +103,7 @@ const ComponentForm = ({
     setValue("signal", null);
   }, [component, setValue]);
 
-  // Reset subphases field when component changes so signal matches component signal type
+  // Reset subphases field when phase changes so subphase options match phase
   useEffect(() => {
     if (!phase?.value) return;
     if (!initialFormValues) return;
@@ -209,7 +209,7 @@ const ComponentForm = ({
               <ControlledAutocomplete
                 id="phase"
                 label="Phase"
-                options={areOptionsLoading ? [] : phaseOptions}
+                options={phaseOptions}
                 name="phase"
                 control={control}
                 required
@@ -221,7 +221,7 @@ const ComponentForm = ({
                 <ControlledAutocomplete
                   id="subphase"
                   label="Subphase"
-                  options={areOptionsLoading ? [] : subphaseOptions}
+                  options={subphaseOptions}
                   name="subphase"
                   control={control}
                 />
