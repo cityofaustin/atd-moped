@@ -13,9 +13,21 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       feature_layer {
         internal_table
       }
-      moped_subcomponents(order_by: { subcomponent_name: asc }) {
-        subcomponent_id
-        subcomponent_name
+      moped_components_subcomponents(
+        order_by: { moped_subcomponent: { subcomponent_name: asc } }
+      ) {
+        moped_subcomponent {
+          subcomponent_id
+          subcomponent_name
+        }
+      }
+    }
+    moped_phases(order_by: { phase_order: asc }) {
+      phase_name
+      phase_id
+      moped_subphases {
+        subphase_id
+        subphase_name
       }
     }
   }
@@ -30,65 +42,78 @@ export const ADD_PROJECT_COMPONENT = gql`
 `;
 
 export const GET_PROJECT_COMPONENTS = gql`
-  query GetProjectComponents($projectId: Int!) {
+  fragment projectComponentFields on moped_proj_components {
+    project_component_id
+    component_id
+    description
+    phase_id
+    subphase_id
+    completion_date
+    project_id
+    moped_components {
+      component_name
+      component_subtype
+      feature_layer {
+        internal_table
+      }
+      line_representation
+    }
+    moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
+      subcomponent_id
+    }
+    moped_phase {
+      phase_id
+      phase_name
+      moped_subphases {
+        subphase_id
+        subphase_name
+      }
+    }
+    moped_subphase {
+      subphase_id
+      subphase_name
+    }
+    feature_street_segments(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      ctn_segment_id
+      component_id
+    }
+    feature_intersections(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      intersection_id
+      component_id
+    }
+    feature_signals(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      component_id
+      location_name
+      signal_id
+      signal_type
+      knack_id
+    }
+    feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      component_id
+    }
+    feature_drawn_points(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      source_layer
+      component_id
+    }
+  }
+  query GetProjectComponents($projectId: Int!, $parentProjectId: Int = 0) {
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
-      project_component_id
-      component_id
-      description
-      moped_components {
-        component_name
-        component_subtype
-        feature_layer {
-          internal_table
-        }
-        line_representation
-        moped_subcomponents {
-          subcomponent_id
-          subcomponent_name
-        }
-      }
-      moped_proj_components_subcomponents(
-        where: { is_deleted: { _eq: false } }
-      ) {
-        subcomponent_id
-      }
-      feature_street_segments(where: { is_deleted: { _eq: false } }) {
-        id
-        geometry: geography
-        source_layer
-        ctn_segment_id
-        component_id
-      }
-      feature_intersections(where: { is_deleted: { _eq: false } }) {
-        id
-        geometry: geography
-        source_layer
-        intersection_id
-        component_id
-      }
-      feature_signals(where: { is_deleted: { _eq: false } }) {
-        id
-        geometry: geography
-        component_id
-        location_name
-        signal_id
-        signal_type
-        knack_id
-      }
-      feature_drawn_lines(where: { is_deleted: { _eq: false } }) {
-        id
-        geometry: geography
-        source_layer
-        component_id
-      }
-      feature_drawn_points(where: { is_deleted: { _eq: false } }) {
-        id
-        geometry: geography
-        source_layer
-        component_id
-      }
+      ...projectComponentFields
     }
     project_geography(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -96,6 +121,36 @@ export const GET_PROJECT_COMPONENTS = gql`
       geometry: geography
       component_id
       attributes
+    }
+    parentProjectComponents: moped_proj_components(
+      where: {
+        project_id: { _eq: $parentProjectId }
+        is_deleted: { _eq: false }
+      }
+    ) {
+      ...projectComponentFields
+    }
+    siblingProjects: moped_project(
+      where: {
+        parent_project_id: { _eq: $parentProjectId }
+        is_deleted: { _eq: false }
+      }
+    ) {
+      moped_proj_components(
+        where: { project_id: { _neq: $projectId }, is_deleted: { _eq: false } }
+      ) {
+        ...projectComponentFields
+      }
+    }
+    childProjects: moped_project(
+      where: {
+        parent_project_id: { _eq: $projectId }
+        is_deleted: { _eq: false }
+      }
+    ) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        ...projectComponentFields
+      }
     }
   }
 `;
@@ -108,6 +163,9 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $projectComponentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
+    $phaseId: Int
+    $subphaseId: Int
+    $completionDate: timestamptz
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -117,7 +175,12 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description }
+      _set: {
+        description: $description
+        phase_id: $phaseId
+        subphase_id: $subphaseId
+        completion_date: $completionDate
+      }
     ) {
       project_component_id
     }
@@ -141,6 +204,9 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $signals: [feature_signals_insert_input!]!
+    $phaseId: Int
+    $subphaseId: Int
+    $completionDate: timestamptz
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -156,7 +222,12 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     }
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
-      _set: { description: $description }
+      _set: {
+        description: $description
+        phase_id: $phaseId
+        subphase_id: $subphaseId
+        completion_date: $completionDate
+      }
     ) {
       project_component_id
     }

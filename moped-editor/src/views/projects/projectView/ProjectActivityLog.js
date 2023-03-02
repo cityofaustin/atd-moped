@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 
@@ -11,7 +11,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableHead,
   TableRow,
 } from "@material-ui/core";
 
@@ -21,7 +20,7 @@ import { Alert } from "@material-ui/lab";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import { formatRelativeDate } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ProjectActivityEntry";
 
@@ -47,6 +46,11 @@ const useStyles = makeStyles((theme) => ({
   },
   boldText: {
     fontWeight: 700,
+  },
+  mutedDate: {
+    display: "block",
+    fontSize: ".75rem",
+    color: theme.palette.text.secondary,
   },
 }));
 
@@ -207,7 +211,6 @@ const ProjectActivityLog = () => {
   return (
     <ApolloErrorHandler error={error}>
       <CardContent>
-        <h2 className={classes.projectPageHeader}>Activity feed</h2>
         {getTotalItems(data) === 0 ? (
           <Alert severity="info">
             There is no activity recorded for this project.
@@ -215,20 +218,6 @@ const ProjectActivityLog = () => {
         ) : (
           <TableContainer component={Paper}>
             <Table className={classes.table} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell align="left" className={classes.boldText}>
-                    Date
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    User
-                  </TableCell>
-                  <TableCell align="left" className={classes.boldText}>
-                    Change
-                  </TableCell>
-                  <TableCell align="left" />
-                </TableRow>
-              </TableHead>
               <TableBody>
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
@@ -239,15 +228,6 @@ const ProjectActivityLog = () => {
                     <TableRow key={change.activity_id}>
                       <TableCell
                         align="left"
-                        component="th"
-                        scope="row"
-                        width="5%"
-                        className={classes.tableCell}
-                      >
-                        {formatTimeStampTZType(change.created_at)}
-                      </TableCell>
-                      <TableCell
-                        align="left"
                         width="15%"
                         className={classes.tableCell}
                       >
@@ -255,15 +235,8 @@ const ProjectActivityLog = () => {
                           <Box p={0}>
                             <CDNAvatar
                               className={classes.avatarSmall}
-                              // until we update the events in the activity log to use the user id
-                              // instead of the cognito id, we have to check both places
-                              src={
-                                change?.moped_user?.picture ??
-                                change?.updated_by_user?.picture
-                              }
-                              initials={getInitials(
-                                change?.moped_user ?? change?.updated_by_user
-                              )}
+                              src={change?.updated_by_user?.picture}
+                              initials={getInitials(change?.updated_by_user)}
                               // todo: do we want this to not be always gray if its just the initials?
                               userColor={null}
                             />
@@ -273,9 +246,7 @@ const ProjectActivityLog = () => {
                             flexGrow={1}
                             className={classes.avatarName}
                           >
-                            {getUserFullName(
-                              change?.moped_user ?? change?.updated_by_user
-                            )}
+                            {getUserFullName(change?.updated_by_user)}
                           </Box>
                         </Box>
                       </TableCell>
@@ -288,6 +259,19 @@ const ProjectActivityLog = () => {
                           changeIcon={changeIcon}
                           changeText={changeText}
                         />
+                      </TableCell>
+                      <TableCell
+                        align="left"
+                        component="th"
+                        scope="row"
+                        width="5%"
+                        className={classes.tableCell}
+                        style={{ whiteSpace: "nowrap" }}
+                      >
+                        <span>{formatRelativeDate(change.created_at)}</span>
+                        <span className={classes.mutedDate}>
+                          {new Date(change.created_at).toLocaleString()}
+                        </span>
                       </TableCell>
                     </TableRow>
                   );

@@ -137,7 +137,7 @@ const TABS = [
   { label: "Comments", Component: ProjectComments, param: "comments" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   {
-    label: "Activity Log",
+    label: "Activity",
     Component: ProjectActivityLog,
     param: "activity_log",
   },
@@ -537,6 +537,9 @@ const ProjectView = () => {
                           projectName={data.moped_project[0].project_name}
                           phaseKey={currentPhase?.phase_key}
                           phaseName={currentPhase?.phase_name}
+                          parentProjectId={
+                            data.moped_project[0].parent_project_id
+                          }
                         />
                       </TabPanel>
                     );

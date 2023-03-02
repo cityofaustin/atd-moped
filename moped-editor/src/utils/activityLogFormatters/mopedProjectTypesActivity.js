@@ -1,6 +1,7 @@
 export const formatProjectTypesActivity = (change, projectTypeList) => {
-
-  const changeIcon = <span className="material-symbols-outlined">summarize</span>
+  const changeIcon = (
+    <span className="material-symbols-outlined">summarize</span>
+  );
   const projectType =
     projectTypeList[change.record_data.event.data.new.project_type_id];
   const displayText = {
@@ -31,4 +32,10 @@ export const formatProjectTypesActivity = (change, projectTypeList) => {
       ],
     };
   }
+
+  // Fallback text for other updates. Catches old updates before database refactoring. (status_id etc)
+  return {
+    changeIcon,
+    changeText: [{ text: "Updated ", style: null }, displayText],
+  };
 };
