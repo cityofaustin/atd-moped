@@ -42,6 +42,9 @@ export const GET_PROJECT_COMPONENTS = gql`
     project_component_id
     component_id
     description
+    phase_id
+    subphase_id
+    completion_date
     project_id
     moped_components {
       component_name
@@ -57,6 +60,18 @@ export const GET_PROJECT_COMPONENTS = gql`
     }
     moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
       subcomponent_id
+    }
+    moped_phase {
+      phase_id
+      phase_name
+      moped_subphases {
+        subphase_id
+        subphase_name
+      }
+    }
+    moped_subphase {
+      subphase_id
+      subphase_name
     }
     feature_street_segments(where: { is_deleted: { _eq: false } }) {
       id
