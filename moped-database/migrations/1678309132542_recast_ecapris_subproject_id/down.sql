@@ -5,6 +5,7 @@ CREATE INDEX moped_project_ecapris_subproject_id_index
     ON moped_project (ecapris_subproject_id);
 
 ALTER TABLE moped_project ADD COLUMN capitally_funded boolean default false;
+UPDATE moped_project SET capitally_funded = true WHERE ecapris_subproject_id IS NOT NULL;
 
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
