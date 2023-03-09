@@ -1,11 +1,27 @@
+-- drop the view, which is required in order to change column types
 DROP VIEW project_list_view;
 
+-- this is early moped cruft — we don't need this
 DROP INDEX moped_project_ecapris_subproject_id_index;
 
+-- make ecapris ID column txt
 ALTER TABLE moped_project ALTER COLUMN ecapris_subproject_id TYPE text;
 
+-- add a trailing zero to any existing ecapris ID that has only two digits after the decimal
+-- an ID with two decimal places is an indicator that user-entered ID had a trailing zero
+-- that was truncated
+UPDATE
+    moped_project
+SET
+    ecapris_subproject_id = split_part(ecapris_subproject_id, '.', 1) || '.' || split_part(ecapris_subproject_id, '.', 2) || '0'
+WHERE
+    ecapris_subproject_id IS NOT NULL
+    AND length(split_part(ecapris_subproject_id, '.', 2)) = 2;
+
+-- drop this column which can be computed on the fly (ecapris_subproject_id is not null)
 ALTER TABLE moped_project DROP COLUMN capitally_funded;
 
+-- restablish our view
 CREATE OR REPLACE VIEW public.project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
