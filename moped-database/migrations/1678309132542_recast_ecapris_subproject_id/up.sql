@@ -13,7 +13,7 @@ ALTER TABLE moped_project ALTER COLUMN ecapris_subproject_id TYPE text;
 UPDATE
     moped_project
 SET
-    ecapris_subproject_id = split_part(ecapris_subproject_id, '.', 1) || '.' || split_part(ecapris_subproject_id, '.', 2) || '0'
+    ecapris_subproject_id = ecapris_subproject_id || '0'
 WHERE
     ecapris_subproject_id IS NOT NULL
     AND length(split_part(ecapris_subproject_id, '.', 2)) = 2;
