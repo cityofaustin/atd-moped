@@ -24,6 +24,9 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     color: theme.palette.secondary.dark,
   },
+  quillText: {
+    color: theme.palette.text.primary,
+  },
 }));
 
 const CommentInputQuill = ({
@@ -48,7 +51,7 @@ const CommentInputQuill = ({
     <Container>
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
-          <Box pt={2}>
+          <Box className={classes.quillText} pt={2}>
             <ReactQuill
               theme="snow"
               value={noteText}

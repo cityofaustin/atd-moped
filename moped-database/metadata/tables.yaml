@@ -66,6 +66,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -77,6 +78,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -88,6 +90,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -100,6 +103,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -112,6 +116,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -125,6 +130,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -137,6 +143,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -161,6 +168,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -172,6 +180,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -183,6 +192,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -195,6 +205,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -207,6 +218,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -220,6 +232,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -232,6 +245,7 @@
           - component_id
           - id
           - geography
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -257,6 +271,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -269,6 +284,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -281,6 +297,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -294,6 +311,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -307,6 +325,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -321,6 +340,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -334,6 +354,7 @@
           - intersection_id
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -384,12 +405,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -399,12 +419,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -414,12 +433,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -430,12 +448,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -446,12 +463,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -463,12 +479,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -479,12 +494,11 @@
           - name
           - render_type
           - signal_type
-          - source_layer
           - component_id
           - id
           - signal_id
           - geography
-          - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -516,6 +530,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
     - role: moped-editor
       permission:
         check: {}
@@ -534,6 +549,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
@@ -552,6 +568,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -571,6 +588,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -590,6 +608,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -610,6 +629,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
@@ -629,6 +649,7 @@
           - to_address_max
           - geography
           - project_extent_id
+          - is_deleted
         filter: {}
         check: {}
   delete_permissions:
@@ -648,6 +669,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -656,6 +678,7 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -664,8 +687,47 @@
           - name
           - component_id
           - id
+          - is_deleted
         filter: {}
         allow_aggregations: true
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+        filter: {}
+        check: {}
+- table:
+    name: layer_council_district
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - council_district
+          - id
+          - geography
+        filter: {}
 - table:
     name: moped_activity_log
     schema: public
@@ -695,6 +757,7 @@
           - record_project_id
           - record_type
           - updated_by
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -795,33 +858,18 @@
 - table:
     name: moped_components
     schema: public
+  object_relationships:
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
-    - name: moped_subcomponents
+    - name: moped_components_subcomponents
       using:
         foreign_key_constraint_on:
           column: component_id
           table:
-            name: moped_subcomponents
+            name: moped_components_subcomponents
             schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - component_id
-          - component_name
-          - status_id
-          - component_subtype
-          - line_representation
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - component_id
-          - component_name
-          - status_id
-          - component_subtype
-          - line_representation
   select_permissions:
     - role: moped-admin
       permission:
@@ -831,6 +879,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-editor
       permission:
@@ -840,6 +889,7 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
     - role: moped-viewer
       permission:
@@ -849,28 +899,40 @@
           - status_id
           - component_subtype
           - line_representation
+          - feature_layer_id
         filter: {}
-  update_permissions:
+- table:
+    name: moped_components_subcomponents
+    schema: public
+  object_relationships:
+    - name: moped_component
+      using:
+        foreign_key_constraint_on: component_id
+    - name: moped_subcomponent
+      using:
+        foreign_key_constraint_on: subcomponent_id
+  select_permissions:
     - role: moped-admin
       permission:
         columns:
           - component_id
-          - component_name
-          - status_id
-          - component_subtype
-          - line_representation
+          - id
+          - subcomponent_id
         filter: {}
-        check: {}
     - role: moped-editor
       permission:
         columns:
           - component_id
-          - component_name
-          - status_id
-          - component_subtype
-          - line_representation
+          - id
+          - subcomponent_id
         filter: {}
-        check: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - component_id
+          - id
+          - subcomponent_id
+        filter: {}
 - table:
     name: moped_department
     schema: public
@@ -1415,7 +1477,58 @@
     - name: moped_components
       using:
         foreign_key_constraint_on: component_id
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: phase_id
+    - name: moped_subphase
+      using:
+        foreign_key_constraint_on: subphase_id
   array_relationships:
+    - name: feature_drawn_lines
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_lines
+            schema: public
+    - name: feature_drawn_points
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_drawn_points
+            schema: public
+    - name: feature_intersections
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_intersections
+            schema: public
+    - name: feature_signals
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_signals
+            schema: public
+    - name: feature_street_segments
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_street_segments
+            schema: public
     - name: moped_proj_components_subcomponents
       using:
         foreign_key_constraint_on:
@@ -1436,80 +1549,108 @@
         check: {}
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
     - role: moped-editor
       permission:
         check: {}
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
           - component_id
+          - date_added
           - description
+          - interim_project_component_id
+          - is_deleted
           - name
+          - completion_date
+          - phase_id
           - project_component_id
           - project_id
-          - is_deleted
-          - interim_project_component_id
+          - subphase_id
         filter: {}
         check: {}
   event_triggers:
@@ -1521,23 +1662,47 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - component_id
-            - project_component_id
-            - project_id
-            - description
-            - name
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_component_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_components_subcomponents
     schema: public
@@ -1702,6 +1867,56 @@
           - contract_amount
         filter: {}
         check: {}
+  event_triggers:
+    - name: activity_log_moped_proj_contract
+      definition:
+        delete:
+          columns: '*'
+        enable_manual: false
+        insert:
+          columns: '*'
+        update:
+          columns: '*'
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_entities
     schema: public
@@ -1797,34 +2012,6 @@
           - date_added
         filter: {}
         check: null
-  event_triggers:
-    - name: activity_log_moped_proj_entities
-      definition:
-        delete:
-          columns: '*'
-        enable_manual: false
-        insert:
-          columns: '*'
-        update:
-          columns:
-            - project_groups
-            - entity_list_id
-            - project_id
-            - workgroups
-            - partners
-            - project_personnel
-            - project_sponsors
-            - date_added
-      retry_conf:
-        interval_sec: 10
-        num_retries: 0
-        timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
-      headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
 - table:
     name: moped_proj_features
     schema: public
@@ -1837,7 +2024,6 @@
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1845,7 +2031,6 @@
       permission:
         check: {}
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1853,7 +2038,6 @@
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1861,7 +2045,6 @@
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1869,7 +2052,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1878,7 +2060,6 @@
     - role: moped-admin
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -1887,7 +2068,6 @@
     - role: moped-editor
       permission:
         columns:
-          - feature
           - feature_id
           - is_deleted
           - project_component_id
@@ -2261,30 +2441,47 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - added_by
-            - funding_amount
-            - funding_program_id
-            - funding_source_id
-            - funding_status_id
-            - project_id
-            - proj_funding_id
-            - dept_unit
-            - fund
-            - fund_dept_unit
-            - funding_description
-            - date_added
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+                            "variables": {
+                                "object": {
+                                    "record_id": {{ $body.event.data.new.proj_funding_id }},
+                                    "record_type":  {{ $body.table.name }},
+                                    "activity_id": {{ $body.id }},
+                                    "record_project_id": {{ $body.event.data.new.project_id }},
+                                    "record_data": {"event": {{ $body.event }}},
+                                    "description": [{"newSchema": "true"}],
+                                    "operation_type": {{ $body.event.op }},
+                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                                },
+                                "updated_at": {{$body.created_at}},
+                                "project_id": {{$body.event.data.new.project_id}}
+                            }
+                        }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_milestones
     schema: public
@@ -2470,48 +2667,69 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - completed
-            - is_current_milestone
-            - milestone_id
-            - milestone_privacy
-            - milestone_end
-            - milestone_estimate
-            - milestone_start
-            - completed_by_user_id
-            - completion_percentage
-            - milestone_order
-            - milestone_priority
-            - project_id
-            - project_milestone_id
-            - started_by_user_id
-            - milestone_date_type
-            - milestone_description
-            - milestone_status
-            - date_added
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+                            "variables": {
+                                "object": {
+                                    "record_id": {{ $body.event.data.new.project_milestone_id }},
+                                    "record_type":  {{ $body.table.name }},
+                                    "activity_id": {{ $body.id }},
+                                    "record_project_id": {{ $body.event.data.new.project_id }},
+                                    "record_data": {"event": {{ $body.event }}},
+                                    "description": [{"newSchema": "true"}],
+                                    "operation_type": {{ $body.event.op }},
+                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                                },
+                                "updated_at": {{$body.created_at}},
+                                "project_id": {{$body.event.data.new.project_id}}
+                            }
+                        }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_notes
     schema: public
+  object_relationships:
+    - name: moped_phase
+      using:
+        foreign_key_constraint_on: phase_id
+    - name: moped_project
+      using:
+        foreign_key_constraint_on: project_id
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: added_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2520,10 +2738,10 @@
       permission:
         check: {}
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2532,10 +2750,10 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2545,10 +2763,10 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2558,10 +2776,10 @@
     - role: moped-viewer
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2572,10 +2790,10 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2585,10 +2803,10 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by
           - added_by_user_id
           - date_created
           - is_deleted
+          - phase_id
           - project_id
           - project_note
           - project_note_id
@@ -2604,25 +2822,45 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - added_by
-            - added_by_user_id
-            - project_id
-            - project_note_id
-            - project_note_type
-            - project_note
-            - date_created
-            - is_deleted
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_note_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_partners
     schema: public
@@ -2639,7 +2877,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
     - role: moped-editor
@@ -2650,7 +2887,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
   select_permissions:
@@ -2661,7 +2897,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2672,7 +2907,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2683,7 +2917,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2695,7 +2928,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2707,7 +2939,6 @@
           - date_added
           - entity_id
           - is_deleted
-          - partner_name
           - proj_partner_id
           - project_id
         filter: {}
@@ -2721,24 +2952,47 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - added_by
-            - entity_id
-            - is_deleted
-            - project_id
-            - proj_partner_id
-            - partner_name
-            - date_added
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.proj_partner_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_personnel
     schema: public
@@ -2848,24 +3102,45 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - is_deleted
-            - notes
-            - project_id
-            - project_personnel_id
-            - date_added
-            - added_by
-            - user_id
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+                            "variables": {
+                                "object": {
+                                    "record_id": {{ $body.event.data.new.project_personnel_id }},
+                                    "record_type":  {{ $body.table.name }},
+                                    "activity_id": {{ $body.id }},
+                                    "record_project_id": {{ $body.event.data.new.project_id }},
+                                    "record_data": { "event": {{ $body.event }}},
+                                    "description": [{"newSchema": "true"}],
+                                    "operation_type": {{ $body.event.op }},
+                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                                },
+                                "updated_at": {{$body.created_at}},
+                                "project_id": {{$body.event.data.new.project_id}}
+                            }
+                        }
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_personnel_roles
     schema: public
@@ -2933,6 +3208,52 @@
           - project_role_id
         filter: {}
         check: null
+  event_triggers:
+    - name: activity_log_moped_proj_personnel_roles
+      definition:
+        delete:
+          columns: '*'
+        enable_manual: false
+        insert:
+          columns: '*'
+        update:
+          columns: '*'
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+                            "variables": {
+                                "object": {
+                                    "record_id": {{ $body.event.data.new.id }},
+                                    "record_type":  {{ $body.table.name }},
+                                    "activity_id": {{ $body.id }},
+                                    "record_data": { "event": {{ $body.event }}},
+                                    "record_project_id": null,
+                                    "description": [{"newSchema": "true"}],
+                                    "operation_type": {{ $body.event.op }},
+                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                                }
+                            }
+                        }
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_proj_phases
     schema: public
@@ -3055,27 +3376,40 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - is_current_phase
-            - date_added
-            - subphase_id
-            - phase_description
-            - project_id
-            - phase_start
-            - is_deleted
-            - phase_end
-            - project_phase_id
-            - phase_id
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_phase_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
       cleanup_config:
         batch_size: 10000
         clean_invocation_logs: false
@@ -3164,10 +3498,10 @@
           columns: '*'
         update:
           columns:
-            - is_deleted
-            - tag_id
             - id
             - project_id
+            - tag_id
+            - is_deleted
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3184,11 +3518,11 @@
               "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
               "variables": {
                 "object": {
-                  "record_id": {{ $body.event.data.new.project_id }},
+                  "record_id": {{ $body.event.data.new.id }},
                   "record_type":  {{ $body.table.name }},
                   "activity_id": {{ $body.id }},
                   "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {{ $body.event }},
+                  "record_data": {"event" : {{ $body.event }}},
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3201,6 +3535,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project
     schema: public
@@ -3223,6 +3564,9 @@
     - name: moped_project_lead
       using:
         foreign_key_constraint_on: project_lead_id
+    - name: moped_public_process_statuses
+      using:
+        foreign_key_constraint_on: public_process_status_id
     - name: moped_user
       using:
         foreign_key_constraint_on: added_by
@@ -3345,6 +3689,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
     - role: moped-editor
       permission:
         check: {}
@@ -3376,6 +3721,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -3407,6 +3753,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -3439,6 +3786,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -3471,6 +3819,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -3504,6 +3853,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
     - role: moped-editor
@@ -3536,6 +3886,7 @@
           - updated_at
           - project_uuid
           - is_deleted
+          - public_process_status_id
         filter: {}
         check: {}
   event_triggers:
@@ -3548,25 +3899,26 @@
           columns: '*'
         update:
           columns:
+            - project_uuid
+            - ecapris_subproject_id
+            - project_id
+            - end_date
+            - capitally_funded
+            - date_added
+            - added_by
+            - is_deleted
             - project_sponsor
             - task_order
             - parent_project_id
             - interim_project_id
-            - work_assignment_id
-            - ecapris_subproject_id
-            - project_uuid
-            - fiscal_year
-            - project_description
-            - project_name
-            - project_id
-            - capitally_funded
-            - project_website
-            - end_date
-            - knack_project_id
-            - date_added
-            - is_deleted
-            - added_by
             - project_lead_id
+            - project_name
+            - project_description
+            - project_website
+            - knack_project_id
+            - fiscal_year
+            - work_assignment_id
+            - public_process_status_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3587,7 +3939,7 @@
                                     "record_type":  {{ $body.table.name }},
                                     "activity_id": {{ $body.id }},
                                     "record_project_id": {{ $body.event.data.new.project_id }},
-                                    "record_data": {{ $body.event }},
+                                    "record_data": { "event": {{ $body.event }}},
                                     "description": [{"newSchema": "true"}],
                                     "operation_type": {{ $body.event.op }},
                                     "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
@@ -3600,6 +3952,13 @@
         query_params: {}
         template_engine: Kriti
         version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project_files
     schema: public
@@ -3750,31 +4109,47 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - is_deleted
-            - is_scanned
-            - created_by
-            - file_size
-            - file_type
-            - project_file_id
-            - project_id
-            - api_response
-            - file_metadata
-            - file_permissions
-            - file_description
-            - file_key
-            - file_name
-            - create_date
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_file_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: moped_project_roles
     schema: public
@@ -3952,80 +4327,94 @@
         insert:
           columns: '*'
         update:
-          columns:
-            - added_by
-            - id
-            - is_deleted
-            - project_id
-            - project_type_id
-            - date_added
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
         timeout_sec: 60
-      webhook_from_env: MOPED_API_EVENTS_URL
+      webhook_from_env: HASURA_ENDPOINT
       headers:
-        - name: MOPED_API_APIKEY
-          value_from_env: MOPED_API_APIKEY
-        - name: MOPED_API_EVENT_NAME
-          value: activity_log
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
-    name: moped_subcomponents
+    name: moped_public_process_statuses
     schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - subcomponent_id
-          - subcomponent_name
-          - component_id
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - subcomponent_id
-          - subcomponent_name
-          - component_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - component_id
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - slug
+          - name
+        filter: {}
+- table:
+    name: moped_subcomponents
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
           - subcomponent_id
           - subcomponent_name
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - component_id
           - subcomponent_id
           - subcomponent_name
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - component_id
           - subcomponent_id
           - subcomponent_name
         filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - component_id
-          - subcomponent_id
-          - subcomponent_name
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - component_id
-          - subcomponent_id
-          - subcomponent_name
-        filter: {}
-        check: null
 - table:
     name: moped_subphases
     schema: public

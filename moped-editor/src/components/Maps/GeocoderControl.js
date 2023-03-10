@@ -2,6 +2,7 @@ import * as React from "react";
 import { useState } from "react";
 import { useControl, Marker } from "react-map-gl";
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import { mapParameters } from "src/views/projects/projectView/ProjectComponents/mapSettings";
 
 // See MOPED Technical Docs > Dev Guides > Maps and geospatial data  > Libraries
 const austinFullPurposeJurisdictionFeatureCollection = {
@@ -25,8 +26,8 @@ export default function GeocoderControl(props) {
     () => {
       const ctrl = new MapboxGeocoder({
         ...props,
-        marker: false,
-        accessToken: props.mapboxAccessToken,
+        flyTo: true,
+        accessToken: mapParameters.mapboxAccessToken,
         bbox: austinFullPurposeJurisdictionFeatureCollection.bbox,
       });
       ctrl.on("loading", props.onLoading);

@@ -74,7 +74,6 @@ const randomProjContract = () => ({
 });
 
 const randomProjPartner = () => ({
-  partner_name: randomString(),
   entity_id: randomArrElement(lookups.entities),
 });
 

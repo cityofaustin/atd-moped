@@ -58,6 +58,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Default column display (if no config in local storage)
+ */
+const DEFAULT_HIDDEN_COLS = {
+  project_id: false,
+  project_name: false,
+  current_phase: false,
+  project_team_members: true,
+  project_lead: false,
+  project_sponsor: false,
+  project_partner: true,
+  ecapris_subproject_id: false,
+  updated_at: false,
+  project_feature: true, // signal_ids
+  task_order: true,
+  type_name: true,
+  funding_source_name: true,
+  project_note: true,
+  construction_start_date: false,
+  completion_end_date: false,
+  project_inspector: true,
+  project_designer: true,
+  contractors: true,
+  contract_numbers: true,
+  project_tags: false,
+  added_by: true,
+};
+
+/**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
  * @param {String} searchTerm - The initial term
@@ -148,34 +176,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    */
   const [filters, setFilter] = useState(getFilterQuery() || {});
 
-  const defaultHiddenColumns = {
-    project_id: false,
-    project_name: false,
-    current_phase: false,
-    project_team_members: false,
-    project_lead: false,
-    project_sponsor: false,
-    project_partner: false,
-    ecapris_subproject_id: false,
-    updated_at: false,
-    project_feature: false, // signal_ids
-    task_order: true,
-    type_name: true,
-    funding_source_name: true,
-    project_note: true,
-    construction_start_date: false,
-    completion_end_date: false,
-    project_inspector: true,
-    project_designer: true,
-    contractors: false,
-    contract_numbers: false,
-    project_tags: false,
-    added_by: true,
-  };
-
   const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
-      defaultHiddenColumns
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
   const toggleColumnConfig = (field, hiddenState) => {
@@ -299,7 +301,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
         position: "sticky",
         left: 0,
         backgroundColor: "white",
-        whiteSpace: "noWrap",
+        minWidth: "20rem",
         zIndex: 1,
       },
     },
@@ -318,7 +320,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_team_members",
       hidden: hiddenColumns["project_team_members"],
       cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => renderProjectTeamMembers(entry.project_team_members, "projectsListView"),
+      render: (entry) =>
+        renderProjectTeamMembers(
+          entry.project_team_members,
+          "projectsListView"
+        ),
     },
     {
       title: "Lead",
@@ -375,21 +381,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       hidden: hiddenColumns["project_feature"],
       sorting: false,
       render: (entry) => {
-        // if there are no features, project_feature is [null]
-        if (!entry?.project_feature[0]) {
+        if (!entry?.project_feature) {
           return "-";
         } else {
-          const signalIds = [];
-          entry.project_feature.forEach((projectFeature) => {
-            const signal = projectFeature?.properties?.signal_id;
-            if (signal) {
-              signalIds.push({
-                signal_id: signal,
-                knack_id: projectFeature.properties.id,
-              });
-            }
-          });
-          return <RenderSignalLink signals={signalIds} />;
+          const signals = entry.project_feature.filter(
+            (signal) => signal.signal_id && signal.knack_id
+          );
+          return <RenderSignalLink signals={signals} />;
         }
       },
     },
@@ -447,7 +445,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       field: "project_note",
       hidden: hiddenColumns["project_note"],
       emptyValue: "-",
-      cellStyle: { minWidth: 300 },
+      cellStyle: { maxWidth: "30rem" },
       render: (entry) => parse(String(entry.project_note)),
     },
     {

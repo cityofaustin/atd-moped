@@ -1,6 +1,7 @@
 import {
   formatDateType,
   formatTimeStampTZType,
+  formatRelativeDate,
   makeUSExpandedFormDateFromTimeStampTZ,
   makeHourAndMinutesFromTimeStampTZ,
   makeFullTimeFromTimeStampTZ,
@@ -52,5 +53,41 @@ describe("makeFullTimeFromTimeStampTZ()", () => {
     const formattedTime = makeFullTimeFromTimeStampTZ(timeStampTZFromDatabase);
 
     expect(formattedTime).toBe("11:14:45 AM");
+  });
+});
+
+describe("formatRelativeDate()", () => {
+  it("formats millesconds ago to a human description relative to now", () => {
+    const nowMills = new Date().getTime();
+    const twoSecondsAgoMills = nowMills - 1000 * 2;
+    const oneMinute20sAgoMills = nowMills - 1000 * 70;
+    const twoMinutesAgoMills = nowMills - 1000 * 60 * 2;
+    const fiftyNineMinutesAgo = nowMills - 1000 * 60 * 59;
+    const twoHoursAgoMills = nowMills - 1000 * 60 * 60 * 2;
+    const twoDaysAgoMills = nowMills - 1000 * 60 * 60 * 2 * 24;
+    const twoMonthsAgoMills = nowMills - 1000 * 60 * 60 * 2 * 24 * 60;
+
+    let formattedTime = formatRelativeDate(twoSecondsAgoMills);
+    expect(formattedTime).toBe("Just now");
+
+    formattedTime = formatRelativeDate(oneMinute20sAgoMills);
+    expect(formattedTime).toBe("1 minute ago");
+
+    formattedTime = formatRelativeDate(twoMinutesAgoMills);
+    expect(formattedTime).toBe("2 minutes ago");
+
+    formattedTime = formatRelativeDate(fiftyNineMinutesAgo);
+    expect(formattedTime).toBe("1 hour ago");
+
+    formattedTime = formatRelativeDate(twoHoursAgoMills);
+    expect(formattedTime).toBe("2 hours ago");
+
+    formattedTime = formatRelativeDate(twoDaysAgoMills);
+    expect(formattedTime).toBe("2 days ago");
+
+    formattedTime = formatRelativeDate(twoMonthsAgoMills);
+    expect(formattedTime).toBe(
+      new Date(twoMonthsAgoMills).toLocaleDateString("en-US")
+    );
   });
 });

@@ -52,6 +52,7 @@ import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -189,6 +190,9 @@ const ProjectFundingTable = () => {
   const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
   const [newTaskOrderList, setNewTaskOrderList] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -516,6 +520,11 @@ const ProjectFundingTable = () => {
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
+  const handleDeleteOpen = (task) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(task);
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
@@ -586,15 +595,22 @@ const ProjectFundingTable = () => {
             />
             <Box component={"ul"} className={classes.chipContainer}>
               <Typography className={classes.fieldLabel}>Task order</Typography>
-              {taskOrderData.map((task) => (
-                <li key={task.id}>
-                  <Chip
-                    label={task.display_name}
-                    onDelete={() => handleTaskOrderDelete(task)}
-                    className={classes.chip}
-                  />
-                </li>
-              ))}
+              <DeleteConfirmationModal
+                type="tag"
+                submitDelete={() => handleTaskOrderDelete(deleteConfirmationId)}
+                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+              >
+                {taskOrderData.map((task) => (
+                  <li key={task.task_order}>
+                    <Chip
+                      label={task.display_name}
+                      onDelete={() => handleDeleteOpen(task)}
+                      className={classes.chip}
+                    />
+                  </li>
+                ))}
+              </DeleteConfirmationModal>
               {!addTaskOrderMode && (
                 <li key={`add-task-order`}>
                   <Tooltip title="Add New Task Order">
@@ -672,6 +688,9 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   added_by: userId,
+                  // preventing empty strings from being saved
+                  funding_description: newData.funding_description || null,
+                  funding_amount: newData.funding_amount || null,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
@@ -697,17 +716,11 @@ const ProjectFundingTable = () => {
             delete updateProjectFundingData.__typename;
             delete updateProjectFundingData.added_by;
             delete updateProjectFundingData.date_added;
-            // Format edited funding values to number value
-            updateProjectFundingData.funding_amount = Number(
-              newData.funding_amount
-            );
-            // add fallback of empty strings instead of null value
-            updateProjectFundingData.fund_dept_unit =
-              newData.fund_dept_unit || "";
+
+            updateProjectFundingData.funding_amount =
+              updateProjectFundingData.funding_amount || null;
             updateProjectFundingData.funding_description =
-              newData.funding_description || "";
-            updateProjectFundingData.funding_program_id =
-              newData.funding_program_id || 0;
+              updateProjectFundingData.funding_description || null;
 
             return updateProjectFunding({
               variables: updateProjectFundingData,

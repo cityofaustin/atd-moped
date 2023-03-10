@@ -9,7 +9,7 @@ const theme = createTheme({
       paper: "#ffffff",
       mapControls: "#FFFFFF",
       mapControlsHover: "#e6e6e6",
-      summaryHover: "#f2f2f2"
+      summaryHover: "#f2f2f2",
     },
     primary: {
       main: "#1276D1",
@@ -19,6 +19,11 @@ const theme = createTheme({
     secondary: {
       main: "#ff6549",
     },
+    error: {
+      light: "#e57373",
+      main: "#f44336",
+      dark: "#d32f2f",
+    },
     text: {
       primary: "#212121",
       secondary: "#848484",
@@ -26,7 +31,8 @@ const theme = createTheme({
     },
     map: {
       transparent: "rgba(0,0,0,0)",
-      trail: "#4caf50",
+      green: "#4caf50",
+      greenLight: "#80e27e",
       draw: {
         activeLineVertices: "#7ac943",
         orange: "#fbb03b",

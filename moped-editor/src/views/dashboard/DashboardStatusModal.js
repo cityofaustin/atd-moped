@@ -15,6 +15,7 @@ import ProjectComments from "../projects/projectView/ProjectComments";
 const DashboardStatusModal = ({
   projectId,
   projectName,
+  currentPhaseId,
   modalParent,
   statusUpdate,
   queryRefetch,
@@ -67,6 +68,7 @@ const DashboardStatusModal = ({
           <ProjectComments
             modal
             projectId={projectId}
+            currentPhaseId={currentPhaseId}
             closeModalDialog={handleDialogClose}
           />
         </DialogContent>

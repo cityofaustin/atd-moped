@@ -1,12 +1,11 @@
 import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
-import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
-// Ref that is forwarded is defined in useMapDrawTools and we need to drill it down here
-// so that we can assign the draw instance draw instance that exposes mapbox-gl-draw methods
-// that is returned from useControl as its current value
+// Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
+// We need to drill it down here so that we can assign the draw instance that exposes the
+// mapbox-gl-draw methods that are returned from useControl as its current value.
 export const DrawControl = React.forwardRef((props, ref) => {
   ref.current = useControl(
     ({ map }) => {
@@ -18,7 +17,6 @@ export const DrawControl = React.forwardRef((props, ref) => {
         // This override prevents the introduction of line midpoints and vertices into line string geometries
         props.overrideDirectSelect();
       });
-      map.on("load", props.initializeExistingDrawFeatures);
 
       return new MapboxDraw(props);
     },
@@ -76,12 +74,13 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 /**
  * This component defines common DrawControl props and also conditionally renders point or line controls
- * The ref that is forwarded is defined in useMapDrawTools and passes through
+ * The ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools and passes through
  * DrawPointsControl and DrawLinesControl so it can make its way to DrawControl and
  * have its current value assigned
  * @param {function} onCreate - fires after drawing is complete and a feature is created
+ * @param {function} onUpdate - fires after a feature is updated (used to update on feature drag)
  * @param {function} onDelete - fires after a feature is selected and deleted with the trash icon
- * @param {boolean} drawLines - tells us if we are drawing lines or not
+ * @param {string} linkMode - tracks if we are editing "lines" or "points"
  * @param {function} onModeChange - fires when a draw mode button is clicked and mode changes
  * @param {function} initializeExistingDrawFeatures - passed to load existing drawn features into the draw interface on map load
  * @param {function} overrideDirectSelect - overrides direct_select draw mode when map loads
@@ -90,32 +89,33 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 const ComponentsDrawControl = React.forwardRef(
   (
-    {
-      onCreate,
-      onUpdate,
-      onDelete,
-      drawLines,
-      onModeChange,
-      initializeExistingDrawFeatures,
-      overrideDirectSelect,
-    },
+    { onCreate, onUpdate, onDelete, linkMode, onModeChange, styleOverrides },
     ref
   ) => {
-    const shouldDrawLines = drawLines === true;
-    const shouldDrawPoints = drawLines === false;
+    const shouldDrawLines = linkMode === "lines";
+    const shouldDrawPoints = linkMode === "points";
+
+    /**
+     * direct_select allows more complex interactions like breaking line strings into midpoints
+     * but we only want users to select and deselect with simple_select mode so we override on load
+     * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#simple_select
+     *  @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#direct_select
+     */
+    const overrideDirectSelect = () => {
+      ref.current.modes.DIRECT_SELECT = "simple_select";
+    };
 
     const sharedProps = {
       position: "top-right",
       displayControlsDefault: false, // Disable to allow us to set which controls to show
       default_mode: "simple_select",
-      clickBuffer: 12,
+      clickBuffer: 8, // pixel width of click tolerance to make a point or line active
       onCreate,
       onUpdate,
       onDelete,
       onModeChange,
-      initializeExistingDrawFeatures,
       overrideDirectSelect,
-      styles: mapboxDrawStylesOverrides,
+      styles: styleOverrides,
     };
 
     if (shouldDrawPoints)
