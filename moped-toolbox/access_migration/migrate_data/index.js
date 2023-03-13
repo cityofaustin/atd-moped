@@ -3,6 +3,9 @@ const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const {
+  PUBLIC_PROCESS_STATUS_MAP,
+} = require("./mappings/public_process_status");
+const {
   exportMetadata,
   replaceMetadata,
   reloadMetadata,
@@ -96,6 +99,18 @@ fields = [
       } else {
         return null;
       }
+    },
+  },
+  {
+    in: "PublicProcessStatus",
+    out: "public_process_status_id",
+    required: false,
+    transform(row) {
+      const statusText = row["PublicProcessStatus"];
+      const statusMatch = PUBLIC_PROCESS_STATUS_MAP.find(
+        (status) => status.in === statusText
+      );
+      return statusMatch?.out || null;
     },
   },
 ];
