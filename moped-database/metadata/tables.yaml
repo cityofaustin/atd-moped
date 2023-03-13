@@ -3892,26 +3892,25 @@
           columns: '*'
         update:
           columns:
-            - project_uuid
-            - ecapris_subproject_id
-            - project_id
-            - end_date
-            - capitally_funded
             - date_added
-            - added_by
+            - fiscal_year
+            - capitally_funded
+            - project_name
+            - interim_project_id
             - is_deleted
             - project_sponsor
-            - task_order
-            - parent_project_id
-            - interim_project_id
-            - project_lead_id
-            - project_name
-            - project_description
-            - project_website
             - knack_project_id
-            - fiscal_year
-            - work_assignment_id
+            - project_uuid
+            - ecapris_subproject_id
+            - project_description
+            - parent_project_id
             - public_process_status_id
+            - project_lead_id
+            - added_by
+            - task_order
+            - project_id
+            - project_website
+            - end_date
       retry_conf:
         interval_sec: 10
         num_retries: 0
