@@ -1,4 +1,3 @@
-
 # IMPDB Access Migration
 
 This directory is home to the tools that will migrate the Interim Mobility Project Database, an MS Access DB, into Moped.
@@ -49,7 +48,7 @@ $ npm run start
 
 ```shell
 # requires node v18
-$ nvm use 
+$ nvm use
 # install packages
 $ npm install
 ```
@@ -62,14 +61,10 @@ $ node index.js local
 
 4. Open the Moped Editor to inspect projects ✨
 
-
 ### Issues to make
 
-
----> we cna drop the project facility attribute detail. the rest are subcomponents. john to copy to component description with subcomponent type (facility attribute). 
+---> we can drop the project facility attribute detail. the rest are subcomponents. john to copy to component description with subcomponent type (facility attribute).
 --->
-
-
 
 - clean up/de-dupe RRFB component
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
@@ -82,17 +77,18 @@ $ node index.js local
   - updated_by
   - updated_at
   - description
-- use a lookup table for note types 
-
+- use a lookup table for note types
 
 ### NW Questions
 
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
-- project description - these are not public friendly. there are very view "project description" public. propose we import project description as a note? but these projects need descriptions :/ 
+- project description - these are not public friendly. there are very view "project description" public. propose we import project description as a note? but these projects need descriptions :/
 - is there a table that holds project partners? where does the concatenation come from on the main projects table?
 
 #### Facilities
+
 - What to do with these project_facility columns?
+
   - PerfMeasureCategory
   - PerfMeasureName
   - PerfMeasureType
@@ -107,6 +103,3 @@ $ node index.js local
   - figure out how to handle these :/
 
 ### moped_project
-
-
-
