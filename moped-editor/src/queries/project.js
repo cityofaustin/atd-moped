@@ -10,7 +10,6 @@ export const ADD_PROJECT = gql`
       project_priority
       ecapris_subproject_id
       fiscal_year
-      capitally_funded
       moped_proj_phases {
         phase_id
         is_current_phase
@@ -33,7 +32,6 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
-      capitally_funded
       ecapris_subproject_id
       fiscal_year
       project_priority
@@ -758,14 +756,12 @@ export const PROJECT_UPDATE_TYPES = gql`
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECapris(
     $projectId: Int!
-    $eCapris: numeric!
-    $capitallyFunded: Boolean!
+    $eCapris: String!
   ) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: {
         ecapris_subproject_id: $eCapris
-        capitally_funded: $capitallyFunded
       }
     ) {
       affected_rows
@@ -777,7 +773,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECaprisClear($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: null, capitally_funded: false }
+      _set: { ecapris_subproject_id: null }
     ) {
       affected_rows
     }
