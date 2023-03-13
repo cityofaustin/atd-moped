@@ -57,7 +57,7 @@ $ npm install
 3. Run the migration!
 
 ```shell
-$ node index.js
+$ node index.js local
 ```
 
 4. Open the Moped Editor to inspect projects ✨
