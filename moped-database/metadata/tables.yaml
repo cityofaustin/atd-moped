@@ -3876,10 +3876,10 @@
           - project_sponsor
           - project_uuid
           - project_website
+          - public_process_status_id
           - task_order
           - timeline_id
           - updated_at
-          - work_assignment_id
         filter: {}
         check: {}
   event_triggers:
