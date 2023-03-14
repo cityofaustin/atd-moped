@@ -3390,6 +3390,9 @@
       permission:
         check: {}
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3407,6 +3410,9 @@
     - role: moped-admin
       permission:
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3425,6 +3431,9 @@
     - role: moped-editor
       permission:
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3443,6 +3452,9 @@
     - role: moped-viewer
       permission:
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3462,6 +3474,9 @@
     - role: moped-admin
       permission:
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3480,6 +3495,9 @@
     - role: moped-editor
       permission:
         columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
@@ -3505,6 +3523,9 @@
           columns: '*'
         update:
           columns:
+          - added_by
+          - interim_project_id
+          - parent_project_id
           - project_id
           - project_lead_id
           - project_sponsor
