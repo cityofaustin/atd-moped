@@ -3523,21 +3523,20 @@
           columns: '*'
         update:
           columns:
-          - added_by
-          - interim_project_id
-          - parent_project_id
+          - ecapris_subproject_id
           - project_id
-          - project_lead_id
+          - date_added
+          - added_by
+          - is_deleted
           - project_sponsor
           - task_order
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
+          - parent_project_id
+          - interim_project_id
+          - project_lead_id
           - project_name
+          - project_description
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
+          - knack_project_id
           - public_process_status_id
       retry_conf:
         interval_sec: 10
