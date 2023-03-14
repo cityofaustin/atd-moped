@@ -3662,7 +3662,6 @@
       permission:
         check: {}
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3694,7 +3693,6 @@
       permission:
         check: {}
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3726,7 +3724,6 @@
     - role: moped-admin
       permission:
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3759,7 +3756,6 @@
     - role: moped-editor
       permission:
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3792,7 +3788,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3826,7 +3821,6 @@
     - role: moped-admin
       permission:
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3859,7 +3853,6 @@
     - role: moped-editor
       permission:
         columns:
-          - capitally_funded
           - end_date
           - added_by
           - interim_project_id
@@ -3903,7 +3896,6 @@
             - ecapris_subproject_id
             - project_id
             - end_date
-            - capitally_funded
             - date_added
             - added_by
             - is_deleted
@@ -5015,7 +5007,6 @@
     - role: moped-admin
       permission:
         columns:
-          - capitally_funded
           - is_deleted
           - completion_end_date
           - construction_start_date
@@ -5055,7 +5046,6 @@
     - role: moped-editor
       permission:
         columns:
-          - capitally_funded
           - is_deleted
           - completion_end_date
           - construction_start_date
@@ -5095,7 +5085,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - capitally_funded
           - is_deleted
           - completion_end_date
           - construction_start_date
