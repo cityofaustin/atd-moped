@@ -789,73 +789,6 @@
         filter: {}
         allow_aggregations: true
 - table:
-    name: moped_city_fiscal_years
-    schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - fiscal_year_value
-          - fiscal_year_start_date
-          - fiscal_year_end_date
-          - active_fy
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - fiscal_year_value
-          - fiscal_year_start_date
-          - fiscal_year_end_date
-          - active_fy
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - active_fy
-          - fiscal_year_end_date
-          - fiscal_year_start_date
-          - fiscal_year_value
-        filter: {}
-        allow_aggregations: true
-    - role: moped-editor
-      permission:
-        columns:
-          - active_fy
-          - fiscal_year_end_date
-          - fiscal_year_start_date
-          - fiscal_year_value
-        filter: {}
-        allow_aggregations: true
-    - role: moped-viewer
-      permission:
-        columns:
-          - fiscal_year_value
-          - fiscal_year_start_date
-          - fiscal_year_end_date
-          - active_fy
-        filter: {}
-        allow_aggregations: true
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - active_fy
-          - fiscal_year_end_date
-          - fiscal_year_start_date
-          - fiscal_year_value
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - active_fy
-          - fiscal_year_end_date
-          - fiscal_year_start_date
-          - fiscal_year_value
-        filter: {}
-        check: null
-- table:
     name: moped_components
     schema: public
   object_relationships:
@@ -2071,231 +2004,6 @@
           - feature_id
           - is_deleted
           - project_component_id
-        filter: {}
-        check: null
-- table:
-    name: moped_proj_financials
-    schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-        filter: {}
-        allow_aggregations: true
-    - role: moped-editor
-      permission:
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-        filter: {}
-        allow_aggregations: true
-    - role: moped-viewer
-      permission:
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-        filter: {}
-        allow_aggregations: true
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - budget_available
-          - budget_previous
-          - budget_total
-          - ecapris_subproject_id
-          - expenses_previous
-          - expenses_total
-          - expenses_ytd
-          - financials_id
-          - last_updated
-          - primary_funding_source
-          - project_id
-          - subproject_name
-          - subproject_status
-        filter: {}
-        check: null
-- table:
-    name: moped_proj_fiscal_years
-    schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - fiscal_year_name
-          - fiscal_year_start
-          - fiscal_year_end
-          - budget_total
-          - expenses_total
-          - budget_available_at_end
-          - project_id
-          - date_added
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - fiscal_year_name
-          - fiscal_year_start
-          - fiscal_year_end
-          - budget_total
-          - expenses_total
-          - budget_available_at_end
-          - project_id
-          - date_added
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - fiscal_year_end
-          - fiscal_year_start
-          - budget_available_at_end
-          - budget_total
-          - expenses_total
-          - project_id
-          - fiscal_year_name
-          - date_added
-        filter: {}
-        allow_aggregations: true
-    - role: moped-editor
-      permission:
-        columns:
-          - fiscal_year_end
-          - fiscal_year_start
-          - budget_available_at_end
-          - budget_total
-          - expenses_total
-          - project_id
-          - fiscal_year_name
-          - date_added
-        filter: {}
-        allow_aggregations: true
-    - role: moped-viewer
-      permission:
-        columns:
-          - fiscal_year_name
-          - fiscal_year_start
-          - fiscal_year_end
-          - budget_total
-          - expenses_total
-          - budget_available_at_end
-          - project_id
-          - date_added
-        filter: {}
-        allow_aggregations: true
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - fiscal_year_end
-          - fiscal_year_start
-          - budget_available_at_end
-          - budget_total
-          - expenses_total
-          - project_id
-          - fiscal_year_name
-          - date_added
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - fiscal_year_end
-          - fiscal_year_start
-          - budget_available_at_end
-          - budget_total
-          - expenses_total
-          - project_id
-          - fiscal_year_name
-          - date_added
         filter: {}
         check: null
 - table:
@@ -3662,93 +3370,60 @@
       permission:
         check: {}
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
         filter: {}
@@ -3756,31 +3431,20 @@
     - role: moped-editor
       permission:
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
         filter: {}
@@ -3788,31 +3452,20 @@
     - role: moped-viewer
       permission:
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
         filter: {}
@@ -3821,31 +3474,20 @@
     - role: moped-admin
       permission:
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
         filter: {}
@@ -3853,31 +3495,20 @@
     - role: moped-editor
       permission:
         columns:
-          - end_date
           - added_by
           - interim_project_id
-          - milestone_id
           - parent_project_id
           - project_id
-          - project_importance
           - project_lead_id
-          - project_length
-          - project_order
           - project_sponsor
-          - timeline_id
           - task_order
           - ecapris_subproject_id
-          - fiscal_year
           - knack_project_id
           - project_description
-          - project_description_public
           - project_name
-          - project_priority
           - project_website
-          - work_assignment_id
           - date_added
           - updated_at
-          - project_uuid
           - is_deleted
           - public_process_status_id
         filter: {}
@@ -3892,25 +3523,21 @@
           columns: '*'
         update:
           columns:
-            - project_uuid
-            - ecapris_subproject_id
-            - project_id
-            - end_date
-            - date_added
-            - added_by
-            - is_deleted
-            - project_sponsor
-            - task_order
-            - parent_project_id
-            - interim_project_id
-            - project_lead_id
-            - project_name
-            - project_description
-            - project_website
-            - knack_project_id
-            - fiscal_year
-            - work_assignment_id
-            - public_process_status_id
+          - ecapris_subproject_id
+          - project_id
+          - date_added
+          - added_by
+          - is_deleted
+          - project_sponsor
+          - task_order
+          - parent_project_id
+          - interim_project_id
+          - project_lead_id
+          - project_name
+          - project_description
+          - project_website
+          - knack_project_id
+          - public_process_status_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -5010,12 +4637,7 @@
           - is_deleted
           - completion_end_date
           - construction_start_date
-          - end_date
-          - milestone_id
           - project_id
-          - project_length
-          - project_order
-          - timeline_id
           - project_feature
           - task_order
           - ecapris_subproject_id
@@ -5024,7 +4646,6 @@
           - contractors
           - current_phase
           - current_phase_key
-          - fiscal_year
           - funding_source_name
           - project_description
           - project_designer
@@ -5040,7 +4661,6 @@
           - type_name
           - date_added
           - updated_at
-          - project_uuid
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -5049,12 +4669,7 @@
           - is_deleted
           - completion_end_date
           - construction_start_date
-          - end_date
-          - milestone_id
           - project_id
-          - project_length
-          - project_order
-          - timeline_id
           - project_feature
           - task_order
           - ecapris_subproject_id
@@ -5063,7 +4678,6 @@
           - contractors
           - current_phase
           - current_phase_key
-          - fiscal_year
           - funding_source_name
           - project_description
           - project_designer
@@ -5079,7 +4693,6 @@
           - type_name
           - date_added
           - updated_at
-          - project_uuid
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -5088,12 +4701,7 @@
           - is_deleted
           - completion_end_date
           - construction_start_date
-          - end_date
-          - milestone_id
           - project_id
-          - project_length
-          - project_order
-          - timeline_id
           - project_feature
           - task_order
           - ecapris_subproject_id
@@ -5102,7 +4710,6 @@
           - contractors
           - current_phase
           - current_phase_key
-          - fiscal_year
           - funding_source_name
           - project_description
           - project_designer
@@ -5118,7 +4725,6 @@
           - type_name
           - date_added
           - updated_at
-          - project_uuid
         filter: {}
         allow_aggregations: true
 - table:
