@@ -59,9 +59,7 @@
       permission:
         check: {}
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -71,9 +69,7 @@
       permission:
         check: {}
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -83,9 +79,7 @@
     - role: moped-admin
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -96,9 +90,7 @@
     - role: moped-editor
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -109,9 +101,7 @@
     - role: moped-viewer
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -123,9 +113,7 @@
     - role: moped-admin
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -136,9 +124,7 @@
     - role: moped-editor
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -208,9 +194,7 @@
       permission:
         check: {}
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -220,9 +204,7 @@
       permission:
         check: {}
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -232,9 +214,7 @@
     - role: moped-admin
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -245,9 +225,7 @@
     - role: moped-editor
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -258,9 +236,7 @@
     - role: moped-viewer
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -272,9 +248,7 @@
     - role: moped-admin
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -285,9 +259,7 @@
     - role: moped-editor
       permission:
         columns:
-          - name
           - project_extent_id
-          - render_type
           - source_layer
           - component_id
           - id
@@ -357,68 +329,53 @@
       permission:
         check: {}
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -426,28 +383,22 @@
     - role: moped-admin
       permission:
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
-          - name
-          - render_type
           - source_layer
           - component_id
           - id
           - intersection_id
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}
@@ -543,7 +494,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -556,7 +506,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -569,7 +518,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -583,7 +531,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -597,7 +544,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -612,7 +558,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -626,7 +571,6 @@
         columns:
           - knack_id
           - location_name
-          - render_type
           - signal_type
           - component_id
           - id
@@ -698,10 +642,7 @@
         check: {}
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -710,17 +651,13 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -729,17 +666,13 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -748,7 +681,6 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -756,10 +688,7 @@
       permission:
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -768,7 +697,6 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -776,10 +704,7 @@
       permission:
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -788,7 +713,6 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -797,10 +721,7 @@
       permission:
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -809,7 +730,6 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}
@@ -817,10 +737,7 @@
       permission:
         columns:
           - full_street_name
-          - knack_id
           - line_type
-          - name
-          - render_type
           - source_layer
           - component_id
           - ctn_segment_id
@@ -829,7 +746,6 @@
           - symbol
           - to_address_max
           - geography
-          - project_extent_id
           - is_deleted
         filter: {}
         check: {}
@@ -894,7 +810,6 @@
     - role: moped-admin
       permission:
         columns:
-          - name
           - component_id
           - id
           - is_deleted
@@ -903,7 +818,6 @@
     - role: moped-editor
       permission:
         columns:
-          - name
           - component_id
           - id
           - is_deleted
@@ -912,7 +826,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - name
           - component_id
           - id
           - is_deleted
@@ -4808,7 +4721,6 @@
       permission:
         columns:
           - is_deleted
-          - feature_name
           - original_fk
           - table
           - component_archtype_id
@@ -4833,7 +4745,6 @@
           - table
           - original_fk
           - component_name
-          - feature_name
           - attributes
           - geography
         filter: {}
@@ -4842,7 +4753,6 @@
       permission:
         columns:
           - is_deleted
-          - feature_name
           - original_fk
           - table
           - component_archtype_id
