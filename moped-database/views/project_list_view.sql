@@ -1,3 +1,4 @@
+-- latest version 1678894870998_remove_cols_from_geo_views
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
