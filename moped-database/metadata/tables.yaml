@@ -402,7 +402,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -416,7 +415,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -430,7 +428,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -445,7 +442,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -460,7 +456,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -476,7 +471,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
@@ -491,7 +485,6 @@
         columns:
           - knack_id
           - location_name
-          - name
           - render_type
           - signal_type
           - component_id
