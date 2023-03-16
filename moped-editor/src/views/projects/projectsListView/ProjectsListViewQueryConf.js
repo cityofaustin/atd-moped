@@ -172,13 +172,12 @@ export const ProjectsListViewQueryConf = {
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
         />
       ),
-      type: "number",
+      type: "string",
       search: {
         label: "Search by eCapris subproject ID",
-        operator: "_eq",
-        quoted: false,
+        operator: "_ilike",
+        quoted: true,
         envelope: "%{VALUE}%",
-        invalidValueDefault: 0,
       },
     },
     updated_at: {
