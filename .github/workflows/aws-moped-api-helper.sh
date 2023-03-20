@@ -77,7 +77,6 @@ function deploy_moped_api() {
   initialize_virtualenv;
   install_requirements;
   download_zappa_settings;
-  echo "region is ${AWS_DEFAULT_REGION}"
   update_lambda_api;
 
   echo "Finished Updating MOPED API: ${WORKING_STAGE^^}";
