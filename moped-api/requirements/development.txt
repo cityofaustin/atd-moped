@@ -32,7 +32,7 @@ Jinja2==2.11.3
 jmespath==0.10.0
 kappa==0.6.0
 locket==0.2.1
-MarkupSafe==1.1.1
+MarkupSafe==2.1.1
 marshmallow==3.14.1
 marshmallow-oneofschema==3.0.1
 mock==4.0.2
