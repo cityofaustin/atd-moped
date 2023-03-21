@@ -8,7 +8,6 @@ certifi==2021.5.30
 cffi==1.14.3
 cfn-flip==1.2.3
 chardet==4.0.0
-click==7.1.2
 cognitojwt==1.2.2
 cryptography==39.0.1
 durationpy==0.5
