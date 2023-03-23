@@ -188,6 +188,11 @@ export const ProjectsListViewQueryConf = {
       filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
     },
+    public_process_status: {
+      label: "Public process status",
+      searchable: false,
+      type: "string",
+    },
     // the following column configurations only work with material table and do not have the
     // necessary details to work with Grid Table
     task_order: {

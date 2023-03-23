@@ -105,4 +105,8 @@ export const ProjectsListViewExportConf = {
   added_by: {
     label: "Created by",
   },
+  public_process_status: {
+    label: "Public process status",
+    filter: filterNullValues,
+  },
 };

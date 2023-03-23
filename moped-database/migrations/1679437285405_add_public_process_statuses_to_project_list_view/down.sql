@@ -42,7 +42,6 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
-    mpps.name AS public_process_status,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
@@ -143,7 +142,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
-     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
   GROUP BY
     mp.project_id, 
     mp.project_name, 
@@ -162,4 +160,3 @@ AS WITH project_person_list_lookup AS (
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,
-    mpps.name;
