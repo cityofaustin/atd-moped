@@ -35,29 +35,39 @@ const useStyles = makeStyles((theme) => ({
 const templateChoices = ["Arterial Management"];
 
 /**
- * useMemo hook to choose milestone options
+ * useMemo hook to choose phase options
  * @return {Object[]}
  */
 const usePhaseOptions = (template, projectId) =>
   useMemo(() => {
     if (template === "Arterial Management") {
       return returnArterialManagementPhaseTemplate(projectId);
-      // } else if (template === "Project Delivery") {
-      //   return returnPDDMilestoneTemplate(projectId);
     } else {
       return [];
     }
   }, [template, projectId]);
 
 /**
- * useMemo hook to filter out already selected milestones
+ * useMemo hook to filter out already selected phases
  * @return {Object[]}
  */
 const usePhaseSelections = (phasesList, selectedPhases) =>
   useMemo(() => {
-    const selectedPhaseIds = selectedPhases.map((phase) => phase.phase_id);
+    const selectedPhaseSubphaseCombinations = selectedPhases.map(
+      (phase) =>
+        String(phase.moped_phase.phase_id) +
+        String(phase.subphase_id) +
+        String(phase.phase_description)
+    );
+
     return phasesList.filter(
-      (option) => !selectedPhaseIds.includes(option.phase_id)
+      (option) =>
+        !selectedPhaseSubphaseCombinations.includes(
+          String(option.phase_id) +
+            String(option.subphase_id) +
+            String(option.phase_description ?? null) // phase_description here couild come back as undefined,
+          // it needs to be null for it to match the comobinations above
+        )
     );
   }, [phasesList, selectedPhases]);
 
@@ -68,7 +78,7 @@ const PhaseTemplateModal = ({
   selectedPhases,
   refetch,
   phaseNameLookup,
-  subphaseNameLookup
+  subphaseNameLookup,
 }) => {
   const classes = useStyles();
 
@@ -78,7 +88,6 @@ const PhaseTemplateModal = ({
   const [addProjectPhase] = useMutation(ADD_PROJECT_PHASE);
 
   const phasesList = usePhaseOptions(template, projectId);
-  console.log("PHASE LIST ", phasesList);
 
   const filteredPhasesList = usePhaseSelections(phasesList, selectedPhases);
 
@@ -165,16 +174,15 @@ const PhaseTemplateModal = ({
             let secondaryText = subphaseNameLookup[phase.subphase_id] ?? "";
             if (phase.phase_description) {
               if (secondaryText) {
-                secondaryText = secondaryText + " - " + phase.phase_description     
+                secondaryText = secondaryText + " - " + phase.phase_description;
               } else {
-                secondaryText = phase.phase_description
+                secondaryText = phase.phase_description;
               }
-
             }
             return (
               <ListItem
                 button
-                key={`${phase.phase_order}${phase.phase_id}`}
+                key={`${phase.phase_id}${phase.subphase_id}${phase.phase_description}`}
                 dense
                 onClick={() => handleToggle(phase)}
               >
