@@ -255,6 +255,10 @@ export const TIMELINE_QUERY = gql`
         subphase_id
       }
     }
+    moped_subphases(order_by: { subphase_order: asc }) {
+      subphase_name
+      subphase_id
+    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: {
