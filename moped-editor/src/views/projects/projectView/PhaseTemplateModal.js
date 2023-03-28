@@ -95,7 +95,7 @@ const PhaseTemplateModal = ({
     setPhasesToAdd([...filteredPhasesList]);
   }, [filteredPhasesList]);
 
-  // checks if milestone is in list of milestones to add
+  // checks if phase is in list of phases to add
   // if in list, remove. if not, add.
   const handleToggle = (phase) => {
     const currentIndex = phasesToAdd.indexOf(phase);
@@ -134,7 +134,7 @@ const PhaseTemplateModal = ({
       maxWidth={"md"}
     >
       <DialogTitle disableTypography className={classes.dialogTitle}>
-        <h3>Select milestone template</h3>
+        <h3>Select phase template</h3>
         <IconButton onClick={closeDialog}>
           <CloseIcon />
         </IconButton>
@@ -166,7 +166,7 @@ const PhaseTemplateModal = ({
             onClick={handleAddPhases}
             disabled={phasesToAdd.length === 0}
           >
-            Add milestones
+            Add phases
           </Button>
         </Box>
         <List dense>
