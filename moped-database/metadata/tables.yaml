@@ -4190,52 +4190,37 @@
           - subphase_id
           - subphase_name
           - subphase_description
-          - subphase_order
-          - subphase_average_length
-          - required_subphase
           - related_phase_id
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
@@ -4243,11 +4228,8 @@
     - role: moped-admin
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
@@ -4255,11 +4237,8 @@
     - role: moped-editor
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
