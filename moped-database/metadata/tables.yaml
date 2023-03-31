@@ -4182,23 +4182,6 @@
     - name: moped_phase
       using:
         foreign_key_constraint_on: related_phase_id
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - subphase_id
-          - subphase_name
-          - subphase_description
-          - related_phase_id
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - related_phase_id
-          - subphase_id
-          - subphase_description
-          - subphase_name
   select_permissions:
     - role: moped-admin
       permission:
@@ -4224,25 +4207,6 @@
           - subphase_description
           - subphase_name
         filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - related_phase_id
-          - subphase_id
-          - subphase_description
-          - subphase_name
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - related_phase_id
-          - subphase_id
-          - subphase_description
-          - subphase_name
-        filter: {}
-        check: null
 - table:
     name: moped_tags
     schema: public
