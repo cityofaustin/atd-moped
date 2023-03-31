@@ -42,6 +42,7 @@ export const useProjectComponents = (data) => {
   const allRelatedComponents = useMemo(() => {
     return [...parentComponents, ...siblingComponents, ...childComponents].map(
       (component) => {
+        /* these refs will feed component list items so that we can scroll to them */
         component._ref = createRef();
         return component;
       }
