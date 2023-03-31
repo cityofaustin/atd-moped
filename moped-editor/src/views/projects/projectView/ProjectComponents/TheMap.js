@@ -119,22 +119,25 @@ export default function TheMap({
     // hover states conflict! the first feature to reach hover state wins
     // so set point radii and line widths accordingly
     setCursor("pointer");
-
-    e.features.forEach((feature) => {
-      if (feature.layer.id.includes("project")) {
-        // it's a project feature, so add to the hover tracking for sidebar interaction
-        setHoveredOnMapFeature(feature);
-      }
-      // mapRef.current?.setFeatureState(feature, { hover: true });
-    });
+    // e.features.forEach((feature) => {
+    //   if (feature.layer.id.includes("project")) {
+    //     // it's a project feature, so add to the hover tracking for sidebar interaction
+    //     // setHoveredOnMapFeature(feature);
+    //   }
+    //   // ["project-points", "project-lines", "ATD_ADMIN.CTN"].forEach(
+    //   //   (sourceId) => {
+    //   //     mapRef.current?.removeFeatureState({ source: sourceId });
+    //   //   }
+    //   // );
+    //   // mapRef.current?.setFeatureState(feature, { hover: true });
+    // });
   };
 
   const onMouseLeave = (e) => {
     setCursor("grab");
-    setHoveredOnMapFeature(null);
-    // e.features.forEach((feature) => {
-    //   mapRef.current?.setFeatureState(feature, { hover: false });
-    //   // setHoveredOnMapFeatureId(null);
+    // setHoveredOnMapFeature(null);
+    // ["project-points", "project-lines", "ATD_ADMIN.CTN"].forEach((sourceId) => {
+    //   mapRef.current?.removeFeatureState({ source: sourceId });
     // });
   };
 
@@ -273,7 +276,19 @@ export default function TheMap({
     /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {
       const clickedProjectFeature = getClickedFeatureFromMap(e);
-
+      const clickedComponentId =
+        clickedProjectFeature.properties.project_component_id;
+      const clickedComponentFromMap = [
+        ...projectComponents,
+        ...allRelatedComponents,
+      ].find(
+        (component) => component.project_component_id === clickedComponentId
+      );
+      if (clickedComponentFromMap) {
+        clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
+        const ref = clickedComponentFromMap?._ref;
+        ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+      }
       setClickedProjectFeature(clickedProjectFeature);
       return;
     }
@@ -289,8 +304,6 @@ export default function TheMap({
       handleEditOnClick(e);
       return;
     }
-
-    // setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
   const onMoveEnd = (e) => {
