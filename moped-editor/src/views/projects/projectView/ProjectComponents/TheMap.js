@@ -276,19 +276,26 @@ export default function TheMap({
     /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {
       const clickedProjectFeature = getClickedFeatureFromMap(e);
+
+      /* Extract component id fron the clicked feature */
       const clickedComponentId =
-        clickedProjectFeature.properties.project_component_id;
+        clickedProjectFeature?.properties.project_component_id;
+
+      /* Find the component (this project's component or related components) that mathes this feature */
       const clickedComponentFromMap = [
         ...projectComponents,
         ...allRelatedComponents,
       ].find(
         (component) => component.project_component_id === clickedComponentId
       );
+
+      /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
         clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
         const ref = clickedComponentFromMap?._ref;
         ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
       }
+
       setClickedProjectFeature(clickedProjectFeature);
       return;
     }
