@@ -282,16 +282,25 @@ export default function TheMap({
         clickedProjectFeature?.properties.project_component_id;
 
       /* Find the component (this project's component or related components) that mathes this feature */
-      const clickedComponentFromMap = [
-        ...projectComponents,
-        ...allRelatedComponents,
-      ].find(
+
+      let isNewClickedComponentRelated = false;
+      let clickedComponentFromMap = projectComponents.find(
         (component) => component.project_component_id === clickedComponentId
       );
+
+      if (!clickedComponentFromMap) {
+        clickedComponentFromMap = allRelatedComponents.find(
+          (component) => component.project_component_id === clickedComponentId
+        );
+        if (clickedComponentFromMap) {
+          isNewClickedComponentRelated = true;
+        }
+      }
 
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
         clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
+        isNewClickedComponentRelated && setIsClickedComponentRelated(true);
         const ref = clickedComponentFromMap?._ref;
         ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
       }
