@@ -875,5 +875,9 @@ export const LOOKUP_TABLES_QUERY = gql`
       name
       id
     }
+    moped_public_process_statuses(order_by: { name: asc }) {
+      name
+      id
+    }
   }
 `;

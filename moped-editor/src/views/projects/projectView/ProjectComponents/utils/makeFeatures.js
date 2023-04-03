@@ -12,26 +12,18 @@ export const featureTableFieldMap = {
     from_address_min: "FROM_ADDRESS_MIN",
     to_address_max: "TO_ADDRESS_MAX",
     line_type: "LINE_TYPE",
-    // project_extent_id: NULL,
-    // knack_id: NULL,
-    // symbol: undefined,
-    // name: NULL
   },
   feature_intersections: {
     intersection_id: "INTERSECTIONID",
-    // project_extent_id: NULL,
-    // name: NULL
   },
   feature_signals: {
     // Transform of signal records happens in knackSignalRecordToFeatureSignalsRecord
-    // render_type: undefined,
-    // name: undefined
   },
   feature_drawn_lines: {
-    // name: NULL
+    // no columns to map
   },
   feature_drawn_points: {
-    // name: NULL
+    // no columns to map
   },
 };
 
