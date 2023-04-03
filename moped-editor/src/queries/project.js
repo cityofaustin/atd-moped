@@ -260,7 +260,6 @@ export const TIMELINE_QUERY = gql`
       order_by: {
         phase_start: desc
         moped_phase: { phase_order: desc }
-        moped_subphase: { subphase_order: desc }
       }
     ) {
       project_phase_id
