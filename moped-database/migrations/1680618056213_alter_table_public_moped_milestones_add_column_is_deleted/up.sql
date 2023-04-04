@@ -22,4 +22,4 @@ UPDATE moped_milestones SET is_deleted = true WHERE milestone_id = 52;
 
 
 INSERT INTO moped_milestones ("is_deleted","milestone_order", "related_phase_id", "milestone_description", "milestone_name") VALUES (false, null, 9, null, E'AMD power construction complete');
--- INSERT INTO moped_milestones ("is_deleted","milestone_order", "related_phase_id", "milestone_description", "milestone_name") VALUES (false, null, 9, null, E'Cabinet / Battery Backup System terminated');
+INSERT INTO moped_milestones ("is_deleted","milestone_order", "related_phase_id", "milestone_description", "milestone_name") VALUES (false, null, 9, null, E'Arms hung / cabinet ready to be set');
