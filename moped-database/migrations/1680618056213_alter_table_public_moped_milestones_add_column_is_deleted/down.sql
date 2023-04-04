@@ -12,3 +12,6 @@ UPDATE moped_milestones SET milestone_name = 'Power has been installed' WHERE mi
 UPDATE moped_milestones SET milestone_name = 'Verification deficiencies have been addressed ' WHERE milestone_id = 50;
 UPDATE moped_milestones SET milestone_name = 'Signal turn on ' WHERE milestone_id = 51;
 UPDATE moped_milestones SET milestone_name = 'Cabinet ready to be set ' WHERE milestone_id = 44;
+
+DELETE FROM moped_milestones WHERE milestone_name = 'AMD power construction complete';
+DELETE FROM moped_milestones WHERE milestone_name = 'Arms hung / cabinet ready to be set';
