@@ -1,7 +1,12 @@
 import RoomOutlinedIcon from "@material-ui/icons/RoomOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
-export const formatComponentsActivity = (change, componentList) => {
+export const formatComponentsActivity = (
+  change,
+  componentList,
+  phaseList,
+  subphaseList
+) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_components"];
 
   const changeIcon = <RoomOutlinedIcon />;
@@ -11,6 +16,17 @@ export const formatComponentsActivity = (change, componentList) => {
     text: component,
     style: "boldText",
   };
+  const phase = phaseList[change.record_data.event.data.new.phase_id];
+  const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
+  const phaseText = {
+    text: phase,
+    style: "boldText",
+  };
+  const subphaseText = {
+    text: ` - ${subphase}`,
+    style: "boldText",
+  };
+  const previousPhase = change.record_data.event.data.old?.phase_id;
 
   // add a new component
   if (change.description.length === 0) {
@@ -26,6 +42,32 @@ export const formatComponentsActivity = (change, componentList) => {
       changeIcon,
       changeText: [
         { text: "Removed a component: ", style: null },
+        componentText,
+      ],
+    };
+  }
+
+  // add a new component phase
+  if (phase && !previousPhase) {
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Added the phase ", style: null },
+        phaseText,
+        // include subphase name if one exists
+        ...(subphase ? [subphaseText] : []),
+        { text: " to component ", style: null },
+        componentText,
+      ],
+    };
+  }
+
+  // delete an existing component phase
+  if (!phase && previousPhase) {
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Deleted the phase from component ", style: null },
         componentText,
       ],
     };
