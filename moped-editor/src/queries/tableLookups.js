@@ -14,7 +14,10 @@ export const TABLE_LOOKUPS_QUERY = gql`
         subphase_order
       }
     }
-    moped_milestones(order_by: { milestone_id: asc }) {
+    moped_milestones(
+      where: { is_deleted: { _eq: false } }
+      order_by: { milestone_id: asc }
+    ) {
       milestone_id
       milestone_name
       milestone_description
