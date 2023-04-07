@@ -250,7 +250,7 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
       phase_order
-      moped_subphases {
+      moped_subphases(order_by: { subphase_name: asc }) {
         subphase_name
         subphase_id
       }
@@ -264,6 +264,7 @@ export const TIMELINE_QUERY = gql`
       order_by: {
         phase_start: desc
         moped_phase: { phase_order: desc }
+        moped_subphase: { subphase_name: asc }
       }
     ) {
       project_phase_id
