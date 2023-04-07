@@ -90,7 +90,9 @@ const ComponentForm = ({
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
-    optionsData?.moped_components);
+    optionsData?.moped_components
+  );
+
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -110,12 +112,15 @@ const ComponentForm = ({
     setValue("signal", null);
   }, [component, setValue]);
 
-
   // reset subcomponent selections when component to ensure only allowed subcomponents
-  // todo: preserve allowed subcomponents when switching b/t component types
   useEffect(() => {
+    if (initialFormValues?.subcomponents) {
+      // don't reset subcomponents value if editing a component
+      // assumes component type cannot be changed when editing
+      return;
+    }
     setValue("subcomponents", []);
-  }, [subcomponentOptions, setValue]);
+  }, [subcomponentOptions, initialFormValues, setValue]);
 
   // Reset subphases field when phase changes so subphase options match phase
   useEffect(() => {
