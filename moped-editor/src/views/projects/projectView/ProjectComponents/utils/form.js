@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Autocomplete } from "@material-ui/lab";
 import { Controller } from "react-hook-form";
 import { Icon, makeStyles, TextField } from "@material-ui/core";
@@ -40,29 +40,67 @@ export const useComponentOptions = (data) =>
   }, [data]);
 
 /**
+ * Compare two arrays to determine if they hold the same values. Only
+ * supports arrays of scalars (string, number, bool, null, undefined)
+ * @param {*} a
+ * @param {*} b
+ * @returns {Boolean} true if arrays are equal
+ */
+const shallowArraysAreEqual = (a, b) => {
+  if (a.length !== b.length) return false;
+  a.sort();
+  b.sort();
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
+};
+
+/**
  * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
- * for a MUI autocomplete
+ * for a MUI autocomplete. Has special logic to memoize/persist subcomponent options when changing between
+ * componentIds that have the same allowed subcomponents.
  * @param {Integer} componentId The unique ID of the moped_component
  * @param {Object[]} optionsData And array of moped_components records
- * @returns {Array} The subcompnent options with value and label
+ * @returns {Array} The subcomponent options with value and label
  */
-export const useSubcomponentOptions = (componentId, optionsData) =>
-  useMemo(() => {
-    if (!componentId || !optionsData) return [];
+export const useSubcomponentOptions = (componentId, optionsData) => {
+  const [options, setOptions] = useState([]);
+  useEffect(() => {
+    if (!componentId || !optionsData) {
+      // we don't have enough data - reset if needed
+      if (options.length) {
+        setOptions([]);
+      }
+      return;
+    }
 
+    // find all subcomponents allowed for the given componentId
     const subcomponents = optionsData.find(
       (option) => option.component_id === componentId
     )?.moped_components_subcomponents;
 
-    if (!subcomponents) return [];
-
-    const options = subcomponents.map((subComp) => ({
+    if ((!subcomponents || !subcomponents.length) && options.length) {
+      // there are no allowed subcomponents, but there are already options - reset
+      setOptions([]);
+      return;
+    }
+    // build new array of subcomponent options
+    const newOptions = subcomponents.map((subComp) => ({
       value: subComp.moped_subcomponent.subcomponent_id,
       label: subComp.moped_subcomponent.subcomponent_name,
     }));
-
-    return options;
+    // compare the subcomponent Ids in the old options vs new
+    const newArray = newOptions.map((o) => o.value);
+    const oldArray = options.map((o) => o.value);
+    if (shallowArraysAreEqual(newArray, oldArray)) {
+      // no change - we can persist existing subcomponent options
+      return;
+    }
+    setOptions(newOptions);
   }, [componentId, optionsData]);
+  return options;
+};
 
 /**
  * Take the moped_phases records data response and create options for a MUI autocomplete
