@@ -264,43 +264,13 @@ export const returnArterialManagementPhaseTemplate = projectId => {
       project_id: projectId,
       is_deleted: false,
       phase_id: 1,
-      subphase_id: 5,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 1,
-      subphase_id: 11,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 1,
-      subphase_id: 12,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 1,
-      subphase_id: 14,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 1,
-      subphase_id: 25,
+      subphase_id: null,
     },
     {
       project_id: projectId,
       is_deleted: false,
       phase_id: 2,
       subphase_id: 15,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 6,
-      subphase_id: 16,
     },
     {
       project_id: projectId,
@@ -317,18 +287,6 @@ export const returnArterialManagementPhaseTemplate = projectId => {
     {
       project_id: projectId,
       is_deleted: false,
-      phase_id: 6,
-      subphase_id: 19,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 7,
-      subphase_id: 2,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
       phase_id: 7,
       subphase_id: 3,
       phase_description: "Electric Service Planning Application (ESPA)",
@@ -339,12 +297,6 @@ export const returnArterialManagementPhaseTemplate = projectId => {
       phase_id: 7,
       subphase_id: 3,
       phase_description: "Traffic Control Plan (TCP) / Right of Way (ROW)",
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 7,
-      subphase_id: 23,
     },
     {
       project_id: projectId,
@@ -380,19 +332,7 @@ export const returnArterialManagementPhaseTemplate = projectId => {
       project_id: projectId,
       is_deleted: false,
       phase_id: 10,
-      subphase_id: 1,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 10,
-      subphase_id: 21,
-    },
-    {
-      project_id: projectId,
-      is_deleted: false,
-      phase_id: 10,
-      subphase_id: 24,
+      subphase_id: null,
     },
     {
       project_id: projectId,
