@@ -1389,88 +1389,37 @@
           table:
             name: moped_proj_milestones
             schema: public
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - required_milestone
-          - milestone_average_length
-          - milestone_id
-          - milestone_order
-          - related_phase_id
-          - milestone_description
-          - milestone_name
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - required_milestone
-          - milestone_average_length
-          - milestone_id
-          - milestone_order
-          - related_phase_id
-          - milestone_description
-          - milestone_name
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - required_milestone
-          - milestone_average_length
           - milestone_id
           - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
+          - is_deleted
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - required_milestone
-          - milestone_average_length
           - milestone_id
           - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
+          - is_deleted
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - required_milestone
-          - milestone_average_length
           - milestone_id
           - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
+          - is_deleted
         filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - required_milestone
-          - milestone_average_length
-          - milestone_id
-          - milestone_order
-          - related_phase_id
-          - milestone_description
-          - milestone_name
-        filter: {}
-        check: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - required_milestone
-          - milestone_average_length
-          - milestone_id
-          - milestone_order
-          - related_phase_id
-          - milestone_description
-          - milestone_name
-        filter: {}
-        check: {}
 - table:
     name: moped_organization
     schema: public
