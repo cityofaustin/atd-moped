@@ -4131,88 +4131,31 @@
     - name: moped_phase
       using:
         foreign_key_constraint_on: related_phase_id
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - subphase_id
-          - subphase_name
-          - subphase_description
-          - subphase_order
-          - subphase_average_length
-          - required_subphase
-          - related_phase_id
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - required_subphase
-          - related_phase_id
-          - subphase_average_length
-          - subphase_id
-          - subphase_order
-          - subphase_description
-          - subphase_name
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - required_subphase
           - related_phase_id
-          - subphase_average_length
           - subphase_id
-          - subphase_order
           - subphase_description
           - subphase_name
         filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - required_subphase
-          - related_phase_id
-          - subphase_average_length
-          - subphase_id
-          - subphase_order
-          - subphase_description
-          - subphase_name
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - required_subphase
-          - related_phase_id
-          - subphase_average_length
-          - subphase_id
-          - subphase_order
-          - subphase_description
-          - subphase_name
-        filter: {}
-        check: null
 - table:
     name: moped_tags
     schema: public
