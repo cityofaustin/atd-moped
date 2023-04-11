@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
-// import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import CreateComponentDrawTools from "./CreateComponentDrawTools";
@@ -116,8 +115,6 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    // hover states conflict! the first feature to reach hover state wins
-    // so set point radii and line widths accordingly
     setCursor("pointer");
   };
 
@@ -128,26 +125,26 @@ export default function TheMap({
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
 
-    // Get the details we need to see if the feature is already in the draftComponent or not
+    /* Get the details we need to see if the feature is already in the draftComponent or not */
     const { internal_table } = newDraftComponent;
     const ctnUniqueIdentifier = Object.values(SOURCES).find(
       (source) => source.table === internal_table
     )._featureIdProp;
 
-    // Get the IDs of the features already in the draftComponent
+    /* Get the IDs of the features already in the draftComponent */
     const existingDraftIds = newDraftComponent.features.map(
       (feature) => feature.properties[ctnUniqueIdentifier]
     );
 
-    // Find the feature that was clicked that's already in the draftComponent
+    /* Find the feature that was clicked that's already in the draftComponent */
     const clickedDraftComponentFeature = e.features.find((feature) =>
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    // If we clicked a drawn feature, we don't need to capture from the CTN layers
+    /* If we clicked a drawn feature, we don't need to capture from the CTN layers */
     if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
 
-    // If we clicked a feature that's already in the draftComponent, we remove it
+    /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
       createDispatch({
         type: "remove_draft_component_feature",
@@ -156,7 +153,7 @@ export default function TheMap({
       return;
     }
 
-    // Otherwise, we capture the feature from the CTN layers and add it to the draftComponent
+    /* Otherwise, we capture the feature from the CTN layers and add it to the draftComponent  */
     const clickedFeature = e.features[0];
     const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
       clickedFeature,
@@ -182,7 +179,7 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    // If drawn feature is clicked, the draw tools take over and we don't need to do anything else
+    /* If drawn feature is clicked, the draw tools take over and we don't need to do anything else  */
     if (isDrawnExistingFeature(clickedFeature)) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
@@ -205,7 +202,7 @@ export default function TheMap({
     const tableToInsert =
       draftEditComponent?.moped_components?.feature_layer?.internal_table;
 
-    // Update UI
+    /* Update UI  */
     const addOrRemoveClickedEditFeatures = (currentComponent) => {
       const isFeatureAlreadyInComponent = Boolean(
         currentComponent[tableToInsert].find(
@@ -215,8 +212,10 @@ export default function TheMap({
         )
       );
 
-      // If the feature is not already in the draftEditComponent, add it
-      // otherwise, remove it.
+      /* 
+        If the feature is not already in the draftEditComponent, add it
+        otherwise, remove it.
+      */
       if (!isFeatureAlreadyInComponent) {
         return {
           ...currentComponent,
@@ -243,14 +242,14 @@ export default function TheMap({
   };
 
   const onClick = (e) => {
-    // if map is clicked outside interactive layers
+    /* if map is clicked outside interactive layers */
     if (e.features.length === 0) {
-      // clear clickedComponent to collapse list item
+      /* clear clickedComponent to collapse list item  */
       if (clickedComponent) {
         setClickedComponent(null);
         setIsClickedComponentRelated(false);
       }
-      // clear clickedProjectFeature to close FeaturePopup
+      /* clear clickedProjectFeature to close FeaturePopup  */
       if (clickedProjectFeature) {
         setClickedProjectFeature(null);
       }
@@ -266,7 +265,6 @@ export default function TheMap({
         clickedProjectFeature?.properties.project_component_id;
 
       /* Find the component (this project's component or related components) that mathes this feature */
-
       let isNewClickedComponentRelated = false;
       let clickedComponentFromMap = projectComponents.find(
         (component) => component.project_component_id === clickedComponentId
