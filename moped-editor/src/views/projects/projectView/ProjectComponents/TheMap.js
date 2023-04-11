@@ -119,26 +119,10 @@ export default function TheMap({
     // hover states conflict! the first feature to reach hover state wins
     // so set point radii and line widths accordingly
     setCursor("pointer");
-    // e.features.forEach((feature) => {
-    //   if (feature.layer.id.includes("project")) {
-    //     // it's a project feature, so add to the hover tracking for sidebar interaction
-    //     // setHoveredOnMapFeature(feature);
-    //   }
-    //   // ["project-points", "project-lines", "ATD_ADMIN.CTN"].forEach(
-    //   //   (sourceId) => {
-    //   //     mapRef.current?.removeFeatureState({ source: sourceId });
-    //   //   }
-    //   // );
-    //   // mapRef.current?.setFeatureState(feature, { hover: true });
-    // });
   };
 
   const onMouseLeave = (e) => {
     setCursor("grab");
-    // setHoveredOnMapFeature(null);
-    // ["project-points", "project-lines", "ATD_ADMIN.CTN"].forEach((sourceId) => {
-    //   mapRef.current?.removeFeatureState({ source: sourceId });
-    // });
   };
 
   const handleCreateOnClick = (e) => {
