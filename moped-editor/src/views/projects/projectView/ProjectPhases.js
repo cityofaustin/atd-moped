@@ -372,6 +372,7 @@ const ProjectPhases = ({
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+          addRowPosition: "first",
         }}
         localization={{
           header: {
