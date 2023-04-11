@@ -83,6 +83,7 @@ const DEFAULT_HIDDEN_COLS = {
   contract_numbers: true,
   project_tags: false,
   added_by: true,
+  public_process_status: true,
 };
 
 /**
@@ -520,6 +521,12 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Created by",
       field: "added_by",
       hidden: hiddenColumns["added_by"],
+      emptyValue: "-",
+    },
+    {
+      title: "Public process status",
+      field: "public_process_status",
+      hidden: hiddenColumns["public_process_status"],
       emptyValue: "-",
     },
   ];

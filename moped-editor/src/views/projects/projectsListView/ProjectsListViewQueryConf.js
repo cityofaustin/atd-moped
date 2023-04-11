@@ -172,13 +172,12 @@ export const ProjectsListViewQueryConf = {
           url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
         />
       ),
-      type: "number",
+      type: "string",
       search: {
         label: "Search by eCapris subproject ID",
-        operator: "_eq",
-        quoted: false,
+        operator: "_ilike",
+        quoted: true,
         envelope: "%{VALUE}%",
-        invalidValueDefault: 0,
       },
     },
     updated_at: {
@@ -188,6 +187,11 @@ export const ProjectsListViewQueryConf = {
       label: "Last modified",
       filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
+    },
+    public_process_status: {
+      label: "Public process status",
+      searchable: false,
+      type: "string",
     },
     // the following column configurations only work with material table and do not have the
     // necessary details to work with Grid Table

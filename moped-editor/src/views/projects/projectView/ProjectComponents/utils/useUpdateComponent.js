@@ -47,6 +47,7 @@ const editReducer = (state, action) => {
         ...state,
         showEditAttributesDialog: false,
         isEditingComponent: false,
+        draftEditComponent: null,
       };
     case "cancel_map_edit":
       return {

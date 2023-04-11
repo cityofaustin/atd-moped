@@ -1,5 +1,92 @@
--- latest version 1678894870998_remove_cols_from_geo_views
+-- we need to drop all the views: uniform_features goes last because the others depend on it
 DROP VIEW project_list_view;
+DROP VIEW "public"."project_geography";
+DROP VIEW "public"."uniform_features";
+
+CREATE OR REPLACE VIEW "public"."uniform_features" AS
+SELECT
+    feature_signals.id,
+    feature_signals.component_id,
+    'feature_signals'::text AS "table",
+    json_build_object(
+        'signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type) AS attributes,
+    feature_signals.geography
+FROM
+    feature_signals
+WHERE (
+    feature_signals.is_deleted = FALSE)
+UNION ALL
+SELECT
+    feature_street_segments.id,
+    feature_street_segments.component_id,
+    'feature_street_segments'::text AS "table",
+    json_build_object(
+        'ctn_segment_id', feature_street_segments.ctn_segment_id, 'from_address_min', feature_street_segments.from_address_min, 'to_address_max', feature_street_segments.to_address_max, 'full_street_name', feature_street_segments.full_street_name, 'line_type', feature_street_segments.line_type, 'symbol', feature_street_segments.symbol, 'source_layer', feature_street_segments.source_layer) AS attributes,
+    feature_street_segments.geography
+FROM
+    feature_street_segments
+WHERE (
+    feature_street_segments.is_deleted = FALSE)
+UNION ALL
+SELECT
+    feature_intersections.id,
+    feature_intersections.component_id,
+    'feature_intersections'::text AS "table",
+    json_build_object(
+        'intersection_id', feature_intersections.intersection_id, 'source_layer', feature_intersections.source_layer) AS attributes,
+    feature_intersections.geography
+FROM
+    feature_intersections
+WHERE (
+    feature_intersections.is_deleted = FALSE)
+UNION ALL
+SELECT
+    feature_drawn_points.id,
+    feature_drawn_points.component_id,
+    'feature_drawn_points'::text AS "table",
+    NULL::json AS attributes,
+    feature_drawn_points.geography
+FROM
+    feature_drawn_points
+WHERE (
+    feature_drawn_points.is_deleted = FALSE)
+UNION ALL
+SELECT
+    feature_drawn_lines.id,
+    feature_drawn_lines.component_id,
+    'feature_drawn_lines'::text AS "table",
+    NULL::json AS attributes,
+    feature_drawn_lines.geography
+FROM
+    feature_drawn_lines
+WHERE (
+    feature_drawn_lines.is_deleted = FALSE
+);
+
+
+
+CREATE OR REPLACE VIEW project_geography AS (
+    SELECT
+        moped_project.project_id AS project_id,
+        uniform_features.id AS feature_id,
+        moped_components.component_id AS component_archtype_id,
+        moped_proj_components.project_component_id AS component_id,
+        moped_proj_components.is_deleted,
+        moped_project.project_name AS project_name,
+        feature_layers.internal_table AS TABLE,
+        feature_layers.reference_layer_primary_key_column AS original_fk,
+        moped_proj_components.name AS component_name,
+        uniform_features.attributes AS attributes,
+        uniform_features.geography AS geography
+    FROM
+        moped_project
+        JOIN moped_proj_components ON (moped_proj_components.project_id = moped_project.project_id)
+        JOIN moped_components ON (moped_proj_components.component_id = moped_components.component_id)
+        JOIN feature_layers ON (moped_components.feature_layer_id = feature_layers.id)
+        JOIN uniform_features ON (moped_proj_components.project_component_id = uniform_features.component_id)
+        --join component_feature_map on (moped_proj_components.project_component_id = component_feature_map.component_id)
+        --join uniform_features on (component_feature_map.feature_id = uniform_features.id)
+);
 
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
@@ -43,7 +130,6 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
-    mpps.name AS public_process_status,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
@@ -144,7 +230,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
-     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
   GROUP BY
     mp.project_id, 
     mp.project_name, 
@@ -162,5 +247,4 @@ AS WITH project_person_list_lookup AS (
     ptl.type_name, 
     fsl.funding_source_name,
     added_by_user.first_name,
-    added_by_user.last_name,
-    mpps.name;
+    added_by_user.last_name;
