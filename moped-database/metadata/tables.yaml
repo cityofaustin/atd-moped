@@ -930,6 +930,38 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: moped_component_work_types
+    schema: public
+  object_relationships:
+    - name: moped_component
+      using:
+        foreign_key_constraint_on: component_id
+    - name: moped_work_type
+      using:
+        foreign_key_constraint_on: work_type_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+- table:
     name: moped_components
     schema: public
   object_relationships:
@@ -937,12 +969,26 @@
       using:
         foreign_key_constraint_on: feature_layer_id
   array_relationships:
+    - name: moped_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            name: moped_component_work_types
+            schema: public
     - name: moped_components_subcomponents
       using:
         foreign_key_constraint_on:
           column: component_id
           table:
             name: moped_components_subcomponents
+            schema: public
+    - name: moped_proj_components
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            name: moped_proj_components
             schema: public
   select_permissions:
     - role: moped-admin
@@ -1294,6 +1340,73 @@
           - phase_key
         filter: {}
 - table:
+    name: moped_proj_component_work_types
+    schema: public
+  object_relationships:
+    - name: moped_proj_component
+      using:
+        foreign_key_constraint_on: project_component_id
+    - name: moped_work_type
+      using:
+        foreign_key_constraint_on: work_type_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+        filter: {}
+        check: {}
+- table:
     name: moped_proj_components
     schema: public
   object_relationships:
@@ -1351,6 +1464,13 @@
           insertion_order: null
           remote_table:
             name: feature_street_segments
+            schema: public
+    - name: moped_proj_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: project_component_id
+          table:
+            name: moped_proj_component_work_types
             schema: public
     - name: moped_proj_components_subcomponents
       using:
@@ -4209,6 +4329,49 @@
           user_id:
             _eq: x-hasura-user-db-id
         check: null
+- table:
+    name: moped_work_types
+    schema: public
+  array_relationships:
+    - name: moped_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_component_work_types
+            schema: public
+    - name: moped_proj_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_proj_component_work_types
+            schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
 - table:
     name: moped_workgroup
     schema: public
