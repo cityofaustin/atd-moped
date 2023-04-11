@@ -264,7 +264,7 @@ export default function TheMap({
       const clickedComponentId =
         clickedProjectFeature?.properties.project_component_id;
 
-      /* Find the component (this project's component or related components) that mathes this feature */
+      /* Find the component (this project's component or related components) that matches this feature */
       let isNewClickedComponentRelated = false;
       let clickedComponentFromMap = projectComponents.find(
         (component) => component.project_component_id === clickedComponentId
