@@ -1,7 +1,7 @@
 CREATE TABLE moped_work_types (
     id SERIAL PRIMARY KEY,
     name TEXT NOT NULL,
-    KEY TEXT UNIQUE NOT NULL,
+    key TEXT UNIQUE NOT NULL,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
