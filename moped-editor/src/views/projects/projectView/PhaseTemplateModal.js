@@ -65,7 +65,7 @@ const usePhaseSelections = (phasesList, selectedPhases) =>
         !selectedPhaseSubphaseCombinations.includes(
           String(option.phase_id) +
             String(option.subphase_id) +
-            String(option.phase_description ?? null) // phase_description here couild come back as undefined,
+            String(option.phase_description ?? null) // phase_description here could come back as undefined,
           // it needs to be null for it to match the comobinations above
         )
     );
