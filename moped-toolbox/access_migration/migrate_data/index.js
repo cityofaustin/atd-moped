@@ -15,8 +15,11 @@ const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { logger } = require("./utils/logger");
 const { mapRow, chunkArray } = require("./utils/misc");
 
+const getMetadataFileDateString = () =>
+  new Date().toLocaleDateString().replaceAll("/", "_");
+
 const FNAME = "./data/raw/projects.json";
-const METADATA_FNAME = "./backup/metadata.json";
+const METADATA_FNAME = `./backup/metadata_${getMetadataFileDateString()}.json`;
 
 const DELETE_ALL_PROJECTS_MUTATION = gql`
   mutation DeleteAlllProjects {
