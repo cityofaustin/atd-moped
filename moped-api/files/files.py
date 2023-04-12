@@ -93,7 +93,7 @@ def files_request_signature(claims: list) -> dict:
 
     # Check our parameters
     if not is_valid_filename(filename):
-        return jsonify({"status": "error", "message": "Invalid file name"}), 403
+        return jsonify({"status": "error", "message": "Invalid file name", "filename": filename}), 403
 
     # Determine upload type
     if upload_type not in ["private", "public"]:
