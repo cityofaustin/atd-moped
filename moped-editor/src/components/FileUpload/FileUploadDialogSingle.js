@@ -82,7 +82,7 @@ const FileUploadDialogSingle = (props) => {
    * @param {Object} e - The event object
    */
   const handleFileNameChange = (e) => {
-    setFileName(e.target.value);
+    setFileName(e.target.value.replace("&", ""));
   };
 
   /**
