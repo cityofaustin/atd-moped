@@ -82,7 +82,9 @@ const FileUploadDialogSingle = (props) => {
    * @param {Object} e - The event object
    */
   const handleFileNameChange = (e) => {
-    setFileName(e.target.value);
+    // strip out & because of file upload bug 
+    // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
+    setFileName(e.target.value.replace("&", ""));
   };
 
   /**
