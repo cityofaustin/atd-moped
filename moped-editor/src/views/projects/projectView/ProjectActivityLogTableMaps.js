@@ -366,6 +366,15 @@ export const ProjectActivityLogTableMaps = {
       is_deleted: {
         label: "is deleted",
       },
+      phase_id: {
+        label: "component phase"
+      },
+      subphase_id: {
+        label: "component subphase",
+      },
+      completion_date: {
+        label: "completion date",
+      },
     },
   },
   moped_project_files: {

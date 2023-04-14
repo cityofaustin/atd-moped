@@ -18,7 +18,8 @@ import { makeStyles } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 import AddCircle from "@material-ui/icons/AddCircle";
 import {
-  returnSignalPHBMilestoneTemplate,
+  returnAMDSignalInfrastructureMilestoneTemplate,
+  returnAMDInspectionOnlyMilestoneTemplate,
   returnPDDMilestoneTemplate,
 } from "../../../utils/timelineTemplates";
 
@@ -35,7 +36,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const templateChoices = ["Arterial Management", "Project Delivery"];
+const templateChoices = [
+  "AMD Signal Infrastructure",
+  "AMD Inspection-only",
+  "Project Delivery",
+];
 
 /**
  * useMemo hook to choose milestone options
@@ -43,8 +48,10 @@ const templateChoices = ["Arterial Management", "Project Delivery"];
  */
 const useMilestoneOptions = (template, projectId) =>
   useMemo(() => {
-    if (template === "Arterial Management") {
-      return returnSignalPHBMilestoneTemplate(projectId);
+    if (template === "AMD Signal Infrastructure") {
+      return returnAMDSignalInfrastructureMilestoneTemplate(projectId);
+    } else if (template === "AMD Inspection-only") {
+      return returnAMDInspectionOnlyMilestoneTemplate(projectId);
     } else if (template === "Project Delivery") {
       return returnPDDMilestoneTemplate(projectId);
     } else {
