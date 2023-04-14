@@ -8,9 +8,7 @@ import {
   FormControl,
   FormHelperText,
 } from "@material-ui/core";
-import {
-  EditOutlined as EditOutlinedIcon
-} from "@material-ui/icons";
+import { EditOutlined as EditOutlinedIcon } from "@material-ui/icons";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -69,7 +67,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   // Hide Milestone template dialog
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
-  }
+  };
 
   /**
    * Column configuration for <MaterialTable> Milestones table
@@ -173,142 +171,142 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
 
   return (
     <>
-    <MaterialTable
-      columns={milestoneColumns}
-      data={data.moped_proj_milestones}
-      icons={{
-        Edit: EditOutlinedIcon,
-      }}
-      components={{
-        EditRow: (props) => (
-          <MTableEditRow
-            {...props}
-            onKeyDown={(e) => {
-              if (e.keyCode === 13) {
-                // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-              }
-            }}
-          />
-        ),
-        Action: (props) => {
-          // If isn't the add action
-          if (
-            typeof props.action === typeof Function ||
-            props.action.tooltip !== "Add"
-          ) {
-            return <MTableAction {...props} />;
-          } else {
-            return (
-              <ButtonDropdownMenu
-                addAction={props.action.onClick}
-                openActionDialog={setIsDialogOpen}
-                parentButtonText="Add milestone"
-                firstOptionText="New milestone"
-                secondOptionText="From template"
-                secondOptionIcon
-              />
-            );
-          }
-        },
-      }}
-      editable={{
-        onRowAdd: (newData) => {
-          // Merge input fields with required fields default data.
-          const newMilestoneObject = Object.assign(
-            {
-              project_id: projectId,
-              completed: false,
-            },
-            newData
-          );
-
-          // Execute insert mutation
-          return addProjectMilestone({
-            variables: {
-              objects: [newMilestoneObject],
-            },
-          }).then(() => {
-            // Refetch data
-            refetch();
-          });
-        },
-        onRowUpdate: (newData, oldData) => {
-          const updatedMilestoneObject = {
-            ...oldData,
-          };
-
-          // Array of differences between new and old data
-          let differences = Object.keys(oldData).filter(
-            (key) => oldData[key] !== newData[key]
-          );
-
-          // Loop through the differences and assign newData values.
-          // If one of the Date fields is blanked out, coerce empty
-          // string to null.
-          differences.forEach((diff) => {
-            let shouldCoerceEmptyStringToNull =
-              newData[diff] === "" &&
-              (diff === "milestone_estimate" || diff === "milestone_end");
-
-            if (shouldCoerceEmptyStringToNull) {
-              updatedMilestoneObject[diff] = null;
-            } else {
-              updatedMilestoneObject[diff] = newData[diff];
-            }
-          });
-
-          // Remove extraneous fields given by MaterialTable that
-          // Hasura doesn't need
-          delete updatedMilestoneObject.tableData;
-          delete updatedMilestoneObject.project_id;
-          delete updatedMilestoneObject.__typename;
-
-          // Execute update mutation
-          return updateProjectMilestone({
-            variables: updatedMilestoneObject,
-          }).then(() => {
-            // Refetch data
-            refetch();
-          });
-        },
-        onRowDelete: (oldData) => {
-          // Execute delete mutation
-          return deleteProjectMilestone({
-            variables: {
-              project_milestone_id: oldData.project_milestone_id,
-            },
-          }).then(() => {
-            // Refetch data
-            refetch();
-          });
-        },
-      }}
-      title={
-        <Typography variant="h2" color="primary">
-          Milestones
-        </Typography>
-      }
-      options={{
-        paging: false,
-        search: false,
-        rowStyle: { fontFamily: typography.fontFamily },
-        actionsColumnIndex: -1,
-        addRowPosition: 'first',
-      }}
-      localization={{
-        header: {
-          actions: "",
-        },
-        body: {
-          emptyDataSourceMessage: (
-            <Typography variant="body1">
-              No project milestones to display
-            </Typography>
+      <MaterialTable
+        columns={milestoneColumns}
+        data={data.moped_proj_milestones}
+        icons={{
+          Edit: EditOutlinedIcon,
+        }}
+        components={{
+          EditRow: (props) => (
+            <MTableEditRow
+              {...props}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                }
+              }}
+            />
           ),
-        },
-      }}
-    />
+          Action: (props) => {
+            // If isn't the add action
+            if (
+              typeof props.action === typeof Function ||
+              props.action.tooltip !== "Add"
+            ) {
+              return <MTableAction {...props} />;
+            } else {
+              return (
+                <ButtonDropdownMenu
+                  addAction={props.action.onClick}
+                  openActionDialog={setIsDialogOpen}
+                  parentButtonText="Add milestone"
+                  firstOptionText="New milestone"
+                  secondOptionText="From template"
+                  secondOptionIcon
+                />
+              );
+            }
+          },
+        }}
+        editable={{
+          onRowAdd: (newData) => {
+            // Merge input fields with required fields default data.
+            const newMilestoneObject = Object.assign(
+              {
+                project_id: projectId,
+                completed: false,
+              },
+              newData
+            );
+
+            // Execute insert mutation
+            return addProjectMilestone({
+              variables: {
+                objects: [newMilestoneObject],
+              },
+            }).then(() => {
+              // Refetch data
+              refetch();
+            });
+          },
+          onRowUpdate: (newData, oldData) => {
+            const updatedMilestoneObject = {
+              ...oldData,
+            };
+
+            // Array of differences between new and old data
+            let differences = Object.keys(oldData).filter(
+              (key) => oldData[key] !== newData[key]
+            );
+
+            // Loop through the differences and assign newData values.
+            // If one of the Date fields is blanked out, coerce empty
+            // string to null.
+            differences.forEach((diff) => {
+              let shouldCoerceEmptyStringToNull =
+                newData[diff] === "" &&
+                (diff === "milestone_estimate" || diff === "milestone_end");
+
+              if (shouldCoerceEmptyStringToNull) {
+                updatedMilestoneObject[diff] = null;
+              } else {
+                updatedMilestoneObject[diff] = newData[diff];
+              }
+            });
+
+            // Remove extraneous fields given by MaterialTable that
+            // Hasura doesn't need
+            delete updatedMilestoneObject.tableData;
+            delete updatedMilestoneObject.project_id;
+            delete updatedMilestoneObject.__typename;
+
+            // Execute update mutation
+            return updateProjectMilestone({
+              variables: updatedMilestoneObject,
+            }).then(() => {
+              // Refetch data
+              refetch();
+            });
+          },
+          onRowDelete: (oldData) => {
+            // Execute delete mutation
+            return deleteProjectMilestone({
+              variables: {
+                project_milestone_id: oldData.project_milestone_id,
+              },
+            }).then(() => {
+              // Refetch data
+              refetch();
+            });
+          },
+        }}
+        title={
+          <Typography variant="h2" color="primary">
+            Milestones
+          </Typography>
+        }
+        options={{
+          paging: false,
+          search: false,
+          rowStyle: { fontFamily: typography.fontFamily },
+          actionsColumnIndex: -1,
+          addRowPosition: "first",
+        }}
+        localization={{
+          header: {
+            actions: "",
+          },
+          body: {
+            emptyDataSourceMessage: (
+              <Typography variant="body1">
+                No project milestones to display
+              </Typography>
+            ),
+          },
+        }}
+      />
       <MilestoneTemplateModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleTemplateModalClose}
@@ -317,7 +315,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         projectId={projectId}
         refetch={refetch}
       />
-      </>
+    </>
   );
 };
 
