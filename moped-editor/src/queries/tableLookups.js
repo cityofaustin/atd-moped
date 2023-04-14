@@ -7,14 +7,16 @@ export const TABLE_LOOKUPS_QUERY = gql`
       phase_name
       phase_description
       phase_order
-      moped_subphases(order_by: { subphase_order: asc }) {
+      moped_subphases {
         subphase_id
         subphase_description
         subphase_name
-        subphase_order
       }
     }
-    moped_milestones(order_by: { milestone_id: asc }) {
+    moped_milestones(
+      where: { is_deleted: { _eq: false } }
+      order_by: { milestone_id: asc }
+    ) {
       milestone_id
       milestone_name
       milestone_description

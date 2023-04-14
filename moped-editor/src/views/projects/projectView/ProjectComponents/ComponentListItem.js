@@ -52,6 +52,7 @@ export default function ComponentListItem({
         button
         onClick={onListItemClick}
         className={classes.listItem}
+        ref={component._ref}
       >
         {Icon}
         <ListItemText

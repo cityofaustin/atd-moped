@@ -250,18 +250,21 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
       phase_order
-      moped_subphases(order_by: { subphase_order: asc }) {
+      moped_subphases(order_by: { subphase_name: asc }) {
         subphase_name
         subphase_id
       }
     }
+    moped_subphases {
+      subphase_name
+      subphase_id
+    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: {
-        phase_start: desc
-        moped_phase: { phase_order: desc }
-        moped_subphase: { subphase_order: desc }
-      }
+      order_by: [
+        { moped_phase: { phase_order: asc } }
+        { moped_subphase: { subphase_name: asc } }
+      ]
     ) {
       project_phase_id
       is_current_phase
@@ -279,7 +282,9 @@ export const TIMELINE_QUERY = gql`
         phase_name
       }
     }
-    moped_milestones(where: { milestone_id: { _gt: 0 } }) {
+    moped_milestones(
+      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+    ) {
       milestone_id
       milestone_name
     }
