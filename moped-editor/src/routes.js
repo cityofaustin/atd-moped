@@ -84,7 +84,7 @@ export const routes = [
         element: <LookupsView />,
       },
       {
-        path: "dev/map",
+        path: "map",
         action: "style:visit",
         element: <DevMapView />,
       },
