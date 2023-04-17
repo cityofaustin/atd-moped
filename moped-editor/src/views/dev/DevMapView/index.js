@@ -29,7 +29,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 `;
 
 const DevMapView = () => {
-  const { loading, error, data } = useQuery(GET_PROJECT_COMPONENTS, {
+  const { error, data } = useQuery(GET_PROJECT_COMPONENTS, {
     fetchPolicy: "no-cache",
   });
 

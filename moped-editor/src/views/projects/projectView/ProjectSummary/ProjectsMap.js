@@ -3,7 +3,6 @@ import MapGL from "react-map-gl";
 import { Box } from "@material-ui/core";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
-import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
 import ProjectsMapSourcesAndLayers from "./ProjectsMapSourcesAndLayers";
 import FeaturePopup from "../ProjectComponents/FeaturePopup";
 

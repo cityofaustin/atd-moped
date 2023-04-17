@@ -14,7 +14,6 @@ import {
 import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
 import {
   useZoomToExistingComponents,
-  interactiveLayerIds,
 } from "../ProjectComponents/utils/map";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -68,7 +67,6 @@ const ProjectSummaryMap = ({ data }) => {
     setClickedFeatures([...e.features]);
   };
 
-  // console.log(interactiveLayerIds)
   return (
     <Box>
       {areThereComponentFeatures ? (
