@@ -3,16 +3,27 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Page from "src/components/Page";
 import { useQuery, gql } from "@apollo/client";
-import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMap";
+import ProjectsMap from "src/views/projects/projectView/ProjectSummary/ProjectsMap";
 export const GET_PROJECT_COMPONENTS = gql`
   query GetProjectGeography {
-    project_geography(where: { is_deleted: { _eq: false } }) {
-      project_id
-      project_name
-      component_id
-      component_name
-      attributes
-      geometry: geography
+    moped_project(where: { is_deleted: { _eq: false } }) {
+      current_phase_view {
+        phase_name
+        phase_key
+      }
+      geography(where: { is_deleted: { _eq: false } }) {
+        project_id
+        project_name
+        proj_component {
+          project_component_id
+          moped_components {
+            component_name
+            component_subtype
+          }
+        }
+        attributes
+        geometry: geography
+      }
     }
   }
 `;
@@ -28,7 +39,7 @@ const DevMapView = () => {
         <Container maxWidth="xl">
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <ProjectSummaryMap data={data} />
+              <ProjectsMap data={data} />
             </Grid>
           </Grid>
         </Container>

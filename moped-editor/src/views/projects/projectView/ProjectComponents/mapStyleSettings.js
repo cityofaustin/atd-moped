@@ -17,6 +17,10 @@ export const COLORS = {
   white: "#fff",
   orange: "#ffb300",
   lightOrange: "#ffc94a",
+  success: theme.palette.success.main,
+  warning: theme.palette.warning.light,
+  info: theme.palette.info.dark,
+  gray: theme.palette.grey[300],
 };
 
 export const pointsCircleRadiusStops = {
@@ -32,6 +36,36 @@ export const lineWidthStops = {
     [20, 10],
   ],
 };
+
+const PHASE_COLOR_MAP = [
+  "match",
+  ["get", "phase_key"],
+  "planned",
+  COLORS.success,
+  "preliminary_engineering",
+  COLORS.success,
+  "scoping",
+  COLORS.success,
+  "preliminary_design",
+  COLORS.success,
+  "design",
+  COLORS.success,
+  "pre_construction",
+  COLORS.success,
+  "bid_award_execution",
+  COLORS.success,
+  "construction_ready",
+  COLORS.success,
+  "construction",
+  COLORS.success,
+  "post_construction",
+  COLORS.success,
+  "potential",
+  COLORS.warning,
+  "complete",
+  COLORS.info,
+  /* other */ COLORS.gray,
+];
 
 /**
  * Sets the interactivity and styles of the map layers
@@ -70,6 +104,37 @@ export const MAP_STYLES = {
           COLORS.pinkDark,
           COLORS.bluePrimary,
         ],
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "project-points-phasing": {
+    isInteractive: true,
+    layerProps: {
+      id: "project-points",
+      _featureIdProp: "INTERSECTIONID",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 1,
+        "circle-color": PHASE_COLOR_MAP,
+        "circle-stroke-color": PHASE_COLOR_MAP,
+        "circle-opacity": 0.6,
+      },
+    },
+  },
+  "project-lines-phasing": {
+    isInteractive: true,
+    layerProps: {
+      id: "project-lines",
+      _featureIdProp: "CTN_SEGMENT_ID",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": PHASE_COLOR_MAP,
       },
       layout: {
         "line-cap": "round",

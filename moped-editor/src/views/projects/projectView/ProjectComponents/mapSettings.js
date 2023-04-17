@@ -47,7 +47,12 @@ export const fitBoundsOptions = {
     maxZoom: 19,
     padding: 200,
     duration: 1500,
-    linear: true
+    linear: true,
+  },
+  zoomToAllProjectsExtent: {
+    minZoom: 8,
+    // accounting for fixed top bar
+    // padding: 200,
   },
 };
 

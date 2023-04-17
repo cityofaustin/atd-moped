@@ -395,12 +395,6 @@ export default function TheMap({
           ctnLinesGeojson={ctnLinesGeojson}
           ctnPointsGeojson={ctnPointsGeojson}
         />
-        {/* <FeaturePopup
-        onClose={() => setClickedProjectFeature(null)}
-        feature={clickedProjectFeature}
-        components={components}
-        setClickedComponent={setClickedComponent}
-      /> */}
       </MapGL>
     </>
   );

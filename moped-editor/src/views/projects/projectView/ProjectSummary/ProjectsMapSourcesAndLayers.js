@@ -8,7 +8,7 @@ import { useFeatureTypes } from "../ProjectComponents/utils/map";
  * @param {Object} projectFeatureCollection - GeoJSON feature collection with all project features
  * @returns JSX.Element
  */
-const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
+const ProjectsMapSourcesAndLayers = ({ projectFeatureCollection }) => {
   const projectLines = useFeatureTypes(projectFeatureCollection, "line");
   const projectPoints = useFeatureTypes(projectFeatureCollection, "point");
 
@@ -23,7 +23,7 @@ const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
       >
         <Layer
           beforeId="street-labels"
-          {...MAP_STYLES["project-lines"].layerProps}
+          {...MAP_STYLES["project-lines-phasing"].layerProps}
         />
       </Source>
 
@@ -35,11 +35,11 @@ const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
       >
         <Layer
           beforeId="street-labels"
-          {...MAP_STYLES["project-points"].layerProps}
+          {...MAP_STYLES["project-points-phasing"].layerProps}
         />
       </Source>
     </>
   );
 };
 
-export default ProjectSummaryMapSourcesAndLayers;
+export default ProjectsMapSourcesAndLayers;

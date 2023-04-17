@@ -136,3 +136,27 @@ export const useZoomToExistingComponents = (mapRef, data) => {
     setHasMapZoomedInitially(true);
   }, [data, hasMapZoomedInitially, mapRef]);
 };
+
+/**
+ * Use Mapbox fitBounds to zoom to existing project components feature collection
+ * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
+ * @param {Object} data - Data returned from the moped_components query
+ * @param {Array} data.project_geography - Array of existing component features
+ */
+export const useZoomToAllProjects = (mapRef, featureCollection) => {
+  const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
+
+  useEffect(() => {
+    if (!featureCollection?.features?.length > 0 || hasMapZoomedInitially)
+      return;
+    if (!mapRef?.current) return;
+
+    zoomMapToFeatureCollection(
+      mapRef,
+      featureCollection,
+      fitBoundsOptions.zoomToAllProjectsExtent
+    );
+
+    setHasMapZoomedInitially(true);
+  }, [featureCollection, hasMapZoomedInitially, mapRef]);
+};
