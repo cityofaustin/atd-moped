@@ -67,7 +67,7 @@ const FileUploadDialogSingle = (props) => {
   };
 
   /**
-   * Logic that needs to be run after a file has been added to the
+   * Logic that needs to be run after a file has been added to the uploader
    * @param error
    * @param file
    */
@@ -82,9 +82,7 @@ const FileUploadDialogSingle = (props) => {
    * @param {Object} e - The event object
    */
   const handleFileNameChange = (e) => {
-    // strip out & because of file upload bug 
-    // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
-    setFileName(e.target.value.replace("&", ""));
+    setFileName(e.target.value);
   };
 
   /**
@@ -254,7 +252,7 @@ const FileUploadDialogSingle = (props) => {
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
-              principal={"project"}
+              principal={"project"} // I dont think this prop is being used
               projectId={props.projectId}
               onFileProcessed={handleOnFileProcessed}
               onFileAdded={handleOnFileAdded}

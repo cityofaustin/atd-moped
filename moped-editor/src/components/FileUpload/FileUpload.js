@@ -83,9 +83,12 @@ const FileUpload = props => {
    * @return {Promise<boolean>}
    */
   const handleBeforeAdd = item => {
+    // strip out & because of file upload bug
+    // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
+    const filteredFilename = item.filename.replace("&", "")
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
-        file: item.filename,
+        file: filteredFilename,
         ...(props?.projectId ? { project_id: props.projectId } : {}),
         ...(props?.uploadType ? { type: props.uploadType } : {}),
       }),
@@ -110,7 +113,7 @@ const FileUpload = props => {
                 setErrors([]);
                 if (data?.credentials) {
                   const newFileSignatureState = { ...fileSignatures };
-                  newFileSignatureState[item.filename] = data.credentials;
+                  newFileSignatureState[filteredFilename] = data.credentials;
                   setFileSignatures(newFileSignatureState);
                 }
               })
@@ -162,7 +165,7 @@ const FileUpload = props => {
 
   /**
    * Processes a single file upload event
-   * @param {string} fieldName - The name of the field
+   * @param {string} fieldName - The name of the input field
    * @param {string} file - The name of the file
    * @param {Object} metadata - The file metadata
    * @function load - Load function callback
@@ -180,7 +183,7 @@ const FileUpload = props => {
     progress,
     abort
   ) => {
-    // fieldName is the name of the input field
+    // fieldName is the name of the input field (filepond)
     // file is the actual file object to send
     const formData = new FormData();
 
@@ -278,6 +281,7 @@ const FileUpload = props => {
       >
         {/* Update current files  */}
         {files.map(file => (
+          // getting error about this and not seeing it locally
           <File key={file} src={file} origin="local" />
         ))}
       </FilePond>
