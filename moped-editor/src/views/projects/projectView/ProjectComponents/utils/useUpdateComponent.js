@@ -9,6 +9,9 @@ import {
 } from "./makeFeatures";
 import { useDoesDraftEditComponentHaveFeatures } from "./features";
 import { UPDATE_COMPONENT_FEATURES } from "src/queries/components";
+import { zoomMapToFeatureCollection } from "./map";
+import { useComponentFeatureCollection } from "./makeFeatureCollections";
+import { fitBoundsOptions } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
@@ -44,6 +47,7 @@ const editReducer = (state, action) => {
         ...state,
         showEditAttributesDialog: false,
         isEditingComponent: false,
+        draftEditComponent: null,
       };
     case "cancel_map_edit":
       return {
@@ -218,12 +222,13 @@ const editReducer = (state, action) => {
 };
 
 export const useUpdateComponent = ({
-  components,
+  projectComponents,
   clickedComponent,
   setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
   setIsDrawing,
+  mapRef,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -236,6 +241,9 @@ export const useUpdateComponent = ({
 
   const doesDraftEditComponentHaveFeatures =
     useDoesDraftEditComponentHaveFeatures(editState.draftEditComponent);
+  const draftEditComponentFeatureCollection = useComponentFeatureCollection(
+    editState.draftEditComponent
+  );
 
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
 
@@ -256,7 +264,7 @@ export const useUpdateComponent = ({
 
     const editedComponentId = editState.draftEditComponent.project_component_id;
 
-    const originalComponent = components.find(
+    const originalComponent = projectComponents.find(
       (component) => component.project_component_id === editedComponentId
     );
 
@@ -403,6 +411,12 @@ export const useUpdateComponent = ({
           setClickedComponent(null);
           editDispatch({ type: "save_edit" });
           setIsDrawing(false);
+
+          zoomMapToFeatureCollection(
+            mapRef,
+            draftEditComponentFeatureCollection,
+            fitBoundsOptions.zoomToClickedComponent
+          );
         });
       })
       .catch((error) => {

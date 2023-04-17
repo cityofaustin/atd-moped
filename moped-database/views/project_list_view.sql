@@ -1,3 +1,4 @@
+-- latest version 1678894870998_remove_cols_from_geo_views
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -29,20 +30,12 @@ AS WITH project_person_list_lookup AS (
     GROUP BY mpt.project_id
   )
  SELECT
-    mp.project_uuid,
     mp.project_id,
     mp.project_name,
     mp.project_description,
     mp.ecapris_subproject_id,
-    mp.project_order,
-    mp.timeline_id,
-    mp.end_date,
-    mp.project_length,
-    mp.fiscal_year,
-    mp.capitally_funded,
     mp.date_added,
     mp.is_deleted,
-    mp.milestone_id,
     mp.task_order,
     mp.updated_at,
     current_phase.phase_name as current_phase,
@@ -50,6 +43,7 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
+    mpps.name AS public_process_status,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
@@ -150,20 +144,15 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
-  GROUP BY mp.project_uuid, 
+     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
+  GROUP BY
     mp.project_id, 
     mp.project_name, 
     mp.project_description, 
     ppll.project_team_members, 
     mp.ecapris_subproject_id, 
-    mp.project_order, 
-    mp.timeline_id, 
-    mp.end_date, 
-    mp.fiscal_year, 
-    mp.capitally_funded, 
     mp.date_added,
     mp.is_deleted, 
-    mp.milestone_id, 
     me.entity_name, 
     mel.entity_name, 
     mp.updated_at, 
@@ -173,4 +162,5 @@ AS WITH project_person_list_lookup AS (
     ptl.type_name, 
     fsl.funding_source_name,
     added_by_user.first_name,
-    added_by_user.last_name;
+    added_by_user.last_name,
+    mpps.name;

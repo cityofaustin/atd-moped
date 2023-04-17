@@ -4,7 +4,6 @@
 const { arcgisToGeoJSON } = require("@terraformer/arcgis");
 const fs = require("fs");
 
-
 /**
  * Params of note
  * geometryPrecision=8: cap coordinates at 8 decimal places
@@ -51,32 +50,7 @@ const makeMultiPoly = (features) => {
 };
 
 /**
- * Merges district two polygons into one polygon
- */
-const mergeDistrict2 = (features) => {
-  const district2s = features.filter(
-    (feature) => feature.properties.COUNCIL_DISTRICT === 2
-  );
-  const otherDistricts = features.filter(
-    (feature) => feature.properties.COUNCIL_DISTRICT !== 2
-  );
-  let newDistrict2Coordinates = [];
-  district2s.forEach((feature) => {
-    if (feature.geometry.type !== "MultiPolygon") {
-      throw `Feature must be multipolygon for this hack to work`;
-    }
-    newDistrict2Coordinates = [
-      ...newDistrict2Coordinates,
-      ...feature.geometry.coordinates,
-    ];
-  });
-  const newDistrict2 = district2s[0];
-  newDistrict2.geometry.coordinates = newDistrict2Coordinates;
-  return [...otherDistricts, newDistrict2];
-};
-
-/**
- * strip out all feature properties except council_district 
+ * strip out all feature properties except council_district
  */
 const filterAndFormatProperties = (features) =>
   features.forEach((feature) => {
@@ -89,10 +63,9 @@ const main = async () => {
   const esriJson = await getDistrictsJson();
   const districtGeojson = arcgisToGeoJSON(esriJson);
   const features = makeMultiPoly(districtGeojson.features);
-  const featuresDeDuped = mergeDistrict2(features);
-  filterAndFormatProperties(featuresDeDuped);
+  filterAndFormatProperties(features);
 
-  const districtIds = featuresDeDuped.map(
+  const districtIds = features.map(
     (feature) => feature.properties.council_district
   );
 
@@ -110,7 +83,7 @@ const main = async () => {
 
   saveJsonFile(GEOJSON_FILENAME, {
     type: "FeatureCollection",
-    features: featuresDeDuped,
+    features: features,
   });
 };
 

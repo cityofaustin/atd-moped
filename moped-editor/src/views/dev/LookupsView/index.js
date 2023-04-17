@@ -54,7 +54,7 @@ const LookupsView = () => {
 
   /**
    * We're using history here (and elsewhere) because it's not possible to use react-router
-   * to replace window.loctation w/o forcing a re-render.
+   * to replace window.location w/o forcing a re-render.
    * See // https://github.com/remix-run/react-router/issues/8908
    */
   const history = createBrowserHistory();

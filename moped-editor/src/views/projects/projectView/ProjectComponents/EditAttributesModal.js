@@ -14,6 +14,8 @@ import {
   UPDATE_SIGNAL_COMPONENT,
 } from "src/queries/components";
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
+import { zoomMapToFeatureCollection } from "./utils/map";
+import { fitBoundsOptions } from "./mapSettings";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -25,12 +27,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditComponentModal = ({
+const EditAttributesModal = ({
   showDialog,
   editDispatch,
   componentToEdit,
   refetchProjectComponents,
   setClickedComponent,
+  mapRef,
 }) => {
   const classes = useStyles();
 
@@ -52,7 +55,8 @@ const EditComponentModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents } = formData;
+    const { description, subcomponents, phase, subphase } = formData;
+    const completionDate = !!phase ? formData.completionDate : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
     // Prepare the subcomponent data for the mutation
@@ -68,6 +72,7 @@ const EditComponentModal = ({
       const signalFromForm = formData.signal;
       const featureSignalRecord =
         knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+
       const signalToInsert = {
         ...featureSignalRecord,
         component_id: projectComponentId,
@@ -79,6 +84,9 @@ const EditComponentModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data,
+        completion_date: completionDate,
       };
 
       updateSignalComponent({
@@ -87,9 +95,20 @@ const EditComponentModal = ({
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id,
+          completionDate,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .then(() => {
+          onComponentSaveSuccess(updatedClickedComponentState);
+          // Zoom to the new or existing signal
+          zoomMapToFeatureCollection(
+            mapRef,
+            { type: "FeatureCollection", features: [signalFromForm] },
+            fitBoundsOptions.zoomToClickedComponent
+          );
+        })
         .catch((error) => {
           console.log(error);
         });
@@ -97,6 +116,9 @@ const EditComponentModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
+        moped_phase: phase?.data,
+        moped_subphase: subphase?.data,
+        completion_date: completionDate,
       };
 
       updateComponentAttributes({
@@ -104,6 +126,9 @@ const EditComponentModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
+          phaseId: phase?.data.phase_id,
+          subphaseId: subphase?.data.subphase_id,
+          completionDate,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -121,6 +146,9 @@ const EditComponentModal = ({
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
     description: componentToEdit?.description,
+    phase: componentToEdit?.moped_phase,
+    subphase: componentToEdit?.moped_subphase,
+    completionDate: componentToEdit?.completion_date,
   };
 
   return (
@@ -142,4 +170,4 @@ const EditComponentModal = ({
   );
 };
 
-export default EditComponentModal;
+export default EditAttributesModal;

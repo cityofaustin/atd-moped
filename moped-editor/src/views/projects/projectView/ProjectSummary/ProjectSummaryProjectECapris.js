@@ -80,7 +80,7 @@ const ProjectSummaryProjectECapris = ({
     PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
 
-  const isValidNumber = num => /^-{0,1}\d*\.{0,1}\d+$/.test(num);
+  const isValidECaprisId = (num) => /^[\d]*\.[0-9]{3}$/.test(num);
   /**
    * Resets the project website to original value
    */
@@ -94,12 +94,11 @@ const ProjectSummaryProjectECapris = ({
    */
   const handleProjectECaprisSave = () => {
     const isEmpty = (eCapris ?? "").length === 0;
-    const validNumber = isValidNumber(eCapris);
 
-    if (!isEmpty && !validNumber) {
+    if (!isEmpty && !isValidECaprisId(eCapris)) {
       snackbarHandle(
         true,
-        `Invalid eCapris value: ${eCapris} must be numeric.`,
+        `Invalid eCapris value: ${eCapris} must not contain letters and have exactly three digits after the decimal place. E.g., 12680.010.`,
         "error"
       );
       return;
@@ -114,8 +113,7 @@ const ProjectSummaryProjectECapris = ({
       : updateProjectECapris({
           variables: {
             projectId: projectId,
-            eCapris: Number(eCapris),
-            capitallyFunded: validNumber,
+            eCapris: eCapris,
           },
         })
     )
@@ -128,7 +126,7 @@ const ProjectSummaryProjectECapris = ({
         );
       })
       .then(() => refetch())
-      .catch(err => {
+      .catch((err) => {
         snackbarHandle(
           true,
           "Failed to update eCAPRIS Subproject ID: " + String(err),
@@ -144,7 +142,7 @@ const ProjectSummaryProjectECapris = ({
    * Updates the state of website
    * @param {Object} e - Event object
    */
-  const handleProjectECaprisChange = e => {
+  const handleProjectECaprisChange = (e) => {
     setECapris(e.target.value.trim());
   };
 
@@ -182,7 +180,7 @@ const ProjectSummaryProjectECapris = ({
         {!editMode && (
           <ProjectSummaryLabel
             text={
-              (isValidNumber(eCapris) && (
+              (eCapris && (
                 <>
                   <Typography variant={"inherit"} color={"primary"}>
                     {eCapris}{" "}

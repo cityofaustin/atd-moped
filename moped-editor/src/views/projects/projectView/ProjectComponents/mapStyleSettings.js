@@ -1,4 +1,5 @@
 import { MIN_SELECT_FEATURE_ZOOM } from "./mapSettings";
+import theme from "src/theme/index";
 
 export const MAPBOX_PADDING_PIXELS = 10;
 export const MAPBOX_CONTROL_BUTTON_WIDTH = 29;
@@ -68,6 +69,42 @@ export const MAP_STYLES = {
           ["boolean", ["feature-state", "hover"], false],
           COLORS.pinkDark,
           COLORS.bluePrimary,
+        ],
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "related-project-points": {
+    isInteractive: true,
+    layerProps: {
+      id: "related-project-points",
+      _featureIdProp: "INTERSECTIONID",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": theme.palette.map.green,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": theme.palette.map.greenLight,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
+  "related-project-lines": {
+    isInteractive: true,
+    layerProps: {
+      id: "related-project-lines",
+      _featureIdProp: "CTN_SEGMENT_ID",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          COLORS.pinkDark,
+          theme.palette.map.green,
         ],
       },
       layout: {
@@ -291,6 +328,37 @@ export const MAP_STYLES = {
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
         "circle-color": COLORS.blueLight,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
+  "clicked-related-features-lines": {
+    isInteractive: false,
+    layerProps: {
+      id: "clicked-related-features-lines",
+      featureIdProp: "id",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": theme.palette.map.green,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
+  "clicked-related-features-points": {
+    isInteractive: false,
+    layerProps: {
+      id: "clicked-related-features-points",
+      featureIdProp: "id",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": theme.palette.map.green,
+        "circle-stroke-width": 2,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": theme.palette.map.greenLight,
         "circle-opacity": 0.9,
       },
     },

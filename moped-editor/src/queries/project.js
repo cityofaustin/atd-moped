@@ -7,10 +7,7 @@ export const ADD_PROJECT = gql`
       project_id
       project_name
       project_description
-      project_priority
       ecapris_subproject_id
-      fiscal_year
-      capitally_funded
       moped_proj_phases {
         phase_id
         is_current_phase
@@ -33,15 +30,11 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_description
-      capitally_funded
       ecapris_subproject_id
-      fiscal_year
-      project_priority
       knack_project_id
       project_sponsor
       project_lead_id
       project_website
-      work_assignment_id
       parent_project_id
       interim_project_id
       is_deleted
@@ -257,18 +250,21 @@ export const TIMELINE_QUERY = gql`
       phase_id
       phase_name
       phase_order
-      moped_subphases(order_by: { subphase_order: asc }) {
+      moped_subphases(order_by: { subphase_name: asc }) {
         subphase_name
         subphase_id
       }
     }
+    moped_subphases {
+      subphase_name
+      subphase_id
+    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: {
-        phase_start: desc
-        moped_phase: { phase_order: desc }
-        moped_subphase: { subphase_order: desc }
-      }
+      order_by: [
+        { moped_phase: { phase_order: asc } }
+        { moped_subphase: { subphase_name: asc } }
+      ]
     ) {
       project_phase_id
       is_current_phase
@@ -286,7 +282,9 @@ export const TIMELINE_QUERY = gql`
         phase_name
       }
     }
-    moped_milestones(where: { milestone_id: { _gt: 0 } }) {
+    moped_milestones(
+      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+    ) {
       milestone_id
       milestone_name
     }
@@ -461,13 +459,6 @@ export const PROJECT_ACTIVITY_LOG = gql`
       description
       operation_type
       record_data
-      moped_user {
-        first_name
-        last_name
-        picture
-        email
-        user_id
-      }
       updated_by_user {
         first_name
         last_name
@@ -518,12 +509,12 @@ export const PROJECT_ACTIVITY_LOG = gql`
       id
       name
     }
-    moped_components(order_by: {component_id: asc}) {
+    moped_components(order_by: { component_id: asc }) {
       component_id
       component_name
       component_subtype
     }
-    moped_types(order_by: {type_id: asc}) {
+    moped_types(order_by: { type_id: asc }) {
       type_id
       type_name
     }
@@ -764,17 +755,10 @@ export const PROJECT_UPDATE_TYPES = gql`
 `;
 
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
-  mutation UpdateProjectECapris(
-    $projectId: Int!
-    $eCapris: numeric!
-    $capitallyFunded: Boolean!
-  ) {
+  mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: {
-        ecapris_subproject_id: $eCapris
-        capitally_funded: $capitallyFunded
-      }
+      _set: { ecapris_subproject_id: $eCapris }
     ) {
       affected_rows
     }
@@ -785,32 +769,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECaprisClear($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: null, capitally_funded: false }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_UPDATE_WORK_ASSIGNMENT_ID = gql`
-  mutation UpdateWorkAssignmentID(
-    $projectId: Int!
-    $work_assignment_id: String!
-  ) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { work_assignment_id: $work_assignment_id }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_CLEAR_WORK_ASSIGNMENT_ID = gql`
-  mutation UpdateWorkAssignmentID($projectId: Int!) {
-    update_moped_project(
-      where: { project_id: { _eq: $projectId } }
-      _set: { work_assignment_id: null }
+      _set: { ecapris_subproject_id: null }
     ) {
       affected_rows
     }
@@ -914,6 +873,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       entity_name
     }
     moped_tags(order_by: { name: asc }) {
+      name
+      id
+    }
+    moped_public_process_statuses(order_by: { name: asc }) {
       name
       id
     }

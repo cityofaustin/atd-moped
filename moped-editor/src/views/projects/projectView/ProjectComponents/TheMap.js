@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import MapGL from "react-map-gl";
 import { cloneDeep } from "lodash";
-// import FeaturePopup from "./FeaturePopup";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
 import CreateComponentDrawTools from "./CreateComponentDrawTools";
 import EditComponentDrawTools from "./EditComponentDrawTools";
 import BaseMapSourceAndLayers from "./BaseMapSourceAndLayers";
 import ProjectSourcesAndLayers from "./ProjectSourcesAndLayers";
+import RelatedProjectSourcesAndLayers from "./RelatedProjectSourcesAndLayers";
 import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
@@ -29,7 +29,6 @@ import {
   isDrawnDraftFeature,
   isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
-  useComponentFeatureCollectionFromMap,
 } from "./utils/features";
 import {
   useComponentFeatureCollection,
@@ -47,7 +46,8 @@ mapboxgl.workerClass =
 export default function TheMap({
   setHoveredOnMapFeature,
   hoveredOnMapFeature,
-  components,
+  projectComponents,
+  allRelatedComponents,
   isCreatingComponent,
   isEditingComponent,
   draftComponent,
@@ -61,26 +61,28 @@ export default function TheMap({
   setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
-  featureCollectionsByComponentId,
   isDrawing,
   setIsDrawing,
   errorMessageDispatch,
+  shouldShowRelatedProjects,
+  isClickedComponentRelated,
+  setIsClickedComponentRelated,
 }) {
   const [cursor, setCursor] = useState("grab");
 
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
   const projectComponentsFeatureCollection =
-    useAllComponentsFeatureCollection(components);
+    useAllComponentsFeatureCollection(projectComponents);
+  const allRelatedComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(allRelatedComponents);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
     useComponentFeatureCollection(draftEditComponent);
 
-  const componentFeatureCollection = useComponentFeatureCollectionFromMap(
-    clickedComponent,
-    featureCollectionsByComponentId
-  );
+  const clickedComponentFeatureCollection =
+    useComponentFeatureCollection(clickedComponent);
 
   const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
@@ -113,51 +115,36 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    // hover states conflict! the first feature to reach hover state wins
-    // so set point radii and line widths accordingly
     setCursor("pointer");
-
-    e.features.forEach((feature) => {
-      if (feature.layer.id.includes("project")) {
-        // it's a project feature, so add to the hover tracking for sidebar interaction
-        setHoveredOnMapFeature(feature);
-      }
-      // mapRef.current?.setFeatureState(feature, { hover: true });
-    });
   };
 
   const onMouseLeave = (e) => {
     setCursor("grab");
-    setHoveredOnMapFeature(null);
-    // e.features.forEach((feature) => {
-    //   mapRef.current?.setFeatureState(feature, { hover: false });
-    //   // setHoveredOnMapFeatureId(null);
-    // });
   };
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
 
-    // Get the details we need to see if the feature is already in the draftComponent or not
+    /* Get the details we need to see if the feature is already in the draftComponent or not */
     const { internal_table } = newDraftComponent;
     const ctnUniqueIdentifier = Object.values(SOURCES).find(
       (source) => source.table === internal_table
     )._featureIdProp;
 
-    // Get the IDs of the features already in the draftComponent
+    /* Get the IDs of the features already in the draftComponent */
     const existingDraftIds = newDraftComponent.features.map(
       (feature) => feature.properties[ctnUniqueIdentifier]
     );
 
-    // Find the feature that was clicked that's already in the draftComponent
+    /* Find the feature that was clicked that's already in the draftComponent */
     const clickedDraftComponentFeature = e.features.find((feature) =>
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    // If we clicked a drawn feature, we don't need to capture from the CTN layers
+    /* If we clicked a drawn feature, we don't need to capture from the CTN layers */
     if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
 
-    // If we clicked a feature that's already in the draftComponent, we remove it
+    /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
       createDispatch({
         type: "remove_draft_component_feature",
@@ -166,7 +153,7 @@ export default function TheMap({
       return;
     }
 
-    // Otherwise, we capture the feature from the CTN layers and add it to the draftComponent
+    /* Otherwise, we capture the feature from the CTN layers and add it to the draftComponent  */
     const clickedFeature = e.features[0];
     const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(
       clickedFeature,
@@ -192,7 +179,7 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    // If drawn feature is clicked, the draw tools take over and we don't need to do anything else
+    /* If drawn feature is clicked, the draw tools take over and we don't need to do anything else  */
     if (isDrawnExistingFeature(clickedFeature)) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
@@ -215,7 +202,7 @@ export default function TheMap({
     const tableToInsert =
       draftEditComponent?.moped_components?.feature_layer?.internal_table;
 
-    // Update UI
+    /* Update UI  */
     const addOrRemoveClickedEditFeatures = (currentComponent) => {
       const isFeatureAlreadyInComponent = Boolean(
         currentComponent[tableToInsert].find(
@@ -225,8 +212,10 @@ export default function TheMap({
         )
       );
 
-      // If the feature is not already in the draftEditComponent, add it
-      // otherwise, remove it.
+      /* 
+        If the feature is not already in the draftEditComponent, add it
+        otherwise, remove it.
+      */
       if (!isFeatureAlreadyInComponent) {
         return {
           ...currentComponent,
@@ -253,13 +242,14 @@ export default function TheMap({
   };
 
   const onClick = (e) => {
-    // if map is clicked outside interactive layers
+    /* if map is clicked outside interactive layers */
     if (e.features.length === 0) {
-      // clear clickedComponent to collapse list item
+      /* clear clickedComponent to collapse list item  */
       if (clickedComponent) {
         setClickedComponent(null);
+        setIsClickedComponentRelated(false);
       }
-      // clear clickedProjectFeature to close FeaturePopup
+      /* clear clickedProjectFeature to close FeaturePopup  */
       if (clickedProjectFeature) {
         setClickedProjectFeature(null);
       }
@@ -269,6 +259,33 @@ export default function TheMap({
     /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {
       const clickedProjectFeature = getClickedFeatureFromMap(e);
+
+      /* Extract component id fron the clicked feature */
+      const clickedComponentId =
+        clickedProjectFeature?.properties.project_component_id;
+
+      /* Find the component (this project's component or related components) that matches this feature */
+      let isNewClickedComponentRelated = false;
+      let clickedComponentFromMap = projectComponents.find(
+        (component) => component.project_component_id === clickedComponentId
+      );
+
+      if (!clickedComponentFromMap) {
+        clickedComponentFromMap = allRelatedComponents.find(
+          (component) => component.project_component_id === clickedComponentId
+        );
+        if (clickedComponentFromMap) {
+          isNewClickedComponentRelated = true;
+        }
+      }
+
+      /* Assign to clickedComponent and trigger side-panel scroll  */
+      if (clickedComponentFromMap) {
+        clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
+        isNewClickedComponentRelated && setIsClickedComponentRelated(true);
+        const ref = clickedComponentFromMap?._ref;
+        ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+      }
 
       setClickedProjectFeature(clickedProjectFeature);
       return;
@@ -285,8 +302,6 @@ export default function TheMap({
       handleEditOnClick(e);
       return;
     }
-
-    // setHoveredOnMapFeatureId(newFeature.properties.id);
   };
 
   const onMoveEnd = (e) => {
@@ -348,14 +363,22 @@ export default function TheMap({
           }
           draftEditComponent={draftEditComponent}
         />
+        <RelatedProjectSourcesAndLayers
+          isCreatingComponent={isCreatingComponent}
+          isEditingComponent={isEditingComponent}
+          featureCollection={allRelatedComponentsFeatureCollection}
+          shouldShowRelatedProjects={shouldShowRelatedProjects}
+          clickedComponent={clickedComponent}
+        />
         <DraftComponentSourcesAndLayers
           draftComponentFeatures={draftComponentFeatures}
           linkMode={linkMode}
         />
         <ClickedComponentSourcesAndLayers
           clickedComponent={clickedComponent}
-          componentFeatureCollection={componentFeatureCollection}
+          componentFeatureCollection={clickedComponentFeatureCollection}
           isEditingComponent={isEditingComponent}
+          isClickedComponentRelated={isClickedComponentRelated}
         />
         <EditDraftComponentSourcesAndLayers
           draftEditComponentFeatureCollection={

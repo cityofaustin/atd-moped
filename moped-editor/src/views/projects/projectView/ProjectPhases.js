@@ -2,7 +2,6 @@ import React, { useState } from "react";
 
 // Material
 import {
-  Button,
   CircularProgress,
   Typography,
   FormControl,
@@ -14,7 +13,6 @@ import Autocomplete from "@material-ui/lab/Autocomplete";
 import { green } from "@material-ui/core/colors";
 
 import {
-  AddCircle as AddCircleIcon,
   EditOutlined as EditOutlinedIcon,
   CheckCircleOutline,
 } from "@material-ui/icons";
@@ -36,10 +34,11 @@ import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
-// Helpers
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
+import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
+import PhaseTemplateModal from "./PhaseTemplateModal";
 
 /**
  * Identify any current moped_proj_phases
@@ -67,8 +66,7 @@ const replaceEmptyStrings = (obj) => {
 };
 
 /**
- * ProjectTimeline Component - renders the view displayed when the "Timeline"
- * tab is active
+ * ProjectPhases Component - renders Project Phase table
  * @return {JSX.Element}
  * @constructor
  */
@@ -79,13 +77,8 @@ const ProjectPhases = ({
   refetch,
   projectViewRefetch,
 }) => {
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
-  const addActionRefPhases = React.useRef();
-
   const [isMutating, setIsMutating] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   // Mutations
   const [updateProjectPhase] = useMutation(UPDATE_PROJECT_PHASES_MUTATION);
@@ -97,6 +90,11 @@ const ProjectPhases = ({
 
   // Dropdown options
   const phaseOptions = data?.moped_phases || [];
+
+  // Hide Phase template dialog
+  const handleTemplateModalClose = () => {
+    setIsDialogOpen(false);
+  };
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -115,6 +113,22 @@ const ProjectPhases = ({
       console.error(err);
     });
   };
+
+  const phaseNameLookup = data.moped_phases.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.phase_id]: item.phase_name,
+      }),
+    {}
+  );
+
+  const subphaseNameLookup = data.moped_subphases.reduce(
+    (obj, item) =>
+      Object.assign(obj, {
+        [item.subphase_id]: item.subphase_name,
+      }),
+    {}
+  );
 
   /**
    * Column configuration for <MaterialTable> Phases table
@@ -207,172 +221,182 @@ const ProjectPhases = ({
   ];
 
   return (
-    <MaterialTable
-      isLoading={isMutating}
-      columns={phasesColumns}
-      data={data.moped_proj_phases}
-      // Action component customized as described in this gh-issue:
-      // https://github.com/mbrn/material-table/issues/2133
-      icons={{
-        Edit: EditOutlinedIcon,
-      }}
-      components={{
-        EditRow: (props) => (
-          <MTableEditRow
-            {...props}
-            onKeyDown={(e) => {
-              if (e.keyCode === 13) {
-                // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-              }
-            }}
-          />
-        ),
-        Action: (props) => {
-          // If isn't the add action
-          if (
-            typeof props.action === typeof Function ||
-            props.action.tooltip !== "Add"
-          ) {
-            return <MTableAction {...props} />;
-          } else {
-            return (
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                startIcon={<AddCircleIcon />}
-                ref={addActionRefPhases}
-                onClick={props.action.onClick}
-              >
-                Add phase
-              </Button>
-            );
-          }
-        },
-      }}
-      editable={{
-        onRowAdd: async (newData) => {
-          setIsMutating(true);
-          const { moped_phase, ...rest } = newData;
-
-          const newPhasePayload = {
-            project_id: projectId,
-            phase_id: moped_phase.phase_id,
-            ...rest,
-          };
-
-          replaceEmptyStrings(newPhasePayload);
-
-          // if necessary, updates existing phases in table to ensure only one is marked "current"
-          if (newPhasePayload.is_current_phase) {
-            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
-              null,
-              data.moped_proj_phases
-            );
-            if (projPhasesIdsToUpdate.length > 0) {
-              await updateExistingPhases(projPhasesIdsToUpdate);
-            }
-          }
-
-          // Execute insert mutation, returns promise
-          await addProjectPhase({
-            variables: {
-              objects: [newPhasePayload],
-            },
-          }).catch((err) => {
-            console.error(err);
-          });
-          // Refetch data
-          await refetch();
-          if (!!projectViewRefetch) {
-            await projectViewRefetch();
-          }
-          setIsMutating(false);
-        },
-        onRowUpdate: async (newData, oldData) => {
-          setIsMutating(true);
-          const {
-            project_phase_id,
-            moped_phase,
-            moped_subphase,
-            __typename,
-            ...updatedPhasePayload
-          } = newData;
-          // extract phase_id from moped_phase object
-          updatedPhasePayload.phase_id = moped_phase.phase_id;
-
-          replaceEmptyStrings(updatedPhasePayload);
-
-          // if necessary, updates existing phases in table to ensure only one is marked "current"
-          if (updatedPhasePayload.is_current_phase) {
-            const projPhasesIdsToUpdate = getCurrentPhaseIDs(
-              project_phase_id,
-              data.moped_proj_phases
-            );
-            if (projPhasesIdsToUpdate.length > 0) {
-              await updateExistingPhases(projPhasesIdsToUpdate);
-            }
-          }
-
-          // Execute update mutation
-          await updateProjectPhase({
-            variables: { project_phase_id, object: updatedPhasePayload },
-          }).catch((err) => {
-            console.error(err);
-          });
-          // Refetch data
-          await refetch();
-
-          if (!!projectViewRefetch) {
-            await projectViewRefetch();
-          }
-          setIsMutating(false);
-        },
-        onRowDelete: async (oldData) => {
-          // Execute delete mutation
-          setIsMutating(true);
-          await deleteProjectPhase({
-            variables: {
-              project_phase_id: oldData.project_phase_id,
-            },
-          }).catch((err) => {
-            console.error(err);
-          });
-          await refetch();
-
-          if (!!projectViewRefetch) {
-            await projectViewRefetch();
-          }
-          setIsMutating(false);
-        },
-      }}
-      title={
-        <Typography variant="h2" color="primary">
-          Phases
-        </Typography>
-      }
-      options={{
-        ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
-          paging: false,
-        }),
-        search: false,
-        rowStyle: { fontFamily: typography.fontFamily },
-        actionsColumnIndex: -1,
-      }}
-      localization={{
-        header: {
-          actions: "",
-        },
-        body: {
-          emptyDataSourceMessage: (
-            <Typography variant="body1">
-              No project phases to display
-            </Typography>
+    <>
+      <MaterialTable
+        isLoading={isMutating}
+        columns={phasesColumns}
+        data={data.moped_proj_phases}
+        icons={{
+          Edit: EditOutlinedIcon,
+        }}
+        // Action component customized as described in this gh-issue:
+        // https://github.com/mbrn/material-table/issues/2133
+        components={{
+          EditRow: (props) => (
+            <MTableEditRow
+              {...props}
+              onKeyDown={(e) => {
+                if (e.keyCode === 13) {
+                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
+                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
+                }
+              }}
+            />
           ),
-        },
-      }}
-    />
+          Action: (props) => {
+            // If isn't the add action
+            if (
+              typeof props.action === typeof Function ||
+              props.action.tooltip !== "Add"
+            ) {
+              return <MTableAction {...props} />;
+            } else {
+              return (
+                <ButtonDropdownMenu
+                  addAction={props.action.onClick}
+                  openActionDialog={setIsDialogOpen}
+                  parentButtonText="Add phase"
+                  firstOptionText="New phase"
+                  secondOptionText="From template"
+                  secondOptionIcon
+                />
+              );
+            }
+          },
+        }}
+        editable={{
+          onRowAdd: async (newData) => {
+            setIsMutating(true);
+            const { moped_phase, ...rest } = newData;
+
+            const newPhasePayload = {
+              project_id: projectId,
+              phase_id: moped_phase.phase_id,
+              ...rest,
+            };
+
+            replaceEmptyStrings(newPhasePayload);
+
+            // if necessary, updates existing phases in table to ensure only one is marked "current"
+            if (newPhasePayload.is_current_phase) {
+              const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+                null,
+                data.moped_proj_phases
+              );
+              if (projPhasesIdsToUpdate.length > 0) {
+                await updateExistingPhases(projPhasesIdsToUpdate);
+              }
+            }
+
+            // Execute insert mutation, returns promise
+            await addProjectPhase({
+              variables: {
+                objects: [newPhasePayload],
+              },
+            }).catch((err) => {
+              console.error(err);
+            });
+            // Refetch data
+            await refetch();
+            if (!!projectViewRefetch) {
+              await projectViewRefetch();
+            }
+            setIsMutating(false);
+          },
+          onRowUpdate: async (newData, oldData) => {
+            setIsMutating(true);
+            const {
+              project_phase_id,
+              moped_phase,
+              moped_subphase,
+              __typename,
+              ...updatedPhasePayload
+            } = newData;
+            // extract phase_id from moped_phase object
+            updatedPhasePayload.phase_id = moped_phase.phase_id;
+
+            replaceEmptyStrings(updatedPhasePayload);
+
+            // if necessary, updates existing phases in table to ensure only one is marked "current"
+            if (updatedPhasePayload.is_current_phase) {
+              const projPhasesIdsToUpdate = getCurrentPhaseIDs(
+                project_phase_id,
+                data.moped_proj_phases
+              );
+              if (projPhasesIdsToUpdate.length > 0) {
+                await updateExistingPhases(projPhasesIdsToUpdate);
+              }
+            }
+
+            // Execute update mutation
+            await updateProjectPhase({
+              variables: { project_phase_id, object: updatedPhasePayload },
+            }).catch((err) => {
+              console.error(err);
+            });
+            // Refetch data
+            await refetch();
+
+            if (!!projectViewRefetch) {
+              await projectViewRefetch();
+            }
+            setIsMutating(false);
+          },
+          onRowDelete: async (oldData) => {
+            // Execute delete mutation
+            setIsMutating(true);
+            await deleteProjectPhase({
+              variables: {
+                project_phase_id: oldData.project_phase_id,
+              },
+            }).catch((err) => {
+              console.error(err);
+            });
+            await refetch();
+
+            if (!!projectViewRefetch) {
+              await projectViewRefetch();
+            }
+            setIsMutating(false);
+          },
+        }}
+        title={
+          <Typography variant="h2" color="primary">
+            Phases
+          </Typography>
+        }
+        options={{
+          ...(data.moped_proj_phases.length < PAGING_DEFAULT_COUNT + 1 && {
+            paging: false,
+          }),
+          search: false,
+          rowStyle: { fontFamily: typography.fontFamily },
+          actionsColumnIndex: -1,
+          addRowPosition: "first",
+        }}
+        localization={{
+          header: {
+            actions: "",
+          },
+          body: {
+            emptyDataSourceMessage: (
+              <Typography variant="body1">
+                No project phases to display
+              </Typography>
+            ),
+          },
+        }}
+      />
+      <PhaseTemplateModal
+        isDialogOpen={isDialogOpen}
+        handleDialogClose={handleTemplateModalClose}
+        selectedPhases={data.moped_proj_phases}
+        phaseNameLookup={phaseNameLookup}
+        subphaseNameLookup={subphaseNameLookup}
+        projectId={projectId}
+        refetch={refetch}
+      />
+    </>
   );
 };
 

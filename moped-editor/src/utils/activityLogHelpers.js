@@ -54,7 +54,12 @@ export const formatActivityLogEntry = (change, lookupData) => {
     case "moped_proj_notes":
       return formatNotesActivity(change);
     case "moped_proj_components":
-      return formatComponentsActivity(change, lookupData.componentList);
+      return formatComponentsActivity(
+        change,
+        lookupData.componentList,
+        lookupData.phaseList,
+        lookupData.subphaseList
+      );
     case "moped_project_types":
       return formatProjectTypesActivity(change, lookupData.projectTypeList);
     case "moped_project_files":
