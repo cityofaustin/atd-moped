@@ -113,7 +113,7 @@ const FileUpload = props => {
                 setErrors([]);
                 if (data?.credentials) {
                   const newFileSignatureState = { ...fileSignatures };
-                  newFileSignatureState[filteredFilename] = data.credentials;
+                  newFileSignatureState[item.filename] = data.credentials;
                   setFileSignatures(newFileSignatureState);
                 }
               })
@@ -255,7 +255,7 @@ const FileUpload = props => {
   };
 
   return (
-    <Grid fullWidth>
+    <Grid fullwidth>
       {errors.length > 0 &&
         errors.map(err => {
           return (
