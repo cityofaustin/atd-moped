@@ -7,7 +7,7 @@ import { useUser, getJwt } from "../../auth/user";
 // File Pond Library
 import { FilePond, registerPlugin } from "react-filepond";
 // `File` imported from filepond to workaround react-scripts 5 import error
-import { File } from "filepond"
+//import { File } from "filepond"
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
@@ -281,8 +281,9 @@ const FileUpload = props => {
       >
         {/* Update current files  */}
         {files.map(file => (
+          <p>{file.name}</p>
           // getting error about this and not seeing it locally
-          <File key={file} src={file} origin="local" />
+          // <File key={file} src={file} origin="local" />
         ))}
       </FilePond>
     </Grid>
