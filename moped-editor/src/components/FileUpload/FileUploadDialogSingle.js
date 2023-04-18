@@ -252,7 +252,6 @@ const FileUploadDialogSingle = (props) => {
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
-              principal={"project"} // I dont think this prop is being used
               projectId={props.projectId}
               onFileProcessed={handleOnFileProcessed}
               onFileAdded={handleOnFileAdded}

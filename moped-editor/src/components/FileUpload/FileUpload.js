@@ -6,8 +6,6 @@ import { useUser, getJwt } from "../../auth/user";
 
 // File Pond Library
 import { FilePond, registerPlugin } from "react-filepond";
-// `File` imported from filepond to workaround react-scripts 5 import error
-//import { File } from "filepond"
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";

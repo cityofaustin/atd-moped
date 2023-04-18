@@ -155,7 +155,6 @@ const FileUploadDialogSimple = props => {
               <FileUpload
                 limit={1}
                 sizeLimit={"1024MB"}
-                principal={props?.principal ?? "user"} // prop not being used
                 projectId={props?.projectId ?? null}
                 uploadType={"private"}
                 onFileProcessed={handleOnFileProcessed}
