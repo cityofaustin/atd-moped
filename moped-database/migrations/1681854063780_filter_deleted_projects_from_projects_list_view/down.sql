@@ -1,4 +1,4 @@
--- latest version 1681854063780_filter_deleted_projects_from_projects_list_view
+-- remove is_deleted filter from project view
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -145,8 +145,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
-  WHERE
-    mp.is_deleted = false
   GROUP BY
     mp.project_id, 
     mp.project_name, 
