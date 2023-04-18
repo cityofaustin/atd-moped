@@ -41,13 +41,6 @@ const FileUpload = props => {
   const maxFiles = props?.limit ?? 1;
 
   /**
-   * For use of filepond component.
-   * @constant {Object[]} files - It holds a list of files and metadata.
-   * @function setFiles - For use of filepond only.
-   */
-  const [files, setFiles] = useState([]);
-
-  /**
    * @constant {Object} - A key value dictionary, where the key
    * is the name of the file, the value are the credentials as
    * provided by S3.
@@ -277,15 +270,7 @@ const FileUpload = props => {
         }}
         beforeAddFile={handleBeforeAdd}
         onprocessfile={(error, file) => handleFileAdded(error, file)}
-        onupdatefiles={setFiles}
-      >
-        {/* Update current files  */}
-        {files.map(file => (
-          <p>{file.name}</p>
-          // getting error about this and not seeing it locally
-          // <File key={file} src={file} origin="local" />
-        ))}
-      </FilePond>
+      />
     </Grid>
   );
 };
