@@ -11,7 +11,7 @@ The process is split into two steps.
 
 ### Access DB Extraction
 
-1. Download a snapshot of the Access DB from [Drive](https://drive.google.com/drive/u/2/folders/1-pNBTdfPBxJm8VpYjxpZwA8ziCLMZdRx). Save it as `./export_data/database/database.md`
+1. Download a snapshot of the Access DB from [Drive](https://drive.google.com/drive/u/2/folders/1-pNBTdfPBxJm8VpYjxpZwA8ziCLMZdRx). Save it as `./export_data/database/database.md`. These snapshots have been retrieved from G drive: ATD\ATD\Mobility Project Tracking
 
 2. From this directory, build the docker image:
 
@@ -67,6 +67,7 @@ $ node index.js local
 --->
 
 - clean up/de-dupe RRFB component
+- implement new subcomponents / split out work types
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - work authorizations - can we just mirror Data Tracker functionality in SMB?
   - if we must; strive for simplest implementation!

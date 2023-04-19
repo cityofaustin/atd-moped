@@ -8,7 +8,6 @@ const {
 const {
   exportMetadata,
   replaceMetadata,
-  reloadMetadata,
   makeHasuraRequest,
 } = require("./utils/graphql");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
