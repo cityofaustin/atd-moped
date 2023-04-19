@@ -76,7 +76,7 @@ const FileUpload = props => {
   const handleBeforeAdd = item => {
     // strip out & because of file upload bug
     // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
-    const filteredFilename = item.filename.replace("&", "")
+    const filteredFilename = item.filename.replace("&", "_")
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
         file: filteredFilename,
