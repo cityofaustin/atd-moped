@@ -268,7 +268,6 @@ const FileUpload = props => {
         }}
         beforeAddFile={handleBeforeAdd}
         onprocessfile={(error, file) => handleFileAdded(error, file)}
-        onupdatefiles={setFiles}
       />
     </Grid>
   );
