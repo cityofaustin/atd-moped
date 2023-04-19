@@ -78,7 +78,7 @@ const FileUploadDialogSimple = props => {
     }
 
     /**
-     * Logic that needs to be run after a file has been added to the
+     * Logic that needs to be run after a file has been added to the uploader
      * @param error
      * @param file
      */
@@ -143,7 +143,6 @@ const FileUploadDialogSimple = props => {
 
     return (
       <Dialog
-        className={classes.dialog}
         open={props.dialogOpen}
         onClose={props.handleClickCloseUploadFile}
         aria-labelledby="alert-dialog-title"
@@ -158,7 +157,6 @@ const FileUploadDialogSimple = props => {
               <FileUpload
                 limit={1}
                 sizeLimit={"1024MB"}
-                principal={props?.principal ?? "user"}
                 projectId={props?.projectId ?? null}
                 uploadType={"private"}
                 onFileProcessed={handleOnFileProcessed}
