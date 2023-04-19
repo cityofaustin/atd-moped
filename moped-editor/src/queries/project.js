@@ -12,11 +12,6 @@ export const ADD_PROJECT = gql`
         phase_id
         is_current_phase
       }
-      moped_proj_components {
-        moped_proj_features {
-          feature_id
-        }
-      }
       moped_project_types {
         project_type_id
       }
