@@ -6,8 +6,6 @@ import { useUser, getJwt } from "../../auth/user";
 
 // File Pond Library
 import { FilePond, registerPlugin } from "react-filepond";
-// `File` imported from filepond to workaround react-scripts 5 import error
-import { File } from "filepond"
 import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
@@ -39,13 +37,6 @@ const FileUpload = props => {
   const { user } = useUser();
   const token = getJwt(user);
   const maxFiles = props?.limit ?? 1;
-
-  /**
-   * For use of filepond component.
-   * @constant {Object[]} files - It holds a list of files and metadata.
-   * @function setFiles - For use of filepond only.
-   */
-  const [files, setFiles] = useState([]);
 
   /**
    * @constant {Object} - A key value dictionary, where the key
@@ -83,9 +74,12 @@ const FileUpload = props => {
    * @return {Promise<boolean>}
    */
   const handleBeforeAdd = item => {
+    // strip out & because of file upload bug
+    // https://github.com/cityofaustin/atd-data-tech/issues/11900#issuecomment-1505701452
+    const filteredFilename = item.filename.replace("&", "_")
     return fetch(
       withQuery(`${config.env.APP_API_ENDPOINT}/files/request-signature`, {
-        file: item.filename,
+        file: filteredFilename,
         ...(props?.projectId ? { project_id: props.projectId } : {}),
         ...(props?.uploadType ? { type: props.uploadType } : {}),
       }),
@@ -162,7 +156,7 @@ const FileUpload = props => {
 
   /**
    * Processes a single file upload event
-   * @param {string} fieldName - The name of the field
+   * @param {string} fieldName - The name of the input field
    * @param {string} file - The name of the file
    * @param {Object} metadata - The file metadata
    * @function load - Load function callback
@@ -180,7 +174,7 @@ const FileUpload = props => {
     progress,
     abort
   ) => {
-    // fieldName is the name of the input field
+    // fieldName is the name of the input field (filepond)
     // file is the actual file object to send
     const formData = new FormData();
 
@@ -252,7 +246,7 @@ const FileUpload = props => {
   };
 
   return (
-    <Grid fullWidth>
+    <Grid fullwidth>
       {errors.length > 0 &&
         errors.map(err => {
           return (
@@ -274,13 +268,7 @@ const FileUpload = props => {
         }}
         beforeAddFile={handleBeforeAdd}
         onprocessfile={(error, file) => handleFileAdded(error, file)}
-        onupdatefiles={setFiles}
-      >
-        {/* Update current files  */}
-        {files.map(file => (
-          <File key={file} src={file} origin="local" />
-        ))}
-      </FilePond>
+      />
     </Grid>
   );
 };

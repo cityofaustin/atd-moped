@@ -374,7 +374,7 @@ SELECT pg_catalog.setval('public.moped_project_project_id_simple_seq', 229, true
 -- Name: moped_purchase_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 2, true);
+SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 3, true);
 
 
 --
