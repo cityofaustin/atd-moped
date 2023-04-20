@@ -1,4 +1,3 @@
-data/raw/*
-data/moped/*
+data/*
 secrets.js
 backup/*.json
