@@ -1,9 +1,9 @@
 import ComponentListItem from "./ComponentListItem";
-import Button from "@material-ui/core/Button";
-import { EditOutlined } from "@material-ui/icons";
-import DeleteIcon from "@material-ui/icons/Delete";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
+import Button from "@mui/material/Button";
+import { EditOutlined } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";

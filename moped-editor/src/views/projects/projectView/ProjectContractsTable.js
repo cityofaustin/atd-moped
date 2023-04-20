@@ -9,14 +9,14 @@ import {
   Snackbar,
   Typography,
   TextField,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import { Alert } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/icons-material";
+import makeStyles from '@mui/styles/makeStyles';
 import MaterialTable, {
   MTableEditRow,
   MTableAction,

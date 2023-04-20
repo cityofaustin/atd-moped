@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Button, ListItemIcon, Menu, MenuItem } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
-import AddCircle from "@material-ui/icons/AddCircle";
-import { makeStyles } from "@material-ui/core";
+import { Button, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import AddCircle from "@mui/icons-material/AddCircle";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   dropDownMenu: {

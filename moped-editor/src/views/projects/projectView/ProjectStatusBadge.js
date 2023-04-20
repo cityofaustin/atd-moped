@@ -1,14 +1,14 @@
 import React from "react";
-import { Chip } from "@material-ui/core";
+import { Chip } from "@mui/material";
 
-import CancelOutlinedIcon from "@material-ui/icons/CancelOutlined";
-import PauseCircleOutlineOutlinedIcon from "@material-ui/icons/PauseCircleOutlineOutlined";
-import RemoveCircleOutlineOutlinedIcon from "@material-ui/icons/RemoveCircleOutlineOutlined";
-import PlayCircleOutlineOutlinedIcon from "@material-ui/icons/PlayCircleOutlineOutlined";
-import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlineOutlined";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
+import PauseCircleOutlineOutlinedIcon from "@mui/icons-material/PauseCircleOutlineOutlined";
+import RemoveCircleOutlineOutlinedIcon from "@mui/icons-material/RemoveCircleOutlineOutlined";
+import PlayCircleOutlineOutlinedIcon from "@mui/icons-material/PlayCircleOutlineOutlined";
+import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 
-import { makeStyles } from "@material-ui/styles";
+import { makeStyles } from "@mui/styles";
 import clsx from "clsx";
 
 const defaultIcon = HelpOutlineIcon;

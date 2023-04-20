@@ -9,10 +9,10 @@ import {
   Switch,
   FormControlLabel,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
-import { CheckCircle } from "@material-ui/icons";
+import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";

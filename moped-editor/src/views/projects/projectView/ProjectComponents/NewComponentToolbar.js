@@ -1,16 +1,16 @@
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Icon from "@material-ui/core/Icon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Collapse from "@material-ui/core/Collapse";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import Switch from "@material-ui/core/Switch";
-import Button from "@material-ui/core/Button";
-import IconButton from "@material-ui/core/IconButton";
-import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
-import TuneIcon from "@material-ui/icons/Tune";
+import makeStyles from '@mui/styles/makeStyles';
+import Box from "@mui/material/Box";
+import Icon from "@mui/material/Icon";
+import ListItemText from "@mui/material/ListItemText";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import Collapse from "@mui/material/Collapse";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import Switch from "@mui/material/Switch";
+import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import TuneIcon from "@mui/icons-material/Tune";
 
 const useStyles = makeStyles((theme) => ({
   buttonTextLeft: {
@@ -38,49 +38,47 @@ const NewComponentToolbar = ({
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
-  return (
-    isNotCreatingOrEditing && (
-      <>
-        <ListItem dense>
-          <Button
-            className={classes.buttonTextLeft}
-            size="small"
-            color="primary"
-            fullWidth
-            startIcon={<AddCircleOutlineIcon />}
-            onClick={onStartCreatingComponent}
-          >
-            New Component
-          </Button>
-          <IconButton
-            onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-            aria-label="settings"
-          >
-            <TuneIcon fontSize="small" />
-          </IconButton>
-        </ListItem>
-        <Collapse in={areSettingsOpen}>
-          <Box borderLeft={7} borderColor="white">
-            <ListItem className={classes.listItem}>
-              <Icon />
-              <ListItemText
-                className={classes.listItemText}
-                secondary="Show related projects"
+  return isNotCreatingOrEditing && (
+    <>
+      <ListItem dense>
+        <Button
+          className={classes.buttonTextLeft}
+          size="small"
+          color="primary"
+          fullWidth
+          startIcon={<AddCircleOutlineIcon />}
+          onClick={onStartCreatingComponent}
+        >
+          New Component
+        </Button>
+        <IconButton
+          onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+          aria-label="settings"
+          size="large">
+          <TuneIcon fontSize="small" />
+        </IconButton>
+      </ListItem>
+      <Collapse in={areSettingsOpen}>
+        <Box borderLeft={7} borderColor="white">
+          <ListItem className={classes.listItem}>
+            <Icon />
+            <ListItemText
+              className={classes.listItemText}
+              secondary="Show related projects"
+            />
+            <ListItemSecondaryAction>
+              <Switch
+                checked={shouldShowRelatedProjects}
+                onChange={toggleShowRelatedProjects}
+                name="showRelatedProjects"
+                color="primary"
               />
-              <ListItemSecondaryAction>
-                <Switch
-                  checked={shouldShowRelatedProjects}
-                  onChange={toggleShowRelatedProjects}
-                  name="showRelatedProjects"
-                  color="primary"
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          </Box>
-        </Collapse>
-        <Divider />
-      </>
-    )
+            </ListItemSecondaryAction>
+          </ListItem>
+        </Box>
+      </Collapse>
+      <Divider />
+    </>
   );
 };
 

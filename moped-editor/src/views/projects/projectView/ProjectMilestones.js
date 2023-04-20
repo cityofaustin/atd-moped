@@ -7,8 +7,8 @@ import {
   Typography,
   FormControl,
   FormHelperText,
-} from "@material-ui/core";
-import { EditOutlined as EditOutlinedIcon } from "@material-ui/icons";
+} from "@mui/material";
+import { EditOutlined as EditOutlinedIcon } from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -24,7 +24,7 @@ import {
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete from '@mui/material/Autocomplete';
 
 // Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
@@ -85,7 +85,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             name={"milestone_name"}
             options={Object.keys(milestoneNameLookup)}
             getOptionLabel={(option) => milestoneNameLookup[option]}
-            getOptionSelected={(option, value) => option === value}
+            isOptionEqualToValue={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
             renderInput={(params) => <TextField {...params} />}

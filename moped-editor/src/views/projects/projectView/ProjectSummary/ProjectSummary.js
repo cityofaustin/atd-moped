@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 
-import { Grid, CardContent, CircularProgress } from "@material-ui/core";
+import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";

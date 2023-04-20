@@ -3,16 +3,16 @@ import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { useQuery } from "@apollo/client";
 import { useLocation, Link } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import Tooltip from "@material-ui/core/Tooltip";
-import Typography from "@material-ui/core/Typography";
-import IconButton from "@material-ui/core/IconButton";
-import Button from "@material-ui/core/Button";
-import LinkIcon from "@material-ui/icons/Link";
-import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
-import { makeStyles } from "@material-ui/styles";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Paper from "@mui/material/Paper";
+import Tooltip from "@mui/material/Tooltip";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import Button from "@mui/material/Button";
+import LinkIcon from "@mui/icons-material/Link";
+import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
+import { makeStyles } from "@mui/styles";
 import Page from "src/components/Page";
 import RecordTable from "./RecordTable";
 import { TABLE_LOOKUPS_QUERY } from "src/queries/tableLookups";
@@ -146,7 +146,7 @@ const LookupsView = () => {
                           scrollToTable(recordType.key, refs);
                           history.replace(createRecordKeyHash(recordType.key));
                         }}
-                      >
+                        size="large">
                         <LinkIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
@@ -161,7 +161,7 @@ const LookupsView = () => {
                           scrollToTable("_scroll_to_top", refs);
                           history.replace("");
                         }}
-                      >
+                        size="large">
                         <ArrowUpwardIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>

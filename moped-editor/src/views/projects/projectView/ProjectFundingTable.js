@@ -14,15 +14,15 @@ import {
   TextField,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import { Alert, Autocomplete } from "@material-ui/lab";
+} from "@mui/material";
+import { Alert, Autocomplete } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
+} from "@mui/icons-material";
+import makeStyles from '@mui/styles/makeStyles';
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -341,7 +341,7 @@ const ProjectFundingTable = () => {
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
       }
-      getOptionSelected={(value, option) =>
+      isOptionEqualToValue={(value, option) =>
         value[`${props.name}_name`] === option
       }
       onChange={(e, value) => {
@@ -372,7 +372,7 @@ const ProjectFundingTable = () => {
           ? option
           : `${option.fund_id} | ${option.fund_name}`
       }
-      getOptionSelected={(value, option) =>
+      isOptionEqualToValue={(value, option) =>
         value.fund_id === option.fund_id && value.fund_name === option.fund_name
       }
       onChange={(e, value) => {
@@ -637,14 +637,14 @@ const ProjectFundingTable = () => {
                       className={classes.editIconButton}
                       aria-label="Add"
                       onClick={handleNewTaskOrderSave}
-                    >
+                      size="large">
                       <Icon fontSize={"small"}>check</Icon>
                     </IconButton>
                     <IconButton
                       className={classes.editIconButton}
                       aria-label="Cancel"
                       onClick={handleNewTaskOrderCancel}
-                    >
+                      size="large">
                       <Icon fontSize={"small"}>close</Icon>
                     </IconButton>
                   </div>

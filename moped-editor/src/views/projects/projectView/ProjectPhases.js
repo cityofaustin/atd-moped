@@ -8,14 +8,14 @@ import {
   FormHelperText,
   TextField,
   Box,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
-import { green } from "@material-ui/core/colors";
+} from "@mui/material";
+import Autocomplete from '@mui/material/Autocomplete';
+import { green } from "@mui/material/colors";
 
 import {
   EditOutlined as EditOutlinedIcon,
   CheckCircleOutline,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -146,7 +146,7 @@ const ProjectPhases = ({
             name="phase_id_autocomplete"
             options={phaseOptions}
             getOptionLabel={(phase) => phase.phase_name}
-            getOptionSelected={(option, value) =>
+            isOptionEqualToValue={(option, value) =>
               option.phase_id === value.phase_id
             }
             value={props.value || null}

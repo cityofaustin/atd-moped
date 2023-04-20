@@ -1,4 +1,4 @@
-import SpeakerNotesOutlinedIcon from "@material-ui/icons/SpeakerNotesOutlined";
+import SpeakerNotesOutlinedIcon from "@mui/icons-material/SpeakerNotesOutlined";
 import parse from "html-react-parser";
 
 export const formatNotesActivity = (change, entityList) => {

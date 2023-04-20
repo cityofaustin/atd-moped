@@ -19,12 +19,12 @@ import {
   Grid,
   InputLabel,
   TextField,
-  makeStyles,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import StaffFormErrorModal from "./components/StaffFormErrorModal";
 import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
 

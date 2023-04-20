@@ -12,9 +12,9 @@ import {
   Select,
   MenuItem,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import typography from "../../../theme/typography";
 import MaterialTable, {
   MTableEditRow,
@@ -24,7 +24,7 @@ import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";

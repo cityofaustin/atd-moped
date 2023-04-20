@@ -1,12 +1,12 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
-import { makeStyles } from "@material-ui/core/styles";
-import { Dialog } from "@material-ui/core";
-import Drawer from "@material-ui/core/Drawer";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
+import makeStyles from '@mui/styles/makeStyles';
+import { Dialog } from "@mui/material";
+import Drawer from "@mui/material/Drawer";
+import CssBaseline from "@mui/material/CssBaseline";
+import Toolbar from "@mui/material/Toolbar";
+import List from "@mui/material/List";
 import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";

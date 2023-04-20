@@ -1,15 +1,8 @@
 import React, { useState, useEffect } from "react";
-import {
-  Box,
-  ClickAwayListener,
-  IconButton,
-  InputBase,
-  Popper,
-  Slide,
-  makeStyles,
-} from "@material-ui/core";
+import { Box, ClickAwayListener, IconButton, InputBase, Popper, Slide } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import clsx from "clsx";
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
@@ -32,7 +25,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       maxWidth: "400px",
     },
     // overflow hidden makes it so the popper does not slide in from edge of screen
@@ -53,7 +46,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       maxWidth: "200px",
     },
     height: "44px",
@@ -70,7 +63,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       maxWidth: "400px",
     },
     height: "44px",
@@ -79,7 +72,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       fontSize: "0.875rem",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       fontSize: "0.75rem",
     },
     paddingLeft: "1em",
@@ -102,7 +95,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       width: "200px",
     },
     overflow: "hidden",
@@ -112,7 +105,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       width: "400px",
     },
     overflow: "hidden",
@@ -270,7 +263,7 @@ const NavigationSearchInput = ({ input404Class }) => {
           ref={divRef}
         >
           {!searchInput ? (
-            <IconButton>
+            <IconButton size="large">
               <SearchIcon />
             </IconButton>
           ) : (

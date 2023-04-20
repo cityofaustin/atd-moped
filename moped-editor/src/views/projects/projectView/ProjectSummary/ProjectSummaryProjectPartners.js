@@ -9,7 +9,7 @@ import {
   MenuItem,
   Select,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { useMutation } from "@apollo/client";

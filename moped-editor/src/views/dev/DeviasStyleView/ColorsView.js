@@ -1,10 +1,11 @@
 import React from "react";
 import clsx from "clsx";
-import { Paper, makeStyles, Box, Avatar } from "@material-ui/core";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
+import { Paper, Box, Avatar } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import ListItemText from "@mui/material/ListItemText";
 
 const useStyles = makeStyles(theme => ({
   root: {

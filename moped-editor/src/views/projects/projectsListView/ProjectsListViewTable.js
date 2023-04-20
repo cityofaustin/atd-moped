@@ -7,10 +7,9 @@ import {
   CircularProgress,
   Container,
   Paper,
-} from "@material-ui/core";
+} from "@mui/material";
 
-// Styling
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";

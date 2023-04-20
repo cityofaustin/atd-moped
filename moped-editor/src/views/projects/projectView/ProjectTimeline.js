@@ -1,7 +1,7 @@
 import React from "react";
 
 // Material
-import { Box, CardContent, CircularProgress, Grid } from "@material-ui/core";
+import { Box, CardContent, CircularProgress, Grid } from "@mui/material";
 
 // Query
 import { TIMELINE_QUERY } from "../../../queries/project";

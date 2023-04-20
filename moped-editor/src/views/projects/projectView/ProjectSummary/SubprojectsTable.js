@@ -8,13 +8,13 @@ import {
   FormHelperText,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/icons-material";
+import Autocomplete from '@mui/material/Autocomplete';
 import MaterialTable, { MTableAction } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";

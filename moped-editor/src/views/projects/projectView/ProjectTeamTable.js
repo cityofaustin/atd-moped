@@ -11,17 +11,17 @@ import {
   Typography,
   FormControl,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
 } from "@material-table/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import typography from "../../../theme/typography";
 
@@ -36,7 +36,7 @@ import {
 } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles((theme) => ({
@@ -201,7 +201,7 @@ const ProjectTeamTable = ({ projectId }) => {
               name="moped_user_autocomplete"
               options={userOptions}
               getOptionLabel={(option) => getUserFullName(option)}
-              getOptionSelected={(option, value) =>
+              isOptionEqualToValue={(option, value) =>
                 option.user_id === value.user_id
               }
               value={props.value || null}

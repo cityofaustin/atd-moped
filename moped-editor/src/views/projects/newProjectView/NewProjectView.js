@@ -6,8 +6,8 @@ import {
   Container,
   Card,
   CardContent,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";

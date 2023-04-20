@@ -12,10 +12,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from "@material-ui/core";
+} from "@mui/material";
 import FileUpload from "./FileUpload";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   title: {

@@ -16,11 +16,12 @@ import {
   Icon,
   IconButton,
   Grow,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import { Autocomplete } from "@material-ui/lab";
-import BackspaceOutlinedIcon from "@material-ui/icons/BackspaceOutlined";
+import makeStyles from '@mui/styles/makeStyles';
+
+import { Autocomplete } from '@mui/material';
+import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
 /**
@@ -52,13 +53,13 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "2px",
     paddingRight: "16px",
     paddingLeft: "16px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: 0,
     },
   },
   bottomButton: {
     margin: theme.spacing(1),
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       margin: 0,
     },
     minWidth: "100px",
@@ -73,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   filtersContainer: {
     paddingLeft: "8px",
     marginBottom: "8px",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down('md')]: {
       paddingLeft: 0,
     },
   },
@@ -454,7 +455,7 @@ const GridTableFilters = ({
         <IconButton
           onClick={handleAdvancedSearchClose}
           className={classes.closeButton}
-        >
+          size="large">
           <Icon fontSize={"small"}>close</Icon>
         </IconButton>
       </Grid>
@@ -480,7 +481,7 @@ const GridTableFilters = ({
                     onChange={(e, value) => {
                       handleFilterFieldMenuClick(filterId, value?.name);
                     }}
-                    getOptionSelected={(option, value) => {
+                    isOptionEqualToValue={(option, value) => {
                       if (Object.hasOwn(value, "name")) {
                         return option.name === value.name;
                       }
@@ -565,7 +566,7 @@ const GridTableFilters = ({
                             value[filterParameters[filterId].lookup_field]
                           );
                         }}
-                        getOptionSelected={(option, value) => {
+                        isOptionEqualToValue={(option, value) => {
                           if (Object.hasOwn(value, "name")) {
                             return option.name === value.name;
                           }
@@ -601,13 +602,13 @@ const GridTableFilters = ({
                     ))}
                 </FormControl>
               </Grid>
-              <Hidden smDown>
+              <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
                     disabled={Object.keys(filterParameters).length === 1 && !filterComplete}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
-                  >
+                    size="large">
                     <Icon className={classes.deleteIcon}>delete_outline</Icon>
                   </IconButton>
                 </Grid>
@@ -657,7 +658,7 @@ const GridTableFilters = ({
             </Button>
           )}
         </Grid>
-        <Hidden smDown>
+        <Hidden mdDown>
           <Grid item xs={12} md={7}>
             {""}
           </Grid>

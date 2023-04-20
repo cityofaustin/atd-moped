@@ -1,12 +1,13 @@
 import { useMemo, useEffect } from "react";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from '@mui/material';
 import { Controller } from "react-hook-form";
-import { Icon, makeStyles, TextField } from "@material-ui/core";
+import { Icon, TextField } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import theme from "src/theme/index";
 
 /**
@@ -285,7 +286,7 @@ export const ControlledAutocomplete = ({
         options={options}
         multiple={multiple}
         getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
+        isOptionEqualToValue={(option, value) => option?.value === value?.value}
         renderOption={renderOption}
         value={value}
         disabled={disabled}

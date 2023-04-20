@@ -7,9 +7,9 @@ import {
   DialogContent,
   Grid,
   IconButton,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import makeStyles from '@mui/styles/makeStyles';
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
@@ -56,57 +56,55 @@ const DashboardTimelineModal = ({
     dashboardRefetch();
   };
 
-  return (
-    <>
-      <div
-        className={classes.clickableDiv}
-        onClick={() => setIsDialogOpen(true)}
-      >
-        {children}
-      </div>
-      <Dialog
-        open={isDialogOpen}
-        onClose={handleDialogClose}
-        fullWidth
-        maxWidth={"xl"}
-      >
-        <DialogTitle disableTypography className={classes.dialogTitle}>
-          <h4>{`Update ${table} - ${projectName}`}</h4>
-          <IconButton onClick={() => handleDialogClose()}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <ApolloErrorHandler error={error}>
-            <CardContent>
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Box mb={2} style={{ maxWidth: "100%" }}>
-                    {table === "phases" && (
-                      <ProjectPhases
-                        projectId={projectId}
-                        loading={loading}
-                        data={data}
-                        refetch={refetch}
-                      />
-                    )}
-                    {table === "milestones" && (
-                      <ProjectMilestones
-                        projectId={projectId}
-                        loading={loading}
-                        data={data}
-                        refetch={refetch}
-                      />
-                    )}
-                  </Box>
-                </Grid>
+  return <>
+    <div
+      className={classes.clickableDiv}
+      onClick={() => setIsDialogOpen(true)}
+    >
+      {children}
+    </div>
+    <Dialog
+      open={isDialogOpen}
+      onClose={handleDialogClose}
+      fullWidth
+      maxWidth={"xl"}
+    >
+      <DialogTitle className={classes.dialogTitle}>
+        <h4>{`Update ${table} - ${projectName}`}</h4>
+        <IconButton onClick={() => handleDialogClose()} size="large">
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent>
+        <ApolloErrorHandler error={error}>
+          <CardContent>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Box mb={2} style={{ maxWidth: "100%" }}>
+                  {table === "phases" && (
+                    <ProjectPhases
+                      projectId={projectId}
+                      loading={loading}
+                      data={data}
+                      refetch={refetch}
+                    />
+                  )}
+                  {table === "milestones" && (
+                    <ProjectMilestones
+                      projectId={projectId}
+                      loading={loading}
+                      data={data}
+                      refetch={refetch}
+                    />
+                  )}
+                </Box>
               </Grid>
-            </CardContent>
-          </ApolloErrorHandler>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
+            </Grid>
+          </CardContent>
+        </ApolloErrorHandler>
+      </DialogContent>
+    </Dialog>
+  </>;
 };
 
 export default DashboardTimelineModal;

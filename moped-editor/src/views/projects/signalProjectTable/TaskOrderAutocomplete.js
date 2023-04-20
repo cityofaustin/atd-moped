@@ -1,6 +1,6 @@
 import React from "react";
-import { Chip, CircularProgress } from "@material-ui/core";
-import { Autocomplete, Alert } from "@material-ui/lab";
+import { Chip, CircularProgress } from "@mui/material";
+import { Autocomplete, Alert } from '@mui/material';
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import {
   TaskOrderInput,
@@ -39,7 +39,7 @@ const TaskOrderAutocomplete = ({ classes, props, value }) => {
       options={data}
       renderInput={params => TaskOrderInput(params, null, "outlined")}
       value={value ?? []}
-      getOptionSelected={(value, option) =>
+      isOptionEqualToValue={(value, option) =>
         value.display_name === option.display_name
       }
       renderTags={(tagValue, getTagProps) =>

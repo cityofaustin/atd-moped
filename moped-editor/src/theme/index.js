@@ -1,8 +1,8 @@
-import { createTheme } from "@material-ui/core";
+import { createTheme, adaptV4Theme } from "@mui/material";
 import shadows from "./shadows";
 import typography from "./typography";
 
-const theme = createTheme({
+const theme = createTheme(adaptV4Theme({
   palette: {
     background: {
       default: "#edeeed",
@@ -43,6 +43,6 @@ const theme = createTheme({
   },
   shadows,
   typography,
-});
+}));
 
 export default theme;

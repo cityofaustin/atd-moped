@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from "react";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
-import { Select, MenuItem, FormControl } from "@material-ui/core";
+import { Select, MenuItem, FormControl } from "@mui/material";
 
 // hook which keeps available subphase options in sync
 const useSubphaseOptions = ({ phases, phaseId }) =>

@@ -10,9 +10,9 @@ import {
   Hidden,
   Icon,
   IconButton,
-  makeStyles,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
 
@@ -164,70 +164,68 @@ const GridTableSearchBar = ({
     );
   }
 
-  return (
-    <>
-      <TextField
+  return <>
+    <TextField
+      fullWidth
+      inputProps={{
+        style: {
+          paddingTop: 12,
+          paddingBottom: 12,
+        },
+      }}
+      onChange={e => handleSearchValueChange(e.target.value)}
+      onKeyDown={e => handleKeyDown(e.key)}
+      InputProps={{
+        startAdornment: (
+          <InputAdornment position="start">
+            <SvgIcon fontSize="small" color="action">
+              <SearchIcon />
+            </SvgIcon>
+          </InputAdornment>
+        ),
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              onClick={toggleAdvancedSearch}
+              className={clsx({
+                [classes.tuneIcon]: !filterStateActive,
+                [classes.advancedSearchSelected]: advancedSearchAnchor,
+                [classes.advancedSearchActive]: filterStateActive,
+              })}
+              data-testid="advanced-filter-button"
+              size="large">
+              <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
+            </IconButton>
+          </InputAdornment>
+        ),
+      }}
+      placeholder={getSearchPlaceholder()}
+      variant="outlined"
+      value={searchFieldValue}
+    />
+    {filterStateActive && (
+      <Box className={classes.filtersList}>
+        <Typography align="right" className={classes.filtersText}>
+          Filtered by{" "}
+          <span className={classes.filtersSpan}>{`${filtersApplied.join(
+            ", "
+          )}`}</span>
+        </Typography>
+      </Box>
+    )}
+    <Hidden smUp>
+      <Button
+        className={classes.searchButton}
         fullWidth
-        inputProps={{
-          style: {
-            paddingTop: 12,
-            paddingBottom: 12,
-          },
-        }}
-        onChange={e => handleSearchValueChange(e.target.value)}
-        onKeyDown={e => handleKeyDown(e.key)}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SvgIcon fontSize="small" color="action">
-                <SearchIcon />
-              </SvgIcon>
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={toggleAdvancedSearch}
-                className={clsx({
-                  [classes.tuneIcon]: !filterStateActive,
-                  [classes.advancedSearchSelected]: advancedSearchAnchor,
-                  [classes.advancedSearchActive]: filterStateActive,
-                })}
-                data-testid="advanced-filter-button"
-              >
-                <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        placeholder={getSearchPlaceholder()}
-        variant="outlined"
-        value={searchFieldValue}
-      />
-      {filterStateActive && (
-        <Box className={classes.filtersList}>
-          <Typography align="right" className={classes.filtersText}>
-            Filtered by{" "}
-            <span className={classes.filtersSpan}>{`${filtersApplied.join(
-              ", "
-            )}`}</span>
-          </Typography>
-        </Box>
-      )}
-      <Hidden smUp>
-        <Button
-          className={classes.searchButton}
-          fullWidth
-          variant="contained"
-          color="primary"
-          startIcon={<Icon>search</Icon>}
-          onClick={handleSearchSubmission}
-        >
-          Search
-        </Button>
-      </Hidden>
-    </>
-  );
+        variant="contained"
+        color="primary"
+        startIcon={<Icon>search</Icon>}
+        onClick={handleSearchSubmission}
+      >
+        Search
+      </Button>
+    </Hidden>
+  </>;
 };
 
 GridTableSearchBar.propTypes = {

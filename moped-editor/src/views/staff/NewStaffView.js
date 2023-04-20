@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardContent,
   Divider,
-} from "@material-ui/core";
+} from "@mui/material";
 import Page from "src/components/Page";
 import { ADD_NON_MOPED_USER } from "src/queries/staff";
 

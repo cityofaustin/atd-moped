@@ -1,4 +1,4 @@
-import RoomOutlinedIcon from "@material-ui/icons/RoomOutlined";
+import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatComponentsActivity = (

@@ -9,11 +9,11 @@ import {
   List,
   ListItem,
   ListItemText,
-} from "@material-ui/core";
-import Cancel from "@material-ui/icons/Cancel";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CloseIcon from "@material-ui/icons/Close";
-import { makeStyles } from "@material-ui/core";
+} from "@mui/material";
+import Cancel from "@mui/icons-material/Cancel";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CloseIcon from "@mui/icons-material/Close";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -45,9 +45,9 @@ const DeleteComponentModal = ({
   if (!clickedComponent) return null;
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth>
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>Are you sure you want to delete this component?</h3>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>
