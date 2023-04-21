@@ -88,10 +88,10 @@ const ProjectContractsTable = () => {
       // we use this custom component in order to autofocus the input
       editComponent: (props) => (
         <TextField
+          variant="standard"
           {...props}
           onChange={(e) => props.onChange(e.target.value)}
-          autoFocus
-        />
+          autoFocus />
       ),
     },
     {

@@ -129,6 +129,7 @@ const ProjectSummaryProjectTypes = ({
         {editMode ? (
           <>
             <Select
+              variant="standard"
               id={`moped-project-summary-type-select-${projectId}`}
               multiple
               value={selectedTypes}
@@ -149,8 +150,7 @@ const ProjectSummaryProjectTypes = ({
                   width: 450,
                 },
               }}
-              className={classes.fieldSelectItem}
-            >
+              className={classes.fieldSelectItem}>
               {typeList.map(type => (
                 <MenuItem key={type.type_id} value={type.type_id}>
                   <Checkbox

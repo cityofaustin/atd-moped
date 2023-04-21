@@ -278,14 +278,14 @@ const StaffForm = ({
               <Controller
                 render={({ onChange, ref, value }) => (
                   <Select
+                    variant="standard"
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
                     disabled={!isUserActive}
                     onChange={(e) => onChange(updateWorkgroupFields(e))}
                     inputRef={ref}
-                    value={value}
-                  >
+                    value={value}>
                     {workgroups.moped_workgroup.map((workgroup) => (
                       <MenuItem
                         key={workgroup.workgroup_id}
@@ -313,13 +313,13 @@ const StaffForm = ({
         </Grid>
         {/* This hidden field is populated with workgroup_id field by updateWorkgroupFields() */}
         <TextField
+          variant="standard"
           id="workgroup-id"
           name="workgroup_id"
           inputRef={register}
-          className={classes.hiddenTextField}
-        />
+          className={classes.hiddenTextField} />
         <Grid item xs={12} md={6}>
-          <FormControl component="fieldset">
+          <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
               as={

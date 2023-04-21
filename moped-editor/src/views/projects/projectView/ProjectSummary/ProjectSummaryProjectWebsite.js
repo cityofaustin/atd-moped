@@ -91,13 +91,13 @@ const ProjectSummaryProjectWebsite = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-website"
               label={null}
               onChange={handleProjectWebsiteChange}
-              value={website}
-            />
+              value={website} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectWebsiteSave}

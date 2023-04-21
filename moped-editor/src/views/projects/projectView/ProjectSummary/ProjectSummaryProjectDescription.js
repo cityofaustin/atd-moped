@@ -93,6 +93,7 @@ const ProjectSummaryProjectDescription = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               multiline={true}
@@ -100,8 +101,7 @@ const ProjectSummaryProjectDescription = ({
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
-              value={description}
-            />
+              value={description} />
 
             <IconButton onClick={handleProjectDescriptionSave} size="large">
               <Icon>check</Icon>

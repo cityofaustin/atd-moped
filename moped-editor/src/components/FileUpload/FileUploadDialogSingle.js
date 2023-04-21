@@ -192,6 +192,7 @@ const FileUploadDialogSingle = (props) => {
         <Grid container>
           <Grid item xs={12} md={12}>
             <TextField
+              variant="standard"
               autoFocus
               className={classes.textField}
               id="standard-multiline-flexible"
@@ -199,17 +200,16 @@ const FileUploadDialogSingle = (props) => {
               multiline={false}
               value={null}
               onChange={handleFileNameChange}
-              fullWidth
-            />
+              fullWidth />
 
-            <FormControl>
+            <FormControl variant="standard">
               <InputLabel>Type</InputLabel>
               <Select
+                variant="standard"
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
-                onChange={handleFileTypeChange}
-              >
+                onChange={handleFileTypeChange}>
                 <MenuItem
                   value={1}
                   className={classes.inputFieldAdornmentColor}
@@ -238,6 +238,7 @@ const FileUploadDialogSingle = (props) => {
             </FormControl>
 
             <TextField
+              variant="standard"
               className={classes.textField}
               id="standard-multiline-static"
               placeholder={"Description"}
@@ -245,8 +246,7 @@ const FileUploadDialogSingle = (props) => {
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              fullWidth
-            />
+              fullWidth />
           </Grid>
           <Grid item xs={12} md={12} className={classes.fileUpload}>
             <FileUpload

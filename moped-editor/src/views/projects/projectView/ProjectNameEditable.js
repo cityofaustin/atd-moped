@@ -139,6 +139,7 @@ const ProjectNameEditable = (props) => {
           <Grid container fullWidth>
             <Grid item xs={12} sm={11}>
               <TextField
+                variant="standard"
                 fullWidth
                 autoFocus
                 id="project name"
@@ -159,8 +160,7 @@ const ProjectNameEditable = (props) => {
                   classes: {
                     input: classes.titleEditField,
                   },
-                }}
-              />
+                }} />
             </Grid>
             <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
               <Icon

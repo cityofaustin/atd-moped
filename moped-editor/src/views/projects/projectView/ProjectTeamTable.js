@@ -195,7 +195,7 @@ const ProjectTeamTable = ({ projectId }) => {
           );
         }
         return (
-          <FormControl style={{ width: "100%" }}>
+          <FormControl variant="standard" style={{ width: "100%" }}>
             <Autocomplete
               id="moped_user_autocomplete"
               name="moped_user_autocomplete"
@@ -206,7 +206,7 @@ const ProjectTeamTable = ({ projectId }) => {
               }
               value={props.value || null}
               onChange={(event, value) => props.onChange(value)}
-              renderInput={(params) => <TextField {...params} autoFocus />}
+              renderInput={(params) => <TextField variant="standard" {...params} autoFocus />}
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
@@ -262,13 +262,13 @@ const ProjectTeamTable = ({ projectId }) => {
         const val = props.value ?? "";
         return (
           <TextField
+            variant="standard"
             id="notes"
             name="notes"
             multiline
             inputProps={{ maxLength: 125 }}
             value={val && val !== "null" ? val : ""}
-            onChange={(e) => props.onChange(e.target.value)}
-          />
+            onChange={(e) => props.onChange(e.target.value)} />
         );
       },
     },

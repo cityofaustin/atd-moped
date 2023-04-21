@@ -108,13 +108,13 @@ const ProjectSummaryInterimID = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-interimID"
               label={null}
               onChange={handleProjectInterimIdChange}
-              value={interimId ?? ""}
-            />
+              value={interimId ?? ""} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectInterimIdSave}

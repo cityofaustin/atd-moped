@@ -9,7 +9,7 @@ import {
   TextField,
   Box,
 } from "@mui/material";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 import { green } from "@mui/material/colors";
 
 import {
@@ -140,7 +140,7 @@ const ProjectPhases = ({
       validate: (row) => !!row.moped_phase?.phase_id,
       render: (row) => row.moped_phase?.phase_name,
       editComponent: (props) => (
-        <FormControl style={{ minWidth: 150 }}>
+        <FormControl variant="standard" style={{ minWidth: 150 }}>
           <Autocomplete
             id="phase_id_autocomplete"
             name="phase_id_autocomplete"
@@ -154,7 +154,12 @@ const ProjectPhases = ({
               return props.onChange(value);
             }}
             renderInput={(params) => (
-              <TextField {...params} autoFocus style={{ minWidth: 200 }} />
+              <TextField
+                variant="standard"
+                {...params}
+                autoFocus
+                style={{ minWidth: 200 }}
+              />
             )}
           />
           <FormHelperText>Required</FormHelperText>

@@ -60,7 +60,7 @@ const SubprojectsTable = ({ projectId = null }) => {
         />
       ),
       editComponent: (props) => (
-        <FormControl style={{ width: "100%" }}>
+        <FormControl variant="standard" style={{ width: "100%" }}>
           <Autocomplete
             id="project_name"
             name="project_name"
@@ -70,7 +70,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             }
             value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField variant="standard" {...params} />}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>

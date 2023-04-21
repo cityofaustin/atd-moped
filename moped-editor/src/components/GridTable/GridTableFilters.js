@@ -470,7 +470,7 @@ const GridTableFilters = ({
             >
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
-                <FormControl fullWidth className={classes.formControl}>
+                <FormControl variant="standard" fullWidth className={classes.formControl}>
                   <Autocomplete
                     value={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
@@ -501,11 +501,12 @@ const GridTableFilters = ({
 
               {/*Select the operator from drop-down menu*/}
               <Grid item xs={12} md={3} className={classes.gridItemPadding}>
-                <FormControl fullWidth className={classes.formControl}>
+                <FormControl variant="standard" fullWidth className={classes.formControl}>
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
                   </InputLabel>
                   <Select
+                    variant="standard"
                     fullWidth
                     disabled={
                       filterParameters[filterId].availableOperators.length === 0
@@ -521,8 +522,7 @@ const GridTableFilters = ({
                       handleFilterOperatorClick(filterId, e.target.value)
                     }
                     label="field"
-                    data-testid="operator-select"
-                  >
+                    data-testid="operator-select">
                     {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (

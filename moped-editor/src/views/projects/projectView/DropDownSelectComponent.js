@@ -44,8 +44,12 @@ const DropDownSelectComponent = ({ name, data, rowData, value, onChange }) => {
   if (subphaseOptions.length === 0) return null;
 
   return (
-    <FormControl>
-      <Select id={name} value={value ?? ""} style={{ minWidth: "8em" }}>
+    <FormControl variant="standard">
+      <Select
+        variant="standard"
+        id={name}
+        value={value ?? ""}
+        style={{ minWidth: "8em" }}>
         {subphaseOptions.map(({ value, label }) => (
           <MenuItem
             onChange={() => onChange(value)}

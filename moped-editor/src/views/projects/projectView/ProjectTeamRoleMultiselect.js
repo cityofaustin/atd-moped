@@ -27,8 +27,9 @@ const useStyles = makeStyles((theme) => ({
 const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
   const classes = useStyles();
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl variant="standard" className={classes.formControl}>
       <Select
+        variant="standard"
         style={{ minWidth: "8em" }}
         labelId="team-role-multiselect-label"
         id="team-role-multiselect"
@@ -57,8 +58,7 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
           PaperProps: { style: { width: "50%" } },
           anchorOrigin: { vertical: "bottom", horizontal: "center" },
           transformOrigin: { vertical: "top", horizontal: "center" },
-        }}
-      >
+        }}>
         {roles.map(
           ({
             project_role_id,

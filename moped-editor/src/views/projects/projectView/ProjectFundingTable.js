@@ -336,7 +336,7 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={props.name}
       options={props.data}
-      renderInput={(params) => <TextField {...params} multiline />}
+      renderInput={(params) => <TextField variant="standard" {...params} multiline />}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
@@ -365,7 +365,7 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={"moped_funds"}
       options={props.data}
-      renderInput={(params) => <TextField {...params} multiline />}
+      renderInput={(params) => <TextField variant="standard" {...params} multiline />}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string
         typeof option === "string"
@@ -445,12 +445,12 @@ const ProjectFundingTable = () => {
       field: "funding_description",
       editComponent: (props) => (
         <TextField
+          variant="standard"
           id="funding_description"
           name="funding_description"
           multiline
           value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
+          onChange={(e) => props.onChange(e.target.value)} />
       ),
     },
     {

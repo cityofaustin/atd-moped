@@ -9,10 +9,10 @@ import { handleKeyEvent } from "../utils/materialTableHelpers";
  */
 const LookupSelectComponent = (props) => (
   <Select
+    variant="standard"
     style={{ minWidth: "8em" }}
     id={props.name}
-    value={props.value || props.defaultValue}
-  >
+    value={props.value || props.defaultValue}>
     {props.data.map((item) => (
       <MenuItem
         onChange={() => props.onChange(item[`${props.name}_id`])}

@@ -156,13 +156,13 @@ const ProjectSummaryProjectECapris = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
-              value={eCapris}
-            />
+              value={eCapris} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectECaprisSave}

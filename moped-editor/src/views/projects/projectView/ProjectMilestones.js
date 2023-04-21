@@ -79,7 +79,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       render: (milestone) => milestone.moped_milestone.milestone_name,
       validate: (milestone) => !!milestone.milestone_id,
       editComponent: (props) => (
-        <FormControl style={{ width: "100%" }}>
+        <FormControl variant="standard" style={{ width: "100%" }}>
           <Autocomplete
             id={"milestone_name"}
             name={"milestone_name"}
@@ -88,7 +88,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             isOptionEqualToValue={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField {...params} />}
+            renderInput={(params) => <TextField variant="standard" {...params} />}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>

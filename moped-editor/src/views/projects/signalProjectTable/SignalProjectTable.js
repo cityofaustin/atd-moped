@@ -454,9 +454,11 @@ const SignalProjectTable = () => {
     projectTypes: (props) => {
       return (
         <Select
+          variant="standard"
           multiple
           value={props.value}
-          onChange={(event, value) => props.onChange(event.target.value)} //handleChange}
+          //handleChange}
+          onChange={(event, value) => props.onChange(event.target.value)}
           input={<Input />}
           renderValue={(type_ids) =>
             type_ids.map((t) => typeDict[t]).join(", ")
@@ -472,8 +474,7 @@ const SignalProjectTable = () => {
               maxHeight: 500,
               width: 450,
             },
-          }}
-        >
+          }}>
           {typeList.map((type) => (
             <MenuItem key={type.type_id} value={type.type_id}>
               <Checkbox

@@ -133,6 +133,7 @@ const ProjectSummaryProjectPartners = ({
         {editMode && (
           <>
             <Select
+              variant="standard"
               id={`moped-project-summary-partner-select-${projectId}`}
               multiple
               value={selectedEntities}
@@ -153,8 +154,7 @@ const ProjectSummaryProjectPartners = ({
                   width: 450,
                 },
               }}
-              className={classes.fieldSelectItem}
-            >
+              className={classes.fieldSelectItem}>
               {entityList.map((entity) => (
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
                   <Checkbox

@@ -37,9 +37,9 @@ const EnvAlertBanner = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
+  // root: {
+  //   backgroundColor: theme.palette.background.paper,
+  // },
   tabs: {
     marginLeft: "12px",
   },

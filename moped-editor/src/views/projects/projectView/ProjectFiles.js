@@ -168,12 +168,12 @@ const ProjectFiles = props => {
       ),
       editComponent: props => (
         <TextField
+          variant="standard"
           id="file_name"
           name="file_name"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
-          helperText="Required"
-        />
+          helperText="Required" />
       ),
     },
     {
@@ -181,13 +181,13 @@ const ProjectFiles = props => {
       field: "file_type",
       render: record => <span>{fileTypes[record?.file_type]}</span>,
       editComponent: props => (
-        <FormControl>
+        <FormControl variant="standard">
           <Select
+            variant="standard"
             id="file_description"
             name="file_description"
             value={props?.value}
-            onChange={e => props.onChange(e.target.value)}
-          >
+            onChange={e => props.onChange(e.target.value)}>
             <MenuItem value={1} className={classes.inputFieldAdornmentColor}>
               Funding
             </MenuItem>
@@ -211,11 +211,11 @@ const ProjectFiles = props => {
       render: record => <span>{record?.file_description}</span>,
       editComponent: props => (
         <TextField
+          variant="standard"
           id="file_description"
           name="file_description"
           value={props?.value}
-          onChange={e => props.onChange(e.target.value)}
-        />
+          onChange={e => props.onChange(e.target.value)} />
       ),
     },
     {
