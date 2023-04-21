@@ -1,7 +1,5 @@
 import React from "react";
-import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { parseISO, format } from "date-fns";
 
 /**
@@ -18,7 +16,7 @@ const DateFieldEditComponent = (props) => {
   };
 
   return (
-    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+    //<MuiPickersUtilsProvider utils={DateFnsUtils}>
       <DatePicker
         clearable={true}
         emptyLabel="mm/dd/yyyy"
@@ -27,7 +25,7 @@ const DateFieldEditComponent = (props) => {
         onChange={handleDateChange}
         InputProps={{ style: { minWidth: "100px" } }}
       />
-    </MuiPickersUtilsProvider>
+    // </MuiPickersUtilsProvider>
   );
 };
 

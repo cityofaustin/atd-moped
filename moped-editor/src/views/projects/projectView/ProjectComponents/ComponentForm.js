@@ -10,8 +10,8 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
+// import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -247,7 +247,7 @@ const ComponentForm = ({
                 name="completionDate"
                 control={control}
                 render={({ onChange, value, ref }) => (
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                 // <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <DatePicker
                       inputRef={ref}
                       value={value}
@@ -258,7 +258,7 @@ const ComponentForm = ({
                       variant="outlined"
                       label={"Completion date"}
                     />
-                  </MuiPickersUtilsProvider>
+                  //</MuiPickersUtilsProvider>
                 )}
               />
             </Grid>
