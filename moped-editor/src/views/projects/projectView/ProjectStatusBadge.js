@@ -17,8 +17,7 @@ const defaultLabel = "Unknown";
 /**
  * Retrieves the style configuration for an individual phase
  * @param {Object} theme - The theme object
- * @param {string} phaseName - The phase name to be used as the badge label
- * @param {string} phaseKey - The key to be used to determine badge styles
+ * @param {string} phaseKey - The key used to determine badge styles
  * @returns {Object}
  */
 const getStyle = (theme, phaseKey) => {
@@ -26,7 +25,7 @@ const getStyle = (theme, phaseKey) => {
    * Font colors
    */
   const primary = theme?.palette?.text?.primary;
-  const white = theme?.palette?.common?.white;
+  const white = theme?.palette?.background?.paper;
 
   /**
    * Background color mapping
@@ -34,13 +33,10 @@ const getStyle = (theme, phaseKey) => {
   const backgroundColors = {
     default: theme?.palette?.grey?.[300],
     warning: theme?.palette?.warning?.light,
-    success: theme?.palette?.success?.main,
+    success: theme?.palette?.success?.light,
     info: theme?.palette?.info?.dark,
     error: theme?.palette?.error?.main,
   };
-
-  // Default background color
-  const defaultBackgroundColor = backgroundColors.default;
 
   /**
    * Main style configuration per phase name, containing font `color`, chip `background` color and the icon.
@@ -118,7 +114,7 @@ const getStyle = (theme, phaseKey) => {
     },
     default: {
       color: primary,
-      background: defaultBackgroundColor,
+      background: backgroundColors.default,
       icon: defaultIcon,
     },
   };
@@ -172,9 +168,8 @@ const useChipStyles = makeStyles((theme) => ({
 
 /**
  * Renders a chip
- * @param {number} status - The status id of the current project
- * @param {string} phase - The current phase name of the project
- * @param {Object} projectStatuses - A dictionary of all available project statuses
+ * @param {string} phaseKey - phase name in key form
+ * @param {string} phaseName - name of phase being rendered
  * @returns {JSX.Element}
  * @constructor
  */
@@ -206,7 +201,8 @@ const ProjectStatusBadge = ({
         condensed ? chipClasses.condensed : chipClasses.root,
         leftMargin && chipClasses.leftMargin
       )}
-      icon={<ChipIcon className={iconClasses.root} />}
+      // for some reason passing color as a prop is ensuring the iconClasses.root style is being used
+      icon={<ChipIcon className={iconClasses.root} color="action" />}
       label={phaseName || defaultLabel}
       color={"default"}
     />
