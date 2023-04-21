@@ -3,8 +3,8 @@ import { Link as RouterLink } from "react-router-dom";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 import { AppBar, Box, Hidden, Toolbar, Tabs, Tab } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { Alert } from '@mui/material';
+import makeStyles from "@mui/styles/makeStyles";
+import { Alert } from "@mui/material";
 import Logo from "src/components/Logo";
 import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
 import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
@@ -37,9 +37,9 @@ const EnvAlertBanner = () => {
 };
 
 const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   backgroundColor: theme.palette.background.paper,
-  // },
+  root: {
+    backgroundColor: theme.palette.background.paper,
+  },
   tabs: {
     marginLeft: "12px",
   },
@@ -100,7 +100,7 @@ const TopBar = ({ className, ...rest }) => {
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
       <EnvAlertBanner />
-      <Toolbar>
+      <Toolbar className={classes.root}>
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
