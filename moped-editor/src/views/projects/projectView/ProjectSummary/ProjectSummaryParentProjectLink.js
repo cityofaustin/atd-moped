@@ -24,12 +24,11 @@ const ProjectSummaryParentProjectLink = ({ data, classes }) => {
       >
         <RouterLink
           id="projectKnackSyncLink"
-          className={"MuiTypography-body1"}
           to={`/moped/projects/${parentProjectId}`}
         >
           <Typography
             className={classes.fieldLabelText}
-            variant={"inherit"}
+            variant={"body1"}
             color={"primary"}
           >
             {parentProjectName}
