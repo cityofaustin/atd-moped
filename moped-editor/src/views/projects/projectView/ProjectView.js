@@ -104,6 +104,9 @@ const useStyles = makeStyles((theme) => ({
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
   },
+  colorPrimary: {
+    color: theme.palette.primary.main,
+  },
   followDiv: {
     float: "right",
     cursor: "pointer",
@@ -595,7 +598,7 @@ const ProjectView = () => {
                 <Button>
                   <RouterLink
                     to={allProjectsLink}
-                    className={"MuiTypography-colorPrimary"}
+                    className={classes.colorPrimary}
                   >
                     Back to all projects
                   </RouterLink>

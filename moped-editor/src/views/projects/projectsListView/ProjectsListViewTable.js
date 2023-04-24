@@ -54,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "25px",
     paddingBottom: "16px",
   },
+  colorPrimary: {
+    color: theme.palette.primary.main,
+  }
 }));
 
 /**
@@ -292,7 +295,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
               ? btoa(JSON.stringify(filters))
               : false,
           }}
-          className={"MuiTypography-colorPrimary"}
+          className={classes.colorPrimary}
         >
           {entry.project_name}
         </RouterLink>
