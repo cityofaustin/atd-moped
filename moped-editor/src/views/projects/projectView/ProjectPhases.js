@@ -10,7 +10,6 @@ import {
   Box,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
-import { makeStyles } from "@mui/styles";
 import { green } from "@mui/material/colors";
 
 import {
@@ -41,10 +40,6 @@ import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import PhaseTemplateModal from "./PhaseTemplateModal";
-
-const useStyles = makeStyles((theme) => ({
-
-}));
 
 /**
  * Identify any current moped_proj_phases
@@ -331,6 +326,11 @@ const ProjectPhases = ({
             } = newData;
             // extract phase_id from moped_phase object
             updatedPhasePayload.phase_id = moped_phase.phase_id;
+
+
+            // Remove extraneous fields given by MaterialTable that
+            // Hasura doesn't need
+            delete updatedPhasePayload.tableData;
 
             replaceEmptyStrings(updatedPhasePayload);
 
