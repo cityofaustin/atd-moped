@@ -1,8 +1,8 @@
 import { useMemo, useEffect } from "react";
-import { Autocomplete } from '@mui/material';
+import { Autocomplete } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import {
   RoomOutlined as RoomOutlinedIcon,
@@ -242,6 +242,12 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginRight: theme.spacing(1),
   },
+  optionContainer: {
+    display: "flex",
+    justifyContent: "start",
+    alignItems: "center",
+    margin: theme.spacing(1),
+  },
 }));
 
 /**
@@ -254,15 +260,15 @@ export const ComponentOptionWithIcon = ({ option }) => {
   const { data: { line_representation = null } = {} } = option;
 
   return (
-    <>
+    <span className={classes.optionContainer}>
       <span className={classes.iconContainer}>
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}
           color={theme.palette.primary.main}
-        />
-      </span>{" "}
+        />{" "}
+      </span>
       {option.label}
-    </>
+    </span>
   );
 };
 

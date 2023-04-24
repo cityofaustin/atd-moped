@@ -10,7 +10,6 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-// import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
@@ -137,7 +136,7 @@ const ComponentForm = ({
             id="component"
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
-            renderOption={(option) => (
+            renderOption={(props, option) => (
               <ComponentOptionWithIcon option={option} />
             )}
             name="component"
@@ -247,18 +246,16 @@ const ComponentForm = ({
                 name="completionDate"
                 control={control}
                 render={({ onChange, value, ref }) => (
-                 // <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <DatePicker
-                      inputRef={ref}
-                      value={value}
-                      onChange={onChange}
-                      clearable={true}
-                      emptyLabel="mm/dd/yyyy"
-                      format="MM/dd/yyyy"
-                      variant="outlined"
-                      label={"Completion date"}
-                    />
-                  //</MuiPickersUtilsProvider>
+                  <DatePicker
+                    inputRef={ref}
+                    value={value}
+                    onChange={onChange}
+                    clearable={true}
+                    emptyLabel="mm/dd/yyyy"
+                    format="MM/dd/yyyy"
+                    variant="outlined"
+                    label={"Completion date"}
+                  />
                 )}
               />
             </Grid>
