@@ -19,6 +19,7 @@ import typography from "../../../theme/typography";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import {
   AddCircle as AddCircleIcon,
@@ -304,6 +305,12 @@ const ProjectFiles = props => {
                 );
               }
             },
+            Toolbar: (props) => (
+              // to have it align with table content
+              <div style={{ marginLeft: "-10px" }}>
+                <MTableToolbar {...props} />
+              </div>
+            )
           }}
           icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{

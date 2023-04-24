@@ -20,6 +20,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -158,6 +159,12 @@ const ProjectContractsTable = () => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         data={data.moped_proj_contract}
         title={

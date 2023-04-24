@@ -15,7 +15,7 @@ import {
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
 import Autocomplete from '@mui/material/Autocomplete';
-import MaterialTable, { MTableAction } from "@material-table/core";
+import MaterialTable, { MTableAction, MTableToolbar } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
@@ -127,6 +127,12 @@ const SubprojectsTable = ({ projectId = null }) => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         title={
           <Typography variant="h2" color="primary">

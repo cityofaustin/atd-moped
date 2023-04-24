@@ -10,6 +10,7 @@ import {
   Box,
 } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
+import { makeStyles } from "@mui/styles";
 import { green } from "@mui/material/colors";
 
 import {
@@ -19,6 +20,7 @@ import {
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -39,6 +41,10 @@ import ToggleEditComponent from "./ToggleEditComponent";
 import DropDownSelectComponent from "./DropDownSelectComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import PhaseTemplateModal from "./PhaseTemplateModal";
+
+const useStyles = makeStyles((theme) => ({
+
+}));
 
 /**
  * Identify any current moped_proj_phases
@@ -268,6 +274,12 @@ const ProjectPhases = ({
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         editable={{
           onRowAdd: async (newData) => {

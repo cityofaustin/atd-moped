@@ -12,6 +12,7 @@ import { EditOutlined as EditOutlinedIcon } from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -209,6 +210,12 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         editable={{
           onRowAdd: (newData) => {

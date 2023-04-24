@@ -26,6 +26,7 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -574,6 +575,12 @@ const ProjectFundingTable = () => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         data={data.moped_proj_funding}
         title={

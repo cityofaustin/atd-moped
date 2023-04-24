@@ -20,6 +20,7 @@ import {
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar,
 } from "@material-table/core";
 import Autocomplete from '@mui/material/Autocomplete';
 
@@ -314,6 +315,12 @@ const ProjectTeamTable = ({ projectId }) => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         data={personnel}
         title={
