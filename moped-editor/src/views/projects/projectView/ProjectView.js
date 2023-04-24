@@ -96,6 +96,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.header,
   },
   selectedTab: {
+    minWidth: "160px",
     "&.Mui-selected": {
       color: theme.palette.text.primary,
     },
