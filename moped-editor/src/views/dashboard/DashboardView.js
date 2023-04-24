@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import MaterialTable from "@material-table/core";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 
@@ -344,19 +344,25 @@ const DashboardView = () => {
                       Views
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Link href="/moped/views/signal-projects" noWrap>
-                      <Card>
-                        <CardContent className={classes.viewsCard}>
-                          <Grid item xs={4}>
-                            <TrafficIcon />
-                          </Grid>
-                          <Grid item xs={8}>
-                            <Typography>Signal Projects</Typography>
-                          </Grid>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                  <Grid container>
+                    <Grid item xs={12} sm={6} md={3}>
+                      <Link
+                        href="/moped/views/signal-projects"
+                        noWrap
+                        underline={"hover"}
+                      >
+                        <Card>
+                          <CardContent className={classes.viewsCard}>
+                            <Grid item xs={4}>
+                              <TrafficIcon />
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography>Signal Projects</Typography>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>
