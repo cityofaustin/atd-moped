@@ -130,9 +130,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
   },
-  searchResultsPlaceholder: {
-    padding: "16px",
-  },
 }));
 
 /**
@@ -175,7 +172,6 @@ const NavigationSearchInput = ({ input404Class }) => {
 
   // show popper results when search input gets focus
   const handleSearchFocus = () => {
-    console.log(input404Class);
     setSearchResultsAnchor(divRef.current);
     toggleSlideIn(true);
   };
@@ -305,7 +301,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             onClose={handleDropdownClose}
             placement="bottom-start"
             // inherit the position from the modifiers and dont reset to 0
-            style={{top: "inherit", left:"inherit"}}
+            style={{top:"unset", left:"unset"}}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             modifiers={[]}
@@ -324,6 +320,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               in={showSlideIn}
               timeout={300}
               onEntered={() => setPopperEntered(true)}
+              container={searchResultsAnchor}
             >
               <Box className={classes.searchResults}>
                 {called && !loading && (
