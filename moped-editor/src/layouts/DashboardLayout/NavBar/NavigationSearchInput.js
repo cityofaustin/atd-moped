@@ -301,7 +301,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             onClose={handleDropdownClose}
             placement="bottom-start"
             // inherit the position from the modifiers and dont reset to 0
-            style={{top:"unset", left:"unset"}}
+            style={{position: "fixed", top: "unset", left:"unset"}}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             modifiers={[]}
@@ -312,8 +312,8 @@ const NavigationSearchInput = ({ input404Class }) => {
                 [classes.searchPopperShadow]: popperEnterComplete,
               }
             )}
-            // need transition prop since child components include Slide
-            transition
+            // including the transition prop counter intuitively messes up the positioning
+            // transition
           >
             <Slide
               direction="left"
