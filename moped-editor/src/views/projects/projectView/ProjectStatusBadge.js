@@ -34,7 +34,7 @@ const getStyle = (theme, phaseKey) => {
     default: theme?.palette?.grey?.[300],
     warning: theme?.palette?.warning?.light,
     success: theme?.palette?.success?.light,
-    info: theme?.palette?.info?.dark,
+    info: theme?.palette?.info?.main,
     error: theme?.palette?.error?.main,
   };
 
