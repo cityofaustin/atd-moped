@@ -627,6 +627,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       whiteSpace: "nowrap",
                     },
                     columnsButton: true,
+                    idSynonym: "project_id",
                   }}
                   components={{
                     Pagination: (props) => (

@@ -12,8 +12,8 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import Autocomplete from '@mui/material/Autocomplete';
+import makeStyles from "@mui/styles/makeStyles";
+import Autocomplete from "@mui/material/Autocomplete";
 import MaterialTable, {
   MTableEditRow,
   MTableEditField,
@@ -457,24 +457,28 @@ const SignalProjectTable = () => {
           variant="standard"
           multiple
           value={props.value}
-          //handleChange}
           onChange={(event, value) => props.onChange(event.target.value)}
           input={<Input />}
           renderValue={(type_ids) =>
             type_ids.map((t) => typeDict[t]).join(", ")
           }
-          /*
-            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
-            this is fixed by overriding the function "getContentAnchorEl".
-                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
-          */
+          // anchoring the select menu so it doesn't bounce around
           MenuProps={{
-            getContentAnchorEl: () => null,
             style: {
               maxHeight: 500,
               width: 450,
             },
-          }}>
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
+          }}
+        >
           {typeList.map((type) => (
             <MenuItem key={type.type_id} value={type.type_id}>
               <Checkbox

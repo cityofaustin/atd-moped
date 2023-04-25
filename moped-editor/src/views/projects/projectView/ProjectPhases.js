@@ -390,6 +390,7 @@ const ProjectPhases = ({
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
           addRowPosition: "first",
+          idSynonym: "project_phase_id",
         }}
         localization={{
           header: {

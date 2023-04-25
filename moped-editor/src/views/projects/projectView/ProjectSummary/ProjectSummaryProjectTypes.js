@@ -138,13 +138,7 @@ const ProjectSummaryProjectTypes = ({
               renderValue={type_ids =>
                 type_ids.map(t => typeDict[t]).join(", ")
               }
-              /*
-                There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
-                this is fixed by overriding the function "getContentAnchorEl".
-                    Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
-              */
               MenuProps={{
-                getContentAnchorEl: () => null,
                 style: {
                   maxHeight: 500,
                   width: 450,
