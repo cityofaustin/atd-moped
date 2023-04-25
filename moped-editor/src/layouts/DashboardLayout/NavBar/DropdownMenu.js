@@ -91,7 +91,6 @@ const DropdownMenu = ({
         onClose={handleDropdownClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        getContentAnchorEl={null}
       >
         <MenuItem
           onClick={() => {
