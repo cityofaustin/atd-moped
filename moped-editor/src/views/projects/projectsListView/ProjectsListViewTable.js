@@ -20,7 +20,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
-import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
+// import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -183,11 +183,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  const toggleColumnConfig = (field, hiddenState) => {
-    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    storedConfig = { ...storedConfig, [field]: hiddenState };
-    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-  };
+  // const toggleColumnConfig = (field, hiddenState) => {
+  //   let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+  //   storedConfig = { ...storedConfig, [field]: hiddenState };
+  //   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
+  // };
 
   /**
    * Query Management
@@ -638,14 +638,14 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         setPagination={setPagination}
                       />
                     ),
-                    Toolbar: (props) => {
-                      return (
-                        <ProjectsListViewTableToolbar
-                          toggleColumnConfig={toggleColumnConfig}
-                          {...props}
-                        />
-                      );
-                    },
+                    // Toolbar: (props) => {
+                    //   return (
+                    //     <ProjectsListViewTableToolbar
+                    //       toggleColumnConfig={toggleColumnConfig}
+                    //       {...props}
+                    //     />
+                    //   );
+                    // },
                     Header: (props) => (
                       <MTableHeader
                         {...props}
