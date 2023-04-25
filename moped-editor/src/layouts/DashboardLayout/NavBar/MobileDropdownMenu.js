@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { IconButton, Link, Menu, MenuItem } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -47,66 +47,68 @@ const MobileDropdownMenu = () => {
 
   const setShowSubMenu = () => showSubMenu((subMenu) => !subMenu);
 
-  return <>
-    <IconButton onClick={handleMobileClick} size="large">
-      <MenuIcon />
-    </IconButton>
-    <Menu
-      id="mobileDropdown"
-      anchorEl={mobileAnchorEl}
-      keepMounted
-      open={Boolean(mobileAnchorEl)}
-      onClose={handleMobileClose}
-      anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      // getContentAnchorEl needs to be null for the positioning to work
-      getContentAnchorEl={null}
-    >
-      {navigationItems.map((item) => (
+  return (
+    <>
+      <IconButton onClick={handleMobileClick} size="large">
+        <MenuIcon />
+      </IconButton>
+      <Menu
+        id="mobileDropdown"
+        anchorEl={mobileAnchorEl}
+        keepMounted
+        open={Boolean(mobileAnchorEl)}
+        onClose={handleMobileClose}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        // getContentAnchorEl needs to be null for the positioning to work
+        getContentAnchorEl={null}
+      >
+        {navigationItems.map((item) => (
+          <MenuItem
+            key={item.href}
+            onClick={() => {
+              handleMobileClose();
+              navigate(item.href);
+            }}
+          >
+            {item.title}
+          </MenuItem>
+        ))}
+        <MenuItem key="help" onClick={setShowSubMenu}>
+          Help
+          {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </MenuItem>
+        {subMenu && (
+          <div className={classes.subMenu}>
+            {helpItems.map((item) => (
+              <MenuItem key={item.href} onClick={handleMobileClose}>
+                <Link
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  color="inherit"
+                  underline="none"
+                >
+                  {item.title}
+                </Link>
+              </MenuItem>
+            ))}
+          </div>
+        )}
         <MenuItem
-          key={item.href}
           onClick={() => {
             handleMobileClose();
-            navigate(item.href);
+            navigate("/moped/account");
           }}
         >
-          {item.title}
+          Account
         </MenuItem>
-      ))}
-      <MenuItem key="help" onClick={setShowSubMenu}>
-        Help
-        {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-      </MenuItem>
-      {subMenu && (
-        <div className={classes.subMenu}>
-          {helpItems.map((item) => (
-            <MenuItem key={item.href} onClick={handleMobileClose}>
-              <Link
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                color="inherit"
-                underline="none"
-              >
-                {item.title}
-              </Link>
-            </MenuItem>
-          ))}
-        </div>
-      )}
-      <MenuItem
-        onClick={() => {
-          handleMobileClose();
-          navigate("/moped/account");
-        }}
-      >
-        Account
-      </MenuItem>
-      <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
-      <MenuItem>
-        <CanAddProjectButton />
-      </MenuItem>
-    </Menu>
-  </>;
+        <MenuItem onClick={() => navigate("/moped/logout")}>Logout</MenuItem>
+        <MenuItem>
+          <CanAddProjectButton />
+        </MenuItem>
+      </Menu>
+    </>
+  );
 };
 
 export default MobileDropdownMenu;
