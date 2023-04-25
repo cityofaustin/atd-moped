@@ -1,4 +1,4 @@
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Box from "@mui/material/Box";
 import Icon from "@mui/material/Icon";
 import ListItemText from "@mui/material/ListItemText";
@@ -38,47 +38,50 @@ const NewComponentToolbar = ({
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
-  return isNotCreatingOrEditing && (
-    <>
-      <ListItem dense>
-        <Button
-          className={classes.buttonTextLeft}
-          size="small"
-          color="primary"
-          fullWidth
-          startIcon={<AddCircleOutlineIcon />}
-          onClick={onStartCreatingComponent}
-        >
-          New Component
-        </Button>
-        <IconButton
-          onClick={() => setAreSettingsOpen(!areSettingsOpen)}
-          aria-label="settings"
-          size="large">
-          <TuneIcon fontSize="small" />
-        </IconButton>
-      </ListItem>
-      <Collapse in={areSettingsOpen}>
-        <Box borderLeft={7} borderColor="white">
-          <ListItem className={classes.listItem}>
-            <Icon />
-            <ListItemText
-              className={classes.listItemText}
-              secondary="Show related projects"
-            />
-            <ListItemSecondaryAction>
-              <Switch
-                checked={shouldShowRelatedProjects}
-                onChange={toggleShowRelatedProjects}
-                name="showRelatedProjects"
-                color="primary"
+  return (
+    isNotCreatingOrEditing && (
+      <>
+        <ListItem dense>
+          <Button
+            className={classes.buttonTextLeft}
+            size="small"
+            color="primary"
+            fullWidth
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={onStartCreatingComponent}
+          >
+            New Component
+          </Button>
+          <IconButton
+            onClick={() => setAreSettingsOpen(!areSettingsOpen)}
+            aria-label="settings"
+            size="large"
+          >
+            <TuneIcon fontSize="small" />
+          </IconButton>
+        </ListItem>
+        <Collapse in={areSettingsOpen}>
+          <Box borderLeft={7} borderColor="white">
+            <ListItem className={classes.listItem}>
+              <Icon />
+              <ListItemText
+                className={classes.listItemText}
+                secondary="Show related projects"
               />
-            </ListItemSecondaryAction>
-          </ListItem>
-        </Box>
-      </Collapse>
-      <Divider />
-    </>
+              <ListItemSecondaryAction>
+                <Switch
+                  checked={shouldShowRelatedProjects}
+                  onChange={toggleShowRelatedProjects}
+                  name="showRelatedProjects"
+                  color="primary"
+                />
+              </ListItemSecondaryAction>
+            </ListItem>
+          </Box>
+        </Collapse>
+        <Divider />
+      </>
+    )
   );
 };
 
