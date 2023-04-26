@@ -82,7 +82,6 @@ const ButtonDropdownMenu = ({
       </Button>
       <Menu
         className={classes.dropDownMenu}
-        getContentAnchorEl={null}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}

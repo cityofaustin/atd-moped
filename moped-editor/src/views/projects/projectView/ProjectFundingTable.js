@@ -670,6 +670,7 @@ const ProjectFundingTable = () => {
           },
           actionsColumnIndex: -1,
           addRowPosition: "first",
+          idSynonym: "proj_funding_id"
         }}
         localization={{
           header: {

@@ -59,8 +59,6 @@ const MobileDropdownMenu = () => {
         open={Boolean(mobileAnchorEl)}
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        // getContentAnchorEl needs to be null for the positioning to work
-        getContentAnchorEl={null}
       >
         {navigationItems.map((item) => (
           <MenuItem
