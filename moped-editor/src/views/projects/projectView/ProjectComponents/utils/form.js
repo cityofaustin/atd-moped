@@ -258,10 +258,9 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
 export const ComponentOptionWithIcon = ({ option, state, props }) => {
   const classes = useComponentOptionWithIconStyles();
   const { data: { line_representation = null } = {} } = option;
-  console.log(option, state, props)
 
   return (
-    <span className={classes.optionContainer} onClick={props.onClick}>
+    <span className={classes.optionContainer} {...props}>
       <span className={classes.iconContainer}>
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}

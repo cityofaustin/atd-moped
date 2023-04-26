@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -89,7 +89,8 @@ const ComponentForm = ({
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
-    optionsData?.moped_components);
+    optionsData?.moped_components
+  );
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -108,7 +109,6 @@ const ComponentForm = ({
   useEffect(() => {
     setValue("signal", null);
   }, [component, setValue]);
-
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // todo: preserve allowed subcomponents when switching b/t component types
@@ -137,7 +137,11 @@ const ComponentForm = ({
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
             renderOption={(props, option, state) => (
-              <ComponentOptionWithIcon option={option} state={state} props={props}/>
+              <ComponentOptionWithIcon
+                option={option}
+                state={state}
+                props={props}
+              />
             )}
             name="component"
             control={control}
