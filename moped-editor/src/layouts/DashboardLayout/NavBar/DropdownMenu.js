@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   dropdownButton: {
     borderRadius: "50%",
     height: "64px",
+    color: theme.palette.text.primary,
   },
   helpHeader: {
     paddingLeft: "16px",
