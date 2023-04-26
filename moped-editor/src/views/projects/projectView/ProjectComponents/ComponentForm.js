@@ -136,8 +136,8 @@ const ComponentForm = ({
             id="component"
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
-            renderOption={(props, option) => (
-              <ComponentOptionWithIcon option={option} />
+            renderOption={(props, option, state) => (
+              <ComponentOptionWithIcon option={option} state={state} props={props}/>
             )}
             name="component"
             control={control}

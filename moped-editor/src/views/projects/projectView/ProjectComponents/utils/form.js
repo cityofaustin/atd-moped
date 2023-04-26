@@ -255,12 +255,13 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
  * @param {Object} option - Autocomplete option object with label, value, and data about component type
  * @return {JSX.Element}
  */
-export const ComponentOptionWithIcon = ({ option }) => {
+export const ComponentOptionWithIcon = ({ option, state, props }) => {
   const classes = useComponentOptionWithIconStyles();
   const { data: { line_representation = null } = {} } = option;
+  console.log(option, state, props)
 
   return (
-    <span className={classes.optionContainer}>
+    <span className={classes.optionContainer} onClick={props.onClick}>
       <span className={classes.iconContainer}>
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}
