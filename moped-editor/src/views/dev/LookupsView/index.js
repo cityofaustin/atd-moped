@@ -22,6 +22,9 @@ const useStyles = makeStyles((theme) => ({
   topMargin: {
     marginTop: theme.spacing(3),
   },
+  bottomMargin: {
+    marginBottom: theme.spacing(3),
+  },
 }));
 
 /**
@@ -104,7 +107,7 @@ const LookupsView = () => {
             ref={refs._scroll_to_top}
           >
             {SETTINGS.map((recordType) => (
-              <Grid item key={recordType.key}>
+              <Grid item key={recordType.key} className={classes.bottomMargin}>
                 <Button
                   color="primary"
                   variant="outlined"
@@ -146,7 +149,8 @@ const LookupsView = () => {
                           scrollToTable(recordType.key, refs);
                           history.replace(createRecordKeyHash(recordType.key));
                         }}
-                        size="large">
+                        size="large"
+                      >
                         <LinkIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
@@ -161,7 +165,8 @@ const LookupsView = () => {
                           scrollToTable("_scroll_to_top", refs);
                           history.replace("");
                         }}
-                        size="large">
+                        size="large"
+                      >
                         <ArrowUpwardIcon fontSize="small" />
                       </IconButton>
                     </Tooltip>
