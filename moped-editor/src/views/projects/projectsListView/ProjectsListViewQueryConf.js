@@ -240,9 +240,7 @@ export const ProjectsListViewQueryConf = {
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
-  where: {
-    is_deleted: "_eq: false",
-  },
+  where: null,
   or: null,
   and: null,
   limit: 100,
