@@ -21,7 +21,6 @@ export const makeComponentInsertData = (projectId, component) => {
     phase_id,
     subphase_id,
     completion_date,
-    component_name,
     internal_table,
     features,
   } = component;
@@ -70,7 +69,6 @@ export const makeComponentInsertData = (projectId, component) => {
   return {
     description,
     component_id,
-    name: component_name,
     project_id: projectId,
     moped_proj_components_subcomponents: {
       data: subcomponentsArray,
