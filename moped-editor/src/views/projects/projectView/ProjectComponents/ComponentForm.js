@@ -129,6 +129,15 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
+  const parseDate = (value) => {
+    if (value) {
+      let newdate = new Date(value);
+      return newdate;
+    }
+
+    return null;
+  };
+
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
@@ -250,21 +259,25 @@ const ComponentForm = ({
                 id="completion-date"
                 name="completionDate"
                 control={control}
-                render={({ onChange, value, ref }) => (
-                  <DatePicker
-                    inputRef={ref}
-                    value={value ? parseISO(value) : null}
-                    onChange={(date) => {
-                      const newDate = date ? format(date, "yyyy-MM-dd") : null;
-                      onChange(newDate);
-                    }}
-                    clearable={true}
-                    emptyLabel="mm/dd/yyyy"
-                    format="MM/dd/yyyy"
-                    variant="outlined"
-                    label={"Completion date"}
-                  />
-                )}
+                render={({ onChange, value, ref }) => {
+                  return (
+                    <DatePicker
+                      inputRef={ref}
+                      value={parseDate(value)}
+                      onChange={(date) => {
+                        const newDate = date
+                          ? format(date, "yyyy-MM-dd OOOO")
+                          : null;
+                        onChange(newDate);
+                      }}
+                      clearable={true}
+                      format="MM/dd/yyyy"
+                      variant="outlined"
+                      label={"Completion date"}
+                      onAccept={(props) => console.log(props)}
+                    />
+                  );
+                }}
               />
             </Grid>
           </>
