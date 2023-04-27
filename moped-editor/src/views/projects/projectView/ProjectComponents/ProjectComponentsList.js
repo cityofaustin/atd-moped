@@ -74,6 +74,7 @@ const ProjectComponentsList = ({
                   <Button
                     fullWidth
                     size="small"
+                    style={{color: theme.palette.text.primary}}
                     startIcon={<DeleteIcon />}
                     onClick={() => setIsDeletingComponent(true)}
                   >

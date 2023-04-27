@@ -13,7 +13,8 @@ import {
 import Cancel from "@mui/icons-material/Cancel";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloseIcon from "@mui/icons-material/Close";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
+import theme from "src/theme/index";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -68,7 +69,12 @@ const DeleteComponentModal = ({
         </Grid>
         <Grid container spacing={2} display="flex" justifyContent="flex-end">
           <Grid item>
-            <Button size="small" startIcon={<Cancel />} onClick={onClose}>
+            <Button
+              size="small"
+              style={{ color: theme.palette.text.primary }}
+              startIcon={<Cancel />}
+              onClick={onClose}
+            >
               Cancel
             </Button>
           </Grid>
