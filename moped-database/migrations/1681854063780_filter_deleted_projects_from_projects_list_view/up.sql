@@ -1,4 +1,4 @@
--- latest version 1681854063780_filter_deleted_projects_from_projects_list_view
+-- add is_deleted query filter to remove deleted projects from list view
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
