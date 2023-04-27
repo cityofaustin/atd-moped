@@ -24,6 +24,7 @@ import {
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
+import { parseISO } from "date-fns";
 
 const defaultFormValues = {
   component: null,
@@ -252,7 +253,7 @@ const ComponentForm = ({
                 render={({ onChange, value, ref }) => (
                   <DatePicker
                     inputRef={ref}
-                    value={value}
+                    value={value ? parseISO(value) : null}
                     onChange={onChange}
                     clearable={true}
                     emptyLabel="mm/dd/yyyy"
