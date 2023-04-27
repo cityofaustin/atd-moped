@@ -17,12 +17,11 @@ const DateFieldEditComponent = (props) => {
 
   return (
     <MobileDatePicker
-      clearable={true}
-      emptyLabel="mm/dd/yyyy"
       format="MM/dd/yyyy"
       value={props.value ? parseISO(props.value) : null}
       onChange={handleDateChange}
       InputProps={{ style: { minWidth: "100px" } }}
+      slotProps={{ actionBar: { actions: ["accept", "cancel", "clear"] } }}
     />
   );
 };
