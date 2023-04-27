@@ -12,11 +12,11 @@ import {
   ListItemIcon,
   ListItem,
   TextField,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import AddCircle from "@material-ui/icons/AddCircle";
+} from "@mui/material";
+import { Autocomplete } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import AddCircle from "@mui/icons-material/AddCircle";
 import {
   returnAMDSignalInfrastructureMilestoneTemplate,
   returnAMDInspectionOnlyMilestoneTemplate,
@@ -137,9 +137,9 @@ const MilestoneTemplateModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>Select milestone template</h3>
-        <IconButton onClick={closeDialog}>
+        <IconButton onClick={closeDialog} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

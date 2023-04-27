@@ -1,10 +1,10 @@
-import Box from "@material-ui/core/Box";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import Button from "@material-ui/core/Button";
-import ListItemText from "@material-ui/core/ListItemText";
-import Cancel from "@material-ui/icons/Cancel";
-import CheckCircle from "@material-ui/icons/CheckCircle";
+import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import Button from "@mui/material/Button";
+import ListItemText from "@mui/material/ListItemText";
+import Cancel from "@mui/icons-material/Cancel";
+import CheckCircle from "@mui/icons-material/CheckCircle";
 import { COLORS } from "./mapStyleSettings";
 
 const DraftComponentListItem = ({

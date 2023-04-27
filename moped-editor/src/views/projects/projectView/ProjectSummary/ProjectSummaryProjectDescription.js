@@ -6,7 +6,7 @@ import {
   TextField,
   Typography,
   IconButton,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -93,6 +93,7 @@ const ProjectSummaryProjectDescription = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               multiline={true}
@@ -100,14 +101,13 @@ const ProjectSummaryProjectDescription = ({
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
-              value={description}
-            />
+              value={description} />
 
-            <IconButton onClick={handleProjectDescriptionSave}>
+            <IconButton onClick={handleProjectDescriptionSave} size="large">
               <Icon>check</Icon>
             </IconButton>
 
-            <IconButton onClick={handleProjectDescriptionClose}>
+            <IconButton onClick={handleProjectDescriptionClose} size="large">
               <Icon>close</Icon>
             </IconButton>
           </>

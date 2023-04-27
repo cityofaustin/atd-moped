@@ -1,5 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { useMediaQuery, useTheme } from "@material-ui/core";
+import { useMediaQuery, useTheme } from "@mui/material";
 import booleanIntersects from "@turf/boolean-intersects";
 import circle from "@turf/circle";
 import { MAP_STYLES } from "../mapStyleSettings";

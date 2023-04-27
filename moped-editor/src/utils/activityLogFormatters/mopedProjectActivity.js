@@ -1,4 +1,4 @@
-import BeenhereOutlinedIcon from "@material-ui/icons/BeenhereOutlined";
+import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatProjectActivity = (change, lookupList) => {

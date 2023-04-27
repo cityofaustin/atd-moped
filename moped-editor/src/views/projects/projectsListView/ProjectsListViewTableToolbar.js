@@ -1,13 +1,13 @@
 // this is only the show/hide columns menu of material-table-core, adapted from
 // https://github.com/material-table-core/core/blob/master/src/components/MTableToolbar/index.js
 
-import Checkbox from "@material-ui/core/Checkbox";
-import IconButton from "@material-ui/core/IconButton";
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
-import Toolbar from "@material-ui/core/Toolbar";
-import Tooltip from "@material-ui/core/Tooltip";
-import { withStyles } from "@material-ui/core/styles";
+import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import Toolbar from "@mui/material/Toolbar";
+import Tooltip from "@mui/material/Tooltip";
+import withStyles from '@mui/styles/withStyles';
 import React, { useState } from "react";
 
 export function ProjectsListViewTableToolbar(props) {
@@ -33,7 +33,7 @@ export function ProjectsListViewTableToolbar(props) {
                       setColumnsButtonAnchorEl(event.currentTarget)
                     }
                     aria-label={localization.showColumnsAriaLabel}
-                  >
+                    size="large">
                     <props.icons.ViewColumn />
                   </IconButton>
                 </Tooltip>

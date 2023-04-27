@@ -15,11 +15,11 @@ import {
   Typography,
   Button,
   FormControlLabel,
-} from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
-import EditIcon from "@material-ui/icons/EditOutlined";
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
+import EditIcon from "@mui/icons-material/EditOutlined";
 
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -419,7 +419,7 @@ const ProjectComments = (props) => {
                                     onClick={() =>
                                       editComment(i, item.project_note_id)
                                     }
-                                  >
+                                    size="large">
                                     <EditIcon
                                       className={classes.editDeleteButtons}
                                     />
@@ -432,7 +432,7 @@ const ProjectComments = (props) => {
                                     onClick={() =>
                                       handleDeleteOpen(item.project_note_id)
                                     }
-                                  >
+                                    size="large">
                                     <DeleteIcon
                                       className={classes.editDeleteButtons}
                                     />

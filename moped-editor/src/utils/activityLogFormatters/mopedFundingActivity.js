@@ -1,4 +1,4 @@
-import MonetizationOnOutlinedIcon from "@material-ui/icons/MonetizationOnOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 import { isEqual } from "lodash";
 

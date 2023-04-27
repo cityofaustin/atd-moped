@@ -9,10 +9,9 @@ import {
   Switch,
   FormControlLabel,
   FormHelperText,
-} from "@material-ui/core";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { CheckCircle } from "@material-ui/icons";
+} from "@mui/material";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
@@ -90,7 +89,8 @@ const ComponentForm = ({
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
-    optionsData?.moped_components);
+    optionsData?.moped_components
+  );
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -109,7 +109,6 @@ const ComponentForm = ({
   useEffect(() => {
     setValue("signal", null);
   }, [component, setValue]);
-
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // todo: preserve allowed subcomponents when switching b/t component types
@@ -137,8 +136,12 @@ const ComponentForm = ({
             id="component"
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
-            renderOption={(option) => (
-              <ComponentOptionWithIcon option={option} />
+            renderOption={(props, option, state) => (
+              <ComponentOptionWithIcon
+                option={option}
+                state={state}
+                props={props}
+              />
             )}
             name="component"
             control={control}
@@ -247,18 +250,16 @@ const ComponentForm = ({
                 name="completionDate"
                 control={control}
                 render={({ onChange, value, ref }) => (
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <DatePicker
-                      inputRef={ref}
-                      value={value}
-                      onChange={onChange}
-                      clearable={true}
-                      emptyLabel="mm/dd/yyyy"
-                      format="MM/dd/yyyy"
-                      variant="outlined"
-                      label={"Completion date"}
-                    />
-                  </MuiPickersUtilsProvider>
+                  <DatePicker
+                    inputRef={ref}
+                    value={value}
+                    onChange={onChange}
+                    clearable={true}
+                    emptyLabel="mm/dd/yyyy"
+                    format="MM/dd/yyyy"
+                    variant="outlined"
+                    label={"Completion date"}
+                  />
                 )}
               />
             </Grid>

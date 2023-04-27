@@ -1,4 +1,4 @@
-import GroupOutlined from "@material-ui/icons/GroupOutlined";
+import GroupOutlined from "@mui/icons-material/GroupOutlined";
 
 export const formatPartnersActivity = (change, entityList) => {
   const changeIcon = <GroupOutlined />;

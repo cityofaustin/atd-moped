@@ -1,13 +1,8 @@
 import React from "react";
-import {
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  makeStyles,
-} from "@material-ui/core";
+import { Divider, List, ListItem, ListItemText } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { Link as RouterLink } from "react-router-dom";
-import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const useStyles = makeStyles((theme) => ({
   root: {

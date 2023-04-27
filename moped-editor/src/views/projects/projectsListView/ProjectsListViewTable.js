@@ -7,10 +7,9 @@ import {
   CircularProgress,
   Container,
   Paper,
-} from "@material-ui/core";
+} from "@mui/material";
 
-// Styling
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
@@ -21,7 +20,7 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
-import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
+// import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -55,6 +54,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "25px",
     paddingBottom: "16px",
   },
+  colorPrimary: {
+    color: theme.palette.primary.main,
+  }
 }));
 
 /**
@@ -181,11 +183,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  const toggleColumnConfig = (field, hiddenState) => {
-    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    storedConfig = { ...storedConfig, [field]: hiddenState };
-    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-  };
+  // const toggleColumnConfig = (field, hiddenState) => {
+  //   let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+  //   storedConfig = { ...storedConfig, [field]: hiddenState };
+  //   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
+  // };
 
   /**
    * Query Management
@@ -293,7 +295,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
               ? btoa(JSON.stringify(filters))
               : false,
           }}
-          className={"MuiTypography-colorPrimary"}
+          className={classes.colorPrimary}
         >
           {entry.project_name}
         </RouterLink>
@@ -625,6 +627,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       whiteSpace: "nowrap",
                     },
                     columnsButton: true,
+                    idSynonym: "project_id",
                   }}
                   components={{
                     Pagination: (props) => (
@@ -635,14 +638,14 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         setPagination={setPagination}
                       />
                     ),
-                    Toolbar: (props) => {
-                      return (
-                        <ProjectsListViewTableToolbar
-                          toggleColumnConfig={toggleColumnConfig}
-                          {...props}
-                        />
-                      );
-                    },
+                    // Toolbar: (props) => {
+                    //   return (
+                    //     <ProjectsListViewTableToolbar
+                    //       toggleColumnConfig={toggleColumnConfig}
+                    //       {...props}
+                    //     />
+                    //   );
+                    // },
                     Header: (props) => (
                       <MTableHeader
                         {...props}

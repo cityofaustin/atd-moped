@@ -1,5 +1,6 @@
 import React from "react";
 import { NavLink as RouterLink } from "react-router-dom";
+import theme from "src/theme/index"
 
 const RenderFieldLink = ({ projectId, value, tab }) => {
   const route = tab
@@ -8,7 +9,7 @@ const RenderFieldLink = ({ projectId, value, tab }) => {
   return (
     <RouterLink
       to={route}
-      className={"MuiTypography-colorPrimary"}
+      style={{color: theme.palette.primary.main}}
     >
       {value}
     </RouterLink>

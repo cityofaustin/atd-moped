@@ -2,7 +2,7 @@ import React from "react";
 import ProjectTeamTable from "./ProjectTeamTable";
 import { useParams } from "react-router-dom";
 
-import { CardContent, Grid } from "@material-ui/core";
+import { CardContent, Grid } from "@mui/material";
 
 const ProjectTeam = () => {
   const { projectId } = useParams();

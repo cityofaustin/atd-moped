@@ -12,19 +12,20 @@ import {
   Select,
   MenuItem,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import typography from "../../../theme/typography";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -168,12 +169,12 @@ const ProjectFiles = props => {
       ),
       editComponent: props => (
         <TextField
+          variant="standard"
           id="file_name"
           name="file_name"
           value={props.value}
           onChange={e => props.onChange(e.target.value)}
-          helperText="Required"
-        />
+          helperText="Required" />
       ),
     },
     {
@@ -181,13 +182,13 @@ const ProjectFiles = props => {
       field: "file_type",
       render: record => <span>{fileTypes[record?.file_type]}</span>,
       editComponent: props => (
-        <FormControl>
+        <FormControl variant="standard">
           <Select
+            variant="standard"
             id="file_description"
             name="file_description"
             value={props?.value}
-            onChange={e => props.onChange(e.target.value)}
-          >
+            onChange={e => props.onChange(e.target.value)}>
             <MenuItem value={1} className={classes.inputFieldAdornmentColor}>
               Funding
             </MenuItem>
@@ -211,11 +212,11 @@ const ProjectFiles = props => {
       render: record => <span>{record?.file_description}</span>,
       editComponent: props => (
         <TextField
+          variant="standard"
           id="file_description"
           name="file_description"
           value={props?.value}
-          onChange={e => props.onChange(e.target.value)}
-        />
+          onChange={e => props.onChange(e.target.value)} />
       ),
     },
     {
@@ -304,6 +305,12 @@ const ProjectFiles = props => {
                 );
               }
             },
+            Toolbar: (props) => (
+              // to have it align with table content
+              <div style={{ marginLeft: "-10px" }}>
+                <MTableToolbar {...props} />
+              </div>
+            )
           }}
           icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{

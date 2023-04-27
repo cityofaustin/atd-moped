@@ -5,6 +5,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import theme from "src/theme/index";
 
 /**
  * The Query configuration (now also including filters)
@@ -80,7 +81,7 @@ export const ProjectsListViewQueryConf = {
           <RouterLink
             to={`/${jsonValues.singleItem}/${jsonValues.link}/`}
             state={jsonValues.state}
-            className={"MuiTypography-colorPrimary"}
+            style={{ color: theme.palette.primary.main }}
           >
             {jsonValues.data}
           </RouterLink>
