@@ -24,7 +24,7 @@ import {
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
-import { parseISO, format } from "date-fns";
+import { format } from "date-fns";
 
 const defaultFormValues = {
   component: null,
