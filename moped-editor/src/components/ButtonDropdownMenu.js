@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Button, ListItemIcon, Menu, MenuItem } from "@material-ui/core";
-import ArrowDropDownIcon from "@material-ui/icons/ArrowDropDown";
-import ArrowDropUpIcon from "@material-ui/icons/ArrowDropUp";
-import PlaylistAddIcon from "@material-ui/icons/PlaylistAdd";
-import AddCircle from "@material-ui/icons/AddCircle";
-import { makeStyles } from "@material-ui/core";
+import { Button, ListItemIcon, Menu, MenuItem } from "@mui/material";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
+import AddCircle from "@mui/icons-material/AddCircle";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   dropDownMenu: {
@@ -16,17 +16,17 @@ const useStyles = makeStyles((theme) => ({
     "& .MuiList-root": {
       padding: "0px",
     },
-    "& .MuiListItem-root": {
+    "& .MuiMenuItem-root": {
       textTransform: "uppercase",
       fontSize: "14px",
       fontWeight: 500,
       paddingTop: "8px",
       paddingBottom: "8px",
     },
-    "& .MuiListItem-root:hover": {
+    "& .MuiMenuItem-root:hover": {
       backgroundColor: theme.palette.primary.dark,
     },
-    "& .MuiListItem-root:first-of-type": {
+    "& .MuiMenuItem-root:first-of-type": {
       borderBottom: `1px solid ${theme.palette.primary.dark}`,
     },
     "& .MuiListItemIcon-root": {
@@ -82,7 +82,6 @@ const ButtonDropdownMenu = ({
       </Button>
       <Menu
         className={classes.dropDownMenu}
-        getContentAnchorEl={null}
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={() => setAnchorEl(null)}

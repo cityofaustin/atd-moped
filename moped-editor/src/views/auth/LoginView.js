@@ -10,9 +10,9 @@ import {
   Link,
   TextField,
   Typography,
-  makeStyles,
-} from "@material-ui/core";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "../../auth/user";
 import useAuthentication from "../../auth/useAuthentication";

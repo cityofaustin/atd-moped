@@ -12,11 +12,11 @@ import {
   TableCell,
   TableContainer,
   TableRow,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Alert } from "@material-ui/lab";
+import makeStyles from '@mui/styles/makeStyles';
+import { Alert } from '@mui/material';
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";

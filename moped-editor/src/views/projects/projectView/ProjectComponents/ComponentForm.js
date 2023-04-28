@@ -9,10 +9,9 @@ import {
   Switch,
   FormControlLabel,
   FormHelperText,
-} from "@material-ui/core";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import { CheckCircle } from "@material-ui/icons";
+} from "@mui/material";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
@@ -25,6 +24,7 @@ import {
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
+import { format } from "date-fns";
 
 const defaultFormValues = {
   component: null,
@@ -49,6 +49,19 @@ const validationSchema = yup.object().shape({
     then: yup.object().required(),
   }),
 });
+
+/**
+ * Return a Date object from a string date
+ * @param {string} value - the string formatted date
+ * @returns 
+ */
+const parseDate = (value) => {
+  if (value) {
+    let newdate = new Date(value);
+    return newdate;
+  }
+  return null;
+};
 
 const ComponentForm = ({
   formButtonText,
@@ -90,7 +103,8 @@ const ComponentForm = ({
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
-    optionsData?.moped_components);
+    optionsData?.moped_components
+  );
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -109,7 +123,6 @@ const ComponentForm = ({
   useEffect(() => {
     setValue("signal", null);
   }, [component, setValue]);
-
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // todo: preserve allowed subcomponents when switching b/t component types
@@ -137,8 +150,12 @@ const ComponentForm = ({
             id="component"
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
-            renderOption={(option) => (
-              <ComponentOptionWithIcon option={option} />
+            renderOption={(props, option, state) => (
+              <ComponentOptionWithIcon
+                option={option}
+                state={state}
+                props={props}
+              />
             )}
             name="component"
             control={control}
@@ -246,20 +263,26 @@ const ComponentForm = ({
                 id="completion-date"
                 name="completionDate"
                 control={control}
-                render={({ onChange, value, ref }) => (
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <DatePicker
+                render={({ onChange, value, ref }) => {
+                  return (
+                    <MobileDatePicker
                       inputRef={ref}
-                      value={value}
-                      onChange={onChange}
-                      clearable={true}
-                      emptyLabel="mm/dd/yyyy"
+                      value={parseDate(value)}
+                      onChange={(date) => {
+                        const newDate = date
+                          ? format(date, "yyyy-MM-dd OOOO")
+                          : null;
+                        onChange(newDate);
+                      }}
                       format="MM/dd/yyyy"
                       variant="outlined"
                       label={"Completion date"}
+                      slotProps={{
+                        actionBar: { actions: ["accept", "cancel", "clear"] },
+                      }}
                     />
-                  </MuiPickersUtilsProvider>
-                )}
+                  );
+                }}
               />
             </Grid>
           </>

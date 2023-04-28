@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import {
   Box,
   Grid,
@@ -7,9 +7,9 @@ import {
   Snackbar,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { Alert } from "@material-ui/lab";
+import { Alert } from '@mui/material';
 import { UPDATE_PROJECT_NAME_QUERY } from "../../../queries/project";
 
 /**
@@ -139,6 +139,7 @@ const ProjectNameEditable = (props) => {
           <Grid container fullWidth>
             <Grid item xs={12} sm={11}>
               <TextField
+                variant="standard"
                 fullWidth
                 autoFocus
                 id="project name"
@@ -159,8 +160,7 @@ const ProjectNameEditable = (props) => {
                   classes: {
                     input: classes.titleEditField,
                   },
-                }}
-              />
+                }} />
             </Grid>
             <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
               <Icon

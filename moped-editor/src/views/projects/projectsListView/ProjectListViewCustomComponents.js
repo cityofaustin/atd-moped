@@ -1,6 +1,6 @@
 import React from "react";
 import Can from "../../../auth/Can";
-import { Button, Icon } from "@material-ui/core";
+import { Button, Icon } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
 export const CanAddProjectButton = () => (

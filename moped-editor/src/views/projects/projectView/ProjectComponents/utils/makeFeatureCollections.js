@@ -30,13 +30,11 @@ export const getAllComponentFeatures = (component) => {
   });
   // Flatten array of arrays containing features from each feature table
   const allComponentFeaturesFlat = allComponentFeatures.flat();
-
   // Make features valid GeoJSON by adding type and properties attributes
   return allComponentFeaturesFlat.map((feature) => {
-    feature.properties = {
-      // we need this property to tie individual map features back to their parent component
-      project_component_id: component.project_component_id,
-    };
+    feature.properties ??= {};
+    // we need this property to tie individual map features back to their parent component
+    feature.properties.project_component_id = component.project_component_id;
     feature.type = "Feature";
     return feature;
   });

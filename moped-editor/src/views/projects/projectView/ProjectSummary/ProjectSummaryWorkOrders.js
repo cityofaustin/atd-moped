@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Grid, Link, Typography } from "@material-ui/core";
+import { Box, Grid, Link, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
-import { OpenInNew } from "@material-ui/icons";
+import { OpenInNew } from "@mui/icons-material";
 
 /**
  * ProjectSummaryWorkOrders Component

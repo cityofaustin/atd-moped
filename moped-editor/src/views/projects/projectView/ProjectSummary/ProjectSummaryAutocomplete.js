@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Grid, Box, Typography, Icon, TextField } from "@material-ui/core";
+import { Grid, Box, Typography, Icon, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from '@mui/material';
 
 import { useMutation } from "@apollo/client";
 
@@ -86,7 +86,7 @@ const ProjectSummaryAutocomplete = ({
               id={`moped-project-summary-autocomplete-${projectId}`}
               options={optionList}
               getOptionLabel={(e) => e[nameColumn]}
-              getOptionSelected={(option, value) =>
+              isOptionEqualToValue={(option, value) =>
                 option[nameColumn] === value[nameColumn]
               }
               onChange={(event, newValue) => {

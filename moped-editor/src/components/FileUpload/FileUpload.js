@@ -13,9 +13,9 @@ import FilePondPluginFileValidateSize from "filepond-plugin-file-validate-size";
 // Import FilePond styles
 import "filepond/dist/filepond.min.css";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
-import { Alert } from "@material-ui/lab";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import { Grid } from "@material-ui/core";
+import { Alert } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import { Grid } from "@mui/material";
 
 registerPlugin(
   FilePondPluginImageExifOrientation,

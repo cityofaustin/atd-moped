@@ -10,7 +10,7 @@ import {
 } from "../helpers";
 import { useButtonStyles } from "./StaffFormButtons";
 
-import { Button, Typography, Box } from "@material-ui/core";
+import { Button, Typography, Box } from "@mui/material";
 import clsx from "clsx";
 
 /**

@@ -12,11 +12,11 @@ import {
   ListItemIcon,
   ListItem,
   TextField,
-} from "@material-ui/core";
-import { Autocomplete } from "@material-ui/lab";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import AddCircle from "@material-ui/icons/AddCircle";
+} from "@mui/material";
+import { Autocomplete } from '@mui/material';
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import AddCircle from "@mui/icons-material/AddCircle";
 import { returnArterialManagementPhaseTemplate } from "../../../utils/timelineTemplates";
 
 import { ADD_PROJECT_PHASE } from "../../../queries/project";
@@ -133,9 +133,9 @@ const PhaseTemplateModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>Select phase template</h3>
-        <IconButton onClick={closeDialog}>
+        <IconButton onClick={closeDialog} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

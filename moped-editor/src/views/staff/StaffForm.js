@@ -19,12 +19,12 @@ import {
   Grid,
   InputLabel,
   TextField,
-  makeStyles,
   MenuItem,
   Radio,
   RadioGroup,
   Select,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import StaffFormErrorModal from "./components/StaffFormErrorModal";
 import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
 
@@ -121,12 +121,15 @@ const StaffForm = ({
 
   /**
    * Updates the workgroup field state
-   * @param {Object} e - Event
+   * @param {Object} e - from the MUI docs: event: The event source of the callback. You can
+   * pull out the new value by accessing event.target.value (any). Warning: This is a generic event,
+   * not a change event, unless the change event is caused by browser autofill.
+   * @param {Object} child - from MUI docs: child: The react element that was selected when native is false (default).
    * @returns {string} - The workgroup name
    */
-  const updateWorkgroupFields = (e) => {
-    const workgroupId = e.nativeEvent.target.dataset.id;
-    const workgroupName = e.target.value;
+  const updateWorkgroupFields = (e, child) => {
+    const workgroupId = child.props["data-id"];
+    const workgroupName = child.props["value"];
 
     // When workgroup field updates, set corresponding workgroup_id value
     setValue("workgroup_id", workgroupId);
@@ -278,11 +281,14 @@ const StaffForm = ({
               <Controller
                 render={({ onChange, ref, value }) => (
                   <Select
+                    variant="standard"
                     id="workgroup"
                     labelId="workgroup-label"
                     label="Workgroup"
                     disabled={!isUserActive}
-                    onChange={(e) => onChange(updateWorkgroupFields(e))}
+                    onChange={(e, child) =>
+                      onChange(updateWorkgroupFields(e, child))
+                    }
                     inputRef={ref}
                     value={value}
                   >
@@ -313,13 +319,14 @@ const StaffForm = ({
         </Grid>
         {/* This hidden field is populated with workgroup_id field by updateWorkgroupFields() */}
         <TextField
+          variant="standard"
           id="workgroup-id"
           name="workgroup_id"
           inputRef={register}
           className={classes.hiddenTextField}
         />
         <Grid item xs={12} md={6}>
-          <FormControl component="fieldset">
+          <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
               as={

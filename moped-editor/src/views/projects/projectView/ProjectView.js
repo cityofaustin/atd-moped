@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   Breadcrumbs,
@@ -30,8 +30,8 @@ import {
   Snackbar,
   Tooltip,
   Typography,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import { Alert } from '@mui/material';
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -55,11 +55,11 @@ import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import { getSessionDatabaseData } from "../../../auth/user";
 
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import BookmarkBorderIcon from "@material-ui/icons/BookmarkBorder";
-import BookmarkIcon from "@material-ui/icons/Bookmark";
-import CreateOutlinedIcon from "@material-ui/icons/CreateOutlined";
-import DeleteOutlinedIcon from "@material-ui/icons/DeleteOutlined";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 
 const useStyles = makeStyles((theme) => ({
@@ -96,12 +96,16 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.header,
   },
   selectedTab: {
+    minWidth: "160px",
     "&.Mui-selected": {
       color: theme.palette.text.primary,
     },
   },
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
+  },
+  colorPrimary: {
+    color: theme.palette.primary.main,
   },
   followDiv: {
     float: "right",
@@ -458,7 +462,6 @@ const ProjectView = () => {
                           onClose={handleMenuClose}
                           autoFocus={false}
                           TransitionComponent={Fade}
-                          getContentAnchorEl={null}
                           anchorOrigin={{
                             vertical: "bottom",
                             horizontal: "center",
@@ -594,7 +597,7 @@ const ProjectView = () => {
                 <Button>
                   <RouterLink
                     to={allProjectsLink}
-                    className={"MuiTypography-colorPrimary"}
+                    className={classes.colorPrimary}
                   >
                     Back to all projects
                   </RouterLink>

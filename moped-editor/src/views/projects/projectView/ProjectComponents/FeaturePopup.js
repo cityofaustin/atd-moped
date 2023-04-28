@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { Popup } from "react-map-gl";
 import turfCenter from "@turf/center";
-import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemIcon from "@mui/material/ListItemIcon";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const useFeatureComponents = (feature, components) =>
   useMemo(() => {

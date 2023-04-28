@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { makeStyles, Typography } from "@material-ui/core";
+import { Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import ExternalLink from "../../components/ExternalLink";
 import { get } from "lodash";
 

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 
 /*
  * Socrata Endpoint
@@ -172,7 +172,6 @@ export const generateProjectComponent = (
   );
 
   return {
-    name: componentDef.component_name,
     component_id: componentDef.component_id,
     feature_signals: {
       data: [signalRecord],

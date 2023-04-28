@@ -9,8 +9,8 @@ import {
   MenuItem,
   Select,
   Typography,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -27,8 +27,9 @@ const useStyles = makeStyles((theme) => ({
 const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
   const classes = useStyles();
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl variant="standard" className={classes.formControl}>
       <Select
+        variant="standard"
         style={{ minWidth: "8em" }}
         labelId="team-role-multiselect-label"
         id="team-role-multiselect"
@@ -44,21 +45,14 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
             <Typography key={project_role_name}>{project_role_name}</Typography>
           ));
         }}
-        /*  
-            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
-            this is fixed by overriding the function "getContentAnchorEl".
-                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
-        */
         MenuProps={{
-          getContentAnchorEl: null,
           style: {
             maxHeight: 500,
           },
           PaperProps: { style: { width: "50%" } },
           anchorOrigin: { vertical: "bottom", horizontal: "center" },
           transformOrigin: { vertical: "top", horizontal: "center" },
-        }}
-      >
+        }}>
         {roles.map(
           ({
             project_role_id,
