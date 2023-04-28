@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -24,6 +24,7 @@ import {
   useInitialValuesOnAttributesEdit,
 } from "./utils/form";
 import * as yup from "yup";
+import { format } from "date-fns";
 
 const defaultFormValues = {
   component: null,
@@ -48,6 +49,19 @@ const validationSchema = yup.object().shape({
     then: yup.object().required(),
   }),
 });
+
+/**
+ * Return a Date object from a string date
+ * @param {string} value - the string formatted date
+ * @returns 
+ */
+const parseDate = (value) => {
+  if (value) {
+    let newdate = new Date(value);
+    return newdate;
+  }
+  return null;
+};
 
 const ComponentForm = ({
   formButtonText,
@@ -249,18 +263,26 @@ const ComponentForm = ({
                 id="completion-date"
                 name="completionDate"
                 control={control}
-                render={({ onChange, value, ref }) => (
-                  <DatePicker
-                    inputRef={ref}
-                    value={value}
-                    onChange={onChange}
-                    clearable={true}
-                    emptyLabel="mm/dd/yyyy"
-                    format="MM/dd/yyyy"
-                    variant="outlined"
-                    label={"Completion date"}
-                  />
-                )}
+                render={({ onChange, value, ref }) => {
+                  return (
+                    <MobileDatePicker
+                      inputRef={ref}
+                      value={parseDate(value)}
+                      onChange={(date) => {
+                        const newDate = date
+                          ? format(date, "yyyy-MM-dd OOOO")
+                          : null;
+                        onChange(newDate);
+                      }}
+                      format="MM/dd/yyyy"
+                      variant="outlined"
+                      label={"Completion date"}
+                      slotProps={{
+                        actionBar: { actions: ["accept", "cancel", "clear"] },
+                      }}
+                    />
+                  );
+                }}
               />
             </Grid>
           </>
