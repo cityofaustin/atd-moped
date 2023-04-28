@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -261,7 +261,7 @@ const ComponentForm = ({
                 control={control}
                 render={({ onChange, value, ref }) => {
                   return (
-                    <DatePicker
+                    <MobileDatePicker
                       inputRef={ref}
                       value={parseDate(value)}
                       onChange={(date) => {
@@ -270,11 +270,12 @@ const ComponentForm = ({
                           : null;
                         onChange(newDate);
                       }}
-                      clearable={true}
                       format="MM/dd/yyyy"
                       variant="outlined"
                       label={"Completion date"}
-                      onAccept={(props) => console.log(props)}
+                      slotProps={{
+                        actionBar: { actions: ["accept", "cancel", "clear"] },
+                      }}
                     />
                   );
                 }}
