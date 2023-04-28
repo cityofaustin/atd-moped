@@ -50,6 +50,19 @@ const validationSchema = yup.object().shape({
   }),
 });
 
+/**
+ * Return a Date object from a string date
+ * @param {string} value - the string formatted date
+ * @returns 
+ */
+const parseDate = (value) => {
+  if (value) {
+    let newdate = new Date(value);
+    return newdate;
+  }
+  return null;
+};
+
 const ComponentForm = ({
   formButtonText,
   onSave,
@@ -128,15 +141,6 @@ const ComponentForm = ({
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
-
-  const parseDate = (value) => {
-    if (value) {
-      let newdate = new Date(value);
-      return newdate;
-    }
-
-    return null;
-  };
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
