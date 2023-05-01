@@ -4244,6 +4244,16 @@
 - table:
     name: project_geography
     schema: public
+  object_relationships:
+    - name: proj_component
+      using:
+        manual_configuration:
+          column_mapping:
+            component_id: project_component_id
+          insertion_order: null
+          remote_table:
+            name: moped_proj_components
+            schema: public
   select_permissions:
     - role: moped-admin
       permission:
