@@ -1,36 +1,46 @@
 DELETE FROM moped_components_subcomponents where 1=1;
 
-INSERT INTO moped_components_subcomponents (component_id, subcomponent_id)
-    values
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'PHB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Accessible pedestrian signal (APS)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'RRFB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Accessible pedestrian signal (APS)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Accessible pedestrian signal (APS)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'PHB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Bicycle accommodations at PHB')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Bicycle signal (standard signal + bicycle signal sign)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Bicycle signal face (experiment)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Bicycle signal face (interim approval)')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Continuous flow intersection')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Curb extension')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Refuge Island' AND component_subtype = 'Bike'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Curb extension')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Refuge Island' AND component_subtype = 'Bike/Ped'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Curb extension')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Refuge Island' AND component_subtype = 'Ped'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Curb extension')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'PHB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Detection - Bicycle')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'RRFB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Detection - Bicycle')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Detection - Bicycle')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Detection - vehicle')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Intersection square-up')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Sig/nal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Leading bicycle interval')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Leading pedestrian interval')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'PHB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Pedestrian signal head and pushbuttons')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Protected intersection - Full')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Protected intersection - Full - Shared use')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Protected intersection - partial')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Protected left turn phase')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Radius tightening')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Slip lane removal')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Smart right')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'PHB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Timing adjustment')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'RRFB'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Timing adjustment')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Signal' AND component_subtype = 'Traffic'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Timing adjustment')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Transit corner modification')),
-((SELECT component_id FROM moped_components WHERE component_name = 'Intersection' AND component_subtype = 'Improvement'),(SELECT subcomponent_id FROM moped_subcomponents WHERE subcomponent_name = 'Vehicle lane reconfiguration'));
+WITH inserts_todo AS (SELECT
+    mc.component_id component_id,
+    ms.subcomponent_id subcomponent_id
+FROM (VALUES
+    ('Signal', 'PHB', 'Accessible pedestrian signal (APS)'),
+    ('Signal', 'RRFB', 'Accessible pedestrian signal (APS)'),
+    ('Signal', 'Traffic', 'Accessible pedestrian signal (APS)'),
+    ('Signal', 'PHB', 'Bicycle accommodations at PHB'),
+    ('Signal', 'Traffic', 'Bicycle signal (standard signal + bicycle signal sign)'),
+    ('Signal', 'Traffic', 'Bicycle signal face (experiment)'),
+    ('Signal', 'Traffic', 'Bicycle signal face (interim approval)'),
+    ('Intersection', 'Improvement', 'Continuous flow intersection'),
+    ('Intersection', 'Improvement', 'Curb extension'),
+    ('Refuge Island', 'Bike', 'Curb extension'),
+    ('Refuge Island', 'Bike/Ped', 'Curb extension'),
+    ('Refuge Island', 'Ped', 'Curb extension'),
+    ('Signal', 'PHB', 'Detection - Bicycle'),
+    ('Signal', 'RRFB', 'Detection - Bicycle'),
+    ('Signal', 'Traffic', 'Detection - Bicycle'),
+    ('Signal', 'Traffic', 'Detection - vehicle'),
+    ('Intersection', 'Improvement', 'Intersection square-up'),
+    ('Signal', 'Traffic', 'Leading bicycle interval'),
+    ('Signal', 'Traffic', 'Leading pedestrian interval'),
+    ('Signal', 'PHB', 'Pedestrian signal head and pushbuttons'),
+    ('Intersection', 'Improvement', 'Protected intersection - Full'),
+    ('Intersection', 'Improvement', 'Protected intersection - Full - Shared use'),
+    ('Intersection', 'Improvement', 'Protected intersection - partial'),
+    ('Signal', 'Traffic', 'Protected left turn phase'),
+    ('Intersection', 'Improvement', 'Radius tightening'),
+    ('Intersection', 'Improvement', 'Slip lane removal'),
+    ('Intersection', 'Improvement', 'Smart right'),
+    ('Signal', 'PHB', 'Timing adjustment'),
+    ('Signal', 'RRFB', 'Timing adjustment'),
+    ('Signal', 'Traffic', 'Timing adjustment'),
+    ('Intersection', 'Improvement', 'Transit corner modification'),
+    ('Intersection', 'Improvement', 'Vehicle lane reconfiguration')
+  ) AS data (component_name, component_subtype, subcomponent_name)
+        LEFT JOIN moped_components mc ON
+            mc.component_name = data.component_name AND
+            mc.component_subtype = data.component_subtype
+        LEFT JOIN moped_subcomponents ms ON
+            ms.subcomponent_name = data.subcomponent_name)
+        INSERT INTO moped_components_subcomponents (component_id, subcomponent_id)
+            select * from inserts_todo;
