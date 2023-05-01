@@ -125,6 +125,7 @@ const ComponentForm = ({
   }, [component, setValue]);
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
+  // assumes component type cannot be changed when editing
   // todo: preserve allowed subcomponents when switching b/t component types
   useEffect(() => {
     if (!initialFormValues?.subcomponents) {
