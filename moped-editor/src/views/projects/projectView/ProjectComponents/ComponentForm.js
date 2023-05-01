@@ -53,7 +53,7 @@ const validationSchema = yup.object().shape({
 /**
  * Return a Date object from a string date
  * @param {string} value - the string formatted date
- * @returns 
+ * @returns
  */
 const parseDate = (value) => {
   if (value) {
@@ -127,8 +127,10 @@ const ComponentForm = ({
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // todo: preserve allowed subcomponents when switching b/t component types
   useEffect(() => {
-    setValue("subcomponents", []);
-  }, [subcomponentOptions, setValue]);
+    if (!initialFormValues?.subcomponents) {
+      setValue("subcomponents", []);
+    }
+  }, [subcomponentOptions, initialFormValues, setValue]);
 
   // Reset subphases field when phase changes so subphase options match phase
   useEffect(() => {
