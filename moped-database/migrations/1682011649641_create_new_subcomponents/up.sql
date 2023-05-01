@@ -10,7 +10,7 @@ INSERT INTO moped_subcomponents (subcomponent_name) values
     ('Slip lane removal'),
     ('Smart right'),
     ('Intersection square-up'),
-    ('Transit corner modification')
+    ('Transit corner modification'),
     ('Bicycle accommodations at PHB'),
     ('Bicycle signal (standard signal + bicycle signal sign)'),
     ('Bicycle signal face (experiment)'),
