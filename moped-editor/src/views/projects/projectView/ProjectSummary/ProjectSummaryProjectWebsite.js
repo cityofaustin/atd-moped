@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Icon,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -53,10 +45,14 @@ const ProjectSummaryProjectWebsite = ({
    * Saves the new project website...
    */
   const handleProjectWebsiteSave = () => {
+    // Prevent saving if the website is not valid
+    if (!isWebsiteValid) return;
+    const isWebsiteEmpty = website === "";
+
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: isWebsiteValid ? website : null,
+        website: isWebsiteEmpty ? null : website,
       },
     })
       .then(() => {
@@ -103,22 +99,22 @@ const ProjectSummaryProjectWebsite = ({
               value={website}
               error={!isWebsiteValid}
             />
-            <IconButton disabled={!isWebsiteValid}>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={handleProjectWebsiteSave}
-              >
-                check
-              </Icon>
-            </IconButton>
-            <IconButton>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={handleProjectWebsiteClose}
-              >
-                close
-              </Icon>
-            </IconButton>
+            <Icon
+              className={
+                isWebsiteValid
+                  ? classes.editIconConfirm
+                  : classes.editIconConfirmDisabled
+              }
+              onClick={handleProjectWebsiteSave}
+            >
+              check
+            </Icon>
+            <Icon
+              className={classes.editIconConfirm}
+              onClick={handleProjectWebsiteClose}
+            >
+              close
+            </Icon>
           </>
         )}
         {!editMode && (
