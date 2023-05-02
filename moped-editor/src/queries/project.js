@@ -12,11 +12,6 @@ export const ADD_PROJECT = gql`
         phase_id
         is_current_phase
       }
-      moped_proj_components {
-        moped_proj_features {
-          feature_id
-        }
-      }
       moped_project_types {
         project_type_id
       }
@@ -255,13 +250,16 @@ export const TIMELINE_QUERY = gql`
         subphase_id
       }
     }
+    moped_subphases {
+      subphase_name
+      subphase_id
+    }
     moped_proj_phases(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: {
-        phase_start: desc
-        moped_phase: { phase_order: desc }
-        moped_subphase: { subphase_name: asc }
-      }
+      order_by: [
+        { moped_phase: { phase_order: asc } }
+        { moped_subphase: { subphase_name: asc } }
+      ]
     ) {
       project_phase_id
       is_current_phase

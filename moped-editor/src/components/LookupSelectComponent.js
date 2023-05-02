@@ -1,5 +1,5 @@
 import React from "react";
-import { MenuItem, Select } from "@material-ui/core";
+import { MenuItem, Select } from "@mui/material";
 import { handleKeyEvent } from "../utils/materialTableHelpers";
 
 /**
@@ -9,6 +9,7 @@ import { handleKeyEvent } from "../utils/materialTableHelpers";
  */
 const LookupSelectComponent = (props) => (
   <Select
+    variant="standard"
     style={{ minWidth: "8em" }}
     id={props.name}
     value={props.value || props.defaultValue}

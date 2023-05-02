@@ -10,9 +10,9 @@ import {
   Hidden,
   Icon,
   IconButton,
-  makeStyles,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
 
@@ -21,7 +21,7 @@ import clsx from "clsx";
  * @type {Object}
  * @constant
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   advancedSearchSelected: {
     backgroundColor: "rgba(0, 0, 0, 0.04)",
     height: "33px",
@@ -97,7 +97,7 @@ const GridTableSearchBar = ({
     (searchState.searchParameters && searchState.searchParameters.value) || ""
   );
 
-  const handleSearchValueChange = value => {
+  const handleSearchValueChange = (value) => {
     if (value === "" && searchFieldValue !== "") {
       handleClearSearchResults();
     } else {
@@ -109,7 +109,7 @@ const GridTableSearchBar = ({
    * Handles the submission of our search form
    * @param {Object} e - The event object
    */
-  const handleSearchSubmission = event => {
+  const handleSearchSubmission = (event) => {
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       return;
@@ -136,7 +136,7 @@ const GridTableSearchBar = ({
    * Handles special keys typed in the search bar
    * @param {string} key - The key name being typed
    */
-  const handleKeyDown = key => {
+  const handleKeyDown = (key) => {
     switch (key) {
       /**
        * On Escape key, clear the search
@@ -159,7 +159,7 @@ const GridTableSearchBar = ({
   const filterStateActive = !!Object.keys(filterState.filterParameters).length;
   const filtersApplied = [];
   if (filterStateActive) {
-    Object.keys(filterState.filterParameters).map(parameter =>
+    Object.keys(filterState.filterParameters).map((parameter) =>
       filtersApplied.push(filterState.filterParameters[parameter]["label"])
     );
   }
@@ -174,8 +174,8 @@ const GridTableSearchBar = ({
             paddingBottom: 12,
           },
         }}
-        onChange={e => handleSearchValueChange(e.target.value)}
-        onKeyDown={e => handleKeyDown(e.key)}
+        onChange={(e) => handleSearchValueChange(e.target.value)}
+        onKeyDown={(e) => handleKeyDown(e.key)}
         InputProps={{
           startAdornment: (
             <InputAdornment position="start">
@@ -194,6 +194,7 @@ const GridTableSearchBar = ({
                   [classes.advancedSearchActive]: filterStateActive,
                 })}
                 data-testid="advanced-filter-button"
+                size="large"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
               </IconButton>

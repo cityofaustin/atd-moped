@@ -15,9 +15,9 @@ import {
   Tab,
   Tabs,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import MaterialTable from "@material-table/core";
-import { makeStyles } from "@material-ui/core/styles";
+import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 
@@ -29,7 +29,7 @@ import MilestoneProgressMeter from "./MilestoneProgressMeter";
 
 import typography from "../../theme/typography";
 
-import TrafficIcon from "@material-ui/icons/Traffic";
+import TrafficIcon from "@mui/icons-material/Traffic";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -331,6 +331,7 @@ const DashboardView = () => {
                       }),
                       pageSize: 50,
                       pageSizeOptions: [10, 50, 100],
+                      idSynonym:"project_id"
                     }}
                   />
                 )}
@@ -344,19 +345,25 @@ const DashboardView = () => {
                       Views
                     </Typography>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={3}>
-                    <Link href="/moped/views/signal-projects" noWrap>
-                      <Card>
-                        <CardContent className={classes.viewsCard}>
-                          <Grid item xs={4}>
-                            <TrafficIcon />
-                          </Grid>
-                          <Grid item xs={8}>
-                            <Typography>Signal Projects</Typography>
-                          </Grid>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                  <Grid container>
+                    <Grid item xs={12} sm={6} md={3}>
+                      <Link
+                        href="/moped/views/signal-projects"
+                        noWrap
+                        underline={"hover"}
+                      >
+                        <Card>
+                          <CardContent className={classes.viewsCard}>
+                            <Grid item xs={4}>
+                              <TrafficIcon />
+                            </Grid>
+                            <Grid item xs={8}>
+                              <Typography>Signal Projects</Typography>
+                            </Grid>
+                          </CardContent>
+                        </Card>
+                      </Link>
+                    </Grid>
                   </Grid>
                 </CardContent>
               </Card>

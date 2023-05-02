@@ -257,3 +257,89 @@ export const returnPDDMilestoneTemplate = (projectId) => {
     },
   ];
 };
+
+
+export const returnArterialManagementPhaseTemplate = projectId => {
+  return [
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 1,
+      subphase_id: null,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 2,
+      subphase_id: 15,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 6,
+      subphase_id: 17,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 6,
+      subphase_id: 18,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 7,
+      subphase_id: 3,
+      phase_description: "Electric Service Planning Application (ESPA)",
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 7,
+      subphase_id: 3,
+      phase_description: "Traffic Control Plan (TCP) / Right of Way (ROW)",
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 8,
+      subphase_id: null,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 9,
+      subphase_id: 6,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 9,
+      subphase_id: 7,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 9,
+      subphase_id: 26,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 9,
+      subphase_id: 27,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 10,
+      subphase_id: null,
+    },
+    {
+      project_id: projectId,
+      is_deleted: false,
+      phase_id: 11,
+      subphase_id: null,
+    },
+  ];
+};

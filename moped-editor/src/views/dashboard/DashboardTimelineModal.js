@@ -7,9 +7,9 @@ import {
   DialogContent,
   Grid,
   IconButton,
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import { makeStyles } from "@material-ui/core/styles";
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import makeStyles from "@mui/styles/makeStyles";
 import { TIMELINE_QUERY } from "src/queries/project";
 import { useQuery } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
@@ -34,7 +34,7 @@ const DashboardTimelineModal = ({
   projectId,
   projectName,
   dashboardRefetch,
-  children
+  children,
 }) => {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -70,9 +70,9 @@ const DashboardTimelineModal = ({
         fullWidth
         maxWidth={"xl"}
       >
-        <DialogTitle disableTypography className={classes.dialogTitle}>
+        <DialogTitle className={classes.dialogTitle}>
           <h4>{`Update ${table} - ${projectName}`}</h4>
-          <IconButton onClick={() => handleDialogClose()}>
+          <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />
           </IconButton>
         </DialogTitle>

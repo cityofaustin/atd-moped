@@ -110,10 +110,10 @@ INSERT INTO public.moped_project (project_name, project_description, ecapris_sub
 -- Data for Name: moped_proj_components; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (2, 227, 7, '', 'This will be nice', false, NULL);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (3, 227, 61, '', 'let there be light', false, NULL);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (4, 228, 18, 'Signal', 'Signal - Traffic', false, NULL);
-INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, name, description, is_deleted, interim_project_component_id) VALUES (5, 229, 13, '', 'New crosswalks', false, NULL);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, description, is_deleted, interim_project_component_id) VALUES (2, 227, 7, 'This will be nice', false, NULL);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, description, is_deleted, interim_project_component_id) VALUES (3, 227, 61, 'let there be light', false, NULL);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, description, is_deleted, interim_project_component_id) VALUES (4, 228, 18, 'Signal - Traffic', false, NULL);
+INSERT INTO public.moped_proj_components (project_component_id, project_id, component_id, description, is_deleted, interim_project_component_id) VALUES (5, 229, 13, 'New crosswalks', false, NULL);
 
 
 --
@@ -374,7 +374,7 @@ SELECT pg_catalog.setval('public.moped_project_project_id_simple_seq', 229, true
 -- Name: moped_purchase_order_id_seq; Type: SEQUENCE SET; Schema: public; Owner: moped
 --
 
-SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 2, true);
+SELECT pg_catalog.setval('public.moped_purchase_order_id_seq', 3, true);
 
 
 --

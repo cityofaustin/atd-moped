@@ -5,6 +5,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
+import theme from "src/theme/index";
 
 /**
  * The Query configuration (now also including filters)
@@ -80,7 +81,7 @@ export const ProjectsListViewQueryConf = {
           <RouterLink
             to={`/${jsonValues.singleItem}/${jsonValues.link}/`}
             state={jsonValues.state}
-            className={"MuiTypography-colorPrimary"}
+            style={{ color: theme.palette.primary.main }}
           >
             {jsonValues.data}
           </RouterLink>
@@ -240,9 +241,7 @@ export const ProjectsListViewQueryConf = {
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
-  where: {
-    is_deleted: "_eq: false",
-  },
+  where: null,
   or: null,
   and: null,
   limit: 100,

@@ -7,10 +7,10 @@ import {
     DialogTitle,
     Grid,
     Icon,
-} from "@material-ui/core";
+} from "@mui/material";
 import FileUpload from "./FileUpload";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => ({
     fileUpload: {
@@ -42,8 +42,6 @@ const FileUploadDialogSimple = props => {
     const classes = useStyles();
 
     /**
-     * @constant {string} fileName - Contains a human-readable file name
-     * @constant {string} fileDescription - Contains a human-readable file description
      * @constant {string} fileKey - The location of the file in S3
      * @constant {Object} fileObject - Contains the file object, including metadata.
      * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
@@ -78,7 +76,7 @@ const FileUploadDialogSimple = props => {
     }
 
     /**
-     * Logic that needs to be run after a file has been added to the
+     * Logic that needs to be run after a file has been added to the uploader
      * @param error
      * @param file
      */
@@ -143,7 +141,6 @@ const FileUploadDialogSimple = props => {
 
     return (
       <Dialog
-        className={classes.dialog}
         open={props.dialogOpen}
         onClose={props.handleClickCloseUploadFile}
         aria-labelledby="alert-dialog-title"
@@ -158,7 +155,6 @@ const FileUploadDialogSimple = props => {
               <FileUpload
                 limit={1}
                 sizeLimit={"1024MB"}
-                principal={props?.principal ?? "user"}
                 projectId={props?.projectId ?? null}
                 uploadType={"private"}
                 onFileProcessed={handleOnFileProcessed}

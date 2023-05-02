@@ -14,43 +14,9 @@ export const makeFeatureFromProjectGeographyRecord = (record) => ({
 });
 
 /**
- * Create an object map of component feature collections by component id
- * Ex. { 1: { type: "FeatureCollection", features: [...] } }
- * @param {Object} data - data returned by GET_PROJECT_COMPONENTS query
- * @returns {Object} - map of component feature collections by component id
- */
-export const useComponentFeatureCollectionsMap = (data) =>
-  useMemo(() => {
-    if (!data?.project_geography) return {};
-
-    const componentGeographyMap = {};
-
-    data.project_geography.forEach((component) => {
-      const currentComponentId = component.component_id;
-      const currentFeature = makeFeatureFromProjectGeographyRecord(component);
-
-      if (!componentGeographyMap[currentComponentId]) {
-        componentGeographyMap[currentComponentId] = {
-          type: "FeatureCollection",
-          features: [currentFeature],
-        };
-      } else {
-        componentGeographyMap[currentComponentId] = {
-          type: "FeatureCollection",
-          features: [
-            ...componentGeographyMap[currentComponentId].features,
-            currentFeature,
-          ],
-        };
-      }
-    });
-
-    return componentGeographyMap;
-  }, [data]);
-
-/**
  * Component features are returned as arrays for each feature type table.
- * We can use the featureTableFieldMap to unpack the component object.
+ * We can use the featureTableFieldMap to unpack the component object. and
+ * construct a valid geojson feature
  * @param {Object} component - component object from GET_PROJECT_COMPONENTS query
  * @returns {Array} - array of all component features
  */
@@ -58,12 +24,20 @@ export const getAllComponentFeatures = (component) => {
   const allComponentFeatures = [];
 
   Object.keys(featureTableFieldMap).forEach((key) => {
-    if (component.hasOwnProperty(key))
+    if (component.hasOwnProperty(key)) {
       allComponentFeatures.push(component[key]);
+    }
   });
-
   // Flatten array of arrays containing features from each feature table
-  return allComponentFeatures.flat();
+  const allComponentFeaturesFlat = allComponentFeatures.flat();
+  // Make features valid GeoJSON by adding type and properties attributes
+  return allComponentFeaturesFlat.map((feature) => {
+    feature.properties ??= {};
+    // we need this property to tie individual map features back to their parent component
+    feature.properties.project_component_id = component.project_component_id;
+    feature.type = "Feature";
+    return feature;
+  });
 };
 
 /**
@@ -81,16 +55,9 @@ export const useComponentFeatureCollection = (component) =>
 
     const allComponentFeatures = getAllComponentFeatures(component);
 
-    // Make features valid GeoJSON by adding type and properties attributes
-    const geoJsonFeatures = allComponentFeatures.map((component) => ({
-      ...component,
-      type: "Feature",
-      properties: {},
-    }));
-
     return {
       type: "FeatureCollection",
-      features: geoJsonFeatures,
+      features: allComponentFeatures,
     };
   }, [component]);
 
@@ -107,19 +74,11 @@ export const useAllComponentsFeatureCollection = (components) =>
         features: [],
       };
 
-    const allComponentsFeatures = [];
+    const allComponentsFeatures = components.map((component) =>
+      getAllComponentFeatures(component)
+    );
 
-    components.forEach((component) => {
-      const allComponentFeatures = getAllComponentFeatures(component);
-      allComponentsFeatures.push(allComponentFeatures);
-    });
-
-    // Make features valid GeoJSON by adding type and properties attributes
-    const geoJsonFeatures = allComponentsFeatures.flat().map((component) => ({
-      ...component,
-      type: "Feature",
-      properties: {},
-    }));
+    const geoJsonFeatures = allComponentsFeatures.flat();
 
     return {
       type: "FeatureCollection",

@@ -1,5 +1,7 @@
 import React from "react";
-import { Avatar, Icon, makeStyles, Typography } from "@material-ui/core";
+import { Avatar, Icon, Typography } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import config from "../../config";
 

@@ -6,7 +6,7 @@ import {
   Link,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -15,7 +15,7 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@material-ui/icons";
+import { OpenInNew } from "@mui/icons-material";
 
 /**
  * Custom wrapper for the eCapris edit field
@@ -156,13 +156,13 @@ const ProjectSummaryProjectECapris = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
-              value={eCapris}
-            />
+              value={eCapris} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectECaprisSave}

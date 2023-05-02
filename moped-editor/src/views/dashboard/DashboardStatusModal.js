@@ -6,10 +6,10 @@ import {
   DialogContent,
   IconButton,
   Tooltip,
-} from "@material-ui/core";
+} from "@mui/material";
 import clsx from "clsx";
-import CloseIcon from "@material-ui/icons/Close";
-import ControlPointIcon from "@material-ui/icons/ControlPoint";
+import CloseIcon from "@mui/icons-material/Close";
+import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import ProjectComments from "../projects/projectView/ProjectComments";
 
 const DashboardStatusModal = ({
@@ -58,9 +58,9 @@ const DashboardStatusModal = ({
         fullWidth
         maxWidth={"md"}
       >
-        <DialogTitle disableTypography className={classes.dialogTitle}>
+        <DialogTitle className={classes.dialogTitle}>
           <h3>{`Status update - ${projectName}`}</h3>
-          <IconButton onClick={() => handleDialogClose()}>
+          <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />
           </IconButton>
         </DialogTitle>

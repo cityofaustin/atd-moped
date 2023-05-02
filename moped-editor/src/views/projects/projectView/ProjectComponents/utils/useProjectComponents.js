@@ -1,11 +1,14 @@
-import { useMemo } from "react";
+import { useMemo, createRef } from "react";
 
 export const useProjectComponents = (data) => {
   /* holds this project's components */
   const projectComponents = useMemo(() => {
     if (!data?.moped_proj_components) return [];
 
-    return data.moped_proj_components;
+    return data.moped_proj_components.map((component) => {
+      component._ref = createRef();
+      return component;
+    });
   }, [data]);
 
   const parentComponents = useMemo(() => {
@@ -36,17 +39,18 @@ export const useProjectComponents = (data) => {
     return allChildComponents;
   }, [data]);
 
-  const allRelatedComponents = [
-    ...parentComponents,
-    ...siblingComponents,
-    ...childComponents,
-  ];
+  const allRelatedComponents = useMemo(() => {
+    return [...parentComponents, ...siblingComponents, ...childComponents].map(
+      (component) => {
+        /* these refs will feed component list items so that we can scroll to them */
+        component._ref = createRef();
+        return component;
+      }
+    );
+  }, [parentComponents, siblingComponents, childComponents]);
 
   return {
     projectComponents,
-    parentComponents,
-    siblingComponents,
-    childComponents,
     allRelatedComponents,
   };
 };

@@ -1,8 +1,8 @@
 import React from "react";
 import clsx from "clsx";
-import { makeStyles } from "@material-ui/core/styles";
-import { green } from "@material-ui/core/colors";
-import { Icon, Button, CircularProgress } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
+import { green } from "@mui/material/colors";
+import { Icon, Button, CircularProgress } from "@mui/material";
 
 /**
  * Styles
