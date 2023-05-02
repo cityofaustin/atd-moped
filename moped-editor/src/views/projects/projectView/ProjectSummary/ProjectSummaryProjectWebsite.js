@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Icon,
+  Link,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -29,6 +37,7 @@ const ProjectSummaryProjectWebsite = ({
 
   const [editMode, setEditMode] = useState(false);
   const [website, setWebsite] = useState(originalWebsite);
+  const isWebsiteValid = isValidUrl(website);
 
   const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
 
@@ -47,7 +56,7 @@ const ProjectSummaryProjectWebsite = ({
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: website,
+        website: isWebsiteValid ? website : null,
       },
     })
       .then(() => {
@@ -92,20 +101,24 @@ const ProjectSummaryProjectWebsite = ({
               label={null}
               onChange={handleProjectWebsiteChange}
               value={website}
-              error={!isValidUrl(website)}
+              error={!isWebsiteValid}
             />
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectWebsiteSave}
-            >
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectWebsiteClose}
-            >
-              close
-            </Icon>
+            <IconButton disabled={!isWebsiteValid}>
+              <Icon
+                className={classes.editIconConfirm}
+                onClick={handleProjectWebsiteSave}
+              >
+                check
+              </Icon>
+            </IconButton>
+            <IconButton>
+              <Icon
+                className={classes.editIconConfirm}
+                onClick={handleProjectWebsiteClose}
+              >
+                close
+              </Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (
