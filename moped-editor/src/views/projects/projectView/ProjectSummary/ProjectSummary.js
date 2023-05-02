@@ -50,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "24px",
   },
   editIconConfirmDisabled: {
-    cursor: "pointer",
     margin: ".25rem 0",
     fontSize: "24px",
     color: theme.palette.text.secondary,

@@ -29,7 +29,8 @@ const ProjectSummaryProjectWebsite = ({
 
   const [editMode, setEditMode] = useState(false);
   const [website, setWebsite] = useState(originalWebsite);
-  const isWebsiteValid = isValidUrl(website);
+  // Hasura returns null if the website is empty which is a valid entry
+  const isWebsiteValid = isValidUrl(website) || website === null;
 
   const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
 
