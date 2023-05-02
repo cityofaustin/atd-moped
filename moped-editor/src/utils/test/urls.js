@@ -1,7 +1,7 @@
 import { isValidUrl } from "../urls";
 
 describe("isValidUrl()", () => {
-  it("returns a full name string from a user object", () => {
+  it("validates a url using Yup", () => {
     const httpAddress = "http://www.austintexas.gov";
     const httpsAddress = "https://www.austintexas.gov";
     const wwwOnlyAddress = "www.austintexas.gov";
