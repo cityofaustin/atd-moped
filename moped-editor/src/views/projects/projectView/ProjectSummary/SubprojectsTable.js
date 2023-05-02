@@ -14,8 +14,11 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
-import Autocomplete from '@mui/material/Autocomplete';
-import MaterialTable, { MTableAction, MTableToolbar } from "@material-table/core";
+import Autocomplete from "@mui/material/Autocomplete";
+import MaterialTable, {
+  MTableAction,
+  MTableToolbar,
+} from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
@@ -51,7 +54,7 @@ const SubprojectsTable = ({ projectId = null }) => {
     {
       title: "Name",
       field: "project_name",
-      width: "45%",
+      width: "35%",
       validate: (entry) => !!entry.project_name,
       render: (entry) => (
         <RenderFieldLink
@@ -70,7 +73,9 @@ const SubprojectsTable = ({ projectId = null }) => {
             }
             value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField variant="standard" {...params} />}
+            renderInput={(params) => (
+              <TextField variant="standard" {...params} />
+            )}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -132,7 +137,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             <div style={{ marginLeft: "-10px" }}>
               <MTableToolbar {...props} />
             </div>
-          )
+          ),
         }}
         title={
           <Typography variant="h2" color="primary">
