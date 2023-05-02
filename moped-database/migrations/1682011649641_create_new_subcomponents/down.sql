@@ -10,5 +10,14 @@ DELETE FROM moped_subcomponents where subcomponent_name = 'Slip lane removal';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Smart right';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Intersection square-up';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Transit corner modification';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bicycle accommodations at PHB';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bicycle signal (standard signal + bicycle signal sign)';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bicycle signal face (experiment)';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bicycle signal face (interim approval)';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Detection - vehicle';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Leading bicycle interval';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Pedestrian signal head and pushbuttons';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Protected left turn phase';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Timing adjustment';
 
 UPDATE moped_subcomponents set subcomponent_name = 'Audible push button' where subcomponent_name = 'Accessible pedestrian signal (APS)';
