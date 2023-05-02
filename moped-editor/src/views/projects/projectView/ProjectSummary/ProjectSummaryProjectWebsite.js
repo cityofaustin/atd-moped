@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -53,7 +46,7 @@ const ProjectSummaryProjectWebsite = ({
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: website,
+        website: website ? website : null,
       },
     })
       .then(() => {
@@ -97,7 +90,8 @@ const ProjectSummaryProjectWebsite = ({
               id="moped-project-website"
               label={null}
               onChange={handleProjectWebsiteChange}
-              value={website} />
+              value={website}
+            />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectWebsiteSave}
