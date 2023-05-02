@@ -6,6 +6,7 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 import { OpenInNew } from "@mui/icons-material";
+import { isValidUrl } from "src/utils/urls";
 
 /**
  * ProjectSummaryProjectWebsite Component
@@ -46,7 +47,7 @@ const ProjectSummaryProjectWebsite = ({
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: website ? website : null,
+        website: website,
       },
     })
       .then(() => {
@@ -91,6 +92,7 @@ const ProjectSummaryProjectWebsite = ({
               label={null}
               onChange={handleProjectWebsiteChange}
               value={website}
+              error={!isValidUrl(website)}
             />
             <Icon
               className={classes.editIconConfirm}
