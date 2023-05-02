@@ -12,10 +12,10 @@ import {
   TextField,
   Toolbar,
   Typography,
-} from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
-import AddCircle from "@material-ui/icons/AddCircle";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import AddCircle from "@mui/icons-material/AddCircle";
+import Autocomplete from '@mui/material/Autocomplete';
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
@@ -201,14 +201,14 @@ const TagsSection = ({ projectId }) => {
                   className={classes.editIconButton}
                   aria-label="Add"
                   onClick={handleTagAdd}
-                >
+                  size="large">
                   <Icon fontSize={"small"}>check</Icon>
                 </IconButton>
                 <IconButton
                   className={classes.editIconButton}
                   aria-label="Cancel"
                   onClick={handleNewTagCancel}
-                >
+                  size="large">
                   <Icon fontSize={"small"}>close</Icon>
                 </IconButton>
               </div>

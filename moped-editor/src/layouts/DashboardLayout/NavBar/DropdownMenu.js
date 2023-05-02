@@ -1,18 +1,10 @@
 import React from "react";
-import {
-  Button,
-  Divider,
-  Link,
-  Menu,
-  MenuItem,
-  makeStyles,
-  Typography,
-  ListItemIcon,
-} from "@material-ui/core";
+import { Button, Divider, Link, Menu, MenuItem, Typography, ListItemIcon } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import { useNavigate } from "react-router-dom";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import OpenInNewIcon from "@material-ui/icons/OpenInNew";
-import MenuIcon from "@material-ui/icons/Menu";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import MenuIcon from "@mui/icons-material/Menu";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
 import { getInitials } from "src/utils/userNames";
@@ -42,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   dropdownButton: {
     borderRadius: "50%",
     height: "64px",
+    color: theme.palette.text.primary,
   },
   helpHeader: {
     paddingLeft: "16px",
@@ -99,7 +92,6 @@ const DropdownMenu = ({
         onClose={handleDropdownClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
-        getContentAnchorEl={null}
       >
         <MenuItem
           onClick={() => {

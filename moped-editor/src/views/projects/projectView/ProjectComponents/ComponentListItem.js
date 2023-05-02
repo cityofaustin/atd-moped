@@ -1,13 +1,13 @@
-import { makeStyles } from "@material-ui/core/styles";
-import Box from "@material-ui/core/Box";
-import Collapse from "@material-ui/core/Collapse";
-import List from "@material-ui/core/List";
-import Divider from "@material-ui/core/Divider";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
-import ZoomInIcon from "@material-ui/icons/ZoomIn";
-import IconButton from "@material-ui/core/IconButton";
-import ListItemText from "@material-ui/core/ListItemText";
+import makeStyles from '@mui/styles/makeStyles';
+import Box from "@mui/material/Box";
+import Collapse from "@mui/material/Collapse";
+import List from "@mui/material/List";
+import Divider from "@mui/material/Divider";
+import ListItem from "@mui/material/ListItem";
+import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import IconButton from "@mui/material/IconButton";
+import ListItemText from "@mui/material/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import { useComponentListItemText } from "./utils/componentList";
 
@@ -68,7 +68,7 @@ export default function ComponentListItem({
           }
         />
         <ListItemSecondaryAction>
-          <IconButton color="primary" onClick={onZoomClick}>
+          <IconButton color="primary" onClick={onZoomClick} size="large">
             <ZoomInIcon />
           </IconButton>
         </ListItemSecondaryAction>

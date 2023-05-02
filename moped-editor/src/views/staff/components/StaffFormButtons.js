@@ -1,6 +1,8 @@
 import React from "react";
 
-import { Button, makeStyles } from "@material-ui/core";
+import { Button } from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 export const useButtonStyles = makeStyles((theme) => ({
   formButton: {

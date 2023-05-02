@@ -1,11 +1,13 @@
 import React from "react";
 import { useRoutes } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { routes, restrictRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 import { setContext } from "@apollo/client/link/context";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 // Apollo GraphQL Client
 import {
@@ -51,10 +53,14 @@ const App = () => {
 
   return (
     <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyles />
-        {routing}
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <ThemeProvider theme={theme}>
+            <GlobalStyles />
+            {routing}
+          </ThemeProvider>
+        </LocalizationProvider>
+      </StyledEngineProvider>
     </ApolloProvider>
   );
 };

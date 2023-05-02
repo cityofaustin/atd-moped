@@ -6,13 +6,13 @@ import {
   Link,
   TextField,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@material-ui/icons";
+import { OpenInNew } from "@mui/icons-material";
 
 /**
  * ProjectSummaryProjectWebsite Component
@@ -91,13 +91,13 @@ const ProjectSummaryProjectWebsite = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-website"
               label={null}
               onChange={handleProjectWebsiteChange}
-              value={website}
-            />
+              value={website} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectWebsiteSave}

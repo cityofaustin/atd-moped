@@ -9,17 +9,18 @@ import {
   Snackbar,
   Typography,
   TextField,
-} from "@material-ui/core";
-import { Alert } from "@material-ui/lab";
+} from "@mui/material";
+import { Alert } from '@mui/material';
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+} from "@mui/icons-material";
+import makeStyles from '@mui/styles/makeStyles';
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -88,10 +89,10 @@ const ProjectContractsTable = () => {
       // we use this custom component in order to autofocus the input
       editComponent: (props) => (
         <TextField
+          variant="standard"
           {...props}
           onChange={(e) => props.onChange(e.target.value)}
-          autoFocus
-        />
+          autoFocus />
       ),
     },
     {
@@ -158,6 +159,12 @@ const ProjectContractsTable = () => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         data={data.moped_proj_contract}
         title={

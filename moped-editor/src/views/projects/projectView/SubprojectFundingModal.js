@@ -7,10 +7,10 @@ import {
   DialogContent,
   IconButton,
   Typography,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import AddCircle from "@material-ui/icons/AddCircle";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import MaterialTable from "@material-table/core";
 
@@ -117,9 +117,9 @@ const SubprojectFundingModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>Subproject funding sources</h3>
-        <IconButton onClick={() => handleDialogClose()}>
+        <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

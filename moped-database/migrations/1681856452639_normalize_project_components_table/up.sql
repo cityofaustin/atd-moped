@@ -1,4 +1,3 @@
--- latest version from 1681856452639_normalize_project_components_table
 DROP VIEW "public"."project_geography";
 
 CREATE OR REPLACE VIEW project_geography AS (
@@ -23,3 +22,6 @@ CREATE OR REPLACE VIEW project_geography AS (
         --join component_feature_map on (moped_proj_components.project_component_id = component_feature_map.component_id)
         --join uniform_features on (component_feature_map.feature_id = uniform_features.id)
 );
+
+ALTER table "public"."moped_proj_components" DROP column "name" cascade;
+DROP table "public"."moped_proj_features";

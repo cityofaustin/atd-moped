@@ -7,7 +7,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-} from "@material-ui/core";
+} from "@mui/material";
 
 /**
  * Generates a modal to display a confirm message

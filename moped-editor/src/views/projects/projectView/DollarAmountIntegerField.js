@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from "@material-ui/core";
+import { TextField } from "@mui/material";
 import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
@@ -27,13 +27,13 @@ const DollarAmountIntegerField = ({ onChange, value }) => {
 
   return (
     <TextField
+      variant="standard"
       id="funding_amount"
       name="funding_amount"
       type="text"
       inputMode="numeric"
       value={value}
-      onChange={handleInputChange}
-    />
+      onChange={handleInputChange} />
   );
 };
 
