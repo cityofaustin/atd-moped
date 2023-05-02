@@ -15,7 +15,7 @@ import {
   CardContent,
   CircularProgress,
   Divider,
-} from "@material-ui/core";
+} from "@mui/material";
 import Page from "src/components/Page";
 import NotFoundView from "../errors/NotFoundView";
 import { StaffFormSaveButton } from "./components/StaffFormButtons";

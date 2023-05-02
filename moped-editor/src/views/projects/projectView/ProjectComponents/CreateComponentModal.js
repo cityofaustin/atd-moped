@@ -5,9 +5,9 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -87,9 +87,9 @@ const CreateComponentModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>New component</h3>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

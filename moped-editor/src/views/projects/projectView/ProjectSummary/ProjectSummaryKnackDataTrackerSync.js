@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
-import { Box, Grid, Link, Typography } from "@material-ui/core";
-import { Autorenew } from "@material-ui/icons";
+import { Box, Grid, Link, Typography } from "@mui/material";
+import { Autorenew } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";

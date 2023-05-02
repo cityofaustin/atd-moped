@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
-import {
-  Box,
-  Card,
-  CircularProgress,
-  Container,
-  Paper,
-} from "@material-ui/core";
+import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
-// Styling
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
@@ -21,7 +14,6 @@ import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
-import ProjectsListViewTableToolbar from "./ProjectsListViewTableToolbar";
 
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
@@ -55,6 +47,9 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "25px",
     paddingBottom: "16px",
   },
+  colorPrimary: {
+    color: theme.palette.primary.main,
+  },
 }));
 
 /**
@@ -84,6 +79,17 @@ const DEFAULT_HIDDEN_COLS = {
   project_tags: false,
   added_by: true,
   public_process_status: true,
+};
+
+/**
+ * Keeps localStorage column config in sync with UI interactions
+ * @param {Object} column - the MT column config with the `field` prop - aka the column name
+ * @param {Bool} hidden - the hidden state of the column
+ */
+const handleColumnChange = ({ field }, hidden) => {
+  let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+  storedConfig = { ...storedConfig, [field]: hidden };
+  localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
 /**
@@ -180,12 +186,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
-
-  const toggleColumnConfig = (field, hiddenState) => {
-    let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    storedConfig = { ...storedConfig, [field]: hiddenState };
-    localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-  };
 
   /**
    * Query Management
@@ -293,7 +293,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
               ? btoa(JSON.stringify(filters))
               : false,
           }}
-          className={"MuiTypography-colorPrimary"}
+          className={classes.colorPrimary}
         >
           {entry.project_name}
         </RouterLink>
@@ -608,6 +608,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
             ) : data && data["project_list_view"] ? (
               <Card className={classes.root}>
                 <MaterialTable
+                  onChangeColumnHidden={handleColumnChange}
                   data={data["project_list_view"]}
                   columns={columns}
                   title=""
@@ -625,6 +626,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       whiteSpace: "nowrap",
                     },
                     columnsButton: true,
+                    idSynonym: "project_id",
                   }}
                   components={{
                     Pagination: (props) => (
@@ -635,14 +637,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         setPagination={setPagination}
                       />
                     ),
-                    Toolbar: (props) => {
-                      return (
-                        <ProjectsListViewTableToolbar
-                          toggleColumnConfig={toggleColumnConfig}
-                          {...props}
-                        />
-                      );
-                    },
                     Header: (props) => (
                       <MTableHeader
                         {...props}

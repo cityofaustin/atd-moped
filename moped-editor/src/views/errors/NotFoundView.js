@@ -1,5 +1,6 @@
 import React from "react";
-import { Box, Container, Typography, makeStyles } from "@material-ui/core";
+import { Box, Container, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import Page from "src/components/Page";
 import NavigationSearchInput from "../../layouts/DashboardLayout/NavBar/NavigationSearchInput";
 

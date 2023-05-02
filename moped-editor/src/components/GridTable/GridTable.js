@@ -17,10 +17,9 @@ import {
   TableContainer,
   TableRow,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
-// Styling
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 
 // Abstract & GridTable
 import { useQuery } from "@apollo/client";

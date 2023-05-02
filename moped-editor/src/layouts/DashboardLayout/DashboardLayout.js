@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { makeStyles } from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
@@ -36,7 +36,7 @@ const DashboardLayout = () => {
   const classes = useStyles();
   const { user } = useUser();
 
-  console.debug("user", user);
+  // console.debug("user", user);
 
   return user ? (
     <div className={classes.root}>

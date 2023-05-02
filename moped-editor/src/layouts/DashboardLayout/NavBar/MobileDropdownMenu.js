@@ -1,15 +1,10 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  IconButton,
-  Link,
-  Menu,
-  MenuItem,
-  makeStyles,
-} from "@material-ui/core";
-import MenuIcon from "@material-ui/icons/Menu";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import { IconButton, Link, Menu, MenuItem } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import MenuIcon from "@mui/icons-material/Menu";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { helpItems } from "./DropdownMenu";
 import { navigationItems } from "../TopBar";
 import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
@@ -54,7 +49,7 @@ const MobileDropdownMenu = () => {
 
   return (
     <>
-      <IconButton onClick={handleMobileClick}>
+      <IconButton onClick={handleMobileClick} size="large">
         <MenuIcon />
       </IconButton>
       <Menu
@@ -64,8 +59,6 @@ const MobileDropdownMenu = () => {
         open={Boolean(mobileAnchorEl)}
         onClose={handleMobileClose}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        // getContentAnchorEl needs to be null for the positioning to work
-        getContentAnchorEl={null}
       >
         {navigationItems.map((item) => (
           <MenuItem
