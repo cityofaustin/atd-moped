@@ -99,6 +99,7 @@ const ProjectSummaryProjectWebsite = ({
               onChange={handleProjectWebsiteChange}
               value={website}
               error={!isWebsiteValid}
+              helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
             />
             <Icon
               className={
