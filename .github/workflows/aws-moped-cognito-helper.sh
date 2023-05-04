@@ -21,7 +21,7 @@ function install_requirements() {
   echo "Installing AWS's CLI"
   pip install awscli
   echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE}..."
-  pip install -r "${PYTHON_REQUIREMENTS_FILE}" --target ./package
+  pip install -r "${PYTHON_REQUIREMENTS_FILE}" --platform manylinux2014_x86_64 --target ./package
 }
 
 #
