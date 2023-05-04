@@ -10,6 +10,11 @@ export const isValidUrl = (url) => {
   return yup.string().url().isValidSync(url);
 };
 
+/**
+ * Attempt to make a url valid by prepending https:// if it is not already
+ * @param {string} url - url to try to make valid
+ * @returns {string} - valid url or original url
+ */
 export const makeUrlValid = (url) => {
   let validUrl;
 
