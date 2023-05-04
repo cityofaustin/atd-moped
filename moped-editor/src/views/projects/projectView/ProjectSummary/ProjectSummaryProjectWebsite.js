@@ -6,7 +6,7 @@ import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 import { OpenInNew } from "@mui/icons-material";
-import { isValidUrl } from "src/utils/urls";
+import { isValidUrl, makeUrlValid } from "src/utils/urls";
 
 /**
  * ProjectSummaryProjectWebsite Component
@@ -77,7 +77,10 @@ const ProjectSummaryProjectWebsite = ({
    * @param {Object} e - Event object
    */
   const handleProjectWebsiteChange = (e) => {
-    setWebsite(e.target.value);
+    const { value } = e.target;
+    const attempt = makeUrlValid(value);
+
+    setWebsite(attempt);
   };
 
   return (

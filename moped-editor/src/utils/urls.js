@@ -9,3 +9,13 @@ import * as yup from "yup";
 export const isValidUrl = (url) => {
   return yup.string().url().isValidSync(url);
 };
+
+export const makeUrlValid = (url) => {
+  let validUrl;
+
+  if (url && !url.startsWith("https")) {
+    validUrl = "https://" + url;
+  }
+
+  return isValidUrl(validUrl) ? validUrl : url;
+};
