@@ -1,5 +1,6 @@
 const { loadJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
+const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
 const { mapRow } = require("./utils/misc");
 /**
  * Facility_Attributes - actuals associated with project facility instances (many to one)
@@ -11,8 +12,13 @@ const { mapRow } = require("./utils/misc");
  */
 const FACILITIES_FNAME = "./data/raw/project_facilities.json";
 const FACILITY_ATTRS_FNAME = "./data/raw/facility_attributes.json";
+const SRTS_DATA = "./data/raw/srts_infrastructureplan.json"
+const FACILITIES = loadJsonFile(FACILITIES_FNAME);
+const FACILITY_ATTRS = loadJsonFile(FACILITY_ATTRS_FNAME);
+const barf = loadJsonFile(SRTS_DATA)
+debugger;
 
-const fields = [
+const componentFields = [
   {
     in: "FacilityType",
     out: "component_id",
@@ -46,13 +52,46 @@ const fields = [
   },
 ];
 
+const subcomponentFields = [
+  {
+    in: "Attribute",
+    out: "subcomponent_id",
+    required: true,
+    transform(row) {
+      const attrName = row[this.in];
+      const subcomp = SUBCOMPONENTS_MAP.find(
+        (subcomp) => subcomp.in === attrName
+      );
+      if (!subcomp) {
+        // todo: address these transforms: https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1846025869
+        if (
+          ![
+            "Bicycle Signal TBD",
+            "Reconfiguration",
+            "Bicycle Improvement",
+            "PHB to Traffic Signal",
+            null,
+          ].includes(attrName)
+        ) {
+          throw `Encountered unknown facility attribute with name: ${attrName}`;
+        }
+      }
+      return subcomp?.out || null;
+    },
+  },
+  {
+    in: "Project_FacilityID",
+    out: "interim_project_component_id",
+  },
+];
+
 function getComponents() {
-  const facilities = loadJsonFile(FACILITIES_FNAME);
-  const facilityAttrs = loadJsonFile(FACILITY_ATTRS_FNAME);
+  const components = FACILITIES.map((row) => mapRow(row, componentFields));
+  const subcomponents = FACILITY_ATTRS.map((row) =>
+    mapRow(row, subcomponentFields)
+  ).filter((subcomp) => subcomp.subcomponent_id);
 
   debugger;
-  const components = facilities.map((row) => mapRow(row, fields));
-
   return components
     .filter(
       (component) => component.component_id === 0 || !!component.component_id
@@ -66,6 +105,6 @@ function getComponents() {
     }, {});
 }
 
-// getComponents();
+getComponents();
 
 exports.getComponents = getComponents;
