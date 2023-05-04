@@ -51,17 +51,15 @@ const ProjectSummaryProjectWebsite = ({
   const handleProjectWebsiteSave = () => {
     // Prevent saving if the website is not valid
     if (!isWebsiteValid) return;
-    const isWebsiteEmpty = website === "";
-    const websiteToSubmit = isWebsiteEmpty ? null : websiteMadeValid;
 
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: websiteToSubmit,
+        website: websiteMadeValid,
       },
     })
       .then(() => {
-        setWebsite(websiteToSubmit);
+        setWebsite(websiteMadeValid);
         setEditMode(false);
         refetch();
         snackbarHandle(true, "Project website updated!", "success");
