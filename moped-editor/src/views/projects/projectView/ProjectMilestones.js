@@ -12,9 +12,10 @@ import { EditOutlined as EditOutlinedIcon } from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
-  MTableToolbar
+  MTableToolbar,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
+import { DataGrid } from "@mui/x-data-grid";
 
 // Query
 import {
@@ -25,7 +26,7 @@ import {
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 
 // Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
@@ -89,7 +90,9 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             isOptionEqualToValue={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField variant="standard" {...params} />}
+            renderInput={(params) => (
+              <TextField variant="standard" {...params} />
+            )}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -170,6 +173,97 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
   ];
 
+  console.log(data.moped_proj_milestones);
+
+  const dataGridColumns = [
+    {
+      headerName: "Milestone name",
+      field: "milestone_id",
+      renderCell: (props) => props.row.moped_milestone.milestone_name,
+      flex: 0.25,
+      // render: (milestone) => milestone.moped_milestone.milestone_name,
+      // validate: (milestone) => !!milestone.milestone_id,
+      // editComponent: (props) => (
+      //   <FormControl variant="standard" style={{ width: "100%" }}>
+      //     <Autocomplete
+      //       id={"milestone_name"}
+      //       name={"milestone_name"}
+      //       options={Object.keys(milestoneNameLookup)}
+      //       getOptionLabel={(option) => milestoneNameLookup[option]}
+      //       isOptionEqualToValue={(option, value) => option === value}
+      //       value={props.value}
+      //       onChange={(event, value) => props.onChange(value)}
+      //       renderInput={(params) => <TextField variant="standard" {...params} />}
+      //     />
+      //     <FormHelperText>Required</FormHelperText>
+      //   </FormControl>
+      // ),
+    },
+    { field: "milestone_description", headerName: "Description", flex: 0.25 },
+    {
+      field: "moped_milestone",
+      headerName: "Related phase",
+      // editable: "never",
+      // cellStyle: {
+      //   fontFamily: typography.fontFamily,
+      //   fontSize: "14px",
+      // },
+      // customSort: (a, b) => {
+      //   const aPhaseName =
+      //     phaseNameLookup(data)[a.moped_milestone.related_phase_id];
+      //   const bPhaseName =
+      //     phaseNameLookup(data)[b.moped_milestone.related_phase_id];
+      //   if (aPhaseName > bPhaseName) {
+      //     return 1;
+      //   }
+      //   if (aPhaseName < bPhaseName) {
+      //     return -1;
+      //   }
+      //   return 0;
+      // },
+      renderCell: (props) =>
+        phaseNameLookup(data)[props.row.moped_milestone.related_phase_id] ?? "",
+      flex: 0.14,
+    },
+    {
+      headerName: "Completion estimate",
+      field: "milestone_estimate",
+      renderCell: (props) =>
+        props.value ? format(parseISO(props.value), "MM/dd/yyyy") : undefined,
+      // editComponent: (props) => (
+      //   <DateFieldEditComponent
+      //     {...props}
+      //     name="milestone_estimate"
+      //     label="Completion estimate"
+      //   />
+      // ),
+      flex: 0.13,
+    },
+    {
+      headerName: "Date completed",
+      field: "milestone_end",
+      renderCell: (props) =>
+        props.value ? format(parseISO(props.value), "MM/dd/yyyy") : undefined,
+      // editComponent: (props) => (
+      //   <DateFieldEditComponent
+      //     {...props}
+      //     name="milestone_end"
+      //     label="Date completed"
+      //   />
+      // ),
+      flex: 0.13,
+    },
+    {
+      headerName: "Complete",
+      field: "completed",
+      lookup: { true: "Yes", false: "No" },
+      // editComponent: (props) => (
+      //   <ToggleEditComponent {...props} name="completed" />
+      // ),
+      flex: 0.1,
+    },
+  ];
+
   return (
     <>
       <MaterialTable
@@ -215,7 +309,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             <div style={{ marginLeft: "-10px" }}>
               <MTableToolbar {...props} />
             </div>
-          )
+          ),
         }}
         editable={{
           onRowAdd: (newData) => {
@@ -322,6 +416,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         projectId={projectId}
         refetch={refetch}
       />
+      <div style={{ padding: "18px" }}>
+        <DataGrid
+          rows={data.moped_proj_milestones}
+          columns={dataGridColumns}
+          getRowId={(row) => row.project_milestone_id}
+        />
+      </div>
     </>
   );
 };
