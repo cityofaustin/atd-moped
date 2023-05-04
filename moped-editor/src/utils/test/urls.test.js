@@ -4,6 +4,7 @@ const httpAddress = "http://www.austintexas.gov";
 const httpsAddress = "https://www.austintexas.gov";
 const wwwOnlyAddress = "www.austintexas.gov";
 const justLetters = "fjdksaljfdlksa";
+const noWWWAddress = "austintexas.gov";
 
 describe("isValidUrl()", () => {
   it("validates a url using Yup", () => {
@@ -19,6 +20,7 @@ describe("makeUrlValid()", () => {
     expect(makeUrlValid(httpAddress)).toBe(httpAddress);
     expect(makeUrlValid(httpsAddress)).toBe(httpsAddress);
     expect(makeUrlValid(wwwOnlyAddress)).toBe("https://www.austintexas.gov");
+    expect(makeUrlValid(noWWWAddress)).toBe("https://austintexas.gov");
     expect(makeUrlValid(justLetters)).toBe(justLetters);
   });
 });
