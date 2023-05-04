@@ -11,14 +11,14 @@ export const isValidUrl = (url) => {
 };
 
 /**
- * Attempt to make a url valid by prepending https:// to www urls
+ * Attempt to make a url valid by prepending https:// to it
  * @param {string} url - url to try to make valid
  * @returns {string} - valid url or original url
  */
 export const makeUrlValid = (url) => {
   if (url === null || url === "") return url;
 
-  if (url.startsWith("www")) {
+  if (isValidUrl(`https://${url}`)) {
     return `https://${url}`;
   }
 
