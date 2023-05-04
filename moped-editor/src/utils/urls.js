@@ -18,7 +18,7 @@ export const isValidUrl = (url) => {
 export const makeUrlValid = (url) => {
   let validUrl;
 
-  if (url && !url.startsWith("https")) {
+  if (!isValidUrl(url)) {
     validUrl = "https://" + url;
   }
 

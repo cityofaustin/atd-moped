@@ -29,8 +29,11 @@ const ProjectSummaryProjectWebsite = ({
 
   const [editMode, setEditMode] = useState(false);
   const [website, setWebsite] = useState(originalWebsite);
+
+  // Try to make the website valid if it starts with www
+  const websiteMadeValid = makeUrlValid(website);
   // Hasura returns null if the website is empty which is a valid entry
-  const isWebsiteValid = isValidUrl(website) || website === null;
+  const isWebsiteValid = isValidUrl(websiteMadeValid) || website === null;
 
   const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
 
@@ -49,14 +52,16 @@ const ProjectSummaryProjectWebsite = ({
     // Prevent saving if the website is not valid
     if (!isWebsiteValid) return;
     const isWebsiteEmpty = website === "";
+    const websiteToSubmit = isWebsiteEmpty ? null : websiteMadeValid;
 
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: isWebsiteEmpty ? null : website,
+        website: websiteToSubmit,
       },
     })
       .then(() => {
+        setWebsite(websiteToSubmit);
         setEditMode(false);
         refetch();
         snackbarHandle(true, "Project website updated!", "success");
@@ -68,8 +73,8 @@ const ProjectSummaryProjectWebsite = ({
           "error"
         );
         handleProjectWebsiteClose();
+        setEditMode(false);
       });
-    setEditMode(false);
   };
 
   /**
@@ -77,10 +82,7 @@ const ProjectSummaryProjectWebsite = ({
    * @param {Object} e - Event object
    */
   const handleProjectWebsiteChange = (e) => {
-    const { value } = e.target;
-    const attempt = makeUrlValid(value);
-
-    setWebsite(attempt);
+    setWebsite(e.target.value);
   };
 
   return (
