@@ -78,18 +78,17 @@ function deploy_cognito_function() {
 #
 function deploy_cognito_functions() {
   MAIN_DIR=$PWD
-  for FUNCTION in $(find moped-auth -type d -mindepth 1 -maxdepth 1 ! -iname "tests"); do
-    FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
-    FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
-    echo "Current directory: ${PWD}"
-    echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'"
-    cd $FUNCTION
-    echo "Entered directory: ${PWD}"
-    install_requirements
-    bundle_function
-    generate_environment "$FUNCTION_NAME"
-    deploy_cognito_function "$FUNCTION_NAME"
-    cd $MAIN_DIR
-    echo "Exit, current path: ${PWD}"
-  done
+  FUNCTION="moped-auth/cognito-pre-token-hook"
+  FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
+  FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
+  echo "Current directory: ${PWD}"
+  echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'"
+  cd $FUNCTION
+  echo "Entered directory: ${PWD}"
+  install_requirements
+  bundle_function
+  generate_environment "$FUNCTION_NAME"
+  deploy_cognito_function "$FUNCTION_NAME"
+  cd $MAIN_DIR
+  echo "Exit, current path: ${PWD}"
 }
