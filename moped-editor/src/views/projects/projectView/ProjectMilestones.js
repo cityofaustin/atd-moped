@@ -8,7 +8,10 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
-import { EditOutlined as EditOutlinedIcon } from "@mui/icons-material";
+import {
+  EditOutlined as EditOutlinedIcon,
+  DeleteOutline as DeleteOutlineIcon,
+} from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -269,9 +272,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       <MaterialTable
         columns={milestoneColumns}
         data={data.moped_proj_milestones}
-        icons={{
-          Edit: EditOutlinedIcon,
-        }}
+        icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         components={{
           EditRow: (props) => (
             <MTableEditRow
@@ -394,6 +395,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
           addRowPosition: "first",
+          idSynonym: "project_milestone_id",
         }}
         localization={{
           header: {

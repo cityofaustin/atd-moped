@@ -14,12 +14,13 @@ import { green } from "@mui/material/colors";
 
 import {
   EditOutlined as EditOutlinedIcon,
+  DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
 } from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
-  MTableToolbar
+  MTableToolbar,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -232,9 +233,7 @@ const ProjectPhases = ({
         isLoading={isMutating}
         columns={phasesColumns}
         data={data.moped_proj_phases}
-        icons={{
-          Edit: EditOutlinedIcon,
-        }}
+        icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         // Action component customized as described in this gh-issue:
         // https://github.com/mbrn/material-table/issues/2133
         components={{
@@ -274,7 +273,7 @@ const ProjectPhases = ({
             <div style={{ marginLeft: "-10px" }}>
               <MTableToolbar {...props} />
             </div>
-          )
+          ),
         }}
         editable={{
           onRowAdd: async (newData) => {
@@ -326,7 +325,6 @@ const ProjectPhases = ({
             } = newData;
             // extract phase_id from moped_phase object
             updatedPhasePayload.phase_id = moped_phase.phase_id;
-
 
             // Remove extraneous fields given by MaterialTable that
             // Hasura doesn't need
