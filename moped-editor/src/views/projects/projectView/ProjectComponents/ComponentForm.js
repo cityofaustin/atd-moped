@@ -36,30 +36,6 @@ const defaultFormValues = {
   signal: null,
 };
 
-const WORK_TYPE_OPTIONS_SIGNALS = [
-  { label: "New", value: "new" },
-  { label: "Modification", value: "modification" },
-  { label: "Construction Inspection", value: "construction_inspection" },
-  { label: "Maintenance/Repair", value: "maintenance_repair" },
-  { label: "Replacement", value: "replacement" },
-  { label: "Signal Take Over", value: "signal_take_over" },
-];
-
-const WORK_TYPE_OPTIONS_BIKE = [
-  { label: "New", value: "new" },
-  {
-    label: "Construction / Curb modification / Widening",
-    value: "construction_curb_modification_widening",
-  },
-  { label: "Design Review", value: "design_review" },
-  { label: "Lane Conversion", value: "lane_conversion" },
-  { label: "Maintenance/Repair", value: "maintenance_repair" },
-  { label: "Parking Mod", value: "parking_mod" },
-  { label: "Remove Bike Lane", value: "remove_bike_lane" },
-  { label: "Remove Double Yellow", value: "remove_double_yellow" },
-  { label: "Replacement", value: "replacement" },
-];
-
 const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
@@ -114,8 +90,7 @@ const ComponentForm = ({
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
-    optionsData?.moped_components
-  );
+    optionsData?.moped_components);
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
   );
@@ -135,6 +110,7 @@ const ComponentForm = ({
     setValue("signal", null);
   }, [component, setValue]);
 
+
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // todo: preserve allowed subcomponents when switching b/t component types
   useEffect(() => {
@@ -152,10 +128,6 @@ const ComponentForm = ({
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
-
-  const workTypeOptions = component?.label.toLowerCase().includes("signal")
-    ? WORK_TYPE_OPTIONS_SIGNALS
-    : WORK_TYPE_OPTIONS_BIKE;
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -208,16 +180,6 @@ const ComponentForm = ({
             />
           </Grid>
         )}
-        <Grid item xs={12}>
-          <ControlledAutocomplete
-            id="work-type"
-            label="Work Type(s)"
-            multiple
-            options={workTypeOptions}
-            name="work_types"
-            control={control}
-          />
-        </Grid>
         <Grid item xs={12}>
           <TextField
             inputRef={register}
