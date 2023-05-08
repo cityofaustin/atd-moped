@@ -110,10 +110,10 @@ export const zoomMapToFeatureCollection = (
   try {
     return mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
   } catch {
-    console.log(
-      "fitBounds failed, trying again without padding",
-      fitBoundsOptions
-    );
+    console.log("fitBounds failed, trying again without padding", {
+      fitBoundsOptions,
+      screenWidth: window.innerWidth,
+    });
   }
 
   try {
