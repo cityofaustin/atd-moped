@@ -397,7 +397,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Task order",
       field: "task_order",
       hidden: hiddenColumns["task_order"],
-      cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
       render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
@@ -580,14 +579,236 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     }
   }, [data, advancedSearchAnchor]);
 
-  console.log(data);
-
   const dataGridColumns = [
     {
       headerName: "ID",
       field: "project_id",
     },
-    { field: "project_name", headerName: "Name", flex: 2 },
+    {
+      headerName: "Name",
+      field: "project_name",
+      renderCell: (entry) => (
+        <RouterLink
+          to={`/moped/projects/${entry.row.project_id}`}
+          state={{
+            filters: Object.keys(filters).length
+              ? btoa(JSON.stringify(filters))
+              : false,
+          }}
+          className={classes.colorPrimary}
+        >
+          {entry.value}
+        </RouterLink>
+      ),
+      width: 330,
+    },
+    {
+      headerName: "Status",
+      field: "current_phase",
+      renderCell: (entry) =>
+        buildStatusBadge({
+          phaseName: entry.row.current_phase,
+          phaseKey: entry.row.current_phase_key,
+        }),
+      width: 210,
+    },
+    {
+      headerName: "Team",
+      field: "project_team_members",
+      cellStyle: { whiteSpace: "noWrap" },
+      // todo: make the style match up with nowrap
+      renderCell: (entry) =>
+        renderProjectTeamMembers(
+          entry.row.project_team_members,
+          "projectsListView"
+        ),
+      width: 350,
+    },
+    {
+      headerName: "Lead",
+      field: "project_lead",
+      cellStyle: { whiteSpace: "noWrap" },
+      renderCell: (entry) =>
+        entry.row.project_lead === null ? "-" : entry.row.project_lead,
+      width: 200,
+    },
+    {
+      headerName: "Sponsor",
+      field: "project_sponsor",
+      cellStyle: { whiteSpace: "noWrap" },
+      renderCell: (entry) =>
+        entry.row.project_sponsor === "None" ? "-" : entry.row.project_sponsor,
+      width: 200,
+    },
+    {
+      headerName: "Partners",
+      field: "project_partner",
+      renderCell: (entry) => {
+        return entry.row.project_partner
+          ? entry.row.project_partner.split(",").map((partner) => (
+              <span key={partner} style={{ display: "block" }}>
+                {partner}
+              </span>
+            ))
+          : "-";
+      },
+      width: 350,
+    },
+    {
+      headerName: "eCAPRIS ID",
+      field: "ecapris_subproject_id",
+      hidden: hiddenColumns["ecapris_subproject_id"],
+      renderCell: (entry) => (
+        <ExternalLink
+          text={entry.row.ecapris_subproject_id}
+          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
+        />
+      ),
+    },
+    {
+      headerName: "Modified",
+      field: "updated_at",
+      hidden: hiddenColumns["updated_at"],
+      renderCell: (entry) => formatTimeStampTZType(entry.row.updated_at),
+    },
+    {
+      headerName: "Signal IDs",
+      field: "project_feature",
+      hidden: hiddenColumns["project_feature"],
+      sorting: false,
+      renderCell: (entry) => {
+        if (!entry?.row.project_feature) {
+          return "-";
+        } else {
+          const signals = entry.row.project_feature.filter(
+            (signal) => signal.signal_id && signal.knack_id
+          );
+          return <RenderSignalLink signals={signals} />;
+        }
+      },
+    },
+    {
+      headerName: "Task order",
+      field: "task_order",
+      hidden: hiddenColumns["task_order"],
+      renderCell: (entry) => {
+        // Empty value won't work in some cases where task_order is an empty array.
+        if (!entry.row.task_order || entry?.row.task_order.length < 1) {
+          return "-";
+        }
+        // Render values as a comma seperated string
+        return entry.row.task_order.map((taskOrder) => (
+          <span key={taskOrder.task_order} style={{ display: "block" }}>
+            {taskOrder.display_name}
+          </span>
+        ));
+      },
+    },
+    {
+      headerName: "Type",
+      field: "type_name",
+      renderCell: (entry) => {
+        return entry.row.type_name
+          ? entry.row.type_name.split(",").map((type_name) => (
+              <span key={type_name} style={{ display: "block" }}>
+                {type_name}
+              </span>
+            ))
+          : "-";
+      },
+    },
+    {
+      headerName: "Funding",
+      field: "funding_source_name",
+      renderCell: (entry) => {
+        return entry.funding_source_name
+          ? entry.funding_source_name
+              .split(",")
+              .map((funding_source_name, i) => (
+                <span key={i} style={{ display: "block" }}>
+                  {funding_source_name}
+                </span>
+              ))
+          : "-";
+      },
+    },
+    {
+      headerName: "Status update",
+      field: "project_note",
+      // maxWidth: "30rem",
+      renderCell: (entry) =>
+        entry.value ? parse(String(entry.row.project_note)) : "-",
+    },
+    {
+      headerName: "Construction start",
+      field: "construction_start_date",
+      renderCell: (entry) => formatDateType(entry.row.construction_start_date),
+    },
+    {
+      headerName: "Completion date",
+      field: "completion_end_date",
+      renderCell: (entry) => formatDateType(entry.row.completion_end_date),
+    },
+    {
+      headerName: "Designer",
+      field: "project_designer",
+    },
+    {
+      headerName: "Inspector",
+      field: "project_inspector",
+    },
+    {
+      headerName: "Contractors",
+      field: "contractors",
+      renderCell: (entry) => {
+        return entry.row.contractors
+          ? entry.row.contractors.split(",").map((contractor, i) => (
+              <span key={i} style={{ display: "block" }}>
+                {contractor}
+              </span>
+            ))
+          : "-";
+      },
+      width: 200,
+    },
+    {
+      headerName: "Contract numbers",
+      field: "contract_numbers",
+      renderCell: (entry) => {
+        return entry.row.contract_numbers
+          ? entry.row.contract_numbers.split(",").map((contractNumber, i) => (
+              <span key={i} style={{ display: "block" }}>
+                {contractNumber}
+              </span>
+            ))
+          : "-";
+      },
+      width: 200,
+    },
+    {
+      headerName: "Tags",
+      field: "project_tags",
+      renderCell: (entry) => {
+        return entry.row.project_tags
+          ? entry.row.project_tags.split(",").map((tag) => (
+              <span key={tag} style={{ display: "block" }}>
+                {tag}
+              </span>
+            ))
+          : "-";
+      },
+      width: 250,
+    },
+    {
+      headerName: "Created by",
+      field: "added_by",
+      width: 200,
+    },
+    {
+      headerName: "Public process status",
+      field: "public_process_status",
+      width: 200,
+    },
   ];
 
   return (
@@ -682,11 +903,31 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
             )}
           </Box>
           <div style={{ padding: "18px" }}>
-            <DataGrid
-              rows={data["project_list_view"]}
-              columns={dataGridColumns}
-              getRowId={(row) => row.project_id}
-            />
+            {data && (
+              <DataGrid
+                getRowHeight={() => "auto"}
+                sx={{
+                  "& .MuiDataGrid-cell": {
+                    display: "block",
+                  },
+                  // When the height of a row is set to "auto", the final height will follow exactly the
+                  // content size and ignore the density. Add padding to the cells to increase the space
+                  // between the content and the cell borders.
+                  "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+                    py: "8px",
+                  },
+                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+                    py: "15px",
+                  },
+                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+                    py: "22px",
+                  },
+                }}
+                rows={data["project_list_view"]}
+                columns={dataGridColumns}
+                getRowId={(row) => row.project_id}
+              />
+            )}
           </div>
         </Paper>
       </Container>
