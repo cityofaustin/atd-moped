@@ -16,6 +16,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
+import { DataGrid } from "@mui/x-data-grid";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -579,6 +580,16 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     }
   }, [data, advancedSearchAnchor]);
 
+  console.log(data);
+
+  const dataGridColumns = [
+    {
+      headerName: "ID",
+      field: "project_id",
+    },
+    { field: "project_name", headerName: "Name", flex: 2 },
+  ];
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -670,6 +681,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
+          <div style={{ padding: "18px" }}>
+            <DataGrid
+              rows={data["project_list_view"]}
+              columns={dataGridColumns}
+              getRowId={(row) => row.project_id}
+            />
+          </div>
         </Paper>
       </Container>
     </ApolloErrorHandler>
