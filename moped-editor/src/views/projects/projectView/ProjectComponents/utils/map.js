@@ -115,6 +115,12 @@ export const zoomMapToFeatureCollection = (
       fitBoundsOptions
     );
   }
+
+  try {
+    mapRef.current.fitBounds(bboxOfFeatureCollection);
+  } catch {
+    console.log("Unable to fitBounds to feature collection");
+  }
 };
 
 /**
