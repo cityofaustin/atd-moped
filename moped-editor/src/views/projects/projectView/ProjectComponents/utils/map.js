@@ -101,7 +101,20 @@ export const zoomMapToFeatureCollection = (
   if (!mapRef?.current) return;
 
   const bboxOfFeatureCollection = bbox(featureCollection);
-  mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
+
+  /**
+   * There is a known issue with fitBounds throwing an error with padding on smaller screens
+   * So, we try to fitBounds with padding, and if that fails, we try again without padding
+   * @see https://stackoverflow.com/a/76011418
+   * */
+  try {
+    return mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
+  } catch {
+    console.log(
+      "fitBounds failed, trying again without padding",
+      fitBoundsOptions
+    );
+  }
 };
 
 /**
