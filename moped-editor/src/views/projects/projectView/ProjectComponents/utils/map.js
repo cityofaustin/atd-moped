@@ -119,7 +119,7 @@ export const zoomMapToFeatureCollection = (
   try {
     mapRef.current.fitBounds(bboxOfFeatureCollection);
   } catch {
-    console.log("Unable to fitBounds to feature collection");
+    console.log("Unable to fitBounds to feature collection", featureCollection);
   }
 };
 
