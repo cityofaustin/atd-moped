@@ -4,19 +4,19 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
-import typography from "../../../theme/typography";
+// import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
 import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
-import GridTablePagination from "../../../components/GridTable/GridTablePagination";
+// import GridTablePagination from "../../../components/GridTable/GridTablePagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
-import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
-import { DataGrid } from "@mui/x-data-grid";
+// import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -87,11 +87,11 @@ const DEFAULT_HIDDEN_COLS = {
  * @param {Object} column - the MT column config with the `field` prop - aka the column name
  * @param {Bool} hidden - the hidden state of the column
  */
-const handleColumnChange = ({ field }, hidden) => {
-  let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-  storedConfig = { ...storedConfig, [field]: hidden };
-  localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-};
+// const handleColumnChange = ({ field }, hidden) => {
+//   let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+//   storedConfig = { ...storedConfig, [field]: hidden };
+//   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
+// };
 
 /**
  * GridTable Search Capability plus Material Table
@@ -111,11 +111,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @function setPagination - Sets the state of pagination
    * @default {{limit: query.limit, offset: query.offset, page: 0}}
    */
-  const [pagination, setPagination] = useState({
-    limit: query.limit,
-    offset: query.offset,
-    page: 0,
-  });
+  // const [pagination, setPagination] = useState({
+  //   limit: query.limit,
+  //   offset: query.offset,
+  //   page: 0,
+  // });
 
   /**
    * The default sorting properties applied to the table.
@@ -126,11 +126,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @property {integer} columnId - The column id in graphql to sort by
    * @property {string} order - Either "asc" or "desc" or ""
    */
-  const defaultSortingProperties = {
-    column: "updated_at",
-    columnId: 8,
-    order: "desc",
-  };
+  // const defaultSortingProperties = {
+  //   column: "updated_at",
+  //   columnId: 8,
+  //   order: "desc",
+  // };
 
   /**
    * Stores the column name and the order to order by
@@ -138,7 +138,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @function setSort - Sets the state of sort
    * @default {defaultSortingProperties}
    */
-  const [sort, setSort] = useState(defaultSortingProperties);
+  // const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -192,15 +192,16 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  query.setOrder(sort.column, sort.order);
+  // query.setOrder(sort.column, sort.order);
 
   // Set limit, offset based on pagination state
-  if (query.config.showPagination) {
-    query.limit = pagination.limit;
-    query.offset = pagination.offset;
-  } else {
-    query.limit = 0;
-  }
+  // if (query.config.showPagination) {
+  //   query.limit = pagination.limit;
+  //   query.offset = pagination.offset;
+  // } else {
+  //   query.limit = 0;
+  // }
+  query.limit=0;
 
   // Resets the value of "where" "and" "or" to empty
   query.cleanWhere();
@@ -276,260 +277,260 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.config.options.useQuery
   );
 
-  const columns = [
-    {
-      title: "ID",
-      field: "project_id",
-      hidden: hiddenColumns["project_id"],
-    },
-    {
-      title: "Name",
-      field: "project_name",
-      hidden: hiddenColumns["project_name"],
-      render: (entry) => (
-        <RouterLink
-          to={`/moped/projects/${entry.project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
-          className={classes.colorPrimary}
-        >
-          {entry.project_name}
-        </RouterLink>
-      ),
-      cellStyle: {
-        position: "sticky",
-        left: 0,
-        backgroundColor: "white",
-        minWidth: "20rem",
-        zIndex: 1,
-      },
-    },
-    {
-      title: "Status",
-      field: "current_phase",
-      hidden: hiddenColumns["current_phase"],
-      render: (entry) =>
-        buildStatusBadge({
-          phaseName: entry.current_phase,
-          phaseKey: entry.current_phase_key,
-        }),
-    },
-    {
-      title: "Team",
-      field: "project_team_members",
-      hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        renderProjectTeamMembers(
-          entry.project_team_members,
-          "projectsListView"
-        ),
-    },
-    {
-      title: "Lead",
-      field: "project_lead",
-      hidden: hiddenColumns["project_lead"],
-      editable: "never",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        entry.project_lead === null ? "-" : entry.project_lead,
-    },
-    {
-      title: "Sponsor",
-      field: "project_sponsor",
-      hidden: hiddenColumns["project_sponsor"],
-      editable: "never",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
-    },
-    {
-      title: "Partners",
-      field: "project_partner",
-      hidden: hiddenColumns["project_partner"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.project_partner.split(",").map((partner) => (
-          <span key={partner} style={{ display: "block" }}>
-            {partner}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "eCAPRIS ID",
-      field: "ecapris_subproject_id",
-      hidden: hiddenColumns["ecapris_subproject_id"],
-      render: (entry) => (
-        <ExternalLink
-          text={entry.ecapris_subproject_id}
-          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
-        />
-      ),
-    },
-    {
-      title: "Modified",
-      field: "updated_at",
-      hidden: hiddenColumns["updated_at"],
-      render: (entry) => formatTimeStampTZType(entry.updated_at),
-    },
-    {
-      title: "Signal IDs",
-      field: "project_feature",
-      hidden: hiddenColumns["project_feature"],
-      sorting: false,
-      render: (entry) => {
-        if (!entry?.project_feature) {
-          return "-";
-        } else {
-          const signals = entry.project_feature.filter(
-            (signal) => signal.signal_id && signal.knack_id
-          );
-          return <RenderSignalLink signals={signals} />;
-        }
-      },
-    },
-    {
-      title: "Task order",
-      field: "task_order",
-      hidden: hiddenColumns["task_order"],
-      emptyValue: "-",
-      render: (entry) => {
-        // Empty value won't work in some cases where task_order is an empty array.
-        if (entry?.task_order.length < 1) {
-          return "-";
-        }
-        // Render values as a comma seperated string
-        return entry.task_order.map((taskOrder) => (
-          <span key={taskOrder.task_order} style={{ display: "block" }}>
-            {taskOrder.display_name}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Type",
-      field: "type_name",
-      hidden: hiddenColumns["type_name"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.type_name.split(",").map((type_name) => (
-          <span key={type_name} style={{ display: "block" }}>
-            {type_name}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Funding",
-      field: "funding_source_name",
-      hidden: hiddenColumns["funding_source_name"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.funding_source_name
-          .split(",")
-          .map((funding_source_name, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {funding_source_name}
-            </span>
-          ));
-      },
-    },
-    {
-      title: "Status update",
-      field: "project_note",
-      hidden: hiddenColumns["project_note"],
-      emptyValue: "-",
-      cellStyle: { maxWidth: "30rem" },
-      render: (entry) => parse(String(entry.project_note)),
-    },
-    {
-      title: "Construction start",
-      field: "construction_start_date",
-      hidden: hiddenColumns["construction_start_date"],
-      emptyValue: "-",
-      render: (entry) => formatDateType(entry.construction_start_date),
-    },
-    {
-      title: "Completion date",
-      field: "completion_end_date",
-      hidden: hiddenColumns["completion_end_date"],
-      emptyValue: "-",
-      render: (entry) => formatDateType(entry.completion_end_date),
-    },
-    {
-      title: "Designer",
-      field: "project_designer",
-      hidden: hiddenColumns["project_designer"],
-      emptyValue: "-",
-    },
-    {
-      title: "Inspector",
-      field: "project_inspector",
-      hidden: hiddenColumns["project_inspector"],
-      emptyValue: "-",
-    },
-    {
-      title: "Contractors",
-      field: "contractors",
-      hidden: hiddenColumns["contractors"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.contractors.split(",").map((contractor, i) => (
-          <span key={i} style={{ display: "block" }}>
-            {contractor}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Contract numbers",
-      field: "contract_numbers",
-      hidden: hiddenColumns["contract_numbers"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.contract_numbers.split(",").map((contractNumber, i) => (
-          <span key={i} style={{ display: "block" }}>
-            {contractNumber}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Tags",
-      field: "project_tags",
-      hidden: hiddenColumns["project_tags"],
-      cellStyle: { whiteSpace: "noWrap" },
-      emptyValue: "-",
-      render: (entry) => {
-        return entry.project_tags.split(",").map((tag) => (
-          <span key={tag} style={{ display: "block" }}>
-            {tag}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Created by",
-      field: "added_by",
-      hidden: hiddenColumns["added_by"],
-      emptyValue: "-",
-    },
-    {
-      title: "Public process status",
-      field: "public_process_status",
-      hidden: hiddenColumns["public_process_status"],
-      emptyValue: "-",
-    },
-  ];
+  // const columns = [
+  //   {
+  //     title: "ID",
+  //     field: "project_id",
+  //     hidden: hiddenColumns["project_id"],
+  //   },
+  //   {
+  //     title: "Name",
+  //     field: "project_name",
+  //     hidden: hiddenColumns["project_name"],
+  //     render: (entry) => (
+  //       <RouterLink
+  //         to={`/moped/projects/${entry.project_id}`}
+  //         state={{
+  //           filters: Object.keys(filters).length
+  //             ? btoa(JSON.stringify(filters))
+  //             : false,
+  //         }}
+  //         className={classes.colorPrimary}
+  //       >
+  //         {entry.project_name}
+  //       </RouterLink>
+  //     ),
+  //     cellStyle: {
+  //       position: "sticky",
+  //       left: 0,
+  //       backgroundColor: "white",
+  //       minWidth: "20rem",
+  //       zIndex: 1,
+  //     },
+  //   },
+  //   {
+  //     title: "Status",
+  //     field: "current_phase",
+  //     hidden: hiddenColumns["current_phase"],
+  //     render: (entry) =>
+  //       buildStatusBadge({
+  //         phaseName: entry.current_phase,
+  //         phaseKey: entry.current_phase_key,
+  //       }),
+  //   },
+  //   {
+  //     title: "Team",
+  //     field: "project_team_members",
+  //     hidden: hiddenColumns["project_team_members"],
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) =>
+  //       renderProjectTeamMembers(
+  //         entry.project_team_members,
+  //         "projectsListView"
+  //       ),
+  //   },
+  //   {
+  //     title: "Lead",
+  //     field: "project_lead",
+  //     hidden: hiddenColumns["project_lead"],
+  //     editable: "never",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) =>
+  //       entry.project_lead === null ? "-" : entry.project_lead,
+  //   },
+  //   {
+  //     title: "Sponsor",
+  //     field: "project_sponsor",
+  //     hidden: hiddenColumns["project_sponsor"],
+  //     editable: "never",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) =>
+  //       entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
+  //   },
+  //   {
+  //     title: "Partners",
+  //     field: "project_partner",
+  //     hidden: hiddenColumns["project_partner"],
+  //     emptyValue: "-",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) => {
+  //       return entry.project_partner.split(",").map((partner) => (
+  //         <span key={partner} style={{ display: "block" }}>
+  //           {partner}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "eCAPRIS ID",
+  //     field: "ecapris_subproject_id",
+  //     hidden: hiddenColumns["ecapris_subproject_id"],
+  //     render: (entry) => (
+  //       <ExternalLink
+  //         text={entry.ecapris_subproject_id}
+  //         url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
+  //       />
+  //     ),
+  //   },
+  //   {
+  //     title: "Modified",
+  //     field: "updated_at",
+  //     hidden: hiddenColumns["updated_at"],
+  //     render: (entry) => formatTimeStampTZType(entry.updated_at),
+  //   },
+  //   {
+  //     title: "Signal IDs",
+  //     field: "project_feature",
+  //     hidden: hiddenColumns["project_feature"],
+  //     sorting: false,
+  //     render: (entry) => {
+  //       if (!entry?.project_feature) {
+  //         return "-";
+  //       } else {
+  //         const signals = entry.project_feature.filter(
+  //           (signal) => signal.signal_id && signal.knack_id
+  //         );
+  //         return <RenderSignalLink signals={signals} />;
+  //       }
+  //     },
+  //   },
+  //   {
+  //     title: "Task order",
+  //     field: "task_order",
+  //     hidden: hiddenColumns["task_order"],
+  //     emptyValue: "-",
+  //     render: (entry) => {
+  //       // Empty value won't work in some cases where task_order is an empty array.
+  //       if (entry?.task_order.length < 1) {
+  //         return "-";
+  //       }
+  //       // Render values as a comma seperated string
+  //       return entry.task_order.map((taskOrder) => (
+  //         <span key={taskOrder.task_order} style={{ display: "block" }}>
+  //           {taskOrder.display_name}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "Type",
+  //     field: "type_name",
+  //     hidden: hiddenColumns["type_name"],
+  //     emptyValue: "-",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) => {
+  //       return entry.type_name.split(",").map((type_name) => (
+  //         <span key={type_name} style={{ display: "block" }}>
+  //           {type_name}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "Funding",
+  //     field: "funding_source_name",
+  //     hidden: hiddenColumns["funding_source_name"],
+  //     emptyValue: "-",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) => {
+  //       return entry.funding_source_name
+  //         .split(",")
+  //         .map((funding_source_name, i) => (
+  //           <span key={i} style={{ display: "block" }}>
+  //             {funding_source_name}
+  //           </span>
+  //         ));
+  //     },
+  //   },
+  //   {
+  //     title: "Status update",
+  //     field: "project_note",
+  //     hidden: hiddenColumns["project_note"],
+  //     emptyValue: "-",
+  //     cellStyle: { maxWidth: "30rem" },
+  //     render: (entry) => parse(String(entry.project_note)),
+  //   },
+  //   {
+  //     title: "Construction start",
+  //     field: "construction_start_date",
+  //     hidden: hiddenColumns["construction_start_date"],
+  //     emptyValue: "-",
+  //     render: (entry) => formatDateType(entry.construction_start_date),
+  //   },
+  //   {
+  //     title: "Completion date",
+  //     field: "completion_end_date",
+  //     hidden: hiddenColumns["completion_end_date"],
+  //     emptyValue: "-",
+  //     render: (entry) => formatDateType(entry.completion_end_date),
+  //   },
+  //   {
+  //     title: "Designer",
+  //     field: "project_designer",
+  //     hidden: hiddenColumns["project_designer"],
+  //     emptyValue: "-",
+  //   },
+  //   {
+  //     title: "Inspector",
+  //     field: "project_inspector",
+  //     hidden: hiddenColumns["project_inspector"],
+  //     emptyValue: "-",
+  //   },
+  //   {
+  //     title: "Contractors",
+  //     field: "contractors",
+  //     hidden: hiddenColumns["contractors"],
+  //     emptyValue: "-",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) => {
+  //       return entry.contractors.split(",").map((contractor, i) => (
+  //         <span key={i} style={{ display: "block" }}>
+  //           {contractor}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "Contract numbers",
+  //     field: "contract_numbers",
+  //     hidden: hiddenColumns["contract_numbers"],
+  //     emptyValue: "-",
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     render: (entry) => {
+  //       return entry.contract_numbers.split(",").map((contractNumber, i) => (
+  //         <span key={i} style={{ display: "block" }}>
+  //           {contractNumber}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "Tags",
+  //     field: "project_tags",
+  //     hidden: hiddenColumns["project_tags"],
+  //     cellStyle: { whiteSpace: "noWrap" },
+  //     emptyValue: "-",
+  //     render: (entry) => {
+  //       return entry.project_tags.split(",").map((tag) => (
+  //         <span key={tag} style={{ display: "block" }}>
+  //           {tag}
+  //         </span>
+  //       ));
+  //     },
+  //   },
+  //   {
+  //     title: "Created by",
+  //     field: "added_by",
+  //     hidden: hiddenColumns["added_by"],
+  //     emptyValue: "-",
+  //   },
+  //   {
+  //     title: "Public process status",
+  //     field: "public_process_status",
+  //     hidden: hiddenColumns["public_process_status"],
+  //     emptyValue: "-",
+  //   },
+  // ];
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -538,35 +539,35 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Note: this is a GridTable function that we are using to override a Material Table sorting function
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
-  const handleTableHeaderClick = (columnId, newOrderDirection) => {
-    // Before anything, let's clear all current conditions
-    query.clearOrderBy();
-    const columnName = columns[columnId]?.field;
+  // const handleTableHeaderClick = (columnId, newOrderDirection) => {
+  //   // Before anything, let's clear all current conditions
+  //   query.clearOrderBy();
+  //   const columnName = columns[columnId]?.field;
 
-    // Resets pagination to 0 when user clicks a header to display most relevant results
-    setPagination({
-      limit: query.limit,
-      offset: query.offset,
-      page: 0,
-    });
+  //   // Resets pagination to 0 when user clicks a header to display most relevant results
+  //   setPagination({
+  //     limit: query.limit,
+  //     offset: query.offset,
+  //     page: 0,
+  //   });
 
-    if (sort.column === columnName) {
-      // If the current sortColumn is the same as the new
-      // then invert values and repeat sort on column
-      setSort({
-        order: sort.order === "desc" ? "asc" : "desc",
-        column: columnName,
-        columnId: columnId,
-      });
-    } else if (sort.column !== columnName) {
-      // Sort different column in same order as previous column
-      setSort({
-        order: sort.order,
-        column: columnName,
-        columnId: columnId,
-      });
-    }
-  };
+  //   if (sort.column === columnName) {
+  //     // If the current sortColumn is the same as the new
+  //     // then invert values and repeat sort on column
+  //     setSort({
+  //       order: sort.order === "desc" ? "asc" : "desc",
+  //       column: columnName,
+  //       columnId: columnId,
+  //     });
+  //   } else if (sort.column !== columnName) {
+  //     // Sort different column in same order as previous column
+  //     setSort({
+  //       order: sort.order,
+  //       column: columnName,
+  //       columnId: columnId,
+  //     });
+  //   }
+  // };
 
   /*
    * Store column configution before data change triggers page refresh
@@ -615,8 +616,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Team",
       field: "project_team_members",
-      cellStyle: { whiteSpace: "noWrap" },
-      // todo: make the style match up with nowrap
       renderCell: (entry) =>
         renderProjectTeamMembers(
           entry.row.project_team_members,
@@ -627,7 +626,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Lead",
       field: "project_lead",
-      cellStyle: { whiteSpace: "noWrap" },
       renderCell: (entry) =>
         entry.row.project_lead === null ? "-" : entry.row.project_lead,
       width: 200,
@@ -668,13 +666,11 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Modified",
       field: "updated_at",
-      hidden: hiddenColumns["updated_at"],
       renderCell: (entry) => formatTimeStampTZType(entry.row.updated_at),
     },
     {
       headerName: "Signal IDs",
       field: "project_feature",
-      hidden: hiddenColumns["project_feature"],
       sorting: false,
       renderCell: (entry) => {
         if (!entry?.row.project_feature) {
@@ -690,9 +686,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Task order",
       field: "task_order",
-      hidden: hiddenColumns["task_order"],
       renderCell: (entry) => {
-        // Empty value won't work in some cases where task_order is an empty array.
         if (!entry.row.task_order || entry?.row.task_order.length < 1) {
           return "-";
         }
@@ -735,19 +729,21 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Status update",
       field: "project_note",
-      // maxWidth: "30rem",
       renderCell: (entry) =>
-        entry.value ? parse(String(entry.row.project_note)) : "-",
+        entry.value ? parse(String(entry.row.project_note)): "-",
+      width: 400,
     },
     {
       headerName: "Construction start",
       field: "construction_start_date",
-      renderCell: (entry) => formatDateType(entry.row.construction_start_date),
+      renderCell: (entry) =>
+        entry.value ? formatDateType(entry.row.construction_start_date) : "-",
     },
     {
       headerName: "Completion date",
       field: "completion_end_date",
-      renderCell: (entry) => formatDateType(entry.row.completion_end_date),
+      renderCell: (entry) =>
+        entry.value ? formatDateType(entry.row.completion_end_date) : "-",
     },
     {
       headerName: "Designer",
@@ -811,6 +807,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     },
   ];
 
+  console.log(data);
+
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -839,96 +837,96 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
               <CircularProgress />
             ) : data && data["project_list_view"] ? (
               <Card className={classes.root}>
-                <MaterialTable
-                  onChangeColumnHidden={handleColumnChange}
-                  data={data["project_list_view"]}
-                  columns={columns}
-                  title=""
-                  options={{
-                    search: false,
-                    rowStyle: {
-                      fontFamily: typography.fontFamily,
-                      fontSize: "14px",
+                <DataGrid
+                  getRowHeight={() => "auto"}
+                  sx={{
+                    "& .MuiDataGrid-cell": {
+                      display: "block",
                     },
-                    pageSize: Math.min(query.limit, data[query.table].length),
-                    headerStyle: {
-                      // material table header row has a zIndex of 10, which
-                      // is conflicting with the search/filter dropdown
-                      zIndex: 1,
-                      whiteSpace: "nowrap",
+                    // When the height of a row is set to "auto", the final height will follow exactly the
+                    // content size and ignore the density. Add padding to the cells to increase the space
+                    // between the content and the cell borders.
+                    "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+                      py: "8px",
                     },
-                    columnsButton: true,
-                    idSynonym: "project_id",
+                    "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+                      py: "15px",
+                    },
+                    "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell":
+                      {
+                        py: "22px",
+                      },
                   }}
-                  components={{
-                    Pagination: (props) => (
-                      <GridTablePagination
-                        query={query}
-                        data={data}
-                        pagination={pagination}
-                        setPagination={setPagination}
-                      />
-                    ),
-                    Header: (props) => (
-                      <MTableHeader
-                        {...props}
-                        onOrderChange={handleTableHeaderClick}
-                        orderBy={sort.columnId}
-                        orderDirection={sort.order}
-                      />
-                    ),
-                    Body: (props) => {
-                      // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
-                      // we have configured MT to use local data but are technically using remote data
-                      // this results in inconsistencies with how MT displays filtered data
-                      const indexedData = data["project_list_view"].map(
-                        (row, index) => ({
-                          tableData: { id: index, uuid: row.project_id },
-                          ...row,
-                        })
-                      );
-                      return (
-                        <MTableBody
-                          {...props}
-                          renderData={indexedData}
-                          pageSize={indexedData.length}
-                        />
-                      );
-                    },
-                  }}
+                  rows={data["project_list_view"]}
+                  columns={dataGridColumns}
+                  getRowId={(row) => row.project_id}
+                  slots={{ toolbar: GridToolbar }}
                 />
+                {
+                  // <MaterialTable
+                  //   onChangeColumnHidden={handleColumnChange}
+                  //   data={data["project_list_view"]}
+                  //   columns={columns}
+                  //   title=""
+                  //   options={{
+                  //     search: false,
+                  //     rowStyle: {
+                  //       fontFamily: typography.fontFamily,
+                  //       fontSize: "14px",
+                  //     },
+                  //     pageSize: Math.min(query.limit, data[query.table].length),
+                  //     headerStyle: {
+                  //       // material table header row has a zIndex of 10, which
+                  //       // is conflicting with the search/filter dropdown
+                  //       zIndex: 1,
+                  //       whiteSpace: "nowrap",
+                  //     },
+                  //     columnsButton: true,
+                  //     idSynonym: "project_id",
+                  //   }}
+                  //   components={{
+                  //     Pagination: (props) => (
+                  //       <GridTablePagination
+                  //         query={query}
+                  //         data={data}
+                  //         pagination={pagination}
+                  //         setPagination={setPagination}
+                  //       />
+                  //     ),
+                  //     Header: (props) => (
+                  //       <MTableHeader
+                  //         {...props}
+                  //         onOrderChange={handleTableHeaderClick}
+                  //         orderBy={sort.columnId}
+                  //         orderDirection={sort.order}
+                  //       />
+                  //     ),
+                  //     Body: (props) => {
+                  //       // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
+                  //       // we have configured MT to use local data but are technically using remote data
+                  //       // this results in inconsistencies with how MT displays filtered data
+                  //       const indexedData = data["project_list_view"].map(
+                  //         (row, index) => ({
+                  //           tableData: { id: index, uuid: row.project_id },
+                  //           ...row,
+                  //         })
+                  //       );
+                  //       return (
+                  //         <MTableBody
+                  //           {...props}
+                  //           renderData={indexedData}
+                  //           pageSize={indexedData.length}
+                  //         />
+                  //       );
+                  //     },
+                  //   }}
+                  // />
+                }
               </Card>
             ) : (
               <span>{error ? error : "Could not fetch data"}</span>
             )}
           </Box>
-          <div style={{ padding: "18px" }}>
-            {data && (
-              <DataGrid
-                getRowHeight={() => "auto"}
-                sx={{
-                  "& .MuiDataGrid-cell": {
-                    display: "block",
-                  },
-                  // When the height of a row is set to "auto", the final height will follow exactly the
-                  // content size and ignore the density. Add padding to the cells to increase the space
-                  // between the content and the cell borders.
-                  "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
-                    py: "8px",
-                  },
-                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
-                    py: "15px",
-                  },
-                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-                    py: "22px",
-                  },
-                }}
-                rows={data["project_list_view"]}
-                columns={dataGridColumns}
-                getRowId={(row) => row.project_id}
-              />
-            )}
-          </div>
         </Paper>
       </Container>
     </ApolloErrorHandler>
