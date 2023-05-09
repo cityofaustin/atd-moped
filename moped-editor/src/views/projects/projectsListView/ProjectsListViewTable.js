@@ -588,6 +588,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Name",
       field: "project_name",
+      description: "There are tooltips",
       renderCell: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.row.project_id}`}
@@ -633,7 +634,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     {
       headerName: "Sponsor",
       field: "project_sponsor",
-      cellStyle: { whiteSpace: "noWrap" },
+      description: "Project's division sponsor",
       renderCell: (entry) =>
         entry.row.project_sponsor === "None" ? "-" : entry.row.project_sponsor,
       width: 200,
@@ -806,8 +807,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       width: 200,
     },
   ];
-
-  console.log(data);
 
   return (
     <ApolloErrorHandler error={error}>
