@@ -13,7 +13,7 @@ INSERT INTO moped_work_types (name, key) VALUES
     ('Construction / Curb modification / Widening', 'construction_curb_modification_widening'),
     ('Design Review', 'design_review'),
     ('Lane Conversion', 'lane_conversion'),
-    ('Maintenance/Repair', 'maintenance_repair'),
+    ('Maintenance / Repair', 'maintenance_repair'),
     ('Modification', 'modification'),
     ('New', 'new'),
     ('Parking Mod', 'parking_mod'),
