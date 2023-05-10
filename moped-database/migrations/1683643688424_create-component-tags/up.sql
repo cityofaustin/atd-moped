@@ -27,5 +27,5 @@ INSERT INTO public.moped_component_tags (name, "type", slug) values
     ('Council Adopted 2019','bikeways','CouncilAdopted2019'),
     ('Proposed Post-ATX Walk-bike-run','bikeways','ProposedPostATXWBR'),
     ('Proposed','bikeways','Proposed'),
-    ('OtherJuristiction','bikeways','OtherJuristiction'),
+    ('Other Jurisdiction','bikeways','OtherJurisdiction'),
     ('Proposed ATX Walk-bike-run (tentative)','bikeways','ProposedATXWBR(tentative)');
