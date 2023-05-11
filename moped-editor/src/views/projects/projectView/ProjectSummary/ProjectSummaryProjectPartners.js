@@ -9,7 +9,7 @@ import {
   MenuItem,
   Select,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import { useMutation } from "@apollo/client";
@@ -133,6 +133,7 @@ const ProjectSummaryProjectPartners = ({
         {editMode && (
           <>
             <Select
+              variant="standard"
               id={`moped-project-summary-partner-select-${projectId}`}
               multiple
               value={selectedEntities}
@@ -141,20 +142,13 @@ const ProjectSummaryProjectPartners = ({
               renderValue={(entity_ids) =>
                 entity_ids.map((e) => entityDict[e]).join(", ")
               }
-              /*
-                There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
-                this is fixed by overriding the function "getContentAnchorEl".
-                    Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
-              */
               MenuProps={{
-                getContentAnchorEl: () => null,
                 style: {
                   maxHeight: 500,
                   width: 450,
                 },
               }}
-              className={classes.fieldSelectItem}
-            >
+              className={classes.fieldSelectItem}>
               {entityList.map((entity) => (
                 <MenuItem key={entity.entity_id} value={entity.entity_id}>
                   <Checkbox

@@ -6,17 +6,17 @@ import {
   InputBase,
   Popper,
   Slide,
-  makeStyles,
-} from "@material-ui/core";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
-import SearchIcon from "@material-ui/icons/Search";
+import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
 import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     [theme.breakpoints.up("sm")]: {
@@ -32,7 +32,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       maxWidth: "400px",
     },
     // overflow hidden makes it so the popper does not slide in from edge of screen
@@ -53,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       maxWidth: "200px",
     },
     height: "44px",
@@ -70,7 +70,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       maxWidth: "400px",
     },
     height: "44px",
@@ -79,7 +79,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       fontSize: "0.875rem",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       fontSize: "0.75rem",
     },
     paddingLeft: "1em",
@@ -102,7 +102,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "300px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       width: "200px",
     },
     overflow: "hidden",
@@ -112,7 +112,7 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up("sm")]: {
       width: "600px",
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("md")]: {
       width: "400px",
     },
     overflow: "hidden",
@@ -129,9 +129,6 @@ const useStyles = makeStyles(theme => ({
     borderColor: theme.palette.background.default,
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
-  },
-  searchResultsPlaceholder: {
-    padding: "16px",
   },
 }));
 
@@ -197,7 +194,7 @@ const NavigationSearchInput = ({ input404Class }) => {
    * Handles special keys typed in the search bar
    * @param {string} key - The key name being typed
    */
-  const handleKeyDown = key => {
+  const handleKeyDown = (key) => {
     switch (key) {
       // On Escape key, clear the search
       case "Escape":
@@ -218,7 +215,7 @@ const NavigationSearchInput = ({ input404Class }) => {
    * Formats search term and triggers lazy query to load search results
    * @param {event} - Event that triggered submission
    */
-  const handleSearchSubmission = event => {
+  const handleSearchSubmission = (event) => {
     // Stop if we don't have any value entered in the search field
     if (searchTerm.length === 0) {
       return;
@@ -229,13 +226,10 @@ const NavigationSearchInput = ({ input404Class }) => {
 
     // Formats search query based on project search columns and config
     Object.keys(projectSearchQuery.config.columns)
-      .filter(column => projectSearchQuery.config.columns[column]?.searchable)
-      .forEach(column => {
-        const {
-          operator,
-          quoted,
-          envelope,
-        } = projectSearchQuery.config.columns[column].search;
+      .filter((column) => projectSearchQuery.config.columns[column]?.searchable)
+      .forEach((column) => {
+        const { operator, quoted, envelope } =
+          projectSearchQuery.config.columns[column].search;
         const searchValue = getSearchValue(
           projectSearchQuery,
           column,
@@ -270,7 +264,7 @@ const NavigationSearchInput = ({ input404Class }) => {
           ref={divRef}
         >
           {!searchInput ? (
-            <IconButton>
+            <IconButton size="large">
               <SearchIcon />
             </IconButton>
           ) : (
@@ -293,8 +287,8 @@ const NavigationSearchInput = ({ input404Class }) => {
                 inputProps={{ "aria-label": "search" }}
                 startAdornment={<SearchIcon fontSize={"small"} />}
                 onFocus={handleSearchFocus}
-                onChange={e => setSearchTerm(e.target.value)}
-                onKeyDown={e => handleKeyDown(e.key)}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e.key)}
                 value={searchTerm}
                 autoFocus
               />
@@ -305,17 +299,12 @@ const NavigationSearchInput = ({ input404Class }) => {
             open={Boolean(searchResultsAnchor)}
             anchorEl={searchResultsAnchor}
             onClose={handleDropdownClose}
-            placement={"bottom-start"}
-            modifiers={
-              !input404Class && {
-                offset: {
-                  enabled: true,
-                  offset: "0, 15",
-                },
-              }
-            }
+            placement="bottom-start"
+            // inherit the position from the modifiers and dont reset to 0
+            style={{position: "fixed", top: "unset", left:"unset"}}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
+            modifiers={[]}
             className={clsx(
               input404Class ? classes.searchPopper404 : classes.searchPopper,
               {
@@ -323,14 +312,15 @@ const NavigationSearchInput = ({ input404Class }) => {
                 [classes.searchPopperShadow]: popperEnterComplete,
               }
             )}
-            // need transition prop since child components include Slide
-            transition
+            // including the transition prop counter intuitively messes up the positioning
+            // transition
           >
             <Slide
               direction="left"
               in={showSlideIn}
               timeout={300}
               onEntered={() => setPopperEntered(true)}
+              container={searchResultsAnchor}
             >
               <Box className={classes.searchResults}>
                 {called && !loading && (

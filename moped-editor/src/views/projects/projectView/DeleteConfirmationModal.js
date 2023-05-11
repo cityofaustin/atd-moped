@@ -5,8 +5,8 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-} from "@material-ui/core";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+} from "@mui/material";
+import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 
 const DeleteConfirmationModal = ({
   type,

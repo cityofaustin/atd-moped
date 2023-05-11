@@ -1,4 +1,4 @@
-import AssignmentIndIconOutlined from "@material-ui/icons/AssignmentIndOutlined";
+import AssignmentIndIconOutlined from "@mui/icons-material/AssignmentIndOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatContractsActivity = (change) => {

@@ -11,9 +11,9 @@ import {
   Select,
   TextField,
   Typography,
-  makeStyles,
-} from "@material-ui/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+} from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
+import Autocomplete from "@mui/material/Autocomplete";
 import MaterialTable, {
   MTableEditRow,
   MTableEditField,
@@ -443,7 +443,7 @@ const SignalProjectTable = () => {
         options={entityList}
         getOptionLabel={(e) => e.entity_name}
         onChange={(event, value) => props.onChange(value)}
-        getOptionSelected={(option, value) =>
+        isOptionEqualToValue={(option, value) =>
           option.entity_id === value.entity_id
         }
         renderInput={(params) => (
@@ -454,24 +454,29 @@ const SignalProjectTable = () => {
     projectTypes: (props) => {
       return (
         <Select
+          variant="standard"
           multiple
           value={props.value}
-          onChange={(event, value) => props.onChange(event.target.value)} //handleChange}
+          onChange={(event, value) => props.onChange(event.target.value)}
           input={<Input />}
           renderValue={(type_ids) =>
             type_ids.map((t) => typeDict[t]).join(", ")
           }
-          /*
-            There appears to be a problem with MenuProps in version 4.x (which is fixed in 5.0),
-            this is fixed by overriding the function "getContentAnchorEl".
-                Source: https://github.com/mui-org/material-ui/issues/19245#issuecomment-620488016
-          */
+          // anchoring the select menu so it doesn't bounce around
           MenuProps={{
-            getContentAnchorEl: () => null,
             style: {
               maxHeight: 500,
               width: 450,
             },
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left",
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left",
+            },
+            getContentAnchorEl: null,
           }}
         >
           {typeList.map((type) => (

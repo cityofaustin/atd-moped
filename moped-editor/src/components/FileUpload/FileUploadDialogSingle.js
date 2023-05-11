@@ -12,10 +12,10 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from "@material-ui/core";
+} from "@mui/material";
 import FileUpload from "./FileUpload";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -67,7 +67,7 @@ const FileUploadDialogSingle = (props) => {
   };
 
   /**
-   * Logic that needs to be run after a file has been added to the
+   * Logic that needs to be run after a file has been added to the uploader
    * @param error
    * @param file
    */
@@ -192,6 +192,7 @@ const FileUploadDialogSingle = (props) => {
         <Grid container>
           <Grid item xs={12} md={12}>
             <TextField
+              variant="standard"
               autoFocus
               className={classes.textField}
               id="standard-multiline-flexible"
@@ -199,17 +200,16 @@ const FileUploadDialogSingle = (props) => {
               multiline={false}
               value={null}
               onChange={handleFileNameChange}
-              fullWidth
-            />
+              fullWidth />
 
-            <FormControl>
+            <FormControl variant="standard">
               <InputLabel>Type</InputLabel>
               <Select
+                variant="standard"
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
-                onChange={handleFileTypeChange}
-              >
+                onChange={handleFileTypeChange}>
                 <MenuItem
                   value={1}
                   className={classes.inputFieldAdornmentColor}
@@ -238,6 +238,7 @@ const FileUploadDialogSingle = (props) => {
             </FormControl>
 
             <TextField
+              variant="standard"
               className={classes.textField}
               id="standard-multiline-static"
               placeholder={"Description"}
@@ -245,14 +246,12 @@ const FileUploadDialogSingle = (props) => {
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              fullWidth
-            />
+              fullWidth />
           </Grid>
           <Grid item xs={12} md={12} className={classes.fileUpload}>
             <FileUpload
               limit={1}
               sizeLimit={"1024MB"}
-              principal={"project"}
               projectId={props.projectId}
               onFileProcessed={handleOnFileProcessed}
               onFileAdded={handleOnFileAdded}

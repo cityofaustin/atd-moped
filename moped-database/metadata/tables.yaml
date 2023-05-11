@@ -996,7 +996,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -1006,7 +1006,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -1016,7 +1016,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -1526,25 +1526,17 @@
           table:
             name: moped_proj_components_subcomponents
             schema: public
-    - name: moped_proj_features
-      using:
-        foreign_key_constraint_on:
-          column: project_component_id
-          table:
-            name: moped_proj_features
-            schema: public
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1553,13 +1545,12 @@
       permission:
         check: {}
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1568,13 +1559,12 @@
     - role: moped-admin
       permission:
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1583,13 +1573,12 @@
     - role: moped-editor
       permission:
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1598,13 +1587,12 @@
     - role: moped-viewer
       permission:
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1614,13 +1602,12 @@
     - role: moped-admin
       permission:
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -1630,13 +1617,12 @@
     - role: moped-editor
       permission:
         columns:
+          - completion_date
           - component_id
           - date_added
           - description
           - interim_project_component_id
           - is_deleted
-          - name
-          - completion_date
           - phase_id
           - project_component_id
           - project_id
@@ -2000,67 +1986,6 @@
           - project_id
           - workgroups
           - date_added
-        filter: {}
-        check: null
-- table:
-    name: moped_proj_features
-    schema: public
-  object_relationships:
-    - name: moped_proj_component
-      using:
-        foreign_key_constraint_on: project_component_id
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-    - role: moped-editor
-      permission:
-        check: {}
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-        filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
-        filter: {}
-        check: null
-    - role: moped-editor
-      permission:
-        columns:
-          - feature_id
-          - is_deleted
-          - project_component_id
         filter: {}
         check: null
 - table:

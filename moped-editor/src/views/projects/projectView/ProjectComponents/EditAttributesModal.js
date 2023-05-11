@@ -6,9 +6,9 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-} from "@material-ui/core";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
 import {
   UPDATE_COMPONENT_ATTRIBUTES,
   UPDATE_SIGNAL_COMPONENT,
@@ -102,12 +102,21 @@ const EditAttributesModal = ({
       })
         .then(() => {
           onComponentSaveSuccess(updatedClickedComponentState);
-          // Zoom to the new or existing signal
-          zoomMapToFeatureCollection(
-            mapRef,
-            { type: "FeatureCollection", features: [signalFromForm] },
-            fitBoundsOptions.zoomToClickedComponent
-          );
+          const [existingLongitude, existingLatitude] =
+            featureSignalRecord.geography.coordinates[0];
+          const [newLongitude, newLatitude] =
+            signalFromForm.geometry.coordinates;
+          const hasLocationChanged =
+            existingLongitude !== newLongitude ||
+            existingLatitude !== newLatitude;
+
+          // Zoom to the new signal location if it updated
+          hasLocationChanged &&
+            zoomMapToFeatureCollection(
+              mapRef,
+              { type: "FeatureCollection", features: [signalFromForm] },
+              fitBoundsOptions.zoomToClickedComponent
+            );
         })
         .catch((error) => {
           console.log(error);
@@ -153,9 +162,9 @@ const EditAttributesModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle disableTypography className={classes.dialogTitle}>
+      <DialogTitle className={classes.dialogTitle}>
         <h3>Edit component</h3>
-        <IconButton onClick={onClose}>
+        <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

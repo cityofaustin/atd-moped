@@ -86,7 +86,7 @@ export const SETTINGS = [
       },
       {
         key: "milestone_name",
-        label: "Milestone name",
+        label: "Milestone",
       },
       {
         key: "moped_phase",

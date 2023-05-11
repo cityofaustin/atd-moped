@@ -10,9 +10,10 @@ import {
   CardContent,
   Divider,
   Typography,
-  makeStyles,
   CircularProgress,
-} from "@material-ui/core";
+} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 import {
   getSessionDatabaseData,
@@ -22,7 +23,7 @@ import {
 } from "../../../auth/user";
 import emailToInitials from "../../../utils/emailToInitials";
 import { getInitials } from "src/utils/userNames";
-import AddAPhotoIcon from "@material-ui/icons/AddAPhoto";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import FileUploadDialogSimple from "../../../components/FileUpload/FileUploadDialogSimple";
 
 import {
@@ -33,7 +34,7 @@ import {
 
 import { useMutation, useQuery } from "@apollo/client";
 import CDNAvatar from "../../../components/CDN/Avatar";
-import { DeleteForever } from "@material-ui/icons";
+import { DeleteForever } from "@mui/icons-material";
 import config from "../../../config";
 
 const useStyles = makeStyles(() => ({

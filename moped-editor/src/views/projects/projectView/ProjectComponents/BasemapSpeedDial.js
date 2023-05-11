@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import clsx from "clsx";
-import { Icon, makeStyles, Typography } from "@material-ui/core";
-import { SpeedDial, SpeedDialAction } from "@material-ui/lab";
+import { Icon, Typography } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import { SpeedDial, SpeedDialAction } from '@mui/material';
 import {
   MAPBOX_PADDING_PIXELS,
   MAPBOX_CONTROL_BUTTON_WIDTH,

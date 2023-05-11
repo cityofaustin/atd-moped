@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Grid, Typography } from "@material-ui/core";
+import { Box, Grid, Typography } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
 /**
@@ -24,12 +24,11 @@ const ProjectSummaryParentProjectLink = ({ data, classes }) => {
       >
         <RouterLink
           id="projectKnackSyncLink"
-          className={"MuiTypography-body1"}
           to={`/moped/projects/${parentProjectId}`}
         >
           <Typography
             className={classes.fieldLabelText}
-            variant={"inherit"}
+            variant={"body1"}
             color={"primary"}
           >
             {parentProjectName}

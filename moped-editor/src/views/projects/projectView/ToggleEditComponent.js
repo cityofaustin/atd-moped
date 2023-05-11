@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Switch } from "@material-ui/core";
+import { Grid, Switch } from "@mui/material";
 import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 
 /**

@@ -1,4 +1,4 @@
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
 
 export const formatPersonnelActivity = (change, userList) => {
   let changeIcon = <PeopleOutlineIcon />;

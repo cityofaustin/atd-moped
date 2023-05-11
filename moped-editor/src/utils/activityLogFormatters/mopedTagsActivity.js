@@ -1,4 +1,4 @@
-import LocalOfferOutlinedIcon from "@material-ui/icons/LocalOfferOutlined";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 
 export const formatTagsActivity = (change, tagList) => {
   const changeIcon = <LocalOfferOutlinedIcon />;

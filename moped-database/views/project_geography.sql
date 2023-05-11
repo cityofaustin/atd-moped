@@ -1,4 +1,4 @@
--- latest version 1678894870998_remove_cols_from_geo_views
+-- latest version from 1681856452639_normalize_project_components_table
 DROP VIEW "public"."project_geography";
 
 CREATE OR REPLACE VIEW project_geography AS (
@@ -11,7 +11,7 @@ CREATE OR REPLACE VIEW project_geography AS (
         moped_project.project_name AS project_name,
         feature_layers.internal_table AS TABLE,
         feature_layers.reference_layer_primary_key_column AS original_fk,
-        moped_proj_components.name AS component_name,
+        moped_components.component_name AS component_name,
         uniform_features.attributes AS attributes,
         uniform_features.geography AS geography
     FROM

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-import { Box, Button, Icon } from "@material-ui/core";
+import { Box, Button, Icon } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
 /**

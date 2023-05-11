@@ -1,5 +1,5 @@
 import ComponentListItem from "./ComponentListItem";
-import Link from "@material-ui/core/Link";
+import Link from "@mui/material/Link";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
 

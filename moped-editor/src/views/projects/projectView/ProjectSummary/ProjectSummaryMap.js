@@ -1,6 +1,6 @@
 import React, { useCallback, useState, useMemo } from "react";
 import MapGL from "react-map-gl";
-import { Box } from "@material-ui/core";
+import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";

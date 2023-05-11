@@ -11,17 +11,18 @@ import {
   Typography,
   FormControl,
   FormHelperText,
-} from "@material-ui/core";
+} from "@mui/material";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
+  MTableToolbar,
 } from "@material-table/core";
-import Autocomplete from "@material-ui/lab/Autocomplete";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import typography from "../../../theme/typography";
 
@@ -36,7 +37,7 @@ import {
 } from "../../../queries/project";
 
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from '@mui/styles/makeStyles';
 import { getUserFullName } from "src/utils/userNames";
 
 const useStyles = makeStyles((theme) => ({
@@ -195,18 +196,18 @@ const ProjectTeamTable = ({ projectId }) => {
           );
         }
         return (
-          <FormControl style={{ width: "100%" }}>
+          <FormControl variant="standard" style={{ width: "100%" }}>
             <Autocomplete
               id="moped_user_autocomplete"
               name="moped_user_autocomplete"
               options={userOptions}
               getOptionLabel={(option) => getUserFullName(option)}
-              getOptionSelected={(option, value) =>
+              isOptionEqualToValue={(option, value) =>
                 option.user_id === value.user_id
               }
               value={props.value || null}
               onChange={(event, value) => props.onChange(value)}
-              renderInput={(params) => <TextField {...params} autoFocus />}
+              renderInput={(params) => <TextField variant="standard" {...params} autoFocus />}
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
@@ -262,13 +263,13 @@ const ProjectTeamTable = ({ projectId }) => {
         const val = props.value ?? "";
         return (
           <TextField
+            variant="standard"
             id="notes"
             name="notes"
             multiline
             inputProps={{ maxLength: 125 }}
             value={val && val !== "null" ? val : ""}
-            onChange={(e) => props.onChange(e.target.value)}
-          />
+            onChange={(e) => props.onChange(e.target.value)} />
         );
       },
     },
@@ -314,6 +315,12 @@ const ProjectTeamTable = ({ projectId }) => {
               );
             }
           },
+          Toolbar: (props) => (
+            // to have it align with table content
+            <div style={{ marginLeft: "-10px" }}>
+              <MTableToolbar {...props} />
+            </div>
+          )
         }}
         data={personnel}
         title={
@@ -326,6 +333,7 @@ const ProjectTeamTable = ({ projectId }) => {
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+          idSynonym: "project_personnel_id"
         }}
         localization={{
           header: {

@@ -1,12 +1,13 @@
 import { useMemo, useEffect } from "react";
-import { Autocomplete } from "@material-ui/lab";
+import { Autocomplete } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { Icon, makeStyles, TextField } from "@material-ui/core";
+import { Icon, TextField } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
-} from "@material-ui/icons";
+} from "@mui/icons-material";
 import theme from "src/theme/index";
 
 /**
@@ -241,6 +242,12 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
     alignItems: "center",
     marginRight: theme.spacing(1),
   },
+  optionContainer: {
+    display: "flex",
+    justifyContent: "start",
+    alignItems: "center",
+    margin: theme.spacing(1),
+  },
 }));
 
 /**
@@ -248,20 +255,20 @@ const useComponentOptionWithIconStyles = makeStyles((theme) => ({
  * @param {Object} option - Autocomplete option object with label, value, and data about component type
  * @return {JSX.Element}
  */
-export const ComponentOptionWithIcon = ({ option }) => {
+export const ComponentOptionWithIcon = ({ option, state, props }) => {
   const classes = useComponentOptionWithIconStyles();
   const { data: { line_representation = null } = {} } = option;
 
   return (
-    <>
+    <span className={classes.optionContainer} {...props}>
       <span className={classes.iconContainer}>
         <ComponentIconByLineRepresentation
           lineRepresentation={line_representation}
           color={theme.palette.primary.main}
-        />
-      </span>{" "}
+        />{" "}
+      </span>
       {option.label}
-    </>
+    </span>
   );
 };
 
@@ -285,7 +292,7 @@ export const ControlledAutocomplete = ({
         options={options}
         multiple={multiple}
         getOptionLabel={(option) => option?.label || ""}
-        getOptionSelected={(option, value) => option?.value === value?.value}
+        isOptionEqualToValue={(option, value) => option?.value === value?.value}
         renderOption={renderOption}
         value={value}
         disabled={disabled}

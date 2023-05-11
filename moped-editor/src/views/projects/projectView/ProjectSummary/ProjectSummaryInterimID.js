@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@material-ui/core";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import {
@@ -108,13 +108,13 @@ const ProjectSummaryInterimID = ({
         {editMode && (
           <>
             <TextField
+              variant="standard"
               autoFocus
               fullWidth
               id="moped-project-interimID"
               label={null}
               onChange={handleProjectInterimIdChange}
-              value={interimId ?? ""}
-            />
+              value={interimId ?? ""} />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectInterimIdSave}

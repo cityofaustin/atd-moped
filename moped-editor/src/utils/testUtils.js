@@ -1,7 +1,7 @@
 import React from "react";
 import { render } from "@testing-library/react";
 import { BrowserRouter } from "react-router-dom";
-import { ThemeProvider } from "@material-ui/core";
+import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import theme from "src/theme";
 import GlobalStyles from "src/components/GlobalStyles";
 import { UserContext } from "../auth/user";
@@ -33,12 +33,14 @@ const AllTheProviders = ({ children }) => {
 
   return (
     <MockedProvider mocks={apolloMocks} addTypename={false}>
-      <ThemeProvider theme={theme}>
-        <UserContext.Provider value={mockUserContextValues}>
-          <GlobalStyles />
-          <BrowserRouter>{children}</BrowserRouter>
-        </UserContext.Provider>
-      </ThemeProvider>
+      <StyledEngineProvider injectFirst>
+        <ThemeProvider theme={theme}>
+          <UserContext.Provider value={mockUserContextValues}>
+            <GlobalStyles />
+            <BrowserRouter>{children}</BrowserRouter>
+          </UserContext.Provider>
+        </ThemeProvider>
+      </StyledEngineProvider>
     </MockedProvider>
   );
 };

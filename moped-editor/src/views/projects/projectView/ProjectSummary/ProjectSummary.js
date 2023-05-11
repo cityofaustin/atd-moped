@@ -4,10 +4,10 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 
-import { Grid, CardContent, CircularProgress } from "@material-ui/core";
+import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import makeStyles from "@mui/styles/makeStyles";
 import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
@@ -48,6 +48,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     margin: ".25rem 0",
     fontSize: "24px",
+  },
+  editIconConfirmDisabled: {
+    margin: ".25rem 0",
+    fontSize: "24px",
+    color: theme.palette.text.secondary,
   },
   fieldLabel: {
     width: "100%",
@@ -176,9 +181,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                   field="Lead"
                   idColumn={"entity_id"}
                   nameColumn={"entity_name"}
-                  initialValue={
-                    data?.moped_project[0]?.moped_project_lead
-                  }
+                  initialValue={data?.moped_project[0]?.moped_project_lead}
                   optionList={data?.moped_entity ?? []}
                   updateMutation={PROJECT_UPDATE_LEAD}
                   tooltipText="Division, department, or organization responsible for successful project implementation"

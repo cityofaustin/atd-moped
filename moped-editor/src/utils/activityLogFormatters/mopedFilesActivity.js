@@ -1,4 +1,4 @@
-import AttachFileOutlined from "@material-ui/icons/AttachFileOutlined";
+import AttachFileOutlined from "@mui/icons-material/AttachFileOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatFilesActivity = (change) => {

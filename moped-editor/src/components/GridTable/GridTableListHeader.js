@@ -1,7 +1,7 @@
 import React from "react";
 
-import { TableHead, TableRow, TableCell, Icon, Grid } from "@material-ui/core";
-import makeStyles from "@material-ui/core/styles/makeStyles";
+import { TableHead, TableRow, TableCell, Icon, Grid } from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 
 /**
  * GridTableListHeader Styles

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
-import { CircularProgress, TextField } from "@material-ui/core";
-import { Autocomplete, Alert } from "@material-ui/lab";
+import { CircularProgress, TextField } from "@mui/material";
+import { Autocomplete, Alert } from '@mui/material';
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   getSignalOptionLabel,
@@ -54,7 +54,7 @@ const SignalComponentAutocomplete = React.forwardRef(
         className={classes}
         id="signal-id"
         filterOptions={filterOptions}
-        getOptionSelected={getSignalOptionSelected}
+        isOptionEqualToValue={getSignalOptionSelected}
         // this label formatting mirrors the Data Tracker formatting
         getOptionLabel={getSignalOptionLabel}
         onChange={(_event, option) => onChange(option)}

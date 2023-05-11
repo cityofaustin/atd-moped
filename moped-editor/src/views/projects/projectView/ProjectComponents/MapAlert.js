@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert } from "@material-ui/lab";
+import { Alert } from '@mui/material';
 
 const MapAlert = ({ message, severity, isOpen, alertProps }) => {
   return (

@@ -5,11 +5,12 @@ import {
   IconButton,
   Grid,
   Button,
-} from "@material-ui/core";
-import TimelineIcon from "@material-ui/icons/Timeline";
-import ListIcon from "@material-ui/icons/List";
-import { makeStyles } from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+  Typography,
+} from "@mui/material";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import ListIcon from "@mui/icons-material/List";
+import makeStyles from "@mui/styles/makeStyles";
+import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -22,6 +23,10 @@ const useStyles = makeStyles((theme) => ({
   dialogContent: {
     paddingBottom: theme.spacing(3),
   },
+  titleStyles: {
+    fontWeight: 500,
+    fontSize: "20px",
+  },
 }));
 
 const EditModeDialog = ({ showDialog, editDispatch, onEditFeatures }) => {
@@ -33,9 +38,11 @@ const EditModeDialog = ({ showDialog, editDispatch, onEditFeatures }) => {
 
   return (
     <Dialog open={showDialog} onClose={onClose}>
-      <DialogTitle disableTypography className={classes.dialogTitle}>
-        <h3>What do you want to edit?</h3>
-        <IconButton onClick={onClose}>
+      <DialogTitle className={classes.dialogTitle}>
+        <Typography className={classes.titleStyles}>
+          What do you want to edit?
+        </Typography>
+        <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
       </DialogTitle>

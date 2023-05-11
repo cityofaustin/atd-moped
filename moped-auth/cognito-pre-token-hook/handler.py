@@ -13,7 +13,6 @@ from typing import Optional
 AWS_COGNITO_DYNAMO_TABLE_NAME = os.getenv("AWS_COGNITO_DYNAMO_TABLE_NAME", None)
 AWS_COGNITO_DYNAMO_SECRET_NAME = os.getenv("AWS_COGNITO_DYNAMO_SECRET_NAME", None)
 
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 

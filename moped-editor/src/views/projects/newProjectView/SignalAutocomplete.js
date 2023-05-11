@@ -1,6 +1,6 @@
 import React from "react";
-import { CircularProgress } from "@material-ui/core";
-import { Autocomplete, Alert } from "@material-ui/lab";
+import { CircularProgress } from "@mui/material";
+import { Autocomplete, Alert } from '@mui/material';
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   knackSignalRecordToFeatureSignalsRecord,
@@ -58,7 +58,7 @@ const SignalAutocomplete = ({
     <Autocomplete
       id="signal-id"
       filterOptions={filterOptions}
-      getOptionSelected={getSignalOptionSelected}
+      isOptionEqualToValue={getSignalOptionSelected}
       getOptionLabel={getSignalOptionLabel}
       onChange={(e, signal) => {
         handleFieldChange(signal);

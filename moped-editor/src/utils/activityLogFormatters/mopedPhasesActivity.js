@@ -1,4 +1,4 @@
-import EventNoteOutlinedIcon from '@material-ui/icons/EventNoteOutlined';
+import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatPhasesActivity = (change, phaseList, subphaseList) => {
