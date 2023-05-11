@@ -989,7 +989,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -999,7 +999,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -1009,7 +1009,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id

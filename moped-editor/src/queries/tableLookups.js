@@ -26,6 +26,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
       }
     }
     moped_components(
+      where: { is_deleted: { _eq: false } }
       order_by: [{ component_name: asc }, { component_subtype: asc }]
     ) {
       component_name
