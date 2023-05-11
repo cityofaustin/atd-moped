@@ -10,6 +10,10 @@ on:
       - production
     paths:
       - "moped-auth/cognito-pre-token-hook/**"
+  workflow_dispatch:
+    inputs:
+      description:
+        default: ""
 jobs:
   build:
     name: Build
@@ -17,6 +21,7 @@ jobs:
     steps:
       - uses: actions/setup-python@v4
         with:
+          # this python version must be compatible with aws lambda!
           python-version: "3.8"
           architecture: "x64"
       # Get the code first

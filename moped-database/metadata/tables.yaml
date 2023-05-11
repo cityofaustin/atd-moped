@@ -143,12 +143,12 @@
     - name: activity_log_feature_drawn_lines
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -278,12 +278,12 @@
     - name: activity_log_feature_drawn_points
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -413,12 +413,12 @@
     - name: activity_log_feature_intersections
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -590,12 +590,12 @@
     - name: activity_log_feature_signals
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -760,12 +760,12 @@
     - name: activity_log_feature_street_segments
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -930,6 +930,77 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: moped_component_tags
+    schema: public
+  array_relationships:
+    - name: moped_proj_component_tags
+      using:
+        foreign_key_constraint_on:
+          column: component_tag_id
+          table:
+            name: moped_proj_component_tags
+            schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - name
+          - slug
+          - type
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - name
+          - slug
+          - type
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - name
+          - slug
+          - type
+        filter: {}
+- table:
+    name: moped_component_work_types
+    schema: public
+  object_relationships:
+    - name: moped_component
+      using:
+        foreign_key_constraint_on: component_id
+    - name: moped_work_type
+      using:
+        foreign_key_constraint_on: work_type_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - component_id
+          - id
+          - work_type_id
+        filter: {}
+- table:
     name: moped_components
     schema: public
   object_relationships:
@@ -937,6 +1008,13 @@
       using:
         foreign_key_constraint_on: feature_layer_id
   array_relationships:
+    - name: moped_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            name: moped_component_work_types
+            schema: public
     - name: moped_components_subcomponents
       using:
         foreign_key_constraint_on:
@@ -944,13 +1022,20 @@
           table:
             name: moped_components_subcomponents
             schema: public
+    - name: moped_proj_components
+      using:
+        foreign_key_constraint_on:
+          column: component_id
+          table:
+            name: moped_proj_components
+            schema: public
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -960,7 +1045,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -970,7 +1055,7 @@
         columns:
           - component_id
           - component_name
-          - status_id
+          - is_deleted
           - component_subtype
           - line_representation
           - feature_layer_id
@@ -1294,6 +1379,234 @@
           - phase_key
         filter: {}
 - table:
+    name: moped_proj_component_tags
+    schema: public
+  object_relationships:
+    - name: moped_component_tag
+      using:
+        foreign_key_constraint_on: component_tag_id
+    - name: moped_proj_component
+      using:
+        foreign_key_constraint_on: project_component_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - component_tag_id
+          - is_deleted
+          - project_component_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - component_tag_id
+          - is_deleted
+          - project_component_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - component_tag_id
+          - id
+          - project_component_id
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - component_tag_id
+          - id
+          - project_component_id
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - component_tag_id
+          - id
+          - project_component_id
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - component_tag_id
+          - is_deleted
+          - project_component_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - component_tag_id
+          - is_deleted
+          - project_component_id
+        filter: {}
+        check: {}
+  event_triggers:
+    - name: activity_log_proj_component_tags
+      definition:
+        delete:
+          columns: "*"
+        enable_manual: false
+        insert:
+          columns: "*"
+        update:
+          columns: "*"
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                }
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
+- table:
+    name: moped_proj_component_work_types
+    schema: public
+  object_relationships:
+    - name: moped_proj_component
+      using:
+        foreign_key_constraint_on: project_component_id
+    - name: moped_work_type
+      using:
+        foreign_key_constraint_on: work_type_id
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - project_component_id
+          - work_type_id
+          - is_deleted
+        filter: {}
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+        filter: {}
+        check: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - project_component_id
+          - work_type_id
+        filter: {}
+        check: {}
+  event_triggers:
+    - name: activity_log_proj_component_work_types
+      definition:
+        delete:
+          columns: "*"
+        enable_manual: false
+        insert:
+          columns: "*"
+        update:
+          columns: "*"
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                }
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
+- table:
     name: moped_proj_components
     schema: public
   object_relationships:
@@ -1351,6 +1664,20 @@
           insertion_order: null
           remote_table:
             name: feature_street_segments
+            schema: public
+    - name: moped_proj_component_tags
+      using:
+        foreign_key_constraint_on:
+          column: project_component_id
+          table:
+            name: moped_proj_component_tags
+            schema: public
+    - name: moped_proj_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: project_component_id
+          table:
+            name: moped_proj_component_work_types
             schema: public
     - name: moped_proj_components_subcomponents
       using:
@@ -1466,12 +1793,12 @@
     - name: activity_log_moped_proj_components
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -1680,12 +2007,12 @@
     - name: activity_log_moped_proj_contract
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -1959,12 +2286,12 @@
     - name: activity_log_moped_proj_funding
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2185,12 +2512,12 @@
     - name: activity_log_moped_proj_milestones
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2340,12 +2667,12 @@
     - name: activity_log_moped_proj_notes
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2470,12 +2797,12 @@
     - name: activity_log_moped_proj_partners
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2620,12 +2947,12 @@
     - name: activity_log_moped_proj_personnel
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2735,12 +3062,12 @@
     - name: activity_log_moped_proj_personnel_roles
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2894,12 +3221,12 @@
     - name: activity_log_moped_proj_phases
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3015,10 +3342,10 @@
     - name: activity_log_moped_project_tags
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
           columns:
             - id
@@ -3332,10 +3659,10 @@
     - name: activity_log_moped_project
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
           columns:
             - ecapris_subproject_id
@@ -3538,12 +3865,12 @@
     - name: activity_log_moped_project_files
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3712,12 +4039,12 @@
     - name: activity_log_moped_project_types
       definition:
         delete:
-          columns: '*'
+          columns: "*"
         enable_manual: false
         insert:
-          columns: '*'
+          columns: "*"
         update:
-          columns: '*'
+          columns: "*"
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -4324,3 +4651,46 @@
 - table:
     name: uniform_features
     schema: public
+- table:
+    name: moped_work_types
+    schema: public
+  array_relationships:
+    - name: moped_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_component_work_types
+            schema: public
+    - name: moped_proj_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_proj_component_work_types
+            schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}

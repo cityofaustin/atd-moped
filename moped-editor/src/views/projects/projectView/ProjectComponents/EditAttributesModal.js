@@ -102,12 +102,21 @@ const EditAttributesModal = ({
       })
         .then(() => {
           onComponentSaveSuccess(updatedClickedComponentState);
-          // Zoom to the new or existing signal
-          zoomMapToFeatureCollection(
-            mapRef,
-            { type: "FeatureCollection", features: [signalFromForm] },
-            fitBoundsOptions.zoomToClickedComponent
-          );
+          const [existingLongitude, existingLatitude] =
+            featureSignalRecord.geography.coordinates[0];
+          const [newLongitude, newLatitude] =
+            signalFromForm.geometry.coordinates;
+          const hasLocationChanged =
+            existingLongitude !== newLongitude ||
+            existingLatitude !== newLatitude;
+
+          // Zoom to the new signal location if it updated
+          hasLocationChanged &&
+            zoomMapToFeatureCollection(
+              mapRef,
+              { type: "FeatureCollection", features: [signalFromForm] },
+              fitBoundsOptions.zoomToClickedComponent
+            );
         })
         .catch((error) => {
           console.log(error);
