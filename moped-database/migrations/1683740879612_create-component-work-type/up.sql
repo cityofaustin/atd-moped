@@ -47,7 +47,7 @@ WITH inserts_todo AS (
         LEFT JOIN moped_components ON TRUE
         LEFT JOIN moped_work_types mwt ON data.work_type_key = mwt.key
     WHERE
-        moped_components.status_id = 1
+        moped_components.is_deleted = FALSE
 ) INSERT INTO moped_component_work_types (work_type_id, component_id)
 SELECT
     *
