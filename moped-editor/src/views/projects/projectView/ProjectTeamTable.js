@@ -333,6 +333,7 @@ const ProjectTeamTable = ({ projectId }) => {
           search: false,
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
+          idSynonym: "project_personnel_id"
         }}
         localization={{
           header: {
