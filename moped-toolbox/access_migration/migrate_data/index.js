@@ -236,6 +236,7 @@ async function main(env) {
       });
     } catch (error) {
       logger.error({ message: error });
+      debugger;
       break;
     }
   }
