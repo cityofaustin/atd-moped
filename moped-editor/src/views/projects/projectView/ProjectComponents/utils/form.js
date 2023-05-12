@@ -101,6 +101,26 @@ export const useSubphaseOptions = (subphases) =>
     return options;
   }, [subphases]);
 
+
+/**
+ * Take the moped_component_tags records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_component_tags records
+ * @returns {Array} The options with value, label, and full data object to produce the component tags options
+ */
+export const useComponentTagsOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_component_tags.map((tag) => ({
+      value: tag.id,
+      label: tag.name,
+      data: tag,
+    }));
+
+    return options;
+  }, [data]);
+
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,

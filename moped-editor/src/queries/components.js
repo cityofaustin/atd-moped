@@ -30,6 +30,12 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
         subphase_name
       }
     }
+    moped_component_tags(where: { is_deleted: {_eq: false}}) {
+      name
+      slug
+      type
+      id
+    }
   }
 `;
 
