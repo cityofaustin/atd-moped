@@ -204,8 +204,6 @@ const ComponentForm = ({
             />
           </Grid>
         )}
-        {/* Hide unless there are subcomponents for the chosen component */}
-        {true && (
           <Grid item xs={12}>
             <ControlledAutocomplete
               id="tags"
@@ -216,7 +214,6 @@ const ComponentForm = ({
               control={control}
             />
           </Grid>
-        )}
         <Grid item xs={12}>
           <TextField
             inputRef={register}

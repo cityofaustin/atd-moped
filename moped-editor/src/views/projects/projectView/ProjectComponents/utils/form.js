@@ -101,7 +101,6 @@ export const useSubphaseOptions = (subphases) =>
     return options;
   }, [subphases]);
 
-
 /**
  * Take the moped_component_tags records data response and create options for a MUI autocomplete
  * @param {Object} data Data returned with moped_component_tags records
@@ -113,13 +112,14 @@ export const useComponentTagsOptions = (data) =>
 
     const options = data.moped_component_tags.map((tag) => ({
       value: tag.id,
-      label: tag.name,
+      label: `${tag.type.charAt(0).toUpperCase() + tag.type.slice(1)} - ${
+        tag.name
+      }`,
       data: tag,
     }));
 
     return options;
   }, [data]);
-
 
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,

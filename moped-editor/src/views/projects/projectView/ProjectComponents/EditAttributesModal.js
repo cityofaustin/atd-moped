@@ -1,13 +1,8 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   UPDATE_COMPONENT_ATTRIBUTES,
@@ -55,7 +50,7 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase } = formData;
+    const { description, subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -67,6 +62,18 @@ const EditAttributesModal = ({
           project_component_id: projectComponentId,
         }))
       : [];
+
+    const tagsArray = tags
+      ? tags.map((tag) => ({
+          component_tag_id: tag.value,
+          is_deleted: false,
+          project_component_id: projectComponentId,
+        }))
+      : [];
+
+    console.log(tagsArray)
+
+    console.log(formData);
 
     if (isSavingSignalFeature) {
       const signalFromForm = formData.signal;
@@ -140,7 +147,7 @@ const EditAttributesModal = ({
           completionDate,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState)) //breadcrumb
         .catch((error) => {
           console.log(error);
         });
