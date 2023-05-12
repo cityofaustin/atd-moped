@@ -66,6 +66,7 @@ $ node index.js local
 ---> we can drop the project facility attribute detail. the rest are subcomponents. john to copy to component description with subcomponent type (facility attribute).
 --->
 
+- how to handle unmapped components?
 - clean up/de-dupe RRFB component
 - implement new subcomponents / split out work types
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
