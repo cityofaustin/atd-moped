@@ -54,11 +54,14 @@ const ProjectSummaryMap = ({ parentProjectId }) => {
 
   const projectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(projectComponents);
+  const childComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(childComponents);
 
   useZoomToExistingComponents(mapRefState, data);
 
   const areThereComponentFeatures =
-    projectComponentsFeatureCollection.features.length > 0;
+    projectComponentsFeatureCollection.features.length > 0 ||
+    childComponentsFeatureCollection.features.length > 0;
 
   if (error) console.log(error);
 
@@ -92,7 +95,7 @@ const ProjectSummaryMap = ({ parentProjectId }) => {
           <RelatedProjectSourcesAndLayers
             isCreatingComponent={false}
             isEditingComponent={false}
-            featureCollection={childComponents}
+            featureCollection={childComponentsFeatureCollection}
             shouldShowRelatedProjects={true}
             clickedComponent={null}
           />
