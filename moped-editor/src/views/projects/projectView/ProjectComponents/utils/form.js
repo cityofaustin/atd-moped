@@ -128,7 +128,8 @@ export const useInitialValuesOnAttributesEdit = (
   subcomponentOptions,
   phaseOptions,
   subphaseOptions,
-  areSignalOptionsLoaded
+  areSignalOptionsLoaded,
+  componentTagsOptions
 ) => {
   // Set the selected component after the component options are loaded
   useEffect(() => {
@@ -233,6 +234,24 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("completionDate", initialFormValues?.component?.completion_date);
   }, [initialFormValues, setValue]);
+
+  // Set the tags value
+  useEffect(() => {
+    if (!initialFormValues) return;
+    if (componentTagsOptions.length === 0) return;
+    if (initialFormValues.tags.length === 0) return;
+
+    const selectedTags = initialFormValues.tags.map(
+      (tag) => ({
+        value: tag.component_tag_id,
+        label: componentTagsOptions.find(
+          (option) => option.value === tag.component_tag_id
+        ).label,
+      })
+    );
+
+    setValue("tags", selectedTags);
+  }, [componentTagsOptions, initialFormValues, setValue]);
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({

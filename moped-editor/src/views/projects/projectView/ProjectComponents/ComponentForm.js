@@ -113,6 +113,8 @@ const ComponentForm = ({
     !!initialFormValues?.component.moped_phase
   );
 
+  console.log(componentTagsOptions)
+
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
@@ -120,7 +122,8 @@ const ComponentForm = ({
     subcomponentOptions,
     phaseOptions,
     subphaseOptions,
-    areSignalOptionsLoaded
+    areSignalOptionsLoaded,
+    componentTagsOptions
   );
 
   // Reset signal field when component changes so signal matches component signal type

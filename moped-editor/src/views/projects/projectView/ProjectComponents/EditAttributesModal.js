@@ -63,6 +63,7 @@ const EditAttributesModal = ({
         }))
       : [];
 
+
     const tagsArray = tags
       ? tags.map((tag) => ({
           component_tag_id: tag.value,
@@ -70,10 +71,6 @@ const EditAttributesModal = ({
           project_component_id: projectComponentId,
         }))
       : [];
-
-    console.log(tagsArray)
-
-    console.log(formData);
 
     if (isSavingSignalFeature) {
       const signalFromForm = formData.signal;
@@ -91,6 +88,7 @@ const EditAttributesModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
+        moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
@@ -104,6 +102,7 @@ const EditAttributesModal = ({
           signals: [signalToInsert],
           phaseId: phase?.data.phase_id,
           subphaseId: subphase?.data.subphase_id,
+          componentTags: tagsArray,
           completionDate,
         },
       })
@@ -132,6 +131,7 @@ const EditAttributesModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
+        moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
@@ -144,6 +144,7 @@ const EditAttributesModal = ({
           subcomponents: subcomponentsArray,
           phaseId: phase?.data.phase_id,
           subphaseId: subphase?.data.subphase_id,
+          componentTags: tagsArray,
           completionDate,
         },
       })
@@ -158,6 +159,8 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
+  console.log(componentToEdit)
+
   const initialFormValues = {
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
@@ -165,7 +168,10 @@ const EditAttributesModal = ({
     phase: componentToEdit?.moped_phase,
     subphase: componentToEdit?.moped_subphase,
     completionDate: componentToEdit?.completion_date,
+    tags: componentToEdit?.moped_proj_component_tags,
   };
+
+  console.log(initialFormValues)
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
