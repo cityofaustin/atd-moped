@@ -8,6 +8,7 @@ import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers"
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
 import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
 import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
+import RelatedProjectSourcesAndLayers from "../ProjectComponents/RelatedProjectSourcesAndLayers";
 import {
   basemaps,
   mapParameters,
@@ -49,29 +50,10 @@ const ProjectSummaryMap = ({ parentProjectId }) => {
     fetchPolicy: "no-cache",
   });
 
-  const { projectComponents, allRelatedComponents } =
-    useProjectComponents(data);
+  const { projectComponents, childComponents } = useProjectComponents(data);
 
   const projectComponentsFeatureCollection =
     useAllComponentsFeatureCollection(projectComponents);
-
-  // const { projectComponents, allRelatedComponents } =
-  //   useProjectComponents(data);
-
-  // const projectFeatureCollection = useMemo(() => {
-  //   const featureCollection = {
-  //     type: "FeatureCollection",
-  //     features: [],
-  //   };
-
-  //   if (!data?.project_geography) return featureCollection;
-
-  //   const projectGeographyGeoJSONFeatures = data.project_geography.map(
-  //     (feature) => makeFeatureFromProjectGeographyRecord(feature)
-  //   );
-
-  //   return { ...featureCollection, features: projectGeographyGeoJSONFeatures };
-  // }, [data]);
 
   useZoomToExistingComponents(mapRefState, data);
 
@@ -106,6 +88,13 @@ const ProjectSummaryMap = ({ parentProjectId }) => {
               projectComponentsFeatureCollection
             }
             draftEditComponent={null}
+          />
+          <RelatedProjectSourcesAndLayers
+            isCreatingComponent={false}
+            isEditingComponent={false}
+            featureCollection={childComponents}
+            shouldShowRelatedProjects={true}
+            clickedComponent={null}
           />
           {/* <ProjectSummaryMapSourcesAndLayers
             projectFeatureCollection={projectFeatureCollection}
