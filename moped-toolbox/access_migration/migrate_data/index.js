@@ -25,6 +25,9 @@ const DELETE_ALL_PROJECTS_MUTATION = gql`
     delete_moped_project(where: { project_id: { _is_null: false } }) {
       __typename
     }
+    delete_features(where: { id: { _is_null: false } }) {
+      __typename
+    }
   }
 `;
 
