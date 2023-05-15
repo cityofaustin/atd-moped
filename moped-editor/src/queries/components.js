@@ -30,7 +30,7 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
         subphase_name
       }
     }
-    moped_component_tags(where: { is_deleted: {_eq: false}}) {
+    moped_component_tags(where: { is_deleted: { _eq: false } }) {
       name
       slug
       type
@@ -67,7 +67,7 @@ export const GET_PROJECT_COMPONENTS = gql`
     moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
       subcomponent_id
     }
-    moped_proj_component_tags(where: {is_deleted: { _eq: false}}) {
+    moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
       component_tag_id
     }
     moped_phase {

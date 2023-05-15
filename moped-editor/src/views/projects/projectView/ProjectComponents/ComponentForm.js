@@ -113,8 +113,6 @@ const ComponentForm = ({
     !!initialFormValues?.component.moped_phase
   );
 
-  console.log(componentTagsOptions)
-
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
@@ -207,16 +205,16 @@ const ComponentForm = ({
             />
           </Grid>
         )}
-          <Grid item xs={12}>
-            <ControlledAutocomplete
-              id="tags"
-              label="Tags"
-              multiple
-              options={componentTagsOptions}
-              name="tags"
-              control={control}
-            />
-          </Grid>
+        <Grid item xs={12}>
+          <ControlledAutocomplete
+            id="tags"
+            label="Tags"
+            multiple
+            options={componentTagsOptions}
+            name="tags"
+            control={control}
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             inputRef={register}
