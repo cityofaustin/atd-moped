@@ -1,17 +1,20 @@
 import React, { useCallback, useState, useMemo } from "react";
 import { useQuery } from "@apollo/client";
+import { useParams } from "react-router";
 import MapGL from "react-map-gl";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
 import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
+import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
 import {
   basemaps,
   mapParameters,
   initialViewState,
 } from "../ProjectComponents/mapSettings";
 import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
+import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
@@ -22,8 +25,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
  * @see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
  * @returns {Array} - [mapRef, mapRefState] - mapRef is a callback ref, mapRefState is a state variable
  */
-const useMapRef = ({ parentProjectId }) => {
-  const { projectId } = useParams();
+const useMapRef = () => {
   const [mapRefState, setMapRefState] = useState(null);
   const mapRef = useCallback((mapInstance) => {
     if (mapInstance !== null) {
@@ -34,7 +36,8 @@ const useMapRef = ({ parentProjectId }) => {
   return [mapRef, mapRefState];
 };
 
-const ProjectSummaryMap = () => {
+const ProjectSummaryMap = ({ parentProjectId }) => {
+  const { projectId } = useParams();
   const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
 
@@ -73,7 +76,7 @@ const ProjectSummaryMap = () => {
   useZoomToExistingComponents(mapRefState, data);
 
   const areThereComponentFeatures =
-    projectFeatureCollection.features.length > 0;
+    projectComponentsFeatureCollection.features.length > 0;
 
   if (error) console.log(error);
 

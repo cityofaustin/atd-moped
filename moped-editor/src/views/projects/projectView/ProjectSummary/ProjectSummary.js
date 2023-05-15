@@ -121,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch }) => {
+const ProjectSummary = ({ loading, error, data, refetch, parentProjectId }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -293,7 +293,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
           <Grid item xs={12} md={6}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
-                <ProjectSummaryMap data={data} />
+                <ProjectSummaryMap
+                  data={data}
+                  parentProjectId={parentProjectId}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />
