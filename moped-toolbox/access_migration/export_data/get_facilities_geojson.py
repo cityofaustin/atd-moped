@@ -3,7 +3,7 @@ import json
 import arcgis
 from secrets import AGOL_USER, AGOL_PW
 
-out_dir = "/app/migrate_data/data/raw"
+out_dir = "../migrate_data/data/agol"
 
 services = [
     { "name": "lines", "id": "879053efe2314d67a5b7f7c062381059"},
@@ -25,7 +25,7 @@ def main():
         featureSetGeomOnly = arcgis.features.FeatureSet( [f for f in featureSet.features if f.geometry])
         # save this data as geojson
         geojson = featureSetGeomOnly.to_geojson
-        fname = f"{out_dir}/agol_facilities_{service_def['name']}.geojson"
+        fname = f"{out_dir}/interim_facility_{service_def['name']}.geojson"
         print(f"Saving to {fname}")
         with open(fname, "w") as fout:
             fout.write(geojson)

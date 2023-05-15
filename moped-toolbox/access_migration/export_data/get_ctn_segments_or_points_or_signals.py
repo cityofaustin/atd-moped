@@ -7,6 +7,8 @@ out_dir = "../migrate_data/data/agol"
 
 services = [
     { "name": "ctn_segments", "id": "24455c781dbd48669c601ede4b365d1f"},
+    { "name": "ctn_intersections", "id": "d92be8916fd24966aa9c33c481cd1a2c"},
+    {"name": "signals", "id": "e6eb94d1e7cc45c2ac452af6ae6aa534"}
 ]
 
 def main():

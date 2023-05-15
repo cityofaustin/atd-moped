@@ -13,6 +13,10 @@
     "@turf/boolean-contains": "^6.5.0",
     "@turf/boolean-intersects": "^6.5.0",
     "@turf/buffer": "^6.5.0",
+    "@turf/dissolve": "^6.5.0",
+    "@turf/distance": "^6.5.0",
+    "@turf/flatten": "^6.5.0",
+    "@turf/nearest-point": "^6.5.0",
     "@turf/union": "^6.5.0",
     "graphql-request": "^5.0.0",
     "winston": "^3.8.2"

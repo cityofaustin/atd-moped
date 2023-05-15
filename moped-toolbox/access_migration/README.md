@@ -66,6 +66,9 @@ $ node index.js local
 ---> we can drop the project facility attribute detail. the rest are subcomponents. john to copy to component description with subcomponent type (facility attribute).
 --->
 
+- SRTS ID field on components form -> alphanum
+- add interim_project_id to project_list_view and add to advanced search
+- there are facility spatial records with multiple features within one layer and across geom types.
 - how to handle unmapped components?
 - clean up/de-dupe RRFB component
 - implement new subcomponents / split out work types
@@ -83,6 +86,8 @@ $ node index.js local
 
 ### NW Questions
 
+
+- we need to convert unmatched signals to intersection - improvement: moped requires signal to exist in the data tracker
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - project description - these are not public friendly. there are very view "project description" public. propose we import project description as a note? but these projects need descriptions :/
 - is there a table that holds project partners? where does the concatenation come from on the main projects table?

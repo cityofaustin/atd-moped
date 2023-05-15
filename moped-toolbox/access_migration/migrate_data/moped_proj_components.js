@@ -1,4 +1,4 @@
-const { loadJsonFile } = require("./utils/loader");
+const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
 const { mapRow } = require("./utils/misc");
@@ -13,10 +13,12 @@ const { mapRow } = require("./utils/misc");
  */
 const FACILITIES_FNAME = "./data/raw/project_facilities.json";
 const FACILITY_ATTRS_FNAME = "./data/raw/facility_attributes.json";
-const FACILITY_GEOM_FNAME = "./data/agol/ctn_segments_matched.geojson";
+const FACILITY_GEOM_LINES_FNAME = "./data/agol/ctn_segments_matched.geojson";
+const FACILITY_GEOM_POINTS_FNAME = "./data/agol/ctn_points_matched.geojson";
 const FACILITIES = loadJsonFile(FACILITIES_FNAME);
 const FACILITY_ATTRS = loadJsonFile(FACILITY_ATTRS_FNAME);
-const LINE_FEATURES = loadJsonFile(FACILITY_GEOM_FNAME);
+const LINE_FEATURES = loadJsonFile(FACILITY_GEOM_LINES_FNAME);
+const POINT_FEATURES = loadJsonFile(FACILITY_GEOM_POINTS_FNAME);
 
 const componentFields = [
   {
@@ -77,6 +79,18 @@ const subcomponentFields = [
   },
 ];
 
+/**
+ * Convert point geomtery to MultiPoint
+ */
+const makeMultiPoint = (geometry) => {
+  if (geometry.type !== "Point") {
+    throw "Not a point geomtery";
+  }
+  return { type: "MultiPoint", coordinates: [geometry.coordinates] };
+};
+
+const isSignalComponent = (componentId) => [16, 18].includes(componentId);
+
 function getComponents() {
   const components = FACILITIES.map((row) => mapRow(row, componentFields));
   const subcomponents = FACILITY_ATTRS.map((row) =>
@@ -100,7 +114,10 @@ function getComponents() {
     {}
   );
 
-  return components
+  const unmapped = [];
+  const multigeotype = [];
+
+  const componentIndex = components
     .filter(
       (component) => component.component_id === 0 || !!component.component_id
     )
@@ -114,14 +131,50 @@ function getComponents() {
           data: theseSubccomponents,
         };
       }
+
       // attach features
       const drawnLineFeature =
         LINE_FEATURES[interim_project_component_id]?.originalFeature;
 
-      const ctnFeatures =
+      const ctnLineFeatures =
         LINE_FEATURES[interim_project_component_id]?.ctnFeatures;
 
-      if (drawnLineFeature) {
+      const drawnPointFeature =
+        POINT_FEATURES[interim_project_component_id]?.originalFeature;
+      const ctnPointFeature =
+        POINT_FEATURES[interim_project_component_id]?.ctnFeature;
+
+      if (drawnPointFeature && drawnLineFeature) {
+        // todo: how to handle?
+        multigeotype.push(comp);
+        console.log("skipping multigeotype - count at ", multigeotype.length);
+        return index;
+      }
+      if (isSignalComponent(comp.component_id)) {
+        const signalFeature =
+          POINT_FEATURES[interim_project_component_id]?.signalFeature;
+        if (!signalFeature) {
+          unmapped.push(comp);
+          // throw `Signal component with no signal found!`;
+        } else {
+          const featureRecord = {
+            signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
+            knack_id: signalFeature.properties.id,
+            location_name: signalFeature.properties.LOCATION_NAME,
+            signal_type: signalFeature.properties.SIGNAL_TYPE,
+            geography: signalFeature.geometry,
+          };
+          if (featureRecord.geography.type !== "MultiPoint") {
+            // make multipoint if necessary :/
+            // some signals are multipoint already, which is baffling but ok
+            featureRecord.geography.type = "MultiPoint";
+            featureRecord.geography.coordinates = [
+              featureRecord.geography.coordinates,
+            ];
+          }
+          comp.feature_signals = { data: featureRecord };
+        }
+      } else if (drawnLineFeature) {
         // convert to multiline: //todo: do this in preprocessign script
         if (drawnLineFeature.geometry.type === "LineString") {
           drawnLineFeature.geometry.type = "MultiLineString";
@@ -135,20 +188,39 @@ function getComponents() {
           geography: drawnLineFeature.geometry,
         };
         comp.feature_drawn_lines = { data: featureRecord };
+      } else if (drawnPointFeature) {
+        if (ctnPointFeature) {
+          const featureRecord = {
+            source_layer: "ATD_ADMIN.CTN_Intersections",
+            intersection_id: ctnPointFeature.properties.INTERSECTIONID,
+            geography: makeMultiPoint(ctnPointFeature.geometry),
+          };
+          comp.feature_intersections = { data: featureRecord };
+        } else {
+          const featureRecord = {
+            source_layer: "drawnByUserPoint",
+            project_extent_id: "testtodouuid",
+            geography: makeMultiPoint(drawnPointFeature.geometry),
+          };
+          comp.feature_drawn_points = { data: featureRecord };
+        }
+      } else {
+        // todo: how to handle?
+        unmapped.push(comp);
       }
+
       const projectId = comp.interim_project_id;
       index[projectId] ??= [];
       delete comp.interim_project_id;
       index[projectId].push(comp);
 
-      if (ctnFeatures?.length > 0) {
+      if (ctnLineFeatures?.length > 0) {
         // temp duplicate component with snapped segments
         const comp2 = { ...comp };
-
         comp2.description = "CTN SEGMENTS ONLY";
         comp2.feature_drawn_lines = { data: [] };
         comp2.feature_street_segments = {
-          data: ctnFeatures.map((segment) => {
+          data: ctnLineFeatures.map((segment) => {
             const geography = segment.geometry;
             if (geography.type === "LineString") {
               geography.coordinates = [geography.coordinates];
@@ -158,21 +230,32 @@ function getComponents() {
               ctn_segment_id: segment.properties.CTN_SEGMENT_ID,
               from_address_min: segment.properties.FROM_ADDRESS_MIN,
               to_address_max: segment.properties.TO_ADDRESS_MAX,
-              full_street_name: segment.properties.full_street_name,
+              full_street_name: segment.properties.FULL_STREET_NAME,
               line_type: segment.properties.LINE_TYPE,
               source_layer: "ATD_ADMIN.CTN",
               geography,
             };
           }),
         };
-        if (ctnFeatures?.length > 0) {
-          console.log("check", projectId)
-        }
         index[projectId].push(comp2);
       }
 
       return index;
     }, {});
+
+  // uncomment to create file for debugging unmapped components
+  const unmappedFacilities = unmapped.map((comp) => {
+    const id = comp.interim_project_component_id;
+    const f = FACILITIES.find((f) => f.Project_FacilityID === id);
+    return {
+      project_id: f.ProjectID,
+      facility_id: f.Project_FacilityID,
+      facility_type: f.FacilityType,
+      location_detail: f.LocationDetail,
+    };
+  });
+  saveJsonFile("./data/unmapped_components_results.json", unmappedFacilities);
+  return componentIndex;
 }
 
 getComponents();
