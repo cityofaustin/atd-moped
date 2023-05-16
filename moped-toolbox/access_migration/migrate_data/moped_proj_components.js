@@ -2,6 +2,7 @@ const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
 const { mapRow } = require("./utils/misc");
+const { v4: uuidv4 } = require("uuid");
 
 /**
  * Facility_Attributes - actuals associated with project facility instances (many to one)
@@ -91,6 +92,20 @@ const makeMultiPoint = (geometry) => {
 
 const isSignalComponent = (componentId) => [16, 18].includes(componentId);
 
+/**
+ * We cannot bring a signal component into Moped if it does not match
+ * a known AMD signal asset. As a work around, we  can convert the
+ * component to a generic "Intersection Improvement" component.
+ */
+const convertSignalToIntersectionComponent = (component) => {
+  const componentType =
+    component.component_id === 16 ? "Pedestrian" : "Traffic";
+  component.description = `${componentType} signal - ${
+    component.description || ""
+  }`;
+  component.component_id = 66; // "Intersection improvement"
+};
+
 function getComponents() {
   const components = FACILITIES.map((row) => mapRow(row, componentFields));
   const subcomponents = FACILITY_ATTRS.map((row) =>
@@ -141,8 +156,12 @@ function getComponents() {
 
       const drawnPointFeature =
         POINT_FEATURES[interim_project_component_id]?.originalFeature;
+
       const ctnPointFeature =
         POINT_FEATURES[interim_project_component_id]?.ctnFeature;
+
+      const signalFeature =
+        POINT_FEATURES[interim_project_component_id]?.signalFeature;
 
       if (drawnPointFeature && drawnLineFeature) {
         // todo: how to handle?
@@ -150,28 +169,33 @@ function getComponents() {
         console.log("skipping multigeotype - count at ", multigeotype.length);
         return index;
       }
-      if (isSignalComponent(comp.component_id)) {
-        const signalFeature =
-          POINT_FEATURES[interim_project_component_id]?.signalFeature;
-        if (!signalFeature) {
-          unmapped.push(comp);
-          // throw `Signal component with no signal found!`;
-        } else {
-          const featureRecord = {
-            signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
-            knack_id: signalFeature.properties.id,
-            location_name: signalFeature.properties.LOCATION_NAME,
-            signal_type: signalFeature.properties.SIGNAL_TYPE,
-            geography: signalFeature.geometry,
-          };
-          if (featureRecord.geography.type !== "MultiPoint") {
-            // make multipoint if necessary :/
-            // some signals are multipoint already, which is baffling but ok
-            featureRecord.geography.type = "MultiPoint";
-            featureRecord.geography.coordinates = [
-              featureRecord.geography.coordinates,
-            ];
-          }
+
+      /**
+       * check if unmatched signal component - which needs special handling
+       */
+      const unMatchedSignalComponent =
+        isSignalComponent(comp.component_id) && !signalFeature;
+
+      if (unMatchedSignalComponent) {
+        convertSignalToIntersectionComponent(comp);
+      }
+
+      if (isSignalComponent(comp.component_id) && signalFeature) {
+        const featureRecord = {
+          signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
+          knack_id: signalFeature.properties.id,
+          location_name: signalFeature.properties.LOCATION_NAME,
+          signal_type: signalFeature.properties.SIGNAL_TYPE,
+          geography: signalFeature.geometry,
+        };
+        if (featureRecord.geography.type !== "MultiPoint") {
+          // make multipoint if necessary :/
+          // some signals are multipoint already, which is baffling but ok
+          featureRecord.geography.type = "MultiPoint";
+          featureRecord.geography.coordinates = [
+            featureRecord.geography.coordinates,
+          ];
+
           comp.feature_signals = { data: featureRecord };
         }
       } else if (drawnLineFeature) {
@@ -184,7 +208,7 @@ function getComponents() {
         }
         const featureRecord = {
           source_layer: "drawnByUserLine",
-          project_extent_id: "testtodouuid",
+          project_extent_id: uuidv4(),
           geography: drawnLineFeature.geometry,
         };
         comp.feature_drawn_lines = { data: featureRecord };
@@ -199,7 +223,7 @@ function getComponents() {
         } else {
           const featureRecord = {
             source_layer: "drawnByUserPoint",
-            project_extent_id: "testtodouuid",
+            project_extent_id: uuidv4(),
             geography: makeMultiPoint(drawnPointFeature.geometry),
           };
           comp.feature_drawn_points = { data: featureRecord };
