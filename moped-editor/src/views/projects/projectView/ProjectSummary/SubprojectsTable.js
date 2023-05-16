@@ -177,7 +177,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             })
               .then(() => {
                 refetch();
-                refetchSummaryData();
+                refetchSummaryData(); // Refresh subprojects in summary map
               })
               .catch((error) => console.error(error));
           },
@@ -190,7 +190,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             })
               .then(() => {
                 refetch();
-                refetchSummaryData();
+                refetchSummaryData(); // Refresh subprojects in summary map
               })
               .catch((error) => console.error(error));
           },

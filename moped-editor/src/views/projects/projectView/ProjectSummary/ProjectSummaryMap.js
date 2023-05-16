@@ -1,12 +1,9 @@
-import React, { useCallback, useState, useMemo } from "react";
-import { useQuery } from "@apollo/client";
-import { useParams } from "react-router";
+import React, { useCallback, useState } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
-import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
 import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
 import RelatedProjectSourcesAndLayers from "../ProjectComponents/RelatedProjectSourcesAndLayers";
 import {
@@ -14,8 +11,6 @@ import {
   mapParameters,
   initialViewState,
 } from "../ProjectComponents/mapSettings";
-import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
-import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
@@ -37,20 +32,9 @@ const useMapRef = () => {
   return [mapRef, mapRefState];
 };
 
-// TODO Handle stale data Ex. removing a subproject -> refresh this map
-
 const ProjectSummaryMap = ({ data }) => {
-  // const { projectId } = useParams();
   const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
-
-  // const { data, error } = useQuery(GET_PROJECT_COMPONENTS, {
-  //   variables: {
-  //     projectId,
-  //     ...(parentProjectId && { parentProjectId }),
-  //   },
-  //   fetchPolicy: "no-cache",
-  // });
 
   const { projectComponents, childComponents } = useProjectComponents(data);
 
@@ -64,8 +48,6 @@ const ProjectSummaryMap = ({ data }) => {
   const areThereComponentFeatures =
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
-
-  // if (error) console.log(error);
 
   return (
     <Box>
@@ -101,9 +83,6 @@ const ProjectSummaryMap = ({ data }) => {
             shouldShowRelatedProjects={true}
             clickedComponent={null}
           />
-          {/* <ProjectSummaryMapSourcesAndLayers
-            projectFeatureCollection={projectFeatureCollection}
-          /> */}
         </MapGL>
       ) : (
         <ProjectSummaryMapFallback />
