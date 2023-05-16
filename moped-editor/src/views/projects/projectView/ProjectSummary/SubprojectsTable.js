@@ -151,6 +151,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
           actionsColumnIndex: -1,
           tableLayout: "fixed",
           addRowPosition: "first",
+          idSynonym: "project_id",
         }}
         localization={{
           header: {
