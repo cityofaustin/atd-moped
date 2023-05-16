@@ -37,18 +37,20 @@ const useMapRef = () => {
   return [mapRef, mapRefState];
 };
 
-const ProjectSummaryMap = ({ parentProjectId }) => {
-  const { projectId } = useParams();
+// TODO Handle stale data Ex. removing a subproject -> refresh this map
+
+const ProjectSummaryMap = ({ data }) => {
+  // const { projectId } = useParams();
   const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
 
-  const { data, error } = useQuery(GET_PROJECT_COMPONENTS, {
-    variables: {
-      projectId,
-      ...(parentProjectId && { parentProjectId }),
-    },
-    fetchPolicy: "no-cache",
-  });
+  // const { data, error } = useQuery(GET_PROJECT_COMPONENTS, {
+  //   variables: {
+  //     projectId,
+  //     ...(parentProjectId && { parentProjectId }),
+  //   },
+  //   fetchPolicy: "no-cache",
+  // });
 
   const { projectComponents, childComponents } = useProjectComponents(data);
 
@@ -63,7 +65,7 @@ const ProjectSummaryMap = ({ parentProjectId }) => {
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
 
-  if (error) console.log(error);
+  // if (error) console.log(error);
 
   return (
     <Box>
