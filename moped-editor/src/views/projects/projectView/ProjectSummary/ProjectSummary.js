@@ -303,7 +303,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
               </Grid>
               <Grid item xs={12}>
                 {!data.moped_project[0].parent_project_id && (
-                  <SubprojectsTable projectId={projectId} />
+                  <SubprojectsTable
+                    projectId={projectId}
+                    refetchSummaryData={refetch}
+                  />
                 )}
               </Grid>
             </Grid>
