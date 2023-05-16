@@ -159,8 +159,6 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  console.log(componentToEdit)
-
   const initialFormValues = {
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
@@ -170,8 +168,6 @@ const EditAttributesModal = ({
     completionDate: componentToEdit?.completion_date,
     tags: componentToEdit?.moped_proj_component_tags,
   };
-
-  console.log(initialFormValues)
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
