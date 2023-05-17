@@ -9,12 +9,12 @@ const fieldMap = [
   {
     col_name: "AAABicycleNetwork",
     col_val: "CouncilAdopted2014",
-    tag_id: 21,
+    tag_id: 1,
   },
   {
     col_name: "AAABicycleNetwork",
     col_val: "CouncilAdopted2019",
-    tag_id: 1,
+    tag_id: 2,
   },
   {
     col_name: "AAABicycleNetwork",
@@ -26,18 +26,18 @@ const fieldMap = [
         "ProposedPostATXWBR",
         "ProposedATXWBR",
       ].includes(val),
-    tag_id: 2,
+    tag_id: 3,
   },
-  //   { col_name: "AAABicycleNetwork", col_val: "???No data???", tag_id: 3 },
+  //   { col_name: "AAABicycleNetwork", col_val: "???No data???", tag_id: 4 },
   {
     col_name: "AAABicycleNetwork",
     col_val: "OtherJuristiction",
-    tag_id: 4,
+    tag_id: 5,
   },
-  { col_name: "ImpPlan2017", col_val: (val) => !!val, tag_id: 5 },
-  { col_name: "ImpPlan2018", col_val: (val) => !!val, tag_id: 6 },
-  { col_name: "ImpPlan2019", col_val: (val) => !!val, tag_id: 7 },
-  { col_name: "ImpPlan2020", col_val: (val) => !!val, tag_id: 8 },
+  { col_name: "ImpPlan2017", col_val: (val) => !!val, tag_id: 6 },
+  { col_name: "ImpPlan2018", col_val: (val) => !!val, tag_id: 7 },
+  { col_name: "ImpPlan2019", col_val: (val) => !!val, tag_id: 8 },
+  { col_name: "ImpPlan2020", col_val: (val) => !!val, tag_id: 9 },
   { col_name: "ImpPlan2021", col_val: (val) => !!val, tag_id: 10 },
   { col_name: "ImpPlan2022", col_val: (val) => !!val, tag_id: 11 },
   { col_name: "ImpPlan2023", col_val: (val) => !!val, tag_id: 12 },
@@ -85,7 +85,7 @@ function getComponentTags() {
     componentTagIndex[id] ??= [];
     componentTagIndex[id] = [
       ...componentTagIndex[id],
-      matchedTags.map((component_tag_id) => ({ component_tag_id })),
+      ...matchedTags.map((component_tag_id) => ({ component_tag_id })),
     ];
   });
   const count = Object.keys(componentTagIndex).filter(
