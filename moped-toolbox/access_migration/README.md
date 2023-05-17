@@ -63,7 +63,6 @@ $ node index.js local
 
 ### Issues to make / todo
 
-- facility phase override
 - SRTS ID field on components form -> alphanum
 - add interim_project_id to project_list_view and add to advanced search
 - there are facility spatial records with multiple features within one layer and across geom types.

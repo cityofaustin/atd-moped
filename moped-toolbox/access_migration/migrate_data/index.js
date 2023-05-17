@@ -239,7 +239,7 @@ async function main(env) {
         env,
       });
     } catch (error) {
-      // logger.error({ message: error });
+      logger.error({ message: error });
       debugger;
       break;
     }
