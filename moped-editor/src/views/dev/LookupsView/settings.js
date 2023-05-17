@@ -176,4 +176,14 @@ export const SETTINGS = [
       },
     ],
   },
+  {
+    key: "moped_component_tags",
+    label: "Component tags",
+    columns: [
+      { key: "id", label: "ID" },
+      { key: "type", label: "Type" },
+      { key: "name", label: "Name" },
+      { key: "slug", label: "Slug"}
+    ],
+  },
 ];
