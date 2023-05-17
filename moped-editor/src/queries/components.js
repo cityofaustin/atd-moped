@@ -4,7 +4,7 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
   query GetComponentsFormOptions {
     moped_components(
       order_by: [{ component_name: asc }, { component_subtype: asc }]
-      where: { status_id: { _neq: 0 } }
+      where: { is_deleted: { _eq: false } }
     ) {
       component_id
       component_name
@@ -29,6 +29,12 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
         subphase_id
         subphase_name
       }
+    }
+    moped_component_tags(where: { is_deleted: { _eq: false } }) {
+      name
+      slug
+      type
+      id
     }
   }
 `;
@@ -60,6 +66,9 @@ export const GET_PROJECT_COMPONENTS = gql`
     }
     moped_proj_components_subcomponents(where: { is_deleted: { _eq: false } }) {
       subcomponent_id
+    }
+    moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
+      component_tag_id
     }
     moped_phase {
       phase_id
@@ -166,6 +175,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
+    $componentTags: [moped_proj_component_tags_insert_input!]!
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -188,6 +198,15 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
       objects: $subcomponents
       on_conflict: {
         constraint: unique_component_and_subcomponent
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_component_tags(
+      objects: $componentTags
+      on_conflict: {
+        constraint: unique_component_and_tag
         update_columns: [is_deleted]
       }
     ) {

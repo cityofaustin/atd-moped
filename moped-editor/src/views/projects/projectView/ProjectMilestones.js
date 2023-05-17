@@ -78,7 +78,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
    */
   const milestoneColumns = [
     {
-      title: "Milestone name",
+      title: "Milestone",
       field: "milestone_id",
       render: (milestone) => milestone.moped_milestone.milestone_name,
       validate: (milestone) => !!milestone.milestone_id,

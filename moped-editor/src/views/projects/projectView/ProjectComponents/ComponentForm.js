@@ -22,6 +22,7 @@ import {
   usePhaseOptions,
   useSubphaseOptions,
   useInitialValuesOnAttributesEdit,
+  useComponentTagsOptions,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -31,40 +32,18 @@ const defaultFormValues = {
   subcomponents: [],
   phase: null,
   subphase: null,
+  tags: [],
   completionDate: null,
   description: "",
   signal: null,
 };
-
-const WORK_TYPE_OPTIONS_SIGNALS = [
-  { label: "New", value: "new" },
-  { label: "Modification", value: "modification" },
-  { label: "Construction Inspection", value: "construction_inspection" },
-  { label: "Maintenance/Repair", value: "maintenance_repair" },
-  { label: "Replacement", value: "replacement" },
-  { label: "Signal Take Over", value: "signal_take_over" },
-];
-
-const WORK_TYPE_OPTIONS_BIKE = [
-  { label: "New", value: "new" },
-  {
-    label: "Construction / Curb modification / Widening",
-    value: "construction_curb_modification_widening",
-  },
-  { label: "Design Review", value: "design_review" },
-  { label: "Lane Conversion", value: "lane_conversion" },
-  { label: "Maintenance/Repair", value: "maintenance_repair" },
-  { label: "Parking Mod", value: "parking_mod" },
-  { label: "Remove Bike Lane", value: "remove_bike_lane" },
-  { label: "Remove Double Yellow", value: "remove_double_yellow" },
-  { label: "Replacement", value: "replacement" },
-];
 
 const validationSchema = yup.object().shape({
   component: yup.object().required(),
   subcomponents: yup.array().optional(),
   phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
+  tags: yup.array().optional(),
   completionDate: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
@@ -124,6 +103,7 @@ const ComponentForm = ({
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
+  const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
@@ -140,7 +120,8 @@ const ComponentForm = ({
     subcomponentOptions,
     phaseOptions,
     subphaseOptions,
-    areSignalOptionsLoaded
+    areSignalOptionsLoaded,
+    componentTagsOptions
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -168,10 +149,6 @@ const ComponentForm = ({
 
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
-
-  const workTypeOptions = component?.label.toLowerCase().includes("signal")
-    ? WORK_TYPE_OPTIONS_SIGNALS
-    : WORK_TYPE_OPTIONS_BIKE;
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -230,11 +207,11 @@ const ComponentForm = ({
         )}
         <Grid item xs={12}>
           <ControlledAutocomplete
-            id="work-type"
-            label="Work Type(s)"
+            id="tags"
+            label="Tags"
             multiple
-            options={workTypeOptions}
-            name="work_types"
+            options={componentTagsOptions}
+            name="tags"
             control={control}
           />
         </Grid>
