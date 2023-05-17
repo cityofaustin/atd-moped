@@ -86,8 +86,7 @@ $ node index.js local
 
 ### NW Questions
 
-
-- we need to convert unmatched signals to intersection - improvement: moped requires signal to exist in the data tracker
+- we are converting unmatched signals to intersection improbment compoentns
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - project description - these are not public friendly. there are very view "project description" public. propose we import project description as a note? but these projects need descriptions :/
 - is there a table that holds project partners? where does the concatenation come from on the main projects table?
@@ -106,14 +105,7 @@ $ node index.js local
 
 ### Todo
 
-- facility pgase override
+- check geometry types of components - some may need to be converted to point or line
+- facility phase override
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
-
-### moped_project
-
-
-### Program Data
-#### SRTS
-- where is the canonical source for this data?
-
