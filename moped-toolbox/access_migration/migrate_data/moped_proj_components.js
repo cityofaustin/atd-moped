@@ -1,8 +1,9 @@
+const { v4: uuidv4 } = require("uuid");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
 const { mapRow } = require("./utils/misc");
-const { v4: uuidv4 } = require("uuid");
+const { getComponentTags } = require("./moped_proj_component_tags");
 
 /**
  * Facility_Attributes - actuals associated with project facility instances (many to one)
@@ -107,6 +108,8 @@ const convertSignalToIntersectionComponent = (component) => {
 };
 
 function getComponents() {
+  const tagIndex = getComponentTags();
+
   const components = FACILITIES.map((row) => mapRow(row, componentFields));
   const subcomponents = FACILITY_ATTRS.map((row) =>
     mapRow(row, subcomponentFields)
@@ -132,6 +135,7 @@ function getComponents() {
   const unmapped = [];
   const multigeotype = [];
 
+  // todo: log when a component is filtered/excluded!
   const componentIndex = components
     .filter(
       (component) => component.component_id === 0 || !!component.component_id
@@ -145,6 +149,12 @@ function getComponents() {
         comp.moped_proj_components_subcomponents = {
           data: theseSubccomponents,
         };
+      }
+
+      // attached tags
+      const tags = tagIndex[interim_project_component_id];
+      if (tags?.length > 0) {
+        comp.moped_proj_component_tags = { data: theseTags };
       }
 
       // attach features
@@ -281,7 +291,5 @@ function getComponents() {
   saveJsonFile("./data/unmapped_components_results.json", unmappedFacilities);
   return componentIndex;
 }
-
-getComponents();
 
 exports.getComponents = getComponents;
