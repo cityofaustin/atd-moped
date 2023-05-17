@@ -154,7 +154,7 @@ function getComponents() {
       // attached tags
       const tags = tagIndex[interim_project_component_id];
       if (tags?.length > 0) {
-        comp.moped_proj_component_tags = { data: theseTags };
+        comp.moped_proj_component_tags = { data: tags };
       }
 
       // attach features
