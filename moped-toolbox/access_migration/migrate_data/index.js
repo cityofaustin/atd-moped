@@ -17,6 +17,7 @@ const { mapRow, chunkArray } = require("./utils/misc");
 const getMetadataFileDateString = () =>
   new Date().toLocaleDateString().replaceAll("/", "_");
 
+const PROJECT_CHUNK_SIZE = 50;
 const FNAME = "./data/raw/projects.json";
 const METADATA_FNAME = `./backup/metadata_${getMetadataFileDateString()}.json`;
 
@@ -223,7 +224,7 @@ async function main(env) {
 
   logger.info(`Inserting ${projects.length} projects...`);
 
-  const projectChunks = chunkArray(projects, 50);
+  const projectChunks = chunkArray(projects, PROJECT_CHUNK_SIZE);
 
   for (let i = 0; i < projectChunks.length; i++) {
     try {
@@ -238,7 +239,7 @@ async function main(env) {
         env,
       });
     } catch (error) {
-      logger.error({ message: error });
+      // logger.error({ message: error });
       debugger;
       break;
     }
