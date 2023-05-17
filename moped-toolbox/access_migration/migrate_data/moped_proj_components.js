@@ -2,6 +2,7 @@ const { v4: uuidv4 } = require("uuid");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
+const { PHASES_MAP } = require("./mappings/phases");
 const { mapRow } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
 
@@ -46,6 +47,17 @@ const componentFields = [
     required: true,
   },
   { in: "LocationDetail", out: "description" },
+  {
+    in: "FacilityPhaseOverride",
+    out: "phase_id",
+    transform(row) {
+      const phaseName = row[this.in];
+      const phaseId = PHASES_MAP.find((phase) => phase.in === phaseName)?.out
+        ?.phase_id;
+      return phaseId || null;
+    },
+  },
+  { in: "ActualEndDateFacilityOverride", out: "completion_date" },
 ];
 
 const subcomponentFields = [
