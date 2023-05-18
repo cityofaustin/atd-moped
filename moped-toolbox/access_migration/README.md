@@ -63,6 +63,8 @@ $ node index.js local
 
 ### Issues to make / todo
 
+
+- component name: Refuge Island >> Crossing Island
 - SRTS ID field on components form -> alphanum
 - add interim_project_id to project_list_view and add to advanced search
 - there are facility spatial records with multiple features within one layer and across geom types.
@@ -78,6 +80,9 @@ $ node index.js local
 
 ### NW Questions
 
+- should we assign "New" work type to anything that doesn't have a work type?
+- facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
+- the "Miscellaneous" facility type is usually referencing an SRTS id that we're not currently handling. There's also athe "Project Type" property that we're not handling"
 - we are converting unmatched signals to intersection improvement components
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - some project descriptions missing
