@@ -3,7 +3,7 @@ const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
 const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
 const { PHASES_MAP } = require("./mappings/phases");
-const { mapRow } = require("./utils/misc");
+const { mapRow, mapRowExpanded } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
 
 /**
@@ -23,17 +23,41 @@ const FACILITY_ATTRS = loadJsonFile(FACILITY_ATTRS_FNAME);
 const LINE_FEATURES = loadJsonFile(FACILITY_GEOM_LINES_FNAME);
 const POINT_FEATURES = loadJsonFile(FACILITY_GEOM_POINTS_FNAME);
 
+// we are applying mapRowExpanded on this field set!
 const componentFields = [
   {
     in: "FacilityType",
     out: "component_id",
     required: true,
-    transform(row) {
-      const componentName = row[this.in];
+    transform(oldRow, newRow) {
+      const componentName = oldRow[this.in];
       const component = COMPONENTS_MAP.find(
         (comp) => comp.in === componentName
       );
-      return component?.out || null;
+      newRow[this.out] = component ? component.out : null;
+      // yep - loads of one-off customizations in here
+      if (componentName === "Bike Lane - Removed") {
+        newRow.description = "Bike Lane - Removed";
+        newRow.moped_proj_component_work_types = {
+          // add remove bike lane work type
+          data: [{ work_type_id: 10 }],
+        };
+      } else if (componentName === "Crosswalk - Remove") {
+        newRow.description = "Remove crosswalk";
+      } else if (componentName === "Miscellaneous") {
+        newRow.description = "Remove crosswalk";
+      } else if (componentName === "Remove DY") {
+        newRow.description = "Remove double-yellow striping.";
+        newRow.moped_proj_component_work_types = {
+          // add remove double yellow work type
+          data: [{ work_type_id: 11 }],
+        };
+      } else if (componentName === "Sidewalk - Fix Obstructions") {
+        newRow.description = "Fix sidewalk obstructions.";
+      } else if (componentName === "Trim Vegetation") {
+        newRow.description = "Trim vegetation. ";
+      }
+      return newRow;
     },
   },
   {
@@ -46,15 +70,27 @@ const componentFields = [
     out: "interim_project_component_id",
     required: true,
   },
-  { in: "LocationDetail", out: "description" },
+  {
+    in: "LocationDetail",
+    out: "description",
+    transform(oldRow, newRow) {
+      // we're dumping data into description from other transforms,
+      // so we can't just overwrite it here.
+      const prevDescription = newRow.description || "";
+      const locationDetail = oldRow.LocationDetail || "";
+      newRow.description = `${prevDescription} ${locationDetail}`.trim();
+      return newRow;
+    },
+  },
   {
     in: "FacilityPhaseOverride",
     out: "phase_id",
-    transform(row) {
-      const phaseName = row[this.in];
+    transform(oldRow, newRow) {
+      const phaseName = oldRow[this.in];
       const phaseId = PHASES_MAP.find((phase) => phase.in === phaseName)?.out
         ?.phase_id;
-      return phaseId || null;
+      newRow[this.out] = phaseId || null;
+      return newRow;
     },
   },
   { in: "ActualEndDateFacilityOverride", out: "completion_date" },
@@ -122,7 +158,9 @@ const convertSignalToIntersectionComponent = (component) => {
 function getComponents() {
   const tagIndex = getComponentTags();
 
-  const components = FACILITIES.map((row) => mapRow(row, componentFields));
+  const components = FACILITIES.map((row) =>
+    mapRowExpanded(row, componentFields)
+  );
   const subcomponents = FACILITY_ATTRS.map((row) =>
     mapRow(row, subcomponentFields)
   ).filter((subcomp) => subcomp.subcomponent_id);
@@ -149,9 +187,7 @@ function getComponents() {
 
   // todo: log when a component is filtered/excluded!
   const componentIndex = components
-    .filter(
-      (component) => component.component_id === 0 || !!component.component_id
-    )
+    .filter((component) => component.component_id !== null)
     .reduce((index, comp) => {
       const { interim_project_component_id } = comp;
       // attach subcomponents

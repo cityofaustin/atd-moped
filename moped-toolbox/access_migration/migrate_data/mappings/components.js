@@ -44,7 +44,7 @@ const COMPONENTS_MAP = [
   { in: "Lighting (Street or Trail Illumination)", out: 60 },
   { in: "Miscellaneous", out: 0 },
   { in: "Neighborhood Bikeway (BBlvd)", out: 72 },
-  { in: "New Bridge (all modes)", out: null },
+  { in: "New Bridge (all modes)", out: 0 },
   { in: "New Connection - Street", out: 73 },
   { in: "New Connection - Trail", out: 85 },
   { in: "New Connection - Trail or Street", out: 85 },
