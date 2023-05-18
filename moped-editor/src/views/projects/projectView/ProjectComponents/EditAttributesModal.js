@@ -148,7 +148,7 @@ const EditAttributesModal = ({
           completionDate,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState)) //breadcrumb
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
         .catch((error) => {
           console.log(error);
         });
