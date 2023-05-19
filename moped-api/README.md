@@ -71,7 +71,7 @@ Once the installation of the requirements is done, you are ready to launch the a
 #### Run Flask in development mode:
 
 ```
-$ FLASK_ENV=development flask run
+$ FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
 ```
 
 You may have noticed the FLASK_ENV=development bash variable, this is passed to the flask command and it will initialize the application in app.py and enabled hot-reload, meaning that any changes you make to the code will be automatically reloaded for you (without you having to restart the API for every change).
