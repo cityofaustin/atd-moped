@@ -63,9 +63,8 @@ $ node index.js local
 
 ### Issues to make / todo
 
-
-- component name: Refuge Island >> Crossing Island
 - SRTS ID field on components form -> alphanum
+- component name: Refuge Island >> Crossing Island
 - add interim_project_id to project_list_view and add to advanced search
 - there are facility spatial records with multiple features within one layer and across geom types.
 - how to handle unmapped components?
