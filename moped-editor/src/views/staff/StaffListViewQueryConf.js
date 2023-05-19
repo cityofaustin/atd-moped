@@ -99,19 +99,6 @@ export const StaffListViewQueryConf = {
       width: "20%",
       type: "String",
     },
-    // workgroup: {
-    //   width: "20%",
-    //   searchable: true,
-    //   sortable: true,
-    //   label: "Workgroup",
-    //   search: {
-    //     label: "Search by Workgroup",
-    //     operator: "_ilike",
-    //     quoted: true,
-    //     envelope: "%{VALUE}%",
-    //   },
-    //   type: "String",
-    // },
     roles: {
       searchable: false,
       sortable: false,
