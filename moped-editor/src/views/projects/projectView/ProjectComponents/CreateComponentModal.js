@@ -45,6 +45,7 @@ const CreateComponentModal = ({
       phase,
       subphase,
       completionDate,
+      tags,
     } = formData;
 
     const newComponent = {
@@ -60,6 +61,7 @@ const CreateComponentModal = ({
       completion_date: completionDate,
       label: component_name,
       features: [],
+      moped_proj_component_tags: tags,
     };
 
     const linkMode = newComponent.line_representation ? "lines" : "points";

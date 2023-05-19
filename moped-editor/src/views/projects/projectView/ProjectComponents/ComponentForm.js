@@ -22,6 +22,7 @@ import {
   usePhaseOptions,
   useSubphaseOptions,
   useInitialValuesOnAttributesEdit,
+  useComponentTagsOptions,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -31,6 +32,7 @@ const defaultFormValues = {
   subcomponents: [],
   phase: null,
   subphase: null,
+  tags: [],
   completionDate: null,
   description: "",
   signal: null,
@@ -41,6 +43,7 @@ const validationSchema = yup.object().shape({
   subcomponents: yup.array().optional(),
   phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
+  tags: yup.array().optional(),
   completionDate: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
@@ -100,6 +103,7 @@ const ComponentForm = ({
   const internalTable = component?.data?.feature_layer?.internal_table;
   const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
+  const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
@@ -116,7 +120,8 @@ const ComponentForm = ({
     subcomponentOptions,
     phaseOptions,
     subphaseOptions,
-    areSignalOptionsLoaded
+    areSignalOptionsLoaded,
+    componentTagsOptions
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -200,6 +205,16 @@ const ComponentForm = ({
             />
           </Grid>
         )}
+        <Grid item xs={12}>
+          <ControlledAutocomplete
+            id="tags"
+            label="Tags"
+            multiple
+            options={componentTagsOptions}
+            name="tags"
+            control={control}
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             inputRef={register}

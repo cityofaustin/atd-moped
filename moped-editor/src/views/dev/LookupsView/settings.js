@@ -34,6 +34,9 @@ const subComponentHandler = (subcomponents) =>
  * @type { Object[]}  - An array of settings for data tables. Each object references a typename
  * returned from a Hasura query
  */
+// milestones
+// phases
+// tags
 export const SETTINGS = [
   /**
    * @type { Object } Settings for one data type
@@ -41,68 +44,6 @@ export const SETTINGS = [
    * @property { string } label - a humanized label for this object
    * @property { Object[]} columns - an array of column definitions
    */
-  {
-    key: "moped_phases",
-    label: "Phases",
-    columns: [
-      /**
-       * @type { Object } Column definition
-       * @property { string } key - the accessor that will be used to retrieve data from a table row
-       * object
-       * @property { string} label - a human-friendly label which will be used as a table column header
-       * @property { Function } [handler] - an optional transform function that receives any object and
-       * returns a string. You'll want to use this on complex data types.
-       */
-      {
-        key: "phase_order",
-        label: "Phase order",
-      },
-      {
-        key: "phase_id",
-        label: "Phase ID",
-      },
-      {
-        key: "phase_name",
-        label: "Phase name",
-      },
-      {
-        key: "phase_description",
-        label: "Description",
-      },
-      {
-        key: "moped_subphases",
-        label: "Subphases",
-        handler: subPhaseHandler,
-      },
-    ],
-  },
-  {
-    key: "moped_milestones",
-    label: "Milestones",
-    columns: [
-      {
-        key: "milestone_id",
-        label: "Milestone ID",
-      },
-      {
-        key: "milestone_name",
-        label: "Milestone",
-      },
-      {
-        key: "moped_phase",
-        label: "Related phase",
-        handler: relatedPhaseHandler,
-      },
-      {
-        key: "milestone_order",
-        label: "Milestone order",
-      },
-      {
-        key: "milestone_description",
-        label: "Description",
-      },
-    ],
-  },
   {
     key: "moped_components",
     label: "Components",
@@ -141,6 +82,92 @@ export const SETTINGS = [
     ],
   },
   {
+    key: "moped_component_tags",
+    label: "Component tags",
+    columns: [
+      { key: "id", label: "ID" },
+      { key: "type", label: "Type" },
+      { key: "name", label: "Name" },
+      { key: "slug", label: "Slug" },
+    ],
+  },
+  {
+    key: "moped_entity",
+    label: "Entities",
+    columns: [
+      {
+        key: "entity_id",
+        label: "ID",
+      },
+      {
+        key: "entity_name",
+        label: "Name",
+      },
+    ],
+  },
+  {
+    key: "moped_milestones",
+    label: "Milestones",
+    columns: [
+      {
+        key: "milestone_id",
+        label: "Milestone ID",
+      },
+      {
+        key: "milestone_name",
+        label: "Milestone",
+      },
+      {
+        key: "moped_phase",
+        label: "Related phase",
+        handler: relatedPhaseHandler,
+      },
+      {
+        key: "milestone_order",
+        label: "Milestone order",
+      },
+      {
+        key: "milestone_description",
+        label: "Description",
+      },
+    ],
+  },
+  {
+    key: "moped_phases",
+    label: "Phases",
+    columns: [
+      /**
+       * @type { Object } Column definition
+       * @property { string } key - the accessor that will be used to retrieve data from a table row
+       * object
+       * @property { string} label - a human-friendly label which will be used as a table column header
+       * @property { Function } [handler] - an optional transform function that receives any object and
+       * returns a string. You'll want to use this on complex data types.
+       */
+      {
+        key: "phase_order",
+        label: "Phase order",
+      },
+      {
+        key: "phase_id",
+        label: "Phase ID",
+      },
+      {
+        key: "phase_name",
+        label: "Phase name",
+      },
+      {
+        key: "phase_description",
+        label: "Description",
+      },
+      {
+        key: "moped_subphases",
+        label: "Subphases",
+        handler: subPhaseHandler,
+      },
+    ],
+  },
+  {
     key: "moped_tags",
     label: "Tags",
     columns: [
@@ -159,20 +186,6 @@ export const SETTINGS = [
       {
         key: "slug",
         label: "Slug",
-      },
-    ],
-  },
-  {
-    key: "moped_entity",
-    label: "Entities",
-    columns: [
-      {
-        key: "entity_id",
-        label: "ID",
-      },
-      {
-        key: "entity_name",
-        label: "Name",
       },
     ],
   },
