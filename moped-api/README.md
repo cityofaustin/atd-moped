@@ -71,7 +71,7 @@ AWS_ACCESS_KEY_ID=<your-access-key-id>
 AWS_SECRET_ACCESS_KEY=<your-access-key-secret>
 ```
 
-The app will use your crednetials to fetch it's environment from secret manager. It defaults to "staging", and may will need to manually patch in a local Hasura endpoint to run end to end tests.
+The app will use your credentials to fetch its environment from secret manager. It defaults to "staging", and you may need to manually patch in a local Hasura endpoint to run end to end tests.
 
 Running the API (with hot-reload)
 Once the installation of the requirements is done, you are ready to launch the application using this command:
