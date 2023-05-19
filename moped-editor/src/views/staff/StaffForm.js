@@ -89,7 +89,6 @@ const StaffForm = ({
     handleSubmit,
     errors,
     control,
-    setValue,
     watch,
     formState: { isSubmitting },
     reset,
