@@ -10,8 +10,10 @@ export const GET_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       cognito_user_id
       email
       roles
@@ -32,8 +34,10 @@ export const ADD_NON_MOPED_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       email
       roles
       is_deleted
@@ -50,8 +54,10 @@ export const UPDATE_NON_MOPED_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       email
       roles
       is_deleted

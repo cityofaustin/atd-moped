@@ -12,6 +12,9 @@ export const ACCOUNT_USER_PROFILE_GET_PLAIN = `
             title
             picture
             workgroup
+            moped_workgroup {
+              workgroup_name
+            }
         }
     }
 `;

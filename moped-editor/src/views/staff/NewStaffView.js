@@ -26,7 +26,6 @@ export const initialFormValues = {
   title: "",
   email: "",
   password: "",
-  workgroup: "",
   workgroup_id: "",
   roles: ["moped-editor"],
 };
@@ -41,8 +40,7 @@ const validationSchema = yup.object().shape({
   first_name: yup.string().required(),
   last_name: yup.string().required(),
   title: yup.string().required(),
-  workgroup: yup.string().required(),
-  workgroup_id: yup.string().required(),
+  workgroup_id: yup.number().integer().required(),
   email: yup.string().required().email().lowercase(),
   // Password is not required for non-login users since they will not be added to Cognito user pool
   password: yup.string().when("roles", {

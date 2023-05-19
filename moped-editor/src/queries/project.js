@@ -153,7 +153,6 @@ export const TEAM_QUERY = gql`
         moped_user {
           first_name
           last_name
-          workgroup_id
           user_id
           is_deleted
           moped_workgroup {
