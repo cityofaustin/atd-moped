@@ -1,23 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 
-import {
-  Card,
-  FormControlLabel,
-  FormGroup,
-  Switch,
-  CircularProgress,
-} from "@mui/material";
+import { Box, Card, Container, CircularProgress } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
-import Page from "src/components/Page";
-import { NavLink as RouterLink } from "react-router-dom";
-
-import { StaffListViewQueryConf } from "./StaffListViewQueryConf";
-import GQLAbstract from "../../libs/GQLAbstract";
-import GridTable from "../../components/GridTable/GridTable";
-import { GET_ALL_USERS } from "src/queries/staff";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
+
+import Page from "src/components/Page";
+import { GET_ALL_USERS } from "src/queries/staff";
+import { AddUserButton, EditUserButton } from "./StaffListViewCustomComponents";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -25,46 +15,29 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
   },
-  switch: {
-    marginTop: "1rem",
+  container: {
+    maxWidth: "100%",
+  },
+  addStaffButton: {
+    display: "flex",
     justifyContent: "flex-end",
-    alignItems: "flex-end",
+    marginBottom: "24px",
   },
 }));
 
 const StaffListView = () => {
   const classes = useStyles();
 
-  const [showInactive, setShowInactive] = useState(false);
-
-  /**
-   * Override 'where' key based on state of 'showInactive'
-   * @type {GQLAbstract}
-   */
-  const staffQuery = new GQLAbstract({
-    ...StaffListViewQueryConf,
-    ...(showInactive ? { where: {} } : {}),
-  });
-
   const { data, loading, error } = useQuery(GET_ALL_USERS);
-
-  /**
-   * Toggles list of inactive users
-   */
-  const toggleShowInactive = () => {
-    setShowInactive(!showInactive);
-  };
 
   const staffColumns = [
     {
       headerName: "",
       field: "user_id",
-      renderCell: (props) => (
-        <RouterLink to={`edit/${props.value}`}>
-          <CreateOutlinedIcon color="primary" />{" "}
-        </RouterLink>
-      ),
+      renderCell: (props) => <EditUserButton id={props.value} />,
       width: 50,
+      sortable: false,
+      filterable: false
     },
     {
       headerName: "First name",
@@ -115,31 +88,10 @@ const StaffListView = () => {
       {loading ? (
         <CircularProgress />
       ) : (
-        <>
-          <GridTable
-            title={"Staff"}
-            query={staffQuery}
-            toolbar={null}
-            customComponents={{
-              table: {
-                before: (
-                  <FormGroup className={classes.switch}>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={showInactive}
-                          onChange={toggleShowInactive}
-                          color={"primary"}
-                        />
-                      }
-                      labelPlacement="start"
-                      label="Show Inactive Accounts"
-                    />
-                  </FormGroup>
-                ),
-              },
-            }}
-          />
+        <Container className={classes.container}>
+          <Box className={classes.addStaffButton}>
+            <AddUserButton />
+          </Box>
           <Card>
             <DataGrid
               rows={data["moped_users"]}
@@ -148,7 +100,7 @@ const StaffListView = () => {
               slots={{ toolbar: GridToolbar }}
             />
           </Card>
-        </>
+        </Container>
       )}
     </Page>
   );
