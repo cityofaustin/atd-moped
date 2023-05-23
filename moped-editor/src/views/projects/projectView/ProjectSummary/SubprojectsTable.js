@@ -30,7 +30,7 @@ import {
 } from "../../../../queries/subprojects";
 import typography from "../../../../theme/typography";
 
-const SubprojectsTable = ({ projectId = null }) => {
+const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   const addActionRef = React.useRef();
 
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
@@ -151,6 +151,7 @@ const SubprojectsTable = ({ projectId = null }) => {
           actionsColumnIndex: -1,
           tableLayout: "fixed",
           addRowPosition: "first",
+          idSynonym: "project_id",
         }}
         localization={{
           header: {
@@ -177,6 +178,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             })
               .then(() => {
                 refetch();
+                refetchSummaryData(); // Refresh subprojects in summary map
               })
               .catch((error) => console.error(error));
           },
@@ -189,6 +191,7 @@ const SubprojectsTable = ({ projectId = null }) => {
             })
               .then(() => {
                 refetch();
+                refetchSummaryData(); // Refresh subprojects in summary map
               })
               .catch((error) => console.error(error));
           },

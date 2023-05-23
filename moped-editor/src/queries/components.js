@@ -47,7 +47,7 @@ export const ADD_PROJECT_COMPONENT = gql`
   }
 `;
 
-export const GET_PROJECT_COMPONENTS = gql`
+export const PROJECT_COMPONENT_FIELDS = gql`
   fragment projectComponentFields on moped_proj_components {
     project_component_id
     component_id
@@ -118,6 +118,10 @@ export const GET_PROJECT_COMPONENTS = gql`
       component_id
     }
   }
+`;
+
+export const GET_PROJECT_COMPONENTS = gql`
+  ${PROJECT_COMPONENT_FIELDS}
   query GetProjectComponents($projectId: Int!, $parentProjectId: Int = 0) {
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
