@@ -37,7 +37,7 @@ const StaffListView = () => {
       renderCell: (props) => <EditUserButton id={props.value} />,
       width: 50,
       sortable: false,
-      filterable: false
+      filterable: false,
     },
     {
       headerName: "First name",
@@ -76,6 +76,11 @@ const StaffListView = () => {
         const role = props.value[0].replace("moped-", "");
         return role.charAt(0).toUpperCase() + role.slice(1);
       },
+    },
+    {
+      headerName: "Is deleted",
+      field: "is_deleted",
+      valueGetter: (props) => (props.value ? "True" : "False"),
     },
   ];
 
