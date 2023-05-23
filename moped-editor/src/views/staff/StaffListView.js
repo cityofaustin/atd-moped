@@ -25,10 +25,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StaffListView = () => {
-  const classes = useStyles();
-
-  const { data, loading, error } = useQuery(GET_ALL_USERS);
 
   const staffColumns = [
     {
@@ -78,11 +74,17 @@ const StaffListView = () => {
       },
     },
     {
-      headerName: "Is deleted",
+      headerName: "Active",
       field: "is_deleted",
-      valueGetter: (props) => (props.value ? "True" : "False"),
+      // if the user has been deleted (is_deleted === True), then they are not active
+      valueGetter: (props) => (props.value ? "No" : "Yes"),
     },
   ];
+
+const StaffListView = () => {
+  const classes = useStyles();
+
+  const { data, loading, error } = useQuery(GET_ALL_USERS);
 
   if (error) {
     console.error(error);
@@ -99,6 +101,7 @@ const StaffListView = () => {
           </Box>
           <Card>
             <DataGrid
+              disableRowSelectionOnClick
               rows={data["moped_users"]}
               columns={staffColumns}
               getRowId={(row) => row.user_id}

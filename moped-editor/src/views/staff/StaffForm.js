@@ -97,7 +97,7 @@ const StaffForm = ({
       ...initialFormValues,
       // Roles are stored as an array in the DB but we need to feed the form a string
       roles: findHighestRole(initialFormValues.roles),
-      workgroup_id: initialFormValues?.moped_workgroup?.workgroup_id ?? null,
+      workgroup_id: initialFormValues?.moped_workgroup?.workgroup_id ?? "",
     },
     resolver: yupResolver(validationSchema),
   });
