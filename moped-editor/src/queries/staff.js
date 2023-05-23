@@ -1,5 +1,23 @@
 import { gql } from "@apollo/client";
 
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    moped_users(order_by: { first_name: asc }) {
+      last_name
+      first_name
+      user_id
+      email
+      roles
+      title
+      is_deleted
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
+    }
+  }
+`;
+
 export const GET_USER = gql`
   query GetUser($userId: Int) {
     moped_users(where: { user_id: { _eq: $userId } }) {
