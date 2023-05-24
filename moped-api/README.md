@@ -63,7 +63,15 @@ $ pip install -r requirements/development.txt
 
 This particular requirements file includes tools such as pytest that make development and unit testing a lot easier, but it also makes the api bulky. Do not bother in installing the production or staging requirement files, those are only meant for cloud deployments.
 
-Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console.
+Next, set up your [AWS config and credentials](https://docs.aws.amazon.com/sdkref/latest/guide/file-format.html) files. You can obtain your credentials from the AWS console. Your credentials will need read access to the AWS secret manager. These are the env vars of concern:
+
+```shell
+AWS_DEFAULT_REGION="us-east-1"
+AWS_ACCESS_KEY_ID=<your-access-key-id>
+AWS_SECRET_ACCESS_KEY=<your-access-key-secret>
+```
+
+The app will use your credentials to fetch its environment from secret manager. It defaults to "staging", and you may need to manually patch in a local Hasura endpoint to run end to end tests.
 
 Running the API (with hot-reload)
 Once the installation of the requirements is done, you are ready to launch the application using this command:
@@ -71,7 +79,7 @@ Once the installation of the requirements is done, you are ready to launch the a
 #### Run Flask in development mode:
 
 ```
-$ FLASK_ENV=development flask run
+$ FLASK_ENV=development flask run --host=0.0.0.0 --port 5001 --debug
 ```
 
 You may have noticed the FLASK_ENV=development bash variable, this is passed to the flask command and it will initialize the application in app.py and enabled hot-reload, meaning that any changes you make to the code will be automatically reloaded for you (without you having to restart the API for every change).

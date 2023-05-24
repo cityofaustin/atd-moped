@@ -4356,7 +4356,6 @@
           - last_name
           - picture
           - title
-          - workgroup
           - date_added
           - cognito_user_id
           - staff_uuid
@@ -4374,7 +4373,6 @@
           - last_name
           - picture
           - title
-          - workgroup
           - date_added
           - cognito_user_id
           - staff_uuid
@@ -4393,7 +4391,6 @@
           - last_name
           - picture
           - title
-          - workgroup
           - date_added
           - cognito_user_id
           - staff_uuid
@@ -4412,7 +4409,6 @@
           - last_name
           - picture
           - title
-          - workgroup
           - date_added
           - cognito_user_id
           - staff_uuid
@@ -4427,7 +4423,6 @@
           - first_name
           - last_name
           - title
-          - workgroup
           - user_id
           - workgroup_id
           - cognito_user_id
