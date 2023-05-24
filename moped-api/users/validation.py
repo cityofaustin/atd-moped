@@ -55,15 +55,6 @@ USER_VALIDATION_SCHEMA = {
         "nullable": True,
         "required": False,
     },
-    "workgroup": {
-        "type": "string",
-        "nullable": False,
-        "required": True,
-        "empty": False,
-        "minlength": 3,
-        "maxlength": 128,
-        "regex": "^[a-zA-Z0-9_\-\!\@\%\^\*\~\?\.\:\&\*\(\)\[\]\$\ ]*$",
-    },
     "workgroup_id": {
         "type": "number",
         "nullable": False,
