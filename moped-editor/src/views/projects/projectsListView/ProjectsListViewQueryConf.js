@@ -238,6 +238,9 @@ export const ProjectsListViewQueryConf = {
     added_by: {
       type: "string",
     },
+    interim_project_id: {
+      type: "string",
+    }
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },

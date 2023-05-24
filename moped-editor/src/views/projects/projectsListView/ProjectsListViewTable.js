@@ -79,6 +79,7 @@ const DEFAULT_HIDDEN_COLS = {
   project_tags: false,
   added_by: true,
   public_process_status: true,
+  interim_project_id: true,
 };
 
 /**
@@ -529,6 +530,12 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       hidden: hiddenColumns["public_process_status"],
       emptyValue: "-",
     },
+    {
+      title: "Interim MPD (Access) ID",
+      field: "interim_project_id",
+      hidden: hiddenColumns["interim_project_id"],
+      emptyValue: "-"
+    }
   ];
 
   /**
