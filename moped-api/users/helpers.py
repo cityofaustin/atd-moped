@@ -35,7 +35,6 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
         "is_coa_staff": is_coa_staff(json_data["email"]),
         "is_deleted": json_data.get("is_deleted", False),
         "title": json_data.get("title", None),
-        "workgroup": json_data.get("workgroup", None),
         "workgroup_id": json_data.get("workgroup_id", None),
         "roles": json_data.get("roles", None),
     }
@@ -114,7 +113,6 @@ User profile dictionary example:
         "is_coa_staff": True,
         "is_deleted": False,
         "title": "",
-        "workgroup": "ATD",
         "workgroup_id": 1,
         "roles": ["moped-viewer"]
     }

@@ -1,13 +1,8 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   UPDATE_COMPONENT_ATTRIBUTES,
@@ -55,7 +50,7 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase } = formData;
+    const { description, subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -64,6 +59,15 @@ const EditAttributesModal = ({
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
           is_deleted: false, // Used for update on constraint in mutation
+          project_component_id: projectComponentId,
+        }))
+      : [];
+
+
+    const tagsArray = tags
+      ? tags.map((tag) => ({
+          component_tag_id: tag.value,
+          is_deleted: false,
           project_component_id: projectComponentId,
         }))
       : [];
@@ -84,6 +88,7 @@ const EditAttributesModal = ({
         feature_signals: [
           { ...featureSignalRecord, geometry: featureSignalRecord.geography },
         ],
+        moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
@@ -97,6 +102,7 @@ const EditAttributesModal = ({
           signals: [signalToInsert],
           phaseId: phase?.data.phase_id,
           subphaseId: subphase?.data.subphase_id,
+          componentTags: tagsArray,
           completionDate,
         },
       })
@@ -125,6 +131,7 @@ const EditAttributesModal = ({
       const updatedClickedComponentState = {
         description,
         moped_proj_components_subcomponents: subcomponentsArray,
+        moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
@@ -137,6 +144,7 @@ const EditAttributesModal = ({
           subcomponents: subcomponentsArray,
           phaseId: phase?.data.phase_id,
           subphaseId: subphase?.data.subphase_id,
+          componentTags: tagsArray,
           completionDate,
         },
       })
@@ -158,6 +166,7 @@ const EditAttributesModal = ({
     phase: componentToEdit?.moped_phase,
     subphase: componentToEdit?.moped_subphase,
     completionDate: componentToEdit?.completion_date,
+    tags: componentToEdit?.moped_proj_component_tags,
   };
 
   return (

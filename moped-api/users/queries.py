@@ -12,7 +12,6 @@ GRAPHQL_CREATE_USER = """
             cognito_user_id,
             date_added,
             title,
-            workgroup,
             workgroup_id,
             roles
           ]
