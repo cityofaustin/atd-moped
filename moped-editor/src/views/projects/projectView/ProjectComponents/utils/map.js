@@ -126,25 +126,24 @@ export const zoomMapToFeatureCollection = (
 /**
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
- * @param {Object} data - Data returned from the moped_components query
- * @param {Array} data.project_geography - Array of existing component features
+ * @param {Object} featureCollection - feature collection of project components
  */
-export const useZoomToExistingComponents = (mapRef, data) => {
+export const useZoomToExistingComponents = (mapRef, featureCollection) => {
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
   useEffect(() => {
-    if (!data || hasMapZoomedInitially) return;
+    if (!featureCollection || hasMapZoomedInitially) return;
     if (!mapRef?.current) return;
 
-    if (data.project_geography.length === 0) {
-      setHasMapZoomedInitially(true);
-      return;
-    }
+    // if (data.project_geography.length === 0) {
+    //   setHasMapZoomedInitially(true);
+    //   return;
+    // }
 
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: data.project_geography,
-    };
+    // const featureCollection = {
+    //   type: "FeatureCollection",
+    //   features: data.project_geography,
+    // };
 
     zoomMapToFeatureCollection(
       mapRef,
@@ -153,5 +152,5 @@ export const useZoomToExistingComponents = (mapRef, data) => {
     );
 
     setHasMapZoomedInitially(true);
-  }, [data, hasMapZoomedInitially, mapRef]);
+  }, [featureCollection, hasMapZoomedInitially, mapRef]);
 };

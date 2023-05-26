@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { Dialog } from "@mui/material";
 import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -164,7 +164,10 @@ export default function MapView({
 
   if (error) console.log(error);
 
-  useZoomToExistingComponents(mapRef, data);
+  useZoomToExistingComponents(mapRef, {
+    type: "FeatureCollection",
+    features: data?.project_geography,
+  });
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {

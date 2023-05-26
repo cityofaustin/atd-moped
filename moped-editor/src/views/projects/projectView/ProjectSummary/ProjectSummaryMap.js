@@ -43,7 +43,10 @@ const ProjectSummaryMap = ({ data }) => {
   const childComponentsFeatureCollection =
     useAllComponentsFeatureCollection(childComponents);
 
-  useZoomToExistingComponents(mapRefState, data);
+  useZoomToExistingComponents(mapRefState, {
+    type: "FeatureCollection",
+    features: data.project_geography,
+  });
 
   const areThereComponentFeatures =
     projectComponentsFeatureCollection.features.length > 0 ||
