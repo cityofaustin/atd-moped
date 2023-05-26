@@ -19,7 +19,7 @@ import {
   SOURCES,
   MIN_SELECT_FEATURE_ZOOM,
 } from "./mapSettings";
-import { interactiveLayerIds } from "./utils/map";
+import { interactiveLayerIds, useZoomToExistingComponents } from "./utils/map";
 import {
   useAgolFeatures,
   findFeatureInAgolGeojsonFeatures,
@@ -76,6 +76,11 @@ export default function TheMap({
     useAllComponentsFeatureCollection(projectComponents);
   const allRelatedComponentsFeatureCollection =
     useAllComponentsFeatureCollection(allRelatedComponents);
+  const projectAndRelatedComponentsFeatureCollection =
+    useAllComponentsFeatureCollection([
+      ...projectComponents,
+      ...allRelatedComponents,
+    ]);
 
   const draftComponentFeatures = useDraftComponentFeatures(draftComponent);
   const draftEditComponentFeatureCollection =
@@ -90,6 +95,11 @@ export default function TheMap({
     setIsFetchingFeatures,
     currentZoom,
     bounds
+  );
+
+  useZoomToExistingComponents(
+    mapRef,
+    projectAndRelatedComponentsFeatureCollection
   );
 
   useEffect(() => {

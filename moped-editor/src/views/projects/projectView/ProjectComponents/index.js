@@ -13,7 +13,7 @@ import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
-import { useAppBarHeight, useZoomToExistingComponents } from "./utils/map";
+import { useAppBarHeight } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
@@ -163,11 +163,6 @@ export default function MapView({
   const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
 
   if (error) console.log(error);
-
-  useZoomToExistingComponents(mapRef, {
-    type: "FeatureCollection",
-    features: data?.project_geography,
-  });
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
   const onClickZoomToComponent = (component) => {
