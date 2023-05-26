@@ -127,23 +127,18 @@ export const zoomMapToFeatureCollection = (
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
  * @param {Object} featureCollection - feature collection of project components
+ * @param {boolean}
  */
-export const useZoomToExistingComponents = (mapRef, featureCollection) => {
+export const useZoomToExistingComponents = (
+  mapRef,
+  featureCollection,
+  refreshOnComponentsUpdate = false
+) => {
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
   useEffect(() => {
     if (!featureCollection || hasMapZoomedInitially) return;
     if (!mapRef?.current) return;
-
-    // if (data.project_geography.length === 0) {
-    //   setHasMapZoomedInitially(true);
-    //   return;
-    // }
-
-    // const featureCollection = {
-    //   type: "FeatureCollection",
-    //   features: data.project_geography,
-    // };
 
     zoomMapToFeatureCollection(
       mapRef,
@@ -151,6 +146,6 @@ export const useZoomToExistingComponents = (mapRef, featureCollection) => {
       fitBoundsOptions.zoomToExtent
     );
 
-    setHasMapZoomedInitially(true);
+    !refreshOnComponentsUpdate && setHasMapZoomedInitially(true);
   }, [featureCollection, hasMapZoomedInitially, mapRef]);
 };
