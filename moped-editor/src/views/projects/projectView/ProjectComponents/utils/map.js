@@ -127,7 +127,7 @@ export const zoomMapToFeatureCollection = (
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
  * @param {Object} featureCollection - feature collection of project components
- * @param {boolean}
+ * @param {boolean} refreshOnComponentsUpdate - if true, zoom to components on every update
  */
 export const useZoomToExistingComponents = (
   mapRef,

@@ -41,13 +41,13 @@ export const fitBoundsOptions = {
   zoomToExtent: {
     maxZoom: 15,
     // accounting for fixed top bar
-    padding: 200,
+    padding: 50,
   },
   zoomToClickedComponent: {
     maxZoom: 19,
     padding: 200,
     duration: 1500,
-    linear: true
+    linear: true,
   },
 };
 

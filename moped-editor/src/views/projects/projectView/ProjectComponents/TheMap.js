@@ -99,7 +99,8 @@ export default function TheMap({
 
   useZoomToExistingComponents(
     mapRef,
-    projectAndRelatedComponentsFeatureCollection
+    projectAndRelatedComponentsFeatureCollection,
+    false
   );
 
   useEffect(() => {
