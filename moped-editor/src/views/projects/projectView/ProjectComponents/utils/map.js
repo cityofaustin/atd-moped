@@ -147,5 +147,10 @@ export const useZoomToExistingComponents = (
     );
 
     !refreshOnComponentsUpdate && setHasMapZoomedInitially(true);
-  }, [featureCollection, hasMapZoomedInitially, mapRef]);
+  }, [
+    featureCollection,
+    hasMapZoomedInitially,
+    mapRef,
+    refreshOnComponentsUpdate,
+  ]);
 };
