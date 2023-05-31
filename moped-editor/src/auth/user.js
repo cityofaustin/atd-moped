@@ -57,6 +57,7 @@ export const destroyLoggedInProfile = () =>
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
+  console.log("getSessionDatabaseData ", localStorage)
   if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
     return null;
   }
@@ -87,8 +88,6 @@ export const initializeUserDBObject = (userObject) => {
   // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
 
-  console.log(config.env, userObject)
-
   // If the user object is valid and there is no existing data...
   if (userObject && sessionData === null) {
     // Fetch the data from Hasura
@@ -112,6 +111,8 @@ export const initializeUserDBObject = (userObject) => {
       // Then we parse the response
       res.json().then((resData) => {
         // If we have any user data,  use it
+
+        console.log("we got new user data ", resData)
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
           window.location.reload();
