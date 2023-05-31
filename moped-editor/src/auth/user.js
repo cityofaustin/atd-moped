@@ -294,7 +294,7 @@ export const findHighestRole = (roles) => {
 
   switch (roles) {
     case findRole("moped-admin"):
-      return "moped-editor";
+      return "moped-admin";
     case findRole("moped-editor"):
       return "moped-editor";
     case findRole("moped-viewer"):
