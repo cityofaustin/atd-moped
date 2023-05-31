@@ -57,7 +57,6 @@ export const destroyLoggedInProfile = () =>
  * @return {Object}
  */
 export const getSessionDatabaseData = () => {
-  console.log("getSessionDatabaseData ", localStorage)
   if (localStorage.getItem(atdSessionDatabaseDataKeyName) === "undefined") {
     return null;
   }
@@ -111,8 +110,9 @@ export const initializeUserDBObject = (userObject) => {
       // Then we parse the response
       res.json().then((resData) => {
         // If we have any user data,  use it
-
-        console.log("we got new user data ", resData)
+        if (resData?.errors) {
+          console.error(resData.errors)
+        }
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
           window.location.reload();
@@ -269,13 +269,11 @@ export const getHasuraClaims = (user) => {
 };
 
 export const getDatabaseId = (user) => {
-  // if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
-    console.log("claims ", claims)
     return claims["x-hasura-user-db-id"];
   } catch (e) {
-    console.error("get database id: ", e)
+    console.error("getDatabaseId error ", e)
     return null;
   }
 };
