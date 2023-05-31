@@ -273,6 +273,7 @@ export const getDatabaseId = (user) => {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];
   } catch (e) {
+    console.error("getDatabaseId error ", e)
     return null;
   }
 };
