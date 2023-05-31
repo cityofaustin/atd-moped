@@ -114,7 +114,6 @@ export const initializeUserDBObject = (userObject) => {
           console.error(resData.errors)
         }
         if (resData?.data?.moped_users) {
-          console.log(resData?.data)
           setSessionDatabaseData(resData.data.moped_users[0]);
           window.location.reload();
         }
