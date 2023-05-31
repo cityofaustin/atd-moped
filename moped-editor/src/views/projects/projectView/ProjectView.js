@@ -195,6 +195,9 @@ const ProjectView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
+  console.log(userId)
+  console.log("session data: ", userSessionData)
+
   const handleSnackbarClose = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };

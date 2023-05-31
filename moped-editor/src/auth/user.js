@@ -87,6 +87,8 @@ export const initializeUserDBObject = (userObject) => {
   // Retrieve the data (if any)
   const sessionData = getSessionDatabaseData();
 
+  console.log(config.env, userObject)
+
   // If the user object is valid and there is no existing data...
   if (userObject && sessionData === null) {
     // Fetch the data from Hasura
@@ -269,8 +271,10 @@ export const getDatabaseId = (user) => {
   // if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
+    console.log("claims ", claims)
     return claims["x-hasura-user-db-id"];
   } catch (e) {
+    console.error("get database id: ", e)
     return null;
   }
 };
@@ -290,7 +294,7 @@ export const findHighestRole = (roles) => {
 
   switch (roles) {
     case findRole("moped-admin"):
-      return "moped-admin";
+      return "moped-editor";
     case findRole("moped-editor"):
       return "moped-editor";
     case findRole("moped-viewer"):

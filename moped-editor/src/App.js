@@ -35,6 +35,8 @@ const App = () => {
     const token = getJwt(user);
     const role = getHighestRole(user);
 
+    console.log(role)
+
     // Return the headers and role to the context so httpLink can read them
     return {
       headers: {
