@@ -109,7 +109,9 @@ export const initializeUserDBObject = (userObject) => {
     }).then((res) => {
       // Then we parse the response
       res.json().then((resData) => {
-        // If we have any user data,  use it
+        if (resData?.errors) {
+          console.error(resData.errors)
+        }
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
           window.location.reload();
@@ -271,6 +273,7 @@ export const getDatabaseId = (user) => {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];
   } catch (e) {
+    console.error("getDatabaseId error ", e)
     return null;
   }
 };
