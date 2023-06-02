@@ -240,9 +240,16 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
+    $componentTags: [moped_proj_component_tags_insert_input!]!
     $srtsId: String
   ) {
     update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_component_tags(
       where: { project_component_id: { _eq: $projectComponentId } }
       _set: { is_deleted: true }
     ) {
@@ -276,6 +283,15 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
       affected_rows
     }
     insert_feature_signals(objects: $signals) {
+      affected_rows
+    }
+    insert_moped_proj_component_tags(
+      objects: $componentTags
+      on_conflict: {
+        constraint: unique_component_and_tag
+        update_columns: [is_deleted]
+      }
+    ) {
       affected_rows
     }
   }
