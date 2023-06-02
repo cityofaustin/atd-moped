@@ -50,7 +50,8 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase, tags } = formData;
+    const { description, subcomponents, phase, subphase, tags, srtsId } =
+      formData;
     const completionDate = !!phase ? formData.completionDate : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -62,7 +63,6 @@ const EditAttributesModal = ({
           project_component_id: projectComponentId,
         }))
       : [];
-
 
     const tagsArray = tags
       ? tags.map((tag) => ({
@@ -92,6 +92,7 @@ const EditAttributesModal = ({
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
+        srts_id: srtsId,
       };
 
       updateSignalComponent({
@@ -104,6 +105,7 @@ const EditAttributesModal = ({
           subphaseId: subphase?.data.subphase_id,
           componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
         .then(() => {
@@ -135,6 +137,7 @@ const EditAttributesModal = ({
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
+        srts_id: srtsId,
       };
 
       updateComponentAttributes({
@@ -146,6 +149,7 @@ const EditAttributesModal = ({
           subphaseId: subphase?.data.subphase_id,
           componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
         .then(() => onComponentSaveSuccess(updatedClickedComponentState))
@@ -158,7 +162,7 @@ const EditAttributesModal = ({
   const onClose = () => {
     editDispatch({ type: "cancel_attributes_edit" });
   };
-
+  console.log(componentToEdit);
   const initialFormValues = {
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
@@ -167,6 +171,7 @@ const EditAttributesModal = ({
     subphase: componentToEdit?.moped_subphase,
     completionDate: componentToEdit?.completion_date,
     tags: componentToEdit?.moped_proj_component_tags,
+    srtsId: componentToEdit?.srts_id,
   };
 
   return (

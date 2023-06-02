@@ -252,8 +252,8 @@ export const useInitialValuesOnAttributesEdit = (
   // Set the srts id once
   useEffect(() => {
     if (!initialFormValues) return;
-    debugger;
-    setValue("srtsId", initialFormValues.srts_id);
+
+    setValue("srtsId", initialFormValues.srtsId);
   }, [initialFormValues, setValue]);
 };
 
