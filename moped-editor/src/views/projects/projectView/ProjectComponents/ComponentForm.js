@@ -123,8 +123,7 @@ const ComponentForm = ({
     phaseOptions,
     subphaseOptions,
     areSignalOptionsLoaded,
-    componentTagsOptions,
-    srtsId
+    componentTagsOptions
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -246,8 +245,10 @@ const ComponentForm = ({
               shrink: true,
             }}
             variant="outlined"
-            multiline
             minRows={4}
+            helperText={
+              "The Safe Routes to School infrastructure plan record identifier"
+            }
           />
         </Grid>
         <Grid item xs={12}>
