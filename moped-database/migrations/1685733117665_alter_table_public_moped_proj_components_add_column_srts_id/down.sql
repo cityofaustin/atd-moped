@@ -1,4 +1,1 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_components" add column "srts_id" text
---  null;
+alter table "public"."moped_proj_components" drop column "srts_id";

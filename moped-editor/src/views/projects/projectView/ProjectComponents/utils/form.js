@@ -248,6 +248,13 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("tags", selectedTags);
   }, [componentTagsOptions, initialFormValues, setValue]);
+
+  // Set the srts id once
+  useEffect(() => {
+    if (!initialFormValues) return;
+
+    setValue("srtsId", initialFormValues.srtsId);
+  }, [initialFormValues, setValue]);
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
