@@ -56,6 +56,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     subphase_id
     completion_date
     project_id
+    srts_id
     moped_components {
       component_name
       component_subtype
@@ -170,7 +171,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 
 // This mutation updates component subcomponents and component tags by first updating *all* existing
 // subcomponents and tags to is_deleted = true and then inserting the new subcomponents and tags
-// with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user 
+// with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user
 // are switched to is_deleted = false by the mutation)
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateComponentAttributes(

@@ -58,7 +58,7 @@ const CreateComponentModal = ({
       label: component_name,
       features: [],
       moped_proj_component_tags: tags,
-      srtsId: srtsId.length > 0 ? srtsId : null,
+      srts_id: srtsId.length > 0 ? srtsId : null,
     };
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
