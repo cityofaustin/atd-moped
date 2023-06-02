@@ -162,7 +162,7 @@ const EditAttributesModal = ({
   const onClose = () => {
     editDispatch({ type: "cancel_attributes_edit" });
   };
-  console.log(componentToEdit);
+
   const initialFormValues = {
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
