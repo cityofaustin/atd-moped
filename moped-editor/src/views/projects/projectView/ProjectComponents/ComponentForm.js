@@ -245,7 +245,6 @@ const ComponentForm = ({
               shrink: true,
             }}
             variant="outlined"
-            minRows={4}
             helperText={
               "The Safe Routes to School infrastructure plan record identifier"
             }

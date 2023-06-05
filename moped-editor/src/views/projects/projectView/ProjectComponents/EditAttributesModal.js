@@ -50,9 +50,11 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase, tags, srtsId } =
-      formData;
+    const { subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
+    const description =
+      formData.description.length > 0 ? formData.description : null;
+    const srtsId = formData.srtsId.length > 0 ? formData.srtsId : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
     // Prepare the subcomponent data for the mutation
