@@ -1,4 +1,3 @@
--- latest version 1684878028985_project_list_interim_id
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -44,7 +43,6 @@ AS WITH project_person_list_lookup AS (
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
     mpps.name AS public_process_status,
-    mp.interim_project_id,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
@@ -75,8 +73,8 @@ AS WITH project_person_list_lookup AS (
     ( -- get the date of the completion phase with the latest end date
       SELECT max(phases.phase_end)
       FROM moped_proj_phases phases
-      WHERE true 
-        AND phases.project_id = mp.project_id 
+      WHERE true
+        AND phases.project_id = mp.project_id
         AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
       ) AS completion_end_date,
@@ -143,25 +141,24 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
-     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
+     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
   WHERE
     mp.is_deleted = false
   GROUP BY
-    mp.project_id, 
-    mp.project_name, 
-    mp.project_description, 
-    ppll.project_team_members, 
-    mp.ecapris_subproject_id, 
+    mp.project_id,
+    mp.project_name,
+    mp.project_description,
+    ppll.project_team_members,
+    mp.ecapris_subproject_id,
     mp.date_added,
-    mp.is_deleted, 
-    me.entity_name, 
-    mel.entity_name, 
+    mp.is_deleted,
+    me.entity_name,
+    mel.entity_name,
     mp.updated_at, 
     mp.task_order,
-    mp.interim_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
-    ptl.type_name, 
+    ptl.type_name,
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,

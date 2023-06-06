@@ -350,6 +350,16 @@ export const ProjectsListViewFiltersConf = {
         "string_is_not_null",
       ],
     },
+    {
+      name: "interim_project_id",
+      label: "Interim MPD (Access) ID",
+      placeholder: "Interim MPD (Access) ID",
+      type: "number",
+      defaultOperator: "number_equals",
+      operators: [
+        "*", // All of them (shortcut)
+      ],
+    },
   ],
 
   operators: {
