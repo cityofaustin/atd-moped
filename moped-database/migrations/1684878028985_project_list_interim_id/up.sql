@@ -1,4 +1,3 @@
--- latest version 1684878028985_project_list_interim_id
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view

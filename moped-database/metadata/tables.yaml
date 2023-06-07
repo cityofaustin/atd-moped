@@ -143,12 +143,12 @@
     - name: activity_log_feature_drawn_lines
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -278,12 +278,12 @@
     - name: activity_log_feature_drawn_points
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -413,12 +413,12 @@
     - name: activity_log_feature_intersections
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -590,12 +590,12 @@
     - name: activity_log_feature_signals
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -760,12 +760,12 @@
     - name: activity_log_feature_street_segments
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -1449,12 +1449,12 @@
     - name: activity_log_proj_component_tags
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -1563,12 +1563,12 @@
     - name: activity_log_proj_component_work_types
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -1800,12 +1800,12 @@
     - name: activity_log_moped_proj_components
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2014,12 +2014,12 @@
     - name: activity_log_moped_proj_contract
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2293,12 +2293,12 @@
     - name: activity_log_moped_proj_funding
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2519,12 +2519,12 @@
     - name: activity_log_moped_proj_milestones
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2674,12 +2674,12 @@
     - name: activity_log_moped_proj_notes
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2804,12 +2804,12 @@
     - name: activity_log_moped_proj_partners
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -2954,12 +2954,12 @@
     - name: activity_log_moped_proj_personnel
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3069,12 +3069,12 @@
     - name: activity_log_moped_proj_personnel_roles
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3228,12 +3228,12 @@
     - name: activity_log_moped_proj_phases
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3349,10 +3349,10 @@
     - name: activity_log_moped_project_tags
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
           columns:
             - id
@@ -3666,10 +3666,10 @@
     - name: activity_log_moped_project
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
           columns:
             - ecapris_subproject_id
@@ -3872,12 +3872,12 @@
     - name: activity_log_moped_project_files
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -4046,12 +4046,12 @@
     - name: activity_log_moped_project_types
       definition:
         delete:
-          columns: "*"
+          columns: '*'
         enable_manual: false
         insert:
-          columns: "*"
+          columns: '*'
         update:
-          columns: "*"
+          columns: '*'
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -4464,6 +4464,49 @@
             _eq: x-hasura-user-db-id
         check: null
 - table:
+    name: moped_work_types
+    schema: public
+  array_relationships:
+    - name: moped_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_component_work_types
+            schema: public
+    - name: moped_proj_component_work_types
+      using:
+        foreign_key_constraint_on:
+          column: work_type_id
+          table:
+            name: moped_proj_component_work_types
+            schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - key
+          - is_deleted
+        filter: {}
+- table:
     name: moped_workgroup
     schema: public
   object_relationships:
@@ -4564,6 +4607,7 @@
           - date_added
           - ecapris_subproject_id
           - funding_source_name
+          - interim_project_id
           - is_deleted
           - project_description
           - project_designer
@@ -4597,6 +4641,7 @@
           - date_added
           - ecapris_subproject_id
           - funding_source_name
+          - interim_project_id
           - is_deleted
           - project_description
           - project_designer
@@ -4630,6 +4675,7 @@
           - date_added
           - ecapris_subproject_id
           - funding_source_name
+          - interim_project_id
           - is_deleted
           - project_description
           - project_designer
@@ -4653,46 +4699,3 @@
 - table:
     name: uniform_features
     schema: public
-- table:
-    name: moped_work_types
-    schema: public
-  array_relationships:
-    - name: moped_component_work_types
-      using:
-        foreign_key_constraint_on:
-          column: work_type_id
-          table:
-            name: moped_component_work_types
-            schema: public
-    - name: moped_proj_component_work_types
-      using:
-        foreign_key_constraint_on:
-          column: work_type_id
-          table:
-            name: moped_proj_component_work_types
-            schema: public
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - id
-          - name
-          - key
-          - is_deleted
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - id
-          - name
-          - key
-          - is_deleted
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - id
-          - name
-          - key
-          - is_deleted
-        filter: {}
