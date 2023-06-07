@@ -1,12 +1,7 @@
 import React from "react";
 import ComponentForm from "./ComponentForm";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,6 +41,7 @@ const CreateComponentModal = ({
       subphase,
       completionDate,
       tags,
+      srtsId,
     } = formData;
 
     const newComponent = {
@@ -62,6 +58,7 @@ const CreateComponentModal = ({
       label: component_name,
       features: [],
       moped_proj_component_tags: tags,
+      srts_id: srtsId.length > 0 ? srtsId : null,
     };
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
