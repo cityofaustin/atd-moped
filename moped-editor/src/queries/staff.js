@@ -1,5 +1,23 @@
 import { gql } from "@apollo/client";
 
+export const GET_ALL_USERS = gql`
+  query GetAllUsers {
+    moped_users(order_by: { first_name: asc }) {
+      last_name
+      first_name
+      user_id
+      email
+      roles
+      title
+      is_deleted
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
+    }
+  }
+`;
+
 export const GET_USER = gql`
   query GetUser($userId: Int) {
     moped_users(where: { user_id: { _eq: $userId } }) {
@@ -10,8 +28,10 @@ export const GET_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       cognito_user_id
       email
       roles
@@ -32,8 +52,10 @@ export const ADD_NON_MOPED_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       email
       roles
       is_deleted
@@ -50,8 +72,10 @@ export const UPDATE_NON_MOPED_USER = gql`
       staff_uuid
       title
       user_id
-      workgroup
-      workgroup_id
+      moped_workgroup {
+        workgroup_id
+        workgroup_name
+      }
       email
       roles
       is_deleted

@@ -13,7 +13,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   getSessionDatabaseData,
@@ -70,9 +70,9 @@ const Profile = ({ className, ...rest }) => {
 
   const [deleteAccountPicture] = useMutation(ACCOUNT_USER_PICTURE_DELETE);
 
-  const resetUserPicture = fileKey => {
+  const resetUserPicture = (fileKey) => {
     const userData = getSessionDatabaseData();
-    if (userData) userData["picture"] = fileKey;
+    if (userData) userData.picture = fileKey;
     setSessionDatabaseData(userData);
     refetch();
     window.location.reload();
@@ -82,14 +82,14 @@ const Profile = ({ className, ...rest }) => {
    * Persists the file data into the database
    * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
    */
-  const handleClickSaveFile = fileDataBundle => {
+  const handleClickSaveFile = (fileDataBundle) => {
     updateAccountPicture({
       variables: {
         userId: parseInt(getDatabaseId(user)),
         picture: fileDataBundle.key,
       },
     })
-      .then(resp => {
+      .then((resp) => {
         setDialogOpen(false);
         const affected_rows = resp.data?.update_moped_users?.affected_rows ?? 0;
 
@@ -99,7 +99,7 @@ const Profile = ({ className, ...rest }) => {
           resetUserPicture(fileDataBundle.key);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (Object.keys(err) > 0) alert(JSON.stringify(err));
       });
   };
@@ -110,7 +110,7 @@ const Profile = ({ className, ...rest }) => {
         userId: parseInt(getDatabaseId(user)),
       },
     })
-      .then(resp => {
+      .then((resp) => {
         const affected_rows = resp.data?.update_moped_users?.affected_rows ?? 0;
 
         if (affected_rows === 0) {
@@ -119,7 +119,7 @@ const Profile = ({ className, ...rest }) => {
           resetUserPicture(null);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (Object.keys(err) > 0) alert(JSON.stringify(err));
       })
       .finally(() => {
@@ -143,8 +143,8 @@ const Profile = ({ className, ...rest }) => {
   };
 
   const userProfile = data
-    ? "moped_users" in data && data["moped_users"].length > 0
-      ? data["moped_users"][0]
+    ? "moped_users" in data && data.moped_users.length > 0
+      ? data.moped_users[0]
       : null
     : null;
 
@@ -219,16 +219,16 @@ const Profile = ({ className, ...rest }) => {
                 />
               </Box>
               <Typography color="textPrimary" gutterBottom variant="h3">
-                {userProfile["first_name"]} {userProfile["last_name"]}
+                {userProfile.first_name} {userProfile.last_name}
               </Typography>
               <Typography color="textPrimary" gutterBottom variant="h3">
-                {String(userProfile["email"]).toLowerCase()}
+                {String(userProfile.email).toLowerCase()}
               </Typography>
               <Typography color="textSecondary" variant="body1">
-                {userProfile["title"] ?? "Austin Transportation"}
+                {userProfile.title ?? "Austin Transportation"}
               </Typography>
               <Typography color="textSecondary" variant="body1">
-                {userProfile["workgroup"] ?? "Austin, TX"}
+                {userProfile.moped_workgroup?.workgroup_name ?? "Austin, TX"}
               </Typography>
             </Box>
           </CardContent>

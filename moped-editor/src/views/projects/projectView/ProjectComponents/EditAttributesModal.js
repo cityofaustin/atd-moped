@@ -50,8 +50,11 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase, tags } = formData;
+    const { subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
+    const description =
+      formData.description.length > 0 ? formData.description : null;
+    const srtsId = formData.srtsId.length > 0 ? formData.srtsId : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
     // Prepare the subcomponent data for the mutation
@@ -62,7 +65,6 @@ const EditAttributesModal = ({
           project_component_id: projectComponentId,
         }))
       : [];
-
 
     const tagsArray = tags
       ? tags.map((tag) => ({
@@ -92,6 +94,7 @@ const EditAttributesModal = ({
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
+        srts_id: srtsId,
       };
 
       updateSignalComponent({
@@ -104,6 +107,7 @@ const EditAttributesModal = ({
           subphaseId: subphase?.data.subphase_id,
           componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
         .then(() => {
@@ -135,6 +139,7 @@ const EditAttributesModal = ({
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         completion_date: completionDate,
+        srts_id: srtsId,
       };
 
       updateComponentAttributes({
@@ -146,9 +151,10 @@ const EditAttributesModal = ({
           subphaseId: subphase?.data.subphase_id,
           componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState)) //breadcrumb
+        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
         .catch((error) => {
           console.log(error);
         });
@@ -159,8 +165,6 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  console.log(componentToEdit)
-
   const initialFormValues = {
     component: componentToEdit,
     subcomponents: componentToEdit?.moped_proj_components_subcomponents,
@@ -169,9 +173,8 @@ const EditAttributesModal = ({
     subphase: componentToEdit?.moped_subphase,
     completionDate: componentToEdit?.completion_date,
     tags: componentToEdit?.moped_proj_component_tags,
+    srtsId: componentToEdit?.srts_id,
   };
-
-  console.log(initialFormValues)
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">

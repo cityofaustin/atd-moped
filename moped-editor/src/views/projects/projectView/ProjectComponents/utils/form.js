@@ -112,9 +112,7 @@ export const useComponentTagsOptions = (data) =>
 
     const options = data.moped_component_tags.map((tag) => ({
       value: tag.id,
-      label: `${tag.type.charAt(0).toUpperCase() + tag.type.slice(1)} - ${
-        tag.name
-      }`,
+      label: `${tag.type} - ${tag.name}`,
       data: tag,
     }));
 
@@ -221,7 +219,7 @@ export const useInitialValuesOnAttributesEdit = (
     });
   }, [subphaseOptions, initialFormValues, setValue]);
 
-  // Set the description once
+  // Set the description value
   useEffect(() => {
     if (!initialFormValues) return;
 
@@ -241,17 +239,22 @@ export const useInitialValuesOnAttributesEdit = (
     if (componentTagsOptions.length === 0) return;
     if (initialFormValues.tags.length === 0) return;
 
-    const selectedTags = initialFormValues.tags.map(
-      (tag) => ({
-        value: tag.component_tag_id,
-        label: componentTagsOptions.find(
-          (option) => option.value === tag.component_tag_id
-        ).label,
-      })
-    );
+    const selectedTags = initialFormValues.tags.map((tag) => ({
+      value: tag.component_tag_id,
+      label: componentTagsOptions.find(
+        (option) => option.value === tag.component_tag_id
+      ).label,
+    }));
 
     setValue("tags", selectedTags);
   }, [componentTagsOptions, initialFormValues, setValue]);
+
+  // Set the srts id value
+  useEffect(() => {
+    if (!initialFormValues) return;
+
+    setValue("srtsId", initialFormValues.srtsId);
+  }, [initialFormValues, setValue]);
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({

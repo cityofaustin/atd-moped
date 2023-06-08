@@ -4,7 +4,7 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import { Button, Icon } from "@mui/material";
 import { NavLink as RouterLink } from "react-router-dom";
 
-export const newItemButton = (
+export const AddUserButton = () => (
   <Can
     perform="user:create"
     yes={
@@ -18,10 +18,9 @@ export const newItemButton = (
         Add Staff
       </Button>
     }
-  />
-);
+  /> )
 
-export const editItemButton = (id) => (
+export const EditUserButton = ({id}) => (
   <Can
     perform="user:edit"
     yes={

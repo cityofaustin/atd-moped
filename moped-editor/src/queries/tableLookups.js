@@ -52,5 +52,11 @@ export const TABLE_LOOKUPS_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_component_tags(where: { is_deleted: { _eq: false } }) {
+      id
+      type
+      name
+      slug
+    }
   }
 `;

@@ -52,5 +52,6 @@ export const useProjectComponents = (data) => {
   return {
     projectComponents,
     allRelatedComponents,
+    childComponents,
   };
 };

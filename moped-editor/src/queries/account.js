@@ -11,7 +11,9 @@ export const ACCOUNT_USER_PROFILE_GET_PLAIN = `
             is_coa_staff
             title
             picture
-            workgroup
+            moped_workgroup {
+              workgroup_name
+            }
         }
     }
 `;
