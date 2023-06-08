@@ -1,4 +1,3 @@
--- latest version 1683826893015_list-view-contruct-complete-date
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -63,22 +62,24 @@ AS WITH project_person_list_lookup AS (
         WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
         ORDER BY mpn.date_created DESC
         LIMIT 1) AS project_note,
-    ( -- get the date of the construction phase with the earliest start date
-      SELECT min(phases.phase_start)
+    ( -- get me the phase start of the most recently added construction phase entry
+      SELECT phases.phase_start
       FROM moped_proj_phases phases
       WHERE true
         AND phases.project_id = mp.project_id 
         AND phases.phase_id = 9 -- phase_id 9 is construction
         AND phases.is_deleted = false
-    ) AS construction_start_date,
-    ( -- get the date of the completion phase with the latest end date
-      SELECT max(phases.phase_end)
+      ORDER BY phases.date_added DESC
+      LIMIT 1) AS construction_start_date,
+    ( -- get me the phase end of the most recently added completion phase entry
+      SELECT phases.phase_end
       FROM moped_proj_phases phases
       WHERE true 
         AND phases.project_id = mp.project_id 
         AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
-      ) AS completion_end_date,
+      ORDER BY phases.date_added DESC
+      LIMIT 1) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel mpp

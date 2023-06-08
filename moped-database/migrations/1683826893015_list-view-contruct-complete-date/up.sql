@@ -1,4 +1,3 @@
--- latest version 1683826893015_list-view-contruct-complete-date
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
