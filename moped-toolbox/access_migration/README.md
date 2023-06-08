@@ -63,12 +63,9 @@ $ node index.js local
 
 ### Issues to make / todo
 
-- SRTS ID field on components form -> alphanum (https://github.com/cityofaustin/atd-data-tech/issues/12338)
-- component name: Refuge Island >> Crossing Island: https://github.com/cityofaustin/atd-data-tech/issues/12339
-- add interim_project_id to project_list_view and add to advanced search: https://github.com/cityofaustin/atd-data-tech/issues/12340
+- Map SRTS ID to component field
 - there are facility spatial records with multiple features within one layer and across geom types.
 - how to handle unmapped components?
-- clean up/de-dupe RRFB component
 - implement new subcomponents / split out work types
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - use a lookup table for note types
