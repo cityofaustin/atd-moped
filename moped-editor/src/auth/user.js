@@ -109,7 +109,6 @@ export const initializeUserDBObject = (userObject) => {
     }).then((res) => {
       // Then we parse the response
       res.json().then((resData) => {
-        // If we have any user data,  use it
         if (resData?.errors) {
           console.error(resData.errors)
         }
