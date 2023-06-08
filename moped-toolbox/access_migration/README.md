@@ -63,9 +63,9 @@ $ node index.js local
 
 ### Issues to make / todo
 
-- SRTS ID field on components form -> alphanum
-- component name: Refuge Island >> Crossing Island
-- add interim_project_id to project_list_view and add to advanced search
+- SRTS ID field on components form -> alphanum (https://github.com/cityofaustin/atd-data-tech/issues/12338)
+- component name: Refuge Island >> Crossing Island: https://github.com/cityofaustin/atd-data-tech/issues/12339
+- add interim_project_id to project_list_view and add to advanced search: https://github.com/cityofaustin/atd-data-tech/issues/12340
 - there are facility spatial records with multiple features within one layer and across geom types.
 - how to handle unmapped components?
 - clean up/de-dupe RRFB component
