@@ -219,7 +219,7 @@ export const useInitialValuesOnAttributesEdit = (
     });
   }, [subphaseOptions, initialFormValues, setValue]);
 
-  // Set the description once
+  // Set the description value
   useEffect(() => {
     if (!initialFormValues) return;
 
@@ -248,6 +248,13 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("tags", selectedTags);
   }, [componentTagsOptions, initialFormValues, setValue]);
+
+  // Set the srts id value
+  useEffect(() => {
+    if (!initialFormValues) return;
+
+    setValue("srtsId", initialFormValues.srtsId);
+  }, [initialFormValues, setValue]);
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({

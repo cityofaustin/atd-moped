@@ -56,6 +56,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     subphase_id
     completion_date
     project_id
+    srts_id
     moped_components {
       component_name
       component_subtype
@@ -170,7 +171,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 
 // This mutation updates component subcomponents and component tags by first updating *all* existing
 // subcomponents and tags to is_deleted = true and then inserting the new subcomponents and tags
-// with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user 
+// with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user
 // are switched to is_deleted = false by the mutation)
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateComponentAttributes(
@@ -181,6 +182,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $subphaseId: Int
     $completionDate: timestamptz
     $componentTags: [moped_proj_component_tags_insert_input!]!
+    $srtsId: String
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -201,6 +203,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
         phase_id: $phaseId
         subphase_id: $subphaseId
         completion_date: $completionDate
+        srts_id: $srtsId
       }
     ) {
       project_component_id
@@ -237,8 +240,16 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
+    $componentTags: [moped_proj_component_tags_insert_input!]!
+    $srtsId: String
   ) {
     update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_component_tags(
       where: { project_component_id: { _eq: $projectComponentId } }
       _set: { is_deleted: true }
     ) {
@@ -257,6 +268,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
         phase_id: $phaseId
         subphase_id: $subphaseId
         completion_date: $completionDate
+        srts_id: $srtsId
       }
     ) {
       project_component_id
@@ -271,6 +283,15 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
       affected_rows
     }
     insert_feature_signals(objects: $signals) {
+      affected_rows
+    }
+    insert_moped_proj_component_tags(
+      objects: $componentTags
+      on_conflict: {
+        constraint: unique_component_and_tag
+        update_columns: [is_deleted]
+      }
+    ) {
       affected_rows
     }
   }

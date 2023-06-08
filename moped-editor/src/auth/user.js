@@ -268,7 +268,6 @@ export const getHasuraClaims = (user) => {
 };
 
 export const getDatabaseId = (user) => {
-  // if (config.env.APP_ENVIRONMENT === "local") return "1";
   try {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];

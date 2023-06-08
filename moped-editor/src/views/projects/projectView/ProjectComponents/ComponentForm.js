@@ -36,6 +36,7 @@ const defaultFormValues = {
   completionDate: null,
   description: "",
   signal: null,
+  srtsId: null,
 };
 
 const validationSchema = yup.object().shape({
@@ -51,6 +52,7 @@ const validationSchema = yup.object().shape({
     is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
     then: yup.object().required(),
   }),
+  srtsId: yup.string().nullable().optional(),
 });
 
 /**
@@ -229,6 +231,23 @@ const ComponentForm = ({
             variant="outlined"
             multiline
             minRows={4}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            inputRef={register}
+            fullWidth
+            size="small"
+            name="srtsId"
+            id="srtsId"
+            label={"SRTS Infrastructure ID"}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            helperText={
+              "The Safe Routes to School infrastructure plan record identifier"
+            }
           />
         </Grid>
         <Grid item xs={12}>
