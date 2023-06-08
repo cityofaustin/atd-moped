@@ -63,7 +63,6 @@ $ node index.js local
 
 ### Issues to make / todo
 
-- Map SRTS ID to component field
 - there are facility spatial records with multiple features within one layer and across geom types.
 - how to handle unmapped components?
 - implement new subcomponents / split out work types

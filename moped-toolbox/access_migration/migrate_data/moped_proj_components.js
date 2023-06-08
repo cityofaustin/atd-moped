@@ -94,6 +94,7 @@ const componentFields = [
     },
   },
   { in: "ActualEndDateFacilityOverride", out: "completion_date" },
+  { in: "SRTS_ID", out: "srts_id" },
 ];
 
 const subcomponentFields = [
