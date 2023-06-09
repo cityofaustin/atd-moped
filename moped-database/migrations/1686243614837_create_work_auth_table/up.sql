@@ -1,0 +1,15 @@
+CREATE TABLE moped_proj_work_auth (
+    id serial PRIMARY KEY,
+    project_id integer not null references moped_project.project_id,
+    interim_work_order_id_old text,
+    implementation_workgroup_id integer references some_table.id,
+    contract_number text,
+    contractor_name text,
+    task_orders jsonb,
+    description text,
+    updated_by_user_id integer references moped_users.user_id,
+    updated_at timestamp with time zone not null default now(),
+    is_deleted boolean not null default false,
+    created_by_user_id integer references moped_users.user_id,
+    created_at timestamp with time zone not null default now(),
+);
