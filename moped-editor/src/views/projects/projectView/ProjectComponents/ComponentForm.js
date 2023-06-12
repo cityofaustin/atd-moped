@@ -10,6 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
+import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -24,7 +25,6 @@ import {
   useComponentTagsOptions,
 } from "./utils/form";
 import * as yup from "yup";
-import DateFieldEditComponent from "../DateFieldEditComponent";
 
 const defaultFormValues = {
   component: null,

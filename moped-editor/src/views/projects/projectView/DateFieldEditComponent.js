@@ -16,8 +16,6 @@ const DateFieldEditComponent = ({ onChange, value }) => {
     onChange(newDate);
   };
 
-  // the issue is that we want to use the value here but the onChange from the props
-  // choose which to override and which to not
   return (
     <MobileDatePicker
       format="MM/dd/yyyy"
