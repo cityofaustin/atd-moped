@@ -144,7 +144,6 @@ const EditAttributesModal = ({
         moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
-        // This date returns as timestamp with time zone so emulate that for the form to consume
         completion_date: completionDateForState,
         srts_id: srtsId,
       };
