@@ -26,6 +26,7 @@ import {
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
+import DateFieldEditComponent from "../DateFieldEditComponent";
 
 const defaultFormValues = {
   component: null,
@@ -302,22 +303,39 @@ const ComponentForm = ({
                 control={control}
                 render={({ onChange, value, ref }) => {
                   return (
-                    <MobileDatePicker
+                    <DateFieldEditComponent
                       inputRef={ref}
-                      value={parseDate(value)}
-                      onChange={(date) => {
-                        const newDate = date
-                          ? format(date, "yyyy-MM-dd")
-                          : null;
-                        onChange(newDate);
-                      }}
-                      format="MM/dd/yyyy"
+                      value={value}
+                      onChange={onChange}
+                      // onChange={(date) => {
+                      //   const newDate = date
+                      //     ? format(date, "yyyy-MM-dd")
+                      //     : null;
+                      //   onChange(newDate);
+                      // }}
+                      // format="MM/dd/yyyy"
                       variant="outlined"
                       label={"Completion date"}
-                      slotProps={{
-                        actionBar: { actions: ["accept", "cancel", "clear"] },
-                      }}
+                      // slotProps={{
+                      //   actionBar: { actions: ["accept", "cancel", "clear"] },
+                      // }}
                     />
+                    // <MobileDatePicker
+                    //   inputRef={ref}
+                    //   value={parseDate(value)}
+                    //   onChange={(date) => {
+                    //     const newDate = date
+                    //       ? format(date, "yyyy-MM-dd")
+                    //       : null;
+                    //     onChange(newDate);
+                    //   }}
+                    //   format="MM/dd/yyyy"
+                    //   variant="outlined"
+                    //   label={"Completion date"}
+                    //   slotProps={{
+                    //     actionBar: { actions: ["accept", "cancel", "clear"] },
+                    //   }}
+                    // />
                   );
                 }}
               />
