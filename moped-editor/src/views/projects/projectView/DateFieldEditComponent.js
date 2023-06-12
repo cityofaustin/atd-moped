@@ -9,10 +9,9 @@ import { parseISO, format } from "date-fns";
  * @constructor
  */
 
-const DateFieldEditComponent = ({ onChange, value }) => {
+const DateFieldEditComponent = ({ onChange, value, ...props }) => {
   const handleDateChange = (date) => {
     const newDate = date ? format(date, "yyyy-MM-dd") : null;
-    debugger;
     onChange(newDate);
   };
 
@@ -23,6 +22,7 @@ const DateFieldEditComponent = ({ onChange, value }) => {
       onChange={handleDateChange}
       InputProps={{ style: { minWidth: "100px" } }}
       slotProps={{ actionBar: { actions: ["accept", "cancel", "clear"] } }}
+      {...props}
     />
   );
 };

@@ -58,6 +58,11 @@ const EditAttributesModal = ({
     const srtsId = formData.srtsId.length > 0 ? formData.srtsId : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
+    // This date returns as timestamp with time zone so use that format for the form to consume
+    const completionDateForState = completionDate
+      ? formatISO(completionDate)
+      : null;
+
     // Prepare the subcomponent data for the mutation
     const subcomponentsArray = subcomponents
       ? subcomponents.map((subcomponent) => ({
@@ -94,8 +99,7 @@ const EditAttributesModal = ({
         moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
-        // This date returns as timestamp with time zone so emulate that for the form to consume
-        completion_date: formatISO(completionDate),
+        completion_date: completionDateForState,
         srts_id: srtsId,
       };
 
@@ -141,7 +145,7 @@ const EditAttributesModal = ({
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
         // This date returns as timestamp with time zone so emulate that for the form to consume
-        completion_date: formatISO(completionDate),
+        completion_date: completionDateForState,
         srts_id: srtsId,
       };
 
