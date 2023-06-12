@@ -11,6 +11,7 @@ import {
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
+import { formatISO } from "date-fns";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -93,7 +94,8 @@ const EditAttributesModal = ({
         moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
-        completion_date: completionDate,
+        // This date returns as timestamp with time zone so emulate that for the form to consume
+        completion_date: formatISO(completionDate),
         srts_id: srtsId,
       };
 
@@ -138,7 +140,8 @@ const EditAttributesModal = ({
         moped_proj_component_tags: tagsArray,
         moped_phase: phase?.data,
         moped_subphase: subphase?.data,
-        completion_date: completionDate,
+        // This date returns as timestamp with time zone so emulate that for the form to consume
+        completion_date: formatISO(completionDate),
         srts_id: srtsId,
       };
 
