@@ -307,7 +307,7 @@ const ComponentForm = ({
                       value={parseDate(value)}
                       onChange={(date) => {
                         const newDate = date
-                          ? format(date, "yyyy-MM-dd OOOO")
+                          ? format(date, "yyyy-MM-dd")
                           : null;
                         onChange(newDate);
                       }}
