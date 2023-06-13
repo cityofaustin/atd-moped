@@ -88,10 +88,9 @@ const StaffForm = ({
   const {
     register,
     handleSubmit,
-    errors,
     control,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
   } = useForm({
     defaultValues: {
@@ -155,11 +154,11 @@ const StaffForm = ({
             }}
             variant="outlined"
             {...register("first_name")}
-            // error={!!errors.first_name || !!userApiErrors?.first_name}
-            // helperText={
-            //   errors.first_name?.message ||
-            //   formatApiErrors(userApiErrors?.first_name)
-            // }
+            error={!!errors.first_name || !!userApiErrors?.first_name}
+            helperText={
+              errors.first_name?.message ||
+              formatApiErrors(userApiErrors?.first_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -173,11 +172,11 @@ const StaffForm = ({
             }}
             variant="outlined"
             {...register("last_name")}
-            // error={!!errors.last_name || !!userApiErrors?.last_name}
-            // helperText={
-            //   errors.last_name?.message ||
-            //   formatApiErrors(userApiErrors?.last_name)
-            // }
+            error={!!errors.last_name || !!userApiErrors?.last_name}
+            helperText={
+              errors.last_name?.message ||
+              formatApiErrors(userApiErrors?.last_name)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -191,10 +190,10 @@ const StaffForm = ({
             }}
             variant="outlined"
             {...register("title")}
-            // error={!!errors.title || !!userApiErrors?.title}
-            // helperText={
-            //   errors.title?.message || formatApiErrors(userApiErrors?.title)
-            // }
+            error={!!errors.title || !!userApiErrors?.title}
+            helperText={
+              errors.title?.message || formatApiErrors(userApiErrors?.title)
+            }
           />
         </Grid>
         <Grid item xs={12} md={6}>
@@ -208,10 +207,10 @@ const StaffForm = ({
             }}
             variant="outlined"
             {...register("email")}
-            // error={!!errors.email || !!userApiErrors?.email}
-            // helperText={
-            //   errors.email?.message || formatApiErrors(userApiErrors?.email)
-            // }
+            error={!!errors.email || !!userApiErrors?.email}
+            helperText={
+              errors.email?.message || formatApiErrors(userApiErrors?.email)
+            }
           />
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
@@ -228,11 +227,11 @@ const StaffForm = ({
               }}
               variant="outlined"
               {...register("password")}
-              // error={!!errors.password || !!userApiErrors?.password}
-              // helperText={
-              //   errors.password?.message ||
-              //   formatApiErrors(userApiErrors?.password)
-              // }
+              error={!!errors.password || !!userApiErrors?.password}
+              helperText={
+                errors.password?.message ||
+                formatApiErrors(userApiErrors?.password)
+              }
             />
           ) : (
             <TextField
@@ -288,9 +287,9 @@ const StaffForm = ({
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
-              {/* {errors.workgroup && (
+              {errors.workgroup && (
                 <FormHelperText>{errors.workgroup?.message}</FormHelperText>
-              )} */}
+              )}
             </FormControl>
           )}
         </Grid>
