@@ -136,6 +136,16 @@ const StaffForm = ({
 
   const currentSelectedRole = watch("roles");
 
+  const { ref: firstNameRef } = register("first_name");
+  const { ref: lastNameRef } = register("last_name");
+  const { ref: workgroupRef } = register("workgroup_id");
+  const { ref: passwordRef } = register("password");
+  const { ref: titleRef } = register("title");
+  const { ref: emailRef } = register("email");
+
+  // TODO: Update Controllers
+  // TODO: Update error handling
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Grid container spacing={2}>
@@ -143,7 +153,6 @@ const StaffForm = ({
           <TextField
             fullWidth
             autoFocus
-            name="first_name"
             id="first-name"
             label="First Name"
             disabled={!isUserActive}
@@ -151,18 +160,17 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
-            error={!!errors.first_name || !!userApiErrors?.first_name}
-            helperText={
-              errors.first_name?.message ||
-              formatApiErrors(userApiErrors?.first_name)
-            }
+            inputRef={firstNameRef}
+            // error={!!errors.first_name || !!userApiErrors?.first_name}
+            // helperText={
+            //   errors.first_name?.message ||
+            //   formatApiErrors(userApiErrors?.first_name)
+            // }
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="last_name"
             id="last-name"
             label="Last Name"
             disabled={!isUserActive}
@@ -170,18 +178,17 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
-            error={!!errors.last_name || !!userApiErrors?.last_name}
-            helperText={
-              errors.last_name?.message ||
-              formatApiErrors(userApiErrors?.last_name)
-            }
+            inputRef={lastNameRef}
+            // error={!!errors.last_name || !!userApiErrors?.last_name}
+            // helperText={
+            //   errors.last_name?.message ||
+            //   formatApiErrors(userApiErrors?.last_name)
+            // }
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="title"
             id="title"
             label="Title"
             disabled={!isUserActive}
@@ -189,17 +196,16 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
-            error={!!errors.title || !!userApiErrors?.title}
-            helperText={
-              errors.title?.message || formatApiErrors(userApiErrors?.title)
-            }
+            inputRef={titleRef}
+            // error={!!errors.title || !!userApiErrors?.title}
+            // helperText={
+            //   errors.title?.message || formatApiErrors(userApiErrors?.title)
+            // }
           />
         </Grid>
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="email"
             id="email"
             label="Email"
             disabled={!isUserActive}
@@ -207,11 +213,11 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
-            error={!!errors.email || !!userApiErrors?.email}
-            helperText={
-              errors.email?.message || formatApiErrors(userApiErrors?.email)
-            }
+            inputRef={emailRef}
+            // error={!!errors.email || !!userApiErrors?.email}
+            // helperText={
+            //   errors.email?.message || formatApiErrors(userApiErrors?.email)
+            // }
           />
         </Grid>
         {/* Non-Moped Users are not added to the Cognito pool so they do not need a password */}
@@ -220,7 +226,6 @@ const StaffForm = ({
           currentSelectedRole !== nonLoginUserRole ? (
             <TextField
               fullWidth
-              name="password"
               id="password"
               label="Password"
               type="password"
@@ -228,26 +233,25 @@ const StaffForm = ({
                 shrink: true,
               }}
               variant="outlined"
-              inputRef={register}
-              error={!!errors.password || !!userApiErrors?.password}
-              helperText={
-                errors.password?.message ||
-                formatApiErrors(userApiErrors?.password)
-              }
+              inputRef={passwordRef}
+              // error={!!errors.password || !!userApiErrors?.password}
+              // helperText={
+              //   errors.password?.message ||
+              //   formatApiErrors(userApiErrors?.password)
+              // }
             />
           ) : (
             <TextField
               fullWidth
-              name="password"
               id="password"
               label="Password"
               disabled={true}
-              inputRef={register}
+              inputRef={passwordRef}
               InputLabelProps={{
                 shrink: true,
               }}
               variant="outlined"
-              error={!!errors.password || !!userApiErrors?.password}
+              // error={!!errors.password || !!userApiErrors?.password}
               helperText={"Password not required for non-login users"}
             />
           )}
@@ -259,8 +263,7 @@ const StaffForm = ({
           ) : (
             <FormControl variant="outlined" className={classes.formSelect}>
               <InputLabel id="workgroup-label">Workgroup</InputLabel>
-              <Controller
-                name={"workgroup_id"}
+              {/* <Controller
                 control={control}
                 render={({ onChange, ref, value }) => (
                   <Select
@@ -272,7 +275,7 @@ const StaffForm = ({
                     onChange={(e) => {
                       onChange(e.target.value ?? "");
                     }}
-                    inputRef={ref}
+                    inputRef={workgroupRef}
                     value={value}
                   >
                     {workgroups.moped_workgroup.map((workgroup) => (
@@ -285,22 +288,22 @@ const StaffForm = ({
                     ))}
                   </Select>
                 )}
-              />
+              /> */}
               {workgroupError && (
                 <FormHelperText>
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
-              {errors.workgroup && (
+              {/* {errors.workgroup && (
                 <FormHelperText>{errors.workgroup?.message}</FormHelperText>
-              )}
+              )} */}
             </FormControl>
           )}
         </Grid>
         <Grid item xs={12} md={6}>
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
-            <Controller
+            {/* <Controller
               as={
                 <RadioGroup aria-label="roles" name="roles">
                   {roleOptions.map((role) => (
@@ -316,7 +319,7 @@ const StaffForm = ({
               }
               name={"roles"}
               control={control}
-            />
+            /> */}
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
