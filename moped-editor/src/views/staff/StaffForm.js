@@ -108,9 +108,10 @@ const StaffForm = ({
    */
   const onSubmit = (data) => {
     // Parse data and remove unchanged values
+    debugger;
     const databaseData = transformFormDataIntoDatabaseTypes(data);
 
-    onFormSubmit(databaseData);
+    // onFormSubmit(databaseData);
   };
 
   const {
@@ -138,7 +139,6 @@ const StaffForm = ({
 
   const { ref: firstNameRef } = register("first_name");
   const { ref: lastNameRef } = register("last_name");
-  const { ref: workgroupRef } = register("workgroup_id");
   const { ref: passwordRef } = register("password");
   const { ref: titleRef } = register("title");
   const { ref: emailRef } = register("email");
@@ -263,19 +263,21 @@ const StaffForm = ({
           ) : (
             <FormControl variant="outlined" className={classes.formSelect}>
               <InputLabel id="workgroup-label">Workgroup</InputLabel>
-              {/* <Controller
+              <Controller
                 control={control}
-                render={({ onChange, ref, value }) => (
+                name="workgroup_id"
+                render={({ field: { onChange, ref, value, name } }) => (
                   <Select
-                    variant="standard"
+                    variant="outlined"
                     id="workgroup"
+                    name={name}
                     labelId="workgroup-label"
                     label="Workgroup"
                     disabled={!isUserActive}
                     onChange={(e) => {
                       onChange(e.target.value ?? "");
                     }}
-                    inputRef={workgroupRef}
+                    inputRef={ref}
                     value={value}
                   >
                     {workgroups.moped_workgroup.map((workgroup) => (
@@ -288,7 +290,7 @@ const StaffForm = ({
                     ))}
                   </Select>
                 )}
-              /> */}
+              />
               {workgroupError && (
                 <FormHelperText>
                   Workgroups failed to load. Please refresh.
@@ -303,9 +305,16 @@ const StaffForm = ({
         <Grid item xs={12} md={6}>
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
-            {/* <Controller
-              as={
-                <RadioGroup aria-label="roles" name="roles">
+            <Controller
+              name="roles"
+              control={control}
+              render={({ field: { name, value, onChange } }) => (
+                <RadioGroup
+                  aria-label="roles"
+                  name={name}
+                  value={value}
+                  onChange={onChange}
+                >
                   {roleOptions.map((role) => (
                     <FormControlLabel
                       key={role.value}
@@ -316,10 +325,8 @@ const StaffForm = ({
                     />
                   ))}
                 </RadioGroup>
-              }
-              name={"roles"}
-              control={control}
-            /> */}
+              )}
+            />
           </FormControl>
         </Grid>
         <Grid item xs={12} md={6}>
