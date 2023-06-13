@@ -329,26 +329,26 @@ export const ControlledAutocomplete = ({
     id={id}
     name={name}
     control={control}
-    render={({ onChange, value, ref }) => (
+    render={({ field }) => (
       <Autocomplete
+        {...field}
         options={options}
         multiple={multiple}
         getOptionLabel={(option) => option?.label || ""}
         isOptionEqualToValue={(option, value) => option?.value === value?.value}
         renderOption={renderOption}
-        value={value}
         disabled={disabled}
         renderInput={(params) => (
           <TextField
             {...params}
-            inputRef={ref}
+            inputRef={field.ref}
             size="small"
             label={label}
             variant="outlined"
             autoFocus={autoFocus}
           />
         )}
-        onChange={(_event, option) => onChange(option)}
+        onChange={(_event, option) => field.onChange(option)}
       />
     )}
   />

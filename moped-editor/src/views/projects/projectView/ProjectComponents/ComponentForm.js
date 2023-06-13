@@ -152,6 +152,9 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
+  // TODO: Fix submit buttons
+  // TODO: Figure out why the form is showing isValid => true when there are no errors
+
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
@@ -180,11 +183,9 @@ const ComponentForm = ({
               id="signal"
               name="signal"
               control={control}
-              render={({ onChange, value, ref }) => (
+              render={({ field }) => (
                 <SignalComponentAutocomplete
-                  onChange={onChange}
-                  value={value}
-                  ref={ref}
+                  {...field}
                   onOptionsLoaded={onOptionsLoaded}
                   signalType={component?.data?.component_subtype}
                 />
@@ -219,10 +220,9 @@ const ComponentForm = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            inputRef={register}
+            {...register("description")}
             fullWidth
             size="small"
-            name="description"
             id="description"
             label={"Description"}
             InputLabelProps={{
@@ -235,10 +235,9 @@ const ComponentForm = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            inputRef={register}
+            {...register("srtsId")}
             fullWidth
             size="small"
-            name="srtsId"
             id="srtsId"
             label={"SRTS Infrastructure ID"}
             InputLabelProps={{
@@ -300,16 +299,16 @@ const ComponentForm = ({
                 id="completion-date"
                 name="completionDate"
                 control={control}
-                render={({ onChange, value, ref }) => {
+                render={({ field }) => {
                   return (
                     <MobileDatePicker
-                      inputRef={ref}
-                      value={parseDate(value)}
+                      {...field}
+                      value={parseDate(field.value)}
                       onChange={(date) => {
                         const newDate = date
                           ? format(date, "yyyy-MM-dd OOOO")
                           : null;
-                        onChange(newDate);
+                        field.onChange(newDate);
                       }}
                       format="MM/dd/yyyy"
                       variant="outlined"

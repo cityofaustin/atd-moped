@@ -70,7 +70,6 @@ const StaffForm = ({
   isPasswordFieldDisabled,
   FormButtons,
 }) => {
-  console.log(initialFormValues);
   const classes = useStyles();
 
   const initialModalState = {
