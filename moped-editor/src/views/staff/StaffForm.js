@@ -108,10 +108,9 @@ const StaffForm = ({
    */
   const onSubmit = (data) => {
     // Parse data and remove unchanged values
-    debugger;
     const databaseData = transformFormDataIntoDatabaseTypes(data);
 
-    // onFormSubmit(databaseData);
+    onFormSubmit(databaseData);
   };
 
   const {
@@ -136,8 +135,6 @@ const StaffForm = ({
   };
 
   const currentSelectedRole = watch("roles");
-
-  // TODO: Update error handling
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
