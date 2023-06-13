@@ -70,6 +70,7 @@ const StaffForm = ({
   isPasswordFieldDisabled,
   FormButtons,
 }) => {
+  console.log(initialFormValues);
   const classes = useStyles();
 
   const initialModalState = {
@@ -137,13 +138,6 @@ const StaffForm = ({
 
   const currentSelectedRole = watch("roles");
 
-  const { ref: firstNameRef } = register("first_name");
-  const { ref: lastNameRef } = register("last_name");
-  const { ref: passwordRef } = register("password");
-  const { ref: titleRef } = register("title");
-  const { ref: emailRef } = register("email");
-
-  // TODO: Update Controllers
   // TODO: Update error handling
 
   return (
@@ -160,7 +154,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={firstNameRef}
+            {...register("first_name")}
             // error={!!errors.first_name || !!userApiErrors?.first_name}
             // helperText={
             //   errors.first_name?.message ||
@@ -178,7 +172,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={lastNameRef}
+            {...register("last_name")}
             // error={!!errors.last_name || !!userApiErrors?.last_name}
             // helperText={
             //   errors.last_name?.message ||
@@ -196,7 +190,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={titleRef}
+            {...register("title")}
             // error={!!errors.title || !!userApiErrors?.title}
             // helperText={
             //   errors.title?.message || formatApiErrors(userApiErrors?.title)
@@ -213,7 +207,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={emailRef}
+            {...register("email")}
             // error={!!errors.email || !!userApiErrors?.email}
             // helperText={
             //   errors.email?.message || formatApiErrors(userApiErrors?.email)
@@ -233,7 +227,7 @@ const StaffForm = ({
                 shrink: true,
               }}
               variant="outlined"
-              inputRef={passwordRef}
+              {...register("password")}
               // error={!!errors.password || !!userApiErrors?.password}
               // helperText={
               //   errors.password?.message ||
@@ -246,7 +240,7 @@ const StaffForm = ({
               id="password"
               label="Password"
               disabled={true}
-              inputRef={passwordRef}
+              {...register("password")}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -264,21 +258,19 @@ const StaffForm = ({
             <FormControl variant="outlined" className={classes.formSelect}>
               <InputLabel id="workgroup-label">Workgroup</InputLabel>
               <Controller
-                control={control}
                 name="workgroup_id"
-                render={({ field: { onChange, ref, value, name } }) => (
+                control={control}
+                render={({ field }) => (
                   <Select
+                    {...field}
                     variant="outlined"
-                    id="workgroup"
-                    name={name}
+                    id="workgroup_id"
                     labelId="workgroup-label"
                     label="Workgroup"
                     disabled={!isUserActive}
                     onChange={(e) => {
-                      onChange(e.target.value ?? "");
+                      field.onChange(e.target.value ?? "");
                     }}
-                    inputRef={ref}
-                    value={value}
                   >
                     {workgroups.moped_workgroup.map((workgroup) => (
                       <MenuItem
