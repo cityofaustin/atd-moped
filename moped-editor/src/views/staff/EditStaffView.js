@@ -59,13 +59,33 @@ const EditStaffView = () => {
    * @param {Object} data - The data returned from user form to submit to the Moped API
    */
   const onFormSubmit = (data) => {
+    const {
+      first_name,
+      last_name,
+      title,
+      email,
+      password,
+      roles,
+      workgroup_id,
+    } = data;
+
+    const payload = {
+      first_name,
+      last_name,
+      title,
+      email,
+      password,
+      roles,
+      workgroup_id,
+    };
+
     // Navigate to user table on successful add/edit
     const callback = () => navigate("/moped/staff");
 
     requestApi({
       method: "put",
       path: "/users/" + userCognitoId,
-      payload: data,
+      payload,
       callback,
     });
   };
