@@ -240,7 +240,7 @@ const StaffForm = ({
                 shrink: true,
               }}
               variant="outlined"
-              // error={!!errors.password || !!userApiErrors?.password}
+              error={!!errors.password || !!userApiErrors?.password}
               helperText={"Password not required for non-login users"}
             />
           )}
