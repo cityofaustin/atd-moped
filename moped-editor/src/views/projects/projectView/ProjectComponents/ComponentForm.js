@@ -90,16 +90,7 @@ const ComponentForm = ({
   } = useForm({
     defaultValues: defaultFormValues,
     mode: "onChange",
-    // resolver: yupResolver(validationSchema),
-    resolver: async (data, context, options) => {
-      // you can debug your validation schema here
-      console.log("formData", data);
-      console.log(
-        "validation result",
-        await yupResolver(validationSchema)(data, context, options)
-      );
-      return yupResolver(validationSchema)(data, context, options);
-    },
+    resolver: yupResolver(validationSchema),
   });
 
   // Get and format component and subcomponent options
@@ -165,16 +156,8 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
-  const onSubmitForm = (formData) => {
-    debugger;
-  };
-
-  // TODO: Fix submit buttons
-  // TODO: Figure out why the form is showing isValid => true when there are no errors
-  // TODO: Form won't submit because of the yup resolver!
-
   return (
-    <form onSubmit={handleSubmit(onSubmitForm)}>
+    <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
