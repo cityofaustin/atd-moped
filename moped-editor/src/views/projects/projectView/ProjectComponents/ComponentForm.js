@@ -48,10 +48,14 @@ const validationSchema = yup.object().shape({
   completionDate: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
-  signal: yup.object().when("component", {
-    is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
-    then: yup.object().required(),
-  }),
+  signal: yup
+    .object()
+    .nullable()
+    .when("component", {
+      is: (val) =>
+        val?.data?.feature_layer?.internal_table === "feature_signals",
+      then: yup.object().required(),
+    }),
   srtsId: yup.string().nullable().optional(),
 });
 
@@ -86,7 +90,16 @@ const ComponentForm = ({
   } = useForm({
     defaultValues: defaultFormValues,
     mode: "onChange",
-    resolver: yupResolver(validationSchema),
+    // resolver: yupResolver(validationSchema),
+    resolver: async (data, context, options) => {
+      // you can debug your validation schema here
+      console.log("formData", data);
+      console.log(
+        "validation result",
+        await yupResolver(validationSchema)(data, context, options)
+      );
+      return yupResolver(validationSchema)(data, context, options);
+    },
   });
 
   // Get and format component and subcomponent options
@@ -152,11 +165,16 @@ const ComponentForm = ({
   const isEditingExistingComponent = initialFormValues !== null;
   const isSignalComponent = internalTable === "feature_signals";
 
+  const onSubmitForm = (formData) => {
+    debugger;
+  };
+
   // TODO: Fix submit buttons
   // TODO: Figure out why the form is showing isValid => true when there are no errors
+  // TODO: Form won't submit because of the yup resolver!
 
   return (
-    <form onSubmit={handleSubmit(onSave)}>
+    <form onSubmit={handleSubmit(onSubmitForm)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete

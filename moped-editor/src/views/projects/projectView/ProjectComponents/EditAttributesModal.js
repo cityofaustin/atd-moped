@@ -48,6 +48,7 @@ const EditAttributesModal = ({
   };
 
   const onSave = (formData) => {
+    debugger;
     const isSavingSignalFeature = Boolean(formData.signal);
 
     const { subcomponents, phase, subphase, tags } = formData;
