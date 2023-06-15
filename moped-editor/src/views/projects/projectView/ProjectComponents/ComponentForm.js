@@ -12,7 +12,10 @@ import {
 } from "@mui/material";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { CheckCircle } from "@mui/icons-material";
-import { ControlledAutocomplete } from "./utils/form";
+import {
+  ControlledAutocomplete,
+  makeSubcomponentsFormFieldValues,
+} from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import {
@@ -23,6 +26,7 @@ import {
   useSubphaseOptions,
   useInitialValuesOnAttributesEdit,
   useComponentTagsOptions,
+  makeComponentFormFieldValue,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -83,15 +87,11 @@ const ComponentForm = ({
   console.log(initialFormValues);
   const editDefaultFormValues = {
     ...defaultFormValues,
-    component: {
-      value: initialFormValues.component.component_id,
-      label: initialFormValues.component.moped_components.component_name,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component.moped_components,
-      },
-    },
+    component: makeComponentFormFieldValue(initialFormValues?.component),
     description: initialFormValues.description,
+    subcomponents: makeSubcomponentsFormFieldValues(
+      initialFormValues?.subcomponents
+    ),
   };
 
   const {
@@ -137,7 +137,6 @@ const ComponentForm = ({
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
-    subcomponentOptions,
     phaseOptions,
     subphaseOptions,
     areSignalOptionsLoaded,

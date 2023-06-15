@@ -119,10 +119,27 @@ export const useComponentTagsOptions = (data) =>
     return options;
   }, [data]);
 
+export const makeComponentFormFieldValue = (component) => {
+  return {
+    value: component.component_id,
+    label: component.moped_components.component_name,
+    data: {
+      // Include component subcomponents and metadata about the internal_table needed for the form
+      ...component.moped_components,
+    },
+  };
+};
+
+export const makeSubcomponentsFormFieldValues = (subcomponents) => {
+  return subcomponents.map((subcomponent) => ({
+    value: subcomponent.subcomponent_id,
+    label: subcomponent.moped_subcomponent.subcomponent_name,
+  }));
+};
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
-  subcomponentOptions,
   phaseOptions,
   subphaseOptions,
   areSignalOptionsLoaded,
@@ -144,24 +161,6 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("signal", knackFormatSignalOption);
   }, [initialFormValues, areSignalOptionsLoaded, setValue]);
-
-  // Set the selected subcomponent after the subcomponent options are loaded
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (subcomponentOptions.length === 0) return;
-    if (initialFormValues.subcomponents.length === 0) return;
-
-    const selectedSubcomponents = initialFormValues.subcomponents.map(
-      (subcomponent) => ({
-        value: subcomponent.subcomponent_id,
-        label: subcomponentOptions.find(
-          (option) => option.value === subcomponent.subcomponent_id
-        ).label,
-      })
-    );
-
-    setValue("subcomponents", selectedSubcomponents);
-  }, [subcomponentOptions, initialFormValues, setValue]);
 
   // Set the selected phase after the phase options are loaded
   useEffect(() => {
