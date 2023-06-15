@@ -122,30 +122,12 @@ export const useComponentTagsOptions = (data) =>
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
-  componentOptions,
   subcomponentOptions,
   phaseOptions,
   subphaseOptions,
   areSignalOptionsLoaded,
   componentTagsOptions
 ) => {
-  // Set the selected component after the component options are loaded
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (componentOptions.length === 0) return;
-
-    setValue("component", {
-      value: initialFormValues.component.component_id,
-      label: componentOptions.find(
-        (option) => option.value === initialFormValues.component.component_id
-      ).label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component.moped_components,
-      },
-    });
-  }, [componentOptions, initialFormValues, setValue]);
-
   // Set the selected signal if this is a signal component
   useEffect(() => {
     if (!initialFormValues) return;

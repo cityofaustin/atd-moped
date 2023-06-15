@@ -80,6 +80,18 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
+  const editDefaultFormValues = {
+    ...defaultFormValues,
+    component: {
+      value: initialFormValues.component.component_id,
+      label: initialFormValues.component.moped_components.component_name,
+      data: {
+        // Include component subcomponents and metadata about the internal_table needed for the form
+        ...initialFormValues.component.moped_components,
+      },
+    },
+  };
+
   const {
     register,
     handleSubmit,
@@ -88,7 +100,8 @@ const ComponentForm = ({
     setValue,
     formState: { isValid },
   } = useForm({
-    defaultValues: defaultFormValues,
+    // defaultValues: defaultFormValues,
+    defaultValues: { ...defaultFormValues, ...editDefaultFormValues },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
@@ -119,16 +132,15 @@ const ComponentForm = ({
     !!initialFormValues?.component.moped_phase
   );
 
-  // useInitialValuesOnAttributesEdit(
-  //   initialFormValues,
-  //   setValue,
-  //   componentOptions,
-  //   subcomponentOptions,
-  //   phaseOptions,
-  //   subphaseOptions,
-  //   areSignalOptionsLoaded,
-  //   componentTagsOptions
-  // );
+  useInitialValuesOnAttributesEdit(
+    initialFormValues,
+    setValue,
+    subcomponentOptions,
+    phaseOptions,
+    subphaseOptions,
+    areSignalOptionsLoaded,
+    componentTagsOptions
+  );
 
   // Reset signal field when component changes so signal matches component signal type
   useEffect(() => {
