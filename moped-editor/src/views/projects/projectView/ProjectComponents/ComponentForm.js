@@ -119,16 +119,16 @@ const ComponentForm = ({
     !!initialFormValues?.component.moped_phase
   );
 
-  useInitialValuesOnAttributesEdit(
-    initialFormValues,
-    setValue,
-    componentOptions,
-    subcomponentOptions,
-    phaseOptions,
-    subphaseOptions,
-    areSignalOptionsLoaded,
-    componentTagsOptions
-  );
+  // useInitialValuesOnAttributesEdit(
+  //   initialFormValues,
+  //   setValue,
+  //   componentOptions,
+  //   subcomponentOptions,
+  //   phaseOptions,
+  //   subphaseOptions,
+  //   areSignalOptionsLoaded,
+  //   componentTagsOptions
+  // );
 
   // Reset signal field when component changes so signal matches component signal type
   useEffect(() => {
@@ -157,188 +157,190 @@ const ComponentForm = ({
   const isSignalComponent = internalTable === "feature_signals";
 
   return (
-    <form onSubmit={handleSubmit(onSave)}>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <ControlledAutocomplete
-            id="component"
-            label="Component Type"
-            options={areOptionsLoading ? [] : componentOptions}
-            renderOption={(props, option, state) => (
-              <ComponentOptionWithIcon
-                option={option}
-                state={state}
-                props={props}
-              />
-            )}
-            name="component"
-            control={control}
-            autoFocus
-            disabled={isEditingExistingComponent}
-          />
-        </Grid>
-
-        {isSignalComponent && (
-          <Grid item xs={12}>
-            <Controller
-              id="signal"
-              name="signal"
-              control={control}
-              render={({ field }) => (
-                <SignalComponentAutocomplete
-                  {...field}
-                  onOptionsLoaded={onOptionsLoaded}
-                  signalType={component?.data?.component_subtype}
-                />
-              )}
-            />
-          </Grid>
-        )}
-
-        {/* Hide unless there are subcomponents for the chosen component */}
-        {(subcomponentOptions.length !== 0 ||
-          doesInitialValueHaveSubcomponents) && (
+    !areOptionsLoading && (
+      <form onSubmit={handleSubmit(onSave)}>
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <ControlledAutocomplete
-              id="subcomponents"
-              label="Subcomponents"
+              id="component"
+              label="Component Type"
+              options={areOptionsLoading ? [] : componentOptions}
+              renderOption={(props, option, state) => (
+                <ComponentOptionWithIcon
+                  option={option}
+                  state={state}
+                  props={props}
+                />
+              )}
+              name="component"
+              control={control}
+              autoFocus
+              disabled={isEditingExistingComponent}
+            />
+          </Grid>
+
+          {isSignalComponent && (
+            <Grid item xs={12}>
+              <Controller
+                id="signal"
+                name="signal"
+                control={control}
+                render={({ field }) => (
+                  <SignalComponentAutocomplete
+                    {...field}
+                    onOptionsLoaded={onOptionsLoaded}
+                    signalType={component?.data?.component_subtype}
+                  />
+                )}
+              />
+            </Grid>
+          )}
+
+          {/* Hide unless there are subcomponents for the chosen component */}
+          {(subcomponentOptions.length !== 0 ||
+            doesInitialValueHaveSubcomponents) && (
+            <Grid item xs={12}>
+              <ControlledAutocomplete
+                id="subcomponents"
+                label="Subcomponents"
+                multiple
+                options={subcomponentOptions}
+                name="subcomponents"
+                control={control}
+              />
+            </Grid>
+          )}
+          <Grid item xs={12}>
+            <ControlledAutocomplete
+              id="tags"
+              label="Tags"
               multiple
-              options={subcomponentOptions}
-              name="subcomponents"
+              options={componentTagsOptions}
+              name="tags"
               control={control}
             />
           </Grid>
-        )}
-        <Grid item xs={12}>
-          <ControlledAutocomplete
-            id="tags"
-            label="Tags"
-            multiple
-            options={componentTagsOptions}
-            name="tags"
-            control={control}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            {...register("description")}
-            fullWidth
-            size="small"
-            id="description"
-            label={"Description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-            multiline
-            minRows={4}
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField
-            {...register("srtsId")}
-            fullWidth
-            size="small"
-            id="srtsId"
-            label={"SRTS Infrastructure ID"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-            helperText={
-              "The Safe Routes to School infrastructure plan record identifier"
-            }
-          />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={useComponentPhase}
-                onChange={() => setUseComponentPhase(!useComponentPhase)}
-                name="useComponentPhase"
-                color="primary"
-              />
-            }
-            labelPlacement="start"
-            label="Use component phase"
-            style={{ color: "gray", marginLeft: 0 }}
-          />
+          <Grid item xs={12}>
+            <TextField
+              {...register("description")}
+              fullWidth
+              size="small"
+              id="description"
+              label={"Description"}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              multiline
+              minRows={4}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              {...register("srtsId")}
+              fullWidth
+              size="small"
+              id="srtsId"
+              label={"SRTS Infrastructure ID"}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              helperText={
+                "The Safe Routes to School infrastructure plan record identifier"
+              }
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={useComponentPhase}
+                  onChange={() => setUseComponentPhase(!useComponentPhase)}
+                  name="useComponentPhase"
+                  color="primary"
+                />
+              }
+              labelPlacement="start"
+              label="Use component phase"
+              style={{ color: "gray", marginLeft: 0 }}
+            />
+            {useComponentPhase && (
+              <FormHelperText>
+                Assign a phase to the component to differentiate it from the
+                overall phase of this project
+              </FormHelperText>
+            )}
+          </Grid>
           {useComponentPhase && (
-            <FormHelperText>
-              Assign a phase to the component to differentiate it from the
-              overall phase of this project
-            </FormHelperText>
-          )}
-        </Grid>
-        {useComponentPhase && (
-          <>
-            <Grid item xs={12}>
-              <ControlledAutocomplete
-                id="phase"
-                label="Phase"
-                options={phaseOptions}
-                name="phase"
-                control={control}
-                required
-                autoFocus
-              />
-            </Grid>
-            {subphaseOptions.length !== 0 && (
+            <>
               <Grid item xs={12}>
                 <ControlledAutocomplete
-                  id="subphase"
-                  label="Subphase"
-                  options={subphaseOptions}
-                  name="subphase"
+                  id="phase"
+                  label="Phase"
+                  options={phaseOptions}
+                  name="phase"
                   control={control}
+                  required
+                  autoFocus
                 />
               </Grid>
-            )}
-            <Grid item xs={12}>
-              <Controller
-                id="completion-date"
-                name="completionDate"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <MobileDatePicker
-                      {...field}
-                      value={parseDate(field.value)}
-                      onChange={(date) => {
-                        const newDate = date
-                          ? format(date, "yyyy-MM-dd OOOO")
-                          : null;
-                        field.onChange(newDate);
-                      }}
-                      format="MM/dd/yyyy"
-                      variant="outlined"
-                      label={"Completion date"}
-                      slotProps={{
-                        actionBar: { actions: ["accept", "cancel", "clear"] },
-                      }}
-                    />
-                  );
-                }}
-              />
-            </Grid>
-          </>
-        )}
-      </Grid>
-      <Grid container spacing={4} display="flex" justifyContent="flex-end">
-        <Grid item style={{ margin: 5 }}>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<CheckCircle />}
-            type="submit"
-            disabled={!isValid}
-          >
-            {isSignalComponent ? "Save" : formButtonText}
-          </Button>
+              {subphaseOptions.length !== 0 && (
+                <Grid item xs={12}>
+                  <ControlledAutocomplete
+                    id="subphase"
+                    label="Subphase"
+                    options={subphaseOptions}
+                    name="subphase"
+                    control={control}
+                  />
+                </Grid>
+              )}
+              <Grid item xs={12}>
+                <Controller
+                  id="completion-date"
+                  name="completionDate"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <MobileDatePicker
+                        {...field}
+                        value={parseDate(field.value)}
+                        onChange={(date) => {
+                          const newDate = date
+                            ? format(date, "yyyy-MM-dd OOOO")
+                            : null;
+                          field.onChange(newDate);
+                        }}
+                        format="MM/dd/yyyy"
+                        variant="outlined"
+                        label={"Completion date"}
+                        slotProps={{
+                          actionBar: { actions: ["accept", "cancel", "clear"] },
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </Grid>
+            </>
+          )}
         </Grid>
-      </Grid>
-    </form>
+        <Grid container spacing={4} display="flex" justifyContent="flex-end">
+          <Grid item style={{ margin: 5 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<CheckCircle />}
+              type="submit"
+              disabled={!isValid}
+            >
+              {isSignalComponent ? "Save" : formButtonText}
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    )
   );
 };
 
