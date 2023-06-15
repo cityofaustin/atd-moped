@@ -133,8 +133,23 @@ export const makeComponentFormFieldValue = (component) => {
 export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   return subcomponents.map((subcomponent) => ({
     value: subcomponent.subcomponent_id,
-    label: subcomponent.moped_subcomponent.subcomponent_name,
+    label: subcomponent.moped_subcomponent?.subcomponent_name,
   }));
+};
+
+// TODO: isn't there a isSignalComponent helper elsewhere?
+export const makeSignalFormFieldValue = (component) => {
+  const internalTable =
+    component?.moped_components?.feature_layer?.internal_table;
+  const isSignalComponent = internalTable === "feature_signals";
+
+  if (!isSignalComponent) return null;
+
+  const componentSignal = component?.feature_signals?.[0];
+  const knackFormatSignalOption =
+    featureSignalsRecordToKnackSignalRecord(componentSignal);
+
+  return knackFormatSignalOption;
 };
 
 export const useInitialValuesOnAttributesEdit = (
@@ -142,26 +157,8 @@ export const useInitialValuesOnAttributesEdit = (
   setValue,
   phaseOptions,
   subphaseOptions,
-  areSignalOptionsLoaded,
   componentTagsOptions
 ) => {
-  // Set the selected signal if this is a signal component
-  useEffect(() => {
-    if (!initialFormValues) return;
-    const internalTable =
-      initialFormValues.component?.moped_components?.feature_layer
-        ?.internal_table;
-    const isSignalComponent = internalTable === "feature_signals";
-    if (!isSignalComponent) return;
-    if (!areSignalOptionsLoaded) return;
-
-    const componentSignal = initialFormValues.component?.feature_signals?.[0];
-    const knackFormatSignalOption =
-      featureSignalsRecordToKnackSignalRecord(componentSignal);
-
-    setValue("signal", knackFormatSignalOption);
-  }, [initialFormValues, areSignalOptionsLoaded, setValue]);
-
   // Set the selected phase after the phase options are loaded
   useEffect(() => {
     if (!initialFormValues?.component?.moped_phase) return;

@@ -12,10 +12,7 @@ import {
 } from "@mui/material";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import { CheckCircle } from "@mui/icons-material";
-import {
-  ControlledAutocomplete,
-  makeSubcomponentsFormFieldValues,
-} from "./utils/form";
+import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import {
@@ -27,6 +24,8 @@ import {
   useInitialValuesOnAttributesEdit,
   useComponentTagsOptions,
   makeComponentFormFieldValue,
+  makeSubcomponentsFormFieldValues,
+  makeSignalFormFieldValue,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -85,14 +84,18 @@ const ComponentForm = ({
     initialFormValues?.subcomponents.length > 0;
 
   console.log(initialFormValues);
-  const editDefaultFormValues = {
-    ...defaultFormValues,
-    component: makeComponentFormFieldValue(initialFormValues?.component),
-    description: initialFormValues.description,
-    subcomponents: makeSubcomponentsFormFieldValues(
-      initialFormValues?.subcomponents
-    ),
-  };
+  // TODO: Building the initialFormValues should happen in EditAttributesModal
+  const editDefaultFormValues = initialFormValues
+    ? {
+        ...defaultFormValues,
+        component: makeComponentFormFieldValue(initialFormValues?.component),
+        description: initialFormValues.description,
+        subcomponents: makeSubcomponentsFormFieldValues(
+          initialFormValues?.subcomponents
+        ),
+        signal: makeSignalFormFieldValue(initialFormValues?.component),
+      }
+    : null;
 
   const {
     register,
@@ -102,8 +105,9 @@ const ComponentForm = ({
     setValue,
     formState: { isValid },
   } = useForm({
-    // defaultValues: defaultFormValues,
-    defaultValues: { ...defaultFormValues, ...editDefaultFormValues },
+    defaultValues: initialFormValues
+      ? { ...defaultFormValues, ...editDefaultFormValues }
+      : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
@@ -139,7 +143,6 @@ const ComponentForm = ({
     setValue,
     phaseOptions,
     subphaseOptions,
-    areSignalOptionsLoaded,
     componentTagsOptions
   );
 
@@ -170,7 +173,8 @@ const ComponentForm = ({
   const isSignalComponent = internalTable === "feature_signals";
 
   return (
-    !areOptionsLoading && (
+    !areOptionsLoading &&
+    areSignalOptionsLoaded && (
       <form onSubmit={handleSubmit(onSave)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
