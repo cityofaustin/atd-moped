@@ -80,6 +80,7 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
+  console.log(initialFormValues);
   const editDefaultFormValues = {
     ...defaultFormValues,
     component: {
@@ -90,6 +91,7 @@ const ComponentForm = ({
         ...initialFormValues.component.moped_components,
       },
     },
+    description: initialFormValues.description,
   };
 
   const {

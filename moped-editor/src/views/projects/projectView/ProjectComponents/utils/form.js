@@ -201,13 +201,6 @@ export const useInitialValuesOnAttributesEdit = (
     });
   }, [subphaseOptions, initialFormValues, setValue]);
 
-  // Set the description value
-  useEffect(() => {
-    if (!initialFormValues) return;
-
-    setValue("description", initialFormValues.description);
-  }, [initialFormValues, setValue]);
-
   // Set the datepicker value
   useEffect(() => {
     if (!initialFormValues) return;
