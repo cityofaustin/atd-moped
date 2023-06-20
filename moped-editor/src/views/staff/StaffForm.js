@@ -96,7 +96,6 @@ const StaffForm = ({
       ...initialFormValues,
       // Roles are stored as an array in the DB but we need to feed the form a string
       roles: findHighestRole(initialFormValues.roles),
-      workgroup_id: initialFormValues?.moped_workgroup?.workgroup_id ?? "",
     },
     resolver: yupResolver(validationSchema),
   });
@@ -266,6 +265,9 @@ const StaffForm = ({
                     onChange={(e) => {
                       field.onChange(e.target.value ?? "");
                     }}
+                    error={
+                      !!errors.workgroup_id || !!userApiErrors?.workgroup_id
+                    }
                   >
                     {workgroups.moped_workgroup.map((workgroup) => (
                       <MenuItem
@@ -283,8 +285,13 @@ const StaffForm = ({
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
-              {errors.workgroup && (
-                <FormHelperText>{errors.workgroup?.message}</FormHelperText>
+              {errors.workgroup_id && (
+                <FormHelperText
+                  error={!!errors.workgroup_id || !!userApiErrors?.workgroup_id}
+                >
+                  {errors.workgroup_id?.message ||
+                    formatApiErrors(userApiErrors?.workgroup_id)}
+                </FormHelperText>
               )}
             </FormControl>
           )}
