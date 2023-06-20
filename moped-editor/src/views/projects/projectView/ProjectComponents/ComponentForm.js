@@ -83,7 +83,6 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  console.log(initialFormValues);
   // TODO: Building the initialFormValues should happen in EditAttributesModal
   const editDefaultFormValues = initialFormValues
     ? {
@@ -126,8 +125,6 @@ const ComponentForm = ({
   const { component, phase } = watch();
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
-  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
-  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const subcomponentOptions = useSubcomponentOptions(
@@ -173,8 +170,7 @@ const ComponentForm = ({
   const isSignalComponent = internalTable === "feature_signals";
 
   return (
-    !areOptionsLoading &&
-    areSignalOptionsLoaded && (
+    !areOptionsLoading && (
       <form onSubmit={handleSubmit(onSave)}>
         <Grid container spacing={2}>
           <Grid item xs={12}>
@@ -205,7 +201,6 @@ const ComponentForm = ({
                 render={({ field }) => (
                   <SignalComponentAutocomplete
                     {...field}
-                    onOptionsLoaded={onOptionsLoaded}
                     signalType={component?.data?.component_subtype}
                   />
                 )}
