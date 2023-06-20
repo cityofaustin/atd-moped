@@ -80,14 +80,14 @@ const EditStaffView = () => {
     };
 
     // Navigate to user table on successful add/edit
-    // const callback = () => navigate("/moped/staff");
+    const callback = () => navigate("/moped/staff");
 
-    // requestApi({
-    //   method: "put",
-    //   path: "/users/" + userCognitoId,
-    //   payload,
-    //   callback,
-    // });
+    requestApi({
+      method: "put",
+      path: "/users/" + userCognitoId,
+      payload,
+      callback,
+    });
   };
 
   const existingNonLoginUserRoleOptions = [
