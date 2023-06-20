@@ -26,6 +26,7 @@ import {
   makeComponentFormFieldValue,
   makeSubcomponentsFormFieldValues,
   makeSignalFormFieldValue,
+  makePhaseFormFieldValue,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -93,6 +94,7 @@ const ComponentForm = ({
           initialFormValues.subcomponents
         ),
         signal: makeSignalFormFieldValue(initialFormValues.component),
+        phase: makePhaseFormFieldValue(initialFormValues.component),
       }
     : null;
 
@@ -104,7 +106,6 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    reset,
     formState: { isValid },
   } = useForm({
     defaultValues: initialFormValues
@@ -156,7 +157,6 @@ const ComponentForm = ({
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
-    phaseOptions,
     subphaseOptions,
     componentTagsOptions
   );

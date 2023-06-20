@@ -152,31 +152,23 @@ export const makeSignalFormFieldValue = (component) => {
   return knackFormatSignalOption;
 };
 
+export const makePhaseFormFieldValue = (component) => {
+  return {
+    value: component?.moped_phase.phase_id,
+    label: component?.moped_phase.phase_name,
+    data: {
+      // Include component subphases and metadata about the internal_table needed for the form
+      ...component?.moped_phase,
+    },
+  };
+};
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
-  phaseOptions,
   subphaseOptions,
   componentTagsOptions
 ) => {
-  // Set the selected phase after the phase options are loaded
-  useEffect(() => {
-    if (!initialFormValues?.component?.moped_phase) return;
-    if (phaseOptions.length === 0) return;
-
-    setValue("phase", {
-      value: initialFormValues.component?.moped_phase.phase_id,
-      label: phaseOptions.find(
-        (option) =>
-          option.value === initialFormValues.component?.moped_phase.phase_id
-      ).label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component?.moped_phase,
-      },
-    });
-  }, [phaseOptions, initialFormValues, setValue]);
-
   // Set the selected subphase after the subphase options are loaded
   useEffect(() => {
     if (!initialFormValues?.component?.moped_subphase) return;
