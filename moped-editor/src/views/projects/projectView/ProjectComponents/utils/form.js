@@ -122,7 +122,7 @@ export const useComponentTagsOptions = (data) =>
 export const makeComponentFormFieldValue = (component) => {
   return {
     value: component.component_id,
-    label: component.moped_components.component_name,
+    label: makeComponentLabel(component.moped_components),
     data: {
       // Include component subcomponents and metadata about the internal_table needed for the form
       ...component.moped_components,
