@@ -87,7 +87,6 @@ const ComponentForm = ({
   // TODO: Building the initialFormValues should happen in EditAttributesModal
   const editDefaultFormValues = initialFormValues
     ? {
-        ...defaultFormValues,
         component: makeComponentFormFieldValue(initialFormValues.component),
         description: initialFormValues.description,
         subcomponents: makeSubcomponentsFormFieldValues(
@@ -109,7 +108,7 @@ const ComponentForm = ({
     formState: { isValid },
   } = useForm({
     defaultValues: initialFormValues
-      ? { ...defaultFormValues, ...editDefaultFormValues }
+      ? editDefaultFormValues
       : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -134,14 +133,21 @@ const ComponentForm = ({
   const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
+  // Set the selected component after the component options are loaded
+  // TODO: This should NOT happen when creating a new component
   useEffect(() => {
-    if (areOptionsLoading) return;
+    if (areOptionsLoading || initialFormValues === null) return;
 
     setValue("component", editDefaultFormValues.component);
   }, [areOptionsLoading]);
 
   useEffect(() => {
-    if (!areSignalOptionsLoaded && isSignalComponent) return;
+    if (
+      !areSignalOptionsLoaded ||
+      !isSignalComponent ||
+      initialFormValues === null
+    )
+      return;
 
     setValue("signal", editDefaultFormValues.signal);
   }, [areSignalOptionsLoaded]);
