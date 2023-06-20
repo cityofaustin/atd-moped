@@ -28,10 +28,7 @@ export const GET_USER = gql`
       staff_uuid
       title
       user_id
-      moped_workgroup {
-        workgroup_id
-        workgroup_name
-      }
+      workgroup_id
       cognito_user_id
       email
       roles

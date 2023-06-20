@@ -96,7 +96,6 @@ const StaffForm = ({
       ...initialFormValues,
       // Roles are stored as an array in the DB but we need to feed the form a string
       roles: findHighestRole(initialFormValues.roles),
-      workgroup_id: initialFormValues?.moped_workgroup?.workgroup_id ?? "",
     },
     resolver: yupResolver(validationSchema),
   });
@@ -283,8 +282,8 @@ const StaffForm = ({
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
-              {errors.workgroup && (
-                <FormHelperText>{errors.workgroup?.message}</FormHelperText>
+              {errors.workgroup_id && (
+                <FormHelperText>{errors.workgroup_id?.message}</FormHelperText>
               )}
             </FormControl>
           )}
