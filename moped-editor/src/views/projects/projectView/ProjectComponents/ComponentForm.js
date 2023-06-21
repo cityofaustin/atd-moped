@@ -134,7 +134,7 @@ const ComponentForm = ({
     if (areOptionsLoading || initialFormValues === null) return;
 
     setValue("component", initialFormValues.component);
-  }, [areOptionsLoading]);
+  }, [areOptionsLoading, initialFormValues, setValue]);
 
   // TODO: The value of the signal is getting cleared on first load
   useEffect(() => {
@@ -146,7 +146,7 @@ const ComponentForm = ({
       return;
 
     setValue("signal", initialFormValues.signal);
-  }, [areSignalOptionsLoaded]);
+  }, [areSignalOptionsLoaded, initialFormValues, setValue, isSignalComponent]);
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
