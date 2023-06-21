@@ -27,7 +27,6 @@ const EditAttributesModal = ({
   editDispatch,
   componentToEdit,
   refetchProjectComponents,
-  setClickedComponent,
   mapRef,
 }) => {
   const classes = useStyles();
@@ -35,15 +34,9 @@ const EditAttributesModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
-  const onComponentSaveSuccess = (updatedClickedComponentState) => {
-    // Update component list item and clicked component state to keep UI up to date
+  const onSaveSuccess = () => {
     refetchProjectComponents().then(() => {
       onClose();
-      // Update clickedComponent with the attributes that were just edited
-      setClickedComponent((prevComponent) => ({
-        ...prevComponent,
-        ...updatedClickedComponentState,
-      }));
     });
   };
 
@@ -52,8 +45,10 @@ const EditAttributesModal = ({
 
     const { subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
+    // TODO: Can we remove this because RHF returns null now?
     const description =
       formData.description?.length > 0 ? formData.description : null;
+    // TODO: Can we remove this because RHF returns null now?
     const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -84,19 +79,6 @@ const EditAttributesModal = ({
         component_id: projectComponentId,
       };
 
-      const updatedClickedComponentState = {
-        description,
-        moped_proj_components_subcomponents: subcomponentsArray,
-        feature_signals: [
-          { ...featureSignalRecord, geometry: featureSignalRecord.geography },
-        ],
-        moped_proj_component_tags: tagsArray,
-        moped_phase: phase?.data,
-        moped_subphase: subphase?.data,
-        completion_date: completionDate,
-        srts_id: srtsId,
-      };
-
       updateSignalComponent({
         variables: {
           projectComponentId: projectComponentId,
@@ -111,7 +93,8 @@ const EditAttributesModal = ({
         },
       })
         .then(() => {
-          onComponentSaveSuccess(updatedClickedComponentState);
+          onSaveSuccess();
+
           const [existingLongitude, existingLatitude] =
             featureSignalRecord.geography.coordinates[0];
           const [newLongitude, newLatitude] =
@@ -132,16 +115,6 @@ const EditAttributesModal = ({
           console.log(error);
         });
     } else {
-      const updatedClickedComponentState = {
-        description,
-        moped_proj_components_subcomponents: subcomponentsArray,
-        moped_proj_component_tags: tagsArray,
-        moped_phase: phase?.data,
-        moped_subphase: subphase?.data,
-        completion_date: completionDate,
-        srts_id: srtsId,
-      };
-
       updateComponentAttributes({
         variables: {
           projectComponentId: projectComponentId,
@@ -154,7 +127,7 @@ const EditAttributesModal = ({
           srtsId,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .then(() => onSaveSuccess())
         .catch((error) => {
           console.log(error);
         });

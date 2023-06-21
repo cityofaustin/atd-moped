@@ -298,7 +298,6 @@ export default function MapView({
             editDispatch={editDispatch}
             componentToEdit={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
-            setClickedComponent={setClickedComponent}
             mapRef={mapRef}
           />
         </main>

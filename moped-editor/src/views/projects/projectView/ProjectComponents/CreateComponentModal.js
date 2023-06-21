@@ -51,6 +51,7 @@ const CreateComponentModal = ({
       line_representation,
       internal_table,
       moped_subcomponents: subcomponents,
+      // TODO: Can we remove this because RHF returns null now?
       description: description.length > 0 ? description : null,
       phase_id: phase?.data.phase_id,
       subphase_id: subphase?.data.subphase_id,
@@ -58,6 +59,7 @@ const CreateComponentModal = ({
       label: component_name,
       features: [],
       moped_proj_component_tags: tags,
+      // TODO: Can we remove this because RHF returns null now?
       srts_id: srtsId.length > 0 ? srtsId : null,
     };
 
