@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -24,7 +24,6 @@ import {
   useComponentTagsOptions,
 } from "./utils/form";
 import * as yup from "yup";
-import { format } from "date-fns";
 
 const defaultFormValues = {
   component: null,
@@ -57,19 +56,6 @@ const validationSchema = yup.object().shape({
     }),
   srtsId: yup.string().nullable().optional(),
 });
-
-/**
- * Return a Date object from a string date
- * @param {string} value - the string formatted date
- * @returns
- */
-const parseDate = (value) => {
-  if (value) {
-    let newdate = new Date(value);
-    return newdate;
-  }
-  return null;
-};
 
 const ComponentForm = ({
   formButtonText,
@@ -327,21 +313,12 @@ const ComponentForm = ({
                 control={control}
                 render={({ field }) => {
                   return (
-                    <MobileDatePicker
+                    <DateFieldEditComponent
                       {...field}
-                      value={parseDate(field.value)}
-                      onChange={(date) => {
-                        const newDate = date
-                          ? format(date, "yyyy-MM-dd OOOO")
-                          : null;
-                        field.onChange(newDate);
-                      }}
-                      format="MM/dd/yyyy"
+                      value={field.value}
+                      onChange={field.onChange}
                       variant="outlined"
                       label={"Completion date"}
-                      slotProps={{
-                        actionBar: { actions: ["accept", "cancel", "clear"] },
-                      }}
                     />
                   );
                 }}
