@@ -179,8 +179,6 @@ export const makeSubphaseFormFieldValue = (component) => {
   };
 };
 
-// TODO: this breaks when using the state that is set in EditAttributesModal
-// TODO: this will be fixed when that state setting is removed and we refetch
 export const makeTagFormFieldValues = (tags) => {
   return tags.map((tag) => ({
     value: tag.component_tag_id,

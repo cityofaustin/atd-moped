@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -119,6 +119,18 @@ export default function MapView({
 
   const { projectComponents, allRelatedComponents } =
     useProjectComponents(data);
+
+  // Keep clickedComponent state up to date with edits made to project components
+  useEffect(() => {
+    if (clickedComponent === null) return;
+
+    const clickedComponentId = clickedComponent?.project_component_id;
+    const updatedClickedComponent = projectComponents.find(
+      (component) => component.project_component_id === clickedComponentId
+    );
+
+    setClickedComponent(updatedClickedComponent);
+  }, [clickedComponent, projectComponents]);
 
   const {
     onStartCreatingComponent,
