@@ -22,12 +22,6 @@ import {
   usePhaseOptions,
   useSubphaseOptions,
   useComponentTagsOptions,
-  makeComponentFormFieldValue,
-  makeSubcomponentsFormFieldValues,
-  makeSignalFormFieldValue,
-  makePhaseFormFieldValue,
-  makeSubphaseFormFieldValue,
-  makeTagFormFieldValues,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -86,23 +80,21 @@ const ComponentForm = ({
     initialFormValues?.subcomponents.length > 0;
 
   // TODO: Building the initialFormValues should happen in EditAttributesModal
-  const editDefaultFormValues = initialFormValues
-    ? {
-        component: makeComponentFormFieldValue(initialFormValues.component),
-        description: initialFormValues.description,
-        subcomponents: makeSubcomponentsFormFieldValues(
-          initialFormValues.subcomponents
-        ),
-        signal: makeSignalFormFieldValue(initialFormValues.component),
-        phase: makePhaseFormFieldValue(initialFormValues.component),
-        subphase: makeSubphaseFormFieldValue(initialFormValues.component),
-        completionDate: initialFormValues.component.completion_date,
-        srtsId: initialFormValues.srtsId,
-        tags: makeTagFormFieldValues(initialFormValues.tags),
-      }
-    : null;
-
-  console.log(initialFormValues);
+  // const editDefaultFormValues = initialFormValues
+  //   ? {
+  //       component: makeComponentFormFieldValue(initialFormValues.component),
+  //       description: initialFormValues.description,
+  //       subcomponents: makeSubcomponentsFormFieldValues(
+  //         initialFormValues.subcomponents
+  //       ),
+  //       signal: makeSignalFormFieldValue(initialFormValues.component),
+  //       phase: makePhaseFormFieldValue(initialFormValues.component),
+  //       subphase: makeSubphaseFormFieldValue(initialFormValues.component),
+  //       completionDate: initialFormValues.component.completion_date,
+  //       srtsId: initialFormValues.srtsId,
+  //       tags: makeTagFormFieldValues(initialFormValues.tags),
+  //     }
+  //   : null;
 
   const {
     register,
@@ -112,9 +104,7 @@ const ComponentForm = ({
     setValue,
     formState: { isValid },
   } = useForm({
-    defaultValues: initialFormValues
-      ? editDefaultFormValues
-      : defaultFormValues,
+    defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
@@ -143,7 +133,7 @@ const ComponentForm = ({
   useEffect(() => {
     if (areOptionsLoading || initialFormValues === null) return;
 
-    setValue("component", editDefaultFormValues.component);
+    setValue("component", initialFormValues.component);
   }, [areOptionsLoading]);
 
   // TODO: The value of the signal is getting cleared on first load
@@ -155,7 +145,7 @@ const ComponentForm = ({
     )
       return;
 
-    setValue("signal", editDefaultFormValues.signal);
+    setValue("signal", initialFormValues.signal);
   }, [areSignalOptionsLoaded]);
 
   const subcomponentOptions = useSubcomponentOptions(
@@ -163,7 +153,7 @@ const ComponentForm = ({
     optionsData?.moped_components
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
-    !!initialFormValues?.component.moped_phase
+    !!initialFormValues?.phase
   );
 
   // Reset signal field when component changes so signal matches component signal type
@@ -184,7 +174,7 @@ const ComponentForm = ({
   useEffect(() => {
     if (!phase?.value) return;
     if (!initialFormValues) return;
-    if (initialFormValues.phase?.phase_id !== phase?.value) {
+    if (initialFormValues.phase?.value !== phase?.value) {
       setValue("subphase", null);
     }
   }, [phase, setValue, initialFormValues]);

@@ -156,13 +156,13 @@ export const makeSignalFormFieldValue = (component) => {
   return knackFormatSignalOption;
 };
 
-export const makePhaseFormFieldValue = (component) => {
+export const makePhaseFormFieldValue = (phase) => {
   return {
-    value: component?.moped_phase.phase_id,
-    label: component?.moped_phase.phase_name,
+    value: phase.phase_id,
+    label: phase.phase_name,
     data: {
       // Include component subphases and metadata about the internal_table needed for the form
-      ...component?.moped_phase,
+      ...phase,
     },
   };
 };

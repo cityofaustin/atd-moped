@@ -11,6 +11,14 @@ import {
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
+import {
+  makeComponentFormFieldValue,
+  makeSubcomponentsFormFieldValues,
+  makeSignalFormFieldValue,
+  makePhaseFormFieldValue,
+  makeSubphaseFormFieldValue,
+  makeTagFormFieldValues,
+} from "./utils/form";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -138,16 +146,33 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  const initialFormValues = {
-    component: componentToEdit,
-    subcomponents: componentToEdit?.moped_proj_components_subcomponents,
-    description: componentToEdit?.description,
-    phase: componentToEdit?.moped_phase,
-    subphase: componentToEdit?.moped_subphase,
-    completionDate: componentToEdit?.completion_date,
-    tags: componentToEdit?.moped_proj_component_tags,
-    srtsId: componentToEdit?.srts_id,
-  };
+  // const initialFormValues = {
+  //   component: componentToEdit,
+  //   subcomponents: componentToEdit?.moped_proj_components_subcomponents,
+  //   description: componentToEdit?.description,
+  //   phase: componentToEdit?.moped_phase,
+  //   subphase: componentToEdit?.moped_subphase,
+  //   completionDate: componentToEdit?.completion_date,
+  //   tags: componentToEdit?.moped_proj_component_tags,
+  //   srtsId: componentToEdit?.srts_id,
+  // };
+  const initialFormValues = componentToEdit
+    ? {
+        component: makeComponentFormFieldValue(componentToEdit),
+        description: componentToEdit?.description,
+        subcomponents: makeSubcomponentsFormFieldValues(
+          componentToEdit.moped_proj_components_subcomponents
+        ),
+        signal: makeSignalFormFieldValue(componentToEdit),
+        phase: makePhaseFormFieldValue(componentToEdit.moped_phase),
+        subphase: makeSubphaseFormFieldValue(componentToEdit),
+        completionDate: componentToEdit.completion_date,
+        srtsId: componentToEdit.srts_id,
+        tags: makeTagFormFieldValues(
+          componentToEdit?.moped_proj_component_tags
+        ),
+      }
+    : null;
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
