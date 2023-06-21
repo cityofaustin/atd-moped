@@ -21,13 +21,13 @@ import {
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
-  useInitialValuesOnAttributesEdit,
   useComponentTagsOptions,
   makeComponentFormFieldValue,
   makeSubcomponentsFormFieldValues,
   makeSignalFormFieldValue,
   makePhaseFormFieldValue,
   makeSubphaseFormFieldValue,
+  makeTagFormFieldValues,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -98,6 +98,7 @@ const ComponentForm = ({
         subphase: makeSubphaseFormFieldValue(initialFormValues.component),
         completionDate: initialFormValues.component.completion_date,
         srtsId: initialFormValues.srtsId,
+        tags: makeTagFormFieldValues(initialFormValues.tags),
       }
     : null;
 
@@ -163,12 +164,6 @@ const ComponentForm = ({
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.component.moped_phase
-  );
-
-  useInitialValuesOnAttributesEdit(
-    initialFormValues,
-    setValue,
-    componentTagsOptions
   );
 
   // Reset signal field when component changes so signal matches component signal type

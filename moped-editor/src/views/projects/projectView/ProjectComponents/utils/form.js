@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useMemo } from "react";
 import { Autocomplete } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
@@ -20,6 +20,10 @@ export const makeComponentLabel = ({ component_name, component_subtype }) => {
   return component_subtype
     ? `${component_name} - ${component_subtype}`
     : `${component_name}`;
+};
+
+export const makeComponentTagLabel = ({ type, name }) => {
+  return `${type} - ${name}`;
 };
 
 /**
@@ -112,7 +116,7 @@ export const useComponentTagsOptions = (data) =>
 
     const options = data.moped_component_tags.map((tag) => ({
       value: tag.id,
-      label: `${tag.type} - ${tag.name}`,
+      label: makeComponentTagLabel(tag),
       data: tag,
     }));
 
@@ -175,26 +179,13 @@ export const makeSubphaseFormFieldValue = (component) => {
   };
 };
 
-export const useInitialValuesOnAttributesEdit = (
-  initialFormValues,
-  setValue,
-  componentTagsOptions
-) => {
-  // Set the tags value
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (componentTagsOptions.length === 0) return;
-    if (initialFormValues.tags.length === 0) return;
-
-    const selectedTags = initialFormValues.tags.map((tag) => ({
-      value: tag.component_tag_id,
-      label: componentTagsOptions.find(
-        (option) => option.value === tag.component_tag_id
-      ).label,
-    }));
-
-    setValue("tags", selectedTags);
-  }, [componentTagsOptions, initialFormValues, setValue]);
+// TODO: this breaks when using the state that is set in EditAttributesModal
+// TODO: this will be fixed when that state setting is removed and we refetch
+export const makeTagFormFieldValues = (tags) => {
+  return tags.map((tag) => ({
+    value: tag.component_tag_id,
+    label: makeComponentTagLabel(tag.moped_component_tag),
+  }));
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({

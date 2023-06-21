@@ -73,6 +73,10 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     }
     moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
       component_tag_id
+      moped_component_tag {
+        name
+        type
+      }
     }
     moped_phase {
       phase_id
