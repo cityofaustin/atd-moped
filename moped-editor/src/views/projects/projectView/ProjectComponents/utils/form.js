@@ -163,32 +163,24 @@ export const makePhaseFormFieldValue = (component) => {
   };
 };
 
+export const makeSubphaseFormFieldValue = (component) => {
+  return {
+    value: component?.moped_subphase?.subphase_id,
+    // if there is no matching subphase (e.g., you changed the phase), return null
+    label: component?.moped_subphase?.subphase_name,
+    data: {
+      // Include component subcomponents and metadata about the internal_table needed for the form
+      ...component?.moped_subphase,
+    },
+  };
+};
+
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
-  subphaseOptions,
+  // subphaseOptions,
   componentTagsOptions
 ) => {
-  // Set the selected subphase after the subphase options are loaded
-  useEffect(() => {
-    if (!initialFormValues?.component?.moped_subphase) return;
-    if (subphaseOptions.length === 0) return;
-
-    setValue("subphase", {
-      value: initialFormValues.component?.moped_subphase?.subphase_id,
-      // if there is no matching subphase (e.g., you changed the phase), return null
-      label: subphaseOptions.find(
-        (option) =>
-          option.value ===
-          initialFormValues.component?.moped_subphase.subphase_id
-      )?.label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component?.moped_subphase,
-      },
-    });
-  }, [subphaseOptions, initialFormValues, setValue]);
-
   // Set the datepicker value
   useEffect(() => {
     if (!initialFormValues) return;

@@ -27,6 +27,7 @@ import {
   makeSubcomponentsFormFieldValues,
   makeSignalFormFieldValue,
   makePhaseFormFieldValue,
+  makeSubphaseFormFieldValue,
 } from "./utils/form";
 import * as yup from "yup";
 import { format } from "date-fns";
@@ -94,6 +95,7 @@ const ComponentForm = ({
         ),
         signal: makeSignalFormFieldValue(initialFormValues.component),
         phase: makePhaseFormFieldValue(initialFormValues.component),
+        subphase: makeSubphaseFormFieldValue(initialFormValues.component),
       }
     : null;
 
@@ -141,6 +143,7 @@ const ComponentForm = ({
     setValue("component", editDefaultFormValues.component);
   }, [areOptionsLoading]);
 
+  // TODO: The value of the signal is getting cleared on first load
   useEffect(() => {
     if (
       !areSignalOptionsLoaded ||
@@ -163,7 +166,7 @@ const ComponentForm = ({
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
-    subphaseOptions,
+    // subphaseOptions,
     componentTagsOptions
   );
 
