@@ -290,8 +290,8 @@ const ComponentForm = ({
                   return (
                     <DateFieldEditComponent
                       {...field}
-                      value={value}
-                      onChange={onChange}
+                      value={field.value}
+                      onChange={field.onChange}
                       variant="outlined"
                       label={"Completion date"}
                     />
