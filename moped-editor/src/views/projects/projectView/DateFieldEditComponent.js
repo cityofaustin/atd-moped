@@ -9,19 +9,20 @@ import { parseISO, format } from "date-fns";
  * @constructor
  */
 
-const DateFieldEditComponent = (props) => {
+const DateFieldEditComponent = ({ onChange, value, ...props }) => {
   const handleDateChange = (date) => {
     const newDate = date ? format(date, "yyyy-MM-dd") : null;
-    props.onChange(newDate);
+    onChange(newDate);
   };
 
   return (
     <MobileDatePicker
       format="MM/dd/yyyy"
-      value={props.value ? parseISO(props.value) : null}
+      value={value ? parseISO(value) : null}
       onChange={handleDateChange}
       InputProps={{ style: { minWidth: "100px" } }}
       slotProps={{ actionBar: { actions: ["accept", "cancel", "clear"] } }}
+      {...props}
     />
   );
 };
