@@ -65,23 +65,6 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
-  // TODO: Building the initialFormValues should happen in EditAttributesModal
-  // const editDefaultFormValues = initialFormValues
-  //   ? {
-  //       component: makeComponentFormFieldValue(initialFormValues.component),
-  //       description: initialFormValues.description,
-  //       subcomponents: makeSubcomponentsFormFieldValues(
-  //         initialFormValues.subcomponents
-  //       ),
-  //       signal: makeSignalFormFieldValue(initialFormValues.component),
-  //       phase: makePhaseFormFieldValue(initialFormValues.component),
-  //       subphase: makeSubphaseFormFieldValue(initialFormValues.component),
-  //       completionDate: initialFormValues.component.completion_date,
-  //       srtsId: initialFormValues.srtsId,
-  //       tags: makeTagFormFieldValues(initialFormValues.tags),
-  //     }
-  //   : null;
-
   const {
     register,
     handleSubmit,
@@ -143,8 +126,11 @@ const ComponentForm = ({
   );
 
   // Reset signal field when component changes so signal matches component signal type
+  // TODO: we have to check if the component still matches otherwise the component useEffect will clear the signal
   useEffect(() => {
-    setValue("signal", null);
+    if (component.value !== initialFormValues?.component?.value) {
+      setValue("signal", null);
+    }
   }, [component, setValue]);
 
   // reset subcomponent selections when component to ensure only allowed subcomponents

@@ -4,6 +4,7 @@ import { Controller } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
+import { isSignalComponent } from "./componentList";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
@@ -141,13 +142,8 @@ export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   }));
 };
 
-// TODO: isn't there a isSignalComponent helper elsewhere?
 export const makeSignalFormFieldValue = (component) => {
-  const internalTable =
-    component?.moped_components?.feature_layer?.internal_table;
-  const isSignalComponent = internalTable === "feature_signals";
-
-  if (!isSignalComponent) return null;
+  if (!isSignalComponent(component)) return null;
 
   const componentSignal = component?.feature_signals?.[0];
   const knackFormatSignalOption =
@@ -167,14 +163,13 @@ export const makePhaseFormFieldValue = (phase) => {
   };
 };
 
-export const makeSubphaseFormFieldValue = (component) => {
+export const makeSubphaseFormFieldValue = (subphase) => {
   return {
-    value: component?.moped_subphase?.subphase_id,
-    // if there is no matching subphase (e.g., you changed the phase), return null
-    label: component?.moped_subphase?.subphase_name,
+    value: subphase?.subphase_id,
+    label: subphase?.subphase_name,
     data: {
       // Include component subcomponents and metadata about the internal_table needed for the form
-      ...component?.moped_subphase,
+      ...subphase,
     },
   };
 };

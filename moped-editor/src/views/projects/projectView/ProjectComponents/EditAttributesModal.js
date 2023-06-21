@@ -1,7 +1,13 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -146,26 +152,16 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  // const initialFormValues = {
-  //   component: componentToEdit,
-  //   subcomponents: componentToEdit?.moped_proj_components_subcomponents,
-  //   description: componentToEdit?.description,
-  //   phase: componentToEdit?.moped_phase,
-  //   subphase: componentToEdit?.moped_subphase,
-  //   completionDate: componentToEdit?.completion_date,
-  //   tags: componentToEdit?.moped_proj_component_tags,
-  //   srtsId: componentToEdit?.srts_id,
-  // };
   const initialFormValues = componentToEdit
     ? {
         component: makeComponentFormFieldValue(componentToEdit),
-        description: componentToEdit?.description,
+        description: componentToEdit.description,
         subcomponents: makeSubcomponentsFormFieldValues(
           componentToEdit.moped_proj_components_subcomponents
         ),
         signal: makeSignalFormFieldValue(componentToEdit),
         phase: makePhaseFormFieldValue(componentToEdit.moped_phase),
-        subphase: makeSubphaseFormFieldValue(componentToEdit),
+        subphase: makeSubphaseFormFieldValue(componentToEdit.moped_subphase),
         completionDate: componentToEdit.completion_date,
         srtsId: componentToEdit.srts_id,
         tags: makeTagFormFieldValues(
