@@ -96,6 +96,8 @@ const ComponentForm = ({
         signal: makeSignalFormFieldValue(initialFormValues.component),
         phase: makePhaseFormFieldValue(initialFormValues.component),
         subphase: makeSubphaseFormFieldValue(initialFormValues.component),
+        completionDate: initialFormValues.component.completion_date,
+        srtsId: initialFormValues.srtsId,
       }
     : null;
 
@@ -166,7 +168,6 @@ const ComponentForm = ({
   useInitialValuesOnAttributesEdit(
     initialFormValues,
     setValue,
-    // subphaseOptions,
     componentTagsOptions
   );
 

@@ -178,16 +178,8 @@ export const makeSubphaseFormFieldValue = (component) => {
 export const useInitialValuesOnAttributesEdit = (
   initialFormValues,
   setValue,
-  // subphaseOptions,
   componentTagsOptions
 ) => {
-  // Set the datepicker value
-  useEffect(() => {
-    if (!initialFormValues) return;
-
-    setValue("completionDate", initialFormValues?.component?.completion_date);
-  }, [initialFormValues, setValue]);
-
   // Set the tags value
   useEffect(() => {
     if (!initialFormValues) return;
@@ -203,13 +195,6 @@ export const useInitialValuesOnAttributesEdit = (
 
     setValue("tags", selectedTags);
   }, [componentTagsOptions, initialFormValues, setValue]);
-
-  // Set the srts id value
-  useEffect(() => {
-    if (!initialFormValues) return;
-
-    setValue("srtsId", initialFormValues.srtsId);
-  }, [initialFormValues, setValue]);
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
