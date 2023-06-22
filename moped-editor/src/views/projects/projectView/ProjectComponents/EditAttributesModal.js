@@ -1,13 +1,7 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import {

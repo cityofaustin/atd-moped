@@ -22,6 +22,7 @@ import {
   usePhaseOptions,
   useSubphaseOptions,
   useComponentTagsOptions,
+  useResetDependentFieldOnParentChange,
 } from "./utils/form";
 import * as yup from "yup";
 
@@ -131,7 +132,7 @@ const ComponentForm = ({
     if (component.value !== initialFormValues?.component?.value) {
       setValue("signal", null);
     }
-  }, [component, setValue]);
+  }, [component, setValue, initialFormValues]);
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // assumes component type cannot be changed when editing
@@ -150,6 +151,15 @@ const ComponentForm = ({
       setValue("subphase", null);
     }
   }, [phase, setValue, initialFormValues]);
+
+  useResetDependentFieldOnParentChange({ fieldName: "phase" });
+
+  React.useEffect(() => {
+    const subscription = watch((value, { name, type }) =>
+      console.log(value, name, type)
+    );
+    return () => subscription.unsubscribe();
+  }, [watch]);
 
   const isEditingExistingComponent = initialFormValues !== null;
 

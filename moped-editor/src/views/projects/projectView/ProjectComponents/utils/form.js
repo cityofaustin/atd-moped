@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { Autocomplete } from "@mui/material";
-import { Controller } from "react-hook-form";
+import { Controller, useWatch } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
@@ -277,3 +277,9 @@ export const ControlledAutocomplete = ({
     )}
   />
 );
+
+export const useResetDependentFieldOnValueChange = ({ fieldName }) => {
+  const fieldValue = useWatch({ name: fieldName });
+
+  console.log({ [fieldName]: fieldValue });
+};
