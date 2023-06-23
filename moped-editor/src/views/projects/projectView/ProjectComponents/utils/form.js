@@ -23,6 +23,12 @@ export const makeComponentLabel = ({ component_name, component_subtype }) => {
     : `${component_name}`;
 };
 
+/**
+ * Create component tag label out of the type and name
+ * @param {string} type The type of the component tag
+ * @param {string} name The name of the component tag
+ * @returns {string}
+ */
 export const makeComponentTagLabel = ({ type, name }) => {
   return `${type} - ${name}`;
 };
@@ -124,6 +130,11 @@ export const useComponentTagsOptions = (data) =>
     return options;
   }, [data]);
 
+/**
+ * Create the value for the component autocomplete including component metadata for dependent fields
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
 export const makeComponentFormFieldValue = (component) => {
   return {
     value: component.component_id,
@@ -135,6 +146,11 @@ export const makeComponentFormFieldValue = (component) => {
   };
 };
 
+/**
+ * Create the values for the subcomponents autocomplete
+ * @param {Array} subcomponents - The subcomponent records
+ * @returns {Object} the field value
+ */
 export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   return subcomponents.map((subcomponent) => ({
     value: subcomponent.subcomponent_id,
@@ -142,6 +158,11 @@ export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   }));
 };
 
+/**
+ * Create the value for the signal autocomplete if the component is a signal component
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
 export const makeSignalFormFieldValue = (component) => {
   if (!isSignalComponent(component)) return null;
 
@@ -152,17 +173,27 @@ export const makeSignalFormFieldValue = (component) => {
   return knackFormatSignalOption;
 };
 
+/**
+ * Create the value for the phase autocomplete including phase metadata for dependent fields
+ * @param {Object} phase - The component phase record
+ * @returns {Object} the field value
+ */
 export const makePhaseFormFieldValue = (phase) => {
   return {
     value: phase?.phase_id,
     label: phase?.phase_name,
     data: {
-      // Include component metadata needed for subphase options that correspond with selected phase
+      // Include component phase metadata needed for subphase options that correspond with selected phase
       ...phase,
     },
   };
 };
 
+/**
+ * Create the value for the subphase autocomplete
+ * @param {Object} subphase - The component subphase record
+ * @returns {Object} the field value
+ */
 export const makeSubphaseFormFieldValue = (subphase) => {
   return {
     value: subphase?.subphase_id,
@@ -170,6 +201,11 @@ export const makeSubphaseFormFieldValue = (subphase) => {
   };
 };
 
+/**
+ * Create the value for the component tags field
+ * @param {Array} tags - The component tag records
+ * @returns {Object} the field value
+ */
 export const makeTagFormFieldValues = (tags) => {
   return tags.map((tag) => ({
     value: tag.component_tag_id,
@@ -274,10 +310,15 @@ export const ControlledAutocomplete = ({
   />
 );
 
-// TODO: Rename? This is only going to work on autocomplete or selects
-// because they have options with value and label
-// reset dependent field selections when parent field changes to ensure only valid options are available
-export const useResetDependentFieldOnParentChange = ({
+/**
+ * Watch parent field and reset dependent field to default value when parent field changes
+ * @param {Object} parentValue - Option object with value and label
+ * @param {string} dependentFieldName - Name of the dependent field
+ * @param {*} valueToSet - Any value to set the dependent field to
+ * @param {Function} setValue - React Hook Form setValue function
+ * @returns {Object} the field value
+ */
+export const useResetDependentFieldOnAutocompleteChange = ({
   parentValue,
   dependentFieldName,
   valueToSet,
@@ -290,6 +331,7 @@ export const useResetDependentFieldOnParentChange = ({
   // when the parent value changes, compare to previous value
   // if it is different, reset the dependent field to its default
   useEffect(() => {
+    // keep update from firing if the parent value hasn't changed
     if (parentValue?.value === previousParentFormValue?.value) return;
 
     setValue(dependentFieldName, valueToSet);

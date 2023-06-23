@@ -22,7 +22,7 @@ import {
   usePhaseOptions,
   useSubphaseOptions,
   useComponentTagsOptions,
-  useResetDependentFieldOnParentChange,
+  useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
 import * as yup from "yup";
 
@@ -104,14 +104,14 @@ const ComponentForm = ({
     !!initialFormValues?.phase
   );
 
-  useResetDependentFieldOnParentChange({
+  useResetDependentFieldOnAutocompleteChange({
     parentValue: watch("phase"),
     dependentFieldName: "subphase",
     valueToSet: defaultFormValues.subphase,
     setValue,
   });
 
-  useResetDependentFieldOnParentChange({
+  useResetDependentFieldOnAutocompleteChange({
     parentValue: watch("component"),
     dependentFieldName: "signal",
     valueToSet: defaultFormValues.signal,
@@ -119,7 +119,7 @@ const ComponentForm = ({
   });
 
   // todo: preserve allowed subcomponents when switching b/t component types
-  useResetDependentFieldOnParentChange({
+  useResetDependentFieldOnAutocompleteChange({
     parentValue: watch("component"),
     dependentFieldName: "subcomponents",
     valueToSet: defaultFormValues.subcomponents,

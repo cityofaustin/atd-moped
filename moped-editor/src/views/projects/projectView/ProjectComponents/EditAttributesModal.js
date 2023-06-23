@@ -156,9 +156,7 @@ const EditAttributesModal = ({
         subphase: makeSubphaseFormFieldValue(componentToEdit.moped_subphase),
         completionDate: componentToEdit.completion_date,
         srtsId: componentToEdit.srts_id,
-        tags: makeTagFormFieldValues(
-          componentToEdit?.moped_proj_component_tags
-        ),
+        tags: makeTagFormFieldValues(componentToEdit.moped_proj_component_tags),
       }
     : null;
 
