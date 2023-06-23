@@ -35,7 +35,7 @@ const defaultFormValues = {
   completionDate: null,
   description: "",
   signal: null,
-  srtsId: null,
+  srtsId: "",
 };
 
 const validationSchema = yup.object().shape({
@@ -118,8 +118,6 @@ const ComponentForm = ({
     setValue,
   });
 
-  // reset subcomponent selections when component to ensure only allowed subcomponents
-  // assumes component type cannot be changed when editing
   // todo: preserve allowed subcomponents when switching b/t component types
   useResetDependentFieldOnParentChange({
     parentValue: watch("component"),
@@ -140,6 +138,7 @@ const ComponentForm = ({
             options={areOptionsLoading ? [] : componentOptions}
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
+                key={option.value}
                 option={option}
                 state={state}
                 props={props}

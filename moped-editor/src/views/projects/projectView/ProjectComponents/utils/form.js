@@ -157,7 +157,7 @@ export const makePhaseFormFieldValue = (phase) => {
     value: phase?.phase_id,
     label: phase?.phase_name,
     data: {
-      // Include component subphases and metadata about the internal_table needed for the form
+      // Include component metadata needed for subphase options that correspond with selected phase
       ...phase,
     },
   };
@@ -167,10 +167,6 @@ export const makeSubphaseFormFieldValue = (subphase) => {
   return {
     value: subphase?.subphase_id,
     label: subphase?.subphase_name,
-    // data: {
-    //   // Include component subcomponents and metadata about the internal_table needed for the form
-    //   ...subphase,
-    // },
   };
 };
 
@@ -280,6 +276,7 @@ export const ControlledAutocomplete = ({
 
 // TODO: Rename? This is only going to work on autocomplete or selects
 // because they have options with value and label
+// reset dependent field selections when parent field changes to ensure only valid options are available
 export const useResetDependentFieldOnParentChange = ({
   parentValue,
   dependentFieldName,

@@ -53,10 +53,8 @@ const EditAttributesModal = ({
 
     const { subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
-    // TODO: Can we remove this because RHF returns null now?
     const description =
       formData.description?.length > 0 ? formData.description : null;
-    // TODO: Can we remove this because RHF returns null now?
     const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
     const { project_component_id: projectComponentId } = componentToEdit;
 
@@ -93,8 +91,8 @@ const EditAttributesModal = ({
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
-          phaseId: phase?.data.phase_id,
-          subphaseId: subphase?.data.subphase_id,
+          phaseId: phase?.value,
+          subphaseId: subphase?.value,
           componentTags: tagsArray,
           completionDate,
           srtsId,
@@ -128,8 +126,8 @@ const EditAttributesModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
-          phaseId: phase?.data.phase_id,
-          subphaseId: subphase?.data.subphase_id,
+          phaseId: phase?.value,
+          subphaseId: subphase?.value,
           componentTags: tagsArray,
           completionDate,
           srtsId,
