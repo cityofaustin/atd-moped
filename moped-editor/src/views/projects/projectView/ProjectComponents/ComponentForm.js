@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -72,7 +72,7 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isValid },
+    formState: { isDirty, isValid },
   } = useForm({
     defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
@@ -109,7 +109,6 @@ const ComponentForm = ({
     dependentFieldName: "subphase",
     valueToSet: defaultFormValues.subphase,
     setValue,
-    valuePath: "value",
   });
 
   useResetDependentFieldOnParentChange({
@@ -117,7 +116,6 @@ const ComponentForm = ({
     dependentFieldName: "signal",
     valueToSet: defaultFormValues.signal,
     setValue,
-    valuePath: "value",
   });
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
@@ -128,13 +126,7 @@ const ComponentForm = ({
     dependentFieldName: "subcomponents",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
-    valuePath: "value",
   });
-
-  // We need the signal field to reset when the component field changes ✅
-  // We need the subphase field to reset when the phase field changes ✅
-  // We need the subcomponents to clear when the component changes
-  // We need to take into account that the component and
 
   const isEditingExistingComponent = initialFormValues !== null;
 
@@ -304,7 +296,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isValid}
+            disabled={!isDirty || !isValid}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>

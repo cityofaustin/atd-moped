@@ -278,12 +278,13 @@ export const ControlledAutocomplete = ({
   />
 );
 
+// TODO: Rename? This is only going to work on autocomplete or selects
+// because they have options with value and label
 export const useResetDependentFieldOnParentChange = ({
   parentValue,
   dependentFieldName,
   valueToSet,
   setValue,
-  valuePath,
 }) => {
   // Track previous value to compare new value
   const [previousParentFormValue, setPreviousParentValue] =
@@ -292,9 +293,7 @@ export const useResetDependentFieldOnParentChange = ({
   // when the parent value changes, compare to previous value
   // if it is different, reset the dependent field to its default
   useEffect(() => {
-    if (parentValue?.[valuePath] === previousParentFormValue?.[valuePath])
-      return;
-    console.log("parent changed", parentValue, previousParentFormValue);
+    if (parentValue?.value === previousParentFormValue?.value) return;
 
     setValue(dependentFieldName, valueToSet);
     setPreviousParentValue(parentValue);
