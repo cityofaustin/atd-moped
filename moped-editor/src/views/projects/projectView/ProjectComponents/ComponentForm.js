@@ -94,29 +94,7 @@ const ComponentForm = ({
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
   const isSignalComponent = internalTable === "feature_signals";
-  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
-  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
   const componentTagsOptions = useComponentTagsOptions(optionsData);
-
-  // Set the selected component after the component options are loaded
-  // TODO: This should NOT happen when creating a new component
-  useEffect(() => {
-    if (areOptionsLoading || initialFormValues === null) return;
-
-    setValue("component", initialFormValues.component);
-  }, [areOptionsLoading, initialFormValues, setValue]);
-
-  // TODO: The value of the signal is getting cleared on first load
-  useEffect(() => {
-    if (
-      !areSignalOptionsLoaded ||
-      !isSignalComponent ||
-      initialFormValues === null
-    )
-      return;
-
-    setValue("signal", initialFormValues.signal);
-  }, [areSignalOptionsLoaded, initialFormValues, setValue, isSignalComponent]);
 
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
@@ -128,11 +106,11 @@ const ComponentForm = ({
 
   // Reset signal field when component changes so signal matches component signal type
   // TODO: we have to check if the component still matches otherwise the component useEffect will clear the signal
-  useEffect(() => {
-    if (component.value !== initialFormValues?.component?.value) {
-      setValue("signal", null);
-    }
-  }, [component, setValue, initialFormValues]);
+  // useEffect(() => {
+  //   if (component?.value !== initialFormValues?.component?.value) {
+  //     setValue("signal", null);
+  //   }
+  // }, [component, setValue, initialFormValues]);
 
   // reset subcomponent selections when component to ensure only allowed subcomponents
   // assumes component type cannot be changed when editing
@@ -143,23 +121,51 @@ const ComponentForm = ({
     }
   }, [subcomponentOptions, initialFormValues, setValue]);
 
-  // Reset subphases field when phase changes so subphase options match phase
-  useEffect(() => {
-    if (!phase?.value) return;
-    if (!initialFormValues) return;
-    if (initialFormValues.phase?.value !== phase?.value) {
-      setValue("subphase", null);
-    }
-  }, [phase, setValue, initialFormValues]);
+  // useResetDependentFieldOnParentChange({
+  //   watch,
+  //   fieldName: "component",
+  //   dependentFieldName: "signal",
+  //   initialFormValues,
+  //   defaultFormValues,
+  //   setValue,
+  // });
 
-  useResetDependentFieldOnParentChange({ fieldName: "phase" });
+  // useResetDependentFieldOnParentChange({
+  //   watch,
+  //   fieldName: "phase",
+  //   dependentFieldName: "subphase",
+  //   initialFormValues,
+  //   defaultFormValues,
+  //   setValue,
+  // });
 
-  React.useEffect(() => {
-    const subscription = watch((value, { name, type }) =>
-      console.log(value, name, type)
-    );
-    return () => subscription.unsubscribe();
-  }, [watch]);
+  // useResetDependentFieldOnParentChange({
+  //   parentValue: watch("phase"),
+  //   dependentFieldName: "subphase",
+  //   valueToSet: defaultFormValues.subphase,
+  //   setValue,
+  // });
+
+  useResetDependentFieldOnParentChange({
+    parentValue: watch("phase"),
+    dependentFieldName: "subphase",
+    valueToSet: defaultFormValues.subphase,
+    setValue,
+    valuePath: "value",
+  });
+
+  useResetDependentFieldOnParentChange({
+    parentValue: watch("component"),
+    dependentFieldName: "signal",
+    valueToSet: defaultFormValues.signal,
+    setValue,
+    valuePath: "value",
+  });
+
+  // We need the signal field to reset when the component field changes
+  // We need the subphase field to reset when the phase field changes ✅
+  // We need the subcomponents to clear when the component changes
+  // We need to take into account that the component and
 
   const isEditingExistingComponent = initialFormValues !== null;
 
@@ -194,7 +200,6 @@ const ComponentForm = ({
               render={({ field }) => (
                 <SignalComponentAutocomplete
                   {...field}
-                  onOptionsLoaded={onOptionsLoaded}
                   signalType={component?.data?.component_subtype}
                 />
               )}

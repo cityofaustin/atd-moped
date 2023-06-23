@@ -1,6 +1,6 @@
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Autocomplete } from "@mui/material";
-import { Controller, useWatch } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
@@ -154,8 +154,8 @@ export const makeSignalFormFieldValue = (component) => {
 
 export const makePhaseFormFieldValue = (phase) => {
   return {
-    value: phase.phase_id,
-    label: phase.phase_name,
+    value: phase?.phase_id,
+    label: phase?.phase_name,
     data: {
       // Include component subphases and metadata about the internal_table needed for the form
       ...phase,
@@ -278,8 +278,31 @@ export const ControlledAutocomplete = ({
   />
 );
 
-export const useResetDependentFieldOnValueChange = ({ fieldName }) => {
-  const fieldValue = useWatch({ name: fieldName });
+export const useResetDependentFieldOnParentChange = ({
+  parentValue,
+  dependentFieldName,
+  valueToSet,
+  setValue,
+  valuePath,
+}) => {
+  // Track previous value to compare new value
+  const [previousParentFormValue, setPreviousParentValue] =
+    useState(parentValue);
 
-  console.log({ [fieldName]: fieldValue });
+  // when the parent value changes, compare to previous value
+  // if it is different, reset the dependent field to its default
+  useEffect(() => {
+    if (parentValue?.[valuePath] === previousParentFormValue?.[valuePath])
+      return;
+    console.log("parent changed", parentValue, previousParentFormValue);
+
+    setValue(dependentFieldName, valueToSet);
+    setPreviousParentValue(parentValue);
+  }, [
+    parentValue,
+    previousParentFormValue,
+    setValue,
+    dependentFieldName,
+    valueToSet,
+  ]);
 };
