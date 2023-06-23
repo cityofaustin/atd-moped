@@ -167,10 +167,10 @@ export const makeSubphaseFormFieldValue = (subphase) => {
   return {
     value: subphase?.subphase_id,
     label: subphase?.subphase_name,
-    data: {
-      // Include component subcomponents and metadata about the internal_table needed for the form
-      ...subphase,
-    },
+    // data: {
+    //   // Include component subcomponents and metadata about the internal_table needed for the form
+    //   ...subphase,
+    // },
   };
 };
 

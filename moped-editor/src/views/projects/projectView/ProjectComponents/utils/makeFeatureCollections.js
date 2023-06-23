@@ -47,7 +47,7 @@ export const getAllComponentFeatures = (component) => {
  */
 export const useComponentFeatureCollection = (component) =>
   useMemo(() => {
-    if (component === null)
+    if (!component)
       return {
         type: "FeatureCollection",
         features: [],
