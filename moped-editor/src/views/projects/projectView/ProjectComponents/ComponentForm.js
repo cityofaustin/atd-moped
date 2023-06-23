@@ -104,48 +104,6 @@ const ComponentForm = ({
     !!initialFormValues?.phase
   );
 
-  // Reset signal field when component changes so signal matches component signal type
-  // TODO: we have to check if the component still matches otherwise the component useEffect will clear the signal
-  // useEffect(() => {
-  //   if (component?.value !== initialFormValues?.component?.value) {
-  //     setValue("signal", null);
-  //   }
-  // }, [component, setValue, initialFormValues]);
-
-  // reset subcomponent selections when component to ensure only allowed subcomponents
-  // assumes component type cannot be changed when editing
-  // todo: preserve allowed subcomponents when switching b/t component types
-  useEffect(() => {
-    if (!initialFormValues?.subcomponents) {
-      setValue("subcomponents", []);
-    }
-  }, [subcomponentOptions, initialFormValues, setValue]);
-
-  // useResetDependentFieldOnParentChange({
-  //   watch,
-  //   fieldName: "component",
-  //   dependentFieldName: "signal",
-  //   initialFormValues,
-  //   defaultFormValues,
-  //   setValue,
-  // });
-
-  // useResetDependentFieldOnParentChange({
-  //   watch,
-  //   fieldName: "phase",
-  //   dependentFieldName: "subphase",
-  //   initialFormValues,
-  //   defaultFormValues,
-  //   setValue,
-  // });
-
-  // useResetDependentFieldOnParentChange({
-  //   parentValue: watch("phase"),
-  //   dependentFieldName: "subphase",
-  //   valueToSet: defaultFormValues.subphase,
-  //   setValue,
-  // });
-
   useResetDependentFieldOnParentChange({
     parentValue: watch("phase"),
     dependentFieldName: "subphase",
@@ -162,7 +120,18 @@ const ComponentForm = ({
     valuePath: "value",
   });
 
-  // We need the signal field to reset when the component field changes
+  // reset subcomponent selections when component to ensure only allowed subcomponents
+  // assumes component type cannot be changed when editing
+  // todo: preserve allowed subcomponents when switching b/t component types
+  useResetDependentFieldOnParentChange({
+    parentValue: watch("component"),
+    dependentFieldName: "subcomponents",
+    valueToSet: defaultFormValues.subcomponents,
+    setValue,
+    valuePath: "value",
+  });
+
+  // We need the signal field to reset when the component field changes ✅
   // We need the subphase field to reset when the phase field changes ✅
   // We need the subcomponents to clear when the component changes
   // We need to take into account that the component and
