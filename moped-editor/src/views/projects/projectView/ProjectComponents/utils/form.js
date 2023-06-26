@@ -179,6 +179,8 @@ export const makeSignalFormFieldValue = (component) => {
  * @returns {Object} the field value
  */
 export const makePhaseFormFieldValue = (phase) => {
+  if (!phase) return null;
+
   return {
     value: phase?.phase_id,
     label: phase?.phase_name,
@@ -195,6 +197,8 @@ export const makePhaseFormFieldValue = (phase) => {
  * @returns {Object} the field value
  */
 export const makeSubphaseFormFieldValue = (subphase) => {
+  if (!subphase) return null;
+
   return {
     value: subphase?.subphase_id,
     label: subphase?.subphase_name,

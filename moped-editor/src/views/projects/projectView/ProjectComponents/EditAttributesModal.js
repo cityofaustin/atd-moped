@@ -147,7 +147,10 @@ const EditAttributesModal = ({
   const initialFormValues = componentToEdit
     ? {
         component: makeComponentFormFieldValue(componentToEdit),
-        description: componentToEdit.description,
+        description:
+          componentToEdit.description.length > 0
+            ? componentToEdit.description
+            : "",
         subcomponents: makeSubcomponentsFormFieldValues(
           componentToEdit.moped_proj_components_subcomponents
         ),
@@ -155,7 +158,7 @@ const EditAttributesModal = ({
         phase: makePhaseFormFieldValue(componentToEdit.moped_phase),
         subphase: makeSubphaseFormFieldValue(componentToEdit.moped_subphase),
         completionDate: componentToEdit.completion_date,
-        srtsId: componentToEdit.srts_id,
+        srtsId: componentToEdit.srts_id > 0 ? componentToEdit.srts_id : "",
         tags: makeTagFormFieldValues(componentToEdit.moped_proj_component_tags),
       }
     : null;

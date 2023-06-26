@@ -72,12 +72,14 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isDirty, isValid },
+    formState: { isDirty, errors },
   } = useForm({
     defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
+
+  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
   const {
@@ -295,7 +297,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isDirty || !isValid}
+            disabled={!isDirty || areFormErrors}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
