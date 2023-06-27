@@ -308,7 +308,7 @@ export default function MapView({
           <EditAttributesModal
             showDialog={editState.showEditAttributesDialog}
             editDispatch={editDispatch}
-            componentToEdit={clickedComponent}
+            clickedComponent={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
             mapRef={mapRef}
           />

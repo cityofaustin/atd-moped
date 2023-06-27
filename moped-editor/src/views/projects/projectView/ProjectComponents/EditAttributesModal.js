@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
-  componentToEdit,
+  clickedComponent,
   refetchProjectComponents,
   mapRef,
 }) => {
@@ -56,7 +56,7 @@ const EditAttributesModal = ({
     const description =
       formData.description?.length > 0 ? formData.description : null;
     const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
-    const { project_component_id: projectComponentId } = componentToEdit;
+    const { project_component_id: projectComponentId } = clickedComponent;
 
     // Prepare the subcomponent data for the mutation
     const subcomponentsArray = subcomponents
@@ -144,22 +144,25 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  const initialFormValues = componentToEdit
+  const initialFormValues = clickedComponent
     ? {
-        component: makeComponentFormFieldValue(componentToEdit),
+        component: makeComponentFormFieldValue(clickedComponent),
         description:
-          componentToEdit.description.length > 0
-            ? componentToEdit.description
+          clickedComponent.description.length > 0
+            ? clickedComponent.description
             : "",
         subcomponents: makeSubcomponentsFormFieldValues(
-          componentToEdit.moped_proj_components_subcomponents
+          clickedComponent.moped_proj_components_subcomponents
         ),
-        signal: makeSignalFormFieldValue(componentToEdit),
-        phase: makePhaseFormFieldValue(componentToEdit.moped_phase),
-        subphase: makeSubphaseFormFieldValue(componentToEdit.moped_subphase),
-        completionDate: componentToEdit.completion_date,
-        srtsId: componentToEdit.srts_id > 0 ? componentToEdit.srts_id : "",
-        tags: makeTagFormFieldValues(componentToEdit.moped_proj_component_tags),
+        signal: makeSignalFormFieldValue(clickedComponent),
+        phase: makePhaseFormFieldValue(clickedComponent.moped_phase),
+        subphase: makeSubphaseFormFieldValue(clickedComponent.moped_subphase),
+        completionDate: clickedComponent.completion_date,
+        srtsId:
+          clickedComponent.srts_id.length > 0 ? clickedComponent.srts_id : "",
+        tags: makeTagFormFieldValues(
+          clickedComponent.moped_proj_component_tags
+        ),
       }
     : null;
 
