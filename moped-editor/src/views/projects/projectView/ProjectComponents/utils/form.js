@@ -131,7 +131,7 @@ export const useComponentTagsOptions = (data) =>
   }, [data]);
 
 /**
- * Create the value for the component autocomplete including component metadata for dependent fields
+ * Create the value for the required component autocomplete including component metadata for dependent fields
  * @param {Object} component - The component record
  * @returns {Object} the field value
  */

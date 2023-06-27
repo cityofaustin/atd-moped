@@ -148,7 +148,7 @@ const EditAttributesModal = ({
     ? {
         component: makeComponentFormFieldValue(clickedComponent),
         description:
-          clickedComponent.description.length > 0
+          clickedComponent.description?.length > 0
             ? clickedComponent.description
             : "",
         subcomponents: makeSubcomponentsFormFieldValues(
@@ -159,7 +159,7 @@ const EditAttributesModal = ({
         subphase: makeSubphaseFormFieldValue(clickedComponent.moped_subphase),
         completionDate: clickedComponent.completion_date,
         srtsId:
-          clickedComponent.srts_id.length > 0 ? clickedComponent.srts_id : "",
+          clickedComponent.srts_id?.length > 0 ? clickedComponent.srts_id : "",
         tags: makeTagFormFieldValues(
           clickedComponent.moped_proj_component_tags
         ),
