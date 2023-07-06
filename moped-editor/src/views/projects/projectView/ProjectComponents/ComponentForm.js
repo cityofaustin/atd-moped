@@ -92,7 +92,7 @@ const ComponentForm = ({
 
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
-  const { component, phase } = watch();
+  const { component, phase } = watch(["component", "phase"]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
   const isSignalComponent = internalTable === "feature_signals";
