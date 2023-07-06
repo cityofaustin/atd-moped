@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import { CircularProgress, TextField } from "@mui/material";
-import { Autocomplete, Alert } from '@mui/material';
+import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   getSignalOptionLabel,
@@ -38,7 +38,7 @@ const SignalComponentAutocomplete = React.forwardRef(
     useEffect(() => {
       if (features === null) return;
 
-      onOptionsLoaded();
+      onOptionsLoaded && onOptionsLoaded();
     }, [features, onOptionsLoaded]);
 
     if (loading) {

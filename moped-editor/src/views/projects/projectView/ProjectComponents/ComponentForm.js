@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -21,8 +21,8 @@ import {
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
-  useInitialValuesOnAttributesEdit,
   useComponentTagsOptions,
+  useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
 import * as yup from "yup";
 
@@ -35,7 +35,7 @@ const defaultFormValues = {
   completionDate: null,
   description: "",
   signal: null,
-  srtsId: null,
+  srtsId: "",
 };
 
 const validationSchema = yup.object().shape({
@@ -72,12 +72,14 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isValid },
+    formState: { isDirty, errors },
   } = useForm({
-    defaultValues: defaultFormValues,
+    defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
+
+  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
   const {
@@ -90,11 +92,10 @@ const ComponentForm = ({
 
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
-  const { component, phase } = watch();
+  const { component, phase } = watch(["component", "phase"]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
-  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
-  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
+  const isSignalComponent = internalTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const subcomponentOptions = useSubcomponentOptions(
@@ -102,45 +103,32 @@ const ComponentForm = ({
     optionsData?.moped_components
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
-    !!initialFormValues?.component.moped_phase
+    !!initialFormValues?.phase
   );
 
-  useInitialValuesOnAttributesEdit(
-    initialFormValues,
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("phase"),
+    dependentFieldName: "subphase",
+    valueToSet: defaultFormValues.subphase,
     setValue,
-    componentOptions,
-    subcomponentOptions,
-    phaseOptions,
-    subphaseOptions,
-    areSignalOptionsLoaded,
-    componentTagsOptions
-  );
+  });
 
-  // Reset signal field when component changes so signal matches component signal type
-  useEffect(() => {
-    setValue("signal", null);
-  }, [component, setValue]);
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("component"),
+    dependentFieldName: "signal",
+    valueToSet: defaultFormValues.signal,
+    setValue,
+  });
 
-  // reset subcomponent selections when component to ensure only allowed subcomponents
-  // assumes component type cannot be changed when editing
   // todo: preserve allowed subcomponents when switching b/t component types
-  useEffect(() => {
-    if (!initialFormValues?.subcomponents) {
-      setValue("subcomponents", []);
-    }
-  }, [subcomponentOptions, initialFormValues, setValue]);
-
-  // Reset subphases field when phase changes so subphase options match phase
-  useEffect(() => {
-    if (!phase?.value) return;
-    if (!initialFormValues) return;
-    if (initialFormValues.phase?.phase_id !== phase?.value) {
-      setValue("subphase", null);
-    }
-  }, [phase, setValue, initialFormValues]);
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("component"),
+    dependentFieldName: "subcomponents",
+    valueToSet: defaultFormValues.subcomponents,
+    setValue,
+  });
 
   const isEditingExistingComponent = initialFormValues !== null;
-  const isSignalComponent = internalTable === "feature_signals";
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -152,6 +140,7 @@ const ComponentForm = ({
             options={areOptionsLoading ? [] : componentOptions}
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
+                key={option.value}
                 option={option}
                 state={state}
                 props={props}
@@ -173,7 +162,6 @@ const ComponentForm = ({
               render={({ field }) => (
                 <SignalComponentAutocomplete
                   {...field}
-                  onOptionsLoaded={onOptionsLoaded}
                   signalType={component?.data?.component_subtype}
                 />
               )}
@@ -309,7 +297,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isValid}
+            disabled={!isDirty || areFormErrors}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
