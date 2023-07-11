@@ -105,6 +105,7 @@ const MobileDropdownMenu = () => {
                   </MenuItem>
                 );
               }
+              return null;
             })}
           </div>
         )}
