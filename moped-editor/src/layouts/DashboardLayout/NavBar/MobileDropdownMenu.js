@@ -77,19 +77,35 @@ const MobileDropdownMenu = () => {
         </MenuItem>
         {subMenu && (
           <div className={classes.subMenu}>
-            {helpItems.map((item) => (
-              <MenuItem key={item.href} onClick={handleMobileClose}>
-                <Link
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  color="inherit"
-                  underline="none"
-                >
-                  {item.title}
-                </Link>
-              </MenuItem>
-            ))}
+            {helpItems.map((item) => {
+              if (item.linkType === "external") {
+                return (
+                  <MenuItem key={item.href} onClick={handleMobileClose}>
+                    <Link
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      color="inherit"
+                      underline="none"
+                    >
+                      {item.title}
+                    </Link>
+                  </MenuItem>
+                );
+              }
+              if (item.linkType === "internal") {
+                return (
+                  <MenuItem
+                    onClick={() => {
+                      handleMobileClose();
+                      navigate(item.link);
+                    }}
+                  >
+                    {item.title}
+                  </MenuItem>
+                );
+              }
+            })}
           </div>
         )}
         <MenuItem
