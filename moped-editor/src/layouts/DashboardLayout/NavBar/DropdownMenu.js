@@ -22,8 +22,7 @@ import emailToInitials from "../../../utils/emailToInitials";
 /**
  * Configuration for help menu items we iterate to render menu items in DropdownMenu and MobileDropdownMenu
  * @property {string} linkType - "internal" or "external" to determine how to render link
- * @property {string} href - URL to link to if linkType is "external"
- * @property {string} link - URL to link to if linkType is "internal"
+ * @property {string} link - external href or internal route
  * @property {string} title - Text to display for menu item
  * @property {JSX.Element} Icon - Icon to display for menu item in place of the default OpenInNewIcon
  */

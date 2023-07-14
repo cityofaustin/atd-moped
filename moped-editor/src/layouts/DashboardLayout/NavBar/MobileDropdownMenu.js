@@ -62,7 +62,7 @@ const MobileDropdownMenu = () => {
       >
         {navigationItems.map((item) => (
           <MenuItem
-            key={item.link}
+            key={item.href}
             onClick={() => {
               handleMobileClose();
               navigate(item.link);
@@ -78,7 +78,6 @@ const MobileDropdownMenu = () => {
         {subMenu && (
           <div className={classes.subMenu}>
             {helpItems.map((item) => {
-              console.log(item.linkType, item.link);
               if (item.linkType === "external") {
                 return (
                   <MenuItem key={item.link} onClick={handleMobileClose}>
