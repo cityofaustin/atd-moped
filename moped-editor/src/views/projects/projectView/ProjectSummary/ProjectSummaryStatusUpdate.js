@@ -3,9 +3,9 @@ import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 import parse from "html-react-parser";
 
-import { makeUSExpandedFormDateFromTimeStampTZ } from "../../../../utils/dateAndTime";
 import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
 import { getUserFullName } from "src/utils/userNames";
+import { formatRelativeDate } from "src/utils/dateAndTime";
 
 /**
  * ProjectSummaryStatusUpdate Component
@@ -24,9 +24,9 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
   const currentPhaseId =
     data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id;
 
-  const dateCreated = makeUSExpandedFormDateFromTimeStampTZ(
+  const dateCreated = formatRelativeDate(
     data.moped_project[0].moped_proj_notes[0]?.date_created
-  ).toUpperCase();
+  );
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -51,11 +51,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             <div>
               <div>{parse(String(statusUpdate))}</div>
               <span className={classes.fieldAuthor}>{addedBy}</span>
-              <span className={classes.fieldLabel}>
-                {makeUSExpandedFormDateFromTimeStampTZ(
-                  dateCreated
-                ).toUpperCase()}
-              </span>
+              <span className={classes.fieldLabel}>{dateCreated}</span>
             </div>
           )}
         </DashboardStatusModal>
