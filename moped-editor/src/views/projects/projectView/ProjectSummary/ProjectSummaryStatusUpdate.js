@@ -51,7 +51,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
             <div>
               <div>{parse(String(statusUpdate))}</div>
               <span className={classes.fieldAuthor}>{addedBy}</span>
-              <span className={classes.fieldLabel}>{dateCreated}</span>
+              <span className={classes.fieldLabelSmall}>{dateCreated}</span>
             </div>
           )}
         </DashboardStatusModal>
