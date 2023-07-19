@@ -76,10 +76,6 @@ const useStyles = makeStyles((theme) => ({
     },
     overflowWrap: "break-word",
   },
-  fieldAuthor: {
-    marginRight: ".25rem",
-    fontSize: ".8rem",
-  },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
     cursor: "pointer",
