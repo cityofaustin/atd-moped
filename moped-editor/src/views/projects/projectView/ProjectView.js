@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(2),
   },
   title: {
-    height: "3rem",
+    minHeight: "3rem",
   },
   moreHorizontal: {
     fontSize: "2rem",

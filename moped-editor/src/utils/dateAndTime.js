@@ -76,7 +76,7 @@ const MILLS_CONVERSION = {
  * Format millseconds into a relative description
  * @param {integer} millsElapsed - the elapsed time in milliseconds to format
  * @param {string} unitName - the name of the units to convert to - the string must
- * be defined in the MILLS_CONVERSION objeect
+ * be defined in the MILLS_CONVERSION object
  * @returns {string} in format  `<value> <unit-name> ago`
  */
 const formatRelativeTime = (millsElapsed, unitName) => {
