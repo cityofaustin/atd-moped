@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectContractsTable = () => {
+const ProjectWorkActivitiesTable = () => {
   const classes = useStyles();
   const { projectId } = useParams();
 
@@ -286,4 +286,4 @@ const ProjectContractsTable = () => {
   );
 };
 
-export default ProjectContractsTable;
+export default ProjectWorkActivitiesTable;
