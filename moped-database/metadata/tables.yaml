@@ -1915,7 +1915,7 @@
         filter: {}
         check: {}
 - table:
-    name: moped_proj_contract
+    name: moped_proj_work_activity
     schema: public
   object_relationships:
     - name: moped_project
@@ -2011,7 +2011,7 @@
         filter: {}
         check: {}
   event_triggers:
-    - name: activity_log_moped_proj_contract
+    - name: activity_log_moped_proj_work_activity
       definition:
         delete:
           columns: '*'
@@ -3444,12 +3444,12 @@
           table:
             name: moped_proj_components
             schema: public
-    - name: moped_proj_contracts
+    - name: moped_proj_work_activities
       using:
         foreign_key_constraint_on:
           column: project_id
           table:
-            name: moped_proj_contract
+            name: moped_proj_work_activity
             schema: public
     - name: moped_proj_funding
       using:
