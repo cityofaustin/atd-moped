@@ -1,3 +1,6 @@
+-- temporarily disables triggers
+-- SET session_replication_role = replica;
+
 CREATE TABLE moped_proj_work_activity_status (
     id serial PRIMARY KEY,
     KEY text UNIQUE,
@@ -34,42 +37,56 @@ UPDATE moped_activity_log SET record_type = 'moped_proj_work_activity'
 -- backfill created_by, created_at, updated_at
 -- this will need to be done during a live session bc
 -- we should disable event triggers during these updates
--- UPDATE
---     moped_proj_work_activity
--- SET
---     created_at = work_activity_insert_event.created_at,
---     created_by_user_id = work_activity_insert_event.updated_by_user_id,
---     updated_by_user_id = work_activity_insert_event.updated_by_user_id
--- FROM (
---     SELECT
---         record_id,
---         created_at,
---         updated_by_user_id
---     FROM
---         moped_activity_log
---     WHERE
---         record_type = 'moped_proj_work_activity'
---         AND operation_type = 'INSERT') AS work_activity_insert_event
--- WHERE
---     moped_proj_work_activity.id = work_activity_insert_event.record_id;
+UPDATE
+    moped_proj_work_activity
+SET
+    created_at = work_activity_insert_event.created_at,
+    created_by_user_id = work_activity_insert_event.updated_by_user_id,
+    updated_by_user_id = work_activity_insert_event.updated_by_user_id
+FROM (
+    SELECT
+        record_id,
+        created_at,
+        updated_by_user_id
+    FROM
+        moped_activity_log
+    WHERE
+        record_type = 'moped_proj_work_activity'
+        AND operation_type = 'INSERT') AS work_activity_insert_event
+WHERE
+    moped_proj_work_activity.id = work_activity_insert_event.record_id;
 
--- -- backfill updated_at, updated_by if update events exist
--- UPDATE moped_proj_work_activity
--- SET
---     updated_at = work_activity_update_event.created_at,
---     updated_by_user_id = work_activity_update_event.updated_by_user_id
---     FROM (
--- SELECT DISTINCT ON (record_id)
---     record_id,
---     created_at,
---     updated_by_user_id
--- FROM
---     moped_activity_log
--- WHERE
---     operation_type = 'UPDATE' AND
---     record_type = 'moped_proj_work_activity'
--- ORDER BY
---     record_id,
---     created_at DESC)  AS work_activity_update_event
--- WHERE
---     moped_proj_work_activity.id = work_activity_update_event.record_id;
+-- backfill updated_at, updated_by if update events exist
+UPDATE moped_proj_work_activity
+SET
+    updated_at = work_activity_update_event.created_at,
+    updated_by_user_id = work_activity_update_event.updated_by_user_id
+    FROM (
+SELECT DISTINCT ON (record_id)
+    record_id,
+    created_at,
+    updated_by_user_id
+FROM
+    moped_activity_log
+WHERE
+    operation_type = 'UPDATE' AND
+    record_type = 'moped_proj_work_activity'
+ORDER BY
+    record_id,
+    created_at DESC)  AS work_activity_update_event
+WHERE
+    moped_proj_work_activity.id = work_activity_update_event.record_id;
+
+
+-- create trigger to managed updated_at timestamp
+CREATE FUNCTION public.set_updated_at() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$ BEGIN NEW.modified_date := NOW();
+RETURN NEW;
+END;
+$$;
+
+CREATE TRIGGER set_proj_work_activity_trigger_updated_at BEFORE UPDATE ON public.moped_proj_work_activity FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- renable triggers
+-- SET session_replication_role = DEFAULT;
