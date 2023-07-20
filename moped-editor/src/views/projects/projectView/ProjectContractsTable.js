@@ -166,7 +166,7 @@ const ProjectContractsTable = () => {
             </div>
           )
         }}
-        data={data.moped_proj_contract}
+        data={data.moped_proj_work_activity}
         title={
           <div>
             <Typography
@@ -179,7 +179,7 @@ const ProjectContractsTable = () => {
           </div>
         }
         options={{
-          ...(data.moped_proj_contract.length < PAGING_DEFAULT_COUNT + 1 && {
+          ...(data.moped_proj_work_activity.length < PAGING_DEFAULT_COUNT + 1 && {
             paging: false,
           }),
           search: false,
