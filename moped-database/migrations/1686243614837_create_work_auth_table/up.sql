@@ -1,5 +1,5 @@
 -- temporarily disables triggers
--- SET session_replication_role = replica;
+SET session_replication_role = replica;
 
 CREATE TABLE moped_proj_work_activity_status (
     id serial PRIMARY KEY,
@@ -89,4 +89,4 @@ $$;
 CREATE TRIGGER set_proj_work_activity_trigger_updated_at BEFORE UPDATE ON public.moped_proj_work_activity FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- renable triggers
--- SET session_replication_role = DEFAULT;
+SET session_replication_role = DEFAULT;
