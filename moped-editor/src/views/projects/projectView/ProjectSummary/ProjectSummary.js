@@ -60,6 +60,12 @@ const useStyles = makeStyles((theme) => ({
     fontSize: ".8rem",
     paddingLeft: theme.spacing(0.5),
   },
+  fieldLabelSmall: {
+    width: "100%",
+    color: theme.palette.text.secondary,
+    fontSize: ".7rem",
+    paddingLeft: theme.spacing(0.5),
+  },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
     paddingLeft: theme.spacing(0.5),
@@ -69,11 +75,6 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
     overflowWrap: "break-word",
-  },
-  fieldAuthor: {
-    marginRight: ".25rem",
-    fontSize: ".8rem",
-    fontWeight: "bold",
   },
   knackFieldLabelText: {
     width: "calc(100% - 2rem)",
