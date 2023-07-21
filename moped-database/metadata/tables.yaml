@@ -3276,7 +3276,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup
+          - implementation_workgroup_id
           - task_orders
           - status_id
           - status_note
@@ -3295,7 +3295,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup
+          - implementation_workgroup_id
           - task_orders
           - status_id
           - status_note
@@ -3310,7 +3310,7 @@
           - created_by_user_id
           - description
           - id
-          - implementation_workgroup
+          - implementation_workgroup_id
           - interim_work_order_id_old
           - is_deleted
           - project_id
@@ -3335,7 +3335,7 @@
           - contract_number
           - contractor
           - description
-          - implementation_workgroup
+          - implementation_workgroup_id
           - interim_work_order_id_old
           - status_note
           - work_assignment_id
@@ -3356,7 +3356,7 @@
           - contract_number
           - contractor
           - description
-          - implementation_workgroup
+          - implementation_workgroup_id
           - interim_work_order_id_old
           - status_note
           - work_assignment_id
@@ -3375,7 +3375,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup
+          - implementation_workgroup_id
           - task_orders
           - status_id
           - status_note
@@ -3394,7 +3394,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup
+          - implementation_workgroup_id
           - task_orders
           - status_id
           - status_note
@@ -4573,6 +4573,7 @@
           - workgroup_id
           - workgroup_name
           - date_added
+          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4581,6 +4582,7 @@
           - workgroup_id
           - workgroup_name
           - date_added
+          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4589,6 +4591,7 @@
           - workgroup_name
           - workgroup_id
           - date_added
+          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
 - table:
