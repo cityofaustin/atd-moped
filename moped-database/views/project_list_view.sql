@@ -1,4 +1,4 @@
--- latest version 1689881234202_list_view_work_activities
+-- latest version 1686243614837_create_work_auth_table
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
