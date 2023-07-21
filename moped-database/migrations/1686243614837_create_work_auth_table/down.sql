@@ -6,7 +6,7 @@ ALTER TABLE moped_proj_work_activity
     DROP CONSTRAINT created_by_user_fkey,
     DROP CONSTRAINT updated_by_user_fkey,
     DROP COLUMN interim_work_order_id_old,
-    DROP COLUMN implementation_workgroup,
+    DROP COLUMN implementation_workgroup_id,
     DROP COLUMN task_orders,
     DROP COLUMN status_id,
     DROP COLUMN status_note,

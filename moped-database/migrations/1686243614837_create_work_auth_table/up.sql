@@ -8,11 +8,20 @@ CREATE TABLE moped_proj_work_activity_status (
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
+ALTER TABLE moped_workgroup ADD COLUMN is_implementation_workgroup boolean DEFAULT false;
+
+UPDATE moped_workgroup SET is_implementation_workgroup = true where workgroup_name
+    in ('Arterial Management', 'Sidewalks', 'Signs & Markings', 'Urban Trails');
+
+-- backfill activity log entries
+UPDATE moped_activity_log SET record_type = 'moped_proj_work_activity'
+    WHERE record_type = 'moped_proj_contract';
+
 ALTER TABLE moped_proj_contract RENAME TO moped_proj_work_activity;
 
 ALTER TABLE moped_proj_work_activity
     ADD COLUMN interim_work_order_id_old text,
-    ADD COLUMN implementation_workgroup text,
+    ADD COLUMN implementation_workgroup_id integer,
     ADD COLUMN task_orders jsonb,
     ADD COLUMN status_id integer,
     ADD COLUMN status_note text,
@@ -20,6 +29,9 @@ ALTER TABLE moped_proj_work_activity
     ADD COLUMN created_at timestamp WITH time zone NOT NULL DEFAULT now(),
     ADD COLUMN updated_by_user_id integer,
     ADD COLUMN updated_at timestamp WITH time zone NOT NULL DEFAULT now(),
+    ADD CONSTRAINT implementation_workgroup_id_fkey FOREIGN KEY (implementation_workgroup_id)
+        REFERENCES moped_workgroup (workgroup_id)
+        ON UPDATE CASCADE ON DELETE SET NULL,
     ADD CONSTRAINT status_id_fkey FOREIGN KEY (status_id)
         REFERENCES moped_proj_work_activity_status (id)
         ON UPDATE CASCADE ON DELETE SET NULL,
@@ -29,9 +41,6 @@ ALTER TABLE moped_proj_work_activity
     ADD CONSTRAINT updated_by_user_fkey FOREIGN KEY (updated_by_user_id)
         REFERENCES moped_users (user_id)
         ON UPDATE CASCADE ON DELETE SET NULL;
-
-UPDATE moped_activity_log SET record_type = 'moped_proj_work_activity'
-    WHERE record_type = 'moped_proj_contract';
 
 
 -- backfill created_by, created_at, updated_at
