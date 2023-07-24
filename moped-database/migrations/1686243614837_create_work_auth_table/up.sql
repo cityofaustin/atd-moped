@@ -38,7 +38,11 @@ ALTER TABLE moped_proj_work_activity
         REFERENCES moped_users (user_id)
         ON UPDATE CASCADE ON DELETE SET NULL;
 
--- backfill created_by, created_at, updated_at
+-- rename moped_proj_contact activity log entry names
+UPDATE moped_activity_log SET record_type = 'moped_proj_work_activity'
+    WHERE record_type = 'moped_proj_contract';
+
+-- backfill created_by, created_at, updated_at from activity log
 UPDATE
     moped_proj_work_activity
 SET
@@ -58,7 +62,8 @@ FROM (
 WHERE
     moped_proj_work_activity.id = work_activity_insert_event.record_id;
 
--- backfill updated_at, updated_by if update events exist
+-- backfill updated_at, updated_by based on most recent activity log
+-- update event (if one exists)
 UPDATE moped_proj_work_activity
 SET
     updated_at = work_activity_update_event.created_at,
@@ -79,21 +84,17 @@ ORDER BY
 WHERE
     moped_proj_work_activity.id = work_activity_update_event.record_id;
 
--- backfill activity log entry names
-UPDATE moped_activity_log SET record_type = 'moped_proj_work_activity'
-    WHERE record_type = 'moped_proj_contract';
-
 -- create trigger to manage updated_at timestamp
 CREATE FUNCTION public.set_updated_at() RETURNS trigger
     LANGUAGE plpgsql
-    AS $$ BEGIN NEW.modified_date := NOW();
+    AS $$ BEGIN NEW.updated_at := NOW();
 RETURN NEW;
 END;
 $$;
 
 CREATE TRIGGER set_proj_work_activity_trigger_updated_at BEFORE UPDATE ON public.moped_proj_work_activity FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
--- renable triggers
+-- renable event triggers
 SET session_replication_role = DEFAULT;
 
 -- rebuild project list view
