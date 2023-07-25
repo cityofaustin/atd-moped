@@ -72,9 +72,12 @@ $ node index.js local
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
+- Data Requests
+
 
 ### NW Questions
 
+- work authorizations statusID: default to....planned? complete?
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - the "Miscellaneous" facility type is usually referencing an SRTS id that we're not currently handling. There's also athe "Project Type" property that we're not handling"
