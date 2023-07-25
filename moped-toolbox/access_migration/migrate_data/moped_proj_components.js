@@ -57,7 +57,6 @@ const componentFields = [
       } else if (componentName === "Trim Vegetation") {
         newRow.description = "Trim vegetation. ";
       }
-      return newRow;
     },
   },
   {
@@ -79,7 +78,6 @@ const componentFields = [
       const prevDescription = newRow.description || "";
       const locationDetail = oldRow.LocationDetail || "";
       newRow.description = `${prevDescription} ${locationDetail}`.trim();
-      return newRow;
     },
   },
   {
@@ -90,7 +88,6 @@ const componentFields = [
       const phaseId = PHASES_MAP.find((phase) => phase.in === phaseName)?.out
         ?.phase_id;
       newRow[this.out] = phaseId || null;
-      return newRow;
     },
   },
   { in: "ActualEndDateFacilityOverride", out: "completion_date" },
