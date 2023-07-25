@@ -54,6 +54,7 @@ UPDATE
     moped_proj_work_activity
 SET
     created_at = work_activity_insert_event.created_at,
+    updated_at = work_activity_insert_event.created_at,
     created_by_user_id = work_activity_insert_event.updated_by_user_id,
     updated_by_user_id = work_activity_insert_event.updated_by_user_id
 FROM (
