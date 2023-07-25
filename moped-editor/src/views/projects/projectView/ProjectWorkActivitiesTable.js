@@ -174,7 +174,7 @@ const ProjectWorkActivitiesTable = () => {
               color="primary"
               style={{ paddingTop: "1em" }}
             >
-              Contracts
+              Work activities
             </Typography>
           </div>
         }
@@ -194,7 +194,7 @@ const ProjectWorkActivitiesTable = () => {
           },
           body: {
             emptyDataSourceMessage: (
-              <Typography variant="body1">No contracts to display</Typography>
+              <Typography variant="body1">No work activities to display</Typography>
             ),
           },
         }}
