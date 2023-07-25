@@ -15,16 +15,11 @@ INSERT INTO moped_proj_work_activity_status (key, name) VALUES
   ('canceled', 'Canceled'),
   ('on_hold', 'On hold');
 
-ALTER TABLE moped_workgroup ADD COLUMN is_implementation_workgroup boolean DEFAULT false;
-
-UPDATE moped_workgroup SET is_implementation_workgroup = true where workgroup_name
-    in ('Arterial Management', 'Sidewalks', 'Signs & Markings', 'Urban Trails');
-
 ALTER TABLE moped_proj_contract RENAME TO moped_proj_work_activity;
 
 ALTER TABLE moped_proj_work_activity
     ADD COLUMN interim_work_order_id_old text,
-    ADD COLUMN implementation_workgroup_id integer,
+    ADD COLUMN implementation_workgroup text,
     ADD COLUMN task_orders jsonb,
     ADD COLUMN status_id integer NOT NULL DEFAULT 1,
     ADD COLUMN status_note text,
@@ -32,9 +27,6 @@ ALTER TABLE moped_proj_work_activity
     ADD COLUMN created_at timestamp WITH time zone NOT NULL DEFAULT now(),
     ADD COLUMN updated_by_user_id integer,
     ADD COLUMN updated_at timestamp WITH time zone NOT NULL DEFAULT now(),
-    ADD CONSTRAINT implementation_workgroup_id_fkey FOREIGN KEY (implementation_workgroup_id)
-        REFERENCES moped_workgroup (workgroup_id)
-        ON UPDATE CASCADE ON DELETE SET NULL,
     ADD CONSTRAINT status_id_fkey FOREIGN KEY (status_id)
         REFERENCES moped_proj_work_activity_status (id)
         ON UPDATE CASCADE ON DELETE SET NULL,

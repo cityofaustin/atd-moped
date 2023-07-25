@@ -3266,9 +3266,6 @@
     - name: moped_work_activity_status
       using:
         foreign_key_constraint_on: status_id
-    - name: moped_workgroup
-      using:
-        foreign_key_constraint_on: implementation_workgroup_id
     - name: updated_by_user
       using:
         foreign_key_constraint_on: updated_by_user_id
@@ -3288,7 +3285,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup_id
+          - implementation_workgroup
           - task_orders
           - status_id
           - status_note
@@ -3307,7 +3304,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup_id
+          - implementation_workgroup
           - task_orders
           - status_id
           - status_note
@@ -3322,7 +3319,7 @@
           - created_by_user_id
           - description
           - id
-          - implementation_workgroup_id
+          - implementation_workgroup
           - interim_work_order_id_old
           - is_deleted
           - project_id
@@ -3347,7 +3344,7 @@
           - contract_number
           - contractor
           - description
-          - implementation_workgroup_id
+          - implementation_workgroup
           - interim_work_order_id_old
           - status_note
           - work_assignment_id
@@ -3368,7 +3365,7 @@
           - contract_number
           - contractor
           - description
-          - implementation_workgroup_id
+          - implementation_workgroup
           - interim_work_order_id_old
           - status_note
           - work_assignment_id
@@ -3387,7 +3384,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup_id
+          - implementation_workgroup
           - task_orders
           - status_id
           - status_note
@@ -3406,7 +3403,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
-          - implementation_workgroup_id
+          - implementation_workgroup
           - task_orders
           - status_id
           - status_note
@@ -4613,7 +4610,6 @@
           - workgroup_id
           - workgroup_name
           - date_added
-          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4622,7 +4618,6 @@
           - workgroup_id
           - workgroup_name
           - date_added
-          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4631,7 +4626,6 @@
           - workgroup_name
           - workgroup_id
           - date_added
-          - is_implementation_workgroup
         filter: {}
         allow_aggregations: true
 - table:

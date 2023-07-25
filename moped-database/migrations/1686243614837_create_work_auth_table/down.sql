@@ -6,11 +6,8 @@ DROP TRIGGER set_proj_work_activity_trigger_updated_at ON moped_proj_work_activi
 DROP FUNCTION set_updated_at;
 
 ALTER TABLE moped_proj_work_activity
-    -- DROP CONSTRAINT status_id_fkey,
-    -- DROP CONSTRAINT created_by_user_fkey,
-    -- DROP CONSTRAINT updated_by_user_fkey,
     DROP COLUMN interim_work_order_id_old,
-    DROP COLUMN implementation_workgroup_id,
+    DROP COLUMN implementation_workgroup,
     DROP COLUMN task_orders,
     DROP COLUMN status_id,
     DROP COLUMN status_note,
@@ -20,8 +17,6 @@ ALTER TABLE moped_proj_work_activity
     DROP COLUMN updated_at;
 
 DROP TABLE moped_proj_work_activity_status;
-
-ALTER TABLE moped_workgroup DROP COLUMN is_implementation_workgroup;
 
 ALTER TABLE moped_proj_work_activity RENAME TO moped_proj_contract;
 
