@@ -3,10 +3,17 @@ SET session_replication_role = replica;
 
 CREATE TABLE moped_proj_work_activity_status (
     id serial PRIMARY KEY,
-    KEY text UNIQUE,
+    key text UNIQUE,
     name text,
     is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
+
+INSERT INTO moped_proj_work_activity_status (key, name) VALUES 
+  ('planned', 'Planned'),
+  ('under_construction', 'Under construction'),
+  ('complete', 'Complete'),
+  ('canceled', 'Canceled'),
+  ('on_hold', 'On hold');
 
 ALTER TABLE moped_workgroup ADD COLUMN is_implementation_workgroup boolean DEFAULT false;
 
@@ -19,7 +26,7 @@ ALTER TABLE moped_proj_work_activity
     ADD COLUMN interim_work_order_id_old text,
     ADD COLUMN implementation_workgroup_id integer,
     ADD COLUMN task_orders jsonb,
-    ADD COLUMN status_id integer,
+    ADD COLUMN status_id integer NOT NULL DEFAULT 1,
     ADD COLUMN status_note text,
     ADD COLUMN created_by_user_id integer,
     ADD COLUMN created_at timestamp WITH time zone NOT NULL DEFAULT now(),
