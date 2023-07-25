@@ -1,6 +1,7 @@
 const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
+const { getWorkActivities } = require("./moped_work_activity");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
@@ -201,6 +202,8 @@ async function main(env) {
   const { projPhases, projNotes } = getProjPhasesAndNotes();
 
   const projComponents = getComponents();
+
+  const workAcivities = getWorkActivities();
 
   // attach proj phases to projects
   projects.forEach((proj) => {
