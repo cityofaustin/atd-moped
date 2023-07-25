@@ -3263,6 +3263,9 @@
     - name: moped_project
       using:
         foreign_key_constraint_on: project_id
+    - name: moped_work_activity_status
+      using:
+        foreign_key_constraint_on: status_id
     - name: moped_workgroup
       using:
         foreign_key_constraint_on: implementation_workgroup_id
@@ -3461,6 +3464,34 @@
         paused: true
         schedule: 0 0 * * *
         timeout: 60
+- table:
+    name: moped_proj_work_activity_status
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - key
+          - name
+          - is_deleted
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - key
+          - name
+          - is_deleted
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - key
+          - name
+          - is_deleted
+        filter: {}
 - table:
     name: moped_project
     schema: public
