@@ -25,61 +25,60 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const staffColumns = [
+  {
+    headerName: "",
+    field: "user_id",
+    renderCell: (props) => <EditUserButton id={props.value} />,
+    width: 50,
+    sortable: false,
+    filterable: false,
+  },
+  {
+    headerName: "First name",
+    field: "first_name",
+    width: 125,
+  },
+  {
+    headerName: "Last name",
+    field: "last_name",
+    width: 125,
+  },
+  {
+    headerName: "E-mail",
+    field: "email",
+    width: 325,
+  },
+  {
+    headerName: "Title",
+    field: "title",
+    width: 250,
+  },
+  {
+    headerName: "Workgroup",
+    field: "moped_workgroup",
+    valueGetter: (props) => props.row.moped_workgroup.workgroup_name,
+    width: 300,
+  },
+  {
+    headerName: "Role",
+    field: "roles",
+    renderCell: (props) => {
+      if (!props.value || !props.value[0]) {
+        return "N/A";
+      }
 
-  const staffColumns = [
-    {
-      headerName: "",
-      field: "user_id",
-      renderCell: (props) => <EditUserButton id={props.value} />,
-      width: 50,
-      sortable: false,
-      filterable: false,
+      const role = props.value[0].replace("moped-", "");
+      return role.charAt(0).toUpperCase() + role.slice(1);
     },
-    {
-      headerName: "First name",
-      field: "first_name",
-      width: 125,
-    },
-    {
-      headerName: "Last name",
-      field: "last_name",
-      width: 125,
-    },
-    {
-      headerName: "E-mail",
-      field: "email",
-      width: 325,
-    },
-    {
-      headerName: "Title",
-      field: "title",
-      width: 250,
-    },
-    {
-      headerName: "Workgroup",
-      field: "moped_workgroup",
-      valueGetter: (props) => props.row.moped_workgroup.workgroup_name,
-      width: 300,
-    },
-    {
-      headerName: "Role",
-      field: "roles",
-      renderCell: (props) => {
-        if (!props.value || !props.value[0]) {
-          return "N/A";
-        }
-
-        const role = props.value[0].replace("moped-", "");
-        return role.charAt(0).toUpperCase() + role.slice(1);
-      },
-    },
-    {
-      headerName: "Active",
-      field: "is_deleted",
-      // if the user has been deleted (is_deleted === True), then they are not active
-      valueGetter: (props) => (props.value ? "No" : "Yes"),
-    },
-  ];
+  },
+  {
+    headerName: "Active",
+    field: "is_deleted",
+    // if the user has been deleted (is_deleted === True), then they are not active
+    valueGetter: (props) => (props.value ? "No" : "Yes"),
+  },
+];
 
 const StaffListView = () => {
   const classes = useStyles();
@@ -106,6 +105,7 @@ const StaffListView = () => {
               columns={staffColumns}
               getRowId={(row) => row.user_id}
               slots={{ toolbar: GridToolbar }}
+              slotProps={{ toolbar: { showQuickFilter: true } }}
             />
           </Card>
         </Container>
