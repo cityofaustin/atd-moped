@@ -1,8 +1,12 @@
+const { logger } = require("./utils/logger");
 const { loadJsonFile } = require("./utils/loader");
-const { mapRow, mapRowExpanded } = require("./utils/misc");
+const { mapRowExpanded } = require("./utils/misc");
+const { USERS_FNAME } = require("./moped_users");
 
 const WORK_AUTH_FNAME = "./data/raw/workauthorizations.json";
 const WORK_AUTHS = loadJsonFile(WORK_AUTH_FNAME);
+const USERS = loadJsonFile(USERS_FNAME);
+let TASK_ORDERS;
 
 // Moped status IDs
 // 1: planned (default)
@@ -44,13 +48,27 @@ const fields = [
     in: "Description",
     out: "description",
   },
-  //   {
-  //     in: "TaskOrder",
-  //     out: "task_orders",
-  //     transform: () => {
-  //       throw `TODO`;
-  //     },
-  //   },
+  {
+    in: "TaskOrder",
+    out: "task_orders",
+    transform: (oldRow, newRow) => {
+      const taskOrder = oldRow.TaskOrde;
+      if (!taskOrder) {
+        return;
+      }
+      const matchedTaskOrder = TASK_ORDERS.find(
+        (tk) => tk.task_order === taskOrder
+      );
+      if (matchedTaskOrder) {
+        // array-ify task order, since multiple are allowed in Moped
+        newRow.task_orders = [matchedTaskOrder];
+      } else {
+        // todo
+        console.log("UNKNOWN TK", taskOrder);
+        throw `not sure what to do with unknown tks`;
+      }
+    },
+  },
   {
     in: "StatusID",
     out: "status_id",
@@ -78,39 +96,74 @@ const fields = [
       newRow.status_note = statusNote || null;
     },
   },
+  {
+    in: "SubmittedBy",
+    transform: (oldRow, newRow) => {
+      const submittedByUser = oldRow.SubmittedBy;
+      if (!submittedByUser) {
+        return;
+      }
+      const matchedUser = USERS.find(
+        (user) =>
+          `${user.first_name} ${user.last_name}`.toLowerCase() ===
+          submittedByUser.toLowerCase()
+      );
+      if (!matchedUser) {
+        if (
+          [
+            "Pete Dahlberg (Intern)",
+            "Mike Rosas",
+            "Aysha Minot",
+            "Cecily Foote",
+          ].includes(submittedByUser)
+        ) {
+          // todo: :/ cannot edit prod and staging users through UI!
+          console.log("skipping user", submittedByUser);
+          return;
+        } else {
+          console.log("USER NOT FOUND: ", submittedByUser);
+          throw `User not found`;
+          debugger;
+        }
+      }
+      newRow.created_by_user_id = matchedUser.user_id;
+      newRow.updated_by_user_id = matchedUser.user_id;
+    },
+  },
 ];
 
-// "WorkAuthorizationID": 2,
-//     "WAPrefix": null,   X
-//     "WorkOrderID_Old": "BP-0001", X
-//     "ProjectID": null, X
-//     "DO_Number": null, X
-//     "StatusID": null, X
-//     "ImplementationGroup": "Markings", X
-//     "Status": null, X
-//     "Description": "Remove confusing signs at 4th and Comal", X
-//     "TaskOrder": null,
-//     "Priority": null, X (DROP)
-//     "DependenciesAndNotes": null, (DROP)
-//     "InitiationStatus": null, (DROP)
-//     "FieldEngineerEstimate": null, DROP
-//     "ActualCost": null, DROP
-//     "FieldEngineer": null,(DROP)
-//     "PMContact": null,(DROP)
-//     "DateFiled": "2007-10-18 00:00:00",(DROP)
-//     "DateComplete": "2007-12-01 00:00:00" (DROP)
-//     "ApprovedBy": "Alan Hughes", (DROP)
-//     "Contract": null, (DROP)
-//     "ResurfacingRelationship ": null, (DROP)
+async function downloadTaskOrders() {
+  logger.info("Downloading task orders...");
+  const endpoint =
+    "https://data.austintexas.gov/resource/ggav-ufvc.json?$limit=10000000";
+  const response = await fetch(endpoint, {
+    method: "GET",
+  });
+  TASK_ORDERS = await response.json();
+  if (TASK_ORDERS.length < 10000) {
+    // something is wrong - should be 10k tks
+    throw `Task order data error`;
+  } else {
+    logger.info(`✅ ${TASK_ORDERS.length} task orders downloaded.`);
+  }
+}
 
-//     "SubmittedBy": "Nathan Wilkes",
+async function getWorkActivities() {
+  await downloadTaskOrders();
+  return (
+    WORK_AUTHS.filter((row) => row.ProjectID)
+      // exclude any records with no ProjectID (there are ~100)
+      .map((row) => mapRowExpanded(row, fields))
+  );
 
-function getWorkActivities() {
-  const activties = WORK_AUTHS.filter((row) => row.ProjectID)
-    // exclude any records with no ProjectID (there are ~100)
-    .map((row) => mapRowExpanded(row, fields));
-  debugger;
-  return activties;
+  //   const activityIndex = activties.reduce(
+  //     (index, { interim_project_id, ...activityProps }) => {
+  //       index[interim_project_id] = activityProps;
+  //       return index;
+  //     },
+  //     {}
+  //   );
+  //   return activityIndex;
 }
 
 exports.getWorkActivities = getWorkActivities;

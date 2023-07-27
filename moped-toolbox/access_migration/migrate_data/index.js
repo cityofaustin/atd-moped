@@ -2,6 +2,7 @@ const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
+const { downloadUsers } = require("./moped_users");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
@@ -178,12 +179,24 @@ async function main(env) {
 
   logger.info("✅ Event triggers disabled");
 
+  logger.info("Downloading users from production...");
+
+  /**
+   * Download the latest user list from production. If during the during the migration
+   * we encounter a user in the access DB who is unkown to production, the migration
+   * will abort in failure
+   */
+  await downloadUsers(env);
+
+  logger.info("✅ Users downloaded");
+
   if (env === "local" || env === "test") {
-    logger.info("Deleting all projects....");
+    logger.info("Deleting all projects and features...");
     await makeHasuraRequest({
       query: DELETE_ALL_PROJECTS_MUTATION,
       env,
     });
+    logger.info("✅ Projects deleted");
   }
 
   const data = loadJsonFile(FNAME);
@@ -200,10 +213,8 @@ async function main(env) {
     .filter((row) => !!row);
 
   const { projPhases, projNotes } = getProjPhasesAndNotes();
-
   const projComponents = getComponents();
-
-  const workAcivities = getWorkActivities();
+  const workAcivities = await getWorkActivities();
 
   // attach proj phases to projects
   projects.forEach((proj) => {
@@ -222,6 +233,15 @@ async function main(env) {
     const components = projComponents[interim_project_id];
     if (components?.length) {
       proj.moped_proj_components = { data: components };
+    }
+
+    const activities = workAcivities
+      .filter((a) => a.interim_project_id === interim_project_id)
+      // remove interim project id from activity obj
+      .map(({ interim_project_id, ...activity }) => activity);
+
+    if (activities.length) {
+      proj.moped_proj_work_activities = { data: activities };
     }
   });
 
@@ -264,8 +284,9 @@ async function main(env) {
 
 const getEnv = () => {
   const env = process.argv[2];
-  if (!["local", "test", "staging"].includes(env)) {
-    throw "Unknown environment. Choose 'local', 'test', 'staging'";
+  // alter this to enable run against staging or prod 😬
+  if (!["local", "test"].includes(env)) {
+    throw "Unknown environment. Choose 'local', 'test'";
   }
   return env;
 };
