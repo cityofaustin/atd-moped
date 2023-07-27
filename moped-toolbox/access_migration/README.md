@@ -64,11 +64,15 @@ $ node index.js local
 ### Issues to make / todo
 
 - there are facility spatial records with multiple features within one layer and across geom types.
+- it does not seem possible edit users through the staff form in staging or prod :/
+- add user matching to status updates/notes
+- add user matching to project `added_by`
 - how to handle unmapped components?
+  - create issue to allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved)
 - implement new subcomponents / split out work types
+- physical protection type ("Protection Type"): can we move this to subcomponents?
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - use a lookup table for note types
-- physical protection type ("Protection Type"): can we move this to subcomponents?
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
@@ -81,7 +85,7 @@ $ node index.js local
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - the "Miscellaneous" facility type is usually referencing an SRTS id that we're not currently handling. There's also athe "Project Type" property that we're not handling"
-- we are converting unmatched signals to intersection improvement components
+- we are converting unmatched signals to intersection improvement components: review these with AMD
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - some project descriptions missing
 
