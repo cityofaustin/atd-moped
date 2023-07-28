@@ -80,9 +80,9 @@ $ node index.js local
 
 ### Issues to make / todo
 
+- revisit mappings of transit - bus - stop since subcomponents have chagned :/
 - there are facility spatial records with multiple features within one layer and across geom types.
 - it does not seem possible edit users through the staff form in staging or prod :/
-- add user matching to status updates/notes
 - add user matching to project `added_by`
 - how to handle unmapped components?
   - create issue to allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved)
