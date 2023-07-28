@@ -80,6 +80,7 @@ $ node index.js local
 
 ### Issues to make / todo
 
+- decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
 - revisit mappings of transit - bus - stop since subcomponents have chagned :/
 - there are facility spatial records with multiple features within one layer and across geom types.
 - it does not seem possible edit users through the staff form in staging or prod :/
