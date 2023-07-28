@@ -8,6 +8,9 @@
  */
 const { loadJsonFile } = require("./utils/loader");
 const { PHASES_MAP } = require("./mappings/phases");
+const { USERS_FNAME } = require("./moped_users");
+const USERS = loadJsonFile(USERS_FNAME);
+
 const FNAME = "./data/raw/project_statusupdate.json";
 
 /* Given a status update text, find it's corresponding phase data */
@@ -88,11 +91,40 @@ const getProjNotes = (statusUpdates) =>
     // note type 1 = internal note. todo: is this ok?
     const project_note_type = 1;
 
+    // set added by user
+    const updatedBy = status.UpdatedBy;
+    const matchedUser = USERS.find(
+      (user) =>
+        `${user.first_name} ${user.last_name}`.toLowerCase() ===
+        updatedBy.toLowerCase()
+    );
+    if (!matchedUser) {
+      if (
+        [
+          "Pete Dahlberg (Intern)",
+          "Mike Rosas",
+          "Aysha Minot",
+          "Cecily Foote",
+          "_Unknown",
+          "Maddie Strange",
+          "Matthew Cho",
+          "Romani Lalani"
+        ].includes(updatedBy)
+      ) {
+        // todo: :/ cannot edit prod and staging users through UI!
+        console.log("skipping user", updatedBy);
+      } else {
+        console.log("USER NOT FOUND: ", updatedBy);
+        throw `User not found`;
+      }
+    }
+
     // todo: phase_id, added_by
     index[projectId].push({
       project_note,
       project_note_type,
       date_created,
+      added_by_user_id: matchedUser?.user_id || 1,
     });
     return index;
   }, {});
