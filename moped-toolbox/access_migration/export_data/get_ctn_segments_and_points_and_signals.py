@@ -3,7 +3,7 @@ import json
 import arcgis
 from secrets import AGOL_USER, AGOL_PW
 
-out_dir = "../migrate_data/data/agol"
+out_dir = "./migrate_data/data/agol"
 
 services = [
     { "name": "ctn_segments", "id": "24455c781dbd48669c601ede4b365d1f"},
