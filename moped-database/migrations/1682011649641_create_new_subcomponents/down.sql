@@ -19,5 +19,20 @@ DELETE FROM moped_subcomponents where subcomponent_name = 'Leading bicycle inter
 DELETE FROM moped_subcomponents where subcomponent_name = 'Pedestrian signal head and pushbuttons';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Protected left turn phase';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Timing adjustment';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bikeway Direction - Two-way';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Curbside with Bike Lane Bypass';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Floating with Bike Lane';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Island with Bike Lane Behind';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Shared with Bike Lane in Front';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Step-out with Shared Landing';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - With SUP Behind';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - With SUP in Front';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Consolidation';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Maintenance';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Modification';
+
+DELETE FROM moped_components where component_name = 'Transit' and component_subtype = 'Bus Stop - Enhanced';
 
 UPDATE moped_subcomponents set subcomponent_name = 'Audible push button' where subcomponent_name = 'Accessible pedestrian signal (APS)';
+UPDATE moped_components set component_subtype = 'Bus stop' where component_subtype = 'Bus Stop';
+UPDATE moped_components set component_name = 'Bike lane' where component_name = 'Bike Lane';
