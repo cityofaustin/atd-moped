@@ -25,10 +25,12 @@ $ docker build -t moped-migra -t moped-migra:latest .
 $ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/export_data.py
 ```
 
-4. Run the script that downloads facilities (aka components) spatial data from AGOL
+4. Run the script that downloads facilities (aka components) spatial data from AGOL, as well as the canonical data sources we'll match against
 
 ```shell
 $ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/get_facilities_geojson.py
+
+$ docker run -it --rm -v "$(pwd)":/app moped-migra python export_data/get_ctn_segments_and_points_and_signals.py
 ```
 
 ### Transform and Load
@@ -53,13 +55,28 @@ $ nvm use
 $ npm install
 ```
 
-3. Run the migration!
+3. Prepare the geospatial data for import - this may take 5+ minutes
+
+```shell
+$ node facility_line_matcher.js
+$ node facility_point_matcher.js
+```
+
+4. Run the migration!
 
 ```shell
 $ node index.js local
 ```
 
-4. Open the Moped Editor to inspect projects ✨
+5. Open the Moped Editor to inspect projects ✨
+
+
+### On deck
+
+- personnel
+- milestones/date
+- funding
+- project types
 
 ### Issues to make / todo
 
@@ -81,6 +98,7 @@ $ node index.js local
 
 ### NW Questions
 
+- ability to edit component type of the same point/line type
 - work authorizations statusID: default to....planned? complete?
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
