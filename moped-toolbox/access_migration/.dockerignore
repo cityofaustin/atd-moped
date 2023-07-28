@@ -1,2 +1,4 @@
+# we don't copy data into this image so this isn't really necssary :)
 ./migrate_data/*
 *.mdb
+secrets.py
