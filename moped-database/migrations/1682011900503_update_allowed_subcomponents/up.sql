@@ -35,7 +35,18 @@ FROM (VALUES
     ('Signal', 'RRFB', 'Timing adjustment'),
     ('Signal', 'Traffic', 'Timing adjustment'),
     ('Intersection', 'Improvement', 'Transit corner modification'),
-    ('Intersection', 'Improvement', 'Vehicle lane reconfiguration')
+    ('Intersection', 'Improvement', 'Vehicle lane reconfiguration'),
+    ('Transit', 'Bus Stop', 'Bus Stop Consolidation'),
+    ('Transit', 'Bus Stop', 'Bus Stop Maintenance'),
+    ('Transit', 'Bus Stop', 'Bus Stop Modification'),
+    ('Transit', 'Bus Stop - Enhanced', 'Bikeway Direction - Two-way'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - Curbside with Bike Lane Bypass'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - Floating with Bike Lane'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - Island with Bike Lane Behind'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - Shared with Bike Lane in Front'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - Step-out with Shared Landing'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - With SUP Behind'),
+    ('Transit', 'Bus Stop - Enhanced', 'Station Design - With SUP in Front')
   ) AS data (component_name, component_subtype, subcomponent_name)
         LEFT JOIN moped_components mc ON
             mc.component_name = data.component_name AND
