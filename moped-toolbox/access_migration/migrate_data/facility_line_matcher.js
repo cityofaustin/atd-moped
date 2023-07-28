@@ -1,3 +1,16 @@
+/**
+ * Attempts to match facility (aka component) line features to 
+ * CTN street/trail segments.
+ * 
+ * In order for a match to be used:
+ * - the buffered facility lines must entirely contain a set of CTN segments
+ * - the buffer around the matched CTN segments must entirely contain the
+ * facility lines they are matched to
+ * 
+ * This ensures we have captured an entire component geometry. 
+ * 
+ * Features are saved as a JSON indexed on the interim facility ID
+ */
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const buffer = require("@turf/buffer");
 const dissolve = require("@turf/dissolve");

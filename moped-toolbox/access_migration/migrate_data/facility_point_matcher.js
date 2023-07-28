@@ -1,5 +1,14 @@
+/**
+ * For every facility (aka component) point, find the nearest:
+ * - CTN intersection feature
+ * - signal asset feature
+ * 
+ * If these features are within our `BUFFER_DIST` tolerance, they are saved
+ * and referenced later when we build up component features
+ * 
+ * Features are saved as a JSON indexed on the interim facility ID
+ */
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
-const buffer = require("@turf/buffer");
 const nearest = require("@turf/nearest-point").default;
 const distance = require("@turf/distance").default;
 
@@ -51,7 +60,8 @@ function main() {
       return;
     }
     const nearestPoint = nearest(f.geometry, ctnPoints);
-    // very lazily! we are calculating nearest signal for every point
+    // very lazily we are calculating nearest signal for every point
+    // regardless of component type
     // we'll pull from the signal data later as needed when matching
     // facilities to their component record
     const nearestSignal = nearest(f.geometry, signals);

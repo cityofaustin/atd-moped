@@ -6,7 +6,7 @@ const { PHASES_MAP } = require("./mappings/phases");
 const { mapRow, mapRowExpanded } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
 
-/**
+/** Access DB tables related to components/facilities
  * Facility_Attributes - actuals associated with project facility instances (many to one)
  * Facility_AttributesTypes - domain/lookup for facility attributes - moped subcomponents
  * Facility_AttributeTypeApplicability - defines which facility types apply to which facility attributes
@@ -14,8 +14,10 @@ const { getComponentTags } = require("./moped_proj_component_tags");
  * Project_Facilities - instances of project facilities - effectively moped_proj_components
  * Project_FacilityTypes - facility domain - effectively moped_components
  */
+// facilities must be downloaded from AGOL - see README
 const FACILITIES_FNAME = "./data/raw/project_facilities.json";
 const FACILITY_ATTRS_FNAME = "./data/raw/facility_attributes.json";
+// matched CTN features must be pre-processed - see README
 const FACILITY_GEOM_LINES_FNAME = "./data/agol/ctn_segments_matched.geojson";
 const FACILITY_GEOM_POINTS_FNAME = "./data/agol/ctn_points_matched.geojson";
 const FACILITIES = loadJsonFile(FACILITIES_FNAME);
