@@ -111,7 +111,7 @@ const COMPONENTS_MAP = [
   { in: "Trail - Urban Trail (paved dual trail)", out: null },
   { in: "Transit - BRT", out: null },
   { in: "Transit - Bus Stop - Consolidation", out: 62 },
-  { in: "Transit - Bus Stop - Floating w/ Bike Lane", out: 62 },
+  { in: "Transit - Bus Stop - Enhanced", out: 62 },
   { in: "Transit - Bus Stop - Modification", out: 62 },
   { in: "Transit Lane", out: 52 },
   { in: "Transit Managed Lane Access Point", out: 53 },
