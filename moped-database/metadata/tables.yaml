@@ -4365,7 +4365,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
   select_permissions:
     - role: moped-admin
@@ -4382,7 +4381,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4400,7 +4398,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4418,7 +4415,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4426,7 +4422,6 @@
     - role: moped-admin
       permission:
         columns:
-          - staff_uuid
           - first_name
           - last_name
           - title
