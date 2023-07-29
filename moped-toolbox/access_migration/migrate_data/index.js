@@ -2,6 +2,7 @@ const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
+const { getPersonnel } = require("./moped_proj_personnel");
 const { downloadUsers } = require("./moped_users");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const {
@@ -215,6 +216,7 @@ async function main(env) {
   const { projPhases, projNotes } = getProjPhasesAndNotes();
   const projComponents = getComponents();
   const workAcivities = await getWorkActivities();
+  const personnel = getPersonnel();
 
   // attach proj phases to projects
   projects.forEach((proj) => {
@@ -242,6 +244,11 @@ async function main(env) {
 
     if (activities.length) {
       proj.moped_proj_work_activities = { data: activities };
+    }
+
+    const projPersonnel = personnel[interim_project_id];
+    if (projPersonnel) {
+      proj.moped_proj_personnel = { data: projPersonnel };
     }
   });
 
