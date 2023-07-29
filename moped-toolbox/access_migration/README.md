@@ -73,28 +73,38 @@ $ node index.js local
 
 ### On deck
 
-- personnel
 - milestones/date
 - funding
 - project types
 
 ### Issues to make / todo
 
+
+- project personnel:
+  - create "ATD Project Sponsor" and "Project Sponsor" roles or decide how to handle them
+  - how to handle when role is null? default role? currently falling back to "Project Support"
+  - this mapping has the most complete list of moped users to create
+- work authorizations:
+  - WAPRefix and ID :/
+  - implementation workgroup options:
+    - Sidewalks & Special Projects Div
+    - Add "Other" and "General Contractor" (PDD uses a lot of that)
+- moped editor: component mapping: enable vertex editing
+- moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
+- moped editor: it does not seem possible edit users through the staff form in staging or prod :/
+- moped editor: allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved)
+- finish transit - bust stop component/subcomponent maps.
+- remove duplicate component creation for QA review (search for CTN_SEGMENTS_ONLY)
 - decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
-- revisit mappings of transit - bus - stop since subcomponents have chagned :/
 - there are facility spatial records with multiple features within one layer and across geom types.
-- it does not seem possible edit users through the staff form in staging or prod :/
 - add user matching to project `added_by`
-- how to handle unmapped components?
-  - create issue to allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved)
-- implement new subcomponents / split out work types
 - physical protection type ("Protection Type"): can we move this to subcomponents?
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - use a lookup table for note types
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
-- Data Requests
+- search for todos :)
 
 
 ### NW Questions
