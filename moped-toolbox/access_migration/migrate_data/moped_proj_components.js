@@ -297,7 +297,7 @@ function getComponents() {
       index[projectId].push(comp);
 
       if (ctnLineFeatures?.length > 0) {
-        // temp duplicate component with snapped segments
+        // todo: temp duplicate component with snapped segments
         const comp2 = { ...comp };
         comp2.description = "CTN SEGMENTS ONLY";
         comp2.feature_drawn_lines = { data: [] };
