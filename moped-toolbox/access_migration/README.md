@@ -89,6 +89,7 @@ $ node index.js local
   - implementation workgroup options:
     - Sidewalks & Special Projects Div
     - Add "Other" and "General Contractor" (PDD uses a lot of that)
+- add phase to proj notes now that it is supported in data model
 - moped editor: component mapping: enable vertex editing
 - moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
 - moped editor: it does not seem possible edit users through the staff form in staging or prod :/
