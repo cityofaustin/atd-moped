@@ -108,7 +108,7 @@ const getProjNotes = (statusUpdates) =>
           "_Unknown",
           "Maddie Strange",
           "Matthew Cho",
-          "Romani Lalani"
+          "Romani Lalani",
         ].includes(updatedBy)
       ) {
         // todo: :/ cannot edit prod and staging users through UI!
@@ -119,7 +119,8 @@ const getProjNotes = (statusUpdates) =>
       }
     }
 
-    // todo: phase_id, added_by
+    // todo: phase_id
+    // todo: stop defaulting added_by
     index[projectId].push({
       project_note,
       project_note_type,
