@@ -86,8 +86,11 @@ const getProjNotes = (statusUpdates) =>
       // nothing to do here
       return index;
     }
+    setPhaseId(status);
+    const phase_id = status.phase_id;
 
     const date_created = status.StatusDate;
+
     // note type 1 = internal note. todo: is this ok?
     const project_note_type = 1;
 
@@ -118,14 +121,13 @@ const getProjNotes = (statusUpdates) =>
         throw `User not found`;
       }
     }
-
-    // todo: phase_id
     // todo: stop defaulting added_by
     index[projectId].push({
       project_note,
       project_note_type,
       date_created,
       added_by_user_id: matchedUser?.user_id || 1,
+      phase_id,
     });
     return index;
   }, {});
