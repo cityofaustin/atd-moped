@@ -4,6 +4,7 @@ const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
 const { getPersonnel } = require("./moped_proj_personnel");
 const { downloadUsers } = require("./moped_users");
+const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
@@ -217,6 +218,7 @@ async function main(env) {
   const projComponents = getComponents();
   const workAcivities = await getWorkActivities();
   const personnel = getPersonnel();
+  const funding = await getFunding();
 
   // attach proj phases to projects
   projects.forEach((proj) => {
@@ -249,6 +251,11 @@ async function main(env) {
     const projPersonnel = personnel[interim_project_id];
     if (projPersonnel) {
       proj.moped_proj_personnel = { data: projPersonnel };
+    }
+
+    const projFunding = funding[interim_project_id];
+    if (projFunding) {
+      proj.moped_proj_funding = { data: projFunding };
     }
   });
 

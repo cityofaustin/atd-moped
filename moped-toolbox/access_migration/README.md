@@ -73,13 +73,18 @@ $ node index.js local
 
 ### On deck
 
-- funding
-- milestones/date
+- project_dates
 - physical protection types
 - project types
 
 ### Issues to make / todo
 
+- project funding:
+  - DONE except for unmapped sources and programs :)
+  - very few sources have a status. what should we default to? tentatitve
+  - make funding status not nullable (we have zero null entries in moped db)
+  - add `is_deleted` to funding sources and programs
+  - drop unused `fund_dept_unit` column
 - project personnel:
   - create "ATD Project Sponsor" and "Project Sponsor" roles or decide how to handle them
   - how to handle when role is null? default role? currently falling back to "Project Support"
