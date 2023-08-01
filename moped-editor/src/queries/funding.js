@@ -24,7 +24,6 @@ export const FUNDING_QUERY = gql`
     moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id
       funding_source_name
-      funding_source_category
     }
     moped_fund_programs(where: { is_deleted: { _eq: false } }) {
       funding_program_id
