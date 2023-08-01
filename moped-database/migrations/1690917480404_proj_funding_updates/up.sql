@@ -18,6 +18,9 @@ ALTER TABLE moped_fund_programs
 INSERT INTO moped_fund_programs (funding_program_name)
         values('Large CIP'), ('Sidewalk Fee in Lieu'), ('Sidewalk Rehab'), ('Street Impact Fee'), ('Street Rehabilitation'), ('Traffic Mitigation Fees'), ('Transit Enhancement Program');
 
+ALTER TABLE moped_funds
+    ADD COLUMN is_deleted boolean NOT NULL DEFAULT FALSE;
+
 ALTER TABLE moped_proj_funding DROP COLUMN fund_dept_unit;
 
 ALTER TABLE moped_proj_funding ALTER COLUMN funding_status_id SET NOT NULL;
