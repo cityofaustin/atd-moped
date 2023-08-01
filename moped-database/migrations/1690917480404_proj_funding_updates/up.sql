@@ -21,6 +21,6 @@ INSERT INTO moped_fund_programs (funding_program_name)
 ALTER TABLE moped_funds
     ADD COLUMN is_deleted boolean NOT NULL DEFAULT FALSE;
 
-ALTER TABLE moped_proj_funding ADD COLUMN fund_dept_unit text;
+ALTER TABLE moped_proj_funding DROP COLUMN fund_dept_unit;
 
 ALTER TABLE moped_proj_funding ALTER COLUMN funding_status_id SET NOT NULL;
