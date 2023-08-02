@@ -154,7 +154,7 @@ const ProjectWorkActivitiesTable = () => {
                   startIcon={<AddCircleIcon />}
                   onClick={props.action.onClick}
                 >
-                  Add Contract
+                  Add Work
                 </Button>
               );
             }
