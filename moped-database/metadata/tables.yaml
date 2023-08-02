@@ -1193,6 +1193,7 @@
         columns:
           - funding_program_id
           - funding_program_name
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -1200,6 +1201,7 @@
         columns:
           - funding_program_id
           - funding_program_name
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -1207,6 +1209,7 @@
         columns:
           - funding_program_id
           - funding_program_name
+          - is_deleted
         filter: {}
         allow_aggregations: true
 - table:
@@ -1217,16 +1220,16 @@
       permission:
         columns:
           - funding_source_id
-          - funding_source_category
           - funding_source_name
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
           - funding_source_id
-          - funding_source_category
           - funding_source_name
+          - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -1234,7 +1237,7 @@
         columns:
           - funding_source_id
           - funding_source_name
-          - funding_source_category
+          - is_deleted
         filter: {}
         allow_aggregations: true
 - table:
@@ -1269,6 +1272,7 @@
           - id
           - fund_id
           - fund_name
+          - is_deleted
         filter: {}
     - role: moped-editor
       permission:
@@ -1276,6 +1280,7 @@
           - id
           - fund_id
           - fund_name
+          - is_deleted
         filter: {}
     - role: moped-viewer
       permission:
@@ -1283,6 +1288,7 @@
           - id
           - fund_id
           - fund_name
+          - is_deleted
         filter: {}
 - table:
     name: moped_milestones
@@ -2028,7 +2034,6 @@
           - funding_source_id
           - funding_program_id
           - funding_amount
-          - fund_dept_unit
           - funding_description
           - funding_status_id
           - fund
@@ -2047,7 +2052,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -2064,7 +2068,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -2082,7 +2085,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -2100,7 +2102,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -2119,7 +2120,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -2137,7 +2137,6 @@
           - proj_funding_id
           - dept_unit
           - fund
-          - fund_dept_unit
           - funding_description
           - date_added
           - is_deleted
@@ -4455,7 +4454,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
   select_permissions:
     - role: moped-admin
@@ -4472,7 +4470,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4490,7 +4487,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4508,7 +4504,6 @@
           - title
           - date_added
           - cognito_user_id
-          - staff_uuid
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -4516,7 +4511,6 @@
     - role: moped-admin
       permission:
         columns:
-          - staff_uuid
           - first_name
           - last_name
           - title

@@ -87,17 +87,15 @@ const StaffForm = ({
   const {
     register,
     handleSubmit,
-    errors,
     control,
     watch,
-    formState: { isSubmitting },
+    formState: { isSubmitting, errors },
     reset,
   } = useForm({
     defaultValues: {
       ...initialFormValues,
       // Roles are stored as an array in the DB but we need to feed the form a string
       roles: findHighestRole(initialFormValues.roles),
-      workgroup_id: initialFormValues?.moped_workgroup?.workgroup_id ?? "",
     },
     resolver: yupResolver(validationSchema),
   });
@@ -143,7 +141,6 @@ const StaffForm = ({
           <TextField
             fullWidth
             autoFocus
-            name="first_name"
             id="first-name"
             label="First Name"
             disabled={!isUserActive}
@@ -151,7 +148,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
+            {...register("first_name")}
             error={!!errors.first_name || !!userApiErrors?.first_name}
             helperText={
               errors.first_name?.message ||
@@ -162,7 +159,6 @@ const StaffForm = ({
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="last_name"
             id="last-name"
             label="Last Name"
             disabled={!isUserActive}
@@ -170,7 +166,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
+            {...register("last_name")}
             error={!!errors.last_name || !!userApiErrors?.last_name}
             helperText={
               errors.last_name?.message ||
@@ -181,7 +177,6 @@ const StaffForm = ({
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="title"
             id="title"
             label="Title"
             disabled={!isUserActive}
@@ -189,7 +184,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
+            {...register("title")}
             error={!!errors.title || !!userApiErrors?.title}
             helperText={
               errors.title?.message || formatApiErrors(userApiErrors?.title)
@@ -199,7 +194,6 @@ const StaffForm = ({
         <Grid item xs={12} md={6}>
           <TextField
             fullWidth
-            name="email"
             id="email"
             label="Email"
             disabled={!isUserActive}
@@ -207,7 +201,7 @@ const StaffForm = ({
               shrink: true,
             }}
             variant="outlined"
-            inputRef={register}
+            {...register("email")}
             error={!!errors.email || !!userApiErrors?.email}
             helperText={
               errors.email?.message || formatApiErrors(userApiErrors?.email)
@@ -220,7 +214,6 @@ const StaffForm = ({
           currentSelectedRole !== nonLoginUserRole ? (
             <TextField
               fullWidth
-              name="password"
               id="password"
               label="Password"
               type="password"
@@ -228,7 +221,7 @@ const StaffForm = ({
                 shrink: true,
               }}
               variant="outlined"
-              inputRef={register}
+              {...register("password")}
               error={!!errors.password || !!userApiErrors?.password}
               helperText={
                 errors.password?.message ||
@@ -238,11 +231,10 @@ const StaffForm = ({
           ) : (
             <TextField
               fullWidth
-              name="password"
               id="password"
               label="Password"
               disabled={true}
-              inputRef={register}
+              {...register("password")}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -260,20 +252,22 @@ const StaffForm = ({
             <FormControl variant="outlined" className={classes.formSelect}>
               <InputLabel id="workgroup-label">Workgroup</InputLabel>
               <Controller
-                name={"workgroup_id"}
+                name="workgroup_id"
                 control={control}
-                render={({ onChange, ref, value }) => (
+                render={({ field }) => (
                   <Select
-                    variant="standard"
-                    id="workgroup"
+                    {...field}
+                    variant="outlined"
+                    id="workgroup_id"
                     labelId="workgroup-label"
                     label="Workgroup"
                     disabled={!isUserActive}
                     onChange={(e) => {
-                      onChange(e.target.value ?? "");
+                      field.onChange(e.target.value ?? "");
                     }}
-                    inputRef={ref}
-                    value={value}
+                    error={
+                      !!errors.workgroup_id || !!userApiErrors?.workgroup_id
+                    }
                   >
                     {workgroups.moped_workgroup.map((workgroup) => (
                       <MenuItem
@@ -291,8 +285,13 @@ const StaffForm = ({
                   Workgroups failed to load. Please refresh.
                 </FormHelperText>
               )}
-              {errors.workgroup && (
-                <FormHelperText>{errors.workgroup?.message}</FormHelperText>
+              {errors.workgroup_id && (
+                <FormHelperText
+                  error={!!errors.workgroup_id || !!userApiErrors?.workgroup_id}
+                >
+                  {errors.workgroup_id?.message ||
+                    formatApiErrors(userApiErrors?.workgroup_id)}
+                </FormHelperText>
               )}
             </FormControl>
           )}
@@ -301,8 +300,15 @@ const StaffForm = ({
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
-              as={
-                <RadioGroup aria-label="roles" name="roles">
+              name="roles"
+              control={control}
+              render={({ field: { name, value, onChange } }) => (
+                <RadioGroup
+                  aria-label="roles"
+                  name={name}
+                  value={value}
+                  onChange={onChange}
+                >
                   {roleOptions.map((role) => (
                     <FormControlLabel
                       key={role.value}
@@ -313,9 +319,7 @@ const StaffForm = ({
                     />
                   ))}
                 </RadioGroup>
-              }
-              name={"roles"}
-              control={control}
+              )}
             />
           </FormControl>
         </Grid>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -10,7 +10,7 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
@@ -21,11 +21,10 @@ import {
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
-  useInitialValuesOnAttributesEdit,
   useComponentTagsOptions,
+  useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
 import * as yup from "yup";
-import { format } from "date-fns";
 
 const defaultFormValues = {
   component: null,
@@ -36,7 +35,7 @@ const defaultFormValues = {
   completionDate: null,
   description: "",
   signal: null,
-  srtsId: null,
+  srtsId: "",
 };
 
 const validationSchema = yup.object().shape({
@@ -48,25 +47,16 @@ const validationSchema = yup.object().shape({
   completionDate: yup.date().nullable().optional(),
   description: yup.string(),
   // Signal field is required if the selected component inserts into the feature_signals table
-  signal: yup.object().when("component", {
-    is: (val) => val?.data?.feature_layer?.internal_table === "feature_signals",
-    then: yup.object().required(),
-  }),
+  signal: yup
+    .object()
+    .nullable()
+    .when("component", {
+      is: (val) =>
+        val?.data?.feature_layer?.internal_table === "feature_signals",
+      then: yup.object().required(),
+    }),
   srtsId: yup.string().nullable().optional(),
 });
-
-/**
- * Return a Date object from a string date
- * @param {string} value - the string formatted date
- * @returns
- */
-const parseDate = (value) => {
-  if (value) {
-    let newdate = new Date(value);
-    return newdate;
-  }
-  return null;
-};
 
 const ComponentForm = ({
   formButtonText,
@@ -82,12 +72,14 @@ const ComponentForm = ({
     control,
     watch,
     setValue,
-    formState: { isValid },
+    formState: { isDirty, errors },
   } = useForm({
-    defaultValues: defaultFormValues,
+    defaultValues: initialFormValues ? initialFormValues : defaultFormValues,
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
+
+  const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
   const {
@@ -100,11 +92,10 @@ const ComponentForm = ({
 
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
-  const { component, phase } = watch();
+  const [component, phase] = watch(["component", "phase"]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
-  const [areSignalOptionsLoaded, setAreSignalOptionsLoaded] = useState(false);
-  const onOptionsLoaded = () => setAreSignalOptionsLoaded(true);
+  const isSignalComponent = internalTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const subcomponentOptions = useSubcomponentOptions(
@@ -112,45 +103,32 @@ const ComponentForm = ({
     optionsData?.moped_components
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
-    !!initialFormValues?.component.moped_phase
+    !!initialFormValues?.phase
   );
 
-  useInitialValuesOnAttributesEdit(
-    initialFormValues,
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("phase"),
+    dependentFieldName: "subphase",
+    valueToSet: defaultFormValues.subphase,
     setValue,
-    componentOptions,
-    subcomponentOptions,
-    phaseOptions,
-    subphaseOptions,
-    areSignalOptionsLoaded,
-    componentTagsOptions
-  );
+  });
 
-  // Reset signal field when component changes so signal matches component signal type
-  useEffect(() => {
-    setValue("signal", null);
-  }, [component, setValue]);
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("component"),
+    dependentFieldName: "signal",
+    valueToSet: defaultFormValues.signal,
+    setValue,
+  });
 
-  // reset subcomponent selections when component to ensure only allowed subcomponents
-  // assumes component type cannot be changed when editing
   // todo: preserve allowed subcomponents when switching b/t component types
-  useEffect(() => {
-    if (!initialFormValues?.subcomponents) {
-      setValue("subcomponents", []);
-    }
-  }, [subcomponentOptions, initialFormValues, setValue]);
-
-  // Reset subphases field when phase changes so subphase options match phase
-  useEffect(() => {
-    if (!phase?.value) return;
-    if (!initialFormValues) return;
-    if (initialFormValues.phase?.phase_id !== phase?.value) {
-      setValue("subphase", null);
-    }
-  }, [phase, setValue, initialFormValues]);
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("component"),
+    dependentFieldName: "subcomponents",
+    valueToSet: defaultFormValues.subcomponents,
+    setValue,
+  });
 
   const isEditingExistingComponent = initialFormValues !== null;
-  const isSignalComponent = internalTable === "feature_signals";
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -162,6 +140,7 @@ const ComponentForm = ({
             options={areOptionsLoading ? [] : componentOptions}
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
+                key={option.value}
                 option={option}
                 state={state}
                 props={props}
@@ -180,12 +159,9 @@ const ComponentForm = ({
               id="signal"
               name="signal"
               control={control}
-              render={({ onChange, value, ref }) => (
+              render={({ field }) => (
                 <SignalComponentAutocomplete
-                  onChange={onChange}
-                  value={value}
-                  ref={ref}
-                  onOptionsLoaded={onOptionsLoaded}
+                  {...field}
                   signalType={component?.data?.component_subtype}
                 />
               )}
@@ -219,10 +195,9 @@ const ComponentForm = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            inputRef={register}
+            {...register("description")}
             fullWidth
             size="small"
-            name="description"
             id="description"
             label={"Description"}
             InputLabelProps={{
@@ -235,10 +210,9 @@ const ComponentForm = ({
         </Grid>
         <Grid item xs={12}>
           <TextField
-            inputRef={register}
+            {...register("srtsId")}
             fullWidth
             size="small"
-            name="srtsId"
             id="srtsId"
             label={"SRTS Infrastructure ID"}
             InputLabelProps={{
@@ -300,23 +274,14 @@ const ComponentForm = ({
                 id="completion-date"
                 name="completionDate"
                 control={control}
-                render={({ onChange, value, ref }) => {
+                render={({ field }) => {
                   return (
-                    <MobileDatePicker
-                      inputRef={ref}
-                      value={parseDate(value)}
-                      onChange={(date) => {
-                        const newDate = date
-                          ? format(date, "yyyy-MM-dd OOOO")
-                          : null;
-                        onChange(newDate);
-                      }}
-                      format="MM/dd/yyyy"
+                    <DateFieldEditComponent
+                      {...field}
+                      value={field.value}
+                      onChange={field.onChange}
                       variant="outlined"
                       label={"Completion date"}
-                      slotProps={{
-                        actionBar: { actions: ["accept", "cancel", "clear"] },
-                      }}
                     />
                   );
                 }}
@@ -332,7 +297,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isValid}
+            disabled={!isDirty || areFormErrors}
           >
             {isSignalComponent ? "Save" : formButtonText}
           </Button>
