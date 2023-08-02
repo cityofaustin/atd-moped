@@ -76,30 +76,28 @@ $ node index.js local
 - project_dates
 - physical protection types
 - project types
+- files?
 
 ### Issues to make / todo
 
 - project funding:
-  - DONE except for unmapped sources and programs :)
-  - very few sources have a status. what should we default to? tentatitve
-  - make funding status not nullable (we have zero null entries in moped db)
-  - add `is_deleted` to funding sources and programs
-  - drop unused `fund_dept_unit` column
+  - add special handing as described in schema doc
+  - very few sources have a status. currently defaulting to tentatitve.
+  - misc db updates: https://github.com/cityofaustin/atd-data-tech/issues/13113
+- work types:
+  - any remaining mappings?
+- backfill is_coa_staff column in staging and prod for all users :/
+- projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - project personnel:
   - create "ATD Project Sponsor" and "Project Sponsor" roles or decide how to handle them
   - how to handle when role is null? default role? currently falling back to "Project Support"
-  - this mapping has the most complete list of moped users to create
 - work authorizations:
-  - WAPRefix and ID :/
+  - WAPRefix and ID and workorderid_old :/
   - implementation workgroup options:
     - Sidewalks & Special Projects Div
     - Add "Other" and "General Contractor" (PDD uses a lot of that)
-- moped editor: component mapping: enable vertex editing
 - moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
-- moped editor: it does not seem possible edit users through the staff form in staging or prod :/
-- moped editor: allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved)
 - finish transit - bust stop component/subcomponent maps.
-- remove duplicate component creation for QA review (search for CTN_SEGMENTS_ONLY)
 - decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
 - there are facility spatial records with multiple features within one layer and across geom types.
 - add user matching to project `added_by`
@@ -109,16 +107,21 @@ $ node index.js local
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
+- moped editor: nix summary map zoom animation
+- moped editor: project list: cannot search for projects with no/unknown status
+- moped editor: ability to store URLs as files
+- moped editor: apollo is clearly not caching the list view query. ideally, we want to use the option "cache-and-network", but currently the cache is not being hit at all.
+- moped editor: component mapping: enable line vertex editing (https://github.com/cityofaustin/atd-data-tech/issues/13116)
+- moped editor: allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved) https://github.com/cityofaustin/atd-data-tech/issues/13117
 - search for todos :)
 
 
 ### NW Questions
 
-- ability to edit component type of the same point/line type
+- does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
 - work authorizations statusID: default to....planned? complete?
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
-- the "Miscellaneous" facility type is usually referencing an SRTS id that we're not currently handling. There's also athe "Project Type" property that we're not handling"
 - we are converting unmatched signals to intersection improvement components: review these with AMD
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - some project descriptions missing
