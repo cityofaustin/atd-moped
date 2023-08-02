@@ -296,31 +296,31 @@ function getComponents() {
       delete comp.interim_project_id;
       index[projectId].push(comp);
 
-      if (ctnLineFeatures?.length > 0) {
-        // todo: temp duplicate component with snapped segments
-        const comp2 = { ...comp };
-        comp2.description = "CTN SEGMENTS ONLY";
-        comp2.feature_drawn_lines = { data: [] };
-        comp2.feature_street_segments = {
-          data: ctnLineFeatures.map((segment) => {
-            const geography = segment.geometry;
-            if (geography.type === "LineString") {
-              geography.coordinates = [geography.coordinates];
-              geography.type = "MultiLineString";
-            }
-            return {
-              ctn_segment_id: segment.properties.CTN_SEGMENT_ID,
-              from_address_min: segment.properties.FROM_ADDRESS_MIN,
-              to_address_max: segment.properties.TO_ADDRESS_MAX,
-              full_street_name: segment.properties.FULL_STREET_NAME,
-              line_type: segment.properties.LINE_TYPE,
-              source_layer: "ATD_ADMIN.CTN",
-              geography,
-            };
-          }),
-        };
-        index[projectId].push(comp2);
-      }
+      // if (ctnLineFeatures?.length > 0) {
+      //   // todo: temp duplicate component with snapped segments
+      //   const comp2 = { ...comp };
+      //   comp2.description = "CTN SEGMENTS ONLY";
+      //   comp2.feature_drawn_lines = { data: [] };
+      //   comp2.feature_street_segments = {
+      //     data: ctnLineFeatures.map((segment) => {
+      //       const geography = segment.geometry;
+      //       if (geography.type === "LineString") {
+      //         geography.coordinates = [geography.coordinates];
+      //         geography.type = "MultiLineString";
+      //       }
+      //       return {
+      //         ctn_segment_id: segment.properties.CTN_SEGMENT_ID,
+      //         from_address_min: segment.properties.FROM_ADDRESS_MIN,
+      //         to_address_max: segment.properties.TO_ADDRESS_MAX,
+      //         full_street_name: segment.properties.FULL_STREET_NAME,
+      //         line_type: segment.properties.LINE_TYPE,
+      //         source_layer: "ATD_ADMIN.CTN",
+      //         geography,
+      //       };
+      //     }),
+      //   };
+      //   index[projectId].push(comp2);
+      // }
 
       return index;
     }, {});

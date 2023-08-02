@@ -280,6 +280,8 @@ async function main(env) {
       debugger;
       break;
     }
+    logger.info("Sleeping...");
+    await new Promise((r) => setTimeout(r, 2));
   }
 
   logger.info("Restoring event triggers...");
