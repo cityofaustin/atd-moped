@@ -105,13 +105,7 @@ const getProjNotes = (statusUpdates) =>
       if (
         [
           "Pete Dahlberg (Intern)",
-          "Mike Rosas",
-          "Aysha Minot",
-          "Cecily Foote",
           "_Unknown",
-          "Maddie Strange",
-          "Matthew Cho",
-          "Romani Lalani",
         ].includes(updatedBy)
       ) {
         // todo: :/ cannot edit prod and staging users through UI!

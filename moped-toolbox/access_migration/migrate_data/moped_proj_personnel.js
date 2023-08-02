@@ -25,18 +25,6 @@ const fields = [
         if (
           [
             "Pete Dahlberg (Intern)",
-            "Mike Rosas",
-            "Aysha Minot",
-            "Cecily Foote",
-            "Maddie Strange",
-            "Matthew Cho",
-            "Romani Lalani",
-            "Anthony Lamping",
-            "Garrett Davidson",
-            "Jeebika Sharma",
-            "Nicole Alatorre",
-            "Josh Green",
-            "Jetal Bhakta",
           ].includes(thisUser)
         ) {
           // todo: :/ cannot edit prod and staging users through UI!
