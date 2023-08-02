@@ -69,6 +69,7 @@ export function useAppBarHeight() {
     mixins: { toolbar },
     breakpoints,
   } = useTheme();
+
   const toolbarDesktopQuery = breakpoints.up("sm");
   const toolbarLandscapeQuery = `${breakpoints.up(
     "xs"
@@ -83,6 +84,7 @@ export function useAppBarHeight() {
   } else {
     currentToolbarMinHeight = toolbar;
   }
+  console.log(currentToolbarMinHeight)
 
   return currentToolbarMinHeight.minHeight;
 }

@@ -5,6 +5,12 @@ const useStyles = makeStyles(() => ({
   titleDisplayField: {
     display: "flex",
   },
+  titleText: {
+    // textOverflow: "ellipsis",
+    textWrap: "nowrap",
+    maxWidth: "800px", // this needs to match the width of teh screen dynamically
+    overflow: "scroll",
+  },
   titleId: {
     alignSelf: "center",
   },
@@ -15,7 +21,11 @@ const ProjectName = ({ name, id }) => {
 
   return (
     <span className={classes.titleDisplayField}>
-      <Typography color="textPrimary" variant="h1">
+      <Typography
+        color="textPrimary"
+        variant="h1"
+        className={classes.titleText}
+      >
         {name}
       </Typography>
       <Typography
