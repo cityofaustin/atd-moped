@@ -1,6 +1,29 @@
--- latest version 1686243614837_create_work_auth_table
+UPDATE moped_activity_log SET record_type = 'moped_proj_contract'
+    WHERE record_type = 'moped_proj_work_activity';
+
+DROP TRIGGER set_proj_work_activity_trigger_updated_at ON moped_proj_work_activity;
+
+DROP FUNCTION set_updated_at;
+
+ALTER TABLE moped_proj_work_activity
+    DROP COLUMN interim_work_order_id_old,
+    DROP COLUMN implementation_workgroup,
+    DROP COLUMN task_orders,
+    DROP COLUMN status_id,
+    DROP COLUMN status_note,
+    DROP COLUMN created_by_user_id,
+    DROP COLUMN created_at,
+    DROP COLUMN updated_by_user_id,
+    DROP COLUMN updated_at;
+
+DROP TABLE moped_proj_work_activity_status;
+
+ALTER TABLE moped_proj_work_activity RENAME TO moped_proj_contract;
+
 DROP VIEW project_list_view;
 
+
+-- rebuild project list view
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -114,7 +137,7 @@ AS WITH project_person_list_lookup AS (
       GROUP BY ptags.project_id) AS project_tags,
     ( -- get me all of the contractors added to a project
       SELECT string_agg(contract.contractor, ', ' :: text) AS string_agg
-      FROM moped_proj_work_activity contract
+      FROM moped_proj_contract contract
       WHERE 1 = 1
       AND contract.is_deleted = FALSE
       AND contract.project_id = mp.project_id
@@ -125,7 +148,7 @@ AS WITH project_person_list_lookup AS (
         string_agg(
             contract.contract_number, ', ' :: text
         ) AS string_agg
-      FROM moped_proj_work_activity contract
+      FROM moped_proj_contract contract
       WHERE 1 = 1
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
@@ -140,7 +163,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
-     LEFT JOIN moped_proj_work_activity contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
+     LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
