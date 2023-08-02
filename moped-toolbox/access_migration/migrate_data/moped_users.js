@@ -1,7 +1,6 @@
-const generator = require("generate-password");
 const { gql } = require("graphql-request");
-const { makeHasuraRequest, HASURA_AUTH } = require("./utils/graphql");
-const { saveJsonFile, loadJsonFile } = require("./utils/loader");
+const { makeHasuraRequest } = require("./utils/graphql");
+const { saveJsonFile } = require("./utils/loader");
 
 const USERS_FNAME = "./data/moped/moped_users.json";
 
