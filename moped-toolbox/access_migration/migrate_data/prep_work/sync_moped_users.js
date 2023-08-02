@@ -1,29 +1,12 @@
 /**
- * Helper to create user accounts en masse
+ * Helper to copy users from one env to another
  */
 const generator = require("generate-password");
 const { gql } = require("graphql-request");
+const { makeHasuraRequest, HASURA_AUTH } = require("./utils/graphql");
+const { saveJsonFile, loadJsonFile } = require("./utils/loader");
 
-const { makeHasuraRequest, HASURA_AUTH } = require("../utils/graphql");
-
-
-
-
-
-const NEW_USERS = [
-  {
-    email: "+nologin@austintexas.gov",
-    first_name: "",
-    last_name: "",
-    title: "",
-    workgroup_id: 1, // ATSD
-    login_user: false,
-    is_coa_staff: true,
-  },
-
-];
-
-const SESSION_TOKEN = "Bearer ";
+const SESSION_TOKEN ="<jwt token from user session>"
 
 const MOPED_USER_QUERY = gql`
   query Users {
@@ -53,8 +36,8 @@ async function getUsers(env) {
     query: MOPED_USER_QUERY,
     env,
   });
-  // const fname = `./moped_users_${env}.json`;
-  // saveJsonFile(fname, userData.moped_users);
+    // const fname = `./moped_users_${env}.json`;
+    // saveJsonFile(fname, userData.moped_users);
   return userData.moped_users;
 }
 
@@ -100,51 +83,46 @@ const makeLoginUserRequest = async ({ user, env }) => {
 };
 
 async function oneTimeUsersCreate(env) {
-  // const existingUsers = await getUsers(env);
-  // const usersRequired = NEW_USERS;
-  // const usersTodo = usersRequired.filter(
-  //   (user) =>
-  //     !existingUsers.find(
-  //       (eUser) => eUser.email.toLowerCase() === user.email.toLowerCase()
-  //     )
-  // );
-
-  const usersTodo = NEW_USERS;
+  const existingUsers = await getUsers(env);
+  const usersRequired = loadJsonFile("./data/moped/one-time-user-import.json");
+  const usersTodo = usersRequired.filter(
+    (user) =>
+      !existingUsers.find(
+        (eUser) => eUser.email.toLowerCase() === user.email.toLowerCase()
+      )
+  );
 
   /**
    * If not staging or prod, we do NOT want to create new login users, since we only have
    * cognito user pools for staging and prod
    */
   const loginUsersPayload = usersTodo
-    .filter((user) => user.login_user && ["staging", "prod"].includes(env))
+    .filter(
+      (user) => user.login_user === "yes" && ["staging", "prod"].includes(env)
+    )
     .map((user) => makeUserObject(user, true));
 
   const noLoginUsersPayload = usersTodo
-    .filter((user) => !user.login_user || !["staging", "prod"].includes(env))
+    .filter(
+      (user) => user.login_user !== "yes" || !["staging", "prod"].includes(env)
+    )
     .map((user) => makeUserObject(user, false));
 
   for (let i = 0; i < loginUsersPayload.length; i++) {
     const user = loginUsersPayload[i];
-    try {
-      const result = await makeLoginUserRequest({ user, env });
-      console.log(result);
-    } catch (error) {
-      console.log("ERROR", error);
-    }
+    const result = await makeLoginUserRequest({ user, env });
+    console.log(result);
   }
 
-  try {
-    const response = await makeHasuraRequest({
-      query: INSERT_MOPED_USERS_MUTATION,
-      variables: { users: noLoginUsersPayload },
-      env,
-    });
-    console.log("NOLOGINRESPONSE", response);
-  } catch (error) {
-    console.log("ERROR", error);
-  }
+  const response = await makeHasuraRequest({
+    query: INSERT_MOPED_USERS_MUTATION,
+    variables: { users: noLoginUsersPayload },
+    env,
+  });
+  console.log("NOLOGINRESPONSE", response);
 }
 
-oneTimeUsersCreate("staging");
+
+oneTimeUsersCreate("local");
 
 exports.getUsers = getUsers;
