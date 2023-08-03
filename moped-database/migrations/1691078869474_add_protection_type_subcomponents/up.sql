@@ -1,15 +1,15 @@
 INSERT INTO moped_subcomponents (subcomponent_name) values
-    ('Protection Type - Car Free'),
+    ('Protection Type - Car free'),
     ('Protection Type - Concrete'),
-    ('Protection Type - Concrete and On-Street Parking'),
-    ('Protection Type - Concrete Traffic Bump'),
-    ('Protection Type - Concrete with Landscape'),
-    ('Protection Type - Flex Posts'),
-    ('Protection Type - Flex Posts (City Post)'),
-    ('Protection Type - Flex Posts with Curb Stops'),
-    ('Protection Type - Flex Posts with On-Street Parking'),
+    ('Protection Type - Concrete and on-street parking'),
+    ('Protection Type - Concrete traffic bump'),
+    ('Protection Type - Concrete with landscape'),
+    ('Protection Type - Flex posts'),
+    ('Protection Type - Flex posts (City Post)'),
+    ('Protection Type - Flex posts with curb stops'),
+    ('Protection Type - Flex posts with on-street parking'),
     ('Protection Type - Planters'),
-    ('Protection Type - Raised & Behind Curb');
+    ('Protection Type - Raised & behind curb');
 
 
 -- WITH inserts_todo AS (SELECT
