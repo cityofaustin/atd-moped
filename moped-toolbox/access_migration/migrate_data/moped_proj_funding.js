@@ -34,9 +34,7 @@ const fields = [
         (fundStatus) => fundStatus.in === status
       );
       if (!matchedStatus) {
-        // todo: renable exception
-        return null;
-        // throw `Unknown funding status: ${status}`;
+        throw `Unknown funding status: ${status}`;
       }
       return matchedStatus.out;
     },
@@ -53,9 +51,7 @@ const fields = [
         (fundSource) => fundSource.in === source
       );
       if (!matchedSource) {
-        // todo: renable exception
-        return null;
-        // throw `Unknown funding source: ${source}`;
+        throw `Unknown funding source: ${source}`;
       }
       return matchedSource?.out;
     },
@@ -72,9 +68,7 @@ const fields = [
         (fundProgram) => fundProgram.in === program
       );
       if (!matchedProgram) {
-        // todo: renable exception
-        return null;
-        // throw `Unknown funding program: ${program}`;
+        throw `Unknown funding program: ${program}`;
       }
       return matchedProgram.out;
     },
