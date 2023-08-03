@@ -73,51 +73,53 @@ $ node index.js local
 
 ### On deck
 
-- project_dates
 - physical protection types
+- project groups
+- project_dates
 - project types
 - files?
 
 ### Issues to make / todo
 
-- project funding:
-  - add special handing as described in schema doc
-  - very few sources have a status. currently defaulting to tentatitve.
-  - misc db updates: https://github.com/cityofaustin/atd-data-tech/issues/13113
+- physical protection type ("Protection Type"):
+  - mapping done and db migration started (in this branch).
+  - need to update db migration to add allowed subcomponents for these protection types
+    - (all bike lanes?)
+    - you can check their usage to decide
 - work types:
   - any remaining mappings?
 - backfill is_coa_staff column in staging and prod for all users :/
-- projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
-- project personnel:
-  - create "ATD Project Sponsor" and "Project Sponsor" roles or decide how to handle them
-  - how to handle when role is null? default role? currently falling back to "Project Support"
 - work authorizations:
   - WAPRefix and ID and workorderid_old :/
   - implementation workgroup options:
     - Sidewalks & Special Projects Div
     - Add "Other" and "General Contractor" (PDD uses a lot of that)
-- moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
 - finish transit - bust stop component/subcomponent maps.
 - decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
 - there are facility spatial records with multiple features within one layer and across geom types.
 - add user matching to project `added_by`
-- physical protection type ("Protection Type"): can we move this to subcomponents?
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - use a lookup table for note types
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
+- moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
 - moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: ability to store URLs as files
 - moped editor: apollo is clearly not caching the list view query. ideally, we want to use the option "cache-and-network", but currently the cache is not being hit at all.
 - moped editor: component mapping: enable line vertex editing (https://github.com/cityofaustin/atd-data-tech/issues/13116)
 - moped editor: allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved) https://github.com/cityofaustin/atd-data-tech/issues/13117
+- moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
 
 
 ### NW Questions
 
+- project personnel:
+  - how to handle when role is null? default role? currently falling back to "Project Support"
+- project funding:
+  - very few sources have a status. currently defaulting to tentatitve.
 - does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
 - work authorizations statusID: default to....planned? complete?
 - should we assign "New" work type to anything that doesn't have a work type?
