@@ -58,9 +58,8 @@ const NonLoginUserActivationButtons = ({
     });
   };
 
-  const handleUpdateNonLoginUser = () => {
-    const { password, ...restOfFormValues } = formValues;
-
+  const handleUpdateNonLoginUser = async () => {
+    const { password, __typename, ...restOfFormValues } = formValues;
     updateNonMopedUser({
       variables: {
         userId: userId,
