@@ -25,7 +25,6 @@ export const GET_USER = gql`
       first_name
       is_coa_staff
       last_name
-      staff_uuid
       title
       user_id
       workgroup_id
@@ -46,7 +45,6 @@ export const ADD_NON_MOPED_USER = gql`
       date_added
       first_name
       last_name
-      staff_uuid
       title
       user_id
       moped_workgroup {
@@ -66,7 +64,6 @@ export const UPDATE_NON_MOPED_USER = gql`
       date_added
       first_name
       last_name
-      staff_uuid
       title
       user_id
       moped_workgroup {

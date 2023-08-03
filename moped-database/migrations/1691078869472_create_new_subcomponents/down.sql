@@ -19,17 +19,17 @@ DELETE FROM moped_subcomponents where subcomponent_name = 'Leading bicycle inter
 DELETE FROM moped_subcomponents where subcomponent_name = 'Pedestrian signal head and pushbuttons';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Protected left turn phase';
 DELETE FROM moped_subcomponents where subcomponent_name = 'Timing adjustment';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Bikeway Direction - Two-way';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Curbside with Bike Lane Bypass';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Floating with Bike Lane';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Island with Bike Lane Behind';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Shared with Bike Lane in Front';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - Step-out with Shared Landing';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - With SUP Behind';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Station Design - With SUP in Front';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Consolidation';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Maintenance';
-DELETE FROM moped_subcomponents where subcomponent_name = 'Bus Stop Modification';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bikeway direction - Two-way';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - Curbside with Bike Lane Bypass';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - Floating with Bike Lane';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - Island with Bike Lane Behind';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - Shared with Bike Lane in Front';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - Step-out with Shared Landing';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - With SUP Behind';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Station design - With SUP in Front';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus stop consolidation';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus stop maintenance';
+DELETE FROM moped_subcomponents where subcomponent_name = 'Bus stop modification';
 
 DELETE FROM moped_components where component_name = 'Transit' and component_subtype = 'Bus Stop - Enhanced';
 
