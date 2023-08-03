@@ -24,6 +24,7 @@ const ProjectSummaryLabel = ({
       <Typography
         className={className ?? classes.fieldLabelText}
         onClick={onClickEdit}
+        component="span"
       >
         {/* If there is no input, render a "-" */}
         {text.length === 0 && <span>-</span>}

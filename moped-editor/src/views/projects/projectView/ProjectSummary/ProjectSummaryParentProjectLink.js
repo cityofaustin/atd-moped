@@ -16,12 +16,7 @@ const ProjectSummaryParentProjectLink = ({ data, classes }) => {
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Parent project</Typography>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        className={classes.fieldBox}
-        alignItems="center"
-      >
+      <Box className={classes.fieldBox}>
         <RouterLink
           id="projectKnackSyncLink"
           to={`/moped/projects/${parentProjectId}`}

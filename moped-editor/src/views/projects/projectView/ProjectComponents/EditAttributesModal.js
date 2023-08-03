@@ -1,13 +1,8 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  IconButton,
-} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import {
   UPDATE_COMPONENT_ATTRIBUTES,
@@ -16,6 +11,14 @@ import {
 import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
+import {
+  makeComponentFormFieldValue,
+  makeSubcomponentsFormFieldValues,
+  makeSignalFormFieldValue,
+  makePhaseFormFieldValue,
+  makeSubphaseFormFieldValue,
+  makeTagFormFieldValues,
+} from "./utils/form";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -30,9 +33,8 @@ const useStyles = makeStyles((theme) => ({
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
-  componentToEdit,
+  clickedComponent,
   refetchProjectComponents,
-  setClickedComponent,
   mapRef,
 }) => {
   const classes = useStyles();
@@ -40,30 +42,35 @@ const EditAttributesModal = ({
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
-  const onComponentSaveSuccess = (updatedClickedComponentState) => {
-    // Update component list item and clicked component state to keep UI up to date
+  const onSaveSuccess = () => {
     refetchProjectComponents().then(() => {
       onClose();
-      // Update clickedComponent with the attributes that were just edited
-      setClickedComponent((prevComponent) => ({
-        ...prevComponent,
-        ...updatedClickedComponentState,
-      }));
     });
   };
 
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { description, subcomponents, phase, subphase } = formData;
+    const { subcomponents, phase, subphase, tags } = formData;
     const completionDate = !!phase ? formData.completionDate : null;
-    const { project_component_id: projectComponentId } = componentToEdit;
+    const description =
+      formData.description?.length > 0 ? formData.description : null;
+    const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
+    const { project_component_id: projectComponentId } = clickedComponent;
 
     // Prepare the subcomponent data for the mutation
     const subcomponentsArray = subcomponents
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
           is_deleted: false, // Used for update on constraint in mutation
+          project_component_id: projectComponentId,
+        }))
+      : [];
+
+    const tagsArray = tags
+      ? tags.map((tag) => ({
+          component_tag_id: tag.value,
+          is_deleted: false,
           project_component_id: projectComponentId,
         }))
       : [];
@@ -78,60 +85,55 @@ const EditAttributesModal = ({
         component_id: projectComponentId,
       };
 
-      const updatedClickedComponentState = {
-        description,
-        moped_proj_components_subcomponents: subcomponentsArray,
-        feature_signals: [
-          { ...featureSignalRecord, geometry: featureSignalRecord.geography },
-        ],
-        moped_phase: phase?.data,
-        moped_subphase: subphase?.data,
-        completion_date: completionDate,
-      };
-
       updateSignalComponent({
         variables: {
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
           signals: [signalToInsert],
-          phaseId: phase?.data.phase_id,
-          subphaseId: subphase?.data.subphase_id,
+          phaseId: phase?.value,
+          subphaseId: subphase?.value,
+          componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
         .then(() => {
-          onComponentSaveSuccess(updatedClickedComponentState);
-          // Zoom to the new or existing signal
-          zoomMapToFeatureCollection(
-            mapRef,
-            { type: "FeatureCollection", features: [signalFromForm] },
-            fitBoundsOptions.zoomToClickedComponent
-          );
+          onSaveSuccess();
+
+          const [existingLongitude, existingLatitude] =
+            featureSignalRecord.geography.coordinates[0];
+          const [newLongitude, newLatitude] =
+            signalFromForm.geometry.coordinates;
+          const hasLocationChanged =
+            existingLongitude !== newLongitude ||
+            existingLatitude !== newLatitude;
+
+          // Zoom to the new signal location if it updated
+          hasLocationChanged &&
+            zoomMapToFeatureCollection(
+              mapRef,
+              { type: "FeatureCollection", features: [signalFromForm] },
+              fitBoundsOptions.zoomToClickedComponent
+            );
         })
         .catch((error) => {
           console.log(error);
         });
     } else {
-      const updatedClickedComponentState = {
-        description,
-        moped_proj_components_subcomponents: subcomponentsArray,
-        moped_phase: phase?.data,
-        moped_subphase: subphase?.data,
-        completion_date: completionDate,
-      };
-
       updateComponentAttributes({
         variables: {
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
-          phaseId: phase?.data.phase_id,
-          subphaseId: subphase?.data.subphase_id,
+          phaseId: phase?.value,
+          subphaseId: subphase?.value,
+          componentTags: tagsArray,
           completionDate,
+          srtsId,
         },
       })
-        .then(() => onComponentSaveSuccess(updatedClickedComponentState))
+        .then(() => onSaveSuccess())
         .catch((error) => {
           console.log(error);
         });
@@ -142,14 +144,27 @@ const EditAttributesModal = ({
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
-  const initialFormValues = {
-    component: componentToEdit,
-    subcomponents: componentToEdit?.moped_proj_components_subcomponents,
-    description: componentToEdit?.description,
-    phase: componentToEdit?.moped_phase,
-    subphase: componentToEdit?.moped_subphase,
-    completionDate: componentToEdit?.completion_date,
-  };
+  const initialFormValues = clickedComponent
+    ? {
+        component: makeComponentFormFieldValue(clickedComponent),
+        description:
+          clickedComponent.description?.length > 0
+            ? clickedComponent.description
+            : "",
+        subcomponents: makeSubcomponentsFormFieldValues(
+          clickedComponent.moped_proj_components_subcomponents
+        ),
+        signal: makeSignalFormFieldValue(clickedComponent),
+        phase: makePhaseFormFieldValue(clickedComponent.moped_phase),
+        subphase: makeSubphaseFormFieldValue(clickedComponent.moped_subphase),
+        completionDate: clickedComponent.completion_date,
+        srtsId:
+          clickedComponent.srts_id?.length > 0 ? clickedComponent.srts_id : "",
+        tags: makeTagFormFieldValues(
+          clickedComponent.moped_proj_component_tags
+        ),
+      }
+    : null;
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">

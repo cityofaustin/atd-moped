@@ -101,31 +101,44 @@ export const zoomMapToFeatureCollection = (
   if (!mapRef?.current) return;
 
   const bboxOfFeatureCollection = bbox(featureCollection);
-  mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
+
+  /**
+   * There is a known issue with fitBounds throwing an error with padding on smaller screens
+   * So, we try to fitBounds with padding, and if that fails, we try again without padding
+   * @see https://stackoverflow.com/a/76011418
+   * */
+  try {
+    return mapRef.current.fitBounds(bboxOfFeatureCollection, fitBoundsOptions);
+  } catch {
+    console.log("fitBounds failed, trying again without padding", {
+      fitBoundsOptions,
+      screenWidth: window.innerWidth,
+    });
+  }
+
+  try {
+    mapRef.current.fitBounds(bboxOfFeatureCollection);
+  } catch {
+    console.log("Unable to fitBounds to feature collection", featureCollection);
+  }
 };
 
 /**
  * Use Mapbox fitBounds to zoom to existing project components feature collection
  * @param {Object} mapRef - React ref that stores the Mapbox map instance (mapRef.current)
- * @param {Object} data - Data returned from the moped_components query
- * @param {Array} data.project_geography - Array of existing component features
+ * @param {Object} featureCollection - feature collection of project components
+ * @param {boolean} refreshOnComponentsUpdate - if true, zoom to components on every update
  */
-export const useZoomToExistingComponents = (mapRef, data) => {
+export const useZoomToExistingComponents = (
+  mapRef,
+  featureCollection,
+  refreshOnComponentsUpdate = false
+) => {
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
   useEffect(() => {
-    if (!data || hasMapZoomedInitially) return;
+    if (!featureCollection || hasMapZoomedInitially) return;
     if (!mapRef?.current) return;
-
-    if (data.project_geography.length === 0) {
-      setHasMapZoomedInitially(true);
-      return;
-    }
-
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: data.project_geography,
-    };
 
     zoomMapToFeatureCollection(
       mapRef,
@@ -133,6 +146,11 @@ export const useZoomToExistingComponents = (mapRef, data) => {
       fitBoundsOptions.zoomToExtent
     );
 
-    setHasMapZoomedInitially(true);
-  }, [data, hasMapZoomedInitially, mapRef]);
+    !refreshOnComponentsUpdate && setHasMapZoomedInitially(true);
+  }, [
+    featureCollection,
+    hasMapZoomedInitially,
+    mapRef,
+    refreshOnComponentsUpdate,
+  ]);
 };

@@ -26,6 +26,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
       }
     }
     moped_components(
+      where: { is_deleted: { _eq: false } }
       order_by: [{ component_name: asc }, { component_subtype: asc }]
     ) {
       component_name
@@ -50,6 +51,12 @@ export const TABLE_LOOKUPS_QUERY = gql`
     moped_entity(order_by: { entity_name: asc }) {
       entity_id
       entity_name
+    }
+    moped_component_tags(where: { is_deleted: { _eq: false } }) {
+      id
+      type
+      name
+      slug
     }
   }
 `;

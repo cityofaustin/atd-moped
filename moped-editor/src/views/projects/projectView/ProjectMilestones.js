@@ -8,11 +8,14 @@ import {
   FormControl,
   FormHelperText,
 } from "@mui/material";
-import { EditOutlined as EditOutlinedIcon } from "@mui/icons-material";
+import {
+  EditOutlined as EditOutlinedIcon,
+  DeleteOutline as DeleteOutlineIcon,
+} from "@mui/icons-material";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
-  MTableToolbar
+  MTableToolbar,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
 
@@ -25,7 +28,7 @@ import {
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 
 // Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
@@ -75,7 +78,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
    */
   const milestoneColumns = [
     {
-      title: "Milestone name",
+      title: "Milestone",
       field: "milestone_id",
       render: (milestone) => milestone.moped_milestone.milestone_name,
       validate: (milestone) => !!milestone.milestone_id,
@@ -89,7 +92,9 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             isOptionEqualToValue={(option, value) => option === value}
             value={props.value}
             onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => <TextField variant="standard" {...params} />}
+            renderInput={(params) => (
+              <TextField variant="standard" {...params} />
+            )}
           />
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -175,9 +180,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       <MaterialTable
         columns={milestoneColumns}
         data={data.moped_proj_milestones}
-        icons={{
-          Edit: EditOutlinedIcon,
-        }}
+        icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         components={{
           EditRow: (props) => (
             <MTableEditRow
@@ -215,7 +218,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             <div style={{ marginLeft: "-10px" }}>
               <MTableToolbar {...props} />
             </div>
-          )
+          ),
         }}
         editable={{
           onRowAdd: (newData) => {
@@ -300,6 +303,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           rowStyle: { fontFamily: typography.fontFamily },
           actionsColumnIndex: -1,
           addRowPosition: "first",
+          idSynonym: "project_milestone_id",
         }}
         localization={{
           header: {

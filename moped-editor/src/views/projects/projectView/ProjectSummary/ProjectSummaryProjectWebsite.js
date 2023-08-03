@@ -1,18 +1,12 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 import { OpenInNew } from "@mui/icons-material";
+import { isValidUrl, makeUrlValid } from "src/utils/urls";
 
 /**
  * ProjectSummaryProjectWebsite Component
@@ -36,6 +30,11 @@ const ProjectSummaryProjectWebsite = ({
   const [editMode, setEditMode] = useState(false);
   const [website, setWebsite] = useState(originalWebsite);
 
+  // Try to make the website valid if it starts with www
+  const websiteMadeValid = makeUrlValid(website);
+  // Hasura returns null if the website is empty which is a valid entry
+  const isWebsiteValid = isValidUrl(websiteMadeValid) || website === null;
+
   const [updateProjectWebsite] = useMutation(PROJECT_UPDATE_WEBSITE);
 
   /**
@@ -50,13 +49,18 @@ const ProjectSummaryProjectWebsite = ({
    * Saves the new project website...
    */
   const handleProjectWebsiteSave = () => {
+    // Prevent saving if the website is not valid
+    if (!isWebsiteValid) return;
+    const websiteToSubmit = websiteMadeValid === "" ? null : websiteMadeValid;
+
     updateProjectWebsite({
       variables: {
         projectId: projectId,
-        website: website,
+        website: websiteToSubmit,
       },
     })
       .then(() => {
+        setWebsite(websiteToSubmit);
         setEditMode(false);
         refetch();
         snackbarHandle(true, "Project website updated!", "success");
@@ -68,8 +72,8 @@ const ProjectSummaryProjectWebsite = ({
           "error"
         );
         handleProjectWebsiteClose();
+        setEditMode(false);
       });
-    setEditMode(false);
   };
 
   /**
@@ -97,9 +101,16 @@ const ProjectSummaryProjectWebsite = ({
               id="moped-project-website"
               label={null}
               onChange={handleProjectWebsiteChange}
-              value={website} />
+              value={website}
+              error={!isWebsiteValid}
+              helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
+            />
             <Icon
-              className={classes.editIconConfirm}
+              className={
+                isWebsiteValid
+                  ? classes.editIconConfirm
+                  : classes.editIconConfirmDisabled
+              }
               onClick={handleProjectWebsiteSave}
             >
               check

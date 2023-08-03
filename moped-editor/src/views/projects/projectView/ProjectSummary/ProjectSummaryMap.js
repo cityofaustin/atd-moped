@@ -1,17 +1,19 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useState } from "react";
 import MapGL from "react-map-gl";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
 import BasemapSpeedDial from "../ProjectComponents/BasemapSpeedDial";
-import ProjectSummaryMapSourcesAndLayers from "./ProjectSummaryMapSourcesAndLayers";
+import ProjectSourcesAndLayers from "../ProjectComponents/ProjectSourcesAndLayers";
+import RelatedProjectSourcesAndLayers from "../ProjectComponents/RelatedProjectSourcesAndLayers";
 import {
   basemaps,
   mapParameters,
   initialViewState,
 } from "../ProjectComponents/mapSettings";
-import { makeFeatureFromProjectGeographyRecord } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
+import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
+import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 /**
@@ -34,25 +36,27 @@ const ProjectSummaryMap = ({ data }) => {
   const [mapRef, mapRefState] = useMapRef();
   const [basemapKey, setBasemapKey] = useState("streets");
 
-  const projectFeatureCollection = useMemo(() => {
-    const featureCollection = {
-      type: "FeatureCollection",
-      features: [],
-    };
+  const { projectComponents, childComponents } = useProjectComponents(data);
 
-    if (!data?.project_geography) return featureCollection;
+  const projectComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(projectComponents);
+  const childComponentsFeatureCollection =
+    useAllComponentsFeatureCollection(childComponents);
+  const projectAndChildComponentsFeatureCollection =
+    useAllComponentsFeatureCollection([
+      ...projectComponents,
+      ...childComponents,
+    ]);
 
-    const projectGeographyGeoJSONFeatures = data.project_geography.map(
-      (feature) => makeFeatureFromProjectGeographyRecord(feature)
-    );
-
-    return { ...featureCollection, features: projectGeographyGeoJSONFeatures };
-  }, [data]);
-
-  useZoomToExistingComponents(mapRefState, data);
+  useZoomToExistingComponents(
+    mapRefState,
+    projectAndChildComponentsFeatureCollection,
+    true
+  );
 
   const areThereComponentFeatures =
-    projectFeatureCollection.features.length > 0;
+    projectComponentsFeatureCollection.features.length > 0 ||
+    childComponentsFeatureCollection.features.length > 0;
 
   return (
     <Box>
@@ -70,8 +74,23 @@ const ProjectSummaryMap = ({ data }) => {
             setBasemapKey={setBasemapKey}
           />
           <BaseMapSourceAndLayers basemapKey={basemapKey} />
-          <ProjectSummaryMapSourcesAndLayers
-            projectFeatureCollection={projectFeatureCollection}
+          <ProjectSourcesAndLayers
+            isCreatingComponent={false}
+            isEditingComponent={false}
+            isDrawing={false}
+            linkMode={null}
+            clickedComponent={null}
+            projectComponentsFeatureCollection={
+              projectComponentsFeatureCollection
+            }
+            draftEditComponent={null}
+          />
+          <RelatedProjectSourcesAndLayers
+            isCreatingComponent={false}
+            isEditingComponent={false}
+            featureCollection={childComponentsFeatureCollection}
+            shouldShowRelatedProjects={true}
+            clickedComponent={null}
           />
         </MapGL>
       ) : (

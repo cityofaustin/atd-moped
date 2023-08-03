@@ -23,11 +23,19 @@ export const makeComponentInsertData = (projectId, component) => {
     completion_date,
     internal_table,
     features,
+    moped_proj_component_tags,
+    srts_id,
   } = component;
 
   const subcomponentsArray = moped_subcomponents
     ? moped_subcomponents.map((subcomponent) => ({
         subcomponent_id: subcomponent.value,
+      }))
+    : [];
+
+  const tagsArray = moped_proj_component_tags
+    ? moped_proj_component_tags.map((tag) => ({
+        component_tag_id: tag.value,
       }))
     : [];
 
@@ -76,9 +84,13 @@ export const makeComponentInsertData = (projectId, component) => {
     [featureTable]: {
       data: featuresToInsert,
     },
+    moped_proj_component_tags: {
+      data: tagsArray,
+    },
     phase_id,
     subphase_id,
     completion_date,
+    srts_id,
     feature_drawn_lines: { data: drawnLinesToInsert },
     feature_drawn_points: { data: drawnPointsToInsert },
     feature_signals: { data: signalFeaturesToInsert },

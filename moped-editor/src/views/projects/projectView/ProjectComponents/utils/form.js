@@ -1,9 +1,10 @@
-import { useMemo, useEffect } from "react";
+import { useMemo, useEffect, useState } from "react";
 import { Autocomplete } from "@mui/material";
 import { Controller } from "react-hook-form";
 import { Icon, TextField } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
+import { isSignalComponent } from "./componentList";
 import {
   RoomOutlined as RoomOutlinedIcon,
   Timeline as TimelineIcon,
@@ -20,6 +21,16 @@ export const makeComponentLabel = ({ component_name, component_subtype }) => {
   return component_subtype
     ? `${component_name} - ${component_subtype}`
     : `${component_name}`;
+};
+
+/**
+ * Create component tag label out of the type and name
+ * @param {string} type The type of the component tag
+ * @param {string} name The name of the component tag
+ * @returns {string}
+ */
+export const makeComponentTagLabel = ({ type, name }) => {
+  return `${type} - ${name}`;
 };
 
 /**
@@ -101,118 +112,109 @@ export const useSubphaseOptions = (subphases) =>
     return options;
   }, [subphases]);
 
-export const useInitialValuesOnAttributesEdit = (
-  initialFormValues,
-  setValue,
-  componentOptions,
-  subcomponentOptions,
-  phaseOptions,
-  subphaseOptions,
-  areSignalOptionsLoaded
-) => {
-  // Set the selected component after the component options are loaded
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (componentOptions.length === 0) return;
+/**
+ * Take the moped_component_tags records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_component_tags records
+ * @returns {Array} The options with value, label, and full data object to produce the component tags options
+ */
+export const useComponentTagsOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
 
-    setValue("component", {
-      value: initialFormValues.component.component_id,
-      label: componentOptions.find(
-        (option) => option.value === initialFormValues.component.component_id
-      ).label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component.moped_components,
-      },
-    });
-  }, [componentOptions, initialFormValues, setValue]);
+    const options = data.moped_component_tags.map((tag) => ({
+      value: tag.id,
+      label: makeComponentTagLabel(tag),
+      data: tag,
+    }));
 
-  // Set the selected signal if this is a signal component
-  useEffect(() => {
-    if (!initialFormValues) return;
-    const internalTable =
-      initialFormValues.component?.moped_components?.feature_layer
-        ?.internal_table;
-    const isSignalComponent = internalTable === "feature_signals";
-    if (!isSignalComponent) return;
-    if (!areSignalOptionsLoaded) return;
+    return options;
+  }, [data]);
 
-    const componentSignal = initialFormValues.component?.feature_signals?.[0];
-    const knackFormatSignalOption =
-      featureSignalsRecordToKnackSignalRecord(componentSignal);
+/**
+ * Create the value for the required component autocomplete including component metadata for dependent fields
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
+export const makeComponentFormFieldValue = (component) => {
+  return {
+    value: component.component_id,
+    label: makeComponentLabel(component.moped_components),
+    data: {
+      // Include component subcomponents and metadata about the internal_table needed for the form
+      ...component.moped_components,
+    },
+  };
+};
 
-    setValue("signal", knackFormatSignalOption);
-  }, [initialFormValues, areSignalOptionsLoaded, setValue]);
+/**
+ * Create the values for the subcomponents autocomplete
+ * @param {Array} subcomponents - The subcomponent records
+ * @returns {Object} the field value
+ */
+export const makeSubcomponentsFormFieldValues = (subcomponents) => {
+  return subcomponents.map((subcomponent) => ({
+    value: subcomponent.subcomponent_id,
+    label: subcomponent.moped_subcomponent?.subcomponent_name,
+  }));
+};
 
-  // Set the selected subcomponent after the subcomponent options are loaded
-  useEffect(() => {
-    if (!initialFormValues) return;
-    if (subcomponentOptions.length === 0) return;
-    if (initialFormValues.subcomponents.length === 0) return;
+/**
+ * Create the value for the signal autocomplete if the component is a signal component
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
+export const makeSignalFormFieldValue = (component) => {
+  if (!isSignalComponent(component)) return null;
 
-    const selectedSubcomponents = initialFormValues.subcomponents.map(
-      (subcomponent) => ({
-        value: subcomponent.subcomponent_id,
-        label: subcomponentOptions.find(
-          (option) => option.value === subcomponent.subcomponent_id
-        ).label,
-      })
-    );
+  const componentSignal = component?.feature_signals?.[0];
+  const knackFormatSignalOption =
+    featureSignalsRecordToKnackSignalRecord(componentSignal);
 
-    setValue("subcomponents", selectedSubcomponents);
-  }, [subcomponentOptions, initialFormValues, setValue]);
+  return knackFormatSignalOption;
+};
 
-  // Set the selected phase after the phase options are loaded
-  useEffect(() => {
-    if (!initialFormValues?.component?.moped_phase) return;
-    if (phaseOptions.length === 0) return;
+/**
+ * Create the value for the phase autocomplete including phase metadata for dependent fields
+ * @param {Object} phase - The component phase record
+ * @returns {Object} the field value
+ */
+export const makePhaseFormFieldValue = (phase) => {
+  if (!phase) return null;
 
-    setValue("phase", {
-      value: initialFormValues.component?.moped_phase.phase_id,
-      label: phaseOptions.find(
-        (option) =>
-          option.value === initialFormValues.component?.moped_phase.phase_id
-      ).label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component?.moped_phase,
-      },
-    });
-  }, [phaseOptions, initialFormValues, setValue]);
+  return {
+    value: phase?.phase_id,
+    label: phase?.phase_name,
+    data: {
+      // Include component phase metadata needed for subphase options that correspond with selected phase
+      ...phase,
+    },
+  };
+};
 
-  // Set the selected subphase after the subphase options are loaded
-  useEffect(() => {
-    if (!initialFormValues?.component?.moped_subphase) return;
-    if (subphaseOptions.length === 0) return;
+/**
+ * Create the value for the subphase autocomplete
+ * @param {Object} subphase - The component subphase record
+ * @returns {Object} the field value
+ */
+export const makeSubphaseFormFieldValue = (subphase) => {
+  if (!subphase) return null;
 
-    setValue("subphase", {
-      value: initialFormValues.component?.moped_subphase?.subphase_id,
-      // if there is no matching subphase (e.g., you changed the phase), return null
-      label: subphaseOptions.find(
-        (option) =>
-          option.value ===
-          initialFormValues.component?.moped_subphase.subphase_id
-      )?.label,
-      data: {
-        // Include component subcomponents and metadata about the internal_table needed for the form
-        ...initialFormValues.component?.moped_subphase,
-      },
-    });
-  }, [subphaseOptions, initialFormValues, setValue]);
+  return {
+    value: subphase?.subphase_id,
+    label: subphase?.subphase_name,
+  };
+};
 
-  // Set the description once
-  useEffect(() => {
-    if (!initialFormValues) return;
-
-    setValue("description", initialFormValues.description);
-  }, [initialFormValues, setValue]);
-
-  // Set the datepicker value
-  useEffect(() => {
-    if (!initialFormValues) return;
-
-    setValue("completionDate", initialFormValues?.component?.completion_date);
-  }, [initialFormValues, setValue]);
+/**
+ * Create the value for the component tags field
+ * @param {Array} tags - The component tag records
+ * @returns {Object} the field value
+ */
+export const makeTagFormFieldValues = (tags) => {
+  return tags.map((tag) => ({
+    value: tag.component_tag_id,
+    label: makeComponentTagLabel(tag.moped_component_tag),
+  }));
 };
 
 const useComponentIconByLineRepresentationStyles = makeStyles(() => ({
@@ -287,27 +289,62 @@ export const ControlledAutocomplete = ({
     id={id}
     name={name}
     control={control}
-    render={({ onChange, value, ref }) => (
+    render={({ field }) => (
       <Autocomplete
+        {...field}
         options={options}
         multiple={multiple}
         getOptionLabel={(option) => option?.label || ""}
         isOptionEqualToValue={(option, value) => option?.value === value?.value}
         renderOption={renderOption}
-        value={value}
         disabled={disabled}
         renderInput={(params) => (
           <TextField
             {...params}
-            inputRef={ref}
+            inputRef={field.ref}
             size="small"
             label={label}
             variant="outlined"
             autoFocus={autoFocus}
           />
         )}
-        onChange={(_event, option) => onChange(option)}
+        onChange={(_event, option) => field.onChange(option)}
       />
     )}
   />
 );
+
+/**
+ * Watch parent field and reset dependent field to default value when parent field changes
+ * @param {Object} parentValue - Option object with value and label
+ * @param {string} dependentFieldName - Name of the dependent field
+ * @param {*} valueToSet - Any value to set the dependent field to
+ * @param {Function} setValue - React Hook Form setValue function
+ * @returns {Object} the field value
+ */
+export const useResetDependentFieldOnAutocompleteChange = ({
+  parentValue,
+  dependentFieldName,
+  valueToSet,
+  setValue,
+}) => {
+  // Track previous value to compare new value
+  const [previousParentFormValue, setPreviousParentValue] =
+    useState(parentValue);
+
+  // when the parent value changes, compare to previous value
+  // if it is different, reset the dependent field to its default
+  useEffect(() => {
+    // keep update from firing if the parent value hasn't changed
+    if (parentValue?.value === previousParentFormValue?.value) return;
+
+    setValue(dependentFieldName, valueToSet);
+    setPreviousParentValue(parentValue);
+  }, [
+    parentValue,
+    previousParentFormValue,
+    setValue,
+    dependentFieldName,
+    valueToSet,
+  ]);
+};

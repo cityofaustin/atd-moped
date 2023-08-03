@@ -1,4 +1,4 @@
--- latest version 1681854063780_filter_deleted_projects_from_projects_list_view
+-- latest version 1686243614837_create_work_auth_table
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -44,6 +44,7 @@ AS WITH project_person_list_lookup AS (
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
     mpps.name AS public_process_status,
+    mp.interim_project_id,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
@@ -63,24 +64,22 @@ AS WITH project_person_list_lookup AS (
         WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
         ORDER BY mpn.date_created DESC
         LIMIT 1) AS project_note,
-    ( -- get me the phase start of the most recently added construction phase entry
-      SELECT phases.phase_start
+    ( -- get the date of the construction phase with the earliest start date
+      SELECT min(phases.phase_start)
       FROM moped_proj_phases phases
       WHERE true
         AND phases.project_id = mp.project_id 
         AND phases.phase_id = 9 -- phase_id 9 is construction
         AND phases.is_deleted = false
-      ORDER BY phases.date_added DESC
-      LIMIT 1) AS construction_start_date,
-    ( -- get me the phase end of the most recently added completion phase entry
-      SELECT phases.phase_end
+    ) AS construction_start_date,
+    ( -- get the date of the completion phase with the latest end date
+      SELECT max(phases.phase_end)
       FROM moped_proj_phases phases
       WHERE true 
         AND phases.project_id = mp.project_id 
         AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
-      ORDER BY phases.date_added DESC
-      LIMIT 1) AS completion_end_date,
+      ) AS completion_end_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel mpp
@@ -115,7 +114,7 @@ AS WITH project_person_list_lookup AS (
       GROUP BY ptags.project_id) AS project_tags,
     ( -- get me all of the contractors added to a project
       SELECT string_agg(contract.contractor, ', ' :: text) AS string_agg
-      FROM moped_proj_contract contract
+      FROM moped_proj_work_activity contract
       WHERE 1 = 1
       AND contract.is_deleted = FALSE
       AND contract.project_id = mp.project_id
@@ -126,7 +125,7 @@ AS WITH project_person_list_lookup AS (
         string_agg(
             contract.contract_number, ', ' :: text
         ) AS string_agg
-      FROM moped_proj_contract contract
+      FROM moped_proj_work_activity contract
       WHERE 1 = 1
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
@@ -141,7 +140,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
      LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
-     LEFT JOIN moped_proj_contract contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
+     LEFT JOIN moped_proj_work_activity contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
@@ -159,6 +158,7 @@ AS WITH project_person_list_lookup AS (
     mel.entity_name, 
     mp.updated_at, 
     mp.task_order,
+    mp.interim_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
     ptl.type_name, 

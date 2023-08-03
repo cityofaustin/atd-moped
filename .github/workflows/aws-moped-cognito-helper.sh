@@ -12,14 +12,18 @@ esac
 echo "SOURCE -> BRANCH_NAME: ${BRANCH_NAME}"
 echo "SOURCE -> WORKING_STAGE: ${WORKING_STAGE}"
 
+PYTHON_REQUIREMENTS_FILE="$(pwd)/moped-auth/cognito-pre-token-hook/requirements/${WORKING_STAGE}.txt"
+
 #
 # First, we need to create the python package by installing requirements
 #
 function install_requirements() {
+  echo "Updating PIP"
+  pip install --upgrade pip
   echo "Installing AWS's CLI"
   pip install awscli
-  echo "Installing requirements..."
-  pip install -r "./requirements/${WORKING_STAGE}.txt" --target ./package
+  echo "Installing requirements from ${PYTHON_REQUIREMENTS_FILE}..."
+  pip install -r "${PYTHON_REQUIREMENTS_FILE}" --platform manylinux2014_x86_64 --only-binary=:all: --target ./package
 }
 
 #
@@ -38,8 +42,8 @@ function bundle_function() {
 #
 function generate_environment() {
   aws secretsmanager get-secret-value \
-  --secret-id "ATD_MOPED_COGNITO_HOOK_ENV_${WORKING_STAGE^^}" | \
-  jq -rc ".SecretString" > handler_config.json
+    --secret-id "ATD_MOPED_COGNITO_HOOK_ENV_${WORKING_STAGE^^}" |
+    jq -rc ".SecretString" >handler_config.json
 }
 
 #
@@ -64,10 +68,10 @@ function deploy_cognito_function() {
       --function-name "${FUNCTION_NAME}" \
       --zip-file fileb://$PWD/function.zip >/dev/null
   }
-  echo "Resetting environment variables: ${FUNCTION_NAME} @ ${PWD}";
+  echo "Resetting environment variables: ${FUNCTION_NAME} @ ${PWD}"
   aws lambda update-function-configuration \
-        --function-name "${FUNCTION_NAME}" \
-        --cli-input-json file://$PWD/handler_config.json | jq -r ".LastModified";
+    --function-name "${FUNCTION_NAME}" \
+    --cli-input-json file://$PWD/handler_config.json | jq -r ".LastModified"
   echo "Finished Lambda Update/Deployment"
 }
 
@@ -76,18 +80,17 @@ function deploy_cognito_function() {
 #
 function deploy_cognito_functions() {
   MAIN_DIR=$PWD
-  for FUNCTION in $(find moped-auth -type d -mindepth 1 -maxdepth 1 ! -iname "tests"); do
-    FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
-    FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
-    echo "Current directory: ${PWD}"
-    echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'"
-    cd $FUNCTION
-    echo "Entered directory: ${PWD}"
-    install_requirements
-    bundle_function
-    generate_environment "$FUNCTION_NAME"
-    deploy_cognito_function "$FUNCTION_NAME"
-    cd $MAIN_DIR
-    echo "Exit, current path: ${PWD}"
-  done
+  FUNCTION="moped-auth/cognito-pre-token-hook"
+  FUNCTION_DIR=$(echo "${FUNCTION}" | cut -d "/" -f 2)
+  FUNCTION_NAME="atd-moped-${FUNCTION_DIR}-${WORKING_STAGE}"
+  echo "Current directory: ${PWD}"
+  echo "Building function '${FUNCTION_NAME}' @ path: '${FUNCTION}'"
+  cd $FUNCTION
+  echo "Entered directory: ${PWD}"
+  install_requirements
+  bundle_function
+  generate_environment "$FUNCTION_NAME"
+  deploy_cognito_function "$FUNCTION_NAME"
+  cd $MAIN_DIR
+  echo "Exit, current path: ${PWD}"
 }
