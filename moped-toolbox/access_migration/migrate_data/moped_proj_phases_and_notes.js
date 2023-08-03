@@ -112,6 +112,7 @@ const getProjNotes = (statusUpdates) =>
         console.log("skipping user", updatedBy);
       } else {
         console.log("USER NOT FOUND: ", updatedBy);
+        debugger;
         throw `User not found`;
       }
     }
