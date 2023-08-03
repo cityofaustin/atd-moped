@@ -1,7 +1,10 @@
 const { v4: uuidv4 } = require("uuid");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { COMPONENTS_MAP } = require("./mappings/components");
-const { SUBCOMPONENTS_MAP } = require("./mappings/subcomponents");
+const {
+  SUBCOMPONENTS_MAP,
+  PROTECTION_SUBCOMPONENTS_MAP,
+} = require("./mappings/subcomponents");
 const { PHASES_MAP } = require("./mappings/phases");
 const { mapRow, mapRowExpanded } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
@@ -94,6 +97,22 @@ const componentFields = [
   },
   { in: "ActualEndDateFacilityOverride", out: "completion_date" },
   { in: "SRTS_ID", out: "srts_id" },
+  {
+    in: "Protection Type",
+    out: "protection_type_subcomponent",
+    transform(oldRow, newRow) {
+      const protectionType = oldRow[this.in];
+      if (protectionType) {
+        const subcomp = PROTECTION_SUBCOMPONENTS_MAP.find(
+          (subcomp) => subcomp.in === protectionType
+        );
+        newRow[this.out] = subcomp ? { subcomponent_id: subcomp?.out } : null;
+        if (!subcomp && protectionType !== "TBD") {
+          throw `Unknown protection type ${protectionType}`;
+        }
+      }
+    },
+  },
 ];
 
 const subcomponentFields = [
@@ -192,12 +211,22 @@ function getComponents() {
       const { interim_project_component_id } = comp;
       // attach subcomponents
       const theseSubccomponents =
-        subcomponentIndex[interim_project_component_id];
-      if (theseSubccomponents) {
+        subcomponentIndex[interim_project_component_id] || [];
+
+      const protectionSubcomponent = comp.protection_type_subcomponent;
+
+      if (protectionSubcomponent) {
+        theseSubccomponents.push(protectionSubcomponent);
+      }
+
+      if (theseSubccomponents.length > 0) {
         comp.moped_proj_components_subcomponents = {
           data: theseSubccomponents,
         };
       }
+
+      // remove this temporary prop
+      delete comp.protection_type_subcomponent;
 
       // attached tags
       const tags = tagIndex[interim_project_component_id];

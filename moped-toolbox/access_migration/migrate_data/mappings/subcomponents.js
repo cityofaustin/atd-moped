@@ -38,6 +38,21 @@ const SUBCOMPONENTS_MAP = [
   { in: "Bikeway Direction - Two-way", out: 26 },
 ];
 
+const PROTECTION_SUBCOMPONENTS_MAP = [
+  { in: "Car Free", out: 38 },
+  { in: "Concrete", out: 39 },
+  { in: "Concrete and On-Street Parking", out: 40 },
+  { in: "Concrete Traffic Bump", out: 41 },
+  { in: "Concrete with Landscape", out: 42 },
+  { in: "Flex Posts", out: 43 },
+  { in: "Flex Posts (City Post)", out: 44 },
+  { in: "Flex Posts with Curb Stops", out: 45 },
+  { in: "Flex Posts with On-Street Parking", out: 46 },
+  { in: "Planters", out: 47 },
+  { in: "Raised & Behind Curb", out: 48 },
+];
+
 module.exports = {
   SUBCOMPONENTS_MAP,
+  PROTECTION_SUBCOMPONENTS_MAP,
 };
