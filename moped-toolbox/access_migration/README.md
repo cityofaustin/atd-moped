@@ -73,7 +73,6 @@ $ node index.js local
 
 ### On deck
 
-- physical protection types
 - project groups
 - project_dates
 - project types
@@ -81,11 +80,6 @@ $ node index.js local
 
 ### Issues to make / todo
 
-- physical protection type ("Protection Type"):
-  - mapping done and db migration started (in this branch).
-  - need to update db migration to add allowed subcomponents for these protection types
-    - (all bike lanes?)
-    - you can check their usage to decide
 - work types:
   - any remaining mappings?
 - backfill is_coa_staff column in staging and prod for all users :/
@@ -106,16 +100,14 @@ $ node index.js local
 - moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
 - moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
-- moped editor: ability to store URLs as files
-- moped editor: apollo is clearly not caching the list view query. ideally, we want to use the option "cache-and-network", but currently the cache is not being hit at all.
-- moped editor: component mapping: enable line vertex editing (https://github.com/cityofaustin/atd-data-tech/issues/13116)
-- moped editor: allow unmapped components to be rendered and edited  (but not allow unmapped components to be saved) https://github.com/cityofaustin/atd-data-tech/issues/13117
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
 
 
 ### NW Questions
 
+- protection type:
+  - it's subcomponent now. check out the allowed subcomponents list to verify it's ok
 - project personnel:
   - how to handle when role is null? default role? currently falling back to "Project Support"
 - project funding:
