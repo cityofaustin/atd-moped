@@ -106,7 +106,6 @@ const EditComponentDrawTools = ({
   };
 
   const onModeChange = ({ mode }) => {
-
     if (mode === "draw_point" || mode === "draw_line_string") {
       setCursor("crosshair");
       setIsDrawing(true);
