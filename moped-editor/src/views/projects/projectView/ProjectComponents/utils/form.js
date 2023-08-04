@@ -77,6 +77,31 @@ export const useSubcomponentOptions = (componentId, optionsData) =>
   }, [componentId, optionsData]);
 
 /**
+ * Take the data nested in the chosen moped_components option and produce a list of work type options (if there are some)
+ * for a MUI autocomplete
+ * @param {Integer} componentId The unique ID of the moped_component
+ * @param {Object[]} optionsData And array of moped_components records
+ * @returns {Array} The work type options with value and label
+ */
+export const useWorkTypeOptions = (componentId, optionsData) =>
+  useMemo(() => {
+    if (!componentId || !optionsData) return [];
+
+    const workTypes = optionsData.find(
+      (option) => option.component_id === componentId
+    )?.moped_component_work_types;
+
+    if (!workTypes) return [];
+
+    const options = workTypes.map((workType) => ({
+      value: workType.moped_work_type.id,
+      label: workType.moped_work_type.name,
+    }));
+
+    return options;
+  }, [componentId, optionsData]);
+
+/**
  * Take the moped_phases records data response and create options for a MUI autocomplete
  * @param {Object} data Data returned with moped_phases records
  * @returns {Array} The options with value, label, and full data object to produce the phases options
@@ -155,6 +180,18 @@ export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   return subcomponents.map((subcomponent) => ({
     value: subcomponent.subcomponent_id,
     label: subcomponent.moped_subcomponent?.subcomponent_name,
+  }));
+};
+
+/**
+ * Create the values for the work types autocomplete
+ * @param {Array} workTypes - The work type records
+ * @returns {Object} the field value
+ */
+export const makeWorkTypesFormFieldValues = (workTypes) => {
+  return workTypes.map((workType) => ({
+    value: workType.moped_work_type.id,
+    label: workType.moped_work_type.name,
   }));
 };
 
@@ -284,6 +321,7 @@ export const ControlledAutocomplete = ({
   autoFocus = false,
   multiple = false,
   disabled,
+  helperText,
 }) => (
   <Controller
     id={id}
@@ -306,6 +344,7 @@ export const ControlledAutocomplete = ({
             label={label}
             variant="outlined"
             autoFocus={autoFocus}
+            helperText={helperText}
           />
         )}
         onChange={(_event, option) => field.onChange(option)}

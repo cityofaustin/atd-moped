@@ -12,16 +12,17 @@ import {
 } from "@mui/material";
 import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
-import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import {
+  ControlledAutocomplete,
   ComponentOptionWithIcon,
   useComponentOptions,
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
   useComponentTagsOptions,
+  useWorkTypeOptions,
   useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
 import * as yup from "yup";
@@ -98,6 +99,11 @@ const ComponentForm = ({
   const isSignalComponent = internalTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
+  const workTypeOptions = useWorkTypeOptions(
+    component?.value,
+    optionsData?.moped_components
+  );
+
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
     optionsData?.moped_components
@@ -150,6 +156,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             disabled={isEditingExistingComponent}
+            helperText="Required"
           />
         </Grid>
 
@@ -168,7 +175,16 @@ const ComponentForm = ({
             />
           </Grid>
         )}
-
+        <Grid item xs={12}>
+          <ControlledAutocomplete
+            id="work_type"
+            label="Work Type(s)"
+            multiple
+            options={workTypeOptions}
+            name="work_types"
+            control={control}
+          />
+        </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
           doesInitialValueHaveSubcomponents) && (
