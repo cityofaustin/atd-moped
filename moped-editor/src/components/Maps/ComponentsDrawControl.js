@@ -12,11 +12,7 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.on("draw.create", props.onCreate);
       map.on("draw.update", props.onUpdate);
       map.on("draw.delete", props.onDelete);
-      map.on("draw.modechange", (e) => {
-        props.onModeChange(e);
-        // This override prevents the introduction of line midpoints and vertices into line string geometries
-        props.overrideDirectSelect();
-      });
+      map.on("draw.modechange", props.onModeChange);
 
       return new MapboxDraw(props);
     },
@@ -95,16 +91,6 @@ const ComponentsDrawControl = React.forwardRef(
     const shouldDrawLines = linkMode === "lines";
     const shouldDrawPoints = linkMode === "points";
 
-    /**
-     * direct_select allows more complex interactions like breaking line strings into midpoints
-     * but we only want users to select and deselect with simple_select mode so we override on load
-     * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#simple_select
-     *  @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#direct_select
-     */
-    const overrideDirectSelect = () => {
-      ref.current.modes.DIRECT_SELECT = "simple_select";
-    };
-
     const sharedProps = {
       position: "top-right",
       displayControlsDefault: false, // Disable to allow us to set which controls to show
@@ -114,7 +100,6 @@ const ComponentsDrawControl = React.forwardRef(
       onUpdate,
       onDelete,
       onModeChange,
-      overrideDirectSelect,
       styles: styleOverrides,
     };
 
