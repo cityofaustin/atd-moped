@@ -41,6 +41,13 @@ export const TABLE_LOOKUPS_QUERY = gql`
           subcomponent_name
         }
       }
+
+      moped_component_work_types(order_by: { moped_work_type: { name: asc } }) {
+        moped_work_type {
+          id
+          name
+        }
+      }
     }
     moped_tags(where: { is_deleted: { _eq: false } }, order_by: { name: asc }) {
       id
