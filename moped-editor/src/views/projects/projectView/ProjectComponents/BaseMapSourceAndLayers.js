@@ -16,6 +16,21 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
         layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
         beforeId="street-labels"
       />
+
+      <Source
+        id="placeholder-source"
+        type="geojson"
+        data={{
+          type: "FeatureCollection",
+          features: [],
+        }}
+      />
+      <Layer
+        id="components-placeholder"
+        type="circle"
+        source="placeholder-source"
+      />
+
       {/* Always show street labels so they can be the "target" of beforeId 
       and always appear on top of everything else */}
       <Layer
