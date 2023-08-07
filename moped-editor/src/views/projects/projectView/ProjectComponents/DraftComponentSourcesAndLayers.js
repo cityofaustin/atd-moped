@@ -3,7 +3,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 
 /**
  * Component that renders the feature collection of a draft component while creating a component
- * All layers are set to show below basemap street labels using beforeId = "street-labels"
+ * All layers are set to show below basemap street labels using beforeId = "components-placeholder"
  * @param {Object} draftComponentFeatures - GeoJSON feature collection of the draft component
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
  * @returns JSX.Element
@@ -21,7 +21,7 @@ const DraftComponentSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["draft-component-lines"].layerProps,
             layout: {
@@ -40,7 +40,7 @@ const DraftComponentSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...MAP_STYLES["draft-component-points"].layerProps}
           layout={{ visibility: linkMode === "points" ? "visible" : "none" }}
         />
