@@ -257,6 +257,7 @@ const StaffForm = ({
                 render={({ field }) => (
                   <Select
                     {...field}
+                    value={field.value || ""}
                     variant="outlined"
                     id="workgroup_id"
                     labelId="workgroup-label"

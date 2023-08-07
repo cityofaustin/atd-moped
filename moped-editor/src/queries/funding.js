@@ -8,7 +8,6 @@ export const FUNDING_QUERY = gql`
       proj_funding_id
       added_by
       date_added
-      fund_dept_unit
       fund
       dept_unit
       funding_amount
@@ -22,12 +21,11 @@ export const FUNDING_QUERY = gql`
       ecapris_subproject_id
       task_order
     }
-    moped_fund_sources {
+    moped_fund_sources(where: { is_deleted: { _eq: false } }) {
       funding_source_id
       funding_source_name
-      funding_source_category
     }
-    moped_fund_programs {
+    moped_fund_programs(where: { is_deleted: { _eq: false } }) {
       funding_program_id
       funding_program_name
     }
@@ -35,7 +33,10 @@ export const FUNDING_QUERY = gql`
       funding_status_id
       funding_status_name
     }
-    moped_funds(order_by: { fund_id: asc }) {
+    moped_funds(
+      order_by: { fund_id: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
       fund_id
       fund_name
     }
@@ -45,7 +46,6 @@ export const FUNDING_QUERY = gql`
 export const UPDATE_PROJECT_FUNDING = gql`
   mutation UpdateProjectFunding(
     $proj_funding_id: Int!
-    $fund_dept_unit: String!
     $funding_amount: Int!
     $funding_description: String!
     $funding_program_id: Int!
@@ -57,7 +57,6 @@ export const UPDATE_PROJECT_FUNDING = gql`
     update_moped_proj_funding(
       where: { proj_funding_id: { _eq: $proj_funding_id } }
       _set: {
-        fund_dept_unit: $fund_dept_unit
         funding_amount: $funding_amount
         funding_description: $funding_description
         funding_program_id: $funding_program_id
@@ -106,7 +105,7 @@ export const UPDATE_FUNDING_TASK_ORDERS = gql`
 
 export const CONTRACT_QUERY = gql`
   query ProjectPurchaseOrder($projectId: Int) {
-    moped_proj_contract(
+    moped_proj_work_activity(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { id: asc }
     ) {
@@ -121,8 +120,8 @@ export const CONTRACT_QUERY = gql`
 `;
 
 export const ADD_CONTRACT = gql`
-  mutation AddPurchaseOrder($objects: [moped_proj_contract_insert_input!]!) {
-    insert_moped_proj_contract(objects: $objects) {
+  mutation AddPurchaseOrder($objects: [moped_proj_work_activity_insert_input!]!) {
+    insert_moped_proj_work_activity(objects: $objects) {
       returning {
         id
       }
@@ -139,7 +138,7 @@ export const UPDATE_CONTRACT = gql`
     $work_assignment_id: String!
     $contract_amount: Int!
   ) {
-    update_moped_proj_contract_by_pk(
+    update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
       _set: {
         contractor: $contractor
@@ -156,7 +155,7 @@ export const UPDATE_CONTRACT = gql`
 
 export const DELETE_CONTRACT = gql`
   mutation DeletePurchaseOrder($id: Int!) {
-    update_moped_proj_contract_by_pk(
+    update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
       _set: { is_deleted: true }
     ) {

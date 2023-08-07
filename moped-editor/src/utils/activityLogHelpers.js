@@ -64,7 +64,7 @@ export const formatActivityLogEntry = (change, lookupData) => {
       return formatProjectTypesActivity(change, lookupData.projectTypeList);
     case "moped_project_files":
       return formatFilesActivity(change);
-    case "moped_proj_contract":
+    case "moped_proj_work_activity":
       return formatContractsActivity(change);
     default:
       return { changeIcon, changeText };
