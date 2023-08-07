@@ -10,7 +10,7 @@ import {
 import theme from "src/theme/index";
 
 /**
- * Allows the component work type to be default to `New` -
+ * Allows the component work type to be defaulted to `New` -
  * this value matches the `moped_work_types.id` value in the DB.
  */
 export const DEFAULT_COMPONENT_WORK_TYPE_OPTION = { value: 7, label: "New" };
