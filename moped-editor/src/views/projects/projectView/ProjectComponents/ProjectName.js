@@ -8,7 +8,7 @@ const useStyles = makeStyles(() => ({
   titleText: {
     // textOverflow: "ellipsis",
     textWrap: "nowrap",
-    maxWidth: "800px", // this needs to match the width of teh screen dynamically
+    maxWidth: "calc(100vw - 450px)", // visible width minus space for project id, status and close map
     overflow: "scroll",
   },
   titleId: {
