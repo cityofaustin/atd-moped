@@ -14,6 +14,7 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
       <Layer
         {...basemaps.aerial.layers.aerials}
         layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
+        beforeId="street-labels"
       />
       {/* Always show street labels so they can be the "target" of beforeId 
       and always appear on top of everything else */}
