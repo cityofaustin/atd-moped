@@ -103,8 +103,8 @@ export const UPDATE_FUNDING_TASK_ORDERS = gql`
   }
 `;
 
-export const CONTRACT_QUERY = gql`
-  query ProjectPurchaseOrder($projectId: Int) {
+export const WORK_ACTIVITY_QUERY = gql`
+  query ProjectWorkActivity($projectId: Int) {
     moped_proj_work_activity(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { id: asc }
@@ -115,12 +115,37 @@ export const CONTRACT_QUERY = gql`
       description
       work_assignment_id
       contract_amount
+      contractor
+      implementation_workgroup
+      moped_work_activity_status {
+        name
+      }
+      status_note
+      task_orders
+      created_at
+      created_by_user {
+        first_name
+        last_name
+        moped_workgroup {
+          workgroup_name
+        }
+      }
+      updated_at
+      updated_by_user {
+        first_name
+        last_name
+        moped_workgroup {
+          workgroup_name
+        }
+      }
     }
   }
 `;
 
 export const ADD_CONTRACT = gql`
-  mutation AddPurchaseOrder($objects: [moped_proj_work_activity_insert_input!]!) {
+  mutation AddPurchaseOrder(
+    $objects: [moped_proj_work_activity_insert_input!]!
+  ) {
     insert_moped_proj_work_activity(objects: $objects) {
       returning {
         id
