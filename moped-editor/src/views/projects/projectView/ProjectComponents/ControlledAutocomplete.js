@@ -43,7 +43,6 @@ export default function ControlledAutocomplete({
               label={label}
               variant="outlined"
               autoFocus={autoFocus}
-              //   helperText={error ? error.message : helperText}
               helperText={helperText}
               error={error}
             />
