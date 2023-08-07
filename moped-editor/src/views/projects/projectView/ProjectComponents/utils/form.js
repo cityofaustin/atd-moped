@@ -1,7 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { Autocomplete } from "@mui/material";
-import { Controller } from "react-hook-form";
-import { Icon, TextField } from "@mui/material";
+import { Icon } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
