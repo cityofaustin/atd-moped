@@ -12,6 +12,12 @@ import {
 import theme from "src/theme/index";
 
 /**
+ * Allows the component work type to be default to `New` -
+ * this value matches the `moped_work_types.id` value in the DB.
+ */
+export const DEFAULT_COMPONENT_WORK_TYPE_OPTION = { value: 7, label: "New" };
+
+/**
  * Not all component type records have a value in the subtype column but let's concatenate them if they do
  * @param {string} component_name The name of the component
  * @param {string} component_subtype The name value in the component_subtype column of the component record
@@ -310,48 +316,6 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
     </span>
   );
 };
-
-export const ControlledAutocomplete = ({
-  id,
-  options,
-  renderOption,
-  name,
-  control,
-  label,
-  autoFocus = false,
-  multiple = false,
-  disabled,
-  helperText,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ field }) => (
-      <Autocomplete
-        {...field}
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={field.ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-            helperText={helperText}
-          />
-        )}
-        onChange={(_event, option) => field.onChange(option)}
-      />
-    )}
-  />
-);
 
 /**
  * Watch parent field and reset dependent field to default value when parent field changes
