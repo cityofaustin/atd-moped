@@ -20,7 +20,7 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
         beforeId="street-labels"
       />
 
-      {/* This source and empty layer provide a placeholder for component layers
+      {/* This empty source and layer provide a placeholder for component layers
       to render before using the layer attribute called beforeId. */}
       <Source
         id="placeholder-source"
@@ -37,8 +37,8 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
       />
 
       {/* This layer provides the street labels with toggleable styling to be more
-      readable when the aerial layer is selected. It's render order in this component
-      allows it to remain at the very top of the map at all times. */}
+      readable when the aerial layer is selected. The order of components rendered
+      in this component allow it to remain at the very top of the map at all times. */}
       <Layer
         {...{
           ...basemaps.aerial.layers.streetLabels,
