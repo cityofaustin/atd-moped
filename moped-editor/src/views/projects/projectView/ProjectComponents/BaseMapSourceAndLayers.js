@@ -10,35 +10,9 @@ import { COLORS } from "./mapStyleSettings";
 const BaseMapSourceAndLayers = ({ basemapKey }) => {
   return (
     <>
-      {/* This source and layer provide the aerial Nearmap basemap. It renders below the 
-      component placeholder to make sure component features are always visible when present.
-      The beforeId attribute is set to keep the street labels on top. */}
-      <Source {...basemaps.aerial.sources.aerials} />
-      <Layer
-        {...basemaps.aerial.layers.aerials}
-        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
-        beforeId="street-labels"
-      />
-
-      {/* This empty source and layer provide a placeholder for component layers
-      to render before using the layer attribute called beforeId. */}
-      <Source
-        id="placeholder-source"
-        type="geojson"
-        data={{
-          type: "FeatureCollection",
-          features: [],
-        }}
-      />
-      <Layer
-        id="components-placeholder"
-        type="circle"
-        source="placeholder-source"
-      />
-
       {/* This layer provides the street labels with toggleable styling to be more
-      readable when the aerial layer is selected. The order of components rendered
-      in this component allow it to remain at the very top of the map at all times. */}
+      readable when the aerial layer is selected. This renders first so that the 
+      component placeholder can target it with the beforeId layer attribute. */}
       <Layer
         {...{
           ...basemaps.aerial.layers.streetLabels,
@@ -57,6 +31,33 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
                   "text-color": COLORS.black,
                 },
         }}
+      />
+
+      {/* This empty source and layer provide a placeholder for component layers
+      to render beneath it. It renders next so the aerial basemap can target it with the
+      the beforeId layer attribute.  */}
+      <Source
+        id="placeholder-source"
+        type="geojson"
+        data={{
+          type: "FeatureCollection",
+          features: [],
+        }}
+      />
+      <Layer
+        id="components-placeholder"
+        type="circle"
+        source="placeholder-source"
+        beforeId="street-labels"
+      />
+
+      {/* This source and layer provide the aerial Nearmap basemap. The beforeId 
+      attribute is set to keep the street labels and component layers on top. */}
+      <Source {...basemaps.aerial.sources.aerials} />
+      <Layer
+        {...basemaps.aerial.layers.aerials}
+        layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
+        beforeId="components-placeholder"
       />
     </>
   );
