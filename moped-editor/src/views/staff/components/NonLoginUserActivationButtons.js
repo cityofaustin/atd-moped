@@ -7,6 +7,7 @@ import {
   roleLooksGood,
   passwordLooksGood,
   fieldParsers,
+  transformFormDataIntoDatabaseTypes,
 } from "../helpers";
 import { useButtonStyles } from "./StaffFormButtons";
 
@@ -59,7 +60,8 @@ const NonLoginUserActivationButtons = ({
   };
 
   const handleUpdateNonLoginUser = async () => {
-    const { password, __typename, ...restOfFormValues } = formValues;
+    const { password, __typename, ...restOfFormValues } =
+      transformFormDataIntoDatabaseTypes(formValues);
     updateNonMopedUser({
       variables: {
         userId: userId,
