@@ -58,6 +58,16 @@ const ProjectSummaryMap = ({ data }) => {
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
 
+  const [hasPlaceHolderLayers, setHasPlaceHolderLayers] = useState(false);
+
+  const checkIfMapHasPlaceHolderLayers = () => {
+    const hasPlaceholderLayers = Boolean(
+      mapRefState.current.getLayer("components-placeholder")
+    );
+
+    setHasPlaceHolderLayers(hasPlaceholderLayers);
+  };
+
   return (
     <Box>
       {areThereComponentFeatures ? (
@@ -68,30 +78,35 @@ const ProjectSummaryMap = ({ data }) => {
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
+          onLoad={checkIfMapHasPlaceHolderLayers}
         >
           <BasemapSpeedDial
             basemapKey={basemapKey}
             setBasemapKey={setBasemapKey}
           />
           <BaseMapSourceAndLayers basemapKey={basemapKey} />
-          <ProjectSourcesAndLayers
-            isCreatingComponent={false}
-            isEditingComponent={false}
-            isDrawing={false}
-            linkMode={null}
-            clickedComponent={null}
-            projectComponentsFeatureCollection={
-              projectComponentsFeatureCollection
-            }
-            draftEditComponent={null}
-          />
-          <RelatedProjectSourcesAndLayers
-            isCreatingComponent={false}
-            isEditingComponent={false}
-            featureCollection={childComponentsFeatureCollection}
-            shouldShowRelatedProjects={true}
-            clickedComponent={null}
-          />
+          {hasPlaceHolderLayers && (
+            <>
+              <ProjectSourcesAndLayers
+                isCreatingComponent={false}
+                isEditingComponent={false}
+                isDrawing={false}
+                linkMode={null}
+                clickedComponent={null}
+                projectComponentsFeatureCollection={
+                  projectComponentsFeatureCollection
+                }
+                draftEditComponent={null}
+              />
+              <RelatedProjectSourcesAndLayers
+                isCreatingComponent={false}
+                isEditingComponent={false}
+                featureCollection={childComponentsFeatureCollection}
+                shouldShowRelatedProjects={true}
+                clickedComponent={null}
+              />
+            </>
+          )}
         </MapGL>
       ) : (
         <ProjectSummaryMapFallback />

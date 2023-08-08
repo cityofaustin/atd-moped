@@ -326,6 +326,16 @@ export default function TheMap({
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
 
+  const [hasPlaceHolderLayers, setHasPlaceHolderLayers] = useState(false);
+
+  const checkIfMapHasPlaceHolderLayers = () => {
+    const hasPlaceholderLayers = Boolean(
+      mapRef.current.getLayer("components-placeholder")
+    );
+
+    setHasPlaceHolderLayers(hasPlaceholderLayers);
+  };
+
   return (
     <>
       <MapGL
@@ -338,6 +348,7 @@ export default function TheMap({
         onClick={onClick}
         cursor={cursor}
         mapStyle={basemaps[basemapKey].mapStyle}
+        onLoad={checkIfMapHasPlaceHolderLayers}
         {...mapParameters}
       >
         <BasemapSpeedDial
@@ -363,49 +374,53 @@ export default function TheMap({
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
-        <ProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          isDrawing={isDrawing}
-          linkMode={linkMode}
-          clickedComponent={clickedComponent}
-          projectComponentsFeatureCollection={
-            projectComponentsFeatureCollection
-          }
-          draftEditComponent={draftEditComponent}
-        />
-        <RelatedProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          featureCollection={allRelatedComponentsFeatureCollection}
-          shouldShowRelatedProjects={shouldShowRelatedProjects}
-          clickedComponent={clickedComponent}
-        />
-        <DraftComponentSourcesAndLayers
-          draftComponentFeatures={draftComponentFeatures}
-          linkMode={linkMode}
-        />
-        <ClickedComponentSourcesAndLayers
-          clickedComponent={clickedComponent}
-          componentFeatureCollection={clickedComponentFeatureCollection}
-          isEditingComponent={isEditingComponent}
-          isClickedComponentRelated={isClickedComponentRelated}
-        />
-        <EditDraftComponentSourcesAndLayers
-          draftEditComponentFeatureCollection={
-            draftEditComponentFeatureCollection
-          }
-          linkMode={linkMode}
-          isEditingComponent={isEditingComponent}
-        />
-        <CTNSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          isDrawing={isDrawing}
-          linkMode={linkMode}
-          ctnLinesGeojson={ctnLinesGeojson}
-          ctnPointsGeojson={ctnPointsGeojson}
-        />
+        {hasPlaceHolderLayers && (
+          <>
+            <ProjectSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              isDrawing={isDrawing}
+              linkMode={linkMode}
+              clickedComponent={clickedComponent}
+              projectComponentsFeatureCollection={
+                projectComponentsFeatureCollection
+              }
+              draftEditComponent={draftEditComponent}
+            />
+            <RelatedProjectSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              featureCollection={allRelatedComponentsFeatureCollection}
+              shouldShowRelatedProjects={shouldShowRelatedProjects}
+              clickedComponent={clickedComponent}
+            />
+            <DraftComponentSourcesAndLayers
+              draftComponentFeatures={draftComponentFeatures}
+              linkMode={linkMode}
+            />
+            <ClickedComponentSourcesAndLayers
+              clickedComponent={clickedComponent}
+              componentFeatureCollection={clickedComponentFeatureCollection}
+              isEditingComponent={isEditingComponent}
+              isClickedComponentRelated={isClickedComponentRelated}
+            />
+            <EditDraftComponentSourcesAndLayers
+              draftEditComponentFeatureCollection={
+                draftEditComponentFeatureCollection
+              }
+              linkMode={linkMode}
+              isEditingComponent={isEditingComponent}
+            />
+            <CTNSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              isDrawing={isDrawing}
+              linkMode={linkMode}
+              ctnLinesGeojson={ctnLinesGeojson}
+              ctnPointsGeojson={ctnPointsGeojson}
+            />
+          </>
+        )}
         {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}
