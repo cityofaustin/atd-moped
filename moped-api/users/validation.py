@@ -79,6 +79,16 @@ USER_VALIDATION_SCHEMA = {
         "minlength": 1,
         "maxlength": 3,
     },
+    "is_user_group_member": {
+        "type": "boolean",
+        "nullable": True,
+        "required": False,
+    },
+    "note": {
+        "type": "string",
+        "nullable": True,
+        "required": False,
+    },
 }
 
 PASSWORD_VALIDATION_SCHEMA = {
