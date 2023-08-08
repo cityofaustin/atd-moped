@@ -14,6 +14,7 @@ import {
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
+import { useHavePlaceholderLayersLoaded } from "../ProjectComponents/utils/useWatchForPlaceholderLayers";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 /**
@@ -58,15 +59,8 @@ const ProjectSummaryMap = ({ data }) => {
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
 
-  const [hasPlaceHolderLayers, setHasPlaceHolderLayers] = useState(false);
-
-  const checkIfMapHasPlaceHolderLayers = () => {
-    const hasPlaceholderLayers = Boolean(
-      mapRefState.current.getLayer("components-placeholder")
-    );
-
-    setHasPlaceHolderLayers(hasPlaceholderLayers);
-  };
+  const { checkIfMapHasPlaceHolderLayers, hasPlaceHolderLayers } =
+    useHavePlaceholderLayersLoaded(mapRefState);
 
   return (
     <Box>
