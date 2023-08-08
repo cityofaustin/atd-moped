@@ -34,8 +34,9 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
       />
 
       {/* This empty source and layer provide a placeholder for component layers
-      to render beneath it. It renders next so the aerial basemap can target it with the
-      the beforeId layer attribute.  */}
+      to render beneath it by targeting it with beforeId and another placeholder 
+      for the aerial layer below to target. These render next so the aerial basemap
+      can target it with the the beforeId layer attribute.  */}
       <Source
         id="placeholder-source"
         type="geojson"
@@ -43,13 +44,20 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
           type: "FeatureCollection",
           features: [],
         }}
-      />
-      <Layer
-        id="components-placeholder"
-        type="circle"
-        source="placeholder-source"
-        beforeId="street-labels"
-      />
+      >
+        <Layer
+          id="components-placeholder"
+          type="circle"
+          source="placeholder-source"
+          beforeId="street-labels"
+        />
+        <Layer
+          id="aerial-placeholder"
+          type="circle"
+          source="placeholder-source"
+          beforeId="components-placeholder"
+        />
+      </Source>
 
       {/* This source and layer provide the aerial Nearmap basemap. The beforeId 
       attribute is set to keep the street labels and component layers on top. */}
@@ -57,7 +65,7 @@ const BaseMapSourceAndLayers = ({ basemapKey }) => {
       <Layer
         {...basemaps.aerial.layers.aerials}
         layout={{ visibility: basemapKey === "aerial" ? "visible" : "none" }}
-        beforeId="components-placeholder"
+        beforeId="aerial-placeholder"
       />
     </>
   );
