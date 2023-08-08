@@ -189,14 +189,14 @@ const ProjectNameEditable = (props) => {
           <span className={classes.titleDisplayField}>
             <Typography
               color="textPrimary"
-              variant="h1"
+              variant="h2"
               onClick={() => setIsEditing(true)}
             >
               {projectName}
             </Typography>
             <Typography
               color="textSecondary"
-              variant="h1"
+              variant="h2"
               className={classes.titleId}
             >
               &nbsp;#{props.projectId}

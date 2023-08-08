@@ -69,7 +69,6 @@ export function useAppBarHeight() {
     mixins: { toolbar },
     breakpoints,
   } = useTheme();
-
   const toolbarDesktopQuery = breakpoints.up("sm");
   const toolbarLandscapeQuery = `${breakpoints.up(
     "xs"

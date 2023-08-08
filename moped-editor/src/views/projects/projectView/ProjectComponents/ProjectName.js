@@ -6,10 +6,10 @@ const useStyles = makeStyles(() => ({
     display: "flex",
   },
   titleText: {
-    // textOverflow: "ellipsis",
+    textOverflow: "ellipsis",
     textWrap: "nowrap",
     maxWidth: "calc(100vw - 450px)", // visible width minus space for project id, status and close map
-    overflow: "scroll",
+    overflow: "hidden",
   },
   titleId: {
     alignSelf: "center",
@@ -23,14 +23,15 @@ const ProjectName = ({ name, id }) => {
     <span className={classes.titleDisplayField}>
       <Typography
         color="textPrimary"
-        variant="h1"
+        variant="h2"
         className={classes.titleText}
+        title={name}
       >
         {name}
       </Typography>
       <Typography
         color="textSecondary"
-        variant="h1"
+        variant="h2"
         className={classes.titleId}
       >
         &nbsp;#{id}
