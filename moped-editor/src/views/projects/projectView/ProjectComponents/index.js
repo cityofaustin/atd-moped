@@ -27,6 +27,7 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
+import { useMapRef } from "./utils/useMapRef";
 
 const drawerWidth = 350;
 
@@ -65,7 +66,7 @@ export default function MapView({
 }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
-  const mapRef = useRef();
+  const [mapRef, mapRefState] = useMapRef();
   const { projectId } = useParams();
 
   /* sets the type of geometry to use in component edit mode. allowed values
@@ -186,7 +187,7 @@ export default function MapView({
     setClickedProjectFeature(null);
     // move the map
     zoomMapToFeatureCollection(
-      mapRef,
+      mapRefState,
       featureCollection,
       fitBoundsOptions.zoomToClickedComponent
     );
@@ -262,6 +263,7 @@ export default function MapView({
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
+              mapRefState={mapRefState}
               projectComponents={projectComponents}
               allRelatedComponents={allRelatedComponents}
               draftComponent={createState.draftComponent}

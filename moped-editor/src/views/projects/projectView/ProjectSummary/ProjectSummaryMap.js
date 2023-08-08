@@ -15,23 +15,8 @@ import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
 import { useHavePlaceholderLayersLoaded } from "../ProjectComponents/utils/useWatchForPlaceholderLayers";
+import { useMapRef } from "../ProjectComponents/utils/useMapRef";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-/**
- * Use a callback ref to get the map instance and store it in state so we can watch it with useEffect
- * @see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
- * @returns {Array} - [mapRef, mapRefState] - mapRef is a callback ref, mapRefState is a state variable
- */
-const useMapRef = () => {
-  const [mapRefState, setMapRefState] = useState(null);
-  const mapRef = useCallback((mapInstance) => {
-    if (mapInstance !== null) {
-      // Store instance as the value of current just like a ref would
-      setMapRefState({ current: mapInstance });
-    }
-  }, []);
-  return [mapRef, mapRefState];
-};
 
 const ProjectSummaryMap = ({ data }) => {
   const [mapRef, mapRefState] = useMapRef();
