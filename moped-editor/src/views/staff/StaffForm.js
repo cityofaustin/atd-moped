@@ -297,7 +297,8 @@ const StaffForm = ({
             </FormControl>
           )}
         </Grid>
-        <Grid item xs={12} md={6}>
+
+        <Grid item xs={12} md={3}>
           <FormControl variant="standard" component="fieldset">
             <FormLabel id="roles-label">Role</FormLabel>
             <Controller
@@ -323,6 +324,55 @@ const StaffForm = ({
               )}
             />
           </FormControl>
+        </Grid>
+        <Grid item xs={12} md={3}>
+          <FormControl variant="standard" component="fieldset">
+            <FormLabel id="roles-label">
+              Moped User Group (MUG) Member
+            </FormLabel>
+            <Controller
+              name="is_user_group_member"
+              control={control}
+              render={({ field: { name, value, onChange } }) => (
+                <RadioGroup
+                  aria-label="roles"
+                  name={name}
+                  value={value ? "true" : "false"}
+                  onChange={(e) => {
+                    const newValue = e.target.value === "true";
+                    return onChange(newValue);
+                  }}
+                >
+                  <FormControlLabel
+                    value="true"
+                    control={<Radio />}
+                    label="Yes"
+                    disabled={!isUserActive}
+                  />
+                  <FormControlLabel
+                    value="false"
+                    control={<Radio />}
+                    label="No"
+                    disabled={!isUserActive}
+                  />
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            id="note"
+            label="Note"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+            {...register("note")}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           &nbsp;
