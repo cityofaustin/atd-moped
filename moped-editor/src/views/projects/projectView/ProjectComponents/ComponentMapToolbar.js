@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
   },
   toolbarContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
