@@ -47,7 +47,7 @@ const staffColumns = [
   {
     headerName: "E-mail",
     field: "email",
-    width: 225,
+    width: 200,
   },
   {
     headerName: "Title",
@@ -67,10 +67,10 @@ const staffColumns = [
       if (!props.value || !props.value[0]) {
         return "N/A";
       }
-
       const role = props.value[0].replace("moped-", "");
       return role.charAt(0).toUpperCase() + role.slice(1);
     },
+    width: 125
   },
   {
     headerName: "MUG Member",
