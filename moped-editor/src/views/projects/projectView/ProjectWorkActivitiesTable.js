@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 
 // Material
 import {
@@ -11,35 +11,19 @@ import {
   Icon,
 } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
-
 import WorkActivityCard from "./WorkActivityCard";
 import WorkActivityCardEdit from "./WorkActivityCardEdit";
 // Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
-import {
-  WORK_ACTIVITY_QUERY,
-  UPDATE_CONTRACT,
-  ADD_CONTRACT,
-  DELETE_CONTRACT,
-} from "../../../queries/funding";
-
-const useStyles = makeStyles((theme) => ({
-  addRecordButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-}));
+import { WORK_ACTIVITY_QUERY } from "../../../queries/funding";
 
 const ProjectWorkActivitiesTable = () => {
   const [isAddingNewActivity, setIsAddingNewActivity] = useState(false);
   const [editId, setEditId] = useState(null);
-  const classes = useStyles();
   const { projectId } = useParams();
 
-  const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
+  const { loading, error, data } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
     },
