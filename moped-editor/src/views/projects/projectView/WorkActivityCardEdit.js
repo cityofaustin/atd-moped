@@ -1,23 +1,20 @@
-import { useState } from "react";
-import { styled } from "@mui/material/styles";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardContent from "@mui/material/CardContent";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { CheckCircle } from "@mui/icons-material";
 import {
   Button,
   TextField,
-  Switch,
-  FormControlLabel,
-  FormHelperText,
   Divider,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
 } from "@mui/material";
 
-export default function ActivityCardEdit({ activity, setEditId }) {
+export default function ActivityCardEdit({ activity, onEdit, onCancel }) {
   return (
     <Card sx={{ marginBottom: "1rem" }}>
       <CardHeader
@@ -25,19 +22,10 @@ export default function ActivityCardEdit({ activity, setEditId }) {
           <>
             <Button
               variant="contained"
-              color="primary"
-              startIcon={<CheckCircle />}
-              type="submit"
-              onClick={() => setEditId(null)}
-            >
-              Save
-            </Button>
-            <Button
-              variant="contained"
               color="secondary"
               startIcon={<CheckCircle />}
               type="submit"
-              onClick={() => setEditId(null)}
+              onClick={onCancel}
             >
               Cancel
             </Button>
@@ -46,27 +34,38 @@ export default function ActivityCardEdit({ activity, setEditId }) {
           //     <MoreVertIcon />
           //   </IconButton>
         }
-        title={<Typography variant="h3">Work Activity</Typography>}
-        subheader={"#104"}
+        title={activity ? <Typography variant="h3">#104</Typography> : null}
+        // subheader={"#104"}
       />
       <CardContent>
-        <form>
+        <FormControl>
           <Grid container spacing={2} sx={{ marginBottom: "1rem" }}>
             <Grid item xs={6} md={3}>
-              <TextField
+              <InputLabel id="activity-status-label">Status</InputLabel>
+              <Select
                 size="small"
                 fullWidth
+                value={activity?.moped_work_activity_status.name || ""}
+                variant="outlined"
+                id="activity-status"
+                labelId="activity-status-label"
                 label="Status"
-                value={activity.moped_work_activity_status.name}
-              />
+              >
+                <MenuItem value="Planned">Planned</MenuItem>
+                <MenuItem value="Under Construction">
+                  Under Construction
+                </MenuItem>
+                <MenuItem value="Complete">Complete</MenuItem>
+                <MenuItem value="Canceled">Canceled</MenuItem>
+                <MenuItem value="On hold">On hold</MenuItem>
+              </Select>
             </Grid>
             <Grid item xs={6} md={3}>
               <TextField
                 size="small"
                 fullWidth
-                autoFocus
                 label="Status note"
-                value={activity.status_note}
+                value={activity?.status_note || ""}
               />
             </Grid>
           </Grid>
@@ -77,7 +76,7 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 size="small"
                 fullWidth
                 label="Contractor"
-                value={activity.contractor}
+                value={activity?.contractor || ""}
               />
             </Grid>
             <Grid item xs={6} md={3}>
@@ -85,7 +84,7 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 size="small"
                 fullWidth
                 label="Contract"
-                value={activity.contract_number}
+                value={activity?.contract_number || ""}
               />
             </Grid>
             <Grid item xs={6} md={3}>
@@ -93,7 +92,7 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 size="small"
                 fullWidth
                 label="Work Assignment"
-                value={activity.work_assignment_id}
+                value={activity?.work_assignment_id || ""}
               />
             </Grid>
             <Grid item xs={6} md={3}>
@@ -101,17 +100,18 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 size="small"
                 fullWidth
                 label="Amount"
-                value={activity.amount}
+                value={activity?.amount || ""}
               />
             </Grid>
           </Grid>
           <Grid container spacing={2} sx={{ marginBottom: "1rem" }}>
             <Grid item xs={6} md={3}>
+              <InputLabel id="activity-status-label">Status</InputLabel>
               <TextField
                 fullWidth
                 size="small"
-                label="Workgroup"
-                value={activity.implementation_workgroup}
+                label="Implementation Workgroup"
+                value={activity?.implementation_workgroup || ""}
               />
             </Grid>
 
@@ -120,9 +120,11 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 fullWidth
                 size="small"
                 label="Task order(s)"
-                value={activity.task_orders
-                  ?.map((tk) => tk.task_order)
-                  .join(", ")}
+                value={
+                  activity?.task_orders
+                    ?.map((tk) => tk.task_order)
+                    .join(", ") || ""
+                }
               />
             </Grid>
           </Grid>
@@ -132,24 +134,31 @@ export default function ActivityCardEdit({ activity, setEditId }) {
                 fullWidth
                 size="small"
                 label="Description"
-                value={activity.description}
+                value={activity?.description || ""}
                 multiline
                 rows={2}
               />
             </Grid>
           </Grid>
-        </form>
+        </FormControl>
       </CardContent>
       <Divider />
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="end">
           <Grid item>
-            <Typography variant="h4">Updated</Typography>
-            <Typography variant="body2" color="text.secondary">
-              John Clary - 10m ago
-            </Typography>
+            {/* <Typography variant="body2" component="span" color="text.secondary">
+              Updated by John Clary - 10m ago
+            </Typography> */}
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<CheckCircle />}
+              type="submit"
+              onClick={onCancel}
+            >
+              Save
+            </Button>
           </Grid>
-          <Grid item></Grid>
         </Grid>
       </CardContent>
     </Card>

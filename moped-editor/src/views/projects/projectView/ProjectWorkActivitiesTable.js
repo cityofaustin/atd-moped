@@ -6,27 +6,12 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   Button,
   CircularProgress,
-  Snackbar,
   Typography,
-  TextField,
   Grid,
+  Icon,
 } from "@mui/material";
-import { Alert } from "@mui/material";
-import {
-  AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@mui/icons-material";
-import makeStyles from "@mui/styles/makeStyles";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar,
-} from "@material-table/core";
-import typography from "../../../theme/typography";
 
-import { currencyFormatter } from "../../../utils/numberFormatters";
-import DollarAmountIntegerField from "./DollarAmountIntegerField";
+import makeStyles from "@mui/styles/makeStyles";
 
 import WorkActivityCard from "./WorkActivityCard";
 import WorkActivityCardEdit from "./WorkActivityCardEdit";
@@ -40,12 +25,6 @@ import {
   DELETE_CONTRACT,
 } from "../../../queries/funding";
 
-const DEFAULT_SNACKBAR_STATE = {
-  open: false,
-  message: null,
-  severity: "success",
-};
-
 const useStyles = makeStyles((theme) => ({
   addRecordButton: {
     position: "absolute",
@@ -55,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectWorkActivitiesTable = () => {
+  const [isAddingNewActivity, setIsAddingNewActivity] = useState(false);
   const [editId, setEditId] = useState(null);
   const classes = useStyles();
   const { projectId } = useParams();
@@ -66,9 +46,9 @@ const ProjectWorkActivitiesTable = () => {
     fetchPolicy: "no-cache",
   });
 
-  const [addContract] = useMutation(ADD_CONTRACT);
-  const [updateContract] = useMutation(UPDATE_CONTRACT);
-  const [deleteContract] = useMutation(DELETE_CONTRACT);
+  // const [addContract] = useMutation(ADD_CONTRACT);
+  // const [updateContract] = useMutation(UPDATE_CONTRACT);
+  // const [deleteContract] = useMutation(DELETE_CONTRACT);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -76,22 +56,53 @@ const ProjectWorkActivitiesTable = () => {
 
   return (
     <ApolloErrorHandler errors={error}>
-      <Grid>
-        <Grid item xs={12}>
+      <Grid
+        container
+        justifyContent="space-between"
+        direction="row"
+        alignItems="center"
+      >
+        <Grid item>
           <Typography
             variant="h2"
             color="primary"
-            style={{ paddingTop: "1em" }}
+            style={{ paddingTop: "1em", paddingBottom: "1em" }}
           >
-            Work Activity
+            Work Activities
           </Typography>
         </Grid>
+        {!isAddingNewActivity && !editId && (
+          <Grid item>
+            <Button
+              color="primary"
+              variant="contained"
+              startIcon={<Icon>add_circle</Icon>}
+              onClick={() => setIsAddingNewActivity(true)}
+            >
+              New Activity
+            </Button>
+          </Grid>
+        )}
+        {isAddingNewActivity && (
+          <Grid item xs={12}>
+            <WorkActivityCardEdit
+              activity={null}
+              onCancel={() => setIsAddingNewActivity(false)}
+            />
+          </Grid>
+        )}
         {stuff?.map((activity) => (
           <Grid item xs={12}>
             {activity.id === editId ? (
-              <WorkActivityCardEdit activity={activity} setEditId={setEditId} />
+              <WorkActivityCardEdit
+                activity={activity}
+                onCancel={() => setEditId(false)}
+              />
             ) : (
-              <WorkActivityCard activity={stuff?.[0]} setEditId={setEditId} />
+              <WorkActivityCard
+                activity={stuff?.[0]}
+                onEdit={() => setEditId(activity.id)}
+              />
             )}
           </Grid>
         ))}

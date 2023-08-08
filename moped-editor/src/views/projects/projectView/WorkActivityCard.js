@@ -8,20 +8,17 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Divider } from "@mui/material";
-export default function ActivityCard({ activity, setEditId }) {
+export default function ActivityCard({ activity, onEdit }) {
   return (
     <Card sx={{ marginBottom: "1rem" }}>
       <CardHeader
         action={
-          <IconButton
-            aria-label="settings"
-            onClick={() => setEditId(activity.id)}
-          >
+          <IconButton aria-label="settings" onClick={onEdit}>
             <MoreVertIcon />
           </IconButton>
         }
-        title={<Typography variant="h3">Work Activity</Typography>}
-        subheader={"#104"}
+        title={<Typography variant="h3">#104</Typography>}
+        // subheader={"#104"}
       />
       <CardContent>
         <Grid container spacing={2} sx={{ marginBottom: "1rem" }}>
@@ -94,11 +91,11 @@ export default function ActivityCard({ activity, setEditId }) {
       </CardContent>
       <Divider />
       <CardContent>
-        <Grid container spacing={2}>
+        <Grid container spacing={2} justifyContent="end">
           <Grid item>
-            <Typography variant="h4">Updated</Typography>
-            <Typography variant="body2" color="text.secondary">
-              John Clary - 10m ago
+            {/* <Typography variant="body2" component="span">Updated by </Typography> */}
+            <Typography variant="body2" component="span">
+              Updated by John Clary - 10m ago
             </Typography>
           </Grid>
         </Grid>
