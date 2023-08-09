@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from "react";
-import MapGL from "react-map-gl";
+import MapGL, { NavigationControl } from "react-map-gl";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
@@ -73,6 +73,7 @@ const ProjectSummaryMap = ({ data }) => {
             basemapKey={basemapKey}
             setBasemapKey={setBasemapKey}
           />
+          <NavigationControl position="bottom-left" showCompass={false} />
           <BaseMapSourceAndLayers basemapKey={basemapKey} />
           <ProjectSourcesAndLayers
             isCreatingComponent={false}
