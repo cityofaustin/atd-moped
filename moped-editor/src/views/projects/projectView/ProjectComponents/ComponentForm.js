@@ -113,7 +113,7 @@ const ComponentForm = ({
     optionsData?.moped_components
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
-    !!initialFormValues?.phase
+    !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
 
   useResetDependentFieldOnAutocompleteChange({
