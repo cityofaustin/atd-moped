@@ -1,11 +1,3 @@
--- not sure why this is busted locally :/ Seems to be fine in production and staging
-SELECT
-    setval('features_id_seq', (
-            SELECT
-                MAX(id)
-                FROM features));
-
-
 -- add spatial index to this layer
 CREATE INDEX layer_council_district_geom_idx
   ON layer_council_district
@@ -16,8 +8,6 @@ CREATE TABLE public.features_council_districts (
     id serial PRIMARY KEY,
     feature_id integer NOT NULL,
     council_district_id integer NOT NULL,
-    -- FOREIGN KEY ("feature_id") REFERENCES "public"."features" ("id")
-    --     ON UPDATE CASCADE ON DELETE CASCADE,
     FOREIGN KEY ("council_district_id") REFERENCES "public"."layer_council_district" ("council_district")
         ON UPDATE CASCADE ON DELETE CASCADE
 );
@@ -25,8 +15,8 @@ CREATE TABLE public.features_council_districts (
 ALTER TABLE public.features_council_districts
     ADD CONSTRAINT unique_feature_council_district UNIQUE ("feature_id", "council_district_id");
 
--- Is the council district geometry indexed?
-CREATE OR REPLACE FUNCTION public.update_line_council_district ()
+-- create functions to mange point and line type associations
+CREATE OR REPLACE FUNCTION public.update_line_council_district()
     RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -37,7 +27,7 @@ BEGIN
         RETURN NEW;
     END IF;
     -- delete previous district associations
-    -- again, because the moped editor only inserts new geometries, there will be typically
+    -- again, because the moped editor only inserts new geometries, there will typically
     -- not be any old feature-district associations to delete
     DELETE FROM features_council_districts WHERE feature_id = NEW.id;
     -- insert new district associations
@@ -58,8 +48,7 @@ BEGIN
     END;
 $$;
 
-
-CREATE OR REPLACE FUNCTION public.update_point_council_district ()
+CREATE OR REPLACE FUNCTION public.update_point_council_district()
     RETURNS TRIGGER
     LANGUAGE plpgsql
     AS $$
@@ -96,17 +85,17 @@ $$;
 CREATE TRIGGER update_feature_signals_council_district BEFORE INSERT OR UPDATE ON feature_signals
     FOR EACH ROW EXECUTE FUNCTION update_point_council_district();
 
-CREATE TRIGGER update_feature_street_segments_council_district BEFORE INSERT OR UPDATE ON feature_street_segments
-    FOR EACH ROW EXECUTE FUNCTION update_line_council_district();
-
 CREATE TRIGGER update_feature_intersections_council_district BEFORE INSERT OR UPDATE ON feature_intersections
     FOR EACH ROW EXECUTE FUNCTION update_point_council_district();
 
-CREATE TRIGGER update_feature_drawn_lines_council_district BEFORE INSERT OR UPDATE ON feature_drawn_lines
-    FOR EACH ROW EXECUTE FUNCTION update_line_council_district();
-
 CREATE TRIGGER update_feature_drawn_points_council_district BEFORE INSERT OR UPDATE ON feature_drawn_points
     FOR EACH ROW EXECUTE FUNCTION update_point_council_district();
+
+CREATE TRIGGER update_feature_street_segments_council_district BEFORE INSERT OR UPDATE ON feature_street_segments
+    FOR EACH ROW EXECUTE FUNCTION update_line_council_district();
+
+CREATE TRIGGER update_feature_drawn_lines_council_district BEFORE INSERT OR UPDATE ON feature_drawn_lines
+    FOR EACH ROW EXECUTE FUNCTION update_line_council_district();
 
 -- Run a one-time batch update to add districts to all features in the DB
 WITH point_features_union AS (
