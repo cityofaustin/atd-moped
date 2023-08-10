@@ -15,6 +15,9 @@ CREATE TABLE public.features_council_districts (
 ALTER TABLE public.features_council_districts
     ADD CONSTRAINT unique_feature_council_district UNIQUE ("feature_id", "council_district_id");
 
+CREATE INDEX features_council_district_feature_id_idx ON features_council_districts (feature_id);
+CREATE INDEX features_council_district_council_district_id_idx ON features_council_districts (council_district_id);
+
 -- create functions to mange point and line type associations
 CREATE OR REPLACE FUNCTION public.update_line_council_district()
     RETURNS TRIGGER
