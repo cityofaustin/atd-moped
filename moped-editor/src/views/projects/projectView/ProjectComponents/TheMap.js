@@ -56,7 +56,6 @@ export default function TheMap({
   draftEditComponent,
   editDispatch,
   mapRef,
-  mapRefState,
   clickedProjectFeature,
   setClickedProjectFeature,
   clickedComponent,
@@ -91,7 +90,7 @@ export default function TheMap({
   const clickedComponentFeatureCollection =
     useComponentFeatureCollection(clickedComponent);
 
-  const currentZoom = mapRefState?.current?.getZoom();
+  const currentZoom = mapRef?.current?.getZoom();
   const { ctnLinesGeojson, ctnPointsGeojson } = useAgolFeatures(
     linkMode,
     setIsFetchingFeatures,
@@ -100,7 +99,7 @@ export default function TheMap({
   );
 
   useZoomToExistingComponents(
-    mapRefState,
+    mapRef,
     projectAndRelatedComponentsFeatureCollection,
     false
   );
@@ -318,7 +317,7 @@ export default function TheMap({
   };
 
   const onMoveEnd = (e) => {
-    const newBounds = mapRefState.current.getBounds().toArray();
+    const newBounds = mapRef.current.getBounds().toArray();
     setBounds(newBounds.flat());
   };
 

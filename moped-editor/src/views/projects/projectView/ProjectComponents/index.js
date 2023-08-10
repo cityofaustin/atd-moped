@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -27,7 +27,6 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
-import { useMapRef } from "./utils/useMapRef";
 
 const drawerWidth = 350;
 
@@ -66,7 +65,7 @@ export default function MapView({
 }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
-  const [mapRef, mapRefState] = useMapRef();
+  const mapRef = useRef();
   const { projectId } = useParams();
 
   /* sets the type of geometry to use in component edit mode. allowed values
@@ -187,7 +186,7 @@ export default function MapView({
     setClickedProjectFeature(null);
     // move the map
     zoomMapToFeatureCollection(
-      mapRefState,
+      mapRef,
       featureCollection,
       fitBoundsOptions.zoomToClickedComponent
     );
@@ -263,7 +262,6 @@ export default function MapView({
           <div style={{ height: "100%" }}>
             <TheMap
               mapRef={mapRef}
-              mapRefState={mapRefState}
               projectComponents={projectComponents}
               allRelatedComponents={allRelatedComponents}
               draftComponent={createState.draftComponent}
