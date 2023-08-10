@@ -36,7 +36,7 @@ import {
   useDraftComponentFeatures,
 } from "./utils/makeFeatureCollections";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
-import { useHavePlaceholderLayersLoaded } from "../ProjectComponents/utils/useWatchForPlaceholderLayers";
+import { useHasMapLoaded } from "./utils/useHasMapLoaded";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -328,8 +328,7 @@ export default function TheMap({
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
 
-  const { hasPlaceHolderLayers, checkIfMapHasPlaceHolderLayers } =
-    useHavePlaceholderLayersLoaded(mapRefState);
+  const { hasMapLoaded, onMapLoad } = useHasMapLoaded();
 
   return (
     <>
@@ -343,7 +342,7 @@ export default function TheMap({
         onClick={onClick}
         cursor={cursor}
         mapStyle={basemaps[basemapKey].mapStyle}
-        onLoad={checkIfMapHasPlaceHolderLayers}
+        onLoad={onMapLoad}
         {...mapParameters}
       >
         <BasemapSpeedDial
@@ -369,7 +368,7 @@ export default function TheMap({
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
-        {hasPlaceHolderLayers && (
+        {hasMapLoaded && (
           <>
             <ProjectSourcesAndLayers
               isCreatingComponent={isCreatingComponent}

@@ -14,7 +14,7 @@ import {
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
-import { useHavePlaceholderLayersLoaded } from "../ProjectComponents/utils/useWatchForPlaceholderLayers";
+import { useHasMapLoaded } from "../ProjectComponents/utils/useHasMapLoaded";
 import { useMapRef } from "../ProjectComponents/utils/useMapRef";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -44,8 +44,7 @@ const ProjectSummaryMap = ({ data }) => {
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
 
-  const { checkIfMapHasPlaceHolderLayers, hasPlaceHolderLayers } =
-    useHavePlaceholderLayersLoaded(mapRefState);
+  const { hasMapLoaded, onMapLoad } = useHasMapLoaded();
 
   return (
     <Box>
@@ -57,14 +56,14 @@ const ProjectSummaryMap = ({ data }) => {
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
-          onLoad={checkIfMapHasPlaceHolderLayers}
+          onLoad={onMapLoad}
         >
           <BasemapSpeedDial
             basemapKey={basemapKey}
             setBasemapKey={setBasemapKey}
           />
           <BaseMapSourceAndLayers basemapKey={basemapKey} />
-          {hasPlaceHolderLayers && (
+          {hasMapLoaded && (
             <>
               <ProjectSourcesAndLayers
                 isCreatingComponent={false}
