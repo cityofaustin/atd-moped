@@ -367,6 +367,7 @@ export default function TheMap({
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
+        {/* Wait until the map loads and components-placeholder layer is ready to target */}
         {hasMapLoaded && (
           <>
             <ProjectSourcesAndLayers
