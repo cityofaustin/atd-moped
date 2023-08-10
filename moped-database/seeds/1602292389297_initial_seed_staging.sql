@@ -366,6 +366,11 @@ SELECT pg_catalog.setval('public.moped_users_user_id_seq', 4, true);
 SELECT pg_catalog.setval('public.layer_council_district_id_seq', 10, true);
 
 
+SELECT
+    setval('features_id_seq', (
+            SELECT
+                MAX(id)
+                FROM features));
 --
 -- PostgreSQL database dump complete
 --
