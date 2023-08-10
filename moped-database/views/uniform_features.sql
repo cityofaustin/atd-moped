@@ -1,4 +1,4 @@
--- latest version 1678894870998_remove_cols_from_geo_views
+-- latest version from 1691698449987_add-district-columns-to-views
 DROP VIEW "public"."uniform_features";
 
 CREATE OR REPLACE VIEW "public"."uniform_features" AS
