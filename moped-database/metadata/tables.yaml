@@ -845,6 +845,9 @@
         filter: {}
         check: {}
 - table:
+    name: features_council_districts
+    schema: public
+- table:
     name: layer_council_district
     schema: public
   select_permissions:
