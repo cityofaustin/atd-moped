@@ -12,18 +12,21 @@ import {
 } from "@mui/material";
 import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
-import { ControlledAutocomplete } from "./utils/form";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
+  DEFAULT_COMPONENT_WORK_TYPE_OPTION,
   useComponentOptions,
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
   useComponentTagsOptions,
+  useWorkTypeOptions,
   useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
+import ControlledAutocomplete from "./ControlledAutocomplete";
+
 import * as yup from "yup";
 
 const defaultFormValues = {
@@ -34,6 +37,7 @@ const defaultFormValues = {
   tags: [],
   completionDate: null,
   description: "",
+  work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
   srtsId: "",
 };
@@ -46,6 +50,7 @@ const validationSchema = yup.object().shape({
   tags: yup.array().optional(),
   completionDate: yup.date().nullable().optional(),
   description: yup.string(),
+  work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup
     .object()
@@ -98,6 +103,11 @@ const ComponentForm = ({
   const isSignalComponent = internalTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
+  const workTypeOptions = useWorkTypeOptions(
+    component?.value,
+    optionsData?.moped_components
+  );
+
   const subcomponentOptions = useSubcomponentOptions(
     component?.value,
     optionsData?.moped_components
@@ -120,11 +130,19 @@ const ComponentForm = ({
     setValue,
   });
 
-  // todo: preserve allowed subcomponents when switching b/t component types
+  // todo: preserve subcomponent choices if allowed when switching b/t component types
   useResetDependentFieldOnAutocompleteChange({
     parentValue: watch("component"),
     dependentFieldName: "subcomponents",
     valueToSet: defaultFormValues.subcomponents,
+    setValue,
+  });
+
+  // todo: preserve work type if allowed when switching b/t component types
+  useResetDependentFieldOnAutocompleteChange({
+    parentValue: watch("component"),
+    dependentFieldName: "work_types",
+    valueToSet: defaultFormValues.work_types,
     setValue,
   });
 
@@ -150,6 +168,7 @@ const ComponentForm = ({
             control={control}
             autoFocus
             disabled={isEditingExistingComponent}
+            helperText="Required"
           />
         </Grid>
 
@@ -168,7 +187,18 @@ const ComponentForm = ({
             />
           </Grid>
         )}
-
+        <Grid item xs={12}>
+          <ControlledAutocomplete
+            id="work_type"
+            label="Work Type(s)"
+            multiple
+            options={workTypeOptions}
+            name="work_types"
+            control={control}
+            error={errors?.work_types}
+            helperText="Required"
+          />
+        </Grid>
         {/* Hide unless there are subcomponents for the chosen component */}
         {(subcomponentOptions.length !== 0 ||
           doesInitialValueHaveSubcomponents) && (
@@ -254,7 +284,6 @@ const ComponentForm = ({
                 options={phaseOptions}
                 name="phase"
                 control={control}
-                required
                 autoFocus
               />
             </Grid>

@@ -18,6 +18,7 @@ import {
   makePhaseFormFieldValue,
   makeSubphaseFormFieldValue,
   makeTagFormFieldValues,
+  makeWorkTypesFormFieldValues,
 } from "./utils/form";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,7 +52,8 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { subcomponents, phase, subphase, tags } = formData;
+    const { subcomponents, phase, subphase, tags, work_types } = formData;
+
     const completionDate = !!phase ? formData.completionDate : null;
     const description =
       formData.description?.length > 0 ? formData.description : null;
@@ -63,6 +65,15 @@ const EditAttributesModal = ({
       ? subcomponents.map((subcomponent) => ({
           subcomponent_id: subcomponent.value,
           is_deleted: false, // Used for update on constraint in mutation
+          project_component_id: projectComponentId,
+        }))
+      : [];
+
+    // Prepare the work type data for the mutation
+    const workTypesArray = work_types
+      ? work_types.map((workType) => ({
+          work_type_id: workType.value,
+          is_deleted: false,
           project_component_id: projectComponentId,
         }))
       : [];
@@ -90,6 +101,7 @@ const EditAttributesModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
+          workTypes: workTypesArray,
           signals: [signalToInsert],
           phaseId: phase?.value,
           subphaseId: subphase?.value,
@@ -126,6 +138,7 @@ const EditAttributesModal = ({
           projectComponentId: projectComponentId,
           description,
           subcomponents: subcomponentsArray,
+          workTypes: workTypesArray,
           phaseId: phase?.value,
           subphaseId: subphase?.value,
           componentTags: tagsArray,
@@ -153,6 +166,9 @@ const EditAttributesModal = ({
             : "",
         subcomponents: makeSubcomponentsFormFieldValues(
           clickedComponent.moped_proj_components_subcomponents
+        ),
+        work_types: makeWorkTypesFormFieldValues(
+          clickedComponent.moped_proj_component_work_types
         ),
         signal: makeSignalFormFieldValue(clickedComponent),
         phase: makePhaseFormFieldValue(clickedComponent.moped_phase),

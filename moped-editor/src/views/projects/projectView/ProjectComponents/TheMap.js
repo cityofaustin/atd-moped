@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MapGL from "react-map-gl";
+import MapGL, { NavigationControl } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
@@ -348,6 +348,7 @@ export default function TheMap({
           basemapKey={basemapKey}
           setBasemapKey={setBasemapKey}
         />
+        <NavigationControl position="bottom-left" showCompass={false} />
         <GeocoderControl position="top-left" marker={false} />
         {shouldShowCreateDrawControls && (
           <CreateComponentDrawTools

@@ -21,6 +21,12 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
           subcomponent_name
         }
       }
+      moped_component_work_types {
+        moped_work_type {
+          id
+          name
+        }
+      }
     }
     moped_phases(order_by: { phase_order: asc }) {
       phase_name
@@ -69,6 +75,12 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       subcomponent_id
       moped_subcomponent {
         subcomponent_name
+      }
+    }
+    moped_proj_component_work_types(where: { is_deleted: { _eq: false } }) {
+      moped_work_type {
+        id
+        name
       }
     }
     moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
@@ -185,6 +197,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $projectComponentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
+    $workTypes: [moped_proj_component_work_types_insert_input!]!
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
@@ -192,6 +205,12 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $srtsId: String
   ) {
     update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_component_work_types(
       where: { project_component_id: { _eq: $projectComponentId } }
       _set: { is_deleted: true }
     ) {
@@ -224,6 +243,15 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     ) {
       affected_rows
     }
+    insert_moped_proj_component_work_types(
+      objects: $workTypes
+      on_conflict: {
+        constraint: moped_proj_component_work_types_project_component_id_work_type_
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
+    }
     insert_moped_proj_component_tags(
       objects: $componentTags
       on_conflict: {
@@ -243,6 +271,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $projectComponentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
+    $workTypes: [moped_proj_component_work_types_insert_input!]!
     $signals: [feature_signals_insert_input!]!
     $phaseId: Int
     $subphaseId: Int
@@ -251,6 +280,12 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $srtsId: String
   ) {
     update_moped_proj_components_subcomponents(
+      where: { project_component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_moped_proj_component_work_types(
       where: { project_component_id: { _eq: $projectComponentId } }
       _set: { is_deleted: true }
     ) {
@@ -284,6 +319,15 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
       objects: $subcomponents
       on_conflict: {
         constraint: unique_component_and_subcomponent
+        update_columns: [is_deleted]
+      }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_component_work_types(
+      objects: $workTypes
+      on_conflict: {
+        constraint: moped_proj_component_work_types_project_component_id_work_type_
         update_columns: [is_deleted]
       }
     ) {

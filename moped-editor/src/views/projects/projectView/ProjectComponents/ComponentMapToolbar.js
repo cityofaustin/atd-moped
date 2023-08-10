@@ -1,4 +1,4 @@
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
@@ -13,6 +13,9 @@ import { useNavigate, useParams } from "react-router";
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+  },
+  toolbarContainer: {
+    backgroundColor: theme.palette.background.paper,
   },
 }));
 
@@ -30,7 +33,7 @@ export default function ComponentMapToolbar({
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
-      <Toolbar style={{ backgroundColor: "#fff" }}>
+      <Toolbar className={classes.toolbarContainer}>
         <Box mr={2}>
           <ProjectName name={projectName} id={projectId} />
         </Box>
