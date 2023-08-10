@@ -22,8 +22,10 @@ CREATE OR REPLACE FUNCTION public.update_line_council_district()
     AS $$
 BEGIN
     -- currently the moped editor never updates a geometry, it marks a feature as is_deleted
-    -- and inserts a new feature. but we should test if a geometry has changed to be safe.
+    -- and inserts a new feature. so we should only ever see a geometry update from some
+    -- ad-hoc developer intervention
     IF TG_OP = 'UPDATE' AND ST_Equals(NEW.geography::geometry, OLD.geography::geometry) THEN
+        -- nothing to do
         RETURN NEW;
     END IF;
     -- delete previous district associations
@@ -54,8 +56,10 @@ CREATE OR REPLACE FUNCTION public.update_point_council_district()
     AS $$
 BEGIN
     -- currently the moped editor never updates a geometry, it marks a feature as is_deleted
-    -- and inserts a new feature. but we should test if a geometry has changed to be safe.
+    -- and inserts a new feature. so we should only ever see a geometry update from some
+    -- ad-hoc developer intervention
     IF TG_OP = 'UPDATE' AND ST_Equals(NEW.geography::geometry, OLD.geography::geometry) THEN
+        -- nothing to do
         RETURN NEW;
     END IF;
     -- delete previous district associations
