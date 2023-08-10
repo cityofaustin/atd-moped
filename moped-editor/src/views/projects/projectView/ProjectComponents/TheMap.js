@@ -293,7 +293,12 @@ export default function TheMap({
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
         clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
+
+        // Make sure that state reflects whether the clicked component is related or not
+        // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);
+        !isNewClickedComponentRelated && setIsClickedComponentRelated(false);
+
         const ref = clickedComponentFromMap?._ref;
         ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
       }
