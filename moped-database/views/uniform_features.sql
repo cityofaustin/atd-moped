@@ -1,7 +1,7 @@
 -- latest version from 1691698449987_add-district-columns-to-views
 DROP VIEW "public"."uniform_features";
 
-CREATE VIEW "public"."uniform_features" ASCREATE VIEW "public"."uniform_features" AS
+CREATE VIEW "public"."uniform_features" AS
 SELECT
     feature_signals.id,
     feature_signals.component_id,
