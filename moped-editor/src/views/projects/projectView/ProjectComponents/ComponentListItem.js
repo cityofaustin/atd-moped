@@ -36,10 +36,12 @@ export default function ComponentListItem({
   additionalListItemText,
   additionalCollapseListItems,
 }) {
+  const districts = component?.council_districts.join(", ");
+
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
-
+  console.log("districts", districts, component);
   return (
     <Box
       borderLeft={7}
@@ -73,6 +75,11 @@ export default function ComponentListItem({
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
+      <ListItemText
+        primary="districts"
+        secondary={districts}
+        className={classes.listItemText}
+      />
       <Collapse in={isExpanded}>
         <List component="div" disablePadding dense>
           {component.description && (
