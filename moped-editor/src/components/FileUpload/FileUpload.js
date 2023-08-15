@@ -246,7 +246,7 @@ const FileUpload = props => {
   };
 
   return (
-    <Grid fullwidth>
+    <Grid>
       {errors.length > 0 &&
         errors.map(err => {
           return (

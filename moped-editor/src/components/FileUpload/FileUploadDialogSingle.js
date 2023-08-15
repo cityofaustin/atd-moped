@@ -30,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginTop: "1rem",
+    marginBottom: "1rem"
   },
   selectField: {
-    marginTop: "1rem",
     width: "200px",
   },
   inputFieldAdornmentColor: {
@@ -113,9 +113,7 @@ const FileUploadDialogSingle = (props) => {
     setFileReady(false);
   };
 
-  /**
-   * Handles the cancel button behavior
-   */
+
   const handleCancel = () => {
     props.handleClickCloseUploadFile();
     clearState();
@@ -143,7 +141,7 @@ const FileUploadDialogSingle = (props) => {
   /**
    * Checks if the field is a string and returns it's length
    * @param {any} value - The value in question
-   * @return {number}
+   * @return {number} field length or 0 if field is null or not a string
    */
   const fieldLength = (value) => {
     if (value !== null && typeof value === "string") {
@@ -189,23 +187,24 @@ const FileUploadDialogSingle = (props) => {
         {props?.title ? props.title : "Upload Media"}
       </DialogTitle>
       <DialogContent>
-        <Grid container>
+        <Grid container style={{marginTop: "5px"}}>
           <Grid item xs={12} md={12}>
             <TextField
-              variant="standard"
               autoFocus
               className={classes.textField}
               id="standard-multiline-flexible"
-              placeholder={"File name"}
+              // placeholder={"File name"}
               multiline={false}
-              value={null}
+              label={"File name"}
+              value={""}
               onChange={handleFileNameChange}
               fullWidth />
 
-            <FormControl variant="standard">
-              <InputLabel>Type</InputLabel>
+            <FormControl>
+              <InputLabel id="select-dropdown-thing">Type</InputLabel>
               <Select
-                variant="standard"
+                // variant="standard"
+                labelID="select-dropdown-thing"
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
@@ -238,10 +237,9 @@ const FileUploadDialogSingle = (props) => {
             </FormControl>
 
             <TextField
-              variant="standard"
               className={classes.textField}
               id="standard-multiline-static"
-              placeholder={"Description"}
+              label={"Description"}
               multiline
               rows={4}
               defaultValue={null}
