@@ -4,7 +4,7 @@ import { useFeatureTypes } from "../ProjectComponents/utils/map";
 
 /**
  * Component that renders feature collection of all components features in a project
- * All layers are set to show below basemap street labels using beforeId = "street-labels"
+ * All layers are set to show below basemap street labels using beforeId = "components-placeholder"
  * @param {Object} projectFeatureCollection - GeoJSON feature collection with all project features
  * @returns JSX.Element
  */
@@ -21,7 +21,7 @@ const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...MAP_STYLES["project-lines"].layerProps}
         />
       </Source>
@@ -33,7 +33,7 @@ const ProjectSummaryMapSourcesAndLayers = ({ projectFeatureCollection }) => {
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...MAP_STYLES["project-points"].layerProps}
         />
       </Source>
