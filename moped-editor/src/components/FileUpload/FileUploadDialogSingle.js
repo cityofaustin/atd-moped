@@ -9,13 +9,15 @@ import {
   Icon,
   TextField,
   FormControl,
+  FormControlLabel,
   InputLabel,
   Select,
   MenuItem,
+  Switch,
 } from "@mui/material";
 import FileUpload from "./FileUpload";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -30,13 +32,16 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginTop: "1rem",
-    marginBottom: "1rem"
+    marginBottom: "1rem",
   },
   selectField: {
     width: "200px",
   },
   inputFieldAdornmentColor: {
     color: "grey",
+  },
+  fileUpload: {
+    marginTop: "1rem",
   },
 }));
 
@@ -50,6 +55,8 @@ const FileUploadDialogSingle = (props) => {
    * @constant {string} fileKey - The location of the file in S3
    * @constant {Object} fileObject - Contains the file object, including metadata.
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
+   * @constant {bool} externalFile - True if user toggled external file switch
+   * @constant {string} externalFileLink - external file location string
    */
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState("");
@@ -57,6 +64,8 @@ const FileUploadDialogSingle = (props) => {
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
   const [fileReady, setFileReady] = useState(false);
+  const [externalFile, setExternalFile] = useState(false);
+  const [externalFileLink, setExternalFileLink] = useState(null);
 
   /**
    * Logic that needs to be run after the file has been uploaded to S3
@@ -77,28 +86,20 @@ const FileUploadDialogSingle = (props) => {
     }
   };
 
-  /**
-   * Handles the file name changes
-   * @param {Object} e - The event object
-   */
   const handleFileNameChange = (e) => {
     setFileName(e.target.value);
   };
 
-  /**
-   * Handles the file description changes
-   * @param {Object} e - The event object
-   */
   const handleFileDescriptionChange = (e) => {
     setFileDescription(e.target.value);
   };
 
-  /**
-   * Handles the file type changes
-   * @param {Object} e - The event object
-   */
   const handleFileTypeChange = (e) => {
     setFileType(e.target.value);
+  };
+
+  const handleExternalLinkChange = (e) => {
+    setExternalFileLink(e.target.value);
   };
 
   /**
@@ -111,8 +112,8 @@ const FileUploadDialogSingle = (props) => {
     setFileKey(null);
     setFileObject(null);
     setFileReady(false);
+    setExternalFileLink(null);
   };
-
 
   const handleCancel = () => {
     props.handleClickCloseUploadFile();
@@ -167,7 +168,6 @@ const FileUploadDialogSingle = (props) => {
 
     // If no longer disabled, but marked as not ready
     if (saveDisabled === false && fileReady === false) {
-      // Mark it as ready
       setFileReady(true);
     }
 
@@ -187,28 +187,28 @@ const FileUploadDialogSingle = (props) => {
         {props?.title ? props.title : "Upload Media"}
       </DialogTitle>
       <DialogContent>
-        <Grid container style={{marginTop: "5px"}}>
+        <Grid container style={{ marginTop: "5px" }}>
           <Grid item xs={12} md={12}>
             <TextField
               autoFocus
               className={classes.textField}
-              id="standard-multiline-flexible"
-              // placeholder={"File name"}
+              id="file-name-input"
               multiline={false}
               label={"File name"}
-              value={""}
+              value={undefined}
               onChange={handleFileNameChange}
-              fullWidth />
+              fullWidth
+            />
 
             <FormControl>
-              <InputLabel id="select-dropdown-thing">Type</InputLabel>
+              <InputLabel id="select-dropdown-filetype">Type</InputLabel>
               <Select
-                // variant="standard"
-                labelID="select-dropdown-thing"
+                labelId="select-dropdown-filetype"
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
-                onChange={handleFileTypeChange}>
+                onChange={handleFileTypeChange}
+              >
                 <MenuItem
                   value={1}
                   className={classes.inputFieldAdornmentColor}
@@ -244,16 +244,44 @@ const FileUploadDialogSingle = (props) => {
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              fullWidth />
+              fullWidth
+            />
+
+            <FormControl>
+              <FormControlLabel
+                value="external"
+                control={
+                  <Switch
+                    color="primary"
+                    onChange={(event) => setExternalFile(event.target.checked)}
+                  />
+                }
+                label="Link to external file"
+                labelPlacement="start"
+              />
+            </FormControl>
           </Grid>
           <Grid item xs={12} md={12} className={classes.fileUpload}>
-            <FileUpload
-              limit={1}
-              sizeLimit={"1024MB"}
-              projectId={props.projectId}
-              onFileProcessed={handleOnFileProcessed}
-              onFileAdded={handleOnFileAdded}
-            />
+            {externalFile ? (
+              <TextField
+                autoFocus
+                id="file-name-input"
+                multiline={false}
+                label={"Link"}
+                value={undefined}
+                onChange={handleExternalLinkChange}
+                fullWidth
+                helperText={"Enter URL or network location"}
+              />
+            ) : (
+              <FileUpload
+                limit={1}
+                sizeLimit={"1024MB"}
+                projectId={props.projectId}
+                onFileProcessed={handleOnFileProcessed}
+                onFileAdded={handleOnFileAdded}
+              />
+            )}
           </Grid>
         </Grid>
       </DialogContent>
