@@ -37,6 +37,8 @@ def generate_user_profile(cognito_id: str, json_data: dict) -> dict:
         "title": json_data.get("title", None),
         "workgroup_id": json_data.get("workgroup_id", None),
         "roles": json_data.get("roles", None),
+        "is_user_group_member": json_data.get("is_user_group_member", False),
+        "note": json_data.get("note", None),
     }
 
 
