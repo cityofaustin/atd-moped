@@ -52,9 +52,8 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { subcomponents, phase, subphase, tags, work_types } = formData;
+    const { subcomponents, phase, subphase, tags, work_types, completionDate } = formData;
 
-    const completionDate = !!phase ? formData.completionDate : null;
     const description =
       formData.description?.length > 0 ? formData.description : null;
     const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;

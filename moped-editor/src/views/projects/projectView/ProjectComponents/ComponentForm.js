@@ -97,7 +97,11 @@ const ComponentForm = ({
 
   const componentOptions = useComponentOptions(optionsData);
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase] = watch(["component", "phase"]);
+  const [component, phase, completionDate] = watch([
+    "component",
+    "phase",
+    "completionDate",
+  ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
   const isSignalComponent = internalTable === "feature_signals";
@@ -113,7 +117,7 @@ const ComponentForm = ({
     optionsData?.moped_components
   );
   const [useComponentPhase, setUseComponentPhase] = useState(
-    !!initialFormValues?.phase
+    !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
 
   useResetDependentFieldOnAutocompleteChange({
@@ -195,7 +199,7 @@ const ComponentForm = ({
             options={workTypeOptions}
             name="work_types"
             control={control}
-            error={errors?.work_types}
+            error={!!errors?.work_types}
             helperText="Required"
           />
         </Grid>
@@ -262,6 +266,7 @@ const ComponentForm = ({
                 onChange={() => setUseComponentPhase(!useComponentPhase)}
                 name="useComponentPhase"
                 color="primary"
+                disabled={!!phase || !!completionDate}
               />
             }
             labelPlacement="start"
