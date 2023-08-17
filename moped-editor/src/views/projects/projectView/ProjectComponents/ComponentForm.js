@@ -151,6 +151,8 @@ const ComponentForm = ({
   });
 
   const isEditingExistingComponent = initialFormValues !== null;
+  const isLineRepresentation =
+    initialFormValues?.component?.data?.line_representation;
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -171,7 +173,6 @@ const ComponentForm = ({
             name="component"
             control={control}
             autoFocus
-            disabled={isEditingExistingComponent}
             helperText="Required"
           />
         </Grid>
