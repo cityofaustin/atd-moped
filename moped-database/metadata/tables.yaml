@@ -845,6 +845,9 @@
         filter: {}
         check: {}
 - table:
+    name: features_council_districts
+    schema: public
+- table:
     name: layer_council_district
     schema: public
   select_permissions:
@@ -4650,6 +4653,7 @@
           - component_name
           - project_name
           - geography
+          - council_districts
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4666,6 +4670,7 @@
           - component_name
           - attributes
           - geography
+          - council_districts
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4682,6 +4687,7 @@
           - component_name
           - project_name
           - geography
+          - council_districts
         filter: {}
         allow_aggregations: true
 - table:
