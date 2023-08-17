@@ -55,6 +55,19 @@ export const useComponentOptions = (data) =>
     return options;
   }, [data]);
 
+export const useComponentOptionsFilteredByLineRepresentation = ({
+  shouldFilterOptions,
+  options,
+  isLineRepresentation,
+}) =>
+  useMemo(() => {
+    if (!shouldFilterOptions) return options;
+
+    return options.filter(
+      (component) => component.line_representation == isLineRepresentation
+    );
+  }, [shouldFilterOptions, options, isLineRepresentation]);
+
 /**
  * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
  * for a MUI autocomplete

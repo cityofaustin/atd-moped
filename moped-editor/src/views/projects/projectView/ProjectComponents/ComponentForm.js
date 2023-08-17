@@ -18,6 +18,7 @@ import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
   useComponentOptions,
+  useComponentOptionsFilteredByLineRepresentation,
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
@@ -95,7 +96,17 @@ const ComponentForm = ({
 
   error && console.error(error);
 
+  const isEditingExistingComponent = initialFormValues !== null;
+  const isLineRepresentation =
+    initialFormValues?.component?.data?.line_representation;
+
   const componentOptions = useComponentOptions(optionsData);
+  const componentOptionsFilteredByLineRepresentation =
+    useComponentOptionsFilteredByLineRepresentation({
+      shouldFilterOptions: isEditingExistingComponent,
+      options: componentOptions,
+      isLineRepresentation,
+    });
   const phaseOptions = usePhaseOptions(optionsData);
   const [component, phase, completionDate] = watch([
     "component",
@@ -149,10 +160,6 @@ const ComponentForm = ({
     valueToSet: defaultFormValues.work_types,
     setValue,
   });
-
-  const isEditingExistingComponent = initialFormValues !== null;
-  const isLineRepresentation =
-    initialFormValues?.component?.data?.line_representation;
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
