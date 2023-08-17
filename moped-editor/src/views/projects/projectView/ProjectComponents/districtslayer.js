@@ -47,7 +47,7 @@ const labelPoints = {
   ),
 };
 
-const DistrictsLayer = () => {
+const DistrictsLayer = ({}) => {
   return (
     <>
       <Source id="districts" type="geojson" data={DISTRICTS}>
