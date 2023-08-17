@@ -19,6 +19,7 @@ import {
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
   useComponentOptions,
   useComponentOptionsFilteredByLineRepresentation,
+  useComponentOptionsWithoutSignals,
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
@@ -100,6 +101,12 @@ const ComponentForm = ({
       options: unfilteredComponentOptions,
       isLineRepresentation,
     });
+  // When we are editing component type of an existing component, we want to
+  // prevent switching to a signal component for now.
+  const componentOptionsWithoutSignals = useComponentOptionsWithoutSignals(
+    componentOptionsFilteredByLineRepresentation
+  );
+  console.log(componentOptionsWithoutSignals);
   const phaseOptions = usePhaseOptions(optionsData);
   const [component, phase, completionDate] = watch([
     "component",
@@ -163,7 +170,7 @@ const ComponentForm = ({
             label="Component Type"
             options={
               isEditingExistingComponent
-                ? componentOptionsFilteredByLineRepresentation
+                ? componentOptionsWithoutSignals
                 : unfilteredComponentOptions
             }
             renderOption={(props, option, state) => (
@@ -176,6 +183,7 @@ const ComponentForm = ({
             )}
             name="component"
             control={control}
+            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
           />

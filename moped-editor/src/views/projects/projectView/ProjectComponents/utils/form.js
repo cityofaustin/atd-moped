@@ -76,6 +76,14 @@ export const useComponentOptionsFilteredByLineRepresentation = ({
     );
   }, [shouldFilterOptions, options, isLineRepresentation]);
 
+export const useComponentOptionsWithoutSignals = (options) =>
+  useMemo(() => {
+    return options.filter(
+      (component) =>
+        component.feature_layer?.internal_table !== "feature_signals"
+    );
+  }, [options]);
+
 /**
  * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
  * for a MUI autocomplete
