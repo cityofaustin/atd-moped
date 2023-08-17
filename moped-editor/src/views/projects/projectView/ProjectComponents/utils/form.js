@@ -55,6 +55,14 @@ export const useComponentOptions = (data) =>
     return options;
   }, [data]);
 
+/**
+ * Take options returned by useComponentOptions and filter them by line representation of the component
+ * currently being edited to keep from switching between lines and points after creation.
+ * @param {Boolean} shouldFilterOptions Should the options be filtered at all
+ * @param {Array} options Component options returned from useComponentOptions
+ * @param {Boolean} isLineRepresentation is component being edited line represented or not (line or point)
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
 export const useComponentOptionsFilteredByLineRepresentation = ({
   shouldFilterOptions,
   options,
@@ -64,7 +72,7 @@ export const useComponentOptionsFilteredByLineRepresentation = ({
     if (!shouldFilterOptions) return options;
 
     return options.filter(
-      (component) => component.data.line_representation == isLineRepresentation
+      (component) => component.data.line_representation === isLineRepresentation
     );
   }, [shouldFilterOptions, options, isLineRepresentation]);
 
