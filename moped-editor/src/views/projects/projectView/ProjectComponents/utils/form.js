@@ -79,8 +79,8 @@ export const useComponentOptionsFilteredByLineRepresentation = ({
 export const useComponentOptionsWithoutSignals = (options) =>
   useMemo(() => {
     return options.filter(
-      (component) =>
-        component.feature_layer?.internal_table !== "feature_signals"
+      (option) =>
+        option.data.feature_layer?.internal_table !== "feature_signals"
     );
   }, [options]);
 

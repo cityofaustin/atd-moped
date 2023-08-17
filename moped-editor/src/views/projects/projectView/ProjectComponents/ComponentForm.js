@@ -106,7 +106,7 @@ const ComponentForm = ({
   const componentOptionsWithoutSignals = useComponentOptionsWithoutSignals(
     componentOptionsFilteredByLineRepresentation
   );
-  console.log(componentOptionsWithoutSignals);
+
   const phaseOptions = usePhaseOptions(optionsData);
   const [component, phase, completionDate] = watch([
     "component",
