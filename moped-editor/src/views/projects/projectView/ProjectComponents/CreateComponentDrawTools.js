@@ -42,7 +42,7 @@ const CreateComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    const wasComponentDragged = action === "move";
+    const wasComponentDragged = action === "move" || action === "change_coordinates";
 
     if (wasComponentDragged) {
       createDispatch({

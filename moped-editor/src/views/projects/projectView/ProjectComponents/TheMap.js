@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import MapGL from "react-map-gl";
+import MapGL, { NavigationControl } from "react-map-gl";
 import { cloneDeep } from "lodash";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import BasemapSpeedDial from "./BasemapSpeedDial";
@@ -36,6 +36,7 @@ import {
   useDraftComponentFeatures,
 } from "./utils/makeFeatureCollections";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
+import { useHasMapLoaded } from "./utils/useHasMapLoaded";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -293,7 +294,12 @@ export default function TheMap({
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
         clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
+
+        // Make sure that state reflects whether the clicked component is related or not
+        // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);
+        !isNewClickedComponentRelated && setIsClickedComponentRelated(false);
+
         const ref = clickedComponentFromMap?._ref;
         ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
       }
@@ -326,6 +332,8 @@ export default function TheMap({
   const shouldShowEditDrawControls =
     isEditingComponent && shouldShowDrawControls;
 
+  const { hasMapLoaded, onMapLoad } = useHasMapLoaded();
+
   return (
     <>
       <MapGL
@@ -338,12 +346,14 @@ export default function TheMap({
         onClick={onClick}
         cursor={cursor}
         mapStyle={basemaps[basemapKey].mapStyle}
+        onLoad={onMapLoad}
         {...mapParameters}
       >
         <BasemapSpeedDial
           basemapKey={basemapKey}
           setBasemapKey={setBasemapKey}
         />
+        <NavigationControl position="bottom-left" showCompass={false} />
         <GeocoderControl position="top-left" marker={false} />
         {shouldShowCreateDrawControls && (
           <CreateComponentDrawTools
@@ -363,49 +373,54 @@ export default function TheMap({
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
-        <ProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          isDrawing={isDrawing}
-          linkMode={linkMode}
-          clickedComponent={clickedComponent}
-          projectComponentsFeatureCollection={
-            projectComponentsFeatureCollection
-          }
-          draftEditComponent={draftEditComponent}
-        />
-        <RelatedProjectSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          featureCollection={allRelatedComponentsFeatureCollection}
-          shouldShowRelatedProjects={shouldShowRelatedProjects}
-          clickedComponent={clickedComponent}
-        />
-        <DraftComponentSourcesAndLayers
-          draftComponentFeatures={draftComponentFeatures}
-          linkMode={linkMode}
-        />
-        <ClickedComponentSourcesAndLayers
-          clickedComponent={clickedComponent}
-          componentFeatureCollection={clickedComponentFeatureCollection}
-          isEditingComponent={isEditingComponent}
-          isClickedComponentRelated={isClickedComponentRelated}
-        />
-        <EditDraftComponentSourcesAndLayers
-          draftEditComponentFeatureCollection={
-            draftEditComponentFeatureCollection
-          }
-          linkMode={linkMode}
-          isEditingComponent={isEditingComponent}
-        />
-        <CTNSourcesAndLayers
-          isCreatingComponent={isCreatingComponent}
-          isEditingComponent={isEditingComponent}
-          isDrawing={isDrawing}
-          linkMode={linkMode}
-          ctnLinesGeojson={ctnLinesGeojson}
-          ctnPointsGeojson={ctnPointsGeojson}
-        />
+        {/* Wait until the map loads and components-placeholder layer is ready to target */}
+        {hasMapLoaded && (
+          <>
+            <ProjectSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              isDrawing={isDrawing}
+              linkMode={linkMode}
+              clickedComponent={clickedComponent}
+              projectComponentsFeatureCollection={
+                projectComponentsFeatureCollection
+              }
+              draftEditComponent={draftEditComponent}
+            />
+            <RelatedProjectSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              featureCollection={allRelatedComponentsFeatureCollection}
+              shouldShowRelatedProjects={shouldShowRelatedProjects}
+              clickedComponent={clickedComponent}
+            />
+            <DraftComponentSourcesAndLayers
+              draftComponentFeatures={draftComponentFeatures}
+              linkMode={linkMode}
+            />
+            <ClickedComponentSourcesAndLayers
+              clickedComponent={clickedComponent}
+              componentFeatureCollection={clickedComponentFeatureCollection}
+              isEditingComponent={isEditingComponent}
+              isClickedComponentRelated={isClickedComponentRelated}
+            />
+            <EditDraftComponentSourcesAndLayers
+              draftEditComponentFeatureCollection={
+                draftEditComponentFeatureCollection
+              }
+              linkMode={linkMode}
+              isEditingComponent={isEditingComponent}
+            />
+            <CTNSourcesAndLayers
+              isCreatingComponent={isCreatingComponent}
+              isEditingComponent={isEditingComponent}
+              isDrawing={isDrawing}
+              linkMode={linkMode}
+              ctnLinesGeojson={ctnLinesGeojson}
+              ctnPointsGeojson={ctnPointsGeojson}
+            />
+          </>
+        )}
         {/* <FeaturePopup
         onClose={() => setClickedProjectFeature(null)}
         feature={clickedProjectFeature}

@@ -18,6 +18,7 @@ export const makeComponentInsertData = (projectId, component) => {
     component_id,
     description,
     moped_subcomponents,
+    work_types,
     phase_id,
     subphase_id,
     completion_date,
@@ -30,6 +31,12 @@ export const makeComponentInsertData = (projectId, component) => {
   const subcomponentsArray = moped_subcomponents
     ? moped_subcomponents.map((subcomponent) => ({
         subcomponent_id: subcomponent.value,
+      }))
+    : [];
+
+  const workTypesArray = work_types
+    ? work_types.map((workType) => ({
+        work_type_id: workType.value,
       }))
     : [];
 
@@ -80,6 +87,9 @@ export const makeComponentInsertData = (projectId, component) => {
     project_id: projectId,
     moped_proj_components_subcomponents: {
       data: subcomponentsArray,
+    },
+    moped_proj_component_work_types: {
+      data: workTypesArray,
     },
     [featureTable]: {
       data: featuresToInsert,

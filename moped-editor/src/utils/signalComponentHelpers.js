@@ -8,6 +8,12 @@ export const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
 
 /**
+ * An array to use as the default value for
+ * moped_proj_component_work_type: 7 = "New"
+ */
+const DEFAULT_SIGNAL_WORK_TYPE = [{ work_type_id: 7 }];
+
+/**
  * MUI autocomplete getOptionSelected function to which matches input signal value to
  * select options.
  */
@@ -175,6 +181,11 @@ export const generateProjectComponent = (
     component_id: componentDef.component_id,
     feature_signals: {
       data: [signalRecord],
+    },
+    // create default value for component work type, which
+    // is a required field enforced through the UI
+    moped_proj_component_work_types: {
+      data: DEFAULT_SIGNAL_WORK_TYPE,
     },
   };
 };

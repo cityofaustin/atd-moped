@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from "react";
-import MapGL from "react-map-gl";
+import React, { useState } from "react";
+import MapGL, { NavigationControl } from "react-map-gl";
 import { Box } from "@mui/material";
 import ProjectSummaryMapFallback from "./ProjectSummaryMapFallback";
 import BaseMapSourceAndLayers from "../ProjectComponents/BaseMapSourceAndLayers";
@@ -14,23 +14,9 @@ import {
 import { useZoomToExistingComponents } from "../ProjectComponents/utils/map";
 import { useAllComponentsFeatureCollection } from "../ProjectComponents/utils/makeFeatureCollections";
 import { useProjectComponents } from "../ProjectComponents/utils/useProjectComponents";
+import { useHasMapLoaded } from "../ProjectComponents/utils/useHasMapLoaded";
+import { useMapRef } from "../ProjectComponents/utils/useMapRef";
 import "mapbox-gl/dist/mapbox-gl.css";
-
-/**
- * Use a callback ref to get the map instance and store it in state so we can watch it with useEffect
- * @see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
- * @returns {Array} - [mapRef, mapRefState] - mapRef is a callback ref, mapRefState is a state variable
- */
-const useMapRef = () => {
-  const [mapRefState, setMapRefState] = useState(null);
-  const mapRef = useCallback((mapInstance) => {
-    if (mapInstance !== null) {
-      // Store instance as the value of current just like a ref would
-      setMapRefState({ current: mapInstance });
-    }
-  }, []);
-  return [mapRef, mapRefState];
-};
 
 const ProjectSummaryMap = ({ data }) => {
   const [mapRef, mapRefState] = useMapRef();
@@ -58,6 +44,8 @@ const ProjectSummaryMap = ({ data }) => {
     projectComponentsFeatureCollection.features.length > 0 ||
     childComponentsFeatureCollection.features.length > 0;
 
+  const { hasMapLoaded, onMapLoad } = useHasMapLoaded();
+
   return (
     <Box>
       {areThereComponentFeatures ? (
@@ -68,30 +56,37 @@ const ProjectSummaryMap = ({ data }) => {
           mapStyle={basemaps.streets.mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
+          onLoad={onMapLoad}
         >
           <BasemapSpeedDial
             basemapKey={basemapKey}
             setBasemapKey={setBasemapKey}
           />
+          <NavigationControl position="bottom-left" showCompass={false} />
           <BaseMapSourceAndLayers basemapKey={basemapKey} />
-          <ProjectSourcesAndLayers
-            isCreatingComponent={false}
-            isEditingComponent={false}
-            isDrawing={false}
-            linkMode={null}
-            clickedComponent={null}
-            projectComponentsFeatureCollection={
-              projectComponentsFeatureCollection
-            }
-            draftEditComponent={null}
-          />
-          <RelatedProjectSourcesAndLayers
-            isCreatingComponent={false}
-            isEditingComponent={false}
-            featureCollection={childComponentsFeatureCollection}
-            shouldShowRelatedProjects={true}
-            clickedComponent={null}
-          />
+          {/* Wait until the map loads and components-placeholder layer is ready to target */}
+          {hasMapLoaded && (
+            <>
+              <ProjectSourcesAndLayers
+                isCreatingComponent={false}
+                isEditingComponent={false}
+                isDrawing={false}
+                linkMode={null}
+                clickedComponent={null}
+                projectComponentsFeatureCollection={
+                  projectComponentsFeatureCollection
+                }
+                draftEditComponent={null}
+              />
+              <RelatedProjectSourcesAndLayers
+                isCreatingComponent={false}
+                isEditingComponent={false}
+                featureCollection={childComponentsFeatureCollection}
+                shouldShowRelatedProjects={true}
+                clickedComponent={null}
+              />
+            </>
+          )}
         </MapGL>
       ) : (
         <ProjectSummaryMapFallback />

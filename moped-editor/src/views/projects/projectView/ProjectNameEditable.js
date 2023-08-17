@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import {
   Box,
   Grid,
@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useMutation } from "@apollo/client";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 import { UPDATE_PROJECT_NAME_QUERY } from "../../../queries/project";
 
 /**
@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
   },
   boxField: {
     width: "100%",
+  },
+  titleId: {
+    alignSelf: "center",
   },
 }));
 
@@ -160,7 +163,8 @@ const ProjectNameEditable = (props) => {
                   classes: {
                     input: classes.titleEditField,
                   },
-                }} />
+                }}
+              />
             </Grid>
             <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
               <Icon
@@ -185,12 +189,16 @@ const ProjectNameEditable = (props) => {
           <span className={classes.titleDisplayField}>
             <Typography
               color="textPrimary"
-              variant="h1"
+              variant="h2"
               onClick={() => setIsEditing(true)}
             >
               {projectName}
             </Typography>
-            <Typography color="textSecondary" variant="h1">
+            <Typography
+              color="textSecondary"
+              variant="h2"
+              className={classes.titleId}
+            >
               &nbsp;#{props.projectId}
             </Typography>
           </span>

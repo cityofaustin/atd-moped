@@ -137,7 +137,8 @@ export const useZoomToExistingComponents = (
   const [hasMapZoomedInitially, setHasMapZoomedInitially] = useState(false);
 
   useEffect(() => {
-    if (!featureCollection || hasMapZoomedInitially) return;
+    if (!(featureCollection.features.length > 0) || hasMapZoomedInitially)
+      return;
     if (!mapRef?.current) return;
 
     zoomMapToFeatureCollection(

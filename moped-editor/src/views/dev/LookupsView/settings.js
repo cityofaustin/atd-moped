@@ -30,6 +30,17 @@ const subComponentHandler = (subcomponents) =>
   ));
 
 /**
+ * Parses an array of component work types into an array of work type names
+ * @param {Object[]} workTypes - array of moped_work_types objects
+ * @returns { JSX } An array of <div>s with the work type name
+ */
+const workTypeHandler = (workTypes) =>
+  workTypes &&
+  workTypes.map((workType) => (
+    <div key={workType.moped_work_type.id}>{workType.moped_work_type.name}</div>
+  ));
+
+/**
  * Definitions for data tables.
  * @type { Object[]}  - An array of settings for data tables. Each object references a typename
  * returned from a Hasura query
@@ -78,6 +89,11 @@ export const SETTINGS = [
         key: "moped_components_subcomponents",
         label: "Subcomponents",
         handler: subComponentHandler,
+      },
+      {
+        key: "moped_component_work_types",
+        label: "Work types",
+        handler: workTypeHandler,
       },
     ],
   },
