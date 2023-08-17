@@ -12,7 +12,6 @@ import DraftComponentSourcesAndLayers from "./DraftComponentSourcesAndLayers";
 import EditDraftComponentSourcesAndLayers from "./EditDraftComponentSourcesAndLayers";
 import CTNSourcesAndLayers from "./CTNSourcesAndLayers";
 import ClickedComponentSourcesAndLayers from "./ClickedComponentSourcesAndLayers";
-import DistrictsLayer from "./districtslayer";
 import {
   basemaps,
   mapParameters,
@@ -364,7 +363,6 @@ export default function TheMap({
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
-        <DistrictsLayer />
         <ProjectSourcesAndLayers
           isCreatingComponent={isCreatingComponent}
           isEditingComponent={isEditingComponent}
