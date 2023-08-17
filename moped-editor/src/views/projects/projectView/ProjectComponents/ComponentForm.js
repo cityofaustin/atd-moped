@@ -100,11 +100,11 @@ const ComponentForm = ({
   const isLineRepresentation =
     initialFormValues?.component?.data?.line_representation;
 
-  const componentOptions = useComponentOptions(optionsData);
+  const unfilteredComponentOptions = useComponentOptions(optionsData);
   const componentOptionsFilteredByLineRepresentation =
     useComponentOptionsFilteredByLineRepresentation({
       shouldFilterOptions: isEditingExistingComponent,
-      options: componentOptions,
+      options: unfilteredComponentOptions,
       isLineRepresentation,
     });
   const phaseOptions = usePhaseOptions(optionsData);
@@ -168,7 +168,11 @@ const ComponentForm = ({
           <ControlledAutocomplete
             id="component"
             label="Component Type"
-            options={areOptionsLoading ? [] : componentOptions}
+            options={
+              isEditingExistingComponent
+                ? componentOptionsFilteredByLineRepresentation
+                : unfilteredComponentOptions
+            }
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
                 key={option.value}

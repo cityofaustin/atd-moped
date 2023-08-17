@@ -64,7 +64,7 @@ export const useComponentOptionsFilteredByLineRepresentation = ({
     if (!shouldFilterOptions) return options;
 
     return options.filter(
-      (component) => component.line_representation == isLineRepresentation
+      (component) => component.data.line_representation == isLineRepresentation
     );
   }, [shouldFilterOptions, options, isLineRepresentation]);
 
