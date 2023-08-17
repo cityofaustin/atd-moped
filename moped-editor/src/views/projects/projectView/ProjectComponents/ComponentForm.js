@@ -72,6 +72,10 @@ const ComponentForm = ({
   const doesInitialValueHaveSubcomponents =
     initialFormValues?.subcomponents.length > 0;
 
+  // TODO: Handle case when switching between components with and without subcomponents
+  // when changing from with to without, the subcomponents dropdown remains visible but has
+  // no options
+
   const {
     register,
     handleSubmit,
