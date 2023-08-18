@@ -11,7 +11,6 @@ import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
-import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import { useAppBarHeight } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";

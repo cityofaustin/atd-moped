@@ -5,6 +5,7 @@ import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
+import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
 
@@ -97,19 +98,21 @@ const ProjectComponentsList = ({
                   </Button>
                 }
               />
-              <ListItemText
-                primary={
-                  <Button
-                    fullWidth
-                    size="small"
-                    color="primary"
-                    startIcon={<TimelineIcon />}
-                    onClick={() => onEditMap(component)}
-                  >
-                    Map
-                  </Button>
-                }
-              />
+              {!isSignalComponent(component) && (
+                <ListItemText
+                  primary={
+                    <Button
+                      fullWidth
+                      size="small"
+                      color="primary"
+                      startIcon={<TimelineIcon />}
+                      onClick={() => onEditMap(component)}
+                    >
+                      Map
+                    </Button>
+                  }
+                />
+              )}
             </ListItem>
           }
         />
@@ -119,5 +122,3 @@ const ProjectComponentsList = ({
 };
 
 export default ProjectComponentsList;
-
-// TODO: Test signal and non-signal components
