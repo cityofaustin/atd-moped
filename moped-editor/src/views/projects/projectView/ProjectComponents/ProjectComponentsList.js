@@ -1,6 +1,7 @@
 import ComponentListItem from "./ComponentListItem";
 import Button from "@mui/material/Button";
-import { EditOutlined } from "@mui/icons-material";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -88,10 +89,10 @@ const ProjectComponentsList = ({
                     fullWidth
                     size="small"
                     color="primary"
-                    startIcon={<EditOutlined />}
+                    startIcon={<ListIcon />}
                     onClick={() => onStartEditingComponent(component)}
                   >
-                    Edit
+                    Attributes
                   </Button>
                 }
               />
@@ -101,10 +102,10 @@ const ProjectComponentsList = ({
                     fullWidth
                     size="small"
                     color="primary"
-                    startIcon={<EditOutlined />}
+                    startIcon={<TimelineIcon />}
                     onClick={() => onStartEditingComponent(component)}
                   >
-                    Edit
+                    Map
                   </Button>
                 }
               />
@@ -128,3 +129,5 @@ export default ProjectComponentsList;
 // TODO: Update click actions to bypass EditModeDialog
 // TODO: Remove EditModeDialog
 // TODO: Test signal and non-signal components
+// TODO: for the details button, use the same list icon used for the "Attributes" button
+// TODO: for map button, use the same timeline icon used for the "Map" button
