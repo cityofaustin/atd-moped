@@ -95,6 +95,19 @@ const ProjectComponentsList = ({
                   </Button>
                 }
               />
+              <ListItemText
+                primary={
+                  <Button
+                    fullWidth
+                    size="small"
+                    color="primary"
+                    startIcon={<EditOutlined />}
+                    onClick={() => onStartEditingComponent(component)}
+                  >
+                    Edit
+                  </Button>
+                }
+              />
             </ListItem>
           }
         />
@@ -104,3 +117,14 @@ const ProjectComponentsList = ({
 };
 
 export default ProjectComponentsList;
+
+// TODO: Check dispatch messages:
+// start_attributes_edit
+// vs. start_edit
+// to make sure that we don't miss any events
+// Looks like we jump straight to start_attributes_edit for signal components
+// so we might already be good
+// TODO: Add new attributes and map buttons
+// TODO: Update click actions to bypass EditModeDialog
+// TODO: Remove EditModeDialog
+// TODO: Test signal and non-signal components
