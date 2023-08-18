@@ -16,6 +16,7 @@ const ProjectComponentsList = ({
   clickedComponent,
   setClickedComponent,
   onClickZoomToComponent,
+  onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
   setIsClickedComponentRelated,
@@ -43,6 +44,9 @@ const ProjectComponentsList = ({
       editDispatch({ type: "start_edit", payload: component });
     }
   };
+
+  const onEditAttributes = () =>
+    editDispatch({ type: "start_attributes_edit" });
 
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
@@ -90,7 +94,7 @@ const ProjectComponentsList = ({
                     size="small"
                     color="primary"
                     startIcon={<ListIcon />}
-                    onClick={() => onStartEditingComponent(component)}
+                    onClick={onEditAttributes}
                   >
                     Attributes
                   </Button>
@@ -103,7 +107,7 @@ const ProjectComponentsList = ({
                     size="small"
                     color="primary"
                     startIcon={<TimelineIcon />}
-                    onClick={() => onStartEditingComponent(component)}
+                    onClick={onEditFeatures}
                   >
                     Map
                   </Button>
@@ -119,13 +123,6 @@ const ProjectComponentsList = ({
 
 export default ProjectComponentsList;
 
-// TODO: Check dispatch messages:
-// start_attributes_edit
-// vs. start_edit
-// to make sure that we don't miss any events
-// Looks like we jump straight to start_attributes_edit for signal components
-// so we might already be good
-// TODO: Add new attributes and map buttons
 // TODO: Update click actions to bypass EditModeDialog
 // TODO: Remove EditModeDialog
 // TODO: Test signal and non-signal components

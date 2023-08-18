@@ -240,6 +240,7 @@ export default function MapView({
                 clickedComponent={clickedComponent}
                 setClickedComponent={setClickedComponent}
                 onClickZoomToComponent={onClickZoomToComponent}
+                onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
