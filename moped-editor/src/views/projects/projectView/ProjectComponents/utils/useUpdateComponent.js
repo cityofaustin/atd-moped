@@ -25,19 +25,16 @@ const editReducer = (state, action) => {
     case "start_attributes_edit":
       return {
         ...state,
-        showEditModeDialog: false,
         showEditAttributesDialog: true,
       };
     case "start_map_edit":
       return {
         ...state,
-        showEditModeDialog: false,
         isEditingComponent: true,
       };
     case "cancel_mode_edit":
       return {
         ...state,
-        showEditModeDialog: false,
         isEditingComponent: false,
         draftEditComponent: null,
       };
@@ -232,7 +229,6 @@ export const useUpdateComponent = ({
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
     showEditAttributesDialog: false,
-    showEditModeDialog: false,
     draftEditComponent: null,
     drawnLineFeatureUpdates: [],
     drawnPointFeatureUpdates: [],

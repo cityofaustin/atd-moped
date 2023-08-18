@@ -301,11 +301,6 @@ export default function MapView({
             setIsDeletingComponent={setIsDeletingComponent}
             onDeleteComponent={onDeleteComponent}
           />
-          <EditModeDialog
-            showDialog={editState.showEditModeDialog}
-            editDispatch={editDispatch}
-            onEditFeatures={onEditFeatures}
-          />
           <EditAttributesModal
             showDialog={editState.showEditAttributesDialog}
             editDispatch={editDispatch}

@@ -120,8 +120,4 @@ const ProjectComponentsList = ({
 
 export default ProjectComponentsList;
 
-// TODO: Update click actions to bypass EditModeDialog
-// TODO: Remove EditModeDialog
 // TODO: Test signal and non-signal components
-// TODO: for the details button, use the same list icon used for the "Attributes" button
-// TODO: for map button, use the same timeline icon used for the "Map" button
