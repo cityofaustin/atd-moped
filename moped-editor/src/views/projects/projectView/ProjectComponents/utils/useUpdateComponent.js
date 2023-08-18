@@ -230,6 +230,8 @@ export const useUpdateComponent = ({
     drawnPointFeatureUpdates: [],
   });
 
+  console.log(editState.draftEditComponent);
+
   const doesDraftEditComponentHaveFeatures =
     useDoesDraftEditComponentHaveFeatures(editState.draftEditComponent);
   const draftEditComponentFeatureCollection = useComponentFeatureCollection(

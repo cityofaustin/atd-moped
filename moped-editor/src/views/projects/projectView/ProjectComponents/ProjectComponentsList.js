@@ -29,9 +29,10 @@ const ProjectComponentsList = ({
 
   const onListItemClick = (component) => {
     setIsClickedComponentRelated(false);
-    // If we are editing a component, clicking on a component should not change the clicked component
+    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
     if (isExpanded(component)) {
       setClickedComponent(null);
+      editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
       setClickedComponent(component);
       editDispatch({ type: "set_draft_component", payload: component });
