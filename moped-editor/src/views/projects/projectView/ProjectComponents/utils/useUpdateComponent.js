@@ -15,13 +15,12 @@ import { fitBoundsOptions } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
-    case "start_edit":
-      const draftEditComponent = action.payload;
+    case "set_draft_component":
+      const clickedComponent = action.payload;
 
       return {
         ...state,
-        showEditModeDialog: true,
-        draftEditComponent,
+        draftEditComponent: clickedComponent,
       };
     case "start_attributes_edit":
       return {

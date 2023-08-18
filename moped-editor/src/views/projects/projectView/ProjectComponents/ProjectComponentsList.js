@@ -5,7 +5,6 @@ import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
-import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
 
@@ -34,19 +33,17 @@ const ProjectComponentsList = ({
       setClickedComponent(null);
     } else if (isNotCreatingOrEditing) {
       setClickedComponent(component);
-    }
-  };
-
-  const onStartEditingComponent = (component) => {
-    if (isSignalComponent(component)) {
-      editDispatch({ type: "start_attributes_edit" });
-    } else {
-      editDispatch({ type: "start_edit", payload: component });
+      editDispatch({ type: "set_draft_component", payload: component });
     }
   };
 
   const onEditAttributes = () =>
     editDispatch({ type: "start_attributes_edit" });
+
+  const onEditMap = (component) => {
+    editDispatch({ type: "start_map_edit", payload: component });
+    onEditFeatures();
+  };
 
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
@@ -107,7 +104,7 @@ const ProjectComponentsList = ({
                     size="small"
                     color="primary"
                     startIcon={<TimelineIcon />}
-                    onClick={onEditFeatures}
+                    onClick={() => onEditMap(component)}
                   >
                     Map
                   </Button>
