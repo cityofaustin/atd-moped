@@ -256,7 +256,7 @@ export default function TheMap({
   const onClick = (e) => {
     /* if map is clicked outside interactive layers */
     if (e.features.length === 0) {
-      /* clear clickedComponent and draftEditComponent to collapse list item and  */
+      /* clear clickedComponent and draftEditComponent to collapse list item and stop editing  */
       if (clickedComponent) {
         setClickedComponent(null);
         editDispatch({ type: "clear_draft_component" });
