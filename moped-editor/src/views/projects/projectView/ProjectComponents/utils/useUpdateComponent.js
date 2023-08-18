@@ -22,6 +22,11 @@ const editReducer = (state, action) => {
         ...state,
         draftEditComponent: clickedComponent,
       };
+    case "clear_draft_component":
+      return {
+        ...state,
+        draftEditComponent: null,
+      };
     case "start_attributes_edit":
       return {
         ...state,
@@ -32,24 +37,16 @@ const editReducer = (state, action) => {
         ...state,
         isEditingComponent: true,
       };
-    case "cancel_mode_edit":
-      return {
-        ...state,
-        isEditingComponent: false,
-        draftEditComponent: null,
-      };
     case "cancel_attributes_edit":
       return {
         ...state,
         showEditAttributesDialog: false,
         isEditingComponent: false,
-        draftEditComponent: null,
       };
     case "cancel_map_edit":
       return {
         ...state,
         isEditingComponent: false,
-        draftEditComponent: null,
       };
     case "update_clicked_features":
       const updatedDraftEditComponent = action.callback(
@@ -210,7 +207,6 @@ const editReducer = (state, action) => {
       return {
         ...state,
         isEditingComponent: false,
-        draftEditComponent: null,
       };
     default:
       throw Error(`Unknown action. ${action.type}`);
