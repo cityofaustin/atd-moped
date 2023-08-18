@@ -97,18 +97,11 @@ def merge_geoms(features):
         # for point features, we can append each feature's coordinates to our
         # coordinate array
         geometry_type = feature["geometry"]["type"]
-        if geometry_type == "Point":
-            breakpoint()
-            geometry["coordinates"].append(feature["geometry"]["coordinates"])
-        elif geometry_type == "MultiPoint":
+        if geometry_type == "MultiPoint":
             geometry["coordinates"] += feature["geometry"]["coordinates"]
         elif geometry_type == "MultiLineString":
             coords = feature["geometry"]["coordinates"]
             geometry["coordinates"] += coords
-        elif geometry_type == "LineString":
-            breakpoint()
-            coords = feature["geometry"]["coordinates"]
-            geometry["coordinates"] += [coords]
         else:
             raise ValueError("Feature has unsupported geometry type")
     return geometry
