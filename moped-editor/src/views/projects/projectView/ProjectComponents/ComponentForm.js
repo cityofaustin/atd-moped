@@ -151,6 +151,7 @@ const ComponentForm = ({
     dependentFieldName: "subcomponents",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
+    disable: isEditingExistingComponent,
   });
 
   // todo: preserve work type if allowed when switching b/t component types
@@ -159,6 +160,7 @@ const ComponentForm = ({
     dependentFieldName: "work_types",
     valueToSet: defaultFormValues.work_types,
     setValue,
+    disable: isEditingExistingComponent,
   });
 
   return (

@@ -355,6 +355,7 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
  * @param {string} dependentFieldName - Name of the dependent field
  * @param {*} valueToSet - Any value to set the dependent field to
  * @param {Function} setValue - React Hook Form setValue function
+ * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
  */
 export const useResetDependentFieldOnAutocompleteChange = ({
@@ -362,6 +363,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   dependentFieldName,
   valueToSet,
   setValue,
+  disable = false,
 }) => {
   // Track previous value to compare new value
   const [previousParentFormValue, setPreviousParentValue] =
@@ -372,6 +374,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   useEffect(() => {
     // keep update from firing if the parent value hasn't changed
     if (parentValue?.value === previousParentFormValue?.value) return;
+    if (disable) return;
 
     setValue(dependentFieldName, valueToSet);
     setPreviousParentValue(parentValue);
