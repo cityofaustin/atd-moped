@@ -384,5 +384,6 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     setValue,
     dependentFieldName,
     valueToSet,
+    disable,
   ]);
 };
