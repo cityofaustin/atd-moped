@@ -73,15 +73,18 @@ $ node index.js local
 
 ### On deck
 
-- project groups
 - project_dates
 - project types
 - files?
 
-### Issues to make / todo
+### Todo
+
+- project groups (aka project tags):
+  - holding off bc there seems like a lot of overlap with component tags. this should be a very quick implementation once we decide on what needs to be created.
 
 - work types:
   - any remaining mappings?
+  - options not implemented? https://docs.google.com/spreadsheets/d/1bQD0xBQm4BOdTJ1U4hbk98dywJVJZ7O6G-VYLRbviQU/edit#gid=0
 - backfill is_coa_staff column in staging and prod for all users :/
 - work authorizations:
   - WAPRefix and ID and workorderid_old :/
@@ -90,6 +93,7 @@ $ node index.js local
     - Add "Other" and "General Contractor" (PDD uses a lot of that)
 - finish transit - bust stop component/subcomponent maps.
 - decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
+- disable creative crosswalk component? on indefinite hold per heather b
 - there are facility spatial records with multiple features within one layer and across geom types.
 - add user matching to project `added_by`
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
@@ -97,7 +101,6 @@ $ node index.js local
 - check geometry types of components - some may need to be converted to point or line
 - dedupe existing projects with interim_project_id
   - figure out how to handle these :/
-- moped editor: component phase override: we need to allow a separate completion date without a manually entered phase
 - moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
