@@ -207,6 +207,7 @@ const editReducer = (state, action) => {
       return {
         ...state,
         isEditingComponent: false,
+        draftEditComponent: null,
       };
     default:
       throw Error(`Unknown action. ${action.type}`);
