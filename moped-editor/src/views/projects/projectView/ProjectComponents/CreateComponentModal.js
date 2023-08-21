@@ -41,6 +41,7 @@ const CreateComponentModal = ({
       subphase,
       completionDate,
       tags,
+      work_types,
       srtsId,
     } = formData;
 
@@ -51,6 +52,7 @@ const CreateComponentModal = ({
       line_representation,
       internal_table,
       moped_subcomponents: subcomponents,
+      work_types,
       description: description?.length > 0 ? description : null,
       phase_id: phase?.data.phase_id,
       subphase_id: subphase?.data.subphase_id,

@@ -3,7 +3,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 
 /**
  * Component that rendersa feature collection of features for the clicked component
- * All layers are set to show below basemap street labels using beforeId = "street-labels"
+ * All layers are set to show below basemap street labels using beforeId = "components-placeholder"
  * @param {Object} clickedComponent - Details of the component that was clicked
  * @param {Object} componentFeatureCollection - GeoJSON feature collection of the component clicked
  * @param {Boolean} isEditingComponent - are we editing a component?
@@ -36,7 +36,7 @@ const ClickedComponentSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["clicked-component-features-lines"].layerProps,
             layout: {
@@ -50,7 +50,7 @@ const ClickedComponentSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["clicked-related-features-lines"].layerProps,
             layout: {
@@ -63,7 +63,7 @@ const ClickedComponentSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["clicked-component-features-points"].layerProps,
             layout: {
@@ -75,7 +75,7 @@ const ClickedComponentSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["clicked-related-features-points"].layerProps,
             layout: {

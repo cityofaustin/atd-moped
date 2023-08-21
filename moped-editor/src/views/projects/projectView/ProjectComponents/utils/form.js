@@ -1,7 +1,5 @@
 import { useMemo, useEffect, useState } from "react";
-import { Autocomplete } from "@mui/material";
-import { Controller } from "react-hook-form";
-import { Icon, TextField } from "@mui/material";
+import { Icon } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
@@ -10,6 +8,12 @@ import {
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import theme from "src/theme/index";
+
+/**
+ * Allows the component work type to be defaulted to `New` -
+ * this value matches the `moped_work_types.id` value in the DB.
+ */
+export const DEFAULT_COMPONENT_WORK_TYPE_OPTION = { value: 7, label: "New" };
 
 /**
  * Not all component type records have a value in the subtype column but let's concatenate them if they do
@@ -71,6 +75,31 @@ export const useSubcomponentOptions = (componentId, optionsData) =>
     const options = subcomponents.map((subComp) => ({
       value: subComp.moped_subcomponent.subcomponent_id,
       label: subComp.moped_subcomponent.subcomponent_name,
+    }));
+
+    return options;
+  }, [componentId, optionsData]);
+
+/**
+ * Take the data nested in the chosen moped_components option and produce a list of work type options (if there are some)
+ * for a MUI autocomplete
+ * @param {Integer} componentId The unique ID of the moped_component
+ * @param {Object[]} optionsData And array of moped_components records
+ * @returns {Array} The work type options with value and label
+ */
+export const useWorkTypeOptions = (componentId, optionsData) =>
+  useMemo(() => {
+    if (!componentId || !optionsData) return [];
+
+    const workTypes = optionsData.find(
+      (option) => option.component_id === componentId
+    )?.moped_component_work_types;
+
+    if (!workTypes) return [];
+
+    const options = workTypes.map((workType) => ({
+      value: workType.moped_work_type.id,
+      label: workType.moped_work_type.name,
     }));
 
     return options;
@@ -155,6 +184,18 @@ export const makeSubcomponentsFormFieldValues = (subcomponents) => {
   return subcomponents.map((subcomponent) => ({
     value: subcomponent.subcomponent_id,
     label: subcomponent.moped_subcomponent?.subcomponent_name,
+  }));
+};
+
+/**
+ * Create the values for the work types autocomplete
+ * @param {Array} workTypes - The work type records
+ * @returns {Object} the field value
+ */
+export const makeWorkTypesFormFieldValues = (workTypes) => {
+  return workTypes.map((workType) => ({
+    value: workType.moped_work_type.id,
+    label: workType.moped_work_type.name,
   }));
 };
 
@@ -273,46 +314,6 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
     </span>
   );
 };
-
-export const ControlledAutocomplete = ({
-  id,
-  options,
-  renderOption,
-  name,
-  control,
-  label,
-  autoFocus = false,
-  multiple = false,
-  disabled,
-}) => (
-  <Controller
-    id={id}
-    name={name}
-    control={control}
-    render={({ field }) => (
-      <Autocomplete
-        {...field}
-        options={options}
-        multiple={multiple}
-        getOptionLabel={(option) => option?.label || ""}
-        isOptionEqualToValue={(option, value) => option?.value === value?.value}
-        renderOption={renderOption}
-        disabled={disabled}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            inputRef={field.ref}
-            size="small"
-            label={label}
-            variant="outlined"
-            autoFocus={autoFocus}
-          />
-        )}
-        onChange={(_event, option) => field.onChange(option)}
-      />
-    )}
-  />
-);
 
 /**
  * Watch parent field and reset dependent field to default value when parent field changes

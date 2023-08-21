@@ -26,7 +26,6 @@ WITH inserts_todo AS (
             'intersection',
             'pedestrian',
             'sidewalk',
-            'signal',
             'trail',
             'transit')
         AND lower(subcomponent_name)
