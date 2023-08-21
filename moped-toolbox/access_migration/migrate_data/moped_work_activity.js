@@ -109,19 +109,9 @@ const fields = [
           submittedByUser.toLowerCase()
       );
       if (!matchedUser) {
-        if (
-          [
-            "Pete Dahlberg (Intern)",
-          ].includes(submittedByUser)
-        ) {
-          // todo: :/ cannot edit prod and staging users through UI!
-          console.log("skipping user", submittedByUser);
-          return;
-        } else {
-          console.log("USER NOT FOUND: ", submittedByUser);
-          throw `User not found`;
-          debugger;
-        }
+        console.log("USER NOT FOUND: ", submittedByUser);
+        throw `User not found`;
+        debugger;
       }
       newRow.created_by_user_id = matchedUser.user_id;
       newRow.updated_by_user_id = matchedUser.user_id;
