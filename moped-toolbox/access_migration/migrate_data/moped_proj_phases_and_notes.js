@@ -104,7 +104,6 @@ const getProjNotes = (statusUpdates) =>
     if (!matchedUser) {
       if (
         [
-          "Pete Dahlberg (Intern)",
           "_Unknown",
         ].includes(updatedBy)
       ) {
