@@ -132,7 +132,6 @@ export default function MapView({
   }, [clickedComponent, projectComponents]);
 
   const {
-    onStartCreatingComponent,
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
     onCancelComponentCreate,
@@ -140,7 +139,6 @@ export default function MapView({
     createDispatch,
   } = useCreateComponent({
     projectId,
-    setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
@@ -189,6 +187,13 @@ export default function MapView({
       featureCollection,
       fitBoundsOptions.zoomToClickedComponent
     );
+  };
+
+  /* Start creating and clear clicked component and draft edit states to deselect component */
+  const onStartCreatingComponent = () => {
+    createDispatch({ type: "start_create" });
+    editDispatch({ type: "clear_draft_component" });
+    setClickedComponent(null);
   };
 
   return (
