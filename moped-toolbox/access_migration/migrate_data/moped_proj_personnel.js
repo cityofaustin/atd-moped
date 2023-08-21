@@ -22,19 +22,9 @@ const fields = [
           thisUser.toLowerCase()
       );
       if (!matchedUser) {
-        if (
-          [
-            "Pete Dahlberg (Intern)",
-          ].includes(thisUser)
-        ) {
-          // todo: :/ cannot edit prod and staging users through UI!
-          console.log("skipping user", thisUser);
-        //   return;
-        } else {
-          console.log("USER NOT FOUND: ", thisUser);
-          debugger;
-          throw `User not found`;
-        }
+        console.log("USER NOT FOUND: ", thisUser);
+        debugger;
+        throw `User not found`;
       }
       return matchedUser?.user_id || 1;
     },
