@@ -42,14 +42,15 @@ const ProjectComponentsList = ({
   const onEditAttributes = () =>
     editDispatch({ type: "start_attributes_edit" });
 
-  const onEditMap = (component) => {
-    editDispatch({ type: "start_map_edit", payload: component });
+  const onEditMap = () => {
+    editDispatch({ type: "start_map_edit" });
     onEditFeatures();
   };
 
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
+    editDispatch({ type: "set_draft_component", payload: component });
   };
 
   return (
@@ -107,7 +108,7 @@ const ProjectComponentsList = ({
                       size="small"
                       color="primary"
                       startIcon={<TimelineIcon />}
-                      onClick={() => onEditMap(component)}
+                      onClick={onEditMap}
                     >
                       Map
                     </Button>
