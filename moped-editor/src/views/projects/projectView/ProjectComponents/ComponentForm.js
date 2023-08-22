@@ -108,10 +108,11 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate] = watch([
+  const [component, phase, completionDate, subcomponents] = watch([
     "component",
     "phase",
     "completionDate",
+    "subcomponents",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -218,8 +219,9 @@ const ComponentForm = ({
             helperText="Required"
           />
         </Grid>
-        {/* Hide unless there are subcomponents for the chosen component */}
-        {subcomponentOptions.length !== 0 && (
+        {/* Hide unless there are subcomponents for the chosen component
+        or if there is a subcomponent chosen for the component */}
+        {(subcomponentOptions.length !== 0 || subcomponents.length !== 0) && (
           <Grid item xs={12}>
             <ControlledAutocomplete
               id="subcomponents"
