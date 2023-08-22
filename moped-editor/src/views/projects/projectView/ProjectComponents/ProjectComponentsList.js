@@ -96,7 +96,7 @@ const ProjectComponentsList = ({
                     startIcon={<ListIcon />}
                     onClick={onEditAttributes}
                   >
-                    Attributes
+                    Details
                   </Button>
                 }
               />
