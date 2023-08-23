@@ -1,16 +1,15 @@
-import React from "react";
+import { useState, useEffect, useCallback } from "react";
 import Can from "../../auth/Can";
-import Alert from "@mui/material/Alert";
-import ContentCopy from "@mui/icons-material/ContentCopy";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Button from "@mui/material/Button";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import Email from "@mui/icons-material/Email";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemIcon from "@mui/material/ListItemIcon";
-import Snackbar from "@mui/material/Snackbar";
 import { NavLink as RouterLink } from "react-router-dom";
 
 export const AddUserButton = () => (
@@ -42,48 +41,72 @@ export const EditUserButton = ({ id }) => (
   />
 );
 
-const writeTextToClipboard = (text, onSuccessCallback) => {
+/**
+ * Filter function to identify moped user group (MUG) members
+ * @param {object} user - a `moped_user` object
+ * @returns user
+ */
+const mugUserFilter = (user) => user.is_user_group_member && !user.is_deleted;
+
+/**
+ * Filter function to identify all active users who are not non-login users
+ * @param {object} user - a `moped_user` object
+ * @returns user
+ */
+const allUserFilter = (user) =>
+  !user.is_deleted && !user.roles.includes("non-login-user");
+
+/**
+ * Copies user email addresses to clipboard as a semi-colon-separated string
+ * @param {object[]} users - array of `moped_user` bjects
+ * @param {function} userFilter - filter function to apply to user array
+ * @returns Promise to write data to clipboard
+ */
+const copyEmailsToClipboard = (users, userFilter) => {
+  const emails = users
+    ?.filter(userFilter)
+    .map((u) => u.email)
+    .join(";");
   const type = "text/plain";
-  const blob = new Blob([text], { type });
+  const blob = new Blob([emails], { type });
   const data = [new ClipboardItem({ [type]: blob })];
-  navigator.clipboard.write(data).then(
-    () => onSuccessCallback(),
-    () => console.error("Something went wrong :/")
-  );
+  return navigator.clipboard.write(data);
 };
 
-const onCopyAllEmails = (users) => {
-  debugger;
-  const emailString = users
-    ?.filter((u) => !u.is_deleted)
-    .map((u) => u.email)
-    .join(";");
-  writeTextToClipboard(emailString, () => console.log("success"));
-};
-
-const onCopyMugEmails = (users) => {
-  const emailString = users
-    ?.filter((u) => u.is_user_group_member && !u.is_deleted)
-    .map((u) => u.email)
-    .join(";");
-  writeTextToClipboard(emailString, () => console.log("success"));
-};
-
+/**
+ * Menu component which copies Moped user emails to clopboard
+ * @param {object[]} users - array of `moped_user` objects
+ */
 export const CopyMugUsersButton = ({ users }) => {
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const open = Boolean(anchorEl);
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [copiedListName, setCopiedListName] = useState(null);
 
   const handleMenuClick = (e) => {
     setAnchorEl(e.currentTarget);
   };
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-  };
-  const handleSnackbarOpen = () => setSnackbarOpen(true);
-  const handleSnackbarClose = () => setSnackbarOpen(false);
 
-  console.log("USERS", users);
+  const handleCloseMenu = useCallback(() => {
+    setAnchorEl(null);
+  }, [setAnchorEl]);
+
+  const onMenuItemClick = (name) => {
+    const userFilter = name === "mug" ? mugUserFilter : allUserFilter;
+    copyEmailsToClipboard(users, userFilter).then(() => {
+      setCopiedListName(name);
+    });
+  };
+
+  useEffect(() => {
+    if (!copiedListName) return;
+    const timeout = setTimeout(() => {
+      setCopiedListName(null);
+      handleCloseMenu();
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [copiedListName, handleCloseMenu]);
+
+  const open = Boolean(anchorEl);
+
   return (
     <div>
       <Button
@@ -94,7 +117,7 @@ export const CopyMugUsersButton = ({ users }) => {
         onClick={handleMenuClick}
         startIcon={<Email />}
       >
-        Copy email addresses
+        Contact users
       </Button>
       <Menu
         id="basic-menu"
@@ -105,33 +128,27 @@ export const CopyMugUsersButton = ({ users }) => {
           "aria-labelledby": "basic-button",
         }}
       >
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={() => onMenuItemClick("mug")}>
           <ListItemIcon>
-            <ContentCopy fontSize="small" />
+            {copiedListName === "mug" ? (
+              <CheckCircleIcon fontSize="small" />
+            ) : (
+              <ContentCopyIcon fontSize="small" />
+            )}
           </ListItemIcon>
           <ListItemText>Moped User Group</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleCloseMenu}>
+        <MenuItem onClick={() => onMenuItemClick("allUsers")}>
           <ListItemIcon>
-            <ContentCopy fontSize="small" />
+            {copiedListName === "allUsers" ? (
+              <CheckCircleIcon fontSize="small" />
+            ) : (
+              <ContentCopyIcon fontSize="small" />
+            )}
           </ListItemIcon>
           <ListItemText>All active users</ListItemText>
         </MenuItem>
       </Menu>
-
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000}
-        onClose={handleSnackbarClose}
-      >
-        <Alert
-          onClose={handleSnackbarClose}
-          severity="success"
-          sx={{ width: "100%" }}
-        >
-          This is a success message!
-        </Alert>
-      </Snackbar>
     </div>
   );
 };
