@@ -64,7 +64,7 @@ const allUserFilter = (user) =>
  */
 const copyEmailsToClipboard = (users, userFilter) => {
   const emails = users
-    ?.filter(userFilter)
+    .filter(userFilter)
     .map((u) => u.email)
     .join(";");
   const type = "text/plain";
@@ -74,7 +74,7 @@ const copyEmailsToClipboard = (users, userFilter) => {
 };
 
 /**
- * Menu component which copies Moped user emails to clopboard
+ * Menu component which copies Moped user emails to clipboard
  * @param {object[]} users - array of `moped_user` objects
  */
 export const CopyMugUsersButton = ({ users }) => {
@@ -91,7 +91,7 @@ export const CopyMugUsersButton = ({ users }) => {
 
   const onMenuItemClick = (name) => {
     const userFilter = name === "mug" ? mugUserFilter : allUserFilter;
-    copyEmailsToClipboard(users, userFilter).then(() => {
+    copyEmailsToClipboard(users || [], userFilter).then(() => {
       setCopiedListName(name);
     });
   };
