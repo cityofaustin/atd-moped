@@ -14,6 +14,8 @@ export const GET_ALL_USERS = gql`
         workgroup_id
         workgroup_name
       }
+      is_user_group_member
+      note
     }
   }
 `;
@@ -32,6 +34,8 @@ export const GET_USER = gql`
       email
       roles
       is_deleted
+      is_user_group_member
+      note
     }
   }
 `;
@@ -54,6 +58,8 @@ export const ADD_NON_MOPED_USER = gql`
       email
       roles
       is_deleted
+      is_user_group_member
+      note
     }
   }
 `;
@@ -73,6 +79,8 @@ export const UPDATE_NON_MOPED_USER = gql`
       email
       roles
       is_deleted
+      is_user_group_member
+      note
     }
   }
 `;

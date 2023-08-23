@@ -4,7 +4,7 @@ import { useFeatureTypes } from "./utils/map";
 
 /**
  * Component that renders feature collection of existing component features in a project
- * All layers are set to show below basemap street labels using beforeId = "street-labels"
+ * All layers are set to show below basemap street labels using beforeId = "components-placeholder"
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
@@ -63,7 +63,7 @@ const ProjectSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["project-lines-underlay"].layerProps,
             layout: {
@@ -73,7 +73,7 @@ const ProjectSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["project-lines"].layerProps,
             layout: {
@@ -83,7 +83,7 @@ const ProjectSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["project-lines-muted"].layerProps,
             layout: {
@@ -101,7 +101,7 @@ const ProjectSourcesAndLayers = ({
         promoteId="id"
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["project-points"].layerProps,
             layout: {
@@ -111,7 +111,7 @@ const ProjectSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["project-points-muted"].layerProps,
             layout: {

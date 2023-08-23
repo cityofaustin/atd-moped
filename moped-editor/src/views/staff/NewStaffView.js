@@ -28,6 +28,8 @@ export const initialFormValues = {
   password: "",
   workgroup_id: null,
   roles: ["moped-editor"],
+  is_user_group_member: false,
+  note: "",
 };
 
 const newUserRoleOptions = [
@@ -71,6 +73,7 @@ const NewStaffView = () => {
 
     const isNonLoginUser = isUserNonLoginUser(data.roles);
 
+    console.log("Submitted data is: ", data);
     if (isNonLoginUser) {
       // Remove the password for the non-login user create mutation
       const { password, ...restOfData } = data;

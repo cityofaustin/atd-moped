@@ -4,7 +4,7 @@ import { MAP_STYLES } from "./mapStyleSettings";
 
 /**
  * Component that renders CTN GeoJSON data to be captured into draft or edited components
- * All layers are set to show below basemap street labels using beforeId = "street-labels"
+ * All layers are set to show below basemap street labels using beforeId = "components-placeholder"
  * @param {Boolean} isCreatingComponent - are we creating a component?
  * @param {Boolean} isEditingComponent - are we editing a component?
  * @param {String} linkMode - Tracks if we are editing "lines" or "points"
@@ -39,7 +39,7 @@ const CTNSourcesAndLayers = ({
         promoteId={SOURCES["ATD_ADMIN.CTN"]._featureIdProp}
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["ctn-lines-underlay"].layerProps,
             layout: {
@@ -50,7 +50,7 @@ const CTNSourcesAndLayers = ({
         />
 
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["ctn-lines"].layerProps,
             layout: {
@@ -68,7 +68,7 @@ const CTNSourcesAndLayers = ({
         promoteId={SOURCES["ATD_ADMIN.CTN_Intersections"]._featureIdProp}
       >
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["ctn-points-underlay"].layerProps,
             layout: {
@@ -77,7 +77,7 @@ const CTNSourcesAndLayers = ({
           }}
         />
         <Layer
-          beforeId="street-labels"
+          beforeId="components-placeholder"
           {...{
             ...MAP_STYLES["ctn-points"].layerProps,
             layout: {
