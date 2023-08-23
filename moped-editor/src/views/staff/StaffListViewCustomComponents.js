@@ -97,6 +97,9 @@ export const CopyMugUsersButton = ({ users }) => {
   };
 
   useEffect(() => {
+    /**
+     * Effect which closes the menu after a brief pause
+     */
     if (!copiedListName) return;
     const timeout = setTimeout(() => {
       setCopiedListName(null);
@@ -105,27 +108,27 @@ export const CopyMugUsersButton = ({ users }) => {
     return () => clearTimeout(timeout);
   }, [copiedListName, handleCloseMenu]);
 
-  const open = Boolean(anchorEl);
+  const menuOpen = Boolean(anchorEl);
 
   return (
     <div>
       <Button
-        id="basic-button"
-        aria-controls={open ? "basic-menu" : undefined}
+        id="copy-users-menu-button"
+        aria-controls={menuOpen ? "copy-users-menu" : undefined}
         aria-haspopup="true"
-        aria-expanded={open ? "true" : undefined}
+        aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleMenuClick}
         startIcon={<Email />}
       >
         Contact users
       </Button>
       <Menu
-        id="basic-menu"
+        id="copy-users-menu"
         anchorEl={anchorEl}
-        open={open}
+        open={menuOpen}
         onClose={handleCloseMenu}
         MenuListProps={{
-          "aria-labelledby": "basic-button",
+          "aria-labelledby": "copy-users-menu-button",
         }}
       >
         <MenuItem onClick={() => onMenuItemClick("mug")}>
