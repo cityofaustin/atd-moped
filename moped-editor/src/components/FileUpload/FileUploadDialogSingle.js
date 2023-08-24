@@ -112,6 +112,7 @@ const FileUploadDialogSingle = (props) => {
     setFileKey(null);
     setFileObject(null);
     setFileReady(false);
+    setExternalFile(false);
     setExternalFileLink(null);
   };
 
@@ -130,6 +131,7 @@ const FileUploadDialogSingle = (props) => {
       description: fileDescription,
       key: fileKey,
       file: fileObject,
+      url: externalFileLink,
     };
 
     // If there is a click save file handler, call it...
@@ -160,21 +162,35 @@ const FileUploadDialogSingle = (props) => {
    */
   useEffect(() => {
     // Determine if the file is ready to be saved to DB
-    const saveDisabled =
-      fieldLength(fileName) === 0 ||
-      !Number.isInteger(fileType) ||
-      fieldLength(fileKey) === 0 ||
-      fileObject === null;
+    const saveDisabled = externalFile
+      ? fieldLength(fileName) === 0 ||
+        !Number.isInteger(fileType) ||
+        fieldLength(externalFileLink) === 0
+      : fieldLength(fileName) === 0 ||
+        !Number.isInteger(fileType) ||
+        fieldLength(fileKey) === 0 ||
+        fileObject === null;
 
-    // If no longer disabled, but marked as not ready
+    // if !fileReady, then the upload/save button is disabled
+
+    // If the file information is filled out, but button is still disabled, change fileReady to true
     if (saveDisabled === false && fileReady === false) {
       setFileReady(true);
     }
 
+    // if the file information isnt filled out, but the button is active, disable the button
     if (saveDisabled && fileReady) {
       setFileReady(false);
     }
-  }, [fileName, fileType, fileDescription, fileKey, fileObject, fileReady]);
+  }, [
+    fileName,
+    fileType,
+    fileDescription,
+    fileKey,
+    fileObject,
+    fileReady,
+    externalFileLink,
+  ]);
 
   return (
     <Dialog
@@ -253,6 +269,7 @@ const FileUploadDialogSingle = (props) => {
                 control={
                   <Switch
                     color="primary"
+                    checked={externalFile}
                     onChange={(event) => setExternalFile(event.target.checked)}
                   />
                 }
@@ -296,7 +313,7 @@ const FileUploadDialogSingle = (props) => {
           startIcon={<Icon>save</Icon>}
           disabled={!fileReady}
         >
-          Upload
+          {externalFile ? "Save" : "Upload"}
         </Button>
       </DialogActions>
     </Dialog>

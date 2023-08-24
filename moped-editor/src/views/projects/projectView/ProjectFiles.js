@@ -100,9 +100,10 @@ const ProjectFiles = props => {
           project_id: projectId,
           file_name: fileDataBundle?.name,
           file_type: fileDataBundle?.type,
-          file_description: fileDataBundle.description,
-          file_key: fileDataBundle.key,
+          file_description: fileDataBundle?.description,
+          file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
+          file_url: fileDataBundle?.url,
           created_by: getDatabaseId(user),
         },
       },
@@ -110,6 +111,7 @@ const ProjectFiles = props => {
       .then(() => {
         setDialogOpen(false);
       })
+      .catch((error) => console.error(error))
       .finally(() => {
         refetch();
       });
