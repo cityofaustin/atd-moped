@@ -190,6 +190,7 @@ const FileUploadDialogSingle = (props) => {
     fileObject,
     fileReady,
     externalFileLink,
+    externalFile
   ]);
 
   return (

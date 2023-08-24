@@ -586,6 +586,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       file_description
       create_date
       created_by
+      file_url
       moped_user {
         user_id
         first_name

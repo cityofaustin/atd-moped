@@ -14,12 +14,12 @@ import {
   FormHelperText,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
-  MTableToolbar
+  MTableToolbar,
 } from "@material-table/core";
 import {
   AddCircle as AddCircleIcon,
@@ -45,7 +45,7 @@ import {
   makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   title: {
     padding: "0rem 0 2rem 0",
   },
@@ -63,7 +63,7 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = props => {
+const ProjectFiles = (props) => {
   const classes = useStyles();
   const { projectId } = useParams();
   const { user } = useUser();
@@ -93,7 +93,7 @@ const ProjectFiles = props => {
    * Persists the file data into the database
    * @param {Object} fileDataBundle - The file bundle as provided by the FileUpload component
    */
-  const handleClickSaveFile = fileDataBundle => {
+  const handleClickSaveFile = (fileDataBundle) => {
     createProjectFileAttachment({
       variables: {
         object: {
@@ -158,39 +158,53 @@ const ProjectFiles = props => {
     {
       title: "Name",
       field: "file_name",
-      validate: rowData => {
+      validate: (rowData) => {
         return rowData.file_name.length > 0 ? true : false;
       },
-      render: record => (
-        <Link
-          className={classes.downloadLink}
-          onClick={() => downloadFileAttachment(record?.file_key, token)}
-        >
-          {record?.file_name}
-        </Link>
-      ),
-      editComponent: props => (
+      render: (record) => {
+        if (record.file_key) {
+          return (
+            <Link
+              className={classes.downloadLink}
+              onClick={() => downloadFileAttachment(record?.file_key, token)}
+            >
+              {record?.file_name}
+            </Link>
+          );
+        }
+        return (
+            <Link
+              className={classes.downloadLink}
+              href={record?.file_url}
+            >
+              {record?.file_name}
+            </Link>
+          )
+      },
+      editComponent: (props) => (
         <TextField
           variant="standard"
           id="file_name"
           name="file_name"
           value={props.value}
-          onChange={e => props.onChange(e.target.value)}
-          helperText="Required" />
+          onChange={(e) => props.onChange(e.target.value)}
+          helperText="Required"
+        />
       ),
     },
     {
       title: "Type",
       field: "file_type",
-      render: record => <span>{fileTypes[record?.file_type]}</span>,
-      editComponent: props => (
+      render: (record) => <span>{fileTypes[record?.file_type]}</span>,
+      editComponent: (props) => (
         <FormControl variant="standard">
           <Select
             variant="standard"
             id="file_description"
             name="file_description"
             value={props?.value}
-            onChange={e => props.onChange(e.target.value)}>
+            onChange={(e) => props.onChange(e.target.value)}
+          >
             <MenuItem value={1} className={classes.inputFieldAdornmentColor}>
               Funding
             </MenuItem>
@@ -211,20 +225,21 @@ const ProjectFiles = props => {
     {
       title: "Description",
       field: "file_description",
-      render: record => <span>{record?.file_description}</span>,
-      editComponent: props => (
+      render: (record) => <span>{record?.file_description}</span>,
+      editComponent: (props) => (
         <TextField
           variant="standard"
           id="file_description"
           name="file_description"
           value={props?.value}
-          onChange={e => props.onChange(e.target.value)} />
+          onChange={(e) => props.onChange(e.target.value)}
+        />
       ),
     },
     {
       title: "Uploaded by",
       cellStyle: { fontFamily: typography.fontFamily },
-      render: record => (
+      render: (record) => (
         <span>
           {record?.created_by
             ? record?.moped_user?.first_name +
@@ -239,7 +254,7 @@ const ProjectFiles = props => {
       cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) =>
         new Date(a?.create_date ?? 0) - new Date(b?.create_date ?? 0),
-      render: record => (
+      render: (record) => (
         <span>
           {record?.create_date
             ? `${formatTimeStampTZType(
@@ -253,7 +268,7 @@ const ProjectFiles = props => {
       title: "File size",
       cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
-      render: record => (
+      render: (record) => (
         <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
       ),
     },
@@ -273,10 +288,10 @@ const ProjectFiles = props => {
           // Action component customized as described in this gh-issue:
           // https://github.com/mbrn/material-table/issues/2133
           components={{
-            EditRow: props => (
+            EditRow: (props) => (
               <MTableEditRow
                 {...props}
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                   if (e.keyCode === 13) {
                     // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
                     // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
@@ -284,7 +299,7 @@ const ProjectFiles = props => {
                 }}
               />
             ),
-            Action: props => {
+            Action: (props) => {
               // If isn't the add action
               if (
                 typeof props.action === typeof Function ||
@@ -312,7 +327,7 @@ const ProjectFiles = props => {
               <div style={{ marginLeft: "-10px" }}>
                 <MTableToolbar {...props} />
               </div>
-            )
+            ),
           }}
           icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{
@@ -322,6 +337,7 @@ const ProjectFiles = props => {
             search: false,
             rowStyle: { fontFamily: typography.fontFamily },
             actionsColumnIndex: -1,
+            idSynonym: "project_file_id"
           }}
           localization={{
             header: {
@@ -348,7 +364,7 @@ const ProjectFiles = props => {
               }).then(() => {
                 refetch();
               }),
-            onRowDelete: oldData =>
+            onRowDelete: (oldData) =>
               deleteProjectFileAttachment({
                 variables: {
                   fileId: oldData.project_file_id,
