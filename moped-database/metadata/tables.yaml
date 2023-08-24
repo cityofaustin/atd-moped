@@ -3845,6 +3845,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
     - role: moped-editor
       permission:
         check: {}
@@ -3863,6 +3864,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
   select_permissions:
     - role: moped-admin
       permission:
@@ -3881,6 +3883,7 @@
           - is_scanned
           - project_file_id
           - project_id
+          - file_url
         filter: {}
     - role: moped-editor
       permission:
@@ -3899,6 +3902,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
         filter: {}
     - role: moped-viewer
       permission:
@@ -3917,6 +3921,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3936,6 +3941,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
         filter: {}
         check: null
     - role: moped-editor
@@ -3955,6 +3961,7 @@
           - file_key
           - file_name
           - create_date
+          - file_url
         filter: {}
         check: null
   event_triggers:
