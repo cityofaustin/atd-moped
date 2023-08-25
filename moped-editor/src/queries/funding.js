@@ -111,13 +111,16 @@ export const WORK_ACTIVITY_QUERY = gql`
     ) {
       contractor
       id
+      project_id
       contract_number
       description
       work_assignment_id
       contract_amount
       contractor
       implementation_workgroup
+      status_id
       moped_work_activity_status {
+        id
         name
       }
       status_note
@@ -142,8 +145,17 @@ export const WORK_ACTIVITY_QUERY = gql`
   }
 `;
 
-export const ADD_CONTRACT = gql`
-  mutation AddPurchaseOrder(
+export const WORK_ACTIVITY_STATUSES_QUERY = gql`
+  query WorkActivityStatusOptions {
+    moped_proj_work_activity_status(where: { is_deleted: { _eq: false } }) {
+      value: id
+      label: name
+    }
+  }
+`;
+
+export const ADD_WORK_ACTIVITIY = gql`
+  mutation AddWorKActivity(
     $objects: [moped_proj_work_activity_insert_input!]!
   ) {
     insert_moped_proj_work_activity(objects: $objects) {
@@ -154,24 +166,14 @@ export const ADD_CONTRACT = gql`
   }
 `;
 
-export const UPDATE_CONTRACT = gql`
-  mutation UpdatePurchaseOrder(
+export const UPDATE_WORK_ACTIVITY = gql`
+  mutation UpdateWorkActivity(
     $id: Int!
-    $contractor: String!
-    $contract_number: String!
-    $description: String!
-    $work_assignment_id: String!
-    $contract_amount: Int!
+    $object: moped_proj_work_activity_set_input!
   ) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }
-      _set: {
-        contractor: $contractor
-        contract_number: $contract_number
-        description: $description
-        work_assignment_id: $work_assignment_id
-        contract_amount: $contract_amount
-      }
+      _set: $object
     ) {
       id
     }
