@@ -261,6 +261,12 @@ export default function TheMap({
         setClickedComponent(null);
         setIsClickedComponentRelated(false);
       }
+
+      /* If not editing, clear draftEditComponent when map is clicked away from expanded
+      list item */
+      if (draftEditComponent && !isEditingComponent) {
+        editDispatch({ type: "clear_draft_component" });
+      }
       /* clear clickedProjectFeature to close FeaturePopup  */
       if (clickedProjectFeature) {
         setClickedProjectFeature(null);
