@@ -164,11 +164,14 @@ const ProjectWorkActivitiesTable = () => {
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
           hideFooterPagination={true}
+          localeText={{ noRowsLabel: "No work activites" }}
           rows={activities}
           slots={{
             toolbar: Title,
           }}
-          slotProps={{ toolbar: { onClick: onClickAddActivity } }}
+          slotProps={{
+            toolbar: { onClick: onClickAddActivity },
+          }}
         />
       </Box>
       {editActivity && (
