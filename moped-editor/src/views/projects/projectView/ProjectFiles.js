@@ -30,6 +30,7 @@ import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ExternalLink from "../../../components/ExternalLink";
 import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
@@ -173,13 +174,12 @@ const ProjectFiles = (props) => {
           );
         }
         return (
-            <Link
-              className={classes.downloadLink}
-              href={record?.file_url}
-            >
-              {record?.file_name}
-            </Link>
-          )
+          <ExternalLink
+            className={classes.downloadLink}
+            url={record?.file_url}
+            text={record?.file_name}
+          />
+        );
       },
       editComponent: (props) => (
         <TextField
@@ -337,7 +337,7 @@ const ProjectFiles = (props) => {
             search: false,
             rowStyle: { fontFamily: typography.fontFamily },
             actionsColumnIndex: -1,
-            idSynonym: "project_file_id"
+            idSynonym: "project_file_id",
           }}
           localization={{
             header: {
