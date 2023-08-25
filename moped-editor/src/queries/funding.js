@@ -155,13 +155,9 @@ export const WORK_ACTIVITY_STATUSES_QUERY = gql`
 `;
 
 export const ADD_WORK_ACTIVITIY = gql`
-  mutation AddWorKActivity(
-    $objects: [moped_proj_work_activity_insert_input!]!
-  ) {
-    insert_moped_proj_work_activity(objects: $objects) {
-      returning {
-        id
-      }
+  mutation AddWorKActivity($object: moped_proj_work_activity_insert_input!) {
+    insert_moped_proj_work_activity_one(object: $object) {
+      id
     }
   }
 `;
@@ -180,7 +176,7 @@ export const UPDATE_WORK_ACTIVITY = gql`
   }
 `;
 
-export const DELETE_CONTRACT = gql`
+export const DELETE_WORK_ACTIVITY = gql`
   mutation DeletePurchaseOrder($id: Int!) {
     update_moped_proj_work_activity_by_pk(
       pk_columns: { id: $id }

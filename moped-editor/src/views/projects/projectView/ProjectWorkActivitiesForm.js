@@ -2,7 +2,6 @@ import { useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 
-
 import {
   Alert,
   Button,
@@ -12,6 +11,8 @@ import {
   TextField,
 } from "@mui/material";
 
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
@@ -24,12 +25,28 @@ import {
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
 
+const validationSchema = yup.object().shape({
+  contractor: yup.string().nullable(),
+  contract_number: yup.string().nullable(),
+  description: yup.string().nullable(),
+  work_assignment_id: yup.string().nullable(),
+  contract_amount: yup.number().nullable(),
+  implementation_workgroup: yup.string().nullable(),
+  status_id: yup.number().required(),
+  status_note: yup.string().nullable(),
+  task_orders: yup.array().optional(),
+  id: yup.number().optional(),
+  project_id: yup.number().required(),
+});
+
 const statusOnChangeHandler = (option, field) => {
   field.onChange(option?.value || null);
 };
 
 const taskOrderOnChangeHandler = (optionArray, field) => {
-  field.onChange(optionArray || null);
+  const taskOrders = optionArray?.map((o) => o.value);
+
+  field.onChange(taskOrders || null);
 };
 
 const isTaskOrderOptionEqualToValue = (option, value) => {
@@ -54,16 +71,33 @@ const payloadFields = [
   "task_orders",
 ];
 
+const handleTaskOrdersInPayload = (payload) => {
+  const { task_orders } = payload;
+  if (!task_orders || task_orders?.length === 0) {
+    payload.task_orders = null;
+  }
+};
+
 const onSubmit = ({ data, mutate, onSubmitCallback }) => {
+  const { id } = data;
+
   const payload = payloadFields.reduce((obj, key) => {
     obj[key] = data[key];
     return obj;
   }, {});
+
+  handleTaskOrdersInPayload(payload);
+
+  const variables = { object: payload };
+
+  if (id) {
+    variables.id = id;
+  } else {
+    variables.object.project_id = data.project_id;
+  }
+
   mutate({
-    variables: {
-      object: payload,
-      id: data.id,
-    },
+    variables,
   }).then(() => onSubmitCallback());
 };
 
@@ -85,13 +119,13 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     handleSubmit,
     control,
     watch,
-    formState: { isDirty, errors },
+    formState: { isDirty, errors: formErrors },
   } = useForm({
     defaultValues: {
       ...activity,
       task_orders: activity.task_orders || [],
     },
-    //   resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema),
   });
 
   const statusOptions = statusesData?.moped_proj_work_activity_status;
@@ -105,9 +139,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
 
   const taskOrderValueHandler = useCallback(
     (valueArray) => {
-      const selectedTks = valueArray?.map(
-        (tkOption) => tkOption.value.task_order
-      );
+      const selectedTks = valueArray?.map((tkOption) => tkOption.task_order);
       return (
         taskOrderOptions?.filter((option) =>
           selectedTks.includes(option.value.task_order)
@@ -118,7 +150,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   );
 
   const [mutate, mutationState] = useMutation(
-    activity ? UPDATE_WORK_ACTIVITY : ADD_WORK_ACTIVITIY
+    activity.id ? UPDATE_WORK_ACTIVITY : ADD_WORK_ACTIVITIY
   );
 
   if (loadingTaskOrders || statusesLoading) {
@@ -162,6 +194,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               options={statusOptions}
               onChangeHandler={statusOnChangeHandler}
               valueHandler={statusValueHandler}
+              error={formErrors?.status_id}
+              helperText="Required"
             />
           </FormControl>
         </Grid>
@@ -214,6 +248,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               valueHandler={taskOrderValueHandler}
               filterOptions={filterOptions}
               isOptionEqualToValue={isTaskOrderOptionEqualToValue}
+              error={formErrors?.task_orders}
             />
           </FormControl>
         </Grid>
@@ -225,6 +260,17 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               multiline
               rows={3}
               {...register("description")}
+            />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <TextField
+              fullWidth
+              label="Status update"
+              multiline
+              rows={3}
+              {...register("status_note")}
             />
           </FormControl>
         </Grid>

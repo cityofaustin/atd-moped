@@ -1,13 +1,42 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@apollo/client";
-import { CircularProgress, IconButton, Box } from "@mui/material";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  CircularProgress,
+  IconButton,
+  Box,
+  Typography,
+  Button,
+} from "@mui/material";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { DataGrid } from "@mui/x-data-grid";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivitiesDialog";
 
-import { WORK_ACTIVITY_QUERY } from "../../../queries/funding";
+import {
+  WORK_ACTIVITY_QUERY,
+  DELETE_WORK_ACTIVITY,
+} from "../../../queries/funding";
+
+const Title = ({ onClick }) => (
+  <Box display="flex" justifyContent="space-between">
+    <Typography variant="h2" color="primary" style={{ padding: "1em" }}>
+      Work activities
+    </Typography>
+    <div style={{ padding: "1rem" }}>
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<AddCircleIcon />}
+        onClick={onClick}
+      >
+        Add Work Activity
+      </Button>
+    </div>
+  </Box>
+);
 
 const ProjectWorkActivitiesTable = () => {
   const [editActivity, setEditActivity] = useState(null);
@@ -21,21 +50,43 @@ const ProjectWorkActivitiesTable = () => {
   });
 
   // const [addContract] = useMutation(ADD_CONTRACT);
-  // const [deleteContract] = useMutation(DELETE_CONTRACT);
+  const [deleteContract, deleteContractMutationState] =
+    useMutation(DELETE_WORK_ACTIVITY);
 
   if (loading || !data) return <CircularProgress />;
 
-  const stuff = data?.moped_proj_work_activity;
+  const activities = data?.moped_proj_work_activity;
+
+  const onClickAddActivity = () => setEditActivity({ project_id: projectId });
+
+  const onDeleteActivity = ({ id }) => {
+    window.confirm("Are you sure you want to delete this activity?") &&
+      deleteContract({ variables: { id } }).then(() => {
+        refetch();
+      });
+  };
 
   const columns = [
     {
       headerName: "",
       field: "__edit__",
-      renderCell: ({ row }) => (
-        <IconButton aria-label="edit" onClick={() => setEditActivity(row)}>
-          <EditOutlinedIcon />
-        </IconButton>
-      ),
+      renderCell: ({ row }) => {
+        return deleteContractMutationState?.loading ? (
+          <CircularProgress color="primary" size={20} />
+        ) : (
+          <div>
+            <IconButton aria-label="edit" onClick={() => setEditActivity(row)}>
+              <EditOutlinedIcon />
+            </IconButton>
+            <IconButton
+              aria-label="delete"
+              onClick={() => onDeleteActivity({ id: row.id })}
+            >
+              <DeleteOutlineIcon />
+            </IconButton>
+          </div>
+        );
+      },
     },
     {
       headerName: "Status",
@@ -74,36 +125,50 @@ const ProjectWorkActivitiesTable = () => {
       valueGetter: ({ row }) =>
         row.task_orders?.map((tk) => tk.task_order).join(", "),
       minWidth: 150,
+      renderCell: ({ row }) => (
+        <div>
+          {row.task_orders?.map((tk) => (
+            <div key={tk.task_order}>{tk.task_order}</div>
+          ))}
+        </div>
+      ),
     },
     {
       headerName: "Description",
       field: "description",
       minWidth: 150,
-      valueGetter: ({ row }) =>
-        "helloooooooooooooooo helloooooooooooooooo helloooooooooooooooo",
+    },
+    {
+      headerName: "Status update",
+      field: "status_note",
+      minWidth: 150,
     },
     {
       headerName: "ID",
       field: "id",
-      minWidth: 300,
+      minWidth: 50,
     },
   ];
 
-  const onSubmitCallback = (data) => {
+  const onSubmitCallback = () => {
     refetch().then(() => setEditActivity(null));
   };
 
+  console.log("AC", activities);
   return (
     <ApolloErrorHandler errors={error}>
       <Box sx={{ width: "100%" }}>
         <DataGrid
-          hideFooterPagination={true}
           autoHeight
-          disableRowSelectionOnClick
-          rows={stuff}
           columns={columns}
-          // slots={{ toolbar: GridToolbar }}
-          // slotProps={{ toolbar: { showQuickFilter: true } }}
+          disableRowSelectionOnClick
+          getRowHeight={() => "auto"}
+          hideFooterPagination={true}
+          rows={activities}
+          slots={{
+            toolbar: Title,
+          }}
+          slotProps={{ toolbar: { onClick: onClickAddActivity } }}
         />
       </Box>
       {editActivity && (
