@@ -118,7 +118,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     register,
     handleSubmit,
     control,
-    watch,
     formState: { isDirty, errors: formErrors },
   } = useForm({
     defaultValues: {
