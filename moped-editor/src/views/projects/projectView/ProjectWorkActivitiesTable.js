@@ -14,7 +14,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { DataGrid } from "@mui/x-data-grid";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivitiesDialog";
-
+import { getUserFullName } from "src/utils/userNames";
 import {
   WORK_ACTIVITY_QUERY,
   DELETE_WORK_ACTIVITY,
@@ -142,6 +142,19 @@ const ProjectWorkActivitiesTable = () => {
       headerName: "Status update",
       field: "status_note",
       minWidth: 150,
+    },
+    {
+      headerName: "Updated by",
+      field: "updated_by_user",
+      minWidth: 150,
+      valueGetter: ({ row }) => getUserFullName(row.updated_by_user),
+    },
+    {
+      headerName: "Updated at",
+      field: "updated_at",
+      minWidth: 150,
+      valueGetter: ({ row }) =>
+        row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
     },
     {
       headerName: "ID",
