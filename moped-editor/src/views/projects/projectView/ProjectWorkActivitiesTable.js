@@ -89,26 +89,20 @@ const ProjectWorkActivitiesTable = () => {
       },
     },
     {
-      headerName: "Status",
-      field: "status",
-      valueGetter: ({ row }) => row.moped_work_activity_status?.name,
-      minWidth: 150,
+      headerName: "Workgroup/Contractor",
+      field: "contractor",
+      minWidth: 175,
     },
     {
       headerName: "Contract #",
       field: "contract_number",
       minWidth: 150,
     },
-    {
-      headerName: "Contractor",
-      field: "contractor",
-      minWidth: 150,
-    },
-    {
-      headerName: "Imp. Workgroup",
-      field: "implementation_workgroup",
-      minWidth: 150,
-    },
+    // {
+    //   headerName: "Imp. Workgroup",
+    //   field: "implementation_workgroup",
+    //   minWidth: 150,
+    // },
     {
       headerName: "Work Assignment",
       field: "work_assignment_id",
@@ -116,7 +110,7 @@ const ProjectWorkActivitiesTable = () => {
     },
     {
       headerName: "Amount",
-      field: "amount",
+      field: "contract_amount",
       minWidth: 150,
     },
     {
@@ -132,6 +126,12 @@ const ProjectWorkActivitiesTable = () => {
           ))}
         </div>
       ),
+    },
+    {
+      headerName: "Status",
+      field: "status",
+      valueGetter: ({ row }) => row.moped_work_activity_status?.name,
+      minWidth: 150,
     },
     {
       headerName: "Description",

@@ -9,6 +9,8 @@ import {
   Grid,
   FormControl,
   TextField,
+  InputLabel,
+  FormHelperText,
 } from "@mui/material";
 
 import * as yup from "yup";
@@ -17,6 +19,7 @@ import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
+import ControlledSelect from "src/components/ControlledSelect";
 // import CloseIcon from "@mui/icons-material/Close";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import {
@@ -24,6 +27,13 @@ import {
   ADD_WORK_ACTIVITIY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
+
+const IMPLEMENTATION_WORKGROUP_OPTIONS = [
+  "Markigns",
+  "Signs",
+  "Arterial Management",
+  "Other",
+];
 
 const validationSchema = yup.object().shape({
   contractor: yup.string().nullable(),
@@ -38,10 +48,6 @@ const validationSchema = yup.object().shape({
   id: yup.number().optional(),
   project_id: yup.number().required(),
 });
-
-const statusOnChangeHandler = (option, field) => {
-  field.onChange(option?.value || null);
-};
 
 const taskOrderOnChangeHandler = (optionArray, field) => {
   const taskOrders = optionArray?.map((o) => o.value);
@@ -129,11 +135,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
 
   const statusOptions = statusesData?.moped_proj_work_activity_status;
 
-  const statusValueHandler = useCallback(
-    (value) => statusOptions.find((o) => o.value === value) || null,
-    [statusOptions]
-  );
-
   const taskOrderOptions = useTaskOrderOptions(taskOrderData);
 
   const taskOrderValueHandler = useCallback(
@@ -175,6 +176,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     );
   }
 
+  const isNewActivity = !activity.id;
+
   return (
     <form
       onSubmit={handleSubmit((data) =>
@@ -185,24 +188,10 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <ControlledAutocomplete
-              control={control}
-              name="status_id"
-              label="Status"
-              size="lg"
-              options={statusOptions}
-              onChangeHandler={statusOnChangeHandler}
-              valueHandler={statusValueHandler}
-              error={formErrors?.status_id}
-              helperText="Required"
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth>
             <TextField
+              autoFocus={isNewActivity}
               fullWidth
-              label="Contractor"
+              label="Workgroup/Contractor"
               {...register("contractor")}
             />
           </FormControl>
@@ -229,11 +218,20 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           <FormControl fullWidth>
             <TextField
               fullWidth
+              label="Amount"
+              {...register("contract_amount")}
+            />
+          </FormControl>
+        </Grid>
+        {/* <Grid item xs={12}>
+          <FormControl fullWidth>
+            <TextField
+              fullWidth
               label="Implementation Workgroup"
               {...register("implementation_workgroup")}
             />
           </FormControl>
-        </Grid>
+        </Grid> */}
         <Grid item xs={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
@@ -260,6 +258,22 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               rows={3}
               {...register("description")}
             />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={formErrors.status_id}>
+            <InputLabel id="status-label">Status</InputLabel>
+            <ControlledSelect
+              control={control}
+              id="status"
+              labelId="status-label"
+              name="status_id"
+              label="Status"
+              size="lg"
+              options={statusOptions}
+              error={formErrors?.status_id}
+            />
+            <FormHelperText>Required</FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
