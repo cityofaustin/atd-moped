@@ -160,6 +160,10 @@ const ComponentForm = ({
             id="component"
             label="Component Type"
             options={areOptionsLoading ? [] : componentOptions}
+            getOptionLabel={(option) => option?.label || ""}
+            isOptionEqualToValue={(option, value) =>
+              option?.value === value?.value
+            }
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
                 key={option.value}
@@ -197,6 +201,10 @@ const ComponentForm = ({
             label="Work Type(s)"
             multiple
             options={workTypeOptions}
+            getOptionLabel={(option) => option?.label || ""}
+            isOptionEqualToValue={(option, value) =>
+              option?.value === value?.value
+            }
             name="work_types"
             control={control}
             error={!!errors?.work_types}
@@ -212,6 +220,10 @@ const ComponentForm = ({
               label="Subcomponents"
               multiple
               options={subcomponentOptions}
+              getOptionLabel={(option) => option?.label || ""}
+              isOptionEqualToValue={(option, value) =>
+                option?.value === value?.value
+              }
               name="subcomponents"
               control={control}
             />
@@ -223,6 +235,10 @@ const ComponentForm = ({
             label="Tags"
             multiple
             options={componentTagsOptions}
+            getOptionLabel={(option) => option?.label || ""}
+            isOptionEqualToValue={(option, value) =>
+              option?.value === value?.value
+            }
             name="tags"
             control={control}
           />
