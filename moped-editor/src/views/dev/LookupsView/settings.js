@@ -210,7 +210,7 @@ export const SETTINGS = [
     label: "Roles",
     columns: [
       {
-        key: "id",
+        key: "project_role_id",
         label: "Role ID",
       },
       {
