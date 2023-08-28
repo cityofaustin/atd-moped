@@ -20,6 +20,7 @@ import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
 import ControlledSelect from "src/components/ControlledSelect";
+import ControlledTextInput from "./ProjectComponents/ControlledTextInput";
 // import CloseIcon from "@mui/icons-material/Close";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import {
@@ -29,11 +30,16 @@ import {
 } from "src/queries/funding";
 
 const IMPLEMENTATION_WORKGROUP_OPTIONS = [
-  "Markigns",
+  "Markings",
   "Signs",
   "Arterial Management",
   "Other",
 ];
+
+const DEFAULT_VALUES = {
+  status_id: 1, // "planned"
+  task_orders: [],
+};
 
 const validationSchema = yup.object().shape({
   contractor: yup.string().nullable(),
@@ -44,14 +50,13 @@ const validationSchema = yup.object().shape({
   implementation_workgroup: yup.string().nullable(),
   status_id: yup.number().required(),
   status_note: yup.string().nullable(),
-  task_orders: yup.array().optional(),
+  task_orders: yup.array().nullable(),
   id: yup.number().optional(),
   project_id: yup.number().required(),
 });
 
 const taskOrderOnChangeHandler = (optionArray, field) => {
   const taskOrders = optionArray?.map((o) => o.value);
-
   field.onChange(taskOrders || null);
 };
 
@@ -107,6 +112,13 @@ const onSubmit = ({ data, mutate, onSubmitCallback }) => {
   }).then(() => onSubmitCallback());
 };
 
+const useDefaultValues = (activity) =>
+  useMemo(() => {
+    if (activity.id) {
+      return activity;
+    } else return { ...activity, ...DEFAULT_VALUES };
+  }, [activity]);
+
 const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   const {
     loading: statusesLoading,
@@ -120,6 +132,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     error: errorTaskOrders,
   } = useSocrataJson(SOCRATA_ENDPOINT);
 
+  const defaultValues = useDefaultValues(activity);
+
   const {
     register,
     handleSubmit,
@@ -127,8 +141,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     formState: { isDirty, errors: formErrors },
   } = useForm({
     defaultValues: {
-      ...activity,
-      task_orders: activity.task_orders || [],
+      ...defaultValues,
     },
     resolver: yupResolver(validationSchema),
   });
@@ -139,6 +152,10 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
 
   const taskOrderValueHandler = useCallback(
     (valueArray) => {
+      if (!valueArray) {
+        // handles when saved value is null
+        return [];
+      }
       const selectedTks = valueArray?.map((tkOption) => tkOption.task_order);
       return (
         taskOrderOptions?.filter((option) =>
@@ -187,39 +204,64 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     >
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <FormControl fullWidth>
-            <TextField
+          <FormControl fullWidth error={formErrors.status_id}>
+            <InputLabel id="status-label">Status</InputLabel>
+            <ControlledSelect
+              control={control}
+              id="status"
+              labelId="status-label"
+              name="status_id"
+              label="Status"
+              size="lg"
+              options={statusOptions}
+              error={formErrors?.status_id}
               autoFocus={isNewActivity}
-              fullWidth
+            />
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth>
+            <ControlledAutocomplete
+              control={control}
+              name="contractor"
               label="Workgroup/Contractor"
-              {...register("contractor")}
+              size="lg"
+              options={IMPLEMENTATION_WORKGROUP_OPTIONS}
+              freeSolo
+              autoSelect
+              error={formErrors?.contractor}
+              valueHandler={(value) => value || null}
             />
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField
+            <ControlledTextInput
               fullWidth
               label="Contract #"
-              {...register("contract_number")}
+              name="contract_number"
+              control={control}
             />
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField
+            <ControlledTextInput
               fullWidth
               label="Work Assignment ID"
-              {...register("work_assignment_id")}
+              name="work_assignment_id"
+              control={control}
             />
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField
+            <ControlledTextInput
               fullWidth
               label="Amount"
-              {...register("contract_amount")}
+              name="contract_amount"
+              control={control}
             />
           </FormControl>
         </Grid>
@@ -245,45 +287,32 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               valueHandler={taskOrderValueHandler}
               filterOptions={filterOptions}
               isOptionEqualToValue={isTaskOrderOptionEqualToValue}
+              getOptionLabel={(option) => option?.label || ""}
               error={formErrors?.task_orders}
             />
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField
+            <ControlledTextInput
               fullWidth
               label="Description"
               multiline
               rows={3}
-              {...register("description")}
-            />
-          </FormControl>
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth error={formErrors.status_id}>
-            <InputLabel id="status-label">Status</InputLabel>
-            <ControlledSelect
+              name="description"
               control={control}
-              id="status"
-              labelId="status-label"
-              name="status_id"
-              label="Status"
-              size="lg"
-              options={statusOptions}
-              error={formErrors?.status_id}
             />
-            <FormHelperText>Required</FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth>
-            <TextField
+            <ControlledTextInput
               fullWidth
               label="Status update"
               multiline
               rows={3}
-              {...register("status_note")}
+              name="status_note"
+              control={control}
             />
           </FormControl>
         </Grid>
