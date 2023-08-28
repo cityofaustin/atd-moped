@@ -231,7 +231,7 @@ const ProjectFiles = (props) => {
           variant="standard"
           id="file_description"
           name="file_description"
-          value={props?.value}
+          value={props?.value ?? ""}
           onChange={(e) => props.onChange(e.target.value)}
         />
       ),
