@@ -32,7 +32,7 @@ export const ProjectsListViewQueryConf = {
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [5, 10, 25, 50, 100],
+    rowsPerPageOptions: [25, 50, 100, 250, 1000],
   },
   filters: ProjectsListViewFiltersConf,
   export: ProjectsListViewExportConf,
@@ -247,6 +247,6 @@ export const ProjectsListViewQueryConf = {
   where: null,
   or: null,
   and: null,
-  limit: 100,
+  limit: 250,
   offset: 0,
 };
