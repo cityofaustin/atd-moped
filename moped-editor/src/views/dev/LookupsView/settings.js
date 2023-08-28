@@ -205,4 +205,22 @@ export const SETTINGS = [
       },
     ],
   },
+  {
+    key: "moped_project_roles",
+    label: "Roles",
+    columns: [
+      {
+        key: "id",
+        label: "Role ID",
+      },
+      {
+        key: "project_role_name",
+        label: "Name",
+      },
+      {
+        key: "project_role_description",
+        label: "Description",
+      },
+    ],
+  },
 ];
