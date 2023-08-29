@@ -162,6 +162,23 @@ const ProjectFiles = (props) => {
       validate: (rowData) => {
         return rowData.file_name.length > 0 ? true : false;
       },
+      editComponent: (props) => (
+        <TextField
+          variant="standard"
+          id="file_name"
+          name="file_name"
+          value={props.value}
+          onChange={(e) => props.onChange(e.target.value)}
+          helperText="Required"
+        />
+      ),
+    },
+    {
+      title: "File",
+      field: "file_name",
+      validate: (rowData) => {
+        return rowData.file_name.length > 0 ? true : false;
+      },
       render: (record) => {
         if (record.file_key) {
           return (
@@ -169,7 +186,7 @@ const ProjectFiles = (props) => {
               className={classes.downloadLink}
               onClick={() => downloadFileAttachment(record?.file_key, token)}
             >
-              {record?.file_name}
+              {record?.file_key}
             </Link>
           );
         }
@@ -177,7 +194,7 @@ const ProjectFiles = (props) => {
           <ExternalLink
             className={classes.downloadLink}
             url={record?.file_url}
-            text={record?.file_name}
+            text={record?.file_url}
           />
         );
       },
@@ -205,18 +222,10 @@ const ProjectFiles = (props) => {
             value={props?.value}
             onChange={(e) => props.onChange(e.target.value)}
           >
-            <MenuItem value={1} className={classes.inputFieldAdornmentColor}>
-              Funding
-            </MenuItem>
-            <MenuItem value={2} className={classes.inputFieldAdornmentColor}>
-              Plans
-            </MenuItem>
-            <MenuItem value={3} className={classes.inputFieldAdornmentColor}>
-              Estimates
-            </MenuItem>
-            <MenuItem value={4} className={classes.inputFieldAdornmentColor}>
-              Other
-            </MenuItem>
+            <MenuItem value={1}>Funding</MenuItem>
+            <MenuItem value={2}>Plans</MenuItem>
+            <MenuItem value={3}>Estimates</MenuItem>
+            <MenuItem value={4}>Other</MenuItem>
           </Select>
           <FormHelperText>Required</FormHelperText>
         </FormControl>
@@ -269,7 +278,9 @@ const ProjectFiles = (props) => {
       cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
       render: (record) => (
-        <span>{humanReadableFileSize(record?.file_size ?? 0)}</span>
+        <span>
+          {record.file_key ? humanReadableFileSize(record?.file_size ?? 0) : ""}
+        </span>
       ),
     },
   ];
