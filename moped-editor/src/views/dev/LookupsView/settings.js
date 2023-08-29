@@ -184,6 +184,24 @@ export const SETTINGS = [
     ],
   },
   {
+    key: "moped_project_roles",
+    label: "Roles",
+    columns: [
+      {
+        key: "project_role_id",
+        label: "Role ID",
+      },
+      {
+        key: "project_role_name",
+        label: "Name",
+      },
+      {
+        key: "project_role_description",
+        label: "Description",
+      },
+    ],
+  },
+  {
     key: "moped_tags",
     label: "Tags",
     columns: [
@@ -202,24 +220,6 @@ export const SETTINGS = [
       {
         key: "slug",
         label: "Slug",
-      },
-    ],
-  },
-  {
-    key: "moped_project_roles",
-    label: "Roles",
-    columns: [
-      {
-        key: "project_role_id",
-        label: "Role ID",
-      },
-      {
-        key: "project_role_name",
-        label: "Name",
-      },
-      {
-        key: "project_role_description",
-        label: "Description",
       },
     ],
   },
