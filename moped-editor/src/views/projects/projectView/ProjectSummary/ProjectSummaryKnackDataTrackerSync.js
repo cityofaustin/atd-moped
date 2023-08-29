@@ -171,8 +171,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
     setConfirmDialogOpen(false);
     // The following code is capable of handling a "re-sync" to knack for a given project.
     // Currently, our UI does not contain an element that allows a user to request a re-sync, but
-    // this code is ready to "re-sync" a project thanks to its use of a dynamic get
-    console.log("HTTP method: " + knackHttpMethod);
+    // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
+    console.log("data tracker sync HTTP method: " + knackHttpMethod);
     // POST (create) or PUT (update) a project record in Knack
     return fetch(knackProjectEndpointUrl, {
       method: knackHttpMethod,
@@ -199,7 +199,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
           // ask the application to update its status from our graphql endpoint
           .then(() => refetch())
           .then(() =>
-            // End of the chain; advise the user of success
             snackbarHandle(
               true,
               "Success: Project data synchronized with Data Tracker",
@@ -208,7 +207,6 @@ const ProjectSummaryKnackDataTrackerSync = ({
           );
       })
       .catch((error) => {
-        // Failure, alert the user that we've encountered an error
         console.error(error);
         snackbarHandle(true, "Error: Data Tracker sync failed.", "warning");
       });
