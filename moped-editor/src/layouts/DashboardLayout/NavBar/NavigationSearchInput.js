@@ -141,14 +141,6 @@ const NavigationSearchInput = ({ input404Class }) => {
   const divRef = React.useRef();
   let projectSearchQuery = new GQLAbstract(NavigationSearchQueryConf);
 
-  // TODO: Refactor this so that the we don't reuse the saved GQLAbstract parameters (filters to ID 228)
-  // when viewing a project summary.
-  // TODO: Create a separate GQLAbstract for the project summary page?
-  // TODO: Two separate components based on view? Maybe...
-  // need to figure out how the filters are persisted between views
-  // because we still want to be filtered down when going back to the
-  // project list view
-
   // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
   // anchor element for results popper to "attach" to
@@ -176,6 +168,7 @@ const NavigationSearchInput = ({ input404Class }) => {
     showSearchInput(false);
     setSearchTerm("");
     setPopperEntered(false);
+    projectSearchQuery.reset();
   };
 
   // show popper results when search input gets focus
