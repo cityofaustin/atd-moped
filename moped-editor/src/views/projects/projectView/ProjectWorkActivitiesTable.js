@@ -19,6 +19,7 @@ import {
   WORK_ACTIVITY_QUERY,
   DELETE_WORK_ACTIVITY,
 } from "../../../queries/funding";
+import { currencyFormatter } from "src/utils/numberFormatters";
 
 const Title = ({ onClick }) => (
   <Box display="flex" justifyContent="space-between">
@@ -112,6 +113,10 @@ const ProjectWorkActivitiesTable = () => {
       headerName: "Amount",
       field: "contract_amount",
       minWidth: 150,
+      valueGetter: ({ row }) =>
+        isNaN(parseInt(row.contract_amount))
+          ? null
+          : currencyFormatter.format(row.contract_amount),
     },
     {
       headerName: "Task Order(s)",
