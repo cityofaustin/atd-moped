@@ -140,6 +140,15 @@ const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
   let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
+  console.log(projectSearchQuery);
+
+  // TODO: Refactor this so that the we don't reuse the saved GQLAbstract parameters (filters to ID 228)
+  // when viewing a project summary.
+  // TODO: Create a separate GQLAbstract for the project summary page?
+  // TODO: Two separate components based on view? Maybe...
+  // need to figure out how the filters are persisted between views
+  // because we still want to be filtered down when going back to the
+  // project list view
 
   // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
@@ -301,7 +310,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             onClose={handleDropdownClose}
             placement="bottom-start"
             // inherit the position from the modifiers and dont reset to 0
-            style={{position: "fixed", top: "unset", left:"unset"}}
+            style={{ position: "fixed", top: "unset", left: "unset" }}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             modifiers={[]}
