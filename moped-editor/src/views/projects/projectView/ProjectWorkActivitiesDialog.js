@@ -1,31 +1,26 @@
-import ProjectWorkActivitiesForm from "./ProjectWorkActivitiesForm";
-
-// Material
-import { IconButton, Dialog, DialogTitle, DialogContent } from "@mui/material";
-
-import { makeStyles } from "@mui/styles";
+import IconButton from "@mui/material/IconButton";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContent from "@mui/material/DialogContent";
 import CloseIcon from "@mui/icons-material/Close";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
+import ProjectWorkActivitiesForm from "./ProjectWorkActivitiesForm";
 
 const ProjectWorkActivitiesDialog = ({
   onClose,
   activity,
   onSubmitCallback,
 }) => {
-  const classes = useStyles();
+  const titleText = activity.id ? "Edit work activity" : "Add work activity";
   return (
     <Dialog open onClose={onClose} fullWidth scroll="body">
-      <DialogTitle className={classes.DialogTitle}>
-        <span>Hello</span>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <span>{titleText}</span>
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
