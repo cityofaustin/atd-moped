@@ -37,9 +37,6 @@ const useStyles = makeStyles((theme) => ({
   selectField: {
     width: "200px",
   },
-  inputFieldAdornmentColor: {
-    color: "grey",
-  },
   fileUpload: {
     marginTop: "1rem",
   },
@@ -190,7 +187,7 @@ const FileUploadDialogSingle = (props) => {
     fileObject,
     fileReady,
     externalFileLink,
-    externalFile
+    externalFile,
   ]);
 
   return (
@@ -226,30 +223,10 @@ const FileUploadDialogSingle = (props) => {
                 label="Type"
                 onChange={handleFileTypeChange}
               >
-                <MenuItem
-                  value={1}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Funding
-                </MenuItem>
-                <MenuItem
-                  value={2}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Plans
-                </MenuItem>
-                <MenuItem
-                  value={3}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Estimates
-                </MenuItem>
-                <MenuItem
-                  value={4}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Other
-                </MenuItem>
+                <MenuItem value={1}>Funding</MenuItem>
+                <MenuItem value={2}>Plans</MenuItem>
+                <MenuItem value={3}>Estimates</MenuItem>
+                <MenuItem value={4}>Other</MenuItem>
               </Select>
             </FormControl>
 
@@ -274,7 +251,7 @@ const FileUploadDialogSingle = (props) => {
                     onChange={(event) => setExternalFile(event.target.checked)}
                   />
                 }
-                label="Link to external file"
+                label="Link to file"
                 labelPlacement="start"
               />
             </FormControl>
