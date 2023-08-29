@@ -15,45 +15,38 @@ import { fitBoundsOptions } from "../mapSettings";
 
 const editReducer = (state, action) => {
   switch (action.type) {
-    case "start_edit":
-      const draftEditComponent = action.payload;
+    case "set_draft_component":
+      const clickedComponent = action.payload;
 
       return {
         ...state,
-        showEditModeDialog: true,
-        draftEditComponent,
+        draftEditComponent: clickedComponent,
+      };
+    case "clear_draft_component":
+      return {
+        ...state,
+        draftEditComponent: null,
       };
     case "start_attributes_edit":
       return {
         ...state,
-        showEditModeDialog: false,
         showEditAttributesDialog: true,
       };
     case "start_map_edit":
       return {
         ...state,
-        showEditModeDialog: false,
         isEditingComponent: true,
-      };
-    case "cancel_mode_edit":
-      return {
-        ...state,
-        showEditModeDialog: false,
-        isEditingComponent: false,
-        draftEditComponent: null,
       };
     case "cancel_attributes_edit":
       return {
         ...state,
         showEditAttributesDialog: false,
         isEditingComponent: false,
-        draftEditComponent: null,
       };
     case "cancel_map_edit":
       return {
         ...state,
         isEditingComponent: false,
-        draftEditComponent: null,
       };
     case "update_clicked_features":
       const updatedDraftEditComponent = action.callback(
@@ -233,7 +226,6 @@ export const useUpdateComponent = ({
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
     showEditAttributesDialog: false,
-    showEditModeDialog: false,
     draftEditComponent: null,
     drawnLineFeatureUpdates: [],
     drawnPointFeatureUpdates: [],

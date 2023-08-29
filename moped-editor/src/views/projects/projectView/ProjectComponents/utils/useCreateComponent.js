@@ -124,7 +124,6 @@ const createReducer = (state, action) => {
 
 export const useCreateComponent = ({
   projectId,
-  setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
   setIsDrawing,
@@ -137,11 +136,6 @@ export const useCreateComponent = ({
   });
 
   const [addProjectComponent] = useMutation(ADD_PROJECT_COMPONENT);
-
-  const onStartCreatingComponent = () => {
-    createDispatch({ type: "start_create" });
-    setClickedComponent(null);
-  };
 
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
@@ -210,7 +204,6 @@ export const useCreateComponent = ({
   return {
     createState,
     createDispatch,
-    onStartCreatingComponent,
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
     onCancelComponentCreate,

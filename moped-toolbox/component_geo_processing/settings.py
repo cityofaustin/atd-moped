@@ -6,28 +6,21 @@ the column must return a scalar - no objects or arrays."""
 PROJECT_LIST_KEYS = [
     "project_id",
     "project_description",
-    "capitally_funded",
     "completion_end_date",
     "construction_start_date",
     "current_phase",
     "date_added",
     "ecapris_subproject_id",
-    "end_date",
-    "fiscal_year",
     "funding_source_name",
     "is_deleted",
-    "milestone_id",
     "project_designer",
     "project_inspector",
-    "project_length",
     "project_name",
     "project_note",
-    "project_order",
     "project_partner",
     "project_sponsor",
     "project_team_members",
     "task_order_name",
-    "timeline_id",
     "type_name",
     "updated_at",
 ]
@@ -37,7 +30,7 @@ PROJECT_LIST_KEYS = [
 we can save a lot of code by creating a view which returns geojson"""
 QUERY_TEMPLATE = """
     query ProjectComponentsQuery {
-        moped_project(where: {is_deleted: {_eq: false}}) {
+    moped_project(where: {is_deleted: {_eq: false}}) {
             project_id
             moped_proj_tags(where: {is_deleted: {_eq: false}}) {
                 moped_tag {
@@ -45,19 +38,34 @@ QUERY_TEMPLATE = """
                 }
             }
             moped_proj_components(where: {is_deleted: {_eq: false}}) {
+                project_component_id
+      					moped_proj_component_tags {
+                  moped_component_tag {
+                    name
+                  }
+                }
+      					moped_proj_component_work_types {
+                  moped_work_type {
+                    name
+                  }
+                }
                 moped_components {
                     component_name
                     component_subtype
                     line_representation
-                    status_id
-                    moped_subcomponents {
-                    subcomponent_name
-                    }
                 }
-                moped_proj_features(where: {is_deleted: {_eq: false}}) {
-                    feature
+                moped_proj_components_subcomponents {
+                  moped_subcomponent {
+                    subcomponent_name
+                  }
                 }
             }
+        }
+        project_geography(where: { is_deleted: { _eq: false}}) {
+          feature_id
+          component_id
+          geometry: geography
+          council_districts
         }
         project_list_view {
             $keys
