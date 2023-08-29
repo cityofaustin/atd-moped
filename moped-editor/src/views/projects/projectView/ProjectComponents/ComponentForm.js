@@ -171,7 +171,11 @@ const ComponentForm = ({
           <ControlledAutocomplete
             id="component"
             label="Component Type"
-            options={isEditingExistingComponent ? componentOptionsWithoutSignals : unfilteredComponentOptions}
+            options={
+              isEditingExistingComponent
+                ? componentOptionsWithoutSignals
+                : unfilteredComponentOptions
+            }
             getOptionLabel={(option) => option?.label || ""}
             isOptionEqualToValue={(option, value) =>
               option?.value === value?.value
