@@ -12,7 +12,7 @@ import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
-import { NavigationSearchQueryConf } from "../../../queries/NavigationSearchQueryConf";
+import { NavigationSearchQueryConf } from "./NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 

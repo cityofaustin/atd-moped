@@ -1,6 +1,4 @@
 import React from "react";
-import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
-import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { NavLink as RouterLink } from "react-router-dom";
 import theme from "src/theme/index";
@@ -32,8 +30,6 @@ export const NavigationSearchQueryConf = {
   pagination: {
     rowsPerPageOptions: [250, 1000],
   },
-  filters: ProjectsListViewFiltersConf,
-  export: ProjectsListViewExportConf,
   search: {
     placeholder:
       "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
