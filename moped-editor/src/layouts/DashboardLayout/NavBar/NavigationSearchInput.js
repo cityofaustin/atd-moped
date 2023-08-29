@@ -12,7 +12,7 @@ import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
-import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
+import { NavigationSearchQueryConf } from "../../../queries/NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 
@@ -139,8 +139,7 @@ const useStyles = makeStyles((theme) => ({
 const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
-  let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
-  console.log(projectSearchQuery);
+  let projectSearchQuery = new GQLAbstract(NavigationSearchQueryConf);
 
   // TODO: Refactor this so that the we don't reuse the saved GQLAbstract parameters (filters to ID 228)
   // when viewing a project summary.
