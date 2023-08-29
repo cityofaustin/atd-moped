@@ -17,9 +17,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
-import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
-import ControlledSelect from "src/components/ControlledSelect";
-import ControlledTextInput from "./ProjectComponents/ControlledTextInput";
+import ControlledAutocomplete from "../../../components/forms/ControlledAutocomplete";
+import ControlledSelect from "../../../components/forms/ControlledSelect";
+import ControlledTextInput from "../../../components/forms/ControlledTextInput";
 // import CloseIcon from "@mui/icons-material/Close";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import {

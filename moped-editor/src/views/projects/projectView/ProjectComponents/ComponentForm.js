@@ -25,7 +25,7 @@ import {
   useWorkTypeOptions,
   useResetDependentFieldOnAutocompleteChange,
 } from "./utils/form";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 
 import * as yup from "yup";
 
