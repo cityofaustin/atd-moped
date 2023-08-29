@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Grid,
   FormControl,
-  TextField,
   InputLabel,
   FormHelperText,
 } from "@mui/material";
@@ -135,7 +134,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   const defaultValues = useDefaultValues(activity);
 
   const {
-    register,
     handleSubmit,
     control,
     formState: { isDirty, errors: formErrors },
