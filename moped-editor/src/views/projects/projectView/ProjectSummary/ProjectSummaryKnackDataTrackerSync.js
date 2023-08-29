@@ -252,6 +252,9 @@ const ProjectSummaryKnackDataTrackerSync = ({
         handleClose={() => setConfirmDialogOpen(false)}
         handleConfirm={handleSync}
         confirmText={"Sync"}
+        dialogText={
+          "Are you sure you want to sync this project with Data Tracker?"
+        }
       />
     </>
   );
