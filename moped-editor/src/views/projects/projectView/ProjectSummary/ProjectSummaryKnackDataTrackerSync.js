@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Box, Grid, Link, Typography } from "@mui/material";
 import { Autorenew } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
@@ -6,6 +6,7 @@ import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
+import ConfirmDialog from "../../../../components/ConfirmDialog";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
@@ -149,6 +150,8 @@ const ProjectSummaryKnackDataTrackerSync = ({
   refetch,
   snackbarHandle,
 }) => {
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+
   let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
     process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW,
@@ -165,9 +168,10 @@ const ProjectSummaryKnackDataTrackerSync = ({
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
   const handleSync = () => {
+    setConfirmDialogOpen(false);
     // The following code is capable of handling a "re-sync" to knack for a given project.
     // Currently, our UI does not contain an element that allows a user to request a re-sync, but
-    // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
+    // this code is ready to "re-sync" a project thanks to its use of a dynamic get
     console.log("HTTP method: " + knackHttpMethod);
     // POST (create) or PUT (update) a project record in Knack
     return fetch(knackProjectEndpointUrl, {
@@ -219,25 +223,23 @@ const ProjectSummaryKnackDataTrackerSync = ({
             className={classes.fieldLabelDataTrackerLink}
             text={
               // if a project has been synced with Knack and has signals associated, link to signals
-              (project.knack_project_id && signals.length > 0 && (
+              project.knack_project_id && signals.length > 0 ? (
                 <RenderSignalLink signals={signals} />
-              )) || (
+              ) : (
                 // otherwise render link to synchronize with knack
-                <>
-                  <Link
-                    id="projectKnackSyncLink"
-                    className={classes.knackFieldLabelText}
-                    onClick={() => {
-                      handleSync();
-                    }}
-                  >
-                    {"Synchronize with Data Tracker"}
-                    <Autorenew
-                      viewBox={"0 -4 22 26"}
-                      className={classes.syncLinkIcon}
-                    />
-                  </Link>
-                </>
+                <Link
+                  id="projectKnackSyncLink"
+                  className={classes.knackFieldLabelText}
+                  onClick={() => {
+                    setConfirmDialogOpen(true);
+                  }}
+                >
+                  {"Synchronize with Data Tracker"}
+                  <Autorenew
+                    viewBox={"0 -4 22 26"}
+                    className={classes.syncLinkIcon}
+                  />
+                </Link>
               )
             }
             classes={classes}
@@ -245,6 +247,12 @@ const ProjectSummaryKnackDataTrackerSync = ({
           />
         </Box>
       </Grid>
+      <ConfirmDialog
+        dialogOpen={confirmDialogOpen}
+        handleClose={() => setConfirmDialogOpen(false)}
+        handleConfirm={handleSync}
+        confirmText={"Sync"}
+      />
     </>
   );
 };
