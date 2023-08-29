@@ -60,7 +60,6 @@ const FileUploadDialogSingle = (props) => {
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
-  const [fileReady, setFileReady] = useState(false);
   const [externalFile, setExternalFile] = useState(false);
   const [externalFileLink, setExternalFileLink] = useState(null);
 
@@ -108,7 +107,6 @@ const FileUploadDialogSingle = (props) => {
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
-    setFileReady(false);
     setExternalFile(false);
     setExternalFileLink(null);
   };
@@ -151,44 +149,14 @@ const FileUploadDialogSingle = (props) => {
     return 0;
   };
 
-  /**
-   * This side effect checks if the save button should be disabled.
-   * This is done by checking the state every time there is a
-   * change in the field name, file type, description, file object, and
-   * file key state.
-   */
-  useEffect(() => {
-    // Determine if the file is ready to be saved to DB
-    const saveDisabled = externalFile
-      ? fieldLength(fileName) === 0 ||
-        !Number.isInteger(fileType) ||
-        fieldLength(externalFileLink) === 0
-      : fieldLength(fileName) === 0 ||
-        !Number.isInteger(fileType) ||
-        fieldLength(fileKey) === 0 ||
-        fileObject === null;
-
-    // if !fileReady, then the upload/save button is disabled
-
-    // If the file information is filled out, but button is still disabled, change fileReady to true
-    if (saveDisabled === false && fileReady === false) {
-      setFileReady(true);
-    }
-
-    // if the file information isnt filled out, but the button is active, disable the button
-    if (saveDisabled && fileReady) {
-      setFileReady(false);
-    }
-  }, [
-    fileName,
-    fileType,
-    fileDescription,
-    fileKey,
-    fileObject,
-    fileReady,
-    externalFileLink,
-    externalFile,
-  ]);
+  const fileReady = externalFile
+      ? fieldLength(fileName) > 0 &&
+        Number.isInteger(fileType) &&
+        fieldLength(externalFileLink) > 0
+      : fieldLength(fileName) > 0 &&
+        Number.isInteger(fileType) &&
+        fieldLength(fileKey) > 0 &&
+        fileObject != null;
 
   return (
     <Dialog
