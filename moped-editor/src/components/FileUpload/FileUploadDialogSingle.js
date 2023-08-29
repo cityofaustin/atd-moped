@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -83,11 +83,11 @@ const FileUploadDialogSingle = (props) => {
   };
 
   const handleFileNameChange = (e) => {
-    setFileName(e.target.value);
+    setFileName(e.target.value.trim());
   };
 
   const handleFileDescriptionChange = (e) => {
-    setFileDescription(e.target.value);
+    setFileDescription(e.target.value.trim());
   };
 
   const handleFileTypeChange = (e) => {
@@ -95,8 +95,15 @@ const FileUploadDialogSingle = (props) => {
   };
 
   const handleExternalLinkChange = (e) => {
-    setExternalFileLink(e.target.value);
+    setExternalFileLink(e.target.value.trim());
   };
+
+  const handleToggleChange = toggleChecked => {
+    setExternalFile(toggleChecked)
+    if (!toggleChecked) {
+      setExternalFileLink(null)
+    }
+  }
 
   /**
    * Resets all the values in the file upload component
@@ -121,12 +128,12 @@ const FileUploadDialogSingle = (props) => {
    */
   const handleSaveFile = () => {
     const fileBundle = {
-      name: fileName,
+      name: fileName || null,
       type: fileType,
-      description: fileDescription,
+      description: fileDescription || null,
       key: fileKey,
       file: fileObject,
-      url: externalFileLink,
+      url: externalFileLink || null,
     };
 
     // If there is a click save file handler, call it...
@@ -216,7 +223,7 @@ const FileUploadDialogSingle = (props) => {
                   <Switch
                     color="primary"
                     checked={externalFile}
-                    onChange={(event) => setExternalFile(event.target.checked)}
+                    onChange={(event) => handleToggleChange(event.target.checked)}
                   />
                 }
                 label="Link to file"
