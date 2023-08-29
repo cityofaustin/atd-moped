@@ -4,6 +4,8 @@ import { TextField } from "@mui/material";
 
 const defaultOnChangeHandler = (option, field) => field.onChange(option);
 
+const defaultValueHandler = (value) => value;
+
 /**
  * A react-hook-form wrapper of the MUI autocomplete component
  * @return {JSX.Element}
@@ -19,7 +21,7 @@ export default function ControlledAutocomplete({
   size = "small",
   error,
   onChangeHandler = defaultOnChangeHandler,
-  valueHandler,
+  valueHandler = defaultValueHandler,
   ...autoCompleteProps
 }) {
   return (
@@ -33,7 +35,7 @@ export default function ControlledAutocomplete({
             {...field}
             onChange={(_event, option) => onChangeHandler(option, field)}
             options={options}
-            value={valueHandler ? valueHandler(field.value) : field.value}
+            value={valueHandler(field.value)}
             renderInput={(params) => (
               <TextField
                 {...params}

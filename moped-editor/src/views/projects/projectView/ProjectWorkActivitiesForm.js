@@ -27,6 +27,10 @@ import {
   ADD_WORK_ACTIVITIY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
+import {
+  removeDecimalsAndTrailingNumbers,
+  removeNonIntegers,
+} from "src/utils/numberFormatters";
 
 const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Markings",
@@ -53,6 +57,13 @@ const validationSchema = yup.object().shape({
   id: yup.number().optional(),
   project_id: yup.number().required(),
 });
+
+const amountOnChangeHandler = (value, field) => {
+  const handledValue = value
+    ? removeNonIntegers(removeDecimalsAndTrailingNumbers(value))
+    : null;
+  field.onChange(handledValue);
+};
 
 const taskOrderOnChangeHandler = (optionArray, field) => {
   const taskOrders = optionArray?.map((o) => o.value);
@@ -260,6 +271,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               label="Amount"
               name="contract_amount"
               control={control}
+              onChangeHandler={amountOnChangeHandler}
             />
           </FormControl>
         </Grid>
