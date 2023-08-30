@@ -4,7 +4,7 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import Button from "@mui/material/Button";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import Email from "@mui/icons-material/Email";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import Icon from "@mui/material/Icon";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -49,12 +49,15 @@ export const EditUserButton = ({ id }) => (
 const mugUserFilter = (user) => user.is_user_group_member && !user.is_deleted;
 
 /**
- * Filter function to identify all active users who are not non-login users
+ * Filter function to identify all active users who are not non-login users and
+ * do not have a `+` in their email address
  * @param {object} user - a `moped_user` object
  * @returns user
  */
 const allUserFilter = (user) =>
-  !user.is_deleted && !user.roles.includes("non-login-user");
+  !user.is_deleted &&
+  !user.roles.includes("non-login-user") &&
+  user.email.indexOf("+") < 0;
 
 /**
  * Copies user email addresses to clipboard as a semi-colon-separated string
@@ -104,7 +107,7 @@ export const CopyMugUsersButton = ({ users }) => {
     const timeout = setTimeout(() => {
       setCopiedListName(null);
       handleCloseMenu();
-    }, 300);
+    }, 500);
     return () => clearTimeout(timeout);
   }, [copiedListName, handleCloseMenu]);
 
@@ -118,7 +121,7 @@ export const CopyMugUsersButton = ({ users }) => {
         aria-haspopup="true"
         aria-expanded={menuOpen ? "true" : undefined}
         onClick={handleMenuClick}
-        startIcon={<Email />}
+        endIcon={<ArrowDropDownIcon />}
       >
         Contact users
       </Button>
@@ -139,7 +142,11 @@ export const CopyMugUsersButton = ({ users }) => {
               <ContentCopyIcon fontSize="small" />
             )}
           </ListItemIcon>
-          <ListItemText>Moped User Group</ListItemText>
+          <ListItemText>
+            {copiedListName === "allUsers"
+              ? "Copied!"
+              : "Copy Moped User Group (MUG) email addresses"}
+          </ListItemText>
         </MenuItem>
         <MenuItem onClick={() => onMenuItemClick("allUsers")}>
           <ListItemIcon>
@@ -149,7 +156,11 @@ export const CopyMugUsersButton = ({ users }) => {
               <ContentCopyIcon fontSize="small" />
             )}
           </ListItemIcon>
-          <ListItemText>All active users</ListItemText>
+          <ListItemText>
+            {copiedListName === "allUsers"
+              ? "Copied!"
+              : "Copy all active user email addresses"}
+          </ListItemText>
         </MenuItem>
       </Menu>
     </div>
