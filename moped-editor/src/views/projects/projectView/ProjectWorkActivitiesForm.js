@@ -334,7 +334,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isDirty || mutationState.loading}
+            disabled={(!isDirty && !isNewActivity) || mutationState.loading}
           >
             {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
