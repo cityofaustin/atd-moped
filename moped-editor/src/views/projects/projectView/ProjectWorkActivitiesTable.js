@@ -69,8 +69,8 @@ const ProjectWorkActivitiesTable = () => {
 
   const columns = [
     {
-      headerName: "",
-      field: "__edit__",
+      headerName: "Edit",
+      field: "_edit",
       renderCell: ({ row }) => {
         return deleteContractMutationState?.loading ? (
           <CircularProgress color="primary" size={20} />
@@ -99,11 +99,6 @@ const ProjectWorkActivitiesTable = () => {
       field: "contract_number",
       minWidth: 150,
     },
-    // {
-    //   headerName: "Imp. Workgroup",
-    //   field: "implementation_workgroup",
-    //   minWidth: 150,
-    // },
     {
       headerName: "Work Assignment",
       field: "work_assignment_id",
@@ -172,13 +167,13 @@ const ProjectWorkActivitiesTable = () => {
     refetch().then(() => setEditActivity(null));
   };
 
-  console.log("AC", activities);
   return (
     <ApolloErrorHandler errors={error}>
       <Box sx={{ width: "100%" }}>
         <DataGrid
           autoHeight
           columns={columns}
+          density="comfortable"
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
           hideFooterPagination={true}
