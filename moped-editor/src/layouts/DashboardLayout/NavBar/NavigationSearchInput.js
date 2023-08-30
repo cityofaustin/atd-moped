@@ -159,6 +159,12 @@ const NavigationSearchInput = ({ input404Class }) => {
     projectSearchQuery.current.config.options.useQuery
   );
 
+  /* Clear input and reset the gqlabstract 'or' config */
+  const clearSearchInput = () => {
+    setSearchTerm("");
+    projectSearchQuery.current.resetFull();
+  };
+
   // when magnifying glass icon is clicked, show search bar and initiate animation
   const handleMagClick = () => {
     showSearchInput(true);
@@ -169,9 +175,7 @@ const NavigationSearchInput = ({ input404Class }) => {
   const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
-    setSearchTerm("");
     setPopperEntered(false);
-    projectSearchQuery.current.resetFull();
   };
 
   // show popper results when search input gets focus
@@ -182,7 +186,7 @@ const NavigationSearchInput = ({ input404Class }) => {
 
   // initiate exiting animation when clicking outside of search bar / popper results
   const startSlideAway = () => {
-    setSearchTerm("");
+    clearSearchInput();
     setPopperEntered(false);
     toggleSlideIn(false);
   };
@@ -202,8 +206,10 @@ const NavigationSearchInput = ({ input404Class }) => {
     switch (key) {
       // On Escape key, clear the search
       case "Escape":
-        setSearchTerm("");
         setSearchResultsAnchor(null);
+        // Slide away the search bar and reset the input
+        toggleSlideIn(false);
+        clearSearchInput();
         break;
       // On Enter key, initialize the search
       case "Enter":
