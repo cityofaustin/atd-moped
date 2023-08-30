@@ -153,6 +153,10 @@ const ProjectFiles = (props) => {
 
   const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 
+  // remove the FilePond and s3 added path for display, ex:
+  // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
+  const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){2}/g, "");
+
   /**
    * Column configuration for <MaterialTable>
    */
@@ -187,7 +191,7 @@ const ProjectFiles = (props) => {
               className={classes.downloadLink}
               onClick={() => downloadFileAttachment(record?.file_key, token)}
             >
-              {record?.file_key}
+              {cleanUpFileKey(record?.file_key)}
             </Link>
           );
         }
