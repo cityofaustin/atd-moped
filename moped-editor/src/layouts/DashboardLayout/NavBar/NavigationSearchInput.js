@@ -139,7 +139,9 @@ const useStyles = makeStyles((theme) => ({
 const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
-  let projectSearchQuery = new GQLAbstract(NavigationSearchQueryConf);
+  const projectSearchQuery = React.useRef(
+    new GQLAbstract(NavigationSearchQueryConf)
+  );
 
   // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
@@ -152,8 +154,8 @@ const NavigationSearchInput = ({ input404Class }) => {
   const [showSlideIn, toggleSlideIn] = useState(false);
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
-    projectSearchQuery.gql,
-    projectSearchQuery.config.options.useQuery
+    projectSearchQuery.current.gql,
+    projectSearchQuery.current.config.options.useQuery
   );
 
   // when magnifying glass icon is clicked, show search bar and initiate animation
@@ -168,7 +170,7 @@ const NavigationSearchInput = ({ input404Class }) => {
     showSearchInput(false);
     setSearchTerm("");
     setPopperEntered(false);
-    projectSearchQuery.reset();
+    projectSearchQuery.current.resetFull();
   };
 
   // show popper results when search input gets focus
@@ -226,13 +228,16 @@ const NavigationSearchInput = ({ input404Class }) => {
     if (event) event.preventDefault();
 
     // Formats search query based on project search columns and config
-    Object.keys(projectSearchQuery.config.columns)
-      .filter((column) => projectSearchQuery.config.columns[column]?.searchable)
+    Object.keys(projectSearchQuery.current.config.columns)
+      .filter(
+        (column) =>
+          projectSearchQuery.current.config.columns[column]?.searchable
+      )
       .forEach((column) => {
         const { operator, quoted, envelope } =
-          projectSearchQuery.config.columns[column].search;
+          projectSearchQuery.current.config.columns[column].search;
         const searchValue = getSearchValue(
-          projectSearchQuery,
+          projectSearchQuery.current,
           column,
           searchTerm
         );
@@ -240,7 +245,10 @@ const NavigationSearchInput = ({ input404Class }) => {
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
 
-        projectSearchQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
+        projectSearchQuery.current.setOr(
+          column,
+          `${operator}: ${graphqlSearchValue}`
+        );
       });
 
     // Initiate Lazy Query to get search results

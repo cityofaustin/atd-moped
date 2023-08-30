@@ -135,14 +135,6 @@ class GQLAbstract {
   }
 
   /**
-   * Reset all config to initial values
-   * @returns {Array}
-   */
-  get reset() {
-    this.resetFull();
-  }
-
-  /**
    * Resets the value of where and or to empty
    */
   cleanWhere() {
