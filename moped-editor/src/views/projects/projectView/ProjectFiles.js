@@ -384,6 +384,7 @@ const ProjectFiles = (props) => {
                   fileType: newData.file_type,
                   fileName: newData.file_name,
                   fileDescription: newData.file_description,
+                  fileUrl: newData.file_url,
                 },
               }).then(() => {
                 refetch();
