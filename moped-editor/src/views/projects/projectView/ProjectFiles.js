@@ -175,7 +175,7 @@ const ProjectFiles = (props) => {
     },
     {
       title: "File",
-      field: "file_name",
+      field: "file_url",
       validate: (rowData) => {
         return rowData.file_name.length > 0 ? true : false;
       },
@@ -198,16 +198,20 @@ const ProjectFiles = (props) => {
           />
         );
       },
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="file_name"
-          name="file_name"
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-          helperText="Required"
-        />
-      ),
+      editComponent: (props) =>
+        props.rowData.file_key ? (
+          <Typography>{props.value}</Typography>
+        ) : (
+          <TextField
+            variant="standard"
+            id="file_path"
+            name="file_path"
+            value={props.value}
+            onChange={(e) => props.onChange(e.target.value)}
+            helperText="Required"
+            disabled={!!props.rowData.file_key}
+          />
+        ),
     },
     {
       title: "Type",
