@@ -45,6 +45,7 @@ import {
   formatTimeStampTZType,
   makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
+import { isValidUrl } from "src/utils/urls";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -190,12 +191,14 @@ const ProjectFiles = (props) => {
             </Link>
           );
         }
-        return (
+        return isValidUrl(record?.file_url) ? (
           <ExternalLink
             className={classes.downloadLink}
             url={record?.file_url}
             text={record?.file_url}
           />
+        ) : (
+          <Typography>{record?.file_url}</Typography>
         );
       },
       editComponent: (props) =>
