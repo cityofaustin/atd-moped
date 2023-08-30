@@ -140,7 +140,7 @@ export const CopyMugUsersButton = ({ users }) => {
             )}
           </ListItemIcon>
           <ListItemText>
-            {copiedListName === "allUsers"
+            {copiedListName === "mug"
               ? "Copied!"
               : "Copy Moped User Group (MUG) email addresses"}
           </ListItemText>
