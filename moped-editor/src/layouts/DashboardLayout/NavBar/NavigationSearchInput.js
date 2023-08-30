@@ -148,6 +148,7 @@ const NavigationSearchInput = ({ input404Class }) => {
   // anchor element for results popper to "attach" to
   const [searchResultsAnchor, setSearchResultsAnchor] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  console.log(searchTerm);
   // keep track if popper animation has completed so border can be applied
   const [popperEnterComplete, setPopperEntered] = useState(false);
   // boolean used to initiate slide animation
