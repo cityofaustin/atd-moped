@@ -155,7 +155,7 @@ const ProjectFiles = (props) => {
 
   // remove the FilePond and s3 added path for display, ex:
   // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-  const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){2}/g, "");
+  const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
   /**
    * Column configuration for <MaterialTable>
@@ -202,12 +202,14 @@ const ProjectFiles = (props) => {
             text={record?.file_url}
           />
         ) : (
+          // if the user provided file_url is not a valid url, just render the text
           <Typography>{record?.file_url}</Typography>
         );
       },
       editComponent: (props) =>
+        // users cannot edit the file_key, since its provided by the FilePond upload interface
         props.rowData.file_key ? (
-          <Typography>{props.value}</Typography>
+          <Typography>{cleanUpFileKey(props.rowData.file_key)}</Typography>
         ) : (
           <TextField
             variant="standard"
