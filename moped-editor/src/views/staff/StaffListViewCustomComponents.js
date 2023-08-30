@@ -70,10 +70,7 @@ const copyEmailsToClipboard = (users, userFilter) => {
     .filter(userFilter)
     .map((u) => u.email)
     .join(";");
-  const type = "text/plain";
-  const blob = new Blob([emails], { type });
-  const data = [new ClipboardItem({ [type]: blob })];
-  return navigator.clipboard.write(data);
+  return navigator.clipboard.writeText(emails);
 };
 
 /**
