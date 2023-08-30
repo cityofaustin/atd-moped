@@ -57,6 +57,13 @@ const useStyles = makeStyles((theme) => ({
   downloadLink: {
     cursor: "pointer",
   },
+  codeStyle: {
+    backgroundColor: "#eee",
+    fontFamily: "monospace",
+    display: "inline-block",
+    paddingLeft: "4px",
+    paddingRight: "4px",
+  },
 }));
 
 /**
@@ -203,7 +210,9 @@ const ProjectFiles = (props) => {
           />
         ) : (
           // if the user provided file_url is not a valid url, just render the text
-          <Typography>{record?.file_url}</Typography>
+          <Typography className={classes.codeStyle}>
+            {record?.file_url}
+          </Typography>
         );
       },
       editComponent: (props) =>
