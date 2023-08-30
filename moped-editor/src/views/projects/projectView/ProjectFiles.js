@@ -63,6 +63,7 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     paddingLeft: "4px",
     paddingRight: "4px",
+    fontSize: "14px"
   },
 }));
 
