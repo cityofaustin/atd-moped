@@ -181,7 +181,7 @@ const ProjectFiles = (props) => {
           id="file_name"
           name="file_name"
           value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
+          onChange={(e) => props.onChange(e.target.value.trim())}
           helperText="Required"
         />
       ),
@@ -226,7 +226,7 @@ const ProjectFiles = (props) => {
             id="file_path"
             name="file_path"
             value={props.value}
-            onChange={(e) => props.onChange(e.target.value)}
+            onChange={(e) => props.onChange(e.target.value.trim())}
             helperText="Required"
             disabled={!!props.rowData.file_key}
           />
@@ -264,7 +264,7 @@ const ProjectFiles = (props) => {
           id="file_description"
           name="file_description"
           value={props?.value ?? ""}
-          onChange={(e) => props.onChange(e.target.value)}
+          onChange={(e) => props.onChange(e.target.value.trim())}
         />
       ),
     },
@@ -392,9 +392,9 @@ const ProjectFiles = (props) => {
                 variables: {
                   fileId: newData.project_file_id,
                   fileType: newData.file_type,
-                  fileName: newData.file_name,
-                  fileDescription: newData.file_description,
-                  fileUrl: newData.file_url,
+                  fileName: newData.file_name || null,
+                  fileDescription: newData.file_description || null,
+                  fileUrl: newData.file_url || null,
                 },
               }).then(() => {
                 refetch();
