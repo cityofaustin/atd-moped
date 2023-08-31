@@ -51,14 +51,14 @@ class GQLAbstract {
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpKey = exp => exp.split(/[{} ]+/, 1)[0].trim();
+  getExpKey = (exp) => exp.split(/[{} ]+/, 1)[0].trim();
 
   /**
    * Returns the value of a nested expression, usually another expression.
    * @param {string} exp - The GraphQL expression
    * @returns {string}
    */
-  getExpValue = exp =>
+  getExpValue = (exp) =>
     exp.substring(exp.indexOf("{") + 1, exp.lastIndexOf("}")).trim();
 
   /**
@@ -375,7 +375,7 @@ class GQLAbstract {
    * @returns {Array}
    */
   get columns() {
-    return this.getEntries("columns").map(k => k[0]);
+    return this.getEntries("columns").map((k) => k[0]);
   }
 
   /**
@@ -419,7 +419,7 @@ class GQLAbstract {
     if (this.config.and !== null) {
       for (const [key, value] of this.getEntries("and")) {
         const andValues = value.split(",");
-        andValues.forEach(andValue => and.push(`{${key}: {${andValue}}}`));
+        andValues.forEach((andValue) => and.push(`{${key}: {${andValue}}}`));
         // remove key from where clause after including the values in "and"
         this.deleteWhere(key);
       }
@@ -551,7 +551,7 @@ class GQLAbstract {
     const aggregatesQueryArray = [];
 
     // For each config, create query, replace filters/columns, and push to aggregatesQueryArray
-    queryConfigArray.forEach(config => {
+    queryConfigArray.forEach((config) => {
       let query = `
       gqlAbstractTableAggregateName (
           gqlAbstractAggregateFilters
