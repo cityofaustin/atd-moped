@@ -586,6 +586,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       file_description
       create_date
       created_by
+      file_url
       moped_user {
         user_id
         first_name
@@ -601,6 +602,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
     $fileName: String!
     $fileType: Int!
     $fileDescription: String!
+    $fileUrl: String
   ) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
@@ -608,6 +610,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
         file_name: $fileName
         file_type: $fileType
         file_description: $fileDescription
+        file_url: $fileUrl
       }
     ) {
       affected_rows
