@@ -1,6 +1,7 @@
 import ComponentListItem from "./ComponentListItem";
 import Button from "@mui/material/Button";
-import { EditOutlined } from "@mui/icons-material";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -15,6 +16,7 @@ const ProjectComponentsList = ({
   clickedComponent,
   setClickedComponent,
   onClickZoomToComponent,
+  onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
   setIsClickedComponentRelated,
@@ -27,25 +29,28 @@ const ProjectComponentsList = ({
 
   const onListItemClick = (component) => {
     setIsClickedComponentRelated(false);
-    // If we are editing a component, clicking on a component should not change the clicked component
+    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
     if (isExpanded(component)) {
       setClickedComponent(null);
+      editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
       setClickedComponent(component);
+      editDispatch({ type: "set_draft_component", payload: component });
     }
   };
 
-  const onStartEditingComponent = (component) => {
-    if (isSignalComponent(component)) {
-      editDispatch({ type: "start_attributes_edit" });
-    } else {
-      editDispatch({ type: "start_edit", payload: component });
-    }
+  const onEditAttributes = () =>
+    editDispatch({ type: "start_attributes_edit" });
+
+  const onEditMap = () => {
+    editDispatch({ type: "start_map_edit" });
+    onEditFeatures();
   };
 
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
+    editDispatch({ type: "set_draft_component", payload: component });
   };
 
   return (
@@ -88,13 +93,28 @@ const ProjectComponentsList = ({
                     fullWidth
                     size="small"
                     color="primary"
-                    startIcon={<EditOutlined />}
-                    onClick={() => onStartEditingComponent(component)}
+                    startIcon={<ListIcon />}
+                    onClick={onEditAttributes}
                   >
-                    Edit
+                    Details
                   </Button>
                 }
               />
+              {!isSignalComponent(component) && (
+                <ListItemText
+                  primary={
+                    <Button
+                      fullWidth
+                      size="small"
+                      color="primary"
+                      startIcon={<TimelineIcon />}
+                      onClick={onEditMap}
+                    >
+                      Map
+                    </Button>
+                  }
+                />
+              )}
             </ListItem>
           }
         />

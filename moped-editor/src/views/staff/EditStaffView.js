@@ -67,6 +67,8 @@ const EditStaffView = () => {
       password,
       roles,
       workgroup_id,
+      is_user_group_member,
+      note,
     } = data;
 
     const payload = {
@@ -77,6 +79,8 @@ const EditStaffView = () => {
       password,
       roles,
       workgroup_id,
+      is_user_group_member,
+      note,
     };
 
     // Navigate to user table on successful add/edit

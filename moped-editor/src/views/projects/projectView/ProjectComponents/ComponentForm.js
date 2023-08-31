@@ -18,6 +18,8 @@ import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
   useComponentOptions,
+  useComponentOptionsFilteredByLineRepresentation,
+  useComponentOptionsWithoutSignals,
   useSubcomponentOptions,
   usePhaseOptions,
   useSubphaseOptions,
@@ -68,9 +70,6 @@ const ComponentForm = ({
   onSave,
   initialFormValues = null,
 }) => {
-  const doesInitialValueHaveSubcomponents =
-    initialFormValues?.subcomponents.length > 0;
-
   const {
     register,
     handleSubmit,
@@ -87,20 +86,33 @@ const ComponentForm = ({
   const areFormErrors = Object.keys(errors).length > 0;
 
   // Get and format component and subcomponent options
-  const {
-    data: optionsData,
-    loading: areOptionsLoading,
-    error,
-  } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
+  const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
 
   error && console.error(error);
 
-  const componentOptions = useComponentOptions(optionsData);
+  const isEditingExistingComponent = initialFormValues !== null;
+  const isLineRepresentation =
+    initialFormValues?.component?.data?.line_representation;
+
+  const unfilteredComponentOptions = useComponentOptions(optionsData);
+  const componentOptionsFilteredByLineRepresentation =
+    useComponentOptionsFilteredByLineRepresentation({
+      shouldFilterOptions: isEditingExistingComponent,
+      options: unfilteredComponentOptions,
+      isLineRepresentation,
+    });
+  // When we are editing component type of an existing component, we want to
+  // prevent switching to a signal component for now.
+  const componentOptionsWithoutSignals = useComponentOptionsWithoutSignals(
+    componentOptionsFilteredByLineRepresentation
+  );
+
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate] = watch([
+  const [component, phase, completionDate, subcomponents] = watch([
     "component",
     "phase",
     "completionDate",
+    "subcomponents",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -140,6 +152,7 @@ const ComponentForm = ({
     dependentFieldName: "subcomponents",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
+    disable: isEditingExistingComponent,
   });
 
   // todo: preserve work type if allowed when switching b/t component types
@@ -148,9 +161,8 @@ const ComponentForm = ({
     dependentFieldName: "work_types",
     valueToSet: defaultFormValues.work_types,
     setValue,
+    disable: isEditingExistingComponent,
   });
-
-  const isEditingExistingComponent = initialFormValues !== null;
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -159,7 +171,11 @@ const ComponentForm = ({
           <ControlledAutocomplete
             id="component"
             label="Component Type"
-            options={areOptionsLoading ? [] : componentOptions}
+            options={
+              isEditingExistingComponent
+                ? componentOptionsWithoutSignals
+                : unfilteredComponentOptions
+            }
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
                 key={option.value}
@@ -170,8 +186,8 @@ const ComponentForm = ({
             )}
             name="component"
             control={control}
+            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
-            disabled={isEditingExistingComponent}
             helperText="Required"
           />
         </Grid>
@@ -203,9 +219,9 @@ const ComponentForm = ({
             helperText="Required"
           />
         </Grid>
-        {/* Hide unless there are subcomponents for the chosen component */}
-        {(subcomponentOptions.length !== 0 ||
-          doesInitialValueHaveSubcomponents) && (
+        {/* Hide unless there are subcomponents for the chosen component
+        or if there is a subcomponent chosen for the component */}
+        {(subcomponentOptions.length !== 0 || subcomponents.length !== 0) && (
           <Grid item xs={12}>
             <ControlledAutocomplete
               id="subcomponents"

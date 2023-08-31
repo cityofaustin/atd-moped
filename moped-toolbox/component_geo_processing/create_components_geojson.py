@@ -96,14 +96,12 @@ def merge_geoms(features):
     for feature in features:
         # for point features, we can append each feature's coordinates to our
         # coordinate array
-        if feature["geometry"]["type"] == "Point":
-            geometry["coordinates"].append(feature["geometry"]["coordinates"])
-        elif feature["geometry"]["type"] == "MultiLineString":
+        geometry_type = feature["geometry"]["type"]
+        if geometry_type == "MultiPoint":
+            geometry["coordinates"] += feature["geometry"]["coordinates"]
+        elif geometry_type == "MultiLineString":
             coords = feature["geometry"]["coordinates"]
             geometry["coordinates"] += coords
-        elif feature["geometry"]["type"] == "LineString":
-            coords = feature["geometry"]["coordinates"]
-            geometry["coordinates"] += [coords]
         else:
             raise ValueError("Feature has unsupported geometry type")
     return geometry
@@ -122,9 +120,6 @@ def get_component_properties(component):
     properties = {}
     properties["component_name"] = component["component_name"]
     properties["component_subtype"] = component["component_subtype"]
-    properties["moped_subcomponents"] = ", ".join(
-        [sub["subcomponent_name"] for sub in component["moped_subcomponents"]]
-    )
     return properties
 
 
@@ -141,10 +136,33 @@ def add_project_properties(properties, project_data, project_list_keys):
         properties[key] = project_data[key]
 
 
+def add_council_districts(properties, features):
+    properties["council_districts"] = None
+    if not features:
+        return
+    all_districts = [
+        str(district)
+        for feature in features
+        if feature["council_districts"]
+        for district in feature["council_districts"]
+    ]
+    properties["council_districts"] = ",".join(list(set(all_districts)))
+
+
 def add_project_tags(properties, moped_proj_tags):
     tags = [proj_tag["moped_tag"]["name"] for proj_tag in moped_proj_tags]
     properties["moped_proj_tags"] = ",".join(tags) if tags else None
     return
+
+
+def add_subcomponents(properties, proj_component):
+    properties["moped_subcomponents"] = None
+    if proj_component["moped_proj_components_subcomponents"]:
+        subcomponents = [
+            sub["moped_subcomponent"]["subcomponent_name"]
+            for sub in proj_component["moped_proj_components_subcomponents"]
+        ]
+        properties["moped_subcomponents"] = ", ".join(subcomponents)
 
 
 def main(env):
@@ -161,18 +179,22 @@ def main(env):
         # find matching project in the project_list_view
         project_id = proj["project_id"]
         project_data = next(p for p in projects_list if p["project_id"] == project_id)
-
         if not project_data:
             raise ValueError("Unable to find project - this should never happen :/")
 
         for proj_component in proj["moped_proj_components"]:
             # create a single geojson feature with merged geometry from all
-            # moped_proj_features, with properties from the `project_list_view`
-            features = [f["feature"] for f in proj_component["moped_proj_features"]]
+            features = [
+                f
+                for f in data["project_geography"]
+                if f["component_id"] == proj_component["project_component_id"]
+            ]
             geometry = merge_geoms(features)
             properties = get_component_properties(proj_component["moped_components"])
+            add_council_districts(properties, features)
             add_project_properties(properties, project_data, PROJECT_LIST_KEYS)
             add_project_tags(properties, proj["moped_proj_tags"])
+            add_subcomponents(properties, proj_component)
             component_features.append(
                 {
                     "type": "Feature",

@@ -64,6 +64,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     project_id
     srts_id
     moped_components {
+      component_id
       component_name
       component_subtype
       feature_layer {
@@ -195,6 +196,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateComponentAttributes(
     $projectComponentId: Int!
+    $componentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $workTypes: [moped_proj_component_work_types_insert_input!]!
@@ -225,6 +227,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     update_moped_proj_components_by_pk(
       pk_columns: { project_component_id: $projectComponentId }
       _set: {
+        component_id: $componentId
         description: $description
         phase_id: $phaseId
         subphase_id: $subphaseId

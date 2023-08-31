@@ -56,6 +56,40 @@ export const useComponentOptions = (data) =>
   }, [data]);
 
 /**
+ * Take options returned by useComponentOptions and filter them by line representation of the component
+ * currently being edited to keep from switching between lines and points after creation.
+ * @param {Boolean} shouldFilterOptions Should the options be filtered at all
+ * @param {Array} options Component options returned from useComponentOptions for Autocomplete
+ * @param {Boolean} isLineRepresentation is component being edited line represented or not (line or point)
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
+export const useComponentOptionsFilteredByLineRepresentation = ({
+  shouldFilterOptions,
+  options,
+  isLineRepresentation,
+}) =>
+  useMemo(() => {
+    if (!shouldFilterOptions) return options;
+
+    return options.filter(
+      (component) => component.data.line_representation === isLineRepresentation
+    );
+  }, [shouldFilterOptions, options, isLineRepresentation]);
+
+/**
+ * Take options returned by useComponentOptions and filters out signal components.
+ * @param {Array} options Component Autocomplete options
+ * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
+ */
+export const useComponentOptionsWithoutSignals = (options) =>
+  useMemo(() => {
+    return options.filter(
+      (option) =>
+        option.data.feature_layer?.internal_table !== "feature_signals"
+    );
+  }, [options]);
+
+/**
  * Take the data nested in the chosen moped_components option and produce a list of subcomponents options (if there are some)
  * for a MUI autocomplete
  * @param {Integer} componentId The unique ID of the moped_component
@@ -321,6 +355,7 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
  * @param {string} dependentFieldName - Name of the dependent field
  * @param {*} valueToSet - Any value to set the dependent field to
  * @param {Function} setValue - React Hook Form setValue function
+ * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
  */
 export const useResetDependentFieldOnAutocompleteChange = ({
@@ -328,6 +363,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   dependentFieldName,
   valueToSet,
   setValue,
+  disable = false,
 }) => {
   // Track previous value to compare new value
   const [previousParentFormValue, setPreviousParentValue] =
@@ -338,6 +374,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   useEffect(() => {
     // keep update from firing if the parent value hasn't changed
     if (parentValue?.value === previousParentFormValue?.value) return;
+    if (disable) return;
 
     setValue(dependentFieldName, valueToSet);
     setPreviousParentValue(parentValue);
@@ -347,5 +384,6 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     setValue,
     dependentFieldName,
     valueToSet,
+    disable,
   ]);
 };

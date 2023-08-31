@@ -11,7 +11,6 @@ import TheMap from "./TheMap";
 import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
-import EditModeDialog from "./EditModeDialog";
 import ComponentMapToolbar from "./ComponentMapToolbar";
 import { useAppBarHeight } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
@@ -133,7 +132,6 @@ export default function MapView({
   }, [clickedComponent, projectComponents]);
 
   const {
-    onStartCreatingComponent,
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
     onCancelComponentCreate,
@@ -141,7 +139,6 @@ export default function MapView({
     createDispatch,
   } = useCreateComponent({
     projectId,
-    setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
@@ -192,6 +189,13 @@ export default function MapView({
     );
   };
 
+  /* Start creating and clear clicked component and draft edit states to deselect component */
+  const onStartCreatingComponent = () => {
+    createDispatch({ type: "start_create" });
+    editDispatch({ type: "clear_draft_component" });
+    setClickedComponent(null);
+  };
+
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -240,6 +244,7 @@ export default function MapView({
                 clickedComponent={clickedComponent}
                 setClickedComponent={setClickedComponent}
                 onClickZoomToComponent={onClickZoomToComponent}
+                onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
@@ -299,11 +304,6 @@ export default function MapView({
             setClickedComponent={setClickedComponent}
             setIsDeletingComponent={setIsDeletingComponent}
             onDeleteComponent={onDeleteComponent}
-          />
-          <EditModeDialog
-            showDialog={editState.showEditModeDialog}
-            editDispatch={editDispatch}
-            onEditFeatures={onEditFeatures}
           />
           <EditAttributesModal
             showDialog={editState.showEditAttributesDialog}
