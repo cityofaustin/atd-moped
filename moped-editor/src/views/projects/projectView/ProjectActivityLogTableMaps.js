@@ -364,7 +364,7 @@ export const ProjectActivityLogTableMaps = {
         label: "is deleted",
       },
       phase_id: {
-        label: "component phase"
+        label: "component phase",
       },
       subphase_id: {
         label: "component subphase",
@@ -446,6 +446,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "file type",
         data_type: "integer",
+      },
+      file_url: {
+        icon: "",
+        label: "file link",
+        data_type: "text",
       },
     },
   },
@@ -568,4 +573,3 @@ export const ProjectActivityLogTableMaps = {
     },
   },
 };
-
