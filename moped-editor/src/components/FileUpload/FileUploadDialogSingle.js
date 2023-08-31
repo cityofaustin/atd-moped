@@ -98,12 +98,13 @@ const FileUploadDialogSingle = (props) => {
     setExternalFileLink(e.target.value.trim());
   };
 
-  const handleToggleChange = toggleChecked => {
-    setExternalFile(toggleChecked)
+  const handleToggleChange = (e) => {
+    const toggleChecked = e.target.checked;
+    setExternalFile(toggleChecked);
     if (!toggleChecked) {
-      setExternalFileLink(null)
+      setExternalFileLink(null);
     }
-  }
+  };
 
   /**
    * Resets all the values in the file upload component
@@ -157,13 +158,13 @@ const FileUploadDialogSingle = (props) => {
   };
 
   const fileReady = externalFile
-      ? fieldLength(fileName) > 0 &&
-        Number.isInteger(fileType) &&
-        fieldLength(externalFileLink) > 0
-      : fieldLength(fileName) > 0 &&
-        Number.isInteger(fileType) &&
-        fieldLength(fileKey) > 0 &&
-        fileObject != null;
+    ? fieldLength(fileName) > 0 &&
+      Number.isInteger(fileType) &&
+      fieldLength(externalFileLink) > 0
+    : fieldLength(fileName) > 0 &&
+      Number.isInteger(fileType) &&
+      fieldLength(fileKey) > 0 &&
+      fileObject != null;
 
   return (
     <Dialog
@@ -223,7 +224,7 @@ const FileUploadDialogSingle = (props) => {
                   <Switch
                     color="primary"
                     checked={externalFile}
-                    onChange={(event) => handleToggleChange(event.target.checked)}
+                    onChange={handleToggleChange}
                   />
                 }
                 label="Link to file"
