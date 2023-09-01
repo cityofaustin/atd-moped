@@ -7,7 +7,11 @@ import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
 import Page from "src/components/Page";
 import { GET_ALL_USERS } from "src/queries/staff";
-import { AddUserButton, EditUserButton } from "./StaffListViewCustomComponents";
+import {
+  AddUserButton,
+  EditUserButton,
+  CopyMugUsersButton,
+} from "./StaffListViewCustomComponents";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxWidth: "100%",
   },
-  addStaffButton: {
+  buttonContainer: {
     display: "flex",
-    justifyContent: "flex-end",
+    justifyContent: "space-between",
     marginBottom: "24px",
   },
 }));
@@ -70,7 +74,7 @@ const staffColumns = [
       const role = props.value[0].replace("moped-", "");
       return role.charAt(0).toUpperCase() + role.slice(1);
     },
-    width: 125
+    width: 125,
   },
   {
     headerName: "MUG Member",
@@ -100,13 +104,14 @@ const StaffListView = () => {
         <CircularProgress />
       ) : (
         <Container className={classes.container}>
-          <Box className={classes.addStaffButton}>
+          <Box className={classes.buttonContainer}>
+            <CopyMugUsersButton users={data?.moped_users} />
             <AddUserButton />
           </Box>
           <Card>
             <DataGrid
               disableRowSelectionOnClick
-              rows={data["moped_users"]}
+              rows={data?.moped_users}
               columns={staffColumns}
               getRowId={(row) => row.user_id}
               slots={{ toolbar: GridToolbar }}
