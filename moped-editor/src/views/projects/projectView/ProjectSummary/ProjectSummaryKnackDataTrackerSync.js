@@ -1,12 +1,22 @@
 import React, { useMemo, useState } from "react";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Link,
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  DialogContentText,
+} from "@mui/material";
 import { Autorenew } from "@mui/icons-material";
 import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
-import ConfirmDialog from "../../../../components/ConfirmDialog";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
@@ -150,7 +160,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
   refetch,
   snackbarHandle,
 }) => {
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [isConfirmDialogOpen, setIsConfirmDialogOpen] = useState(false);
 
   let knackProjectEndpointUrl = buildProjectUrl(
     process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE,
@@ -164,11 +174,15 @@ const ProjectSummaryKnackDataTrackerSync = ({
   const signals = useProjectSignals(project);
   let knackHttpMethod = getHttpMethod(project?.knack_project_id);
 
+  const handleClose = () => {
+    setIsConfirmDialogOpen(false);
+  };
+
   /**
    * Function to handle the actual mechanics of synchronizing the data on hand to the Knack API endpoint.
    */
   const handleSync = () => {
-    setConfirmDialogOpen(false);
+    setIsConfirmDialogOpen(false);
     // The following code is capable of handling a "re-sync" to knack for a given project.
     // Currently, our UI does not contain an element that allows a user to request a re-sync, but
     // this code is ready to "re-sync" a project thanks to its use of a dynamic knackHttpMethod
@@ -229,7 +243,7 @@ const ProjectSummaryKnackDataTrackerSync = ({
                   id="projectKnackSyncLink"
                   className={classes.knackFieldLabelText}
                   onClick={() => {
-                    setConfirmDialogOpen(true);
+                    setIsConfirmDialogOpen(true);
                   }}
                 >
                   {"Synchronize with Data Tracker"}
@@ -245,15 +259,26 @@ const ProjectSummaryKnackDataTrackerSync = ({
           />
         </Box>
       </Grid>
-      <ConfirmDialog
-        dialogOpen={confirmDialogOpen}
-        handleClose={() => setConfirmDialogOpen(false)}
-        handleConfirm={handleSync}
-        confirmText={"Sync"}
-        dialogText={
-          "Are you sure you want to sync this project with Data Tracker?"
-        }
-      />
+      <Dialog
+        onClose={handleClose}
+        aria-labelledby="customized-dialog-title"
+        open={isConfirmDialogOpen}
+      >
+        <DialogTitle id="alert-dialog-title">
+          <h2>Synchronize Project with Data Tracker</h2>
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            This project's data will be copied to the Arterial Management Data
+            Tracker so that the project can be associated with work orders and
+            asset management.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSync}>Continue</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };
