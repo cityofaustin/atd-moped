@@ -92,7 +92,6 @@ $ node index.js local
     - Sidewalks & Special Projects Div
     - Add "Other" and "General Contractor" (PDD uses a lot of that)
 - finish transit - bust stop component/subcomponent maps.
-- decide what to do about unknown note authors. suggest we create a no-login user that can serve as a fallback
 - disable creative crosswalk component? on indefinite hold per heather b
 - there are facility spatial records with multiple features within one layer and across geom types.
 - add user matching to project `added_by`
@@ -108,15 +107,28 @@ $ node index.js local
 
 
 ### NW Questions
-
-- protection type:
-  - it's subcomponent now. check out the allowed subcomponents list to verify it's ok
 - project personnel:
-  - how to handle when role is null? default role? currently falling back to "Project Support"
+- IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
+
 - project funding:
   - very few sources have a status. currently defaulting to tentatitve.
-- does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
+    - OK
+
 - work authorizations statusID: default to....planned? complete?
+  - > futue/potential
+
+
+
+-> todo: add project funding status order integer
+
+-> issues to make: merge fund and dept-unit
+- protection type:
+  - it's subcomponent now. check out the allowed subcomponents list to verify it's ok
+
+- does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
+
+
+
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - we are converting unmatched signals to intersection improvement components: review these with AMD
