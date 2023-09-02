@@ -95,25 +95,19 @@ const getProjNotes = (statusUpdates) =>
     const project_note_type = 1;
 
     // set added by user
-    const updatedBy = status.UpdatedBy;
+    let updatedBy = status.UpdatedBy;
+    if (updatedBy === "_Unknown") {
+      updatedBy = "Nathan Wilkes";
+    }
     const matchedUser = USERS.find(
       (user) =>
         `${user.first_name} ${user.last_name}`.toLowerCase() ===
         updatedBy.toLowerCase()
     );
     if (!matchedUser) {
-      if (
-        [
-          "_Unknown",
-        ].includes(updatedBy)
-      ) {
-        // todo: :/ cannot edit prod and staging users through UI!
-        console.log("skipping user", updatedBy);
-      } else {
-        console.log("USER NOT FOUND: ", updatedBy);
-        debugger;
-        throw `User not found`;
-      }
+      console.log("USER NOT FOUND: ", updatedBy);
+      debugger;
+      throw `User not found`;
     }
     // todo: stop defaulting added_by
     index[projectId].push({
