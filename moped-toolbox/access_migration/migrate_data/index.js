@@ -23,10 +23,11 @@ const getMetadataFileDateString = () =>
 
 const PROJECT_CHUNK_SIZE = 50;
 const FNAME = "./data/raw/projects.json";
-const METADATA_FNAME = `./backup/metadata_${getMetadataFileDateString()}.json`;
+
+const COUNCIL_DISTRICTS_FNAME = "./backup/council_districts.json";
 
 const DELETE_ALL_PROJECTS_MUTATION = gql`
-  mutation DeleteAlllProjects {
+  mutation DeleteAllProjects {
     delete_moped_project(where: { project_id: { _is_null: false } }) {
       __typename
     }
@@ -39,6 +40,22 @@ const DELETE_ALL_PROJECTS_MUTATION = gql`
 const INSERT_PROJECTS_MUTATION = gql`
   mutation InsertProjects($objects: [moped_project_insert_input!]!) {
     insert_moped_project(objects: $objects) {
+      affected_rows
+    }
+  }
+`;
+
+const GET_COUNCIL_DISTRICTS_QUERY = gql`
+  query getDistricts {
+    layer_council_district {
+      geography
+      council_district
+    }
+  }
+`;
+const DELETE_COUNCIL_DISTRICTS_MUTATION = gql`
+  mutation DeleteCouncilDistricts {
+    delete_layer_council_district(where: { id: { _gt: 0 } }) {
       affected_rows
     }
   }
@@ -146,10 +163,11 @@ const removeEventTriggers = (metadata) => {
 async function main(env) {
   logger.info(`Running Access migration on env ${env} 🚀`);
 
+  const metadataFilename = `./backup/metadata_${env}_${getMetadataFileDateString()}.json`;
   let metadata;
 
   try {
-    metadata = loadJsonFile(METADATA_FNAME);
+    metadata = loadJsonFile(metadataFilename);
   } catch {
     // pass
   }
@@ -163,10 +181,10 @@ async function main(env) {
       logger.error(error);
       return;
     }
-    saveJsonFile(METADATA_FNAME, metadata);
-    logger.info(`✅ Metadata saved to '${METADATA_FNAME}'`);
+    saveJsonFile(metadataFilename, metadata);
+    logger.info(`✅ Metadata saved to '${metadataFilename}'`);
   } else {
-    logger.info(`✅ Loaded metadata backup from '${METADATA_FNAME}'`);
+    logger.info(`✅ Loaded metadata backup from '${metadataFilename}'`);
   }
 
   logger.info("Disabling event triggers...");
@@ -201,6 +219,29 @@ async function main(env) {
     logger.info("✅ Projects deleted");
   }
 
+  if (env === "local" || env === "test") {
+    logger.info("Backing up council districts...");
+    const districts = await makeHasuraRequest({
+      query: GET_COUNCIL_DISTRICTS_QUERY,
+      env,
+    });
+
+    if (districts["layer_council_district"].length > 0) {
+      saveJsonFile(
+        COUNCIL_DISTRICTS_FNAME,
+        districts["layer_council_district"]
+      );
+
+      logger.info("✅ Council districts backed-up");
+      logger.info("🏎️ Deleting council districts (gotta go fast)...");
+
+      await makeHasuraRequest({
+        query: DELETE_COUNCIL_DISTRICTS_MUTATION,
+        env,
+      });
+      logger.info("✅ Council districts deleted");
+    }
+  }
   const data = loadJsonFile(FNAME);
 
   const projects = data
@@ -285,7 +326,7 @@ async function main(env) {
   }
 
   logger.info("Restoring event triggers...");
-  const metadataBackup = loadJsonFile(METADATA_FNAME);
+  const metadataBackup = loadJsonFile(metadataFilename);
 
   try {
     await replaceMetadata({ env, metadata: metadataBackup });
