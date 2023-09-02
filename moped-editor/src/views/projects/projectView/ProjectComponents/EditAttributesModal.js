@@ -52,8 +52,10 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { subcomponents, phase, subphase, tags, work_types, completionDate } = formData;
+    const { subcomponents, phase, subphase, tags, work_types, completionDate } =
+      formData;
 
+    const componentId = formData.component.data.component_id;
     const description =
       formData.description?.length > 0 ? formData.description : null;
     const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
@@ -135,6 +137,7 @@ const EditAttributesModal = ({
       updateComponentAttributes({
         variables: {
           projectComponentId: projectComponentId,
+          componentId,
           description,
           subcomponents: subcomponentsArray,
           workTypes: workTypesArray,

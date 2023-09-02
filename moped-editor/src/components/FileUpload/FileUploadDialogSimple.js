@@ -38,6 +38,8 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
+
+// FileUploadDialogSimple is wrapper around the FileUpload component
 const FileUploadDialogSimple = props => {
     const classes = useStyles();
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Button,
   Dialog,
@@ -9,13 +9,15 @@ import {
   Icon,
   TextField,
   FormControl,
+  FormControlLabel,
   InputLabel,
   Select,
   MenuItem,
+  Switch,
 } from "@mui/material";
 import FileUpload from "./FileUpload";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -30,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
   },
   textField: {
     marginTop: "1rem",
+    marginBottom: "1rem",
   },
   selectField: {
-    marginTop: "1rem",
     width: "200px",
   },
-  inputFieldAdornmentColor: {
-    color: "grey",
+  fileUpload: {
+    marginTop: "1rem",
   },
 }));
 
@@ -50,13 +52,16 @@ const FileUploadDialogSingle = (props) => {
    * @constant {string} fileKey - The location of the file in S3
    * @constant {Object} fileObject - Contains the file object, including metadata.
    * @constant {bool} fileReady - True if we have everything we need to commit the file to the DB
+   * @constant {bool} externalFile - True if user toggled external file switch
+   * @constant {string} externalFileLink - external file location string
    */
   const [fileName, setFileName] = useState(null);
   const [fileType, setFileType] = useState("");
   const [fileDescription, setFileDescription] = useState(null);
   const [fileKey, setFileKey] = useState(null);
   const [fileObject, setFileObject] = useState(null);
-  const [fileReady, setFileReady] = useState(false);
+  const [externalFile, setExternalFile] = useState(false);
+  const [externalFileLink, setExternalFileLink] = useState(null);
 
   /**
    * Logic that needs to be run after the file has been uploaded to S3
@@ -77,28 +82,28 @@ const FileUploadDialogSingle = (props) => {
     }
   };
 
-  /**
-   * Handles the file name changes
-   * @param {Object} e - The event object
-   */
   const handleFileNameChange = (e) => {
-    setFileName(e.target.value);
+    setFileName(e.target.value.trim());
   };
 
-  /**
-   * Handles the file description changes
-   * @param {Object} e - The event object
-   */
   const handleFileDescriptionChange = (e) => {
-    setFileDescription(e.target.value);
+    setFileDescription(e.target.value.trim());
   };
 
-  /**
-   * Handles the file type changes
-   * @param {Object} e - The event object
-   */
   const handleFileTypeChange = (e) => {
     setFileType(e.target.value);
+  };
+
+  const handleExternalLinkChange = (e) => {
+    setExternalFileLink(e.target.value.trim());
+  };
+
+  const handleToggleChange = (e) => {
+    const toggleChecked = e.target.checked;
+    setExternalFile(toggleChecked);
+    if (!toggleChecked) {
+      setExternalFileLink(null);
+    }
   };
 
   /**
@@ -110,12 +115,10 @@ const FileUploadDialogSingle = (props) => {
     setFileDescription(null);
     setFileKey(null);
     setFileObject(null);
-    setFileReady(false);
+    setExternalFile(false);
+    setExternalFileLink(null);
   };
 
-  /**
-   * Handles the cancel button behavior
-   */
   const handleCancel = () => {
     props.handleClickCloseUploadFile();
     clearState();
@@ -126,11 +129,12 @@ const FileUploadDialogSingle = (props) => {
    */
   const handleSaveFile = () => {
     const fileBundle = {
-      name: fileName,
+      name: fileName || null,
       type: fileType,
-      description: fileDescription,
+      description: fileDescription || null,
       key: fileKey,
       file: fileObject,
+      url: externalFileLink || null,
     };
 
     // If there is a click save file handler, call it...
@@ -143,7 +147,7 @@ const FileUploadDialogSingle = (props) => {
   /**
    * Checks if the field is a string and returns it's length
    * @param {any} value - The value in question
-   * @return {number}
+   * @return {number} field length or 0 if field is null or not a string
    */
   const fieldLength = (value) => {
     if (value !== null && typeof value === "string") {
@@ -153,30 +157,14 @@ const FileUploadDialogSingle = (props) => {
     return 0;
   };
 
-  /**
-   * This side effect checks if the save button should be disabled.
-   * This is done by checking the state every time there is a
-   * change in the field name, file type, description, file object, and
-   * file key state.
-   */
-  useEffect(() => {
-    // Determine if the file is ready to be saved to DB
-    const saveDisabled =
-      fieldLength(fileName) === 0 ||
-      !Number.isInteger(fileType) ||
-      fieldLength(fileKey) === 0 ||
-      fileObject === null;
-
-    // If no longer disabled, but marked as not ready
-    if (saveDisabled === false && fileReady === false) {
-      // Mark it as ready
-      setFileReady(true);
-    }
-
-    if (saveDisabled && fileReady) {
-      setFileReady(false);
-    }
-  }, [fileName, fileType, fileDescription, fileKey, fileObject, fileReady]);
+  const fileReady = externalFile
+    ? fieldLength(fileName) > 0 &&
+      Number.isInteger(fileType) &&
+      fieldLength(externalFileLink) > 0
+    : fieldLength(fileName) > 0 &&
+      Number.isInteger(fileType) &&
+      fieldLength(fileKey) > 0 &&
+      fileObject != null;
 
   return (
     <Dialog
@@ -189,73 +177,82 @@ const FileUploadDialogSingle = (props) => {
         {props?.title ? props.title : "Upload Media"}
       </DialogTitle>
       <DialogContent>
-        <Grid container>
+        <Grid container style={{ marginTop: "5px" }}>
           <Grid item xs={12} md={12}>
             <TextField
-              variant="standard"
               autoFocus
               className={classes.textField}
-              id="standard-multiline-flexible"
-              placeholder={"File name"}
+              id="file-name-input"
               multiline={false}
-              value={null}
+              label={"File name"}
+              value={undefined}
               onChange={handleFileNameChange}
-              fullWidth />
+              fullWidth
+            />
 
-            <FormControl variant="standard">
-              <InputLabel>Type</InputLabel>
+            <FormControl>
+              <InputLabel id="select-dropdown-filetype">Type</InputLabel>
               <Select
-                variant="standard"
+                labelId="select-dropdown-filetype"
                 className={classes.selectField}
                 value={fileType}
                 label="Type"
-                onChange={handleFileTypeChange}>
-                <MenuItem
-                  value={1}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Funding
-                </MenuItem>
-                <MenuItem
-                  value={2}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Plans
-                </MenuItem>
-                <MenuItem
-                  value={3}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Estimates
-                </MenuItem>
-                <MenuItem
-                  value={4}
-                  className={classes.inputFieldAdornmentColor}
-                >
-                  Other
-                </MenuItem>
+                onChange={handleFileTypeChange}
+              >
+                <MenuItem value={1}>Funding</MenuItem>
+                <MenuItem value={2}>Plans</MenuItem>
+                <MenuItem value={3}>Estimates</MenuItem>
+                <MenuItem value={4}>Other</MenuItem>
               </Select>
             </FormControl>
 
             <TextField
-              variant="standard"
               className={classes.textField}
               id="standard-multiline-static"
-              placeholder={"Description"}
+              label={"Description"}
               multiline
               rows={4}
               defaultValue={null}
               onChange={handleFileDescriptionChange}
-              fullWidth />
+              fullWidth
+            />
+
+            <FormControl>
+              <FormControlLabel
+                value="external"
+                control={
+                  <Switch
+                    color="primary"
+                    checked={externalFile}
+                    onChange={handleToggleChange}
+                  />
+                }
+                label="Link to file"
+                labelPlacement="start"
+              />
+            </FormControl>
           </Grid>
           <Grid item xs={12} md={12} className={classes.fileUpload}>
-            <FileUpload
-              limit={1}
-              sizeLimit={"1024MB"}
-              projectId={props.projectId}
-              onFileProcessed={handleOnFileProcessed}
-              onFileAdded={handleOnFileAdded}
-            />
+            {externalFile ? (
+              <TextField
+                autoFocus
+                id="file-name-input"
+                multiline={false}
+                label={"Link"}
+                value={undefined}
+                onChange={handleExternalLinkChange}
+                fullWidth
+                helperText={"Enter URL or network location"}
+              />
+            ) : (
+              <FileUpload
+                limit={1}
+                sizeLimit={"1024MB"}
+                projectId={props.projectId}
+                onFileProcessed={handleOnFileProcessed}
+                onFileAdded={handleOnFileAdded}
+              />
+            )}
           </Grid>
         </Grid>
       </DialogContent>
@@ -270,7 +267,7 @@ const FileUploadDialogSingle = (props) => {
           startIcon={<Icon>save</Icon>}
           disabled={!fileReady}
         >
-          Upload
+          {externalFile ? "Save" : "Upload"}
         </Button>
       </DialogActions>
     </Dialog>

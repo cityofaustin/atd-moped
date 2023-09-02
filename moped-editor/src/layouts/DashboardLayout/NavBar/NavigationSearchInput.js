@@ -12,7 +12,7 @@ import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
-import { ProjectsListViewQueryConf } from "../../../views/projects/projectsListView/ProjectsListViewQueryConf";
+import { NavigationSearchQueryConf } from "./NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 
@@ -139,7 +139,9 @@ const useStyles = makeStyles((theme) => ({
 const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
-  let projectSearchQuery = new GQLAbstract(ProjectsListViewQueryConf);
+  const projectSearchQuery = React.useRef(
+    new GQLAbstract(NavigationSearchQueryConf)
+  );
 
   // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
@@ -152,9 +154,15 @@ const NavigationSearchInput = ({ input404Class }) => {
   const [showSlideIn, toggleSlideIn] = useState(false);
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
-    projectSearchQuery.gql,
-    projectSearchQuery.config.options.useQuery
+    projectSearchQuery.current.gql,
+    projectSearchQuery.current.config.options.useQuery
   );
+
+  /* Clear input and reset the gqlabstract 'or' config */
+  const clearSearchInput = () => {
+    setSearchTerm("");
+    projectSearchQuery.current.resetFull();
+  };
 
   // when magnifying glass icon is clicked, show search bar and initiate animation
   const handleMagClick = () => {
@@ -166,8 +174,8 @@ const NavigationSearchInput = ({ input404Class }) => {
   const handleDropdownClose = () => {
     setSearchResultsAnchor(null);
     showSearchInput(false);
-    setSearchTerm("");
     setPopperEntered(false);
+    clearSearchInput();
   };
 
   // show popper results when search input gets focus
@@ -178,7 +186,7 @@ const NavigationSearchInput = ({ input404Class }) => {
 
   // initiate exiting animation when clicking outside of search bar / popper results
   const startSlideAway = () => {
-    setSearchTerm("");
+    clearSearchInput();
     setPopperEntered(false);
     toggleSlideIn(false);
   };
@@ -198,8 +206,10 @@ const NavigationSearchInput = ({ input404Class }) => {
     switch (key) {
       // On Escape key, clear the search
       case "Escape":
-        setSearchTerm("");
         setSearchResultsAnchor(null);
+        // Slide away the search bar and reset the input
+        toggleSlideIn(false);
+        clearSearchInput();
         break;
       // On Enter key, initialize the search
       case "Enter":
@@ -225,13 +235,16 @@ const NavigationSearchInput = ({ input404Class }) => {
     if (event) event.preventDefault();
 
     // Formats search query based on project search columns and config
-    Object.keys(projectSearchQuery.config.columns)
-      .filter((column) => projectSearchQuery.config.columns[column]?.searchable)
+    Object.keys(projectSearchQuery.current.config.columns)
+      .filter(
+        (column) =>
+          projectSearchQuery.current.config.columns[column]?.searchable
+      )
       .forEach((column) => {
         const { operator, quoted, envelope } =
-          projectSearchQuery.config.columns[column].search;
+          projectSearchQuery.current.config.columns[column].search;
         const searchValue = getSearchValue(
-          projectSearchQuery,
+          projectSearchQuery.current,
           column,
           searchTerm
         );
@@ -239,7 +252,10 @@ const NavigationSearchInput = ({ input404Class }) => {
           ? `"${envelope.replace("{VALUE}", searchValue)}"`
           : searchValue;
 
-        projectSearchQuery.setOr(column, `${operator}: ${graphqlSearchValue}`);
+        projectSearchQuery.current.setOr(
+          column,
+          `${operator}: ${graphqlSearchValue}`
+        );
       });
 
     // Initiate Lazy Query to get search results
@@ -301,7 +317,7 @@ const NavigationSearchInput = ({ input404Class }) => {
             onClose={handleDropdownClose}
             placement="bottom-start"
             // inherit the position from the modifiers and dont reset to 0
-            style={{position: "fixed", top: "unset", left:"unset"}}
+            style={{ position: "fixed", top: "unset", left: "unset" }}
             // disablePortal=true ensures the popper wont slip behind the material tables
             disablePortal
             modifiers={[]}
