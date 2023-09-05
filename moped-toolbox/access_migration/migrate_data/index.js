@@ -6,6 +6,7 @@ const { getPersonnel } = require("./moped_proj_personnel");
 const { downloadUsers } = require("./moped_users");
 const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
+const { TAGS_MAP } = require("./mappings/tags");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
 } = require("./mappings/public_process_status");
@@ -138,6 +139,40 @@ fields = [
         (status) => status.in === statusText
       );
       return statusMatch?.out || null;
+    },
+  },
+  {
+    in: "ProjectGroup",
+    out: "moped_proj_tags",
+    transform(row) {
+      const groups = row[this.in]?.split(",");
+      if (!groups) {
+        return null;
+      }
+      const tagRecords = groups
+        .map((groupName) => {
+          const groupNameTrimmed = groupName.trim();
+          let tag = TAGS_MAP.find((tag) => tag.in === groupNameTrimmed);
+
+          if (
+            !tag &&
+            // these tags are to be ignored
+            ![
+              "BusStopEnhancements",
+              "MAP_SW2018(LMAP)",
+              "MAP_VZero2023",
+              "ACTPlan",
+             
+            ].includes(groupName)
+          ) {
+             // todo: i asked NW if these are ok to ignore
+            console.log("Ignoring tag: ", groupName);
+            // throw `Unknwn group name: ${groupName}`;
+          }
+          return tag ? { tag_id: tag.out } : null;
+        })
+        .filter((tag) => tag);
+      return { data: tagRecords };
     },
   },
 ];
