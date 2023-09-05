@@ -127,16 +127,20 @@ $ node index.js local
 
 - does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
 
-
-
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - we are converting unmatched signals to intersection improvement components: review these with AMD
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 - some project descriptions missing
-
+- after the migration, maybe we should import the moped project IDs into the Access DB?
+- 
 - not migrating these project facility colummns:
   - PerfMeasureCategory
   - PerfMeasureName
   - PerfMeasureType
   - Categories
+
+### Test deployment notes:
+- how to deal w/ login?
+- nearmap imagery will not work
+- file uploads will not work
