@@ -253,6 +253,14 @@ async function main(env) {
     });
     logger.info("✅ Projects deleted");
 
+    logger.info("Resetting project ID sequence...");
+    await runSql({
+      env,
+      sql: "SELECT setval('moped_project_project_id_simple_seq', 1, FALSE);",
+    });
+
+    logger.info("✅ Projects ID sequence reset");
+
     logger.info("Backing up council districts...");
     const districts = await makeHasuraRequest({
       query: GET_COUNCIL_DISTRICTS_QUERY,
