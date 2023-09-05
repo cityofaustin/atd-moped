@@ -103,6 +103,7 @@ $ node index.js local
 - moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
+- create default "Migrated project" activity log event for each project?
 - search for todos :)
 
 
@@ -143,4 +144,4 @@ $ node index.js local
 ### Test deployment notes:
 - how to deal w/ login?
 - nearmap imagery will not work
-- file uploads will not work
+- file uploads will not work (but file links will)
