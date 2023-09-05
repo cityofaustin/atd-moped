@@ -15,6 +15,7 @@ const MOPED_USER_QUERY = gql`
       workgroup_id
       is_coa_staff
       roles
+      is_deleted
     }
   }
 `;
@@ -43,12 +44,70 @@ async function getUsers(env) {
  * overwrite each user IDs to `1`
  */
 async function downloadUsers(env) {
-  const users = await getUsers("prod");
-  if (["local", "test"].includes(env)) {
-    users.forEach((user) => (user.user_id = 1));
-  }
+  const users = await getUsers(
+    env === "test" || env === "local" ? "prod" : env
+  );
   saveJsonFile(USERS_FNAME, users);
 }
 
+const makeUserObject = ({
+  email,
+  first_name,
+  last_name,
+  title,
+  user_id,
+  workgroup_id,
+  is_deleted,
+}) => {
+  const user = {
+    email,
+    first_name,
+    last_name,
+    title,
+    user_id,
+    workgroup_id,
+    is_deleted,
+  };
+  user.roles = ["non-login-user"];
+  return user;
+};
+
+async function createUsers(env) {
+  if (env !== "local" && env !== "test") {
+    throw `Only allowed in local and test`;
+  }
+
+  const users = await getUsers("prod");
+
+  const payload = users.map((userData) => makeUserObject(userData));
+
+  // add a JD user as ID 1: this works out well bc there is no user ID 1 in prod, and
+  // this is JD's user ID in the staging user pool: so we can login to local or test
+  // instance as JD and use the app without issue
+
+  payload.push(
+    makeUserObject({
+      email: "jd@emailhost.xyz",
+      first_name: "JD",
+      last_name: "Maccombs",
+      title: "Software Developer",
+      user_id: 1,
+      workgroup_id: 3,
+      is_deleted: false,
+    })
+  );
+
+  try {
+    await makeHasuraRequest({
+      query: INSERT_MOPED_USERS_MUTATION,
+      variables: { users: payload },
+      env,
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+
 exports.downloadUsers = downloadUsers;
+exports.createUsers = createUsers;
 exports.USERS_FNAME = USERS_FNAME;

@@ -3,7 +3,7 @@ const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
 const { getPersonnel } = require("./moped_proj_personnel");
-const { downloadUsers } = require("./moped_users");
+const { downloadUsers, createUsers } = require("./moped_users");
 const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { TAGS_MAP } = require("./mappings/tags");
@@ -14,6 +14,7 @@ const {
   exportMetadata,
   replaceMetadata,
   makeHasuraRequest,
+  runSql,
 } = require("./utils/graphql");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { logger } = require("./utils/logger");
@@ -162,10 +163,9 @@ fields = [
               "MAP_SW2018(LMAP)",
               "MAP_VZero2023",
               "ACTPlan",
-             
             ].includes(groupName)
           ) {
-             // todo: i asked NW if these are ok to ignore
+            // todo: i asked NW if these are ok to ignore
             console.log("Ignoring tag: ", groupName);
             // throw `Unknwn group name: ${groupName}`;
           }
@@ -252,9 +252,7 @@ async function main(env) {
       env,
     });
     logger.info("✅ Projects deleted");
-  }
 
-  if (env === "local" || env === "test") {
     logger.info("Backing up council districts...");
     const districts = await makeHasuraRequest({
       query: GET_COUNCIL_DISTRICTS_QUERY,
@@ -276,6 +274,16 @@ async function main(env) {
       });
       logger.info("✅ Council districts deleted");
     }
+
+    logger.info("Deleting users and resetting ID sequence....");
+    await runSql({
+      env,
+      sql: "DELETE FROM moped_users where 1=1; SELECT setval('moped_users_user_id_seq', 1, FALSE);",
+    });
+    logger.info("✅ Users deleted");
+    logger.info("Creating users from production...");
+    await createUsers(env);
+    logger.info("✅ Users created");
   }
   const data = loadJsonFile(FNAME);
 

@@ -22,6 +22,22 @@ const metadataRequest = async ({ env, query }) => {
   return data;
 };
 
+const schemaRequest = async ({ env, query }) => {
+  const url = `${HASURA_AUTH.endpoint[env]}/v2/query`;
+  const response = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(query),
+    headers: getRequestHeaders(env),
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    console.error(text);
+    throw text;
+  }
+  data = await response.json();
+  return data;
+};
+
 const reloadMetadata = async ({ env }) => {
   // https://hasura.io/docs/latest/api-reference/metadata-api/manage-metadata/#metadata-reload-metadata-syntax
   const query = {
@@ -56,6 +72,17 @@ const exportMetadata = async ({ env }) => {
   return data.metadata;
 };
 
+const runSql = async ({ env, sql }) => {
+  // https://hasura.io/docs/latest/api-reference/metadata-api/manage-metadata/#metadata-replace-metadata
+  const query = {
+    type: "run_sql",
+    args: { sql },
+  };
+
+  const data = await schemaRequest({ env, query });
+  return data;
+};
+
 const makeHasuraRequest = ({ query, variables, env }) => {
   const url = `${HASURA_AUTH.endpoint[env]}/v1/graphql`;
   return request({
@@ -71,4 +98,5 @@ module.exports = {
   makeHasuraRequest,
   replaceMetadata,
   reloadMetadata,
+  runSql,
 };
