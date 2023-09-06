@@ -124,6 +124,9 @@ export const ProjectActivityLogTableMaps = {
       milestone_end: {
         label: "end date",
       },
+      end_date: {
+        label: "end date",
+      },
       project_id: {
         label: "project ID",
       },
@@ -136,13 +139,13 @@ export const ProjectActivityLogTableMaps = {
       completed: {
         label: "completion",
       },
-      is_current_milestone: {
-        label: "current milestone marker",
-      },
       milestone_order: {
         label: "order",
       },
       milestone_description: {
+        label: "description",
+      },
+      description: {
         label: "description",
       },
       milestone_name: {
@@ -151,34 +154,10 @@ export const ProjectActivityLogTableMaps = {
       date_added: {
         label: "date added",
       },
-      milestone_privacy: {
-        label: "privacy flag",
-      },
-      milestone_start: {
-        label: "start date",
-      },
-      completion_percentage: {
-        label: "completion percentage",
-      },
-      milestone_status: {
-        label: "status",
-      },
-      milestone_priority: {
-        label: "priority",
-      },
-      milestone_date_type: {
-        label: "date type",
-      },
-      milestone_related_phase_id: {
-        label: "related phase ID",
-      },
-      started_by_user_id: {
-        label: "started by user ID",
-      },
-      completed_by_user_id: {
-        label: "completed by user ID",
-      },
       milestone_estimate: {
+        label: "completion estimate",
+      },
+      end_date_estimate: {
         label: "completion estimate",
       },
       is_deleted: {

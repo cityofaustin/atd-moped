@@ -19,7 +19,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
     ) {
       milestone_id
       milestone_name
-      milestone_description
+      description
       milestone_order
       moped_phase {
         phase_name

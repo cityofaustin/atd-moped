@@ -103,8 +103,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Description",
-      field: "milestone_description",
-      render: (milestone) => milestone.milestone_description,
+      field: "description",
+      render: (milestone) => milestone.description,
       width: "25%",
     },
     {
@@ -134,15 +134,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Completion estimate",
-      field: "milestone_estimate",
+      field: "end_date_estimate",
       render: (rowData) =>
-        rowData.milestone_estimate
-          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
+        rowData.end_date_estimate
+          ? format(parseISO(rowData.end_date_estimate), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="milestone_estimate"
+          name="end_date_estimate"
           label="Completion estimate"
         />
       ),
@@ -150,15 +150,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Date completed",
-      field: "milestone_end",
+      field: "end_date",
       render: (rowData) =>
-        rowData.milestone_end
-          ? format(parseISO(rowData.milestone_end), "MM/dd/yyyy")
+        rowData.end_date
+          ? format(parseISO(rowData.end_date), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="milestone_end"
+          name="end_date"
           label="Date completed"
         />
       ),
@@ -257,7 +257,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             differences.forEach((diff) => {
               let shouldCoerceEmptyStringToNull =
                 newData[diff] === "" &&
-                (diff === "milestone_estimate" || diff === "milestone_end");
+                (diff === "end_date_estimate" || diff === "end_date");
 
               if (shouldCoerceEmptyStringToNull) {
                 updatedMilestoneObject[diff] = null;
