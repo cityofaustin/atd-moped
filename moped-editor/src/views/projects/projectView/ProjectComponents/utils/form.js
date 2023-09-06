@@ -387,3 +387,8 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     disable,
   ]);
 };
+
+export const getOptionLabel = (option) => option?.label || "";
+
+export const isOptionEqualToValue = (option, value) =>
+  option?.value === value?.value;

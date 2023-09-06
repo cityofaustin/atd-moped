@@ -1,287 +1,199 @@
 import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
-
-// Material
 import {
-  Button,
   CircularProgress,
-  Snackbar,
+  IconButton,
+  Box,
   Typography,
-  TextField,
+  Button,
 } from "@mui/material";
-import { Alert } from '@mui/material';
-import {
-  AddCircle as AddCircleIcon,
-  DeleteOutline as DeleteOutlineIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@mui/icons-material";
-import makeStyles from '@mui/styles/makeStyles';
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar
-} from "@material-table/core";
-import typography from "../../../theme/typography";
-
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import { currencyFormatter } from "../../../utils/numberFormatters";
-import DollarAmountIntegerField from "./DollarAmountIntegerField";
-
-// Error Handler
+import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import { DataGrid } from "@mui/x-data-grid";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-
+import ProjectWorkActivitiesDialog from "./ProjectWorkActivitiesDialog";
+import { getUserFullName } from "src/utils/userNames";
 import {
-  CONTRACT_QUERY,
-  UPDATE_CONTRACT,
-  ADD_CONTRACT,
-  DELETE_CONTRACT,
+  WORK_ACTIVITY_QUERY,
+  DELETE_WORK_ACTIVITY,
 } from "../../../queries/funding";
+import { currencyFormatter } from "src/utils/numberFormatters";
 
-const DEFAULT_SNACKBAR_STATE = {
-  open: false,
-  message: null,
-  severity: "success",
-};
-
-const useStyles = makeStyles((theme) => ({
-  addRecordButton: {
-    position: "absolute",
-    top: "1rem",
-    right: "1rem",
-  },
-}));
+const Title = ({ onClick }) => (
+  <Box display="flex" justifyContent="space-between">
+    <Typography variant="h2" color="primary" style={{ padding: "1em" }}>
+      Work activities
+    </Typography>
+    <div style={{ padding: "1rem" }}>
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<AddCircleIcon />}
+        onClick={onClick}
+      >
+        Add Work Activity
+      </Button>
+    </div>
+  </Box>
+);
 
 const ProjectWorkActivitiesTable = () => {
-  const classes = useStyles();
+  const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
-  const { loading, error, data, refetch } = useQuery(CONTRACT_QUERY, {
+  const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
     },
     fetchPolicy: "no-cache",
   });
 
-  const [addContract] = useMutation(ADD_CONTRACT);
-  const [updateContract] = useMutation(UPDATE_CONTRACT);
-  const [deleteContract] = useMutation(DELETE_CONTRACT);
-
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  // const [addContract] = useMutation(ADD_CONTRACT);
+  const [deleteContract, deleteContractMutationState] =
+    useMutation(DELETE_WORK_ACTIVITY);
 
   if (loading || !data) return <CircularProgress />;
 
-  /**
-   * Return Snackbar state to default, closed state
-   */
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  const activities = data?.moped_proj_work_activity;
+
+  const onClickAddActivity = () => setEditActivity({ project_id: projectId });
+
+  const onDeleteActivity = ({ id }) => {
+    window.confirm("Are you sure you want to delete this activity?") &&
+      deleteContract({ variables: { id } }).then(() => {
+        refetch();
+      });
   };
 
-  /**
-   * Column configuration for <MaterialTable>
-   */
   const columns = [
     {
-      title: "Contractor",
+      headerName: "Edit",
+      field: "_edit",
+      renderCell: ({ row }) => {
+        return deleteContractMutationState?.loading ? (
+          <CircularProgress color="primary" size={20} />
+        ) : (
+          <div>
+            <IconButton aria-label="edit" onClick={() => setEditActivity(row)}>
+              <EditOutlinedIcon />
+            </IconButton>
+            <IconButton
+              aria-label="delete"
+              onClick={() => onDeleteActivity({ id: row.id })}
+            >
+              <DeleteOutlineIcon />
+            </IconButton>
+          </div>
+        );
+      },
+    },
+    {
+      headerName: "Workgroup/Contractor",
       field: "contractor",
-      width: "20%",
-      // we use this custom component in order to autofocus the input
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          {...props}
-          onChange={(e) => props.onChange(e.target.value)}
-          autoFocus />
+      minWidth: 175,
+    },
+    {
+      headerName: "Contract #",
+      field: "contract_number",
+      minWidth: 150,
+    },
+    {
+      headerName: "Work Assignment",
+      field: "work_assignment_id",
+      minWidth: 150,
+    },
+    {
+      headerName: "Amount",
+      field: "contract_amount",
+      minWidth: 150,
+      valueGetter: ({ row }) =>
+        isNaN(parseInt(row.contract_amount))
+          ? null
+          : currencyFormatter.format(row.contract_amount),
+    },
+    {
+      headerName: "Task Order(s)",
+      field: "task_orders",
+      valueGetter: ({ row }) =>
+        row.task_orders?.map((tk) => tk.task_order).join(", "),
+      minWidth: 150,
+      renderCell: ({ row }) => (
+        <div>
+          {row.task_orders?.map((tk) => (
+            <div key={tk.task_order}>{tk.task_order}</div>
+          ))}
+        </div>
       ),
     },
     {
-      title: "Contract #",
-      field: "contract_number",
-      width: "20%",
+      headerName: "Status",
+      field: "status",
+      valueGetter: ({ row }) => row.moped_work_activity_status?.name,
+      minWidth: 150,
     },
     {
-      title: "Description",
+      headerName: "Description",
       field: "description",
-      width: "25%",
+      minWidth: 150,
     },
     {
-      title: "Work assignment ID",
-      field: "work_assignment_id",
-      width: "20%",
+      headerName: "Status update",
+      field: "status_note",
+      minWidth: 150,
     },
     {
-      title: "Amount",
-      field: "contract_amount",
-      render: (row) => currencyFormatter.format(row.contract_amount),
-      editComponent: (props) => <DollarAmountIntegerField {...props} />,
-      type: "currency",
-      width: "15%",
+      headerName: "Updated by",
+      field: "updated_by_user",
+      minWidth: 150,
+      valueGetter: ({ row }) => getUserFullName(row.updated_by_user),
+    },
+    {
+      headerName: "Updated at",
+      field: "updated_at",
+      minWidth: 150,
+      valueGetter: ({ row }) =>
+        row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
+    },
+    {
+      headerName: "ID",
+      field: "id",
+      minWidth: 50,
     },
   ];
 
+  const onSubmitCallback = () => {
+    refetch().then(() => setEditActivity(null));
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
-      <MaterialTable
-        columns={columns}
-        components={{
-          EditRow: (props) => (
-            <MTableEditRow
-              {...props}
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) {
-                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                }
-              }}
-            />
-          ),
-          Action: (props) => {
-            // Add action icons when for NOT "add"
-            if (
-              typeof props.action === typeof Function ||
-              props.action.tooltip !== "Add"
-            ) {
-              return <MTableAction {...props} />;
-            } else {
-              // else add "Add ..." button
-              return (
-                <Button
-                  className={classes.addRecordButton}
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  startIcon={<AddCircleIcon />}
-                  onClick={props.action.onClick}
-                >
-                  Add Work
-                </Button>
-              );
-            }
-          },
-          Toolbar: (props) => (
-            // to have it align with table content
-            <div style={{ marginLeft: "-10px" }}>
-              <MTableToolbar {...props} />
-            </div>
-          )
-        }}
-        data={data.moped_proj_work_activity}
-        title={
-          <div>
-            <Typography
-              variant="h2"
-              color="primary"
-              style={{ paddingTop: "1em" }}
-            >
-              Work activities
-            </Typography>
-          </div>
-        }
-        options={{
-          ...(data.moped_proj_work_activity.length < PAGING_DEFAULT_COUNT + 1 && {
-            paging: false,
-          }),
-          search: false,
-          rowStyle: {
-            fontFamily: typography.fontFamily,
-          },
-          actionsColumnIndex: -1,
-        }}
-        localization={{
-          header: {
-            actions: "",
-          },
-          body: {
-            emptyDataSourceMessage: (
-              <Typography variant="body1">No work activities to display</Typography>
-            ),
-          },
-        }}
-        icons={{
-          Delete: DeleteOutlineIcon,
-          Edit: EditOutlinedIcon,
-        }}
-        editable={{
-          onRowAdd: (newData) =>
-            addContract({
-              variables: {
-                objects: {
-                  ...newData,
-                  project_id: projectId,
-                },
-              },
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem adding the record. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              }),
-          onRowUpdate: (newData, oldData) => {
-            const updateContractData = newData;
-
-            // Remove unneeded variable
-            delete updateContractData.__typename;
-            updateContractData.contract_amount = Number(
-              newData.contract_amount
-            );
-
-            return updateContract({
-              variables: updateContractData,
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem updating record. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              });
-          },
-          onRowDelete: (oldData) =>
-            deleteContract({
-              variables: {
-                id: oldData.id,
-              },
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem deleting the reecord. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              }),
-        }}
-      />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
+      <Box sx={{ width: "100%" }}>
+        <DataGrid
+          autoHeight
+          columns={columns}
+          density="comfortable"
+          disableRowSelectionOnClick
+          getRowHeight={() => "auto"}
+          hideFooterPagination={true}
+          localeText={{ noRowsLabel: "No work activites" }}
+          rows={activities}
+          slots={{
+            toolbar: Title,
+          }}
+          slotProps={{
+            toolbar: { onClick: onClickAddActivity },
+          }}
+        />
+      </Box>
+      {editActivity && (
+        <ProjectWorkActivitiesDialog
+          activity={editActivity}
+          onClose={() => setEditActivity(null)}
+          onSubmitCallback={onSubmitCallback}
+        />
+      )}
     </ApolloErrorHandler>
   );
 };

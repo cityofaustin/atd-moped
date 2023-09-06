@@ -26,8 +26,10 @@ import {
   useComponentTagsOptions,
   useWorkTypeOptions,
   useResetDependentFieldOnAutocompleteChange,
+  getOptionLabel,
+  isOptionEqualToValue,
 } from "./utils/form";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 
 import * as yup from "yup";
 
@@ -176,6 +178,8 @@ const ComponentForm = ({
                 ? componentOptionsWithoutSignals
                 : unfilteredComponentOptions
             }
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
                 key={option.value}
@@ -213,6 +217,8 @@ const ComponentForm = ({
             label="Work Type(s)"
             multiple
             options={workTypeOptions}
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             name="work_types"
             control={control}
             error={!!errors?.work_types}
@@ -228,6 +234,8 @@ const ComponentForm = ({
               label="Subcomponents"
               multiple
               options={subcomponentOptions}
+              getOptionLabel={getOptionLabel}
+              isOptionEqualToValue={isOptionEqualToValue}
               name="subcomponents"
               control={control}
             />
@@ -239,6 +247,8 @@ const ComponentForm = ({
             label="Tags"
             multiple
             options={componentTagsOptions}
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             name="tags"
             control={control}
           />
