@@ -244,25 +244,12 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           onRowUpdate: (newData, oldData) => {
             const updatedMilestoneObject = {
               ...oldData,
+              ...newData,
             };
 
-            // Array of differences between new and old data
-            let differences = Object.keys(oldData).filter(
-              (key) => oldData[key] !== newData[key]
-            );
-
-            // Loop through the differences and assign newData values.
-            // If one of the Date fields is blanked out, coerce empty
-            // string to null.
-            differences.forEach((diff) => {
-              let shouldCoerceEmptyStringToNull =
-                newData[diff] === "" &&
-                (diff === "end_date_estimate" || diff === "end_date");
-
-              if (shouldCoerceEmptyStringToNull) {
-                updatedMilestoneObject[diff] = null;
-              } else {
-                updatedMilestoneObject[diff] = newData[diff];
+            Object.keys(updatedMilestoneObject).forEach((key) => {
+              if (updatedMilestoneObject[key] === "") {
+                updatedMilestoneObject[key] = null;
               }
             });
 
