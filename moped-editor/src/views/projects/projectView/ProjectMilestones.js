@@ -134,15 +134,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Completion estimate",
-      field: "end_date_estimate",
+      field: "date_estimate",
       render: (rowData) =>
-        rowData.end_date_estimate
-          ? format(parseISO(rowData.end_date_estimate), "MM/dd/yyyy")
+        rowData.date_estimate
+          ? format(parseISO(rowData.date_estimate), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="end_date_estimate"
+          name="date_estimate"
           label="Completion estimate"
         />
       ),
@@ -150,16 +150,16 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Date completed",
-      field: "end_date",
+      field: "date_actual",
       render: (rowData) =>
-        rowData.end_date
-          ? format(parseISO(rowData.end_date), "MM/dd/yyyy")
+        rowData.date_actual
+          ? format(parseISO(rowData.date_actual), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="end_date"
-          label="Date completed"
+          name="date_actual"
+          label="Date (actual)"
         />
       ),
       width: "13%",

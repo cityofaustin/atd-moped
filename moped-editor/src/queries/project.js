@@ -301,12 +301,12 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: [{ milestone_order: asc }, { end_date: desc }]
+      order_by: [{ milestone_order: asc }, { date_actual: desc }]
     ) {
       milestone_id
       description
-      end_date_estimate
-      end_date
+      date_estimate
+      date_actual
       completed
       project_milestone_id
       project_id
@@ -356,8 +356,8 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   mutation ProjectMilestonesMutation(
     $description: String
     $completed: Boolean
-    $end_date_estimate: date = null
-    $end_date: date = null
+    $date_estimate: date = null
+    $date_actual: date = null
     $project_milestone_id: Int!
     $milestone_id: Int!
   ) {
@@ -366,15 +366,15 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
       _set: {
         description: $description
         completed: $completed
-        end_date_estimate: $end_date_estimate
-        end_date: $end_date
+        date_estimate: $date_estimate
+        date_actual: $date_actual
         milestone_id: $milestone_id
       }
     ) {
       project_id
       project_milestone_id
-      end_date_estimate
-      end_date
+      date_estimate
+      date_actual
       completed
       description
     }
@@ -428,8 +428,8 @@ export const ADD_PROJECT_MILESTONE = gql`
       returning {
         milestone_id
         description
-        end_date_estimate
-        end_date
+        date_estimate
+        date_actual
         completed
         project_milestone_id
         project_id
