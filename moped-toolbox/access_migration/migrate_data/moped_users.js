@@ -48,6 +48,7 @@ async function downloadUsers(env) {
     env === "test" || env === "local" ? "prod" : env
   );
   saveJsonFile(USERS_FNAME, users);
+  return users;
 }
 
 const makeUserObject = ({
