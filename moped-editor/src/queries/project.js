@@ -126,6 +126,7 @@ export const SUMMARY_QUERY = gql`
     ) {
       geometry: geography
       attributes
+      council_districts
     }
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }

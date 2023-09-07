@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 
-import { Grid, CardContent, CircularProgress } from "@mui/material";
+import { Grid, CardContent, CircularProgress, Typography } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
@@ -143,6 +143,16 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
+
+  const getDistricts = (data) => {
+    const initialValue = [];
+    const districts = data.reduce(
+      (acc, component) => [...acc, component["council_districts"]],
+      initialValue
+    );
+
+    return [...new Set(districts.flat())];
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -295,6 +305,12 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <ProjectSummaryMap data={data} />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography>
+                  Council districts:{" "}
+                  {getDistricts(data.project_geography).join(", ")}
+                </Typography>
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />
