@@ -301,12 +301,12 @@ export const TIMELINE_QUERY = gql`
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: [{ milestone_order: asc }, { milestone_end: desc }]
+      order_by: [{ milestone_order: asc }, { end_date: desc }]
     ) {
       milestone_id
-      milestone_description
-      milestone_estimate
-      milestone_end
+      description
+      end_date_estimate
+      end_date
       completed
       project_milestone_id
       project_id
@@ -354,29 +354,29 @@ export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
 
 export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   mutation ProjectMilestonesMutation(
-    $milestone_description: String
+    $description: String
     $completed: Boolean
-    $milestone_estimate: date = null
-    $milestone_end: date = null
+    $end_date_estimate: date = null
+    $end_date: date = null
     $project_milestone_id: Int!
     $milestone_id: Int!
   ) {
     update_moped_proj_milestones_by_pk(
       pk_columns: { project_milestone_id: $project_milestone_id }
       _set: {
-        milestone_description: $milestone_description
+        description: $description
         completed: $completed
-        milestone_estimate: $milestone_estimate
-        milestone_end: $milestone_end
+        end_date_estimate: $end_date_estimate
+        end_date: $end_date
         milestone_id: $milestone_id
       }
     ) {
       project_id
       project_milestone_id
-      milestone_estimate
-      milestone_end
+      end_date_estimate
+      end_date
       completed
-      milestone_description
+      description
     }
   }
 `;
@@ -427,9 +427,9 @@ export const ADD_PROJECT_MILESTONE = gql`
     insert_moped_proj_milestones(objects: $objects) {
       returning {
         milestone_id
-        milestone_description
-        milestone_estimate
-        milestone_end
+        description
+        end_date_estimate
+        end_date
         completed
         project_milestone_id
         project_id

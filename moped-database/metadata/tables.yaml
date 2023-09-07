@@ -2211,115 +2211,70 @@
         check: {}
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
     - role: moped-editor
       permission:
         check: {}
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
         filter: {}
   update_permissions:
@@ -2327,23 +2282,14 @@
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
         filter: {}
         check: {}
@@ -2351,23 +2297,14 @@
       permission:
         columns:
           - completed
-          - completed_by_user_id
-          - completion_percentage
           - date_added
-          - is_current_milestone
           - milestone_id
-          - milestone_date_type
-          - milestone_description
-          - milestone_end
-          - milestone_estimate
+          - description
+          - date_actual
+          - date_estimate
           - milestone_order
-          - milestone_priority
-          - milestone_privacy
-          - milestone_start
-          - milestone_status
           - project_id
           - project_milestone_id
-          - started_by_user_id
           - is_deleted
         filter: {}
         check: {}

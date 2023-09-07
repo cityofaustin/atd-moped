@@ -103,8 +103,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Description",
-      field: "milestone_description",
-      render: (milestone) => milestone.milestone_description,
+      field: "description",
+      render: (milestone) => milestone.description,
       width: "25%",
     },
     {
@@ -134,15 +134,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Completion estimate",
-      field: "milestone_estimate",
+      field: "end_date_estimate",
       render: (rowData) =>
-        rowData.milestone_estimate
-          ? format(parseISO(rowData.milestone_estimate), "MM/dd/yyyy")
+        rowData.end_date_estimate
+          ? format(parseISO(rowData.end_date_estimate), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="milestone_estimate"
+          name="end_date_estimate"
           label="Completion estimate"
         />
       ),
@@ -150,15 +150,15 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     },
     {
       title: "Date completed",
-      field: "milestone_end",
+      field: "end_date",
       render: (rowData) =>
-        rowData.milestone_end
-          ? format(parseISO(rowData.milestone_end), "MM/dd/yyyy")
+        rowData.end_date
+          ? format(parseISO(rowData.end_date), "MM/dd/yyyy")
           : undefined,
       editComponent: (props) => (
         <DateFieldEditComponent
           {...props}
-          name="milestone_end"
+          name="end_date"
           label="Date completed"
         />
       ),
@@ -223,13 +223,18 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         editable={{
           onRowAdd: (newData) => {
             // Merge input fields with required fields default data.
-            const newMilestoneObject = Object.assign(
-              {
-                project_id: projectId,
-                completed: false,
-              },
-              newData
-            );
+            const newMilestoneObject = {
+              project_id: projectId,
+              completed: false,
+              ...newData,
+            };
+
+            // Coerce empty strings to null
+            Object.keys(newMilestoneObject).forEach((key) => {
+              if (newMilestoneObject[key] === "") {
+                newMilestoneObject[key] = null;
+              }
+            });
 
             // Execute insert mutation
             return addProjectMilestone({
@@ -244,25 +249,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           onRowUpdate: (newData, oldData) => {
             const updatedMilestoneObject = {
               ...oldData,
+              ...newData,
             };
 
-            // Array of differences between new and old data
-            let differences = Object.keys(oldData).filter(
-              (key) => oldData[key] !== newData[key]
-            );
-
-            // Loop through the differences and assign newData values.
-            // If one of the Date fields is blanked out, coerce empty
-            // string to null.
-            differences.forEach((diff) => {
-              let shouldCoerceEmptyStringToNull =
-                newData[diff] === "" &&
-                (diff === "milestone_estimate" || diff === "milestone_end");
-
-              if (shouldCoerceEmptyStringToNull) {
-                updatedMilestoneObject[diff] = null;
-              } else {
-                updatedMilestoneObject[diff] = newData[diff];
+            // Coerce empty strings to null
+            Object.keys(updatedMilestoneObject).forEach((key) => {
+              if (updatedMilestoneObject[key] === "") {
+                updatedMilestoneObject[key] = null;
               }
             });
 

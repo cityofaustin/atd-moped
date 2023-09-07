@@ -143,7 +143,7 @@ export const SETTINGS = [
         label: "Milestone order",
       },
       {
-        key: "milestone_description",
+        key: "description",
         label: "Description",
       },
     ],
