@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 
-import { Grid, CardContent, CircularProgress, Typography } from "@mui/material";
+import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
@@ -19,6 +19,7 @@ import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
+import ProjectSummaryCouncilDistricts from "./ProjectSummaryCouncilDistricts";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
@@ -74,6 +75,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
+    overflowWrap: "break-word",
+  },
+  fieldLabelTextNoHover: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
     overflowWrap: "break-word",
   },
   knackFieldLabelText: {
@@ -143,16 +149,6 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
-
-  const getDistricts = (data) => {
-    const initialValue = [];
-    const districts = data.reduce(
-      (acc, component) => [...acc, component["council_districts"]],
-      initialValue
-    );
-
-    return [...new Set(districts.flat())];
-  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -307,10 +303,10 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 <ProjectSummaryMap data={data} />
               </Grid>
               <Grid item xs={12}>
-                <Typography>
-                  Council districts:{" "}
-                  {getDistricts(data.project_geography).join(", ")}
-                </Typography>
+                <ProjectSummaryCouncilDistricts
+                  classes={classes}
+                  projectGeography={data.project_geography}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />
