@@ -223,13 +223,18 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         editable={{
           onRowAdd: (newData) => {
             // Merge input fields with required fields default data.
-            const newMilestoneObject = Object.assign(
-              {
-                project_id: projectId,
-                completed: false,
-              },
-              newData
-            );
+            const newMilestoneObject = {
+              project_id: projectId,
+              completed: false,
+              ...newData,
+            };
+
+            // Coerce empty strings to null
+            Object.keys(newMilestoneObject).forEach((key) => {
+              if (newMilestoneObject[key] === "") {
+                newMilestoneObject[key] = null;
+              }
+            });
 
             // Execute insert mutation
             return addProjectMilestone({
@@ -247,6 +252,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
               ...newData,
             };
 
+            // Coerce empty strings to null
             Object.keys(updatedMilestoneObject).forEach((key) => {
               if (updatedMilestoneObject[key] === "") {
                 updatedMilestoneObject[key] = null;
