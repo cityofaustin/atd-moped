@@ -122,10 +122,10 @@ export const ProjectActivityLogTableMaps = {
     label: "Milestone",
     fields: {
       milestone_end: {
-        label: "end date",
+        label: "date actual",
       },
-      end_date: {
-        label: "end date",
+      date_actual: {
+        label: "date actual",
       },
       project_id: {
         label: "project ID",
@@ -157,7 +157,7 @@ export const ProjectActivityLogTableMaps = {
       milestone_estimate: {
         label: "completion estimate",
       },
-      end_date_estimate: {
+      date_estimate: {
         label: "completion estimate",
       },
       is_deleted: {
