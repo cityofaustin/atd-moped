@@ -79,10 +79,14 @@ $ node index.js local
 
 ### Todo
 
-- project groups (aka project tags):
-  - holding off bc there seems like a lot of overlap with component tags. this should be a very quick implementation once we decide on what needs to be created.
-
+- use ProjectInitiationDate: 
+  - to create initial project activity
+  - create a second activity with the migration date
+  -  use added_by in the initial project activity
+- project types :/
 - work types:
+  - decide how to migrate task orders :/
+  - merge workgroup + contractor?
   - any remaining mappings?
   - options not implemented? https://docs.google.com/spreadsheets/d/1bQD0xBQm4BOdTJ1U4hbk98dywJVJZ7O6G-VYLRbviQU/edit#gid=0
 - backfill is_coa_staff column in staging and prod for all users :/
@@ -94,7 +98,6 @@ $ node index.js local
 - finish transit - bust stop component/subcomponent maps.
 - disable creative crosswalk component? on indefinite hold per heather b
 - there are facility spatial records with multiple features within one layer and across geom types.
-- add user matching to project `added_by`
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - use a lookup table for note types
 - check geometry types of components - some may need to be converted to point or line
@@ -110,24 +113,18 @@ $ node index.js local
 ### NW Questions
 - project personnel:
 - IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
-
 - project funding:
   - very few sources have a status. currently defaulting to tentatitve.
     - OK
-
 - work authorizations statusID: default to....planned? complete?
   - > futue/potential
 
 
-
--> todo: add project funding status order integer
-
 -> issues to make: merge fund and dept-unit
 - protection type:
   - it's subcomponent now. check out the allowed subcomponents list to verify it's ok
-
+- add project funding status order integer
 - does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
-
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - we are converting unmatched signals to intersection improvement components: review these with AMD
