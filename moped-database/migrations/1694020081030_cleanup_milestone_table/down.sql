@@ -9,5 +9,5 @@ ALTER TABLE moped_proj_milestones ADD COLUMN is_current_milestone boolean;
 ALTER TABLE moped_proj_milestones ADD COLUMN started_by_user_id integer;
 ALTER TABLE moped_proj_milestones ADD COLUMN completed_by_user_id integer;
 ALTER TABLE moped_proj_milestones RENAME COLUMN description to milestone_description;
-ALTER TABLE moped_proj_milestones RENAME COLUMN end_date to milestone_end;
-ALTER TABLE moped_proj_milestones RENAME COLUMN end_date_estimate to milestone_estimate;
+ALTER TABLE moped_proj_milestones RENAME COLUMN date_actual to milestone_end;
+ALTER TABLE moped_proj_milestones RENAME COLUMN date_estimate to milestone_estimate;

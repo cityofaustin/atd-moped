@@ -11,5 +11,5 @@ ALTER TABLE moped_proj_milestones
     DROP COLUMN is_current_milestone;
 
 ALTER TABLE moped_proj_milestones RENAME COLUMN milestone_description TO description;
-ALTER TABLE moped_proj_milestones RENAME COLUMN milestone_end TO end_date;
-ALTER TABLE moped_proj_milestones RENAME COLUMN milestone_estimate TO end_date_estimate;
+ALTER TABLE moped_proj_milestones RENAME COLUMN milestone_end TO date_actual;
+ALTER TABLE moped_proj_milestones RENAME COLUMN milestone_estimate TO date_estimate;

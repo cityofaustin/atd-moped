@@ -2214,8 +2214,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2228,8 +2228,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2242,8 +2242,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2256,8 +2256,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2270,8 +2270,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2285,8 +2285,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
@@ -2300,8 +2300,8 @@
           - date_added
           - milestone_id
           - description
-          - end_date
-          - end_date_estimate
+          - date_actual
+          - date_estimate
           - milestone_order
           - project_id
           - project_milestone_id
