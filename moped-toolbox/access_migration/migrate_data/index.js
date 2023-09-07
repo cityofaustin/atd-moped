@@ -2,7 +2,7 @@ const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
-const { getPersonnel } = require("./moped_proj_personnel");
+const { getPersonnel, getEmployeeId } = require("./moped_proj_personnel");
 const { downloadUsers, createUsers } = require("./moped_users");
 const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
@@ -26,6 +26,8 @@ const getMetadataFileDateString = () =>
 const PROJECT_CHUNK_SIZE = 50;
 const FNAME = "./data/raw/projects.json";
 
+let users;
+
 const COUNCIL_DISTRICTS_FNAME = "./backup/council_districts.json";
 
 const DELETE_ALL_PROJECTS_MUTATION = gql`
@@ -42,7 +44,11 @@ const DELETE_ALL_PROJECTS_MUTATION = gql`
 const INSERT_PROJECTS_MUTATION = gql`
   mutation InsertProjects($objects: [moped_project_insert_input!]!) {
     insert_moped_project(objects: $objects) {
-      affected_rows
+      returning {
+        project_id
+        added_by
+        date_added
+      }
     }
   }
 `;
@@ -126,10 +132,22 @@ fields = [
       if (entity) {
         return entity.out;
       } else {
+        // todo - fix unmatched entities
+        // throw `Entity not found`
         return null;
       }
     },
   },
+  // this is not reliable
+  // {
+  //   in: "UpdatedBy",
+  //   out: "added_by",
+  //   required: false,
+  //   transform(row) {
+  //     const userName = row.UpdatedBy;
+  //     return userName ? getEmployeeId(userName, users) : null;
+  //   },
+  // },
   {
     in: "PublicProcessStatus",
     out: "public_process_status_id",
@@ -166,7 +184,7 @@ fields = [
             ].includes(groupName)
           ) {
             // todo: i asked NW if these are ok to ignore
-            console.log("Ignoring tag: ", groupName);
+            // console.log("Ignoring tag: ", groupName);
             // throw `Unknwn group name: ${groupName}`;
           }
           return tag ? { tag_id: tag.out } : null;
@@ -241,7 +259,7 @@ async function main(env) {
    * we encounter a user in the access DB who is unkown to production, the migration
    * will abort in failure
    */
-  await downloadUsers(env);
+  users = await downloadUsers(env);
 
   logger.info("✅ Users downloaded");
 
@@ -312,7 +330,6 @@ async function main(env) {
   const personnel = getPersonnel();
   const funding = await getFunding();
 
-  // attach proj phases to projects
   projects.forEach((proj) => {
     const { interim_project_id } = proj;
     const phases = projPhases[interim_project_id];
@@ -356,13 +373,15 @@ async function main(env) {
   const projectChunks = chunkArray(projects, PROJECT_CHUNK_SIZE);
 
   for (let i = 0; i < projectChunks.length; i++) {
+    let response;
+    // insert each chunk of projects
     try {
       logger.info(
         `${i + 1}/${projectChunks.length} - uploading ${
           projectChunks[i].length
         } projects...`
       );
-      await makeHasuraRequest({
+      response = await makeHasuraRequest({
         query: INSERT_PROJECTS_MUTATION,
         variables: { objects: projectChunks[i] },
         env,
@@ -372,6 +391,18 @@ async function main(env) {
       debugger;
       break;
     }
+    // create an activity event for each project
+    const projects = response.insert_moped_project.returning;
+
+    projects.forEach((proj) => {
+      // todo 
+      // most projects do not have added_by, which
+      // is merely the last person to update the project
+      // and should not be used for this anyway :|
+      // if (!(proj.added_by && proj.date_added)) {
+        
+      // }
+    });
     logger.info("Sleeping...");
     await new Promise((r) => setTimeout(r, 2));
   }
