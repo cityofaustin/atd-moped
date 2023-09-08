@@ -29,7 +29,7 @@ const mapRowExpanded = (row, fields) =>
     } else {
       newRow[field.out] = row[field.in];
     }
-    return newRow
+    return newRow;
   }, {});
 
 const chunkArray = (arr, chunkSize = 50) => {
@@ -40,8 +40,52 @@ const chunkArray = (arr, chunkSize = 50) => {
   return chunks;
 };
 
+const createProjectActivityRecords = ({
+  project_id,
+  added_by,
+  date_added,
+  project_name,
+  john_user_id,
+}) => {
+  return [
+    {
+      record_id: project_id,
+      record_type: "moped_project",
+      record_project_id: project_id,
+      operation_type: "INSERT",
+      updated_by_user_id: added_by,
+      created_at: date_added,
+      record_data: {
+        event: {
+          op: "INSERT",
+          data: {
+            new: {
+              added_by,
+              date_added,
+              project_id,
+              project_name,
+            },
+            old: null,
+          },
+        },
+      },
+      description: [],
+    },
+    {
+      record_id: project_id,
+      record_type: "moped_project_migration",
+      record_project_id: project_id,
+      operation_type: "UPDATE",
+      updated_by_user_id: john_user_id,
+      description: [],
+      record_data: {},
+    },
+  ];
+};
+
 module.exports = {
   chunkArray,
   mapRow,
-  mapRowExpanded
+  mapRowExpanded,
+  createProjectActivityRecords,
 };
