@@ -7,6 +7,7 @@ const { downloadUsers, createUsers } = require("./moped_users");
 const { getMilestones } = require("./moped_proj_milestones");
 const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
+const { PARTNERS_MAP } = require("./mappings/partners");
 const { TAGS_MAP } = require("./mappings/tags");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
@@ -163,16 +164,29 @@ fields = [
       }
     },
   },
-  // this is not reliable
-  // {
-  //   in: "UpdatedBy",
-  //   out: "added_by",
-  //   required: false,
-  //   transform(row) {
-  //     const userName = row.UpdatedBy;
-  //     return userName ? getEmployeeId(userName, users) : null;
-  //   },
-  // },
+  {
+    in: "Partners",
+    out: "moped_proj_partners",
+    required: false,
+    transform(row) {
+      const partersTodo = row[this.in]?.split(",");
+      if (!partersTodo || partersTodo.length === 0) {
+        return null;
+      }
+      const partners = [];
+      partersTodo.forEach((partner) => {
+        const p = partner.trim();
+        const partnerMatch = PARTNERS_MAP.find((entity) => entity.in === p);
+        if (partnerMatch) {
+          partners.push({ entity_id: partnerMatch.out });
+        } else {
+          // per discussion with NW this is good enough as-is
+          // we will ignore unmatched partners
+        }
+      });
+      return partners;
+    },
+  },
   {
     in: "PublicProcessStatus",
     out: "public_process_status_id",
@@ -383,6 +397,14 @@ async function main(env) {
   const funding = await getFunding();
 
   projects.forEach((proj) => {
+    // handle partners array
+    const partners = proj.moped_proj_partners;
+    if (partners && partners.length > 0) {
+      proj.moped_proj_partners = { data: partners };
+    } else {
+      delete proj.moped_proj_partners;
+    }
+
     const { interim_project_id } = proj;
     let phases = projPhases[interim_project_id] || [];
     // add phases from dates into the mix

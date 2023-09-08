@@ -78,6 +78,7 @@ $ node index.js local
 - files?
 
 ### Todo
+- add missing entities
 - we need some way to undo:
   - the project inserts
   - the activity log records
@@ -128,6 +129,7 @@ $ node index.js local
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
 - we are converting unmatched signals to intersection improvement components: review these with AMD
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
+
 - some project descriptions missing
 - after the migration, maybe we should import the moped project IDs into the Access DB?
 - 
