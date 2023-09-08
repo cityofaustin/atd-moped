@@ -78,18 +78,17 @@ $ node index.js local
 - files?
 
 ### Todo
-
-- use ProjectInitiationDate: 
-  - to create initial project activity
-  - create a second activity with the migration date
-  -  use added_by in the initial project activity
+- we need some way to undo:
+  - the project inserts
+  - the activity log records
+- do we need to check if we are duping phases from milestones that already exist from status updates?
+- interim project 164 has two "start project developmment" milestones. are there more? why?
 - project types :/
 - work types:
   - decide how to migrate task orders :/
   - merge workgroup + contractor?
   - any remaining mappings?
   - options not implemented? https://docs.google.com/spreadsheets/d/1bQD0xBQm4BOdTJ1U4hbk98dywJVJZ7O6G-VYLRbviQU/edit#gid=0
-- backfill is_coa_staff column in staging and prod for all users :/
 - work authorizations:
   - WAPRefix and ID and workorderid_old :/
   - implementation workgroup options:
@@ -99,20 +98,20 @@ $ node index.js local
 - disable creative crosswalk component? on indefinite hold per heather b
 - there are facility spatial records with multiple features within one layer and across geom types.
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
-- use a lookup table for note types
 - check geometry types of components - some may need to be converted to point or line
-- dedupe existing projects with interim_project_id
-  - figure out how to handle these :/
 - moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
-- create default "Migrated project" activity log event for each project?
 - search for todos :)
 
 
 ### NW Questions
+- dedupe existing projects with interim_project_id
+- milestones:
+  - ok to merge public meeting and public meeting (tentative) ? will use estimated date for tentative? 
+  - in mapping doc NW used the estiamted date for not-tentative. confusing!
 - project personnel:
-- IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
+  - IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
 - project funding:
   - very few sources have a status. currently defaulting to tentatitve.
     - OK
