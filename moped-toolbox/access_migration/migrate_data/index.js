@@ -155,6 +155,9 @@ fields = [
         return entity.out;
       } else {
         // todo - fix unmatched entities
+        // COA
+        // UniversityOfTexas
+        // ProjectConnect
         // throw `Entity not found`
         return null;
       }
