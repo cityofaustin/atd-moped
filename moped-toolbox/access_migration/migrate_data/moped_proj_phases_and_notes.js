@@ -91,8 +91,8 @@ const getProjNotes = (statusUpdates) =>
 
     const date_created = status.StatusDate;
 
-    // note type 1 = internal note. todo: is this ok?
-    const project_note_type = 1;
+    // note type 2 = status update. is this ok?
+    const project_note_type = 2;
 
     // set added by user
     let updatedBy = status.UpdatedBy;
