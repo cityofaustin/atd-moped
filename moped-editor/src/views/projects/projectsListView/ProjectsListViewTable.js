@@ -15,7 +15,7 @@ import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
-import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
+import MaterialTable, { MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -102,6 +102,7 @@ const handleColumnChange = ({ field }, hidden) => {
  */
 const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
+  console.log(query);
 
   /**
    * @type {Object} pagination
@@ -192,17 +193,21 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Query Management
    */
   // Manage the ORDER BY clause of our query
-  query.setOrder(sort.column, sort.order);
+  useEffect(() => {
+    query.setOrder(sort.column, sort.order);
+  }, [sort.column, sort.order, query]);
 
-  // Set limit, offset based on pagination state
-  if (query.config.showPagination) {
-    query.limit = pagination.limit;
-    query.offset = pagination.offset;
-  } else {
-    query.limit = 0;
-  }
+  useEffect(() => {
+    // Set limit, offset based on pagination state
+    if (query.config.showPagination) {
+      query.limit = pagination.limit;
+      query.offset = pagination.offset;
+    } else {
+      query.limit = 0;
+    }
+  }, [pagination.limit, pagination.offset, query]);
 
-  // Resets the value of "where" "and" "or" to empty
+  // Resets the value of "where" "and" "or" to empty -- make this only happen when needed
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
@@ -271,6 +276,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
   // Data Management
+
+  // console.log(query.config.options.useQuery)
   const { data, loading, error } = useQuery(
     query.gql,
     query.config.options.useQuery
@@ -534,8 +541,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Interim MPD (Access) ID",
       field: "interim_project_id",
       hidden: hiddenColumns["interim_project_id"],
-      emptyValue: "-"
-    }
+      emptyValue: "-",
+    },
   ];
 
   /**
@@ -652,24 +659,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         orderDirection={sort.order}
                       />
                     ),
-                    Body: (props) => {
-                      // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
-                      // we have configured MT to use local data but are technically using remote data
-                      // this results in inconsistencies with how MT displays filtered data
-                      const indexedData = data["project_list_view"].map(
-                        (row, index) => ({
-                          tableData: { id: index, uuid: row.project_id },
-                          ...row,
-                        })
-                      );
-                      return (
-                        <MTableBody
-                          {...props}
-                          renderData={indexedData}
-                          pageSize={indexedData.length}
-                        />
-                      );
-                    },
                   }}
                 />
               </Card>
