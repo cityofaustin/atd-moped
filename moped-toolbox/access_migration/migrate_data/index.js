@@ -4,6 +4,7 @@ const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
 const { getPersonnel, getEmployeeId } = require("./moped_proj_personnel");
 const { downloadUsers, createUsers } = require("./moped_users");
+const { getMilestones } = require("./moped_proj_milestones");
 const { getFunding } = require("./moped_proj_funding");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { TAGS_MAP } = require("./mappings/tags");
@@ -18,7 +19,11 @@ const {
 } = require("./utils/graphql");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { logger } = require("./utils/logger");
-const { mapRow, chunkArray } = require("./utils/misc");
+const {
+  mapRow,
+  chunkArray,
+  createProjectActivityRecords,
+} = require("./utils/misc");
 
 const getMetadataFileDateString = () =>
   new Date().toLocaleDateString().replaceAll("/", "_");
@@ -38,6 +43,12 @@ const DELETE_ALL_PROJECTS_MUTATION = gql`
     delete_features(where: { id: { _is_null: false } }) {
       __typename
     }
+    delete_features(where: { id: { _is_null: false } }) {
+      __typename
+    }
+    delete_moped_activity_log(where: { activity_id: { _is_null: false } }) {
+      __typename
+    }
   }
 `;
 
@@ -48,7 +59,18 @@ const INSERT_PROJECTS_MUTATION = gql`
         project_id
         added_by
         date_added
+        project_name
       }
+    }
+  }
+`;
+
+const INSERT_ACTIVITY_LOG_EVENT_MUTATION = gql`
+  mutation InsertActivityLogProjectCreate(
+    $objects: [moped_activity_log_insert_input!]!
+  ) {
+    insert_moped_activity_log(objects: $objects) {
+      affected_rows
     }
   }
 `;
@@ -213,6 +235,24 @@ const removeEventTriggers = (metadata) => {
   });
 };
 
+const getEarliestNoteUserId = (notes) => {
+  const earliestNote = notes.reduce((prevNote, currNote) => {
+    const currNoteDate = new Date(currNote.date_created);
+    const prevNoteDate = new Date(prevNote?.date_created);
+    if (!currNoteDate) {
+      return prevNote;
+    } else if (!prevNoteDate) {
+      return currNote;
+    }
+    if (currNoteDate < prevNoteDate) {
+      return currNote;
+    } else {
+      return prevNote;
+    }
+  });
+  return earliestNote?.added_by_user_id;
+};
+
 async function main(env) {
   logger.info(`Running Access migration on env ${env} 🚀`);
 
@@ -260,7 +300,15 @@ async function main(env) {
    * will abort in failure
    */
   users = await downloadUsers(env);
+  const unknownUserId = users.find(
+    (x) => x.first_name.toLowerCase() === "anonymous"
+  ).user_id;
 
+  const john_user_id = users.find(
+    (x) => x.email.toLowerCase() === "john.clary@austintexas.gov"
+  ).user_id;
+
+  // const unknownUserId =
   logger.info("✅ Users downloaded");
 
   if (env === "local" || env === "test") {
@@ -325,6 +373,7 @@ async function main(env) {
     .filter((row) => !!row);
 
   const { projPhases, projNotes } = getProjPhasesAndNotes();
+  const { projMilestones, projPhasesFromDates } = getMilestones();
   const projComponents = getComponents();
   const workAcivities = await getWorkActivities();
   const personnel = getPersonnel();
@@ -332,7 +381,9 @@ async function main(env) {
 
   projects.forEach((proj) => {
     const { interim_project_id } = proj;
-    const phases = projPhases[interim_project_id];
+    let phases = projPhases[interim_project_id] || [];
+    // add phases from dates into the mix
+    phases = [...phases, ...(projPhasesFromDates[interim_project_id] || [])];
     if (phases?.length) {
       proj.moped_proj_phases = { data: phases };
     }
@@ -341,6 +392,9 @@ async function main(env) {
 
     if (notes?.length) {
       proj.moped_proj_notes = { data: notes };
+      // set the project added by to whoever wrote the earliest note
+      // (if we have one)
+      proj.added_by = getEarliestNoteUserId(notes) || unknownUserId;
     }
 
     const components = projComponents[interim_project_id];
@@ -365,6 +419,12 @@ async function main(env) {
     const projFunding = funding[interim_project_id];
     if (projFunding) {
       proj.moped_proj_funding = { data: projFunding };
+    }
+
+    const milestones = projMilestones[interim_project_id];
+
+    if (milestones) {
+      proj.moped_proj_milestones = { data: milestones };
     }
   });
 
@@ -394,15 +454,25 @@ async function main(env) {
     // create an activity event for each project
     const projects = response.insert_moped_project.returning;
 
-    projects.forEach((proj) => {
-      // todo 
-      // most projects do not have added_by, which
-      // is merely the last person to update the project
-      // and should not be used for this anyway :|
-      // if (!(proj.added_by && proj.date_added)) {
-        
-      // }
-    });
+    const activityLogRecords = projects
+      .map((proj) => {
+        return createProjectActivityRecords({ ...proj, john_user_id });
+      })
+      .flat();
+
+    try {
+      logger.info("Creating activity log events...");
+      await makeHasuraRequest({
+        query: INSERT_ACTIVITY_LOG_EVENT_MUTATION,
+        variables: { objects: activityLogRecords },
+        env,
+      });
+    } catch (error) {
+      logger.error({ message: error });
+      debugger;
+      break;
+    }
+
     logger.info("Sleeping...");
     await new Promise((r) => setTimeout(r, 2));
   }
