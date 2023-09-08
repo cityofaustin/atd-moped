@@ -77,8 +77,16 @@ const createProjectActivityRecords = ({
       record_project_id: project_id,
       operation_type: "UPDATE",
       updated_by_user_id: john_user_id,
-      description: [],
-      record_data: {},
+      description: [{ newSchema: true }],
+      record_data: {
+        event: {
+          op: "UPDATE",
+          data: {
+            new: {},
+            old: null,
+          },
+        },
+      },
     },
   ];
 };
