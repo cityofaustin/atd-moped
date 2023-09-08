@@ -8,6 +8,7 @@ class GQLAbstract {
    * @param {Object} The initial configuration of the abstract
    */
   constructor(initConfig) {
+    console.log("constructor")
     this.config = initConfig;
     this.configInit = JSON.parse(JSON.stringify(initConfig));
     this.config.filterStack = {
@@ -138,6 +139,7 @@ class GQLAbstract {
    * Resets the value of where and or to empty
    */
   cleanWhere() {
+    console.log("clean where")
     this.config.where = { ...this.configInit.where };
     this.config.or = null;
     this.config.and = null;
@@ -226,20 +228,9 @@ class GQLAbstract {
    * @param {string} syntax - either 'asc' or 'desc'
    */
   setOrder(key, syntax) {
-    if (this.config && this.config.order_by) {
-      // First, RESET the order_by value, with the assumption
-      // that there should only by 1 order_by at a time.
-      // This assumption is a self-imposed subset of the GraphQL syntax
-      // which happens to make the removal of implicit ordering
-      // of order directives as implemented by Hasura in graphql-engine
-      // 2.0+ a non-issue for this app.
-      this.config.order_by = {};
-      // Now, set new key, syntax pair for order_by
-      this.config.order_by[key] = syntax;
-    } else {
+    console.log("set order")
       this.config.order_by = {};
       this.config.order_by[key] = syntax;
-    }
   }
 
   /**
@@ -400,6 +391,7 @@ class GQLAbstract {
    * @returns {string}
    */
   generateFilters(aggregate = false) {
+    console.log("how often is this?", aggregate)
     const output = [];
     const where = [];
     const or = [];
@@ -482,6 +474,7 @@ class GQLAbstract {
    * @returns {string}
    */
   get query() {
+    console.log("get query")
     // First copy the abstract and work from the copy
     let query = this.abstractStructure;
 
@@ -647,6 +640,7 @@ class GQLAbstract {
    * @returns {Object} gql object
    */
   get gql() {
+    console.log(this.query)
     return gql`
       ${this.query}
     `;
