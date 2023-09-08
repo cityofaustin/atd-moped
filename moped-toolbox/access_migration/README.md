@@ -78,7 +78,7 @@ $ node index.js local
 - files?
 
 ### Todo
-- add missing entities
+- do we need to test project length reporting?
 - we need some way to undo:
   - the project inserts
   - the activity log records
@@ -104,6 +104,7 @@ $ node index.js local
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
+- 
 
 
 ### NW Questions
