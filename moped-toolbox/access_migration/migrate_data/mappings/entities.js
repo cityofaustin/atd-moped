@@ -39,6 +39,9 @@ const ENTITIES_MAP = [
   { in: "TravisCounty", out: 30 },
   { in: "TxDOT", out: 31 },
   { in: "WilliamsonCounty", out: 32 },
+  { in: "COA", out: 38 },
+  { in: "UniversityOfTexas", out: 39 },
+  { in: "ProjectConnect", out: 40 },
 ];
 
 exports.ENTITIES_MAP = ENTITIES_MAP;

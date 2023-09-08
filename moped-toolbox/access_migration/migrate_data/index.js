@@ -159,8 +159,7 @@ fields = [
         // COA
         // UniversityOfTexas
         // ProjectConnect
-        // throw `Entity not found`
-        return null;
+        throw `Entity not found`
       }
     },
   },
