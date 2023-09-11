@@ -24,7 +24,6 @@ export const ProjectsListViewQueryConf = {
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
-  showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,

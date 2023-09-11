@@ -8,7 +8,6 @@ class GQLAbstract {
    * @param {Object} The initial configuration of the abstract
    */
   constructor(initConfig) {
-    console.log("constructor")
     this.config = initConfig;
     this.configInit = JSON.parse(JSON.stringify(initConfig));
     this.config.filterStack = {
@@ -139,7 +138,6 @@ class GQLAbstract {
    * Resets the value of where and or to empty
    */
   cleanWhere() {
-    console.log("clean where")
     this.config.where = { ...this.configInit.where };
     this.config.or = null;
     this.config.and = null;
@@ -228,7 +226,6 @@ class GQLAbstract {
    * @param {string} syntax - either 'asc' or 'desc'
    */
   setOrder(key, syntax) {
-    console.log("set order")
       this.config.order_by = {};
       this.config.order_by[key] = syntax;
   }
@@ -249,15 +246,6 @@ class GQLAbstract {
    */
   isHidden(columnName) {
     return this.config.columns[columnName].hidden || false;
-  }
-
-  /**
-   * Returns true if a column is defined as searchable in the config, assumes false if not found.
-   * @param {string} columnName - The name of the column in the config
-   * @returns {boolean}
-   */
-  isSearchable(columnName) {
-    return this.config.columns[columnName].searchable || false;
   }
 
   /**
@@ -285,15 +273,6 @@ class GQLAbstract {
    */
   hasFilter(columnName) {
     return !!this.config.columns[columnName].filter;
-  }
-
-  /**
-   * Returns the default value when value is null
-   * @param {string} columnName - The name of the column in the config
-   * @returns {string}
-   */
-  getDefault(columnName) {
-    return this.config.columns[columnName].default;
   }
 
   /**
@@ -342,17 +321,6 @@ class GQLAbstract {
   }
 
   /**
-   * Returns the label for a column as specified in the config, either a 'table' label or 'search' label.
-   * Returns null if the label is not found. Assumes type as 'table'.
-   * @param {string} columnName - The name of the column.
-   * @param {string} type - Type type: 'table' or 'search'
-   * @returns {string|null}
-   */
-  getLabel(columnName, type = "table") {
-    return this.config.columns[columnName]["label_" + type] || null;
-  }
-
-  /**
    * Returns an array with key-value pairs
    * @param {string} section - the 'key' name of the section in the config object
    * @returns {[string, any][]}
@@ -377,13 +345,6 @@ class GQLAbstract {
     return this.config.single_item || null;
   }
 
-  /**
-   * Returns the showDateRange configuration value as a boolean.
-   * @return {boolean}
-   */
-  get showDateRange() {
-    return this.config.showDateRange || false;
-  }
 
   /**
    * Generates the filters section and injects the abstract with finished GraphQL syntax.
@@ -391,7 +352,6 @@ class GQLAbstract {
    * @returns {string}
    */
   generateFilters(aggregate = false) {
-    console.log("how often is this?", aggregate)
     const output = [];
     const where = [];
     const or = [];
@@ -474,7 +434,6 @@ class GQLAbstract {
    * @returns {string}
    */
   get query() {
-    console.log("get query")
     // First copy the abstract and work from the copy
     let query = this.abstractStructure;
 
@@ -607,40 +566,10 @@ class GQLAbstract {
   }
 
   /**
-   * Sets the options for Apollo query methods
-   * @param {string} optionType - The method in question: useQuery, useMutation, etc.
-   * @param {object} optionsObject - A key value pair with Apollo config stipulations.
-   */
-  setOption(optionType, optionsObject) {
-    this.config.options[optionType] = optionsObject;
-  }
-
-  /**
-   * Returns an apollo query option by type
-   * @param {string} optionType - The option type name being retrieved: useQuery, useMutation, etc.
-   */
-  getOption(optionType) {
-    try {
-      return this.config.options[optionType];
-    } catch {
-      return {};
-    }
-  }
-
-  /**
-   * Returns a key-value object with options for the Apollo useQuery method
-   * @returns {object} - The options object
-   */
-  get useQueryOptions() {
-    return this.getOption("useQuery") || {};
-  }
-
-  /**
    * Returns a GQL object based on the current state of the configuration.
    * @returns {Object} gql object
    */
   get gql() {
-    console.log(this.query)
     return gql`
       ${this.query}
     `;

@@ -23,7 +23,6 @@ import GridTableNewItem from "./GridTableNewItem";
 import makeStyles from '@mui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
-import { get } from "lodash";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -193,19 +192,15 @@ const GridTableSearch = ({
     const entry = {};
     // For each column in the export configuration
     Object.keys(query.config.export).forEach((column) => {
-      // Extract the label, filter, and path
-      const { label, filter, path } = query.config.export[column];
+      // Extract the label, filter
+      const { label, filter } = query.config.export[column];
       // Determine the new column name, if available.
       const newColumnName = label ? label : column;
-      // If it's a nested graphql expression, use lodash get and
-      // the path to get to the value, otherwise, assign the value.
-      const value = query.isNestedKey(column)
-        ? get(record, path)
-        : record[column];
+      const value = record[column];
+
       // If there is a filter, use it. Assign the value to the new column name.
       entry[newColumnName] = filter ? filter(value) : value;
     });
-    // Return new object
     return entry;
   };
 
