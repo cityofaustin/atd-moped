@@ -9,7 +9,11 @@ import { Box, Grid, Typography } from "@mui/material";
       initialValue
     );
 
-    return [...new Set(districts.flat().sort((a, b) => a - b))];
+    // flatten the array of arrays and remove empty districts
+    const districtsArray = districts.flat().filter(d=>d)
+
+    // sort in ascending order and use Set to only return unique districts
+    return [...new Set(districtsArray.sort((a, b) => a - b))];
   };
 
 /**
