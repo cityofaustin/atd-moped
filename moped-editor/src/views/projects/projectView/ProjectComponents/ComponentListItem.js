@@ -48,7 +48,7 @@ export default function ComponentListItem({
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
-  const signalComponent = isSignalComponent(component);
+  const isComponentSignalComponent = isSignalComponent(component);
 
   return (
     <Box
@@ -87,7 +87,7 @@ export default function ComponentListItem({
       </ListItem>
       <Collapse in={isExpanded}>
         <List component="div" disablePadding dense>
-          {signalComponent && component.description && (
+          {isComponentSignalComponent && component.description && (
             <ListItem className={classes.nested}>
               <ListItemText secondary={component.description} />
             </ListItem>
