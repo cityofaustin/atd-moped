@@ -21,6 +21,8 @@ export const useComponentListItemText = (component) =>
       const signalLocationName = component?.feature_signals?.[0]?.location_name;
       const signalId = component?.feature_signals?.[0]?.signal_id;
       listItemText.secondary = `${signalId}: ${signalLocationName}`;
+    } else {
+      listItemText.secondary = component.description
     }
     return listItemText;
   }, [component]);
