@@ -231,96 +231,6 @@ class GQLAbstract {
   }
 
   /**
-   * Returns true if a column is defined as sortable in the config, assumes false if not found.
-   * @param {string} columnName - The name of the column in the config
-   * @returns {boolean}
-   */
-  isSortable(columnName) {
-    return this.config.columns[columnName].sortable || false;
-  }
-
-  /**
-   * Returns true if a column is defined as hidden in the config, assumes false if not found.
-   * @param {string} columnName - The name of the column in the config
-   * @returns {boolean}
-   */
-  isHidden(columnName) {
-    return this.config.columns[columnName].hidden || false;
-  }
-
-  /**
-   * Returns true if a column is defined as primary key in the config, assumes false if not found.
-   * @param {string} columnName - The name of the column in the config
-   * @returns {boolean}
-   */
-  isPK(columnName) {
-    return this.config.columns[columnName].primary_key || false;
-  }
-
-  /**
-   * Returns the type of a column as defined in the config, assumes string if not found.
-   * @param {string} columnName - The name of the column in the config
-   * @returns {string}
-   */
-  getType(columnName) {
-    return (this.config.columns[columnName].type || "string").toLowerCase();
-  }
-
-  /**
-   * Returns true if the column contains a filter
-   * @param {string} columnName - The name of the column in the config
-   * @return {boolean}
-   */
-  hasFilter(columnName) {
-    return !!this.config.columns[columnName].filter;
-  }
-
-  /**
-   * Attempts to format value based on configuration specification `format`
-   * @param {string} columnName - The column to read the configuration from
-   * @param {object} value - The actual value to be presented to the component
-   */
-  getFormattedValue(columnName, value) {
-    const type = this.getType(columnName);
-
-    if (value === null) {
-      return "-";
-    } else {
-      value = String(value);
-    }
-
-    if (this.hasFilter(columnName)) {
-      return this.config.columns[columnName].filter(value);
-    }
-
-    switch (type) {
-      case "string": {
-        if (typeof value === "object") return JSON.stringify(value);
-        else return `${value}`;
-      }
-      case "date_iso": {
-        let dateValue = "";
-        try {
-          dateValue = new Date(Date.parse(value)).toLocaleString();
-        } catch {
-          dateValue = "n/a";
-        }
-        return `${dateValue}`;
-      }
-      case "currency": {
-        return `$${value.toLocaleString()}`;
-      }
-      case "boolean": {
-        return value ? "True" : "False";
-      }
-      // Integers, Decimals
-      default: {
-        return `${value}`;
-      }
-    }
-  }
-
-  /**
    * Returns an array with key-value pairs
    * @param {string} section - the 'key' name of the section in the config object
    * @returns {[string, any][]}
@@ -335,14 +245,6 @@ class GQLAbstract {
    */
   get columns() {
     return this.getEntries("columns").map((k) => k[0]);
-  }
-
-  /**
-   * Returns the url path for a single item, or null if ot does not exist.
-   * @returns {string|null}
-   */
-  get singleItem() {
-    return this.config.single_item || null;
   }
 
 
@@ -465,6 +367,7 @@ class GQLAbstract {
    * @returns {Object} gql Object
    */
   queryCSV(string) {
+    console.log("querycsv")
     // First copy the abstract and work from the copy and clear offset to request all records
     let query = this.abstractStructure;
     this.offset = 0;

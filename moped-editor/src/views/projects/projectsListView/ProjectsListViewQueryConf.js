@@ -74,18 +74,6 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: (values) => {
-        const jsonValues = JSON.parse(values);
-        return (
-          <RouterLink
-            to={`/${jsonValues.singleItem}/${jsonValues.link}/`}
-            state={jsonValues.state}
-            style={{ color: theme.palette.primary.main }}
-          >
-            {jsonValues.data}
-          </RouterLink>
-        );
-      },
     },
     project_description: {
       hidden: true,

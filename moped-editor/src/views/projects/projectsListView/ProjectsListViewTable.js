@@ -102,7 +102,7 @@ const handleColumnChange = ({ field }, hidden) => {
  */
 const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
-  console.log(query);
+  // console.log(query);
 
   /**
    * @type {Object} pagination
@@ -188,6 +188,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
+
+  useEffect(()=> {
+    console.log("the query has changed")
+  }, [query])
 
   /**
    * Query Management
@@ -591,6 +595,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       setHiddenColumns(storedConfig);
     }
   }, [data, advancedSearchAnchor]);
+
+  // console.log(query.query)
 
   return (
     <ApolloErrorHandler error={error}>
