@@ -2,10 +2,8 @@ import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
-import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
-import theme from "src/theme/index";
 
 /**
  * The Query configuration (now also including filters)

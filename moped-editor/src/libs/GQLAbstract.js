@@ -123,18 +123,6 @@ class GQLAbstract {
   }
 
   /**
-   * Returns an array of searchable columns
-   * @returns {Array}
-   */
-  get searchableFields() {
-    const columns = [];
-    for (const [key, value] of this.getEntries("columns")) {
-      if (value.searchable) columns.push(key);
-    }
-    return columns;
-  }
-
-  /**
    * Resets the value of where and or to empty
    */
   cleanWhere() {
@@ -367,7 +355,6 @@ class GQLAbstract {
    * @returns {Object} gql Object
    */
   queryCSV(string) {
-    console.log("querycsv")
     // First copy the abstract and work from the copy and clear offset to request all records
     let query = this.abstractStructure;
     this.offset = 0;
