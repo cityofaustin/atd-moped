@@ -1,14 +1,6 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
-/**
- * ProjectSummaryCouncilDistricts Component
- * @param {Object} data - The project geography from the graphql query's data object
- * @param {Object} classes - The shared style settings
- * @returns {JSX.Element}
- * @constructor
- */
-const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
   // reduce the array of geography objects into an array of city council districts
   const getDistricts = (data) => {
     const initialValue = [];
@@ -17,8 +9,17 @@ const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
       initialValue
     );
 
-    return [...new Set(districts.flat())];
+    return [...new Set(districts.flat().sort((a, b) => a - b))];
   };
+
+/**
+ * ProjectSummaryCouncilDistricts Component
+ * @param {Object} data - The project geography from the graphql query's data object
+ * @param {Object} classes - The shared style settings
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
