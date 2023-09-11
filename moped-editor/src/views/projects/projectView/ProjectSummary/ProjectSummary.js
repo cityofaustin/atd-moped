@@ -19,6 +19,7 @@ import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
+import ProjectSummaryCouncilDistricts from "./ProjectSummaryCouncilDistricts";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
@@ -74,6 +75,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
+    overflowWrap: "break-word",
+  },
+  fieldLabelTextNoHover: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
     overflowWrap: "break-word",
   },
   knackFieldLabelText: {
@@ -295,6 +301,12 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <ProjectSummaryMap data={data} />
+              </Grid>
+              <Grid item xs={12}>
+                <ProjectSummaryCouncilDistricts
+                  classes={classes}
+                  projectGeography={data.project_geography}
+                />
               </Grid>
               <Grid item xs={12}>
                 <TagsSection projectId={projectId} />
