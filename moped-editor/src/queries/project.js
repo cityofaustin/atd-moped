@@ -897,3 +897,19 @@ export const LOOKUP_TABLES_QUERY = gql`
     }
   }
 `;
+
+export const PROJECT_OPTIONS = gql`
+  query ProjectOptions($projectId: Int!) {
+    moped_project(
+      where: {
+        _and: [
+          { is_deleted: { _eq: false } }
+          { project_id: { _neq: $projectId } }
+        ]
+      }
+    ) {
+      project_id
+      project_name
+    }
+  }
+`;

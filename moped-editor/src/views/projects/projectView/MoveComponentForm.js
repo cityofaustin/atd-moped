@@ -4,30 +4,22 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import { ComponentOptionWithIcon } from "./utils/form";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
+import { PROJECT_OPTIONS } from "src/queries/project";
 
 import * as yup from "yup";
 
 const validationSchema = yup.object().shape({
-  projectComponentId: yup.string.required(),
+  projectId: yup.number().required(),
 });
 
-const ComponentForm = ({
-  formButtonText,
-  onSave,
-  initialFormValues = null,
-  projectComponentId,
-}) => {
+const MoveComponentForm = ({ onSave, projectId }) => {
   const {
-    register,
     handleSubmit,
     control,
-    watch,
-    setValue,
     formState: { isDirty, errors },
   } = useForm({
-    defaultValues: { projectComponentId },
+    defaultValues: { projectId },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
@@ -35,29 +27,25 @@ const ComponentForm = ({
   const areFormErrors = Object.keys(errors).length > 0;
 
   // Get projects for autocomplete
-  //   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
+  const { data: optionsData, error } = useQuery(PROJECT_OPTIONS, {
+    variables: { projectId: projectId },
+  });
 
-  //   error && console.error(error);
+  error && console.error(error);
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
-            id="component"
-            label="Component Type"
-            options={[]}
-            renderOption={(props, option, state) => (
-              <ComponentOptionWithIcon
-                key={option.value}
-                option={option}
-                state={state}
-                props={props}
-              />
-            )}
-            name="component"
+            id="project"
+            label="Project"
+            options={optionsData || []}
+            renderOption={(option) =>
+              `${option.project_id} - ${option.project_name}`
+            }
+            name="project"
             control={control}
-            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
           />
@@ -72,7 +60,7 @@ const ComponentForm = ({
             type="submit"
             disabled={!isDirty || areFormErrors}
           >
-            {isSignalComponent ? "Save" : formButtonText}
+            Save
           </Button>
         </Grid>
       </Grid>
@@ -80,4 +68,4 @@ const ComponentForm = ({
   );
 };
 
-export default ComponentForm;
+export default MoveComponentForm;

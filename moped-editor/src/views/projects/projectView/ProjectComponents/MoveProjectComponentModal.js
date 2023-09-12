@@ -1,4 +1,5 @@
 import React from "react";
+import MoveComponentForm from "../MoveComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
@@ -14,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MoveProjectComponentModal = ({
+  projectId,
   componentId,
   showDialog,
   setIsMovingComponent,
@@ -22,6 +24,9 @@ const MoveProjectComponentModal = ({
   const classes = useStyles();
 
   // Update component project_component_id mutation
+  const onSave = () => {
+    console.log("saving");
+  };
 
   // Refetch project components and close modal
   const onSaveSuccess = () => {
@@ -42,7 +47,9 @@ const MoveProjectComponentModal = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers={true}>"the move component modal"</DialogContent>
+      <DialogContent dividers={true}>
+        <MoveComponentForm projectId={projectId} onSave={onSave} />
+      </DialogContent>
     </Dialog>
   );
 };
