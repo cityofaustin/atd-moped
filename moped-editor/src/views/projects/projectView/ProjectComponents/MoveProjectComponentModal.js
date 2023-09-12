@@ -24,8 +24,10 @@ const MoveProjectComponentModal = ({
   const classes = useStyles();
 
   // Update component project_component_id mutation
-  const onSave = () => {
-    console.log("saving");
+  const onSave = (formData) => {
+    const projectId = formData.projectId.value;
+
+    console.log(projectId);
   };
 
   // Refetch project components and close modal
@@ -42,7 +44,7 @@ const MoveProjectComponentModal = ({
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
       <DialogTitle className={classes.dialogTitle}>
-        <h3>Edit component</h3>
+        <h3>Move component to another project</h3>
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>

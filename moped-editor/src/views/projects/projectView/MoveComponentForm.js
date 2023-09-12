@@ -27,7 +27,7 @@ export const useProjectOptions = (data) =>
   }, [data]);
 
 const validationSchema = yup.object().shape({
-  projectId: yup.string().required(),
+  projectId: yup.object().required(),
 });
 
 const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
@@ -36,7 +36,7 @@ const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
     control,
     formState: { errors },
   } = useForm({
-    defaultValues: { projectId: currentProjectId },
+    defaultValues: { projectId: null },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
