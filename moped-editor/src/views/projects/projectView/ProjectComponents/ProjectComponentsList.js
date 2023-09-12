@@ -107,7 +107,7 @@ const ProjectComponentsList = ({
                   <IconButton
                     aria-label="move"
                     onClick={() => {
-                      console.log("open move modal");
+                      setIsMovingComponent(true);
                     }}
                     size="small"
                   >
