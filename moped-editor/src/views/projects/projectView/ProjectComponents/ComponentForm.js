@@ -26,7 +26,9 @@ import {
   useComponentTagsOptions,
   useWorkTypeOptions,
   useResetDependentFieldOnAutocompleteChange,
+  useResetDependentFieldOnSignalChange,
 } from "./utils/form";
+import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
 import ControlledAutocomplete from "./ControlledAutocomplete";
 
 import * as yup from "yup";
@@ -110,11 +112,12 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents] = watch([
+  const [component, phase, completionDate, subcomponents, signal] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
+    "signal",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -164,6 +167,13 @@ const ComponentForm = ({
     valueToSet: defaultFormValues.work_types,
     setValue,
     disable: isEditingExistingComponent,
+  });
+
+  useResetDependentFieldOnSignalChange({
+    parentValue: watch("signal"),
+    dependentFieldName: "locationDescription",
+    valueToSet: signal ? getSignalOptionLabel(signal) : "",
+    setValue,
   });
 
   return (
@@ -245,21 +255,19 @@ const ComponentForm = ({
             control={control}
           />
         </Grid>
-        {!isSignalComponent && (
-          <Grid item xs={12}>
-            <TextField
-              {...register("locationDescription")}
-              fullWidth
-              size="small"
-              id="locationDescription"
-              label={"Location description"}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-          </Grid>
-        )}
+        <Grid item xs={12}>
+          <TextField
+            {...register("locationDescription")}
+            fullWidth
+            size="small"
+            id="locationDescription"
+            label={"Location description"}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
+          />
+        </Grid>
         <Grid item xs={12}>
           <TextField
             {...register("description")}

@@ -17,12 +17,6 @@ export const useComponentListItemText = (component) =>
     listItemText.primary = componentSubtype
       ? `${componentName} - ${componentSubtype}`
       : componentName;
-    if (isSignalComponent(component)) {
-      const signalLocationName = component?.feature_signals?.[0]?.location_name;
-      const signalId = component?.feature_signals?.[0]?.signal_id;
-      listItemText.secondary = `${signalId}: ${signalLocationName}`;
-    } else {
-      listItemText.secondary = component.location_description
-    }
+    listItemText.secondary = component.location_description;
     return listItemText;
   }, [component]);

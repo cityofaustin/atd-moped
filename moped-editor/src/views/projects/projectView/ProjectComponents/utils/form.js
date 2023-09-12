@@ -387,3 +387,44 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     disable,
   ]);
 };
+
+
+/**
+ * Watch parent field and reset dependent field to efault value when parent field changes
+ * This differs from the function above because it compares the signal properties and not the autocomplete value
+ * @param {Object} parentValue - Option object with value and label
+ * @param {string} dependentFieldName - Name of the dependent field
+ * @param {*} valueToSet - Any value to set the dependent field to
+ * @param {Function} setValue - React Hook Form setValue function
+ * @param {Boolean} disable - Disable the reset
+ * @returns {Object} the field value
+ */
+export const useResetDependentFieldOnSignalChange = ({
+  parentValue,
+  dependentFieldName,
+  valueToSet,
+  setValue,
+  disable = false,
+}) => {
+  // Track previous value to compare new value
+  const [previousParentFormValue, setPreviousParentValue] =
+    useState(parentValue);
+    
+  // when the parent value changes, compare to previous value
+  // if it is different, reset the dependent field to its default
+  useEffect(() => {
+    // keep update from firing if the parent value hasn't changed
+    if (parentValue?.properties === previousParentFormValue?.properties) return;
+    if (disable) return;
+
+    setValue(dependentFieldName, valueToSet);
+    setPreviousParentValue(parentValue);
+  }, [
+    parentValue,
+    previousParentFormValue,
+    setValue,
+    dependentFieldName,
+    valueToSet,
+    disable,
+  ]);
+};
