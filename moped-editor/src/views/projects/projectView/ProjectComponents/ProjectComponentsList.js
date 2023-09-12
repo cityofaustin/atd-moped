@@ -5,6 +5,7 @@ import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
@@ -54,13 +55,6 @@ const ProjectComponentsList = ({
     editDispatch({ type: "set_draft_component", payload: component });
   };
 
-  // TODO: Align rightmost button with the zoom button above it
-  // TODO: Show tooltips on hover for each button
-  // - "Delete"
-  // - "Move to another project"
-  // - "Details"
-  // - "Map"
-
   return (
     isNotCreatingOrEditing &&
     projectComponents.map((component) => {
@@ -89,33 +83,43 @@ const ProjectComponentsList = ({
               // estimating alignment with zoom ListItemSecondaryAction button
               mr={2.5}
             >
-              <IconButton
-                aria-label="delete"
-                onClick={() => {
-                  setIsDeletingComponent(true);
-                }}
-              >
-                <DeleteIcon />
-              </IconButton>
+              <Tooltip title="Delete">
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setIsDeletingComponent(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
 
-              <IconButton
-                aria-label="move"
-                onClick={() => {
-                  setIsMovingComponent(true);
-                }}
-              >
-                <DriveFileMoveIcon />
-              </IconButton>
+              <Tooltip title="Move to another project">
+                <IconButton
+                  aria-label="move"
+                  onClick={() => {
+                    setIsMovingComponent(true);
+                  }}
+                >
+                  <DriveFileMoveIcon />
+                </IconButton>
+              </Tooltip>
 
-              <IconButton aria-label="edit" onClick={onEditAttributes}>
-                <ListIcon />
-              </IconButton>
+              <Tooltip title="Details">
+                <IconButton aria-label="edit" onClick={onEditAttributes}>
+                  <ListIcon />
+                </IconButton>
+              </Tooltip>
 
-              {!isSignalComponent(component) && (
-                <IconButton aria-label="map" onClick={onEditMap}>
+              <Tooltip title="Map">
+                <IconButton
+                  aria-label="map"
+                  onClick={onEditMap}
+                  disabled={isSignalComponent(component)}
+                >
                   <TimelineIcon />
                 </IconButton>
-              )}
+              </Tooltip>
             </Stack>
           }
         />
