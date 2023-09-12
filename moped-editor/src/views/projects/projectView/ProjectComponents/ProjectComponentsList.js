@@ -4,8 +4,7 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
+import Stack from "@mui/material/Stack";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
@@ -82,58 +81,42 @@ const ProjectComponentsList = ({
           }
           selectedBorderColor={theme.palette.primary.main}
           additionalCollapseListItems={
-            <ListItem dense disableGutters>
-              <ListItemText
-                primary={
-                  <IconButton
-                    aria-label="delete"
-                    onClick={() => {
-                      setIsDeletingComponent(true);
-                    }}
-                    size="small"
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                }
-              />
-              <ListItemText
-                primary={
-                  <IconButton
-                    aria-label="move"
-                    onClick={() => {
-                      setIsMovingComponent(true);
-                    }}
-                    size="small"
-                  >
-                    <DriveFileMoveIcon />
-                  </IconButton>
-                }
-              />
-              <ListItemText
-                primary={
-                  <IconButton
-                    aria-label="edit"
-                    size="small"
-                    onClick={onEditAttributes}
-                  >
-                    <ListIcon />
-                  </IconButton>
-                }
-              />
+            <Stack
+              spacing={2}
+              direction="row"
+              justifyContent="flex-end"
+              my={1}
+              // estimating alignment with zoom ListItemSecondaryAction button
+              mr={2.5}
+            >
+              <IconButton
+                aria-label="delete"
+                onClick={() => {
+                  setIsDeletingComponent(true);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+
+              <IconButton
+                aria-label="move"
+                onClick={() => {
+                  setIsMovingComponent(true);
+                }}
+              >
+                <DriveFileMoveIcon />
+              </IconButton>
+
+              <IconButton aria-label="edit" onClick={onEditAttributes}>
+                <ListIcon />
+              </IconButton>
+
               {!isSignalComponent(component) && (
-                <ListItemText
-                  primary={
-                    <IconButton
-                      aria-label="map"
-                      size="small"
-                      onClick={onEditMap}
-                    >
-                      <TimelineIcon />
-                    </IconButton>
-                  }
-                />
+                <IconButton aria-label="map" onClick={onEditMap}>
+                  <TimelineIcon />
+                </IconButton>
               )}
-            </ListItem>
+            </Stack>
           }
         />
       );
