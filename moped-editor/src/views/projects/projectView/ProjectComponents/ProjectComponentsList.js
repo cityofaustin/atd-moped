@@ -1,9 +1,9 @@
 import ComponentListItem from "./ComponentListItem";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { isSignalComponent } from "./utils/componentList";
@@ -20,6 +20,7 @@ const ProjectComponentsList = ({
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
+  setIsMovingComponent,
   setIsClickedComponentRelated,
 }) => {
   const isNotCreatingOrEditing =
@@ -92,10 +93,25 @@ const ProjectComponentsList = ({
                 primary={
                   <IconButton
                     aria-label="delete"
-                    onClick={() => setIsDeletingComponent(true)}
+                    onClick={() => {
+                      setIsDeletingComponent(true);
+                    }}
                     size="small"
                   >
                     <DeleteIcon />
+                  </IconButton>
+                }
+              />
+              <ListItemText
+                primary={
+                  <IconButton
+                    aria-label="move"
+                    onClick={() => {
+                      console.log("open move modal");
+                    }}
+                    size="small"
+                  >
+                    <DriveFileMoveIcon />
                   </IconButton>
                 }
               />
@@ -113,7 +129,11 @@ const ProjectComponentsList = ({
               {!isSignalComponent(component) && (
                 <ListItemText
                   primary={
-                    <IconButton size="small" onClick={onEditMap}>
+                    <IconButton
+                      aria-label="map"
+                      size="small"
+                      onClick={onEditMap}
+                    >
                       <TimelineIcon />
                     </IconButton>
                   }
