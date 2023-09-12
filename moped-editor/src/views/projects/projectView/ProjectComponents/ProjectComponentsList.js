@@ -53,6 +53,19 @@ const ProjectComponentsList = ({
     editDispatch({ type: "set_draft_component", payload: component });
   };
 
+  // TODO: Update buttons icon buttons
+  // TODO: Add move button with isMovingComponent state
+  // TODO: Add move component modal that shows up when move button is clicked
+  // TODO: Copy form from create component modal and adapt it to autocomplete project IDs
+  // TODO: auto-focused autocomplete input
+  // TODO: Form save button on enables when a new project ID is selected
+  // TODO: Align rightmost button with the zoom button above it
+  // TODO: Show tooltips on hover for each button
+  // - "Delete"
+  // - "Move to another project"
+  // - "Details"
+  // - "Map"
+
   return (
     isNotCreatingOrEditing &&
     projectComponents.map((component) => {
