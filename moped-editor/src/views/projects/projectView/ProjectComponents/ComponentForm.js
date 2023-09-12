@@ -38,6 +38,7 @@ const defaultFormValues = {
   subphase: null,
   tags: [],
   completionDate: null,
+  locationDescription: "",
   description: "",
   work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
@@ -63,6 +64,7 @@ const validationSchema = yup.object().shape({
       then: yup.object().required(),
     }),
   srtsId: yup.string().nullable().optional(),
+  locationDescription: yup.string().nullable().optional(),
 });
 
 const ComponentForm = ({
@@ -241,6 +243,19 @@ const ComponentForm = ({
             options={componentTagsOptions}
             name="tags"
             control={control}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            {...register("locationDescription")}
+            fullWidth
+            size="small"
+            id="locationDescription"
+            label={"Location description"}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
           />
         </Grid>
         <Grid item xs={12}>
