@@ -9,10 +9,7 @@ import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
 import { COLORS } from "./mapStyleSettings";
-import {
-  useComponentListItemText,
-  isSignalComponent,
-} from "./utils/componentList";
+import { useComponentListItemText } from "./utils/componentList";
 
 const useStyles = makeStyles((theme) => ({
   nested: {
@@ -25,12 +22,6 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: theme.spacing(1),
   },
   additionalListItemText: {
-    display: "block",
-  },
-  truncatedText: {
-    textOverflow: "ellipsis",
-    textWrap: "nowrap",
-    overflow: "hidden",
     display: "block",
   },
 }));
@@ -48,7 +39,6 @@ export default function ComponentListItem({
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
-  const isComponentSignalComponent = isSignalComponent(component);
 
   return (
     <Box
@@ -70,9 +60,7 @@ export default function ComponentListItem({
           primary={primary}
           secondary={
             <>
-              <span>
-                {secondary}
-              </span>
+              <span>{secondary}</span>
               <span className={classes.additionalListItemText}>
                 {additionalListItemText}
               </span>
