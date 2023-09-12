@@ -245,19 +245,21 @@ const ComponentForm = ({
             control={control}
           />
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            {...register("locationDescription")}
-            fullWidth
-            size="small"
-            id="locationDescription"
-            label={"Location description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-          />
-        </Grid>
+        {!isSignalComponent && (
+          <Grid item xs={12}>
+            <TextField
+              {...register("locationDescription")}
+              fullWidth
+              size="small"
+              id="locationDescription"
+              label={"Location description"}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+            />
+          </Grid>
+        )}
         <Grid item xs={12}>
           <TextField
             {...register("description")}

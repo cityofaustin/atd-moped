@@ -70,7 +70,7 @@ export default function ComponentListItem({
           primary={primary}
           secondary={
             <>
-              <span className={!isExpanded && classes.truncatedText}>
+              <span>
                 {secondary}
               </span>
               <span className={classes.additionalListItemText}>
@@ -87,7 +87,7 @@ export default function ComponentListItem({
       </ListItem>
       <Collapse in={isExpanded}>
         <List component="div" disablePadding dense>
-          {isComponentSignalComponent && component.description && (
+          {component.description && (
             <ListItem className={classes.nested}>
               <ListItemText secondary={component.description} />
             </ListItem>
