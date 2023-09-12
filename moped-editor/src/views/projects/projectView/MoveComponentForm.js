@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -8,6 +8,23 @@ import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
 import { PROJECT_OPTIONS } from "src/queries/project";
 
 import * as yup from "yup";
+
+/**
+ * Take the moped_project records data response and create options for a MUI autocomplete
+ * @param {Object} data Data returned with moped_project records
+ * @returns {Array} The options with value and label for moped projects
+ */
+export const useProjectOptions = (data) =>
+  useMemo(() => {
+    if (!data) return [];
+
+    const options = data.moped_project.map((option) => ({
+      value: option.project_id,
+      label: `${option.project_id} - ${option.project_name}`,
+    }));
+
+    return options;
+  }, [data]);
 
 const validationSchema = yup.object().shape({
   projectId: yup.number().required(),
@@ -27,9 +44,10 @@ const MoveComponentForm = ({ onSave, projectId }) => {
   const areFormErrors = Object.keys(errors).length > 0;
 
   // Get projects for autocomplete
-  const { data: optionsData, error } = useQuery(PROJECT_OPTIONS, {
+  const { data, error } = useQuery(PROJECT_OPTIONS, {
     variables: { projectId: projectId },
   });
+  const projectOptions = useProjectOptions(data);
 
   error && console.error(error);
 
@@ -40,10 +58,7 @@ const MoveComponentForm = ({ onSave, projectId }) => {
           <ControlledAutocomplete
             id="project"
             label="Project"
-            options={optionsData || []}
-            renderOption={(option) =>
-              `${option.project_id} - ${option.project_name}`
-            }
+            options={projectOptions}
             name="project"
             control={control}
             autoFocus
