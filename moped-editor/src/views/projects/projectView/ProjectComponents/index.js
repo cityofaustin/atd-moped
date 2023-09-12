@@ -74,7 +74,6 @@ export default function MapView({
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
-  console.log(clickedComponent);
 
   /* tracks a projectFeature clicked from the map */
   const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
@@ -307,7 +306,6 @@ export default function MapView({
             showDialog={isDeletingComponent}
             setShowDialog={setIsDeletingComponent}
             clickedComponent={clickedComponent}
-            setClickedComponent={setClickedComponent}
             setIsDeletingComponent={setIsDeletingComponent}
             onDeleteComponent={onDeleteComponent}
           />

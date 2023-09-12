@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 const DeleteComponentModal = ({
   showDialog,
   clickedComponent,
-  setClickedComponent,
   setIsDeletingComponent,
   onDeleteComponent,
 }) => {
