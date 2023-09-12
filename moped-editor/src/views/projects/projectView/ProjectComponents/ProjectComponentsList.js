@@ -55,9 +55,6 @@ const ProjectComponentsList = ({
     editDispatch({ type: "set_draft_component", payload: component });
   };
 
-  // TODO: Copy form from create component modal and adapt it to autocomplete project IDs
-  // TODO: auto-focused autocomplete input
-  // TODO: Form save button on enables when a new project ID is selected
   // TODO: Align rightmost button with the zoom button above it
   // TODO: Show tooltips on hover for each button
   // - "Delete"

@@ -1,8 +1,10 @@
 import React from "react";
+import { useMutation } from "@apollo/client";
 import MoveComponentForm from "../MoveComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
+import { UPDATE_COMPONENT_PROJECT_ID } from "src/queries/components";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -23,12 +25,7 @@ const MoveProjectComponentModal = ({
 }) => {
   const classes = useStyles();
 
-  // Update component project_component_id mutation
-  const onSave = (formData) => {
-    const projectId = formData.projectId.value;
-
-    console.log(projectId);
-  };
+  const [updateProjectId] = useMutation(UPDATE_COMPONENT_PROJECT_ID);
 
   // Refetch project components and close modal
   const onSaveSuccess = () => {
@@ -39,6 +36,24 @@ const MoveProjectComponentModal = ({
 
   const onClose = () => {
     setIsMovingComponent(false);
+  };
+
+  // Update component project_component_id mutation
+  const onSave = (formData) => {
+    const projectId = formData.projectId.value;
+
+    updateProjectId({
+      variables: {
+        projectId,
+        componentId,
+      },
+    })
+      .then(() => {
+        onSaveSuccess();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
