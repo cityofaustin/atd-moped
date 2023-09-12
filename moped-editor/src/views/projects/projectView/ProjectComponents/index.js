@@ -74,6 +74,7 @@ export default function MapView({
 
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
+  console.log(clickedComponent);
 
   /* tracks a projectFeature clicked from the map */
   const [clickedProjectFeature, setClickedProjectFeature] = useState(null);

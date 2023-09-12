@@ -40,7 +40,6 @@ const DeleteComponentModal = ({
 
   const onClose = () => {
     setIsDeletingComponent(false);
-    setClickedComponent(null);
   };
 
   if (!clickedComponent) return null;
