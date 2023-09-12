@@ -1,5 +1,6 @@
 import ComponentListItem from "./ComponentListItem";
 import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -89,42 +90,32 @@ const ProjectComponentsList = ({
             <ListItem dense disableGutters>
               <ListItemText
                 primary={
-                  <Button
-                    fullWidth
-                    size="small"
-                    style={{ color: theme.palette.text.primary }}
-                    startIcon={<DeleteIcon />}
+                  <IconButton
+                    aria-label="delete"
                     onClick={() => setIsDeletingComponent(true)}
+                    size="small"
                   >
-                    Delete
-                  </Button>
+                    <DeleteIcon />
+                  </IconButton>
                 }
               />
               <ListItemText
                 primary={
-                  <Button
-                    fullWidth
+                  <IconButton
+                    aria-label="edit"
                     size="small"
-                    color="primary"
-                    startIcon={<ListIcon />}
                     onClick={onEditAttributes}
                   >
-                    Details
-                  </Button>
+                    <ListIcon />
+                  </IconButton>
                 }
               />
               {!isSignalComponent(component) && (
                 <ListItemText
                   primary={
-                    <Button
-                      fullWidth
-                      size="small"
-                      color="primary"
-                      startIcon={<TimelineIcon />}
-                      onClick={onEditMap}
-                    >
-                      Map
-                    </Button>
+                    <IconButton size="small" onClick={onEditMap}>
+                      <TimelineIcon />
+                    </IconButton>
                   }
                 />
               )}
