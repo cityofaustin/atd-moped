@@ -27,16 +27,16 @@ export const useProjectOptions = (data) =>
   }, [data]);
 
 const validationSchema = yup.object().shape({
-  projectId: yup.number().required(),
+  projectId: yup.string().required(),
 });
 
-const MoveComponentForm = ({ onSave, projectId }) => {
+const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
   const {
     handleSubmit,
     control,
-    formState: { isDirty, errors },
+    formState: { errors },
   } = useForm({
-    defaultValues: { projectId },
+    defaultValues: { projectId: currentProjectId },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
@@ -45,7 +45,7 @@ const MoveComponentForm = ({ onSave, projectId }) => {
 
   // Get projects for autocomplete
   const { data, error } = useQuery(PROJECT_OPTIONS, {
-    variables: { projectId: projectId },
+    variables: { projectId: currentProjectId },
   });
   const projectOptions = useProjectOptions(data);
 
@@ -56,10 +56,10 @@ const MoveComponentForm = ({ onSave, projectId }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
-            id="project"
+            id="projectId"
             label="Project"
             options={projectOptions}
-            name="project"
+            name="projectId"
             control={control}
             autoFocus
             helperText="Required"
@@ -73,7 +73,7 @@ const MoveComponentForm = ({ onSave, projectId }) => {
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isDirty || areFormErrors}
+            disabled={areFormErrors}
           >
             Save
           </Button>
