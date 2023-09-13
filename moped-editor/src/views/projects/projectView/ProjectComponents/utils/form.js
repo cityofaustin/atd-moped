@@ -358,9 +358,10 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
  * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
  */
-export const useResetDependentFieldOnAutocompleteChange = ({
+export const useResetDependentFieldOnParentFieldChange = ({
   parentValue,
   dependentFieldName,
+  comparisonVariable,
   valueToSet,
   setValue,
   disable = false,
@@ -373,7 +374,11 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   // if it is different, reset the dependent field to its default
   useEffect(() => {
     // keep update from firing if the parent value hasn't changed
-    if (parentValue?.value === previousParentFormValue?.value) return;
+    if (
+      parentValue?.[comparisonVariable] ===
+      previousParentFormValue?.[comparisonVariable]
+    )
+      return;
     if (disable) return;
 
     setValue(dependentFieldName, valueToSet);
@@ -382,48 +387,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     parentValue,
     previousParentFormValue,
     setValue,
-    dependentFieldName,
-    valueToSet,
-    disable,
-  ]);
-};
-
-
-/**
- * Watch parent field and reset dependent field to specified value when parent field changes
- * This differs from useResetDependentFieldOnAutocompleteChange because it compares the signal properties 
- * and not the autocomplete value
- * @param {Object} parentValue - Signal object with properties
- * @param {string} dependentFieldName - Name of the dependent field
- * @param {*} valueToSet - Any value to set the dependent field to
- * @param {Function} setValue - React Hook Form setValue function
- * @param {Boolean} disable - Disable the reset
- * @returns {Object} the field value
- */
-export const useResetDependentFieldOnSignalChange = ({
-  parentValue,
-  dependentFieldName,
-  valueToSet,
-  setValue,
-  disable = false,
-}) => {
-  // Track previous value to compare new value
-  const [previousParentFormValue, setPreviousParentValue] =
-    useState(parentValue);
-    
-  // when the parent value changes, compare to previous value
-  // if it is different, reset the dependent field to its default
-  useEffect(() => {
-    // keep update from firing if the parent value hasn't changed
-    if (parentValue?.properties === previousParentFormValue?.properties) return;
-    if (disable) return;
-
-    setValue(dependentFieldName, valueToSet);
-    setPreviousParentValue(parentValue);
-  }, [
-    parentValue,
-    previousParentFormValue,
-    setValue,
+    comparisonVariable,
     dependentFieldName,
     valueToSet,
     disable,

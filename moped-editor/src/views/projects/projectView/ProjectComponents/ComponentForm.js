@@ -25,8 +25,7 @@ import {
   useSubphaseOptions,
   useComponentTagsOptions,
   useWorkTypeOptions,
-  useResetDependentFieldOnAutocompleteChange,
-  useResetDependentFieldOnSignalChange,
+  useResetDependentFieldOnParentFieldChange,
 } from "./utils/form";
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
 import ControlledAutocomplete from "./ControlledAutocomplete";
@@ -112,13 +111,20 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents, signal, locationDescription] = watch([
+  const [
+    component,
+    phase,
+    completionDate,
+    subcomponents,
+    signal,
+    locationDescription,
+  ] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
     "signal",
-    "locationDescription"
+    "locationDescription",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -138,42 +144,51 @@ const ComponentForm = ({
     !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase"),
     dependentFieldName: "subphase",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subphase,
     setValue,
   });
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "signal",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.signal,
     setValue,
   });
 
   // todo: preserve subcomponent choices if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "subcomponents",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
     disable: isEditingExistingComponent,
   });
 
   // todo: preserve work type if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "work_types",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.work_types,
     setValue,
     disable: isEditingExistingComponent,
   });
 
-  useResetDependentFieldOnSignalChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
-    valueToSet: signal ? getSignalOptionLabel(signal) : locationDescription,
+    comparisonVariable: "properties",
+    valueToSet:
+      signal && locationDescription?.length === 0
+      // if the signal exists and the locationDescription is empty, set to option label
+        ? getSignalOptionLabel(signal)
+        : locationDescription,
     setValue,
   });
 
