@@ -108,7 +108,6 @@ const useFilterQuery = ({ locationSearch }) =>
  */
 const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
-  // console.log(query);
 
   /**
    * @type {Object} pagination
@@ -213,7 +212,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     }
   }, [pagination.limit, pagination.offset, query]);
 
-  // Resets the value of "where" "and" "or" to empty -- make this only happen when needed
+  // Resets the value of "where" "and" "or" to empty
+  // todo: -- make this only happen when needed
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
@@ -596,8 +596,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       setHiddenColumns(storedConfig);
     }
   }, [data, advancedSearchAnchor]);
-
-  // console.log(query.query)
 
   return (
     <ApolloErrorHandler error={error}>
