@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
+import ControlledAutocomplete from "./ControlledAutocomplete";
 import { PROJECT_OPTIONS } from "src/queries/project";
 
 import * as yup from "yup";
@@ -75,7 +75,7 @@ const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
             type="submit"
             disabled={areFormErrors}
           >
-            Save
+            Move component
           </Button>
         </Grid>
       </Grid>
