@@ -1,10 +1,11 @@
 import ComponentListItem from "./ComponentListItem";
-import Button from "@mui/material/Button";
+import IconButton from "@mui/material/IconButton";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ListIcon from "@mui/icons-material/List";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
+import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
@@ -19,6 +20,7 @@ const ProjectComponentsList = ({
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
+  setIsMovingComponent,
   setIsClickedComponentRelated,
 }) => {
   const isNotCreatingOrEditing =
@@ -73,49 +75,52 @@ const ProjectComponentsList = ({
           }
           selectedBorderColor={theme.palette.primary.main}
           additionalCollapseListItems={
-            <ListItem dense disableGutters>
-              <ListItemText
-                primary={
-                  <Button
-                    fullWidth
-                    size="small"
-                    style={{ color: theme.palette.text.primary }}
-                    startIcon={<DeleteIcon />}
-                    onClick={() => setIsDeletingComponent(true)}
-                  >
-                    Delete
-                  </Button>
-                }
-              />
-              <ListItemText
-                primary={
-                  <Button
-                    fullWidth
-                    size="small"
-                    color="primary"
-                    startIcon={<ListIcon />}
-                    onClick={onEditAttributes}
-                  >
-                    Details
-                  </Button>
-                }
-              />
-              {!isSignalComponent(component) && (
-                <ListItemText
-                  primary={
-                    <Button
-                      fullWidth
-                      size="small"
-                      color="primary"
-                      startIcon={<TimelineIcon />}
-                      onClick={onEditMap}
-                    >
-                      Map
-                    </Button>
-                  }
-                />
-              )}
-            </ListItem>
+            <Stack
+              spacing={2}
+              direction="row"
+              justifyContent="flex-end"
+              my={1}
+              // estimating alignment with zoom ListItemSecondaryAction button
+              mr={2.5}
+            >
+              <Tooltip title="Delete">
+                <IconButton
+                  aria-label="delete"
+                  onClick={() => {
+                    setIsDeletingComponent(true);
+                  }}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Move to another project">
+                <IconButton
+                  aria-label="move"
+                  onClick={() => {
+                    setIsMovingComponent(true);
+                  }}
+                >
+                  <DriveFileMoveIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Details">
+                <IconButton aria-label="edit" onClick={onEditAttributes}>
+                  <ListIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Map">
+                <IconButton
+                  aria-label="map"
+                  onClick={onEditMap}
+                  disabled={isSignalComponent(component)}
+                >
+                  <TimelineIcon />
+                </IconButton>
+              </Tooltip>
+            </Stack>
           }
         />
       );

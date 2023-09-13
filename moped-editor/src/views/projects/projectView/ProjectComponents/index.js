@@ -12,6 +12,7 @@ import CreateComponentModal from "./CreateComponentModal";
 import EditAttributesModal from "./EditAttributesModal";
 import DeleteComponentModal from "./DeleteComponentModal";
 import ComponentMapToolbar from "./ComponentMapToolbar";
+import MoveProjectComponentModal from "./MoveProjectComponentModal";
 import { useAppBarHeight } from "./utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
@@ -85,6 +86,9 @@ export default function MapView({
 
   /* tracks the drawing state of the map */
   const [isDrawing, setIsDrawing] = useState(false);
+
+  /* tracks when a component is being moved from one project to another */
+  const [isMovingComponent, setIsMovingComponent] = useState(false);
 
   /* track settings state and whether we show parent, sibling, and child projects */
   const [areSettingsOpen, setAreSettingsOpen] = useState(true);
@@ -247,6 +251,7 @@ export default function MapView({
                 onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
+                setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
               />
               <RelatedComponentsList
@@ -301,7 +306,6 @@ export default function MapView({
             showDialog={isDeletingComponent}
             setShowDialog={setIsDeletingComponent}
             clickedComponent={clickedComponent}
-            setClickedComponent={setClickedComponent}
             setIsDeletingComponent={setIsDeletingComponent}
             onDeleteComponent={onDeleteComponent}
           />
@@ -311,6 +315,13 @@ export default function MapView({
             clickedComponent={clickedComponent}
             refetchProjectComponents={refetchProjectComponents}
             mapRef={mapRef}
+          />
+          <MoveProjectComponentModal
+            projectId={projectId}
+            componentId={clickedComponent?.project_component_id}
+            showDialog={isMovingComponent}
+            setIsMovingComponent={setIsMovingComponent}
+            refetchProjectComponents={refetchProjectComponents}
           />
         </main>
       </div>
