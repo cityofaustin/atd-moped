@@ -33,14 +33,15 @@ const MoveProjectComponentModal = ({
   const classes = useStyles();
   const [updatedComponentFormData, setUpdatedComponentFormData] =
     React.useState(null);
-  const updatedProjectId = updatedComponentFormData?.value;
+  const updatedProjectId = updatedComponentFormData?.project?.value;
+  const updatedProjectLabel = updatedComponentFormData?.project?.label;
 
   const [updateProjectId] = useMutation(UPDATE_COMPONENT_PROJECT_ID);
 
   // Refetch project components and close modal
   const onSaveSuccess = (formData) => {
     refetchProjectComponents().then(() => {
-      setUpdatedComponentFormData(formData.project);
+      setUpdatedComponentFormData(formData);
     });
   };
 
@@ -86,7 +87,7 @@ const MoveProjectComponentModal = ({
               to={`/moped/projects/${updatedProjectId}?tab=map`}
               style={{ color: theme.palette.primary.main }}
             >
-              #{updatedComponentFormData.label}
+              #{updatedProjectLabel}
             </RouterLink>
           </Typography>
         )}
