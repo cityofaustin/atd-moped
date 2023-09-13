@@ -317,8 +317,7 @@ export default function MapView({
             mapRef={mapRef}
           />
           <MoveProjectComponentModal
-            projectId={projectId}
-            componentId={clickedComponent?.project_component_id}
+            component={clickedComponent}
             showDialog={isMovingComponent}
             setIsMovingComponent={setIsMovingComponent}
             refetchProjectComponents={refetchProjectComponents}

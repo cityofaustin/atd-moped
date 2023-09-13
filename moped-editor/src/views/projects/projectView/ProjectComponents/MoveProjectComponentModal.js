@@ -25,8 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const MoveProjectComponentModal = ({
-  projectId,
-  componentId,
+  component,
   showDialog,
   setIsMovingComponent,
   refetchProjectComponents,
@@ -35,15 +34,13 @@ const MoveProjectComponentModal = ({
   const [updatedComponentFormData, setUpdatedComponentFormData] =
     React.useState(null);
   const updatedProjectId = updatedComponentFormData?.value;
-  console.log({ updatedComponentFormData });
 
   const [updateProjectId] = useMutation(UPDATE_COMPONENT_PROJECT_ID);
 
   // Refetch project components and close modal
   const onSaveSuccess = (formData) => {
     refetchProjectComponents().then(() => {
-      console.log("formData", formData);
-      setUpdatedComponentFormData(formData.projectId);
+      setUpdatedComponentFormData(formData.project);
     });
   };
 
@@ -54,7 +51,8 @@ const MoveProjectComponentModal = ({
 
   // Update component project_component_id mutation
   const onSave = (formData) => {
-    const projectId = formData?.projectId?.value;
+    const projectId = formData?.project?.value;
+    const componentId = component?.project_component_id;
 
     updateProjectId({
       variables: {
@@ -80,7 +78,7 @@ const MoveProjectComponentModal = ({
       </DialogTitle>
       <DialogContent dividers={true}>
         {!updatedComponentFormData ? (
-          <MoveComponentForm projectId={projectId} onSave={onSave} />
+          <MoveComponentForm component={component} onSave={onSave} />
         ) : (
           <Typography>
             Component moved to{" "}
