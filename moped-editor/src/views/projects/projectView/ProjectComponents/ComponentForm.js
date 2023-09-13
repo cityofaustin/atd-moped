@@ -112,12 +112,13 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents, signal] = watch([
+  const [component, phase, completionDate, subcomponents, signal, locationDescription] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
     "signal",
+    "locationDescription"
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -172,7 +173,7 @@ const ComponentForm = ({
   useResetDependentFieldOnSignalChange({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
-    valueToSet: signal ? getSignalOptionLabel(signal) : "",
+    valueToSet: signal ? getSignalOptionLabel(signal) : locationDescription,
     setValue,
   });
 
@@ -210,6 +211,7 @@ const ComponentForm = ({
               id="signal"
               name="signal"
               control={control}
+              shouldUnregister={true}
               render={({ field }) => (
                 <SignalComponentAutocomplete
                   {...field}
