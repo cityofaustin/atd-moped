@@ -7,7 +7,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
-import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
 import GridTablePagination from "../../../components/GridTable/GridTablePagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -601,8 +600,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        {/*Toolbar Space*/}
-        <GridTableToolbar>
           <GridTableSearch
             parentData={data}
             query={query}
@@ -618,7 +615,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
             advancedSearchAnchor={advancedSearchAnchor}
             setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           />
-        </GridTableToolbar>
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box mt={3}>
