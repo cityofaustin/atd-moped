@@ -390,9 +390,9 @@ export const useResetDependentFieldOnAutocompleteChange = ({
 
 
 /**
- * Watch parent field and reset dependent field to efault value when parent field changes
+ * Watch parent field and reset dependent field to specified value when parent field changes
  * This differs from the function above because it compares the signal properties and not the autocomplete value
- * @param {Object} parentValue - Option object with value and label
+ * @param {Object} parentValue - Signal object with properties
  * @param {string} dependentFieldName - Name of the dependent field
  * @param {*} valueToSet - Any value to set the dependent field to
  * @param {Function} setValue - React Hook Form setValue function

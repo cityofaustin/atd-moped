@@ -60,7 +60,7 @@ export default function ComponentListItem({
           primary={primary}
           secondary={
             <>
-              <span>{secondary}</span>
+              <>{secondary}</>
               <span className={classes.additionalListItemText}>
                 {additionalListItemText}
               </span>
