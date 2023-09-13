@@ -2,7 +2,7 @@ import ComponentListItem from "./ComponentListItem";
 import IconButton from "@mui/material/IconButton";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import ListIcon from "@mui/icons-material/List";
-import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
@@ -84,30 +84,12 @@ const ProjectComponentsList = ({
               // estimating alignment with zoom ListItemSecondaryAction button
               mr={2.5}
             >
-              <Tooltip title="Delete">
-                <IconButton
-                  aria-label="delete"
-                  onClick={() => {
-                    setIsDeletingComponent(true);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Move to another project">
-                <IconButton
-                  aria-label="move"
-                  onClick={() => {
-                    setIsMovingComponent(true);
-                  }}
-                >
-                  <DriveFileMoveIcon />
-                </IconButton>
-              </Tooltip>
-
               <Tooltip title="Details">
-                <IconButton aria-label="edit" onClick={onEditAttributes}>
+                <IconButton
+                  color="primary"
+                  aria-label="edit"
+                  onClick={onEditAttributes}
+                >
                   <ListIcon />
                 </IconButton>
               </Tooltip>
@@ -122,6 +104,7 @@ const ProjectComponentsList = ({
                 {/* this span allows the tooltip to display when IconButton is disabled */}
                 <span>
                   <IconButton
+                    color="primary"
                     aria-label="map"
                     onClick={onEditMap}
                     disabled={isSignal}
@@ -129,6 +112,30 @@ const ProjectComponentsList = ({
                     <TimelineIcon />
                   </IconButton>
                 </span>
+              </Tooltip>
+
+              <Tooltip title="Move to another project">
+                <IconButton
+                  color="primary"
+                  aria-label="move"
+                  onClick={() => {
+                    setIsMovingComponent(true);
+                  }}
+                >
+                  <DriveFileMoveIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Delete">
+                <IconButton
+                  color="primary"
+                  aria-label="delete"
+                  onClick={() => {
+                    setIsDeletingComponent(true);
+                  }}
+                >
+                  <DeleteOutlinedIcon />
+                </IconButton>
               </Tooltip>
             </Stack>
           }
