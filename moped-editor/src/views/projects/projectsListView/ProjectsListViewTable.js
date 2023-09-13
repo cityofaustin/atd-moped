@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
@@ -92,6 +92,15 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
+
+// hook which keeps available subphase options in sync
+const useFilterQuery = ({ locationSearch }) =>
+  useMemo(() => {
+    return new URLSearchParams(locationSearch)
+  }, [locationSearch]);
+
+
+
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -158,7 +167,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   // create URLSearchParams from url
-  const filterQuery = new URLSearchParams(useLocation().search);
+  const filterQuery = useFilterQuery(useLocation().search)
 
   /**
    * if filter exists in url, decodes base64 string and returns as object
@@ -187,10 +196,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
-
-  useEffect(()=> {
-    console.log("the query has changed")
-  }, [query])
 
   /**
    * Query Management
@@ -278,7 +283,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const buildStatusBadge = ({ phaseName, phaseKey }) => (
     <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
-  // Data Management
 
   const { data, loading, error } = useQuery(
     query.gql,
