@@ -1,10 +1,18 @@
 import React from "react";
 import { useMutation } from "@apollo/client";
 import MoveComponentForm from "./MoveComponentForm";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  IconButton,
+  Typography,
+} from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
+import { Link as RouterLink } from "react-router-dom";
 import { UPDATE_COMPONENT_PROJECT_ID } from "src/queries/components";
+import theme from "src/theme/index";
 
 const useStyles = makeStyles((theme) => ({
   dialogTitle: {
@@ -24,23 +32,29 @@ const MoveProjectComponentModal = ({
   refetchProjectComponents,
 }) => {
   const classes = useStyles();
+  const [updatedComponentFormData, setUpdatedComponentFormData] =
+    React.useState(null);
+  const updatedProjectId = updatedComponentFormData?.value;
+  console.log({ updatedComponentFormData });
 
   const [updateProjectId] = useMutation(UPDATE_COMPONENT_PROJECT_ID);
 
   // Refetch project components and close modal
-  const onSaveSuccess = () => {
+  const onSaveSuccess = (formData) => {
     refetchProjectComponents().then(() => {
-      onClose();
+      console.log("formData", formData);
+      setUpdatedComponentFormData(formData.projectId);
     });
   };
 
   const onClose = () => {
     setIsMovingComponent(false);
+    setUpdatedComponentFormData(null);
   };
 
   // Update component project_component_id mutation
   const onSave = (formData) => {
-    const projectId = formData.projectId.value;
+    const projectId = formData?.projectId?.value;
 
     updateProjectId({
       variables: {
@@ -49,7 +63,7 @@ const MoveProjectComponentModal = ({
       },
     })
       .then(() => {
-        onSaveSuccess();
+        onSaveSuccess(formData);
       })
       .catch((error) => {
         console.log(error);
@@ -65,7 +79,19 @@ const MoveProjectComponentModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        <MoveComponentForm projectId={projectId} onSave={onSave} />
+        {!updatedComponentFormData ? (
+          <MoveComponentForm projectId={projectId} onSave={onSave} />
+        ) : (
+          <Typography>
+            Component moved to{" "}
+            <RouterLink
+              to={`/moped/projects/${updatedProjectId}?tab=map`}
+              style={{ color: theme.palette.primary.main }}
+            >
+              #{updatedComponentFormData.label}
+            </RouterLink>
+          </Typography>
+        )}
       </DialogContent>
     </Dialog>
   );
