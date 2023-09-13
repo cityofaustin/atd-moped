@@ -93,12 +93,10 @@ const handleColumnChange = ({ field }, hidden) => {
 };
 
 
-// hook which keeps available subphase options in sync
 const useFilterQuery = ({ locationSearch }) =>
   useMemo(() => {
     return new URLSearchParams(locationSearch)
   }, [locationSearch]);
-
 
 
 /**
