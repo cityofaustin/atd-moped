@@ -391,7 +391,8 @@ export const useResetDependentFieldOnAutocompleteChange = ({
 
 /**
  * Watch parent field and reset dependent field to specified value when parent field changes
- * This differs from the function above because it compares the signal properties and not the autocomplete value
+ * This differs from useResetDependentFieldOnAutocompleteChange because it compares the signal properties 
+ * and not the autocomplete value
  * @param {Object} parentValue - Signal object with properties
  * @param {string} dependentFieldName - Name of the dependent field
  * @param {*} valueToSet - Any value to set the dependent field to
