@@ -4,8 +4,7 @@ SET
     location_description =  null
 FROM (
     SELECT
-        component_id AS project_component_id,
-        attributes -> 'location_name'::text AS location_description
+        component_id AS project_component_id
     FROM
         project_geography
     WHERE
