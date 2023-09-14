@@ -100,7 +100,7 @@ const handleColumnChange = ({ field }, hidden) => {
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query, searchTerm }) => {
+const ProjectsListViewTableTest = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**
@@ -275,7 +275,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.gql,
     query.config.options.useQuery
   );
-  console.log(query.gql);
 
   const columns = [
     {
@@ -684,4 +683,4 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   );
 };
 
-export default ProjectsListViewTable;
+export default ProjectsListViewTableTest;
