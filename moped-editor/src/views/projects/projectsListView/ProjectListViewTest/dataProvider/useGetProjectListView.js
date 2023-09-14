@@ -1,19 +1,20 @@
+import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
 export const useGetProjectListView = ({
-  pagination: { limit, offset, page },
+  pagination: { limit, offset },
   columnsToReturn,
 }) => {
+  console.log(offset);
   const query = gql`{
         project_list_view (
-            gqlAbstractFilters
+            limit: ${limit}
+            offset: ${offset}
         ) {
             ${columnsToReturn.join("\n")}
         },
-        project_list_view_aggregate (
-            gqlAbstractAggregateFilters
-        ) {
+        project_list_view_aggregate {
           aggregate {
             count
           }
@@ -21,7 +22,7 @@ export const useGetProjectListView = ({
       }`;
 
   // manage query
-  const { data, loading, error } = useQuery(query.gql, {
+  const { data, loading, error } = useQuery(query, {
     fetchPolicy: "cache-first",
   });
 

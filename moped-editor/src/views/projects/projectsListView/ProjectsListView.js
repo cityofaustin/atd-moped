@@ -1,13 +1,14 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import Page from "src/components/Page";
 
 // Abstract
 import GQLAbstract from "../../../libs/GQLAbstract";
 import ProjectsListViewTable from "./ProjectsListViewTable";
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
+import ProjectsListViewTableTest from "./ProjectListViewTest/ProjectListViewTableTest";
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,12 @@ const ProjectsListView = () => {
 
   return (
     <Page className={classes.root} title="Projects">
-      <ProjectsListViewTable
+      {/* <ProjectsListViewTable
+        title={"Projects"}
+        query={projectsQuery}
+        searchTerm={navSearchTerm}
+      /> */}
+      <ProjectsListViewTableTest
         title={"Projects"}
         query={projectsQuery}
         searchTerm={navSearchTerm}

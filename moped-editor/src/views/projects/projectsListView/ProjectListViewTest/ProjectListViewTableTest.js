@@ -4,22 +4,23 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
-import typography from "../../../theme/typography";
+import typography from "../../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
-import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
-import GridTableSearch from "../../../components/GridTable/GridTableSearch";
-import GridTablePagination from "../../../components/GridTable/GridTablePagination";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
-import ExternalLink from "../../../components/ExternalLink";
-import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import GridTableToolbar from "src/components/GridTable/GridTableToolbar";
+import GridTableSearch from "src/components/GridTable/GridTableSearch";
+import GridTablePagination from "src/components/GridTable/GridTablePagination";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
+import ExternalLink from "src/components/ExternalLink";
+import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
 
 import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
-import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
-import { getSearchValue } from "../../../utils/gridTableHelpers";
+import { filterProjectTeamMembers as renderProjectTeamMembers } from "../helpers.js";
+import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
+import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
 
 /**
  * GridTable Style
@@ -271,10 +272,10 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
   // Data Management
-  const { data, loading, error } = useQuery(
-    query.gql,
-    query.config.options.useQuery
-  );
+  // const { data, loading, error } = useQuery(
+  //   query.gql,
+  //   query.config.options.useQuery
+  // );
 
   const columns = [
     {
@@ -537,6 +538,13 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
       emptyValue: "-",
     },
   ];
+
+  const columnsToReturn = columns.map((column) => column.field);
+
+  const { data, loading, error } = useGetProjectListView({
+    pagination: { limit: 100, offset: 0 },
+    columnsToReturn,
+  });
 
   /**
    * Handles the header click for sorting asc/desc.
