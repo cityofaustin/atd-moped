@@ -8,6 +8,7 @@ import {
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import theme from "src/theme/index";
+import { get } from "lodash";
 
 /**
  * Allows the component work type to be defaulted to `New` -
@@ -375,8 +376,8 @@ export const useResetDependentFieldOnParentFieldChange = ({
   useEffect(() => {
     // keep update from firing if the parent value hasn't changed
     if (
-      parentValue?.[comparisonVariable] ===
-      previousParentFormValue?.[comparisonVariable]
+      get(parentValue, comparisonVariable) ===
+      get(previousParentFormValue, comparisonVariable)
     )
       return;
     if (disable) return;

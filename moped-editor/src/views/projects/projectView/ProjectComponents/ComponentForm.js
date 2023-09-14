@@ -181,7 +181,7 @@ const ComponentForm = ({
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
-    comparisonVariable: "properties",
+    comparisonVariable: "properties.id",
     valueToSet:
       signal
       // if the signal exists and the locationDescription is empty, set to option label
