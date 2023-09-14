@@ -294,7 +294,7 @@ export const TIMELINE_QUERY = gql`
       }
     }
     moped_milestones(
-      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+      where: { is_deleted: { _eq: false } }
     ) {
       milestone_id
       milestone_name
