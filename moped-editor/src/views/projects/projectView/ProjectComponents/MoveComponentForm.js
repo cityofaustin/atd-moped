@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import ControlledAutocomplete from "./ProjectComponents/ControlledAutocomplete";
+import ControlledAutocomplete from "./ControlledAutocomplete";
 import { PROJECT_OPTIONS } from "src/queries/project";
 
 import * as yup from "yup";
@@ -27,10 +27,10 @@ export const useProjectOptions = (data) =>
   }, [data]);
 
 const validationSchema = yup.object().shape({
-  projectId: yup.object().required(),
+  project: yup.object().required(),
 });
 
-const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
+const MoveComponentForm = ({ onSave, component }) => {
   const {
     handleSubmit,
     control,
@@ -40,7 +40,7 @@ const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-
+  const currentProjectId = component?.project_id;
   const areFormErrors = Object.keys(errors).length > 0;
 
   // Get projects for autocomplete
@@ -56,10 +56,10 @@ const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
-            id="projectId"
+            id="project"
             label="Project"
             options={projectOptions}
-            name="projectId"
+            name="project"
             control={control}
             autoFocus
             helperText="Required"
@@ -75,7 +75,7 @@ const MoveComponentForm = ({ onSave, projectId: currentProjectId }) => {
             type="submit"
             disabled={areFormErrors}
           >
-            Save
+            Move component
           </Button>
         </Grid>
       </Grid>

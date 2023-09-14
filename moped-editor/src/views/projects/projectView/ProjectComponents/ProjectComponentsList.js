@@ -60,6 +60,7 @@ const ProjectComponentsList = ({
     projectComponents.map((component) => {
       const lineRepresentation =
         component?.moped_components?.line_representation;
+      const isSignal = isSignalComponent(component);
       return (
         <ComponentListItem
           key={component.project_component_id}
@@ -111,14 +112,23 @@ const ProjectComponentsList = ({
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Map">
-                <IconButton
-                  aria-label="map"
-                  onClick={onEditMap}
-                  disabled={isSignalComponent(component)}
-                >
-                  <TimelineIcon />
-                </IconButton>
+              <Tooltip
+                title={
+                  isSignal
+                    ? "Signal locations can only be changed by editing the component details"
+                    : "Map"
+                }
+              >
+                {/* this span allows the tooltip to display when IconButton is disabled */}
+                <span>
+                  <IconButton
+                    aria-label="map"
+                    onClick={onEditMap}
+                    disabled={isSignal}
+                  >
+                    <TimelineIcon />
+                  </IconButton>
+                </span>
               </Tooltip>
             </Stack>
           }

@@ -50,7 +50,7 @@ const DeleteComponentModal = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent className={classes.dialogContent} dividers={true}>
         <Grid container spacing={1}>
           <List>
             <Box borderLeft={7} borderColor="secondary.main">
