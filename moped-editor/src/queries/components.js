@@ -410,3 +410,15 @@ export const DELETE_PROJECT_COMPONENT = gql`
     }
   }
 `;
+
+// Move a component to another project
+export const UPDATE_COMPONENT_PROJECT_ID = gql`
+  mutation UpdateComponentAttributes($componentId: Int!, $projectId: Int!) {
+    update_moped_proj_components_by_pk(
+      pk_columns: { project_component_id: $componentId }
+      _set: { project_id: $projectId }
+    ) {
+      project_component_id
+    }
+  }
+`;
