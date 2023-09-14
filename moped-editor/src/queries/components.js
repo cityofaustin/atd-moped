@@ -63,6 +63,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     completion_date
     project_id
     srts_id
+    location_description
     moped_components {
       component_id
       component_name
@@ -205,6 +206,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $completionDate: timestamptz
     $componentTags: [moped_proj_component_tags_insert_input!]!
     $srtsId: String
+    $locationDescription: String
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -233,6 +235,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
         subphase_id: $subphaseId
         completion_date: $completionDate
         srts_id: $srtsId
+        location_description: $locationDescription
       }
     ) {
       project_component_id
@@ -281,6 +284,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $completionDate: timestamptz
     $componentTags: [moped_proj_component_tags_insert_input!]!
     $srtsId: String
+    $locationDescription: String
   ) {
     update_moped_proj_components_subcomponents(
       where: { project_component_id: { _eq: $projectComponentId } }
@@ -314,6 +318,7 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
         subphase_id: $subphaseId
         completion_date: $completionDate
         srts_id: $srtsId
+        location_description: $locationDescription
       }
     ) {
       project_component_id

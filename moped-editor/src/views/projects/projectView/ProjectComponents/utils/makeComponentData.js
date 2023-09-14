@@ -25,6 +25,7 @@ export const makeComponentInsertData = (projectId, component) => {
     internal_table,
     features,
     moped_proj_component_tags,
+    location_description,
     srts_id,
   } = component;
 
@@ -100,6 +101,7 @@ export const makeComponentInsertData = (projectId, component) => {
     phase_id,
     subphase_id,
     completion_date,
+    location_description,
     srts_id,
     feature_drawn_lines: { data: drawnLinesToInsert },
     feature_drawn_points: { data: drawnPointsToInsert },

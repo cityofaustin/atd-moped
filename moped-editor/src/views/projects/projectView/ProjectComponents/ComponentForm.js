@@ -25,8 +25,9 @@ import {
   useSubphaseOptions,
   useComponentTagsOptions,
   useWorkTypeOptions,
-  useResetDependentFieldOnAutocompleteChange,
+  useResetDependentFieldOnParentFieldChange,
 } from "./utils/form";
+import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
 import ControlledAutocomplete from "./ControlledAutocomplete";
 
 import * as yup from "yup";
@@ -38,6 +39,7 @@ const defaultFormValues = {
   subphase: null,
   tags: [],
   completionDate: null,
+  locationDescription: "",
   description: "",
   work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
@@ -63,6 +65,7 @@ const validationSchema = yup.object().shape({
       then: yup.object().required(),
     }),
   srtsId: yup.string().nullable().optional(),
+  locationDescription: yup.string().nullable().optional(),
 });
 
 const ComponentForm = ({
@@ -108,11 +111,18 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents] = watch([
+  const [
+    component,
+    phase,
+    completionDate,
+    subcomponents,
+    signal,
+  ] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
+    "signal",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -132,36 +142,52 @@ const ComponentForm = ({
     !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase"),
     dependentFieldName: "subphase",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subphase,
     setValue,
   });
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "signal",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.signal,
     setValue,
   });
 
   // todo: preserve subcomponent choices if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "subcomponents",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
     disable: isEditingExistingComponent,
   });
 
   // todo: preserve work type if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "work_types",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.work_types,
     setValue,
     disable: isEditingExistingComponent,
+  });
+
+  useResetDependentFieldOnParentFieldChange({
+    parentValue: watch("signal"),
+    dependentFieldName: "locationDescription",
+    comparisonVariable: "properties.id",
+    valueToSet:
+      signal
+      // if the signal exists and the locationDescription is empty, set to option label
+        ? getSignalOptionLabel(signal)
+        : "",
+    setValue,
   });
 
   return (
@@ -198,6 +224,7 @@ const ComponentForm = ({
               id="signal"
               name="signal"
               control={control}
+              shouldUnregister={true}
               render={({ field }) => (
                 <SignalComponentAutocomplete
                   {...field}
@@ -241,6 +268,19 @@ const ComponentForm = ({
             options={componentTagsOptions}
             name="tags"
             control={control}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
+            {...register("locationDescription")}
+            fullWidth
+            size="small"
+            id="locationDescription"
+            label={"Location description"}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            variant="outlined"
           />
         </Grid>
         <Grid item xs={12}>
