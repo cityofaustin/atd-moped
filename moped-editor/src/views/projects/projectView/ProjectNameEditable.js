@@ -139,7 +139,7 @@ const ProjectNameEditable = (props) => {
     <Box className={isEditing ? classes.boxField : null}>
       {isEditing && (
         <form onSubmit={(e) => handleAcceptClick(e)}>
-          <Grid container fullWidth>
+          <Grid container>
             <Grid item xs={12} sm={11}>
               <TextField
                 variant="standard"
