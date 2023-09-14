@@ -185,10 +185,10 @@ const ComponentForm = ({
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties",
     valueToSet:
-      signal && locationDescription?.length === 0
+      signal
       // if the signal exists and the locationDescription is empty, set to option label
         ? getSignalOptionLabel(signal)
-        : locationDescription,
+        : "",
     setValue,
   });
 
