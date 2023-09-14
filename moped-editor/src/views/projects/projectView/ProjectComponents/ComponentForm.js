@@ -117,14 +117,12 @@ const ComponentForm = ({
     completionDate,
     subcomponents,
     signal,
-    locationDescription,
   ] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
     "signal",
-    "locationDescription",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
