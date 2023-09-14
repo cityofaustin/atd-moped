@@ -15,8 +15,8 @@ import {
 } from "@mui/material";
 
 import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
-import makeStyles from '@mui/styles/makeStyles';
-import { Alert } from '@mui/material';
+import makeStyles from "@mui/styles/makeStyles";
+import { Alert } from "@mui/material";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
@@ -222,7 +222,8 @@ const ProjectActivityLog = () => {
                 {activityLogData.map((change) => {
                   const { changeIcon, changeText } = formatActivityLogEntry(
                     change,
-                    lookupData
+                    lookupData,
+                    projectId
                   );
                   return (
                     <TableRow key={change.activity_id}>
@@ -268,9 +269,15 @@ const ProjectActivityLog = () => {
                         className={classes.tableCell}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        <span>{formatRelativeDate(change.created_at)}</span>
+                        <span>
+                          {change.created_at
+                            ? formatRelativeDate(change.created_at)
+                            : ""}
+                        </span>
                         <span className={classes.mutedDate}>
-                          {new Date(change.created_at).toLocaleString()}
+                          {change.created_at
+                            ? new Date(change.created_at).toLocaleString()
+                            : ""}
                         </span>
                       </TableCell>
                     </TableRow>

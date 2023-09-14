@@ -1,10 +1,11 @@
 import ComponentListItem from "./ComponentListItem";
-import Button from "@mui/material/Button";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import ListIcon from "@mui/icons-material/List";
-import DeleteIcon from "@mui/icons-material/Delete";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
+import IconButton from "@mui/material/IconButton";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
+import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import EditLocationAltOutlinedIcon from "@mui/icons-material/EditLocationAltOutlined";
+import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
+import Stack from "@mui/material/Stack";
+import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
@@ -19,6 +20,7 @@ const ProjectComponentsList = ({
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
+  setIsMovingComponent,
   setIsClickedComponentRelated,
 }) => {
   const isNotCreatingOrEditing =
@@ -58,6 +60,7 @@ const ProjectComponentsList = ({
     projectComponents.map((component) => {
       const lineRepresentation =
         component?.moped_components?.line_representation;
+      const isSignal = isSignalComponent(component);
       return (
         <ComponentListItem
           key={component.project_component_id}
@@ -73,49 +76,68 @@ const ProjectComponentsList = ({
           }
           selectedBorderColor={theme.palette.primary.main}
           additionalCollapseListItems={
-            <ListItem dense disableGutters>
-              <ListItemText
-                primary={
-                  <Button
-                    fullWidth
-                    size="small"
-                    style={{ color: theme.palette.text.primary }}
-                    startIcon={<DeleteIcon />}
-                    onClick={() => setIsDeletingComponent(true)}
-                  >
-                    Delete
-                  </Button>
+            <Stack
+              spacing={2}
+              direction="row"
+              justifyContent="flex-end"
+              my={1}
+              // estimating alignment with zoom ListItemSecondaryAction button
+              mr={2.5}
+            >
+              <Tooltip title="Details">
+                <IconButton
+                  color="primary"
+                  aria-label="edit"
+                  onClick={onEditAttributes}
+                >
+                  <EditNoteOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip
+                title={
+                  isSignal
+                    ? "Signal locations can only be changed by editing the component details"
+                    : "Map"
                 }
-              />
-              <ListItemText
-                primary={
-                  <Button
-                    fullWidth
-                    size="small"
+              >
+                {/* this span allows the tooltip to display when IconButton is disabled */}
+                <span>
+                  <IconButton
                     color="primary"
-                    startIcon={<ListIcon />}
-                    onClick={onEditAttributes}
+                    aria-label="map"
+                    onClick={onEditMap}
+                    disabled={isSignal}
                   >
-                    Details
-                  </Button>
-                }
-              />
-              {!isSignalComponent(component) && (
-                <ListItemText
-                  primary={
-                    <Button
-                      fullWidth
-                      size="small"
-                      color="primary"
-                      startIcon={<TimelineIcon />}
-                      onClick={onEditMap}
-                    >
-                      Map
-                    </Button>
-                  }
-                />
-              )}
-            </ListItem>
+                    <EditLocationAltOutlinedIcon />
+                  </IconButton>
+                </span>
+              </Tooltip>
+
+              <Tooltip title="Move to another project">
+                <IconButton
+                  color="primary"
+                  aria-label="move"
+                  onClick={() => {
+                    setIsMovingComponent(true);
+                  }}
+                >
+                  <DriveFileMoveOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+
+              <Tooltip title="Delete">
+                <IconButton
+                  color="primary"
+                  aria-label="delete"
+                  onClick={() => {
+                    setIsDeletingComponent(true);
+                  }}
+                >
+                  <DeleteOutlinedIcon />
+                </IconButton>
+              </Tooltip>
+            </Stack>
           }
         />
       );
