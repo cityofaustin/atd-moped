@@ -5,7 +5,7 @@ SET
 FROM (
     SELECT
         component_id AS project_component_id,
-        attributes -> 'location_name'::text AS location_description
+        attributes ->> 'signal_id' || ': ' || trim(attributes ->> 'location_name') AS location_description
     FROM
         project_geography
     WHERE
