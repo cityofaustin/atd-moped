@@ -1,9 +1,9 @@
 import ComponentListItem from "./ComponentListItem";
 import IconButton from "@mui/material/IconButton";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import ListIcon from "@mui/icons-material/List";
+import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
-import DriveFileMoveIcon from "@mui/icons-material/DriveFileMove";
+import EditLocationAltOutlinedIcon from "@mui/icons-material/EditLocationAltOutlined";
+import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
@@ -90,7 +90,7 @@ const ProjectComponentsList = ({
                   aria-label="edit"
                   onClick={onEditAttributes}
                 >
-                  <ListIcon />
+                  <EditNoteOutlinedIcon />
                 </IconButton>
               </Tooltip>
 
@@ -109,7 +109,7 @@ const ProjectComponentsList = ({
                     onClick={onEditMap}
                     disabled={isSignal}
                   >
-                    <TimelineIcon />
+                    <EditLocationAltOutlinedIcon />
                   </IconButton>
                 </span>
               </Tooltip>
@@ -122,7 +122,7 @@ const ProjectComponentsList = ({
                     setIsMovingComponent(true);
                   }}
                 >
-                  <DriveFileMoveIcon />
+                  <DriveFileMoveOutlinedIcon />
                 </IconButton>
               </Tooltip>
 
