@@ -92,12 +92,27 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
-
 const useFilterQuery = ({ locationSearch }) =>
   useMemo(() => {
-    return new URLSearchParams(locationSearch)
+    return new URLSearchParams(locationSearch);
   }, [locationSearch]);
 
+/**
+ * if filter exists in url, decodes base64 string and returns as object
+ * Used to initialize filter state
+ * @return Object
+ */
+const useMakeFilterState = (filterQuery) =>
+  useMemo(() => {
+    if (Array.from(filterQuery).length > 0) {
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")));
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }, [filterQuery]);
 
 /**
  * GridTable Search Capability plus Material Table
@@ -164,23 +179,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   // create URLSearchParams from url
-  const filterQuery = useFilterQuery(useLocation().search)
-
-  /**
-   * if filter exists in url, decodes base64 string and returns as object
-   * Used to initialize filter state
-   * @return Object if valid JSON otherwise false
-   */
-  const getFilterQuery = () => {
-    if (Array.from(filterQuery).length > 0) {
-      try {
-        return JSON.parse(atob(filterQuery.get("filter")));
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
+  const filterQuery = useFilterQuery(useLocation().search);
+  const initialFilterState = useMakeFilterState(filterQuery);
 
   /**
    * Stores objects storing a random id, column, operator, and value.
@@ -188,22 +188,19 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @function setFilter - Sets the state of filters
    * @default {if filter in url, use those params, otherwise {}}
    */
-  const [filters, setFilter] = useState(getFilterQuery() || {});
+  const [filters, setFilter] = useState(initialFilterState);
 
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  /**
-   * Query Management
-   */
   // Manage the ORDER BY clause of our query
   useEffect(() => {
     query.setOrder(sort.column, sort.order);
   }, [sort.column, sort.order, query]);
 
+  // Set limit, offset based on pagination state
   useEffect(() => {
-    // Set limit, offset based on pagination state
     if (query.config.showPagination) {
       query.limit = pagination.limit;
       query.offset = pagination.offset;
@@ -218,24 +215,26 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // If we have a search value in state, initiate search
   // GridTableSearchBar in GridTableSearch updates search value
-  if (search.value && search.value !== "") {
-    /**
-     * Iterate through all column keys, if they are searchable
-     * add the to the Or list.
-     */
-    Object.keys(query.config.columns)
-      .filter((column) => query.config.columns[column]?.searchable)
-      .forEach((column) => {
-        const { operator, quoted, envelope } =
-          query.config.columns[column].search;
-        const searchValue = getSearchValue(query, column, search.value);
-        const graphqlSearchValue = quoted
-          ? `"${envelope.replace("{VALUE}", searchValue)}"`
-          : searchValue;
+  useEffect(() => {
+    if (search.value && search.value !== "") {
+      /**
+       * Iterate through all column keys, if they are searchable
+       * add the to the Or list.
+       */
+      Object.keys(query.config.columns)
+        .filter((column) => query.config.columns[column]?.searchable)
+        .forEach((column) => {
+          const { operator, quoted, envelope } =
+            query.config.columns[column].search;
+          const searchValue = getSearchValue(query, column, search.value);
+          const graphqlSearchValue = quoted
+            ? `"${envelope.replace("{VALUE}", searchValue)}"`
+            : searchValue;
 
-        query.setOr(column, `${operator}: ${graphqlSearchValue}`);
-      });
-  }
+          query.setOr(column, `${operator}: ${graphqlSearchValue}`);
+        });
+    }
+  }, [search.value, query]);
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
@@ -600,21 +599,21 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-          <GridTableSearch
-            parentData={data}
-            query={query}
-            searchState={{
-              searchParameters: search,
-              setSearchParameters: setSearch,
-            }}
-            filterState={{
-              filterParameters: filters,
-              setFilterParameters: setFilter,
-            }}
-            filterQuery={filterQuery}
-            advancedSearchAnchor={advancedSearchAnchor}
-            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
-          />
+        <GridTableSearch
+          parentData={data}
+          query={query}
+          searchState={{
+            searchParameters: search,
+            setSearchParameters: setSearch,
+          }}
+          filterState={{
+            filterParameters: filters,
+            setFilterParameters: setFilter,
+          }}
+          filterQuery={filterQuery}
+          advancedSearchAnchor={advancedSearchAnchor}
+          setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+        />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box mt={3}>

@@ -83,7 +83,6 @@ const GridTableSearch = ({
   query,
   searchState,
   filterState,
-  children,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
@@ -293,7 +292,6 @@ const GridTableSearch = ({
 
   return (
     <div>
-      {children}
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
