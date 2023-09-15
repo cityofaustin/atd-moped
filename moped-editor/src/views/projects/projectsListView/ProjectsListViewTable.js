@@ -215,26 +215,24 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // If we have a search value in state, initiate search
   // GridTableSearchBar in GridTableSearch updates search value
-  useEffect(() => {
-    if (search.value && search.value !== "") {
-      /**
-       * Iterate through all column keys, if they are searchable
-       * add the to the Or list.
-       */
-      Object.keys(query.config.columns)
-        .filter((column) => query.config.columns[column]?.searchable)
-        .forEach((column) => {
-          const { operator, quoted, envelope } =
-            query.config.columns[column].search;
-          const searchValue = getSearchValue(query, column, search.value);
-          const graphqlSearchValue = quoted
-            ? `"${envelope.replace("{VALUE}", searchValue)}"`
-            : searchValue;
+  if (search.value && search.value !== "") {
+    /**
+     * Iterate through all column keys, if they are searchable
+     * add the to the Or list.
+     */
+    Object.keys(query.config.columns)
+      .filter((column) => query.config.columns[column]?.searchable)
+      .forEach((column) => {
+        const { operator, quoted, envelope } =
+          query.config.columns[column].search;
+        const searchValue = getSearchValue(query, column, search.value);
+        const graphqlSearchValue = quoted
+          ? `"${envelope.replace("{VALUE}", searchValue)}"`
+          : searchValue;
 
-          query.setOr(column, `${operator}: ${graphqlSearchValue}`);
-        });
-    }
-  }, [search.value, query]);
+        query.setOr(column, `${operator}: ${graphqlSearchValue}`);
+      });
+  }
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
