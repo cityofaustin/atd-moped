@@ -1,4 +1,4 @@
--- latest version 1694809058492_list_view_optimize
+-- rolls back to version 1686243614837_create_work_auth_table
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -47,14 +47,14 @@ AS WITH project_person_list_lookup AS (
     mp.interim_project_id,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type))
+    (SELECT JSON_AGG(feature.attributes) -- this query finds any signal components and those component's features and rolls them up in a JSON blob
         FROM moped_proj_components components   
-        LEFT JOIN feature_signals
-          ON (feature_signals.component_id = components.project_component_id)
+        LEFT JOIN uniform_features feature
+          ON (feature.component_id = components.project_component_id)
         WHERE TRUE
           AND components.is_deleted = false
           AND components.project_id = mp.project_id
-          and feature_signals.signal_id is not null
+          AND feature.table = 'feature_signals'
         ) as project_feature,
     fsl.funding_source_name,
     ptl.type_name,
