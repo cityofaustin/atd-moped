@@ -92,7 +92,7 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
-const useFilterQuery = ({ locationSearch }) =>
+const useFilterQuery = (locationSearch) =>
   useMemo(() => {
     return new URLSearchParams(locationSearch);
   }, [locationSearch]);
@@ -238,38 +238,40 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
-  Object.keys(filters).forEach((filter) => {
-    let { envelope, field, gqlOperator, value, type, specialNullValue } =
-      filters[filter];
+  useEffect(() => {
+    Object.keys(filters).forEach((filter) => {
+      let { envelope, field, gqlOperator, value, type, specialNullValue } =
+        filters[filter];
 
-    // If we have no operator, then there is nothing we can do.
-    if (field === null || gqlOperator === null) {
-      return;
-    }
-
-    if (gqlOperator.includes("is_null")) {
-      // Some fields when empty are not null but rather an empty string or "None"
-      if (specialNullValue) {
-        gqlOperator = envelope === "true" ? "_eq" : "_neq";
-        value = specialNullValue;
-      } else {
-        value = envelope;
-      }
-    } else {
-      if (value !== null) {
-        // If there is an envelope, insert value in envelope.
-        value = envelope ? envelope.replace("{VALUE}", value) : value;
-
-        // If it is a number or boolean, it does not need quotation marks
-        // Otherwise, add quotation marks for the query to identify as string
-        value = type in ["number", "boolean"] ? value : `"${value}"`;
-      } else {
-        // We don't have a value
+      // If we have no operator, then there is nothing we can do.
+      if (field === null || gqlOperator === null) {
         return;
       }
-    }
-    query.setWhere(field, `${gqlOperator}: ${value}`);
-  });
+
+      if (gqlOperator.includes("is_null")) {
+        // Some fields when empty are not null but rather an empty string or "None"
+        if (specialNullValue) {
+          gqlOperator = envelope === "true" ? "_eq" : "_neq";
+          value = specialNullValue;
+        } else {
+          value = envelope;
+        }
+      } else {
+        if (value !== null) {
+          // If there is an envelope, insert value in envelope.
+          value = envelope ? envelope.replace("{VALUE}", value) : value;
+
+          // If it is a number or boolean, it does not need quotation marks
+          // Otherwise, add quotation marks for the query to identify as string
+          value = type in ["number", "boolean"] ? value : `"${value}"`;
+        } else {
+          // We don't have a value
+          return;
+        }
+      }
+      query.setWhere(field, `${gqlOperator}: ${value}`);
+    });
+  }, [filters, query]);
 
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
