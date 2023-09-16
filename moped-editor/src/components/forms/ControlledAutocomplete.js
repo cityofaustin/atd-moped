@@ -8,7 +8,7 @@ import { TextField } from "@mui/material";
  * handler, it merely saves the exact value(s) selected into RFH state
  * @param {any} option  - the selected option (or array of options if multiple)
  * @param {*} field - the react-hook-form field object
- * @returns function
+ * @returns undefined
  */
 const defaultOnChangeHandler = (option, field) => field.onChange(option);
 
@@ -24,7 +24,7 @@ const defaultOnChangeHandler = (option, field) => field.onChange(option);
 const getIsFieldRequired = (value, required, multiple) => {
   if (!multiple || !required || !value) return required;
   // if the field is multiple, required, and there is a value we
-  // manually remove required constraint (by returning true)
+  // manually remove required constraint
   return value?.length < 1;
 };
 

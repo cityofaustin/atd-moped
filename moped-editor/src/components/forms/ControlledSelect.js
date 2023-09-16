@@ -2,7 +2,7 @@ import { MenuItem, Select } from "@mui/material";
 import { Controller } from "react-hook-form";
 
 /**
- * Component for dropdown select using a lookup table as options
+ *  A react-hook-form wrapper of the MUI Select component
  * @param {*} props
  * @returns {React component}
  */
