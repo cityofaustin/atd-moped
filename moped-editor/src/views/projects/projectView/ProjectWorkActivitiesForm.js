@@ -275,15 +275,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
             />
           </FormControl>
         </Grid>
-        {/* <Grid item xs={12}>
-          <FormControl fullWidth>
-            <TextField
-              fullWidth
-              label="Implementation Workgroup"
-              {...register("implementation_workgroup")}
-            />
-          </FormControl>
-        </Grid> */}
         <Grid item xs={12}>
           <FormControl fullWidth>
             <ControlledAutocomplete
