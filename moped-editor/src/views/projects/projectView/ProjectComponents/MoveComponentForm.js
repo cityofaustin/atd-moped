@@ -37,7 +37,7 @@ const MoveComponentForm = ({ onSave, component }) => {
     control,
     formState: { errors },
   } = useForm({
-    defaultValues: { projectId: null },
+    defaultValues: { project: null },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
