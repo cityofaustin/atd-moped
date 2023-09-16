@@ -20,7 +20,6 @@ export const TABLE_LOOKUPS_QUERY = gql`
       milestone_id
       milestone_name
       milestone_description
-      milestone_order
       moped_phase {
         phase_name
       }
@@ -63,6 +62,14 @@ export const TABLE_LOOKUPS_QUERY = gql`
       type
       name
       slug
+    }
+    moped_project_roles(
+      where: { active_role: { _eq: true } }
+      order_by: { role_order: asc }
+    ) {
+      project_role_id
+      project_role_name
+      project_role_description
     }
   }
 `;

@@ -126,6 +126,7 @@ export const SUMMARY_QUERY = gql`
     ) {
       geometry: geography
       attributes
+      council_districts
     }
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -294,19 +295,19 @@ export const TIMELINE_QUERY = gql`
       }
     }
     moped_milestones(
-      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+      where: { is_deleted: { _eq: false } }
     ) {
       milestone_id
       milestone_name
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: [{ milestone_order: asc }, { milestone_end: desc }]
+      order_by: [{ milestone_order: asc }, { date_actual: desc }]
     ) {
       milestone_id
-      milestone_description
-      milestone_estimate
-      milestone_end
+      description
+      date_estimate
+      date_actual
       completed
       project_milestone_id
       project_id
@@ -354,29 +355,29 @@ export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
 
 export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   mutation ProjectMilestonesMutation(
-    $milestone_description: String
+    $description: String
     $completed: Boolean
-    $milestone_estimate: date = null
-    $milestone_end: date = null
+    $date_estimate: date = null
+    $date_actual: date = null
     $project_milestone_id: Int!
     $milestone_id: Int!
   ) {
     update_moped_proj_milestones_by_pk(
       pk_columns: { project_milestone_id: $project_milestone_id }
       _set: {
-        milestone_description: $milestone_description
+        description: $description
         completed: $completed
-        milestone_estimate: $milestone_estimate
-        milestone_end: $milestone_end
+        date_estimate: $date_estimate
+        date_actual: $date_actual
         milestone_id: $milestone_id
       }
     ) {
       project_id
       project_milestone_id
-      milestone_estimate
-      milestone_end
+      date_estimate
+      date_actual
       completed
-      milestone_description
+      description
     }
   }
 `;
@@ -427,9 +428,9 @@ export const ADD_PROJECT_MILESTONE = gql`
     insert_moped_proj_milestones(objects: $objects) {
       returning {
         milestone_id
-        milestone_description
-        milestone_estimate
-        milestone_end
+        description
+        date_estimate
+        date_actual
         completed
         project_milestone_id
         project_id
@@ -586,6 +587,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       file_description
       create_date
       created_by
+      file_url
       moped_user {
         user_id
         first_name
@@ -601,6 +603,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
     $fileName: String!
     $fileType: Int!
     $fileDescription: String!
+    $fileUrl: String
   ) {
     update_moped_project_files(
       where: { project_file_id: { _eq: $fileId } }
@@ -608,6 +611,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
         file_name: $fileName
         file_type: $fileType
         file_description: $fileDescription
+        file_url: $fileUrl
       }
     ) {
       affected_rows
@@ -890,6 +894,22 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_public_process_statuses(order_by: { name: asc }) {
       name
       id
+    }
+  }
+`;
+
+export const PROJECT_OPTIONS = gql`
+  query ProjectOptions($projectId: Int!) {
+    moped_project(
+      where: {
+        _and: [
+          { is_deleted: { _eq: false } }
+          { project_id: { _neq: $projectId } }
+        ]
+      }
+    ) {
+      project_id
+      project_name
     }
   }
 `;

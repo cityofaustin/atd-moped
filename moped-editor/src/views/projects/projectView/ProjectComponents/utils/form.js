@@ -8,6 +8,7 @@ import {
   Timeline as TimelineIcon,
 } from "@mui/icons-material";
 import theme from "src/theme/index";
+import { get } from "lodash";
 
 /**
  * Allows the component work type to be defaulted to `New` -
@@ -358,9 +359,10 @@ export const ComponentOptionWithIcon = ({ option, state, props }) => {
  * @param {Boolean} disable - Disable the reset
  * @returns {Object} the field value
  */
-export const useResetDependentFieldOnAutocompleteChange = ({
+export const useResetDependentFieldOnParentFieldChange = ({
   parentValue,
   dependentFieldName,
+  comparisonVariable,
   valueToSet,
   setValue,
   disable = false,
@@ -373,7 +375,11 @@ export const useResetDependentFieldOnAutocompleteChange = ({
   // if it is different, reset the dependent field to its default
   useEffect(() => {
     // keep update from firing if the parent value hasn't changed
-    if (parentValue?.value === previousParentFormValue?.value) return;
+    if (
+      get(parentValue, comparisonVariable) ===
+      get(previousParentFormValue, comparisonVariable)
+    )
+      return;
     if (disable) return;
 
     setValue(dependentFieldName, valueToSet);
@@ -382,6 +388,7 @@ export const useResetDependentFieldOnAutocompleteChange = ({
     parentValue,
     previousParentFormValue,
     setValue,
+    comparisonVariable,
     dependentFieldName,
     valueToSet,
     disable,

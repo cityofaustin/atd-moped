@@ -139,11 +139,7 @@ export const SETTINGS = [
         handler: relatedPhaseHandler,
       },
       {
-        key: "milestone_order",
-        label: "Milestone order",
-      },
-      {
-        key: "milestone_description",
+        key: "description",
         label: "Description",
       },
     ],
@@ -180,6 +176,24 @@ export const SETTINGS = [
         key: "moped_subphases",
         label: "Subphases",
         handler: subPhaseHandler,
+      },
+    ],
+  },
+  {
+    key: "moped_project_roles",
+    label: "Roles",
+    columns: [
+      {
+        key: "project_role_id",
+        label: "Role ID",
+      },
+      {
+        key: "project_role_name",
+        label: "Name",
+      },
+      {
+        key: "project_role_description",
+        label: "Description",
       },
     ],
   },

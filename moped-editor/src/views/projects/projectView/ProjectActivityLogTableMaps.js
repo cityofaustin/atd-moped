@@ -122,7 +122,10 @@ export const ProjectActivityLogTableMaps = {
     label: "Milestone",
     fields: {
       milestone_end: {
-        label: "end date",
+        label: "date actual",
+      },
+      date_actual: {
+        label: "date actual",
       },
       project_id: {
         label: "project ID",
@@ -136,13 +139,13 @@ export const ProjectActivityLogTableMaps = {
       completed: {
         label: "completion",
       },
-      is_current_milestone: {
-        label: "current milestone marker",
-      },
       milestone_order: {
         label: "order",
       },
       milestone_description: {
+        label: "description",
+      },
+      description: {
         label: "description",
       },
       milestone_name: {
@@ -151,34 +154,10 @@ export const ProjectActivityLogTableMaps = {
       date_added: {
         label: "date added",
       },
-      milestone_privacy: {
-        label: "privacy flag",
-      },
-      milestone_start: {
-        label: "start date",
-      },
-      completion_percentage: {
-        label: "completion percentage",
-      },
-      milestone_status: {
-        label: "status",
-      },
-      milestone_priority: {
-        label: "priority",
-      },
-      milestone_date_type: {
-        label: "date type",
-      },
-      milestone_related_phase_id: {
-        label: "related phase ID",
-      },
-      started_by_user_id: {
-        label: "started by user ID",
-      },
-      completed_by_user_id: {
-        label: "completed by user ID",
-      },
       milestone_estimate: {
+        label: "completion estimate",
+      },
+      date_estimate: {
         label: "completion estimate",
       },
       is_deleted: {
@@ -364,7 +343,7 @@ export const ProjectActivityLogTableMaps = {
         label: "is deleted",
       },
       phase_id: {
-        label: "component phase"
+        label: "component phase",
       },
       subphase_id: {
         label: "component subphase",
@@ -372,6 +351,12 @@ export const ProjectActivityLogTableMaps = {
       completion_date: {
         label: "completion date",
       },
+      location_description: {
+        label: "location description"
+      },
+      srts_id: {
+        label: "Safe Routes to School infrastructure plan record identifier"
+      }
     },
   },
   moped_project_files: {
@@ -446,6 +431,11 @@ export const ProjectActivityLogTableMaps = {
         icon: "",
         label: "file type",
         data_type: "integer",
+      },
+      file_url: {
+        icon: "",
+        label: "file link",
+        data_type: "text",
       },
     },
   },
@@ -568,4 +558,3 @@ export const ProjectActivityLogTableMaps = {
     },
   },
 };
-
