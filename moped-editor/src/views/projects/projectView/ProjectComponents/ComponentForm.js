@@ -30,9 +30,8 @@ import {
   isOptionEqualToValue,
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
-
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+
 
 import * as yup from "yup";
 

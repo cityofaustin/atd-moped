@@ -4,7 +4,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid } from "@mui/material";
 import { CheckCircle } from "@mui/icons-material";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
+import { getOptionLabel, isOptionEqualToValue } from "./utils/form";
 import { PROJECT_OPTIONS } from "src/queries/project";
 
 import * as yup from "yup";
@@ -59,6 +60,8 @@ const MoveComponentForm = ({ onSave, component }) => {
             id="project"
             label="Project"
             options={projectOptions}
+            isOptionEqualToValue={isOptionEqualToValue}
+            getOptionLabel={getOptionLabel}
             name="project"
             control={control}
             autoFocus
