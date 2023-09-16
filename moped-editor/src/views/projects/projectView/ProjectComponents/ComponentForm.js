@@ -212,6 +212,7 @@ const ComponentForm = ({
             disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
+            required={true}
           />
         </Grid>
 
@@ -243,6 +244,7 @@ const ComponentForm = ({
             control={control}
             error={!!errors?.work_types}
             helperText="Required"
+            required={true}
           />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component
