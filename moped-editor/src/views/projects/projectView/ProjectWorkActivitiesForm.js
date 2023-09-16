@@ -214,17 +214,20 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth error={formErrors.status_id}>
-            <InputLabel id="status-label">Status</InputLabel>
+            <InputLabel id="status-label" required={true}>
+              Status
+            </InputLabel>
             <ControlledSelect
               control={control}
               id="status"
               labelId="status-label"
               name="status_id"
               label="Status"
-              size="lg"
               options={statusOptions}
               error={formErrors?.status_id}
               autoFocus={isNewActivity}
+              size="small"
+              required={true}
             />
             <FormHelperText>Required</FormHelperText>
           </FormControl>
@@ -235,7 +238,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               name="contractor"
               label="Workgroup/Contractor"
-              size="lg"
               options={IMPLEMENTATION_WORKGROUP_OPTIONS}
               freeSolo
               autoSelect
@@ -251,6 +253,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               label="Contract #"
               name="contract_number"
               control={control}
+              size="small"
             />
           </FormControl>
         </Grid>
@@ -261,6 +264,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               label="Work Assignment ID"
               name="work_assignment_id"
               control={control}
+              size="small"
             />
           </FormControl>
         </Grid>
@@ -272,6 +276,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               name="contract_amount"
               control={control}
               onChangeHandler={amountOnChangeHandler}
+              size="small"
             />
           </FormControl>
         </Grid>
@@ -281,7 +286,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               name="task_orders"
               label="Task Orders"
-              size="lg"
               multiple
               options={taskOrderOptions}
               onChangeHandler={taskOrderOnChangeHandler}
@@ -302,6 +306,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               rows={3}
               name="description"
               control={control}
+              size="small"
             />
           </FormControl>
         </Grid>
@@ -314,6 +319,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               rows={3}
               name="status_note"
               control={control}
+              size="small"
             />
           </FormControl>
         </Grid>
