@@ -43,7 +43,7 @@ const CreateComponentModal = ({
       tags,
       work_types,
       srtsId,
-      locationDescription
+      locationDescription,
     } = formData;
 
     const newComponent = {
@@ -54,15 +54,15 @@ const CreateComponentModal = ({
       internal_table,
       moped_subcomponents: subcomponents,
       work_types,
-      description: description?.length > 0 ? description : null,
+      description,
       phase_id: phase?.data.phase_id,
       subphase_id: subphase?.data.subphase_id,
       completion_date: completionDate,
       label: component_name,
       features: [],
       moped_proj_component_tags: tags,
-      srts_id: srtsId?.length > 0 ? srtsId : null,
-      location_description: locationDescription?.length > 0 ? locationDescription : null
+      srts_id: srtsId,
+      location_description: locationDescription,
     };
 
     const linkMode = newComponent.line_representation ? "lines" : "points";

@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
   Grid,
-  TextField,
   Switch,
   FormControlLabel,
   FormHelperText,
@@ -30,8 +29,8 @@ import {
   isOptionEqualToValue,
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
-
 
 import * as yup from "yup";
 
@@ -114,13 +113,7 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [
-    component,
-    phase,
-    completionDate,
-    subcomponents,
-    signal,
-  ] = watch([
+  const [component, phase, completionDate, subcomponents, signal] = watch([
     "component",
     "phase",
     "completionDate",
@@ -185,11 +178,10 @@ const ComponentForm = ({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties.id",
-    valueToSet:
-      signal
-      // if the signal exists and the locationDescription is empty, set to option label
-        ? getSignalOptionLabel(signal)
-        : "",
+    valueToSet: signal
+      ? // if the signal exists and the locationDescription is empty, set to option label
+        getSignalOptionLabel(signal)
+      : "",
     setValue,
   });
 
@@ -282,44 +274,32 @@ const ComponentForm = ({
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("locationDescription")}
+          <ControlledTextInput
             fullWidth
+            label="Location description"
+            name="locationDescription"
             size="small"
-            id="locationDescription"
-            label={"Location description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("description")}
+          <ControlledTextInput
             fullWidth
+            label="Description"
+            name="description"
             size="small"
-            id="description"
-            label={"Description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
             multiline
             minRows={4}
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("srtsId")}
+          <ControlledTextInput
             fullWidth
+            label="SRTS Infrastructure ID"
+            name="srtsId"
             size="small"
-            id="srtsId"
-            label={"SRTS Infrastructure ID"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
+            control={control}
             helperText={
               "The Safe Routes to School infrastructure plan record identifier"
             }
