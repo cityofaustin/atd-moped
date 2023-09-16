@@ -6,7 +6,7 @@ const defaultOnChangeHandler = (value, field) => field.onChange(value || null);
 const defaultValueHandler = (value) => value || "";
 
 /**
- * A react-hook-form wrapper of the MUI autocomplete component
+ * A react-hook-form wrapper of the MUI TextField component
  * @return {JSX.Element}
  */
 export default function ControlledTextInput({
