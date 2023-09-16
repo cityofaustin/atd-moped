@@ -52,7 +52,7 @@ const getIsFieldRequired = (value, required, multiple) => {
  * @param {function} valueHandler - optional function which transforms the field's value from what
  * is saved in RFH state vs what is rendered in the input. The value returned by this function is
  * passed to the `isOptionEqualToValue` test.
- * @param {object} autoCompleteProps - additional optional MUI autocomplete props. notable props 
+ * @param {object} autoCompleteProps - additional optional MUI autocomplete props. notable props
  * include `isOptionEqualToValue` and `getOptionLabel`. see MUI autocomplete docs.
  * @return {JSX.Element}
  */

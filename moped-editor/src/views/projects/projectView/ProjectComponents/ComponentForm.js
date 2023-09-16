@@ -76,7 +76,6 @@ const ComponentForm = ({
   initialFormValues = null,
 }) => {
   const {
-    register,
     handleSubmit,
     control,
     watch,

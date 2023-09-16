@@ -12,13 +12,13 @@ import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { DataGrid } from "@mui/x-data-grid";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivitiesDialog";
 import { getUserFullName } from "src/utils/userNames";
 import {
   WORK_ACTIVITY_QUERY,
   DELETE_WORK_ACTIVITY,
-} from "../../../queries/funding";
+} from "../../../../queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 
 const Title = ({ onClick }) => (
