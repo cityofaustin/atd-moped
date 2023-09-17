@@ -1,4 +1,5 @@
-import { MenuItem, Select } from "@mui/material";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
 import { Controller } from "react-hook-form";
 
 /**
@@ -7,7 +8,6 @@ import { Controller } from "react-hook-form";
  * @returns {React component}
  */
 const ControlledSelect = ({
-  id,
   name,
   control,
   options,
@@ -15,7 +15,6 @@ const ControlledSelect = ({
   ...selectProps
 }) => (
   <Controller
-    id={id}
     name={name}
     control={control}
     render={({ field }) => {
