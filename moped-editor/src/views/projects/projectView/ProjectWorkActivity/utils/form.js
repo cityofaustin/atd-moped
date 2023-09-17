@@ -43,31 +43,29 @@ export const amountOnChangeHandler = (value, field) => {
 };
 
 /**
- * 
- * @param {*} optionArray 
- * @param {*} field 
+ * Extract task order data from select options or `null` if
+ * no options are selected
+ * @param {*} optionArray - array of task order options
+ * @param {*} field - react-hook-form field object
  */
 export const taskOrderOnChangeHandler = (optionArray, field) => {
   const taskOrders = optionArray?.map((o) => o.value);
-  field.onChange(taskOrders || null);
+  field.onChange(taskOrders?.length > 0 ? taskOrders : null);
 };
 
-export const isTaskOrderOptionEqualToValue = (option, value) => {
-  return option.value.task_order === value.value.task_order;
+export const isTaskOrderOptionEqualToValue = (option, selectedOption) => {
+  return option.value.task_order === selectedOption.value.task_order;
 };
 
+/**
+ * Create task order select options by assigning the tk object as the `value`
+ * and the tk display name as the `label`
+ */
 export const useTaskOrderOptions = (taskOrderData) =>
   useMemo(() => {
     if (!taskOrderData) return [];
     return taskOrderData.map((tk) => ({ label: tk.display_name, value: tk }));
   }, [taskOrderData]);
-
-const handleTaskOrdersInPayload = (payload) => {
-  const { task_orders } = payload;
-  if (!task_orders || task_orders?.length === 0) {
-    payload.task_orders = null;
-  }
-};
 
 const FORM_PAYLOAD_FIELDS = [
   "contractor",
@@ -88,8 +86,6 @@ export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {
     obj[key] = data[key];
     return obj;
   }, {});
-
-  handleTaskOrdersInPayload(payload);
 
   const variables = { object: payload };
 
