@@ -3,7 +3,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import CloseIcon from "@mui/icons-material/Close";
-import ProjectWorkActivitiesForm from "./ProjectWorkActivitiesForm";
+import ProjectWorkActivitiesForm from "./ProjectWorkActivityForm";
 
 const ProjectWorkActivitiesDialog = ({
   onClose,

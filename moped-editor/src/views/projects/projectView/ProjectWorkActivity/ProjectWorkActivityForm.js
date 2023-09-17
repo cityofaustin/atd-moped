@@ -1,17 +1,14 @@
 import { useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-
-import {
-  Alert,
-  Button,
-  CircularProgress,
-  Grid,
-  FormControl,
-  InputLabel,
-  FormHelperText,
-} from "@mui/material";
-
+import Alert from "@mui/material/Alert"
+import Button from "@mui/material/Button"
+import CheckCircle from "@mui/icons-material/CheckCircle";
+import CircularProgress from "@mui/material/CircularProgress"
+import FormControl from "@mui/material/FormControl"
+import FormHelperText from "@mui/material/FormHelperText"
+import Grid from "@mui/material/Grid"
+import InputLabel from "@mui/material/InputLabel"
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
@@ -19,14 +16,11 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
 import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import ControlledSelect from "src/components/forms/ControlledSelect";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
-// import CloseIcon from "@mui/icons-material/Close";
-import CheckCircle from "@mui/icons-material/CheckCircle";
 import {
   WORK_ACTIVITY_STATUSES_QUERY,
   ADD_WORK_ACTIVITIY,
   UPDATE_WORK_ACTIVITY,
 } from "src/queries/funding";
-
 import {
   amountOnChangeHandler,
   taskOrderOnChangeHandler,
@@ -39,20 +33,27 @@ import {
 } from "./utils/form";
 
 const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
+  /** Status lookup values */
   const {
-    loading: statusesLoading,
+    loading: loadingStatuses,
     error: errorStatuses,
     data: statusesData,
   } = useQuery(WORK_ACTIVITY_STATUSES_QUERY);
 
+  /** Fetch task order lookup values from Socrata */
   const {
     data: taskOrderData,
     loading: loadingTaskOrders,
     error: errorTaskOrders,
   } = useSocrataJson(SOCRATA_ENDPOINT);
 
+  /** misc form settings */
+  const isNewActivity = !activity.id;
+  const statusOptions = statusesData?.moped_proj_work_activity_status || [];
+  const taskOrderOptions = useTaskOrderOptions(taskOrderData);
   const defaultValues = useDefaultValues(activity);
 
+  /** initiatlize react hook form with validation */
   const {
     handleSubmit,
     control,
@@ -64,10 +65,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     resolver: yupResolver(activityValidationSchema),
   });
 
-  const statusOptions = statusesData?.moped_proj_work_activity_status || [];
-
-  const taskOrderOptions = useTaskOrderOptions(taskOrderData);
-
+  /** Formats array of task order objects into value prop of multiselect component */
   const taskOrderValueHandler = useCallback(
     (valueArray) => {
       if (!valueArray) {
@@ -99,9 +97,15 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
         </Grid>
       </Grid>
     );
+  } else if (loadingStatuses || loadingTaskOrders) {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <CircularProgress color="primary" size={20} />
+        </Grid>
+      </Grid>
+    );
   }
-
-  const isNewActivity = !activity.id;
 
   return (
     <form
@@ -193,8 +197,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               isOptionEqualToValue={isTaskOrderOptionEqualToValue}
               getOptionLabel={(option) => option?.label || ""}
               error={formErrors?.task_orders}
-              loading={loadingTaskOrders}
-              loadingText="Loading..."
             />
           </FormControl>
         </Grid>

@@ -30,6 +30,11 @@ export const activityValidationSchema = yup.object().shape({
   project_id: yup.number().required(),
 });
 
+/**
+ * Parses an input string and saves an integer or null.
+ * @param {string} value from form input
+ * @param {object} field react-hook-form field object
+ */
 export const amountOnChangeHandler = (value, field) => {
   const handledValue = value
     ? removeNonIntegers(removeDecimalsAndTrailingNumbers(value))
@@ -37,6 +42,11 @@ export const amountOnChangeHandler = (value, field) => {
   field.onChange(handledValue);
 };
 
+/**
+ * 
+ * @param {*} optionArray 
+ * @param {*} field 
+ */
 export const taskOrderOnChangeHandler = (optionArray, field) => {
   const taskOrders = optionArray?.map((o) => o.value);
   field.onChange(taskOrders || null);
