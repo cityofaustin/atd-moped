@@ -236,7 +236,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
-  useEffect(() => {
+  //useEffect(() => {
     Object.keys(filters).forEach((filter) => {
       let { envelope, field, gqlOperator, value, type, specialNullValue } =
         filters[filter];
@@ -269,7 +269,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       }
       query.setWhere(field, `${gqlOperator}: ${value}`);
     });
-  }, [filters, query]);
+  //}, [filters, query]);
 
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
