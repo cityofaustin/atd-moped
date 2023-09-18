@@ -78,6 +78,9 @@ $ node index.js local
 - files?
 
 ### Todo
+- sort projects by interim project ID before we migrate them, so that older projects have a lower project ID
+- work activities: how to hand activities wiht no status date/created date?
+- it would appear that the task order edit input is broken on the work auth form for imported tks :/
 - do we need to test project length reporting?
 - we need some way to undo:
   - the project inserts
