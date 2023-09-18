@@ -534,8 +534,52 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Interim MPD (Access) ID",
       field: "interim_project_id",
       hidden: hiddenColumns["interim_project_id"],
-      emptyValue: "-"
-    }
+      emptyValue: "-",
+    },
+    {
+      title: "Parent project ID",
+      field: "parent_project_id",
+      hidden: hiddenColumns["parent_project_id"],
+      emptyValue: "-",
+      render: (entry) => (
+        <RouterLink
+          to={`/moped/projects/${entry.parent_project_id}`}
+          state={{
+            filters: Object.keys(filters).length
+              ? btoa(JSON.stringify(filters))
+              : false,
+          }}
+          className={classes.colorPrimary}
+        >
+          {entry.parent_project_id}
+        </RouterLink>
+      ),
+    },
+    {
+      title: "Subprojects",
+      field: "children_project_ids",
+      hidden: hiddenColumns["children_project_ids"],
+      render: (entry) => (
+        <span>
+          {entry.children_project_ids.map((project, index) => (
+            <RouterLink
+              to={`/moped/projects/${entry.project}`}
+              state={{
+                filters: Object.keys(filters).length
+                  ? btoa(JSON.stringify(filters))
+                  : false,
+              }}
+              className={classes.colorPrimary}
+              key={project}
+            >
+              {project}
+              {index < entry.children_project_ids.length - 1 && ", "}
+            </RouterLink>
+          ))}
+        </span>
+      ),
+      emptyValue: "-",
+    },
   ];
 
   /**
