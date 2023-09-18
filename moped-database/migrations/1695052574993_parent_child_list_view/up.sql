@@ -53,7 +53,7 @@ AS WITH project_person_list_lookup AS (
     (SELECT project_name
       FROM moped_project
       WHERE project_id = mp.parent_project_id
-    ) as parent_name,
+    ) as parent_project_name,
     cpl.children_project_ids,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,

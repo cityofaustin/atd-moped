@@ -4704,7 +4704,7 @@
           - funding_source_name
           - interim_project_id
           - is_deleted
-          - parent_name
+          - parent_project_name
           - parent_project_id
           - project_description
           - project_designer
@@ -4741,7 +4741,7 @@
           - funding_source_name
           - interim_project_id
           - is_deleted
-          - parent_name
+          - parent_project_name
           - parent_project_id
           - project_description
           - project_designer
@@ -4778,7 +4778,7 @@
           - funding_source_name
           - interim_project_id
           - is_deleted
-          - parent_name
+          - parent_project_name
           - parent_project_id
           - project_description
           - project_designer
