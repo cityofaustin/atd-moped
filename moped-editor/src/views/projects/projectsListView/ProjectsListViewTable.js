@@ -200,17 +200,14 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   }, [sort.column, sort.order, query]);
 
   // Set limit, offset based on pagination state
-  useEffect(() => {
-    if (query.config.showPagination) {
-      query.limit = pagination.limit;
-      query.offset = pagination.offset;
-    } else {
-      query.limit = 0;
-    }
-  }, [pagination.limit, pagination.offset, query]);
+  if (query.config.showPagination) {
+    query.limit = pagination.limit;
+    query.offset = pagination.offset;
+  } else {
+    query.limit = 0;
+  }
 
   // Resets the value of "where" "and" "or" to empty
-  // todo: -- make this only happen when needed
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
@@ -237,38 +234,38 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
   //useEffect(() => {
-    Object.keys(filters).forEach((filter) => {
-      let { envelope, field, gqlOperator, value, type, specialNullValue } =
-        filters[filter];
+  Object.keys(filters).forEach((filter) => {
+    let { envelope, field, gqlOperator, value, type, specialNullValue } =
+      filters[filter];
 
-      // If we have no operator, then there is nothing we can do.
-      if (field === null || gqlOperator === null) {
+    // If we have no operator, then there is nothing we can do.
+    if (field === null || gqlOperator === null) {
+      return;
+    }
+
+    if (gqlOperator.includes("is_null")) {
+      // Some fields when empty are not null but rather an empty string or "None"
+      if (specialNullValue) {
+        gqlOperator = envelope === "true" ? "_eq" : "_neq";
+        value = specialNullValue;
+      } else {
+        value = envelope;
+      }
+    } else {
+      if (value !== null) {
+        // If there is an envelope, insert value in envelope.
+        value = envelope ? envelope.replace("{VALUE}", value) : value;
+
+        // If it is a number or boolean, it does not need quotation marks
+        // Otherwise, add quotation marks for the query to identify as string
+        value = type in ["number", "boolean"] ? value : `"${value}"`;
+      } else {
+        // We don't have a value
         return;
       }
-
-      if (gqlOperator.includes("is_null")) {
-        // Some fields when empty are not null but rather an empty string or "None"
-        if (specialNullValue) {
-          gqlOperator = envelope === "true" ? "_eq" : "_neq";
-          value = specialNullValue;
-        } else {
-          value = envelope;
-        }
-      } else {
-        if (value !== null) {
-          // If there is an envelope, insert value in envelope.
-          value = envelope ? envelope.replace("{VALUE}", value) : value;
-
-          // If it is a number or boolean, it does not need quotation marks
-          // Otherwise, add quotation marks for the query to identify as string
-          value = type in ["number", "boolean"] ? value : `"${value}"`;
-        } else {
-          // We don't have a value
-          return;
-        }
-      }
-      query.setWhere(field, `${gqlOperator}: ${value}`);
-    });
+    }
+    query.setWhere(field, `${gqlOperator}: ${value}`);
+  });
   //}, [filters, query]);
 
   /**
