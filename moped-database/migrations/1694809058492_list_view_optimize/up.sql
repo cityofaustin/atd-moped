@@ -1,4 +1,3 @@
--- latest version 1694809058492_list_view_optimize
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
