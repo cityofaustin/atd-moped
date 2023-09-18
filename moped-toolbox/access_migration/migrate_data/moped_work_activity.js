@@ -42,7 +42,8 @@ const fields = [
   },
   {
     in: "ImplementationGroup",
-    out: "implementation_workgroup",
+    // out: "implementation_workgroup",
+    out: "contractor",
   },
   {
     in: "Description",
@@ -52,7 +53,7 @@ const fields = [
     in: "TaskOrder",
     out: "task_orders",
     transform: (oldRow, newRow) => {
-      const taskOrder = oldRow.TaskOrde;
+      const taskOrder = oldRow.TaskOrder?.trim().replaceAll(" ");
       if (!taskOrder) {
         return;
       }
@@ -64,8 +65,8 @@ const fields = [
         newRow.task_orders = [matchedTaskOrder];
       } else {
         // todo
-        console.log("UNKNOWN TK", taskOrder);
-        throw `not sure what to do with unknown tks`;
+        console.log("Ignoring unknown TK: ", taskOrder);
+        // throw `not sure what to do with unknown tks`;
       }
     },
   },
