@@ -14,4 +14,6 @@ Web application for interacting with Moped data.
 
 5. Start the server: `npm run start`
 
-6. Open `localhost:3000`
+6. Open `https://localhost:3000/moped`
+
+7. To login, locate the username and pw in the DTS password store under the name "Moped Local Editor User Login."

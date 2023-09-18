@@ -394,3 +394,8 @@ export const useResetDependentFieldOnParentFieldChange = ({
     disable,
   ]);
 };
+
+export const getOptionLabel = (option) => option?.label || "";
+
+export const isOptionEqualToValue = (option, selectedOption) =>
+  option?.value === selectedOption?.value;
