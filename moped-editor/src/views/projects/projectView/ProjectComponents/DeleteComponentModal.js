@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 const DeleteComponentModal = ({
   showDialog,
   clickedComponent,
-  setClickedComponent,
   setIsDeletingComponent,
   onDeleteComponent,
 }) => {
@@ -40,7 +39,6 @@ const DeleteComponentModal = ({
 
   const onClose = () => {
     setIsDeletingComponent(false);
-    setClickedComponent(null);
   };
 
   if (!clickedComponent) return null;
@@ -52,7 +50,7 @@ const DeleteComponentModal = ({
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent className={classes.dialogContent}>
+      <DialogContent className={classes.dialogContent} dividers={true}>
         <Grid container spacing={1}>
           <List>
             <Box borderLeft={7} borderColor="secondary.main">

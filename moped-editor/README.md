@@ -1,4 +1,4 @@
-****# Moped Editor
+# Moped Editor
 
 Web application for interacting with Moped data.
 

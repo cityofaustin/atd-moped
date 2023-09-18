@@ -5,7 +5,8 @@ export const formatComponentsActivity = (
   change,
   componentList,
   phaseList,
-  subphaseList
+  subphaseList,
+  projectId
 ) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_components"];
 
@@ -47,6 +48,35 @@ export const formatComponentsActivity = (
     };
   }
 
+  if (change.description[0].field === "project_id") {
+    if (change.record_data.event.data.old.project_id === parseInt(projectId)) {
+      // a component was moved from this project to another project
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Moved component ", style: null },
+          componentText,
+          {
+            text: ` to project #${change.record_data.event.data.new.project_id}`,
+            style: null,
+          },
+        ],
+      };
+    } else {
+      // a component was moved here from another project
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Added component ", style: null },
+          componentText,
+          {
+            text: ` from project #${change.record_data.event.data.old.project_id}`,
+            style: null,
+          },
+        ],
+      };
+    }
+  }
   // add a new component phase
   if (phase && !previousPhase) {
     return {

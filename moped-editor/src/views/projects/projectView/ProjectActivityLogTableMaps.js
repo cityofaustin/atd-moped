@@ -351,6 +351,12 @@ export const ProjectActivityLogTableMaps = {
       completion_date: {
         label: "completion date",
       },
+      location_description: {
+        label: "location description"
+      },
+      srts_id: {
+        label: "Safe Routes to School infrastructure plan record identifier"
+      }
     },
   },
   moped_project_files: {

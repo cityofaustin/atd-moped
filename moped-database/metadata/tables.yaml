@@ -1313,7 +1313,6 @@
       permission:
         columns:
           - milestone_id
-          - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
@@ -1323,7 +1322,6 @@
       permission:
         columns:
           - milestone_id
-          - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
@@ -1333,7 +1331,6 @@
       permission:
         columns:
           - milestone_id
-          - milestone_order
           - related_phase_id
           - milestone_description
           - milestone_name
@@ -1706,6 +1703,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1721,6 +1719,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1736,6 +1735,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1751,6 +1751,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1766,6 +1767,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1782,6 +1784,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1798,6 +1801,7 @@
           - description
           - interim_project_component_id
           - is_deleted
+          - location_description
           - phase_id
           - project_component_id
           - project_id
@@ -1842,6 +1846,52 @@
                 },
                 "updated_at": {{$body.created_at}},
                 "project_id": {{$body.event.data.new.project_id}}
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
+    - name: activity_log_moped_proj_components_update
+      definition:
+        enable_manual: false
+        update:
+          columns:
+          - 'project_id'
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_component_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.old.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+                "updated_at": {{$body.created_at}},
+                "project_id": {{$body.event.data.old.project_id}}
               }
             }
         method: POST

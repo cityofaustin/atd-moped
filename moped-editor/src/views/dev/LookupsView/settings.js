@@ -139,10 +139,6 @@ export const SETTINGS = [
         handler: relatedPhaseHandler,
       },
       {
-        key: "milestone_order",
-        label: "Milestone order",
-      },
-      {
         key: "description",
         label: "Description",
       },

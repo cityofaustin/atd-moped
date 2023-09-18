@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
   Grid,
-  TextField,
   Switch,
   FormControlLabel,
   FormHelperText,
@@ -25,11 +24,13 @@ import {
   useSubphaseOptions,
   useComponentTagsOptions,
   useWorkTypeOptions,
-  useResetDependentFieldOnAutocompleteChange,
+  useResetDependentFieldOnParentFieldChange,
   getOptionLabel,
   isOptionEqualToValue,
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
 
 import * as yup from "yup";
 
@@ -40,6 +41,7 @@ const defaultFormValues = {
   subphase: null,
   tags: [],
   completionDate: null,
+  locationDescription: "",
   description: "",
   work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
@@ -65,6 +67,7 @@ const validationSchema = yup.object().shape({
       then: yup.object().required(),
     }),
   srtsId: yup.string().nullable().optional(),
+  locationDescription: yup.string().nullable().optional(),
 });
 
 const ComponentForm = ({
@@ -73,7 +76,6 @@ const ComponentForm = ({
   initialFormValues = null,
 }) => {
   const {
-    register,
     handleSubmit,
     control,
     watch,
@@ -110,11 +112,12 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents] = watch([
+  const [component, phase, completionDate, subcomponents, signal] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
+    "signal",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const internalTable = component?.data?.feature_layer?.internal_table;
@@ -134,36 +137,51 @@ const ComponentForm = ({
     !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase"),
     dependentFieldName: "subphase",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subphase,
     setValue,
   });
 
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "signal",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.signal,
     setValue,
   });
 
   // todo: preserve subcomponent choices if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "subcomponents",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.subcomponents,
     setValue,
     disable: isEditingExistingComponent,
   });
 
   // todo: preserve work type if allowed when switching b/t component types
-  useResetDependentFieldOnAutocompleteChange({
+  useResetDependentFieldOnParentFieldChange({
     parentValue: watch("component"),
     dependentFieldName: "work_types",
+    comparisonVariable: "value",
     valueToSet: defaultFormValues.work_types,
     setValue,
     disable: isEditingExistingComponent,
+  });
+
+  useResetDependentFieldOnParentFieldChange({
+    parentValue: watch("signal"),
+    dependentFieldName: "locationDescription",
+    comparisonVariable: "properties.id",
+    valueToSet: signal
+      ? // if the signal exists and the locationDescription is empty, set to option label
+        getSignalOptionLabel(signal)
+      : "",
+    setValue,
   });
 
   return (
@@ -193,6 +211,7 @@ const ComponentForm = ({
             disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
+            required={true}
           />
         </Grid>
 
@@ -202,6 +221,7 @@ const ComponentForm = ({
               id="signal"
               name="signal"
               control={control}
+              shouldUnregister={true}
               render={({ field }) => (
                 <SignalComponentAutocomplete
                   {...field}
@@ -223,6 +243,7 @@ const ComponentForm = ({
             control={control}
             error={!!errors?.work_types}
             helperText="Required"
+            required={true}
           />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component
@@ -254,31 +275,32 @@ const ComponentForm = ({
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("description")}
+          <ControlledTextInput
             fullWidth
+            label="Location description"
+            name="locationDescription"
             size="small"
-            id="description"
-            label={"Description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
-            multiline
-            minRows={4}
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("srtsId")}
+          <ControlledTextInput
             fullWidth
+            label="Description"
+            name="description"
             size="small"
-            id="srtsId"
-            label={"SRTS Infrastructure ID"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
+            multiline
+            minRows={4}
+            control={control}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <ControlledTextInput
+            fullWidth
+            label="SRTS Infrastructure ID"
+            name="srtsId"
+            size="small"
+            control={control}
             helperText={
               "The Safe Routes to School infrastructure plan record identifier"
             }

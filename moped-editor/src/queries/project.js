@@ -126,6 +126,7 @@ export const SUMMARY_QUERY = gql`
     ) {
       geometry: geography
       attributes
+      council_districts
     }
     moped_proj_components(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -294,7 +295,7 @@ export const TIMELINE_QUERY = gql`
       }
     }
     moped_milestones(
-      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+      where: { is_deleted: { _eq: false } }
     ) {
       milestone_id
       milestone_name
@@ -893,6 +894,22 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_public_process_statuses(order_by: { name: asc }) {
       name
       id
+    }
+  }
+`;
+
+export const PROJECT_OPTIONS = gql`
+  query ProjectOptions($projectId: Int!) {
+    moped_project(
+      where: {
+        _and: [
+          { is_deleted: { _eq: false } }
+          { project_id: { _neq: $projectId } }
+        ]
+      }
+    ) {
+      project_id
+      project_name
     }
   }
 `;

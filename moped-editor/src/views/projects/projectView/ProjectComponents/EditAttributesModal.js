@@ -52,13 +52,20 @@ const EditAttributesModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const { subcomponents, phase, subphase, tags, work_types, completionDate } =
-      formData;
+    const {
+      subcomponents,
+      phase,
+      subphase,
+      tags,
+      work_types,
+      completionDate,
+      srtsId,
+      locationDescription,
+      description,
+    } = formData;
 
     const componentId = formData.component.data.component_id;
-    const description =
-      formData.description?.length > 0 ? formData.description : null;
-    const srtsId = formData.srtsId?.length > 0 ? formData.srtsId : null;
+
     const { project_component_id: projectComponentId } = clickedComponent;
 
     // Prepare the subcomponent data for the mutation
@@ -109,6 +116,7 @@ const EditAttributesModal = ({
           componentTags: tagsArray,
           completionDate,
           srtsId,
+          locationDescription,
         },
       })
         .then(() => {
@@ -146,6 +154,7 @@ const EditAttributesModal = ({
           componentTags: tagsArray,
           completionDate,
           srtsId,
+          locationDescription,
         },
       })
         .then(() => onSaveSuccess())
@@ -181,6 +190,10 @@ const EditAttributesModal = ({
         tags: makeTagFormFieldValues(
           clickedComponent.moped_proj_component_tags
         ),
+        locationDescription:
+          clickedComponent.location_description?.length > 0
+            ? clickedComponent.location_description
+            : "",
       }
     : null;
 
