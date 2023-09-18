@@ -537,7 +537,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       emptyValue: "-",
     },
     {
-      title: "Parent project ID",
+      title: "Parent project",
       field: "parent_project_id",
       hidden: hiddenColumns["parent_project_id"],
       emptyValue: "-",
@@ -551,33 +551,18 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
           }}
           className={classes.colorPrimary}
         >
-          {entry.parent_project_id}
+          {entry.parent_project_name}
         </RouterLink>
       ),
     },
     {
-      title: "Subprojects",
+      title: "Has subprojects",
       field: "children_project_ids",
       hidden: hiddenColumns["children_project_ids"],
-      render: (entry) => (
-        <span>
-          {entry.children_project_ids.map((project, index) => (
-            <RouterLink
-              to={`/moped/projects/${entry.project}`}
-              state={{
-                filters: Object.keys(filters).length
-                  ? btoa(JSON.stringify(filters))
-                  : false,
-              }}
-              className={classes.colorPrimary}
-              key={project}
-            >
-              {project}
-              {index < entry.children_project_ids.length - 1 && ", "}
-            </RouterLink>
-          ))}
-        </span>
-      ),
+      render: (entry) => {
+        const hasChildren = entry.children_project_ids.length > 0;
+        return <span> {hasChildren ? "Yes" : "-"} </span>;
+      },
       emptyValue: "-",
     },
   ];
