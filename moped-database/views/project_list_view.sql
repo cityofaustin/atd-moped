@@ -1,4 +1,4 @@
--- latest version 1694809058492_list_view_optimize
+-- latest version 1695052574993_parent_child_list_view
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -28,7 +28,12 @@ AS WITH project_person_list_lookup AS (
       FROM moped_project_types mpt
         LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
     GROUP BY mpt.project_id
-  )
+  ), child_project_lookup AS (
+    SELECT jsonb_agg(children.project_id) AS children_project_ids,
+      children.parent_project_id AS parent_id
+      FROM moped_project AS children
+        JOIN moped_project AS parent ON (parent.project_id = children.parent_project_id)
+    GROUP BY parent_id)
  SELECT
     mp.project_id,
     mp.project_name,
@@ -45,6 +50,12 @@ AS WITH project_person_list_lookup AS (
     mel.entity_name AS project_lead,
     mpps.name AS public_process_status,
     mp.interim_project_id,
+    mp.parent_project_id,
+    (SELECT project_name
+      FROM moped_project
+      WHERE project_id = mp.parent_project_id
+    ) as parent_project_name,
+    cpl.children_project_ids,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type))
@@ -143,7 +154,8 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_proj_work_activity contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
-     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id 
+     LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
+     LEFT JOIN child_project_lookup cpl on cpl.parent_id = mp.project_id
   WHERE
     mp.is_deleted = false
   GROUP BY
@@ -159,10 +171,12 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at, 
     mp.task_order,
     mp.interim_project_id,
+    mp.parent_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
     ptl.type_name, 
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,
-    mpps.name;
+    mpps.name,
+    cpl.children_project_ids;
