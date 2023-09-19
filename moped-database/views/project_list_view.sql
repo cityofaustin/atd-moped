@@ -33,6 +33,7 @@ AS WITH project_person_list_lookup AS (
       children.parent_project_id AS parent_id
       FROM moped_project AS children
         JOIN moped_project AS parent ON (parent.project_id = children.parent_project_id)
+        WHERE children.is_deleted = false
     GROUP BY parent_id)
  SELECT
     mp.project_id,
@@ -155,7 +156,7 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
-     LEFT JOIN child_project_lookup cpl on cpl.parent_id = mp.project_id
+     left join child_project_lookup cpl on cpl.parent_id = mp.project_id
   WHERE
     mp.is_deleted = false
   GROUP BY
