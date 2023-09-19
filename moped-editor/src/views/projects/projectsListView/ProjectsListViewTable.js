@@ -276,6 +276,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.config.options.useQuery
   );
 
+  const linkStateFilters = Object.keys(filters).length
+    ? btoa(JSON.stringify(filters))
+    : false;
+
   const columns = [
     {
       title: "ID",
@@ -289,11 +293,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
+          state={{ filters: linkStateFilters }}
           className={classes.colorPrimary}
         >
           {entry.project_name}
@@ -544,11 +544,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.parent_project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
+          state={{ filters: linkStateFilters }}
           className={classes.colorPrimary}
         >
           {entry.parent_project_name}
