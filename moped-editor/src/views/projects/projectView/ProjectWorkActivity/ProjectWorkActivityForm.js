@@ -1,14 +1,15 @@
 import { useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import Alert from "@mui/material/Alert"
-import Button from "@mui/material/Button"
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
-import CircularProgress from "@mui/material/CircularProgress"
-import FormControl from "@mui/material/FormControl"
-import FormHelperText from "@mui/material/FormHelperText"
-import Grid from "@mui/material/Grid"
-import InputLabel from "@mui/material/InputLabel"
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import TextField from "@mui/material/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
@@ -115,6 +116,20 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
       autoComplete="off"
     >
       <Grid container spacing={2}>
+        {!isNewActivity && (
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <TextField
+                id="id"
+                disabled
+                fullWidth
+                label="ID"
+                size="small"
+                value={activity.id}
+              />
+            </FormControl>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <FormControl fullWidth error={formErrors.status_id}>
             <InputLabel id="status-label" required={true}>

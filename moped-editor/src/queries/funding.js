@@ -118,6 +118,7 @@ export const WORK_ACTIVITY_QUERY = gql`
       contract_amount
       contractor
       status_id
+      interim_work_order_id
       moped_work_activity_status {
         id
         name

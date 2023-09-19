@@ -1,5 +1,5 @@
 import { Controller } from "react-hook-form";
-import { TextField } from "@mui/material";
+import TextField from "@mui/material/TextField";
 
 /**
  * Coerces empty strings to `null`
