@@ -80,6 +80,11 @@ const DEFAULT_HIDDEN_COLS = {
   added_by: true,
   public_process_status: true,
   interim_project_id: true,
+  construction_start_date: true,
+  completion_end_date: true,
+  project_tags: true,
+  children_project_ids: true,
+  parent_project_id: true,
 };
 
 /**
