@@ -124,7 +124,7 @@ AS WITH project_person_list_lookup AS (
         AND ptags.project_id = mp.project_id
       GROUP BY ptags.project_id) AS project_tags,
     ( -- get me all of the contractors added to a project
-      SELECT string_agg(contract.contractor, ', ' :: text) AS string_agg
+      SELECT string_agg(DISTINCT contract.contractor, ', ' :: text) AS string_agg
       FROM moped_proj_work_activity contract
       WHERE 1 = 1
       AND contract.is_deleted = FALSE
