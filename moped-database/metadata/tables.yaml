@@ -3274,6 +3274,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
+          - interim_work_order_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3293,6 +3294,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
+          - interim_work_order_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3310,6 +3312,7 @@
           - id
           - implementation_workgroup
           - interim_work_order_id_old
+          - interim_work_order_id
           - is_deleted
           - project_id
           - status_id
@@ -3335,6 +3338,7 @@
           - description
           - implementation_workgroup
           - interim_work_order_id_old
+          - interim_work_order_id
           - status_note
           - work_assignment_id
           - created_at
@@ -3356,6 +3360,7 @@
           - description
           - implementation_workgroup
           - interim_work_order_id_old
+          - interim_work_order_id
           - status_note
           - work_assignment_id
           - created_at
@@ -3373,6 +3378,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
+          - interim_work_order_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3392,6 +3398,7 @@
           - work_assignment_id
           - contract_amount
           - interim_work_order_id_old
+          - interim_work_order_id
           - implementation_workgroup
           - task_orders
           - status_id
