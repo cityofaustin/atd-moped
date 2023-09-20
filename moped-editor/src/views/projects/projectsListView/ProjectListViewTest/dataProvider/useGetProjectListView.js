@@ -1,16 +1,18 @@
+import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
+import { usePagination } from "./usePagination";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
-export const useGetProjectListView = ({
-  pagination: { limit, offset },
-  columnsToReturn,
-}) => {
-  console.log(offset);
-  const query = gql`{
+export const useGetProjectListView = ({ columnsToReturn }) => {
+  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
+    usePagination();
+
+  const query = useMemo(() => {
+    return gql`{
         project_list_view (
-            limit: ${limit}
-            offset: ${offset}
+            limit: ${queryLimit}
+            offset: ${queryOffset}
         ) {
             ${columnsToReturn.join("\n")}
         },
@@ -20,6 +22,7 @@ export const useGetProjectListView = ({
           }
         }
       }`;
+  }, [queryLimit, queryOffset, columnsToReturn]);
 
   // manage query
   const { data, loading, error } = useQuery(query, {
@@ -33,6 +36,10 @@ export const useGetProjectListView = ({
     data,
     loading,
     error,
+    setQueryLimit,
+    setQueryOffset,
+    queryLimit,
+    queryOffset,
   };
 };
 

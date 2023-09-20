@@ -6,10 +6,9 @@ import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../../theme/typography";
 
-import { useQuery } from "@apollo/client";
 import GridTableToolbar from "src/components/GridTable/GridTableToolbar";
 import GridTableSearch from "src/components/GridTable/GridTableSearch";
-import GridTablePagination from "src/components/GridTable/GridTablePagination";
+import Pagination from "./Pagination";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import ExternalLink from "src/components/ExternalLink";
@@ -21,6 +20,7 @@ import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
+import { set } from "date-fns";
 
 /**
  * GridTable Style
@@ -105,20 +105,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**
-   * @type {Object} pagination
-   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
-   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
-   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
-   * @function setPagination - Sets the state of pagination
-   * @default {{limit: query.limit, offset: query.offset, page: 0}}
-   */
-  const [pagination, setPagination] = useState({
-    limit: query.limit,
-    offset: query.offset,
-    page: 0,
-  });
-
-  /**
    * The default sorting properties applied to the table.
    * This overrides MaterialTable props and determines how
    * the table is sorted when the page loads. Must remain consistent
@@ -194,14 +180,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
    */
   // Manage the ORDER BY clause of our query
   query.setOrder(sort.column, sort.order);
-
-  // Set limit, offset based on pagination state
-  if (query.config.showPagination) {
-    query.limit = pagination.limit;
-    query.offset = pagination.offset;
-  } else {
-    query.limit = 0;
-  }
 
   // Resets the value of "where" "and" "or" to empty
   query.cleanWhere();
@@ -541,7 +519,15 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
 
   const columnsToReturn = columns.map((column) => column.field);
 
-  const { data, loading, error } = useGetProjectListView({
+  const {
+    data,
+    loading,
+    error,
+    setQueryLimit,
+    setQueryOffset,
+    queryLimit,
+    queryOffset,
+  } = useGetProjectListView({
     pagination: { limit: 100, offset: 0 },
     columnsToReturn,
   });
@@ -559,11 +545,12 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     const columnName = columns[columnId]?.field;
 
     // Resets pagination to 0 when user clicks a header to display most relevant results
-    setPagination({
-      limit: query.limit,
-      offset: query.offset,
-      page: 0,
-    });
+    setQueryOffset(0);
+    // setPagination({
+    //   limit: query.limit,
+    //   offset: query.offset,
+    //   page: 0,
+    // });
 
     if (sort.column === columnName) {
       // If the current sortColumn is the same as the new
@@ -633,7 +620,7 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    pageSize: Math.min(query.limit, data[query.table].length),
+                    pageSize: Math.min(queryLimit, data[query.table].length),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
@@ -645,11 +632,16 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
                   }}
                   components={{
                     Pagination: (props) => (
-                      <GridTablePagination
-                        query={query}
+                      <Pagination
                         data={data}
-                        pagination={pagination}
-                        setPagination={setPagination}
+                        recordCount={
+                          data["project_list_view_aggregate"].aggregate.count
+                        }
+                        queryLimit={queryLimit}
+                        setQueryLimit={setQueryLimit}
+                        queryOffset={queryOffset}
+                        setQueryOffset={setQueryOffset}
+                        rowsPerPageOptions={[250, 1000]}
                       />
                     ),
                     Header: (props) => (
