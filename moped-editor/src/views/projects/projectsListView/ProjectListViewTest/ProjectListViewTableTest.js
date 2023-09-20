@@ -20,7 +20,6 @@ import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
-import { set } from "date-fns";
 
 /**
  * GridTable Style
@@ -528,8 +527,8 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     queryLimit,
     queryOffset,
   } = useGetProjectListView({
-    pagination: { limit: 100, offset: 0 },
     columnsToReturn,
+    hiddenColumns,
   });
 
   /**
@@ -620,7 +619,7 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    pageSize: Math.min(queryLimit, data[query.table].length),
+                    // pageSize: Math.min(queryLimit, data[query.table].length),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown

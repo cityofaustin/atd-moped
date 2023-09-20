@@ -6,7 +6,7 @@ import Page from "src/components/Page";
 
 // Abstract
 import GQLAbstract from "../../../libs/GQLAbstract";
-import ProjectsListViewTable from "./ProjectsListViewTable";
+
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
 import ProjectsListViewTableTest from "./ProjectListViewTest/ProjectListViewTableTest";
 
@@ -36,11 +36,6 @@ const ProjectsListView = () => {
 
   return (
     <Page className={classes.root} title="Projects">
-      {/* <ProjectsListViewTable
-        title={"Projects"}
-        query={projectsQuery}
-        searchTerm={navSearchTerm}
-      /> */}
       <ProjectsListViewTableTest
         title={"Projects"}
         query={projectsQuery}

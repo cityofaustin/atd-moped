@@ -8,6 +8,10 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination();
 
+  // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
+  // TODO: Add hook for order
+  // TODO: Add hook for where filters
+
   const query = useMemo(() => {
     return gql`{
         project_list_view (
@@ -24,13 +28,9 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
       }`;
   }, [queryLimit, queryOffset, columnsToReturn]);
 
-  // manage query
   const { data, loading, error } = useQuery(query, {
     fetchPolicy: "cache-first",
   });
-
-  // build pagination
-  // limit, offset, page
 
   return {
     data,
@@ -47,8 +47,8 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
 // This is what we need to build the query
 // {
 //     project_list_view(
-//       limit: 250
-//       offset: 0
+//       limit: 250 ✅
+//       offset: 0 ✅
 //       where: {}
 //       order_by: {updated_at: desc}
 //     ) {
