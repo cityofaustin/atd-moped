@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "json-to-graphql-query": "^2.2.5"
+  }
+}

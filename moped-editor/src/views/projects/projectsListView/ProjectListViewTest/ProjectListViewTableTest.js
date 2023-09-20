@@ -20,6 +20,7 @@ import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
+import { useGetProjectListViewWithLibrary } from "./dataProvider/useGetProjectListViewWithLibrary";
 
 /**
  * GridTable Style
@@ -518,6 +519,19 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
 
   const columnsToReturn = columns.map((column) => column.field);
 
+  // const {
+  //   data,
+  //   loading,
+  //   error,
+  //   setQueryLimit,
+  //   setQueryOffset,
+  //   queryLimit,
+  //   queryOffset,
+  // } = useGetProjectListView({
+  //   columnsToReturn,
+  //   hiddenColumns,
+  // });
+
   const {
     data,
     loading,
@@ -526,10 +540,7 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     setQueryOffset,
     queryLimit,
     queryOffset,
-  } = useGetProjectListView({
-    columnsToReturn,
-    hiddenColumns,
-  });
+  } = useGetProjectListViewWithLibrary({ columnsToReturn, hiddenColumns });
 
   /**
    * Handles the header click for sorting asc/desc.
