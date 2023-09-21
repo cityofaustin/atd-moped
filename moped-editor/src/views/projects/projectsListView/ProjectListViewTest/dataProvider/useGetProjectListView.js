@@ -2,11 +2,22 @@ import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
+import { useOrderBy } from "./useOrderBy";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
 export const useGetProjectListView = ({ columnsToReturn }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
-    usePagination();
+    usePagination({ defaultLimit: 250, defaultOffset: 0 });
+
+  const {
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useOrderBy({
+    defaultOrderByColumn: "updated_at",
+    defaultOrderByDirection: "desc",
+  });
 
   // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
   // TODO: Add hook for order
@@ -40,6 +51,10 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     setQueryOffset,
     queryLimit,
     queryOffset,
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
   };
 };
 

@@ -10,7 +10,7 @@ import { TablePagination } from "@mui/material";
  * @return {JSX.Element}
  * @constructor
  */
-const GridTablePagination = ({
+const Pagination = ({
   recordCount,
   queryLimit,
   setQueryLimit,
@@ -42,15 +42,6 @@ const GridTablePagination = ({
     setQueryOffset(0);
   };
 
-  console.log({
-    recordCount,
-    queryLimit,
-    setQueryLimit,
-    queryOffset,
-    setQueryOffset,
-    rowsPerPageOptions,
-  });
-
   return (
     <TablePagination
       rowsPerPageOptions={rowsPerPageOptions}
@@ -64,4 +55,4 @@ const GridTablePagination = ({
   );
 };
 
-export default GridTablePagination;
+export default Pagination;

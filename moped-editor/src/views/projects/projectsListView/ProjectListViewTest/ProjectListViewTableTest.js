@@ -21,6 +21,7 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
 import { useGetProjectListViewWithLibrary } from "./dataProvider/useGetProjectListViewWithLibrary";
+import { set } from "date-fns";
 
 /**
  * GridTable Style
@@ -178,11 +179,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
   /**
    * Query Management
    */
-  // Manage the ORDER BY clause of our query
-  query.setOrder(sort.column, sort.order);
-
-  // Resets the value of "where" "and" "or" to empty
-  query.cleanWhere();
 
   // If we have a search value in state, initiate search
   // GridTableSearchBar in GridTableSearch updates search value
@@ -540,7 +536,11 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     setQueryOffset,
     queryLimit,
     queryOffset,
-  } = useGetProjectListViewWithLibrary({ columnsToReturn, hiddenColumns });
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useGetProjectListView({ columnsToReturn });
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -550,33 +550,19 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
   const handleTableHeaderClick = (columnId, newOrderDirection) => {
-    // Before anything, let's clear all current conditions
-    query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // Resets pagination to 0 when user clicks a header to display most relevant results
+    // Resets pagination offset to 0 when user clicks a header to display most relevant results
     setQueryOffset(0);
-    // setPagination({
-    //   limit: query.limit,
-    //   offset: query.offset,
-    //   page: 0,
-    // });
 
-    if (sort.column === columnName) {
+    if (orderByColumn === columnName) {
       // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
-      setSort({
-        order: sort.order === "desc" ? "asc" : "desc",
-        column: columnName,
-        columnId: columnId,
-      });
-    } else if (sort.column !== columnName) {
+      const direction = orderByDirection === "desc" ? "asc" : "desc";
+      setOrderByDirection(direction);
+    } else {
       // Sort different column in same order as previous column
-      setSort({
-        order: sort.order,
-        column: columnName,
-        columnId: columnId,
-      });
+      setOrderByColumn(columnName);
     }
   };
 
@@ -590,6 +576,11 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
       setHiddenColumns(storedConfig);
     }
   }, [data, advancedSearchAnchor]);
+
+  const sortByColumnIndex = columns.findIndex(
+    (column) => column.field === orderByColumn
+  );
+  console.log(sortByColumnIndex);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -658,8 +649,8 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
-                        orderBy={sort.columnId}
-                        orderDirection={sort.order}
+                        orderBy={sortByColumnIndex}
+                        orderDirection={orderByDirection}
                       />
                     ),
                     Body: (props) => {
