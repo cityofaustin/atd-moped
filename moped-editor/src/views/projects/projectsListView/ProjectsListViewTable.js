@@ -69,16 +69,18 @@ const DEFAULT_HIDDEN_COLS = {
   type_name: true,
   funding_source_name: true,
   project_note: true,
-  construction_start_date: false,
-  completion_end_date: false,
+  construction_start_date: true,
+  completion_end_date: true,
   project_inspector: true,
   project_designer: true,
   contractors: true,
   contract_numbers: true,
-  project_tags: false,
+  project_tags: true,
   added_by: true,
   public_process_status: true,
   interim_project_id: true,
+  children_project_ids: true,
+  parent_project_id: true,
 };
 
 /**
@@ -285,6 +287,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     query.config.options.useQuery
   );
 
+  const linkStateFilters = Object.keys(filters).length
+    ? btoa(JSON.stringify(filters))
+    : false;
+
   const columns = [
     {
       title: "ID",
@@ -298,11 +304,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
+          state={{ filters: linkStateFilters }}
           className={classes.colorPrimary}
         >
           {entry.project_name}
@@ -543,6 +545,31 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Interim MPD (Access) ID",
       field: "interim_project_id",
       hidden: hiddenColumns["interim_project_id"],
+      emptyValue: "-",
+    },
+    {
+      title: "Parent project",
+      field: "parent_project_id",
+      hidden: hiddenColumns["parent_project_id"],
+      emptyValue: "-",
+      render: (entry) => (
+        <RouterLink
+          to={`/moped/projects/${entry.parent_project_id}`}
+          state={{ filters: linkStateFilters }}
+          className={classes.colorPrimary}
+        >
+          {entry.parent_project_name}
+        </RouterLink>
+      ),
+    },
+    {
+      title: "Has subprojects",
+      field: "children_project_ids",
+      hidden: hiddenColumns["children_project_ids"],
+      render: (entry) => {
+        const hasChildren = entry.children_project_ids.length > 0;
+        return <span> {hasChildren ? "Yes" : "-"} </span>;
+      },
       emptyValue: "-",
     },
   ];
