@@ -106,29 +106,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
   const classes = useStyles();
 
   /**
-   * The default sorting properties applied to the table.
-   * This overrides MaterialTable props and determines how
-   * the table is sorted when the page loads. Must remain consistent
-   * with the sorting order passed in from ProjectsListViewQueryConf.
-   * @property {string} column - The column name in graphql to sort by
-   * @property {integer} columnId - The column id in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or ""
-   */
-  const defaultSortingProperties = {
-    column: "updated_at",
-    columnId: 8,
-    order: "desc",
-  };
-
-  /**
-   * Stores the column name and the order to order by
-   * @type {Object} sort
-   * @function setSort - Sets the state of sort
-   * @default {defaultSortingProperties}
-   */
-  const [sort, setSort] = useState(defaultSortingProperties);
-
-  /**
    * Stores the string to search for and the column to search against
    * @type {Object} search
    * @property {string} value - The string to be searched for
@@ -515,19 +492,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
 
   const columnsToReturn = columns.map((column) => column.field);
 
-  // const {
-  //   data,
-  //   loading,
-  //   error,
-  //   setQueryLimit,
-  //   setQueryOffset,
-  //   queryLimit,
-  //   queryOffset,
-  // } = useGetProjectListView({
-  //   columnsToReturn,
-  //   hiddenColumns,
-  // });
-
   const {
     data,
     loading,
@@ -541,6 +505,10 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     orderByDirection,
     setOrderByDirection,
   } = useGetProjectListView({ columnsToReturn });
+
+  const sortByColumnIndex = columns.findIndex(
+    (column) => column.field === orderByColumn
+  );
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -576,11 +544,6 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
       setHiddenColumns(storedConfig);
     }
   }, [data, advancedSearchAnchor]);
-
-  const sortByColumnIndex = columns.findIndex(
-    (column) => column.field === orderByColumn
-  );
-  console.log(sortByColumnIndex);
 
   return (
     <ApolloErrorHandler error={error}>

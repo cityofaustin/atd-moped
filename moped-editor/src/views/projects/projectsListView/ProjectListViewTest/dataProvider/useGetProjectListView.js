@@ -20,7 +20,6 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
   });
 
   // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
-  // TODO: Add hook for order
   // TODO: Add hook for where filters
 
   const query = useMemo(() => {
@@ -28,6 +27,7 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
+            order_by: {${orderByColumn}: ${orderByDirection}}
         ) {
             ${columnsToReturn.join("\n")}
         },
@@ -37,7 +37,13 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
           }
         }
       }`;
-  }, [queryLimit, queryOffset, columnsToReturn]);
+  }, [
+    queryLimit,
+    queryOffset,
+    columnsToReturn,
+    orderByColumn,
+    orderByDirection,
+  ]);
 
   const { data, loading, error } = useQuery(query, {
     fetchPolicy: "cache-first",
@@ -65,7 +71,7 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
 //       limit: 250 ✅
 //       offset: 0 ✅
 //       where: {}
-//       order_by: {updated_at: desc}
+//       order_by: {updated_at: desc} ✅
 //     ) {
 //       project_id
 //       project_name
