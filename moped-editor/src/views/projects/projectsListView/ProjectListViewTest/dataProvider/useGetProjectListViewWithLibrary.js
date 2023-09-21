@@ -1,13 +1,24 @@
 import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
-import { jsonToGraphQLQuery } from "json-to-graphql-query";
+import { jsonToGraphQLQuery, EnumType } from "json-to-graphql-query";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
+import { useOrderBy } from "./useOrderBy";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
 export const useGetProjectListViewWithLibrary = ({ columnsToReturn }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
-    usePagination();
+    usePagination({ defaultLimit: 250, defaultOffset: 0 });
+
+  const {
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useOrderBy({
+    defaultOrderByColumn: "updated_at",
+    defaultOrderByDirection: "desc",
+  });
 
   // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
   // TODO: Add hook for order
@@ -28,6 +39,7 @@ export const useGetProjectListViewWithLibrary = ({ columnsToReturn }) => {
           __args: {
             limit: queryLimit,
             offset: queryOffset,
+            order_by: { [orderByColumn]: new EnumType(orderByDirection) },
           },
           ...columnsToQueryMap,
         },
@@ -38,7 +50,13 @@ export const useGetProjectListViewWithLibrary = ({ columnsToReturn }) => {
         },
       },
     };
-  }, [queryLimit, queryOffset, columnsToQueryMap]);
+  }, [
+    queryLimit,
+    queryOffset,
+    columnsToQueryMap,
+    orderByColumn,
+    orderByDirection,
+  ]);
 
   const gqlQuery = gql`
     ${jsonToGraphQLQuery(query, { pretty: true })}
@@ -56,6 +74,10 @@ export const useGetProjectListViewWithLibrary = ({ columnsToReturn }) => {
     setQueryOffset,
     queryLimit,
     queryOffset,
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
   };
 };
 

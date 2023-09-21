@@ -21,7 +21,6 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
 import { useGetProjectListViewWithLibrary } from "./dataProvider/useGetProjectListViewWithLibrary";
-import { set } from "date-fns";
 
 /**
  * GridTable Style
@@ -492,6 +491,21 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
 
   const columnsToReturn = columns.map((column) => column.field);
 
+  // const {
+  //   data,
+  //   loading,
+  //   error,
+  //   setQueryLimit,
+  //   setQueryOffset,
+  //   queryLimit,
+  //   queryOffset,
+  //   orderByColumn,
+  //   setOrderByColumn,
+  //   orderByDirection,
+  //   setOrderByDirection,
+  // } = useGetProjectListView({ columnsToReturn });
+
+  // with json-to-graphql-query library
   const {
     data,
     loading,
@@ -504,7 +518,7 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-  } = useGetProjectListView({ columnsToReturn });
+  } = useGetProjectListViewWithLibrary({ columnsToReturn });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
