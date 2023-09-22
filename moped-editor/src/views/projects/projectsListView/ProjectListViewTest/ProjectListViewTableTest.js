@@ -7,7 +7,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../../theme/typography";
 
 import GridTableToolbar from "src/components/GridTable/GridTableToolbar";
-import GridTableSearch from "src/components/GridTable/GridTableSearch";
+import Search from "./Search";
 import Pagination from "./Pagination";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
@@ -564,7 +564,7 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
       <Container maxWidth={false} className={classes.root}>
         {/*Toolbar Space*/}
         <GridTableToolbar>
-          <GridTableSearch
+          <Search
             parentData={data}
             query={query}
             searchState={{

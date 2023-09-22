@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
+import { useSearch } from "./useSearch";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
 export const useGetProjectListView = ({ columnsToReturn }) => {
@@ -70,7 +71,7 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
 //     project_list_view(
 //       limit: 250 ✅
 //       offset: 0 ✅
-//       where: {}
+//       where: {project_team_members: {_ilike: "%John%"}, project_partner: {_ilike: "%COA%"}}
 //       order_by: {updated_at: desc} ✅
 //     ) {
 //       project_id

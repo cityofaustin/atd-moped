@@ -87,8 +87,8 @@ export const useGetProjectListViewWithLibrary = ({ columnsToReturn }) => {
 //     project_list_view(
 //       limit: 250 ✅
 //       offset: 0 ✅
-//       where: {}
-//       order_by: {updated_at: desc}
+//       where: {project_team_members: {_ilike: "%John%"}, project_partner: {_ilike: "%COA%"}}
+//       order_by: {updated_at: desc} ✅
 //     ) {
 //       project_id
 //       project_name
