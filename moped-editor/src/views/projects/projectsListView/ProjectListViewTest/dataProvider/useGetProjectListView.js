@@ -6,7 +6,10 @@ import { useOrderBy } from "./useOrderBy";
 import { useSearch } from "./useSearch";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
-export const useGetProjectListView = ({ columnsToReturn }) => {
+export const useGetProjectListView = ({
+  columnsToReturn,
+  defaultSearchTerm,
+}) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({ defaultLimit: 250, defaultOffset: 0 });
 
@@ -20,8 +23,16 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     defaultOrderByDirection: "desc",
   });
 
+  const {
+    searchTerm,
+    setSearchTerm,
+    searchByColumn,
+    setSearchByColumn,
+    searchWhereString,
+  } = useSearch({ defaultSearchTerm });
+
   // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
-  // TODO: Add hook for where filters
+  // TODO: Add hook for advanced filters
 
   const query = useMemo(() => {
     return gql`{
@@ -29,6 +40,7 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
+            where: {${searchWhereString}}
         ) {
             ${columnsToReturn.join("\n")}
         },
@@ -62,6 +74,10 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
+    searchTerm,
+    setSearchTerm,
+    searchByColumn,
+    setSearchByColumn,
   };
 };
 

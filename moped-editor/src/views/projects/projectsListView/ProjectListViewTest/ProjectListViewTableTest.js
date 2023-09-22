@@ -101,7 +101,10 @@ const handleColumnChange = ({ field }, hidden) => {
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTableTest = ({ query, searchTerm }) => {
+const ProjectsListViewTableTest = ({
+  query,
+  searchTerm: defaultSearchTerm,
+}) => {
   const classes = useStyles();
 
   /**
@@ -518,7 +521,11 @@ const ProjectsListViewTableTest = ({ query, searchTerm }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-  } = useGetProjectListViewWithLibrary({ columnsToReturn });
+    searchTerm,
+    setSearchTerm,
+    searchByColumn,
+    setSearchByColumn,
+  } = useGetProjectListViewWithLibrary({ columnsToReturn, defaultSearchTerm });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn

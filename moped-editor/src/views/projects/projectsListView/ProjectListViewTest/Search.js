@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
-import GridTableSearchBar from "./GridTableSearchBar";
+import SearchBar from "./SearchBar";
 import GridTableNewItem from "./GridTableNewItem";
 import makeStyles from "@mui/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
@@ -311,7 +311,7 @@ const GridTableSearch = ({
               lg={10}
               className={classes.gridSearchPadding}
             >
-              <GridTableSearchBar
+              <SearchBar
                 query={query}
                 searchState={searchState}
                 filterState={filterState}
