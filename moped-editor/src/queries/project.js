@@ -295,19 +295,19 @@ export const TIMELINE_QUERY = gql`
       }
     }
     moped_milestones(
-      where: { milestone_id: { _gt: 0 }, is_deleted: { _eq: false } }
+      where: { is_deleted: { _eq: false } }
     ) {
       milestone_id
       milestone_name
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
-      order_by: [{ milestone_order: asc }, { milestone_end: desc }]
+      order_by: [{ milestone_order: asc }, { date_actual: desc }]
     ) {
       milestone_id
-      milestone_description
-      milestone_estimate
-      milestone_end
+      description
+      date_estimate
+      date_actual
       completed
       project_milestone_id
       project_id
@@ -355,29 +355,29 @@ export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
 
 export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   mutation ProjectMilestonesMutation(
-    $milestone_description: String
+    $description: String
     $completed: Boolean
-    $milestone_estimate: date = null
-    $milestone_end: date = null
+    $date_estimate: date = null
+    $date_actual: date = null
     $project_milestone_id: Int!
     $milestone_id: Int!
   ) {
     update_moped_proj_milestones_by_pk(
       pk_columns: { project_milestone_id: $project_milestone_id }
       _set: {
-        milestone_description: $milestone_description
+        description: $description
         completed: $completed
-        milestone_estimate: $milestone_estimate
-        milestone_end: $milestone_end
+        date_estimate: $date_estimate
+        date_actual: $date_actual
         milestone_id: $milestone_id
       }
     ) {
       project_id
       project_milestone_id
-      milestone_estimate
-      milestone_end
+      date_estimate
+      date_actual
       completed
-      milestone_description
+      description
     }
   }
 `;
@@ -428,9 +428,9 @@ export const ADD_PROJECT_MILESTONE = gql`
     insert_moped_proj_milestones(objects: $objects) {
       returning {
         milestone_id
-        milestone_description
-        milestone_estimate
-        milestone_end
+        description
+        date_estimate
+        date_actual
         completed
         project_milestone_id
         project_id

@@ -240,6 +240,15 @@ export const ProjectsListViewQueryConf = {
     },
     interim_project_id: {
       type: "Int",
+    },
+    children_project_ids: {
+      type: "array",
+    },
+    parent_project_id: {
+      type: "Int"
+    },
+    parent_project_name: {
+      type: "string",
     }
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅

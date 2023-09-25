@@ -230,6 +230,10 @@ const ProjectsListViewTableTest = ({
   //   query.config.options.useQuery
   // );
 
+  const linkStateFilters = Object.keys(filters).length
+    ? btoa(JSON.stringify(filters))
+    : false;
+
   const columns = [
     {
       title: "ID",
@@ -243,11 +247,7 @@ const ProjectsListViewTableTest = ({
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
+          state={{ filters: linkStateFilters }}
           className={classes.colorPrimary}
         >
           {entry.project_name}
@@ -488,6 +488,31 @@ const ProjectsListViewTableTest = ({
       title: "Interim MPD (Access) ID",
       field: "interim_project_id",
       hidden: hiddenColumns["interim_project_id"],
+      emptyValue: "-",
+    },
+    {
+      title: "Parent project",
+      field: "parent_project_id",
+      hidden: hiddenColumns["parent_project_id"],
+      emptyValue: "-",
+      render: (entry) => (
+        <RouterLink
+          to={`/moped/projects/${entry.parent_project_id}`}
+          state={{ filters: linkStateFilters }}
+          className={classes.colorPrimary}
+        >
+          {entry.parent_project_name}
+        </RouterLink>
+      ),
+    },
+    {
+      title: "Has subprojects",
+      field: "children_project_ids",
+      hidden: hiddenColumns["children_project_ids"],
+      render: (entry) => {
+        const hasChildren = entry.children_project_ids.length > 0;
+        return <span> {hasChildren ? "Yes" : "-"} </span>;
+      },
       emptyValue: "-",
     },
   ];

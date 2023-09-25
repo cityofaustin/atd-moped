@@ -8,7 +8,6 @@ export const useOrderBy = ({
   const [orderByDirection, setOrderByDirection] = useState(
     defaultOrderByDirection
   );
-  console.log(orderByColumn, orderByDirection);
 
   return {
     orderByColumn,
