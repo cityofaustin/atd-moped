@@ -1,5 +1,5 @@
-import { useState } from "react";
-import ProjectsListViewQueryConf from "../../ProjectsListViewQueryConf";
+import { useState, useMemo } from "react";
+import { ProjectsListViewQueryConf } from "../../ProjectsListViewQueryConf";
 
 /**
  * Attempts to retrieve a valid graphql search value, for example when searching on an
@@ -32,7 +32,7 @@ export const useSearch = ({ defaultSearchTerm }) => {
   const [searchTerm, setSearchTerm] = useState(defaultSearchTerm ?? "");
 
   const searchWhereString = useMemo(() => {
-    if (search.value && search.value !== "") {
+    if (searchTerm && searchTerm !== "") {
       /**
        * Iterate through all column keys, if they are searchable
        * add the to the Or list.
@@ -46,7 +46,7 @@ export const useSearch = ({ defaultSearchTerm }) => {
         .map((column) => {
           const { operator, quoted, envelope } =
             ProjectsListViewQueryConf.columns[column].search;
-          const searchValue = getSearchValue(column, search.value);
+          const searchValue = getSearchValue(column, searchTerm);
           const graphqlSearchValue = quoted
             ? `"${envelope.replace("{VALUE}", searchValue)}"`
             : searchValue;
@@ -63,8 +63,6 @@ export const useSearch = ({ defaultSearchTerm }) => {
   return {
     searchTerm,
     setSearchTerm,
-    searchByColumn,
-    setSearchByColumn,
     searchWhereString,
   };
 };

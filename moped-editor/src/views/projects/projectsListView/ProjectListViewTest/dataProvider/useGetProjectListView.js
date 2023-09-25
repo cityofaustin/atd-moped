@@ -23,13 +23,9 @@ export const useGetProjectListView = ({
     defaultOrderByDirection: "desc",
   });
 
-  const {
-    searchTerm,
-    setSearchTerm,
-    searchByColumn,
-    setSearchByColumn,
-    searchWhereString,
-  } = useSearch({ defaultSearchTerm });
+  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    defaultSearchTerm,
+  });
 
   // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
   // TODO: Add hook for advanced filters
@@ -56,6 +52,7 @@ export const useGetProjectListView = ({
     columnsToReturn,
     orderByColumn,
     orderByDirection,
+    searchWhereString,
   ]);
 
   const { data, loading, error } = useQuery(query, {
@@ -76,8 +73,6 @@ export const useGetProjectListView = ({
     setOrderByDirection,
     searchTerm,
     setSearchTerm,
-    searchByColumn,
-    setSearchByColumn,
   };
 };
 

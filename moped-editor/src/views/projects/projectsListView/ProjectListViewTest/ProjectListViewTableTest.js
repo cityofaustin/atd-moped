@@ -116,7 +116,7 @@ const ProjectsListViewTableTest = ({
    * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
-    value: searchTerm ?? "",
+    value: defaultSearchTerm ?? "",
     column: "",
   });
 
@@ -494,21 +494,6 @@ const ProjectsListViewTableTest = ({
 
   const columnsToReturn = columns.map((column) => column.field);
 
-  // const {
-  //   data,
-  //   loading,
-  //   error,
-  //   setQueryLimit,
-  //   setQueryOffset,
-  //   queryLimit,
-  //   queryOffset,
-  //   orderByColumn,
-  //   setOrderByColumn,
-  //   orderByDirection,
-  //   setOrderByDirection,
-  // } = useGetProjectListView({ columnsToReturn });
-
-  // with json-to-graphql-query library
   const {
     data,
     loading,
@@ -521,11 +506,24 @@ const ProjectsListViewTableTest = ({
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-    searchTerm,
-    setSearchTerm,
-    searchByColumn,
-    setSearchByColumn,
-  } = useGetProjectListViewWithLibrary({ columnsToReturn, defaultSearchTerm });
+  } = useGetProjectListView({ columnsToReturn });
+
+  // with json-to-graphql-query library
+  // const {
+  //   data,
+  //   loading,
+  //   error,
+  //   setQueryLimit,
+  //   setQueryOffset,
+  //   queryLimit,
+  //   queryOffset,
+  //   orderByColumn,
+  //   setOrderByColumn,
+  //   orderByDirection,
+  //   setOrderByDirection,
+  //   searchTerm,
+  //   setSearchTerm,
+  // } = useGetProjectListViewWithLibrary({ columnsToReturn, defaultSearchTerm });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
@@ -626,7 +624,7 @@ const ProjectsListViewTableTest = ({
                         setQueryLimit={setQueryLimit}
                         queryOffset={queryOffset}
                         setQueryOffset={setQueryOffset}
-                        rowsPerPageOptions={[250, 1000]}
+                        rowsPerPageOptions={[1, 250, 1000]}
                       />
                     ),
                     Header: (props) => (

@@ -17,9 +17,9 @@ import {
   Popper,
 } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import GridTableFilters from "./GridTableFilters";
+import GridTableFilters from "src/components/GridTable/GridTableFilters";
 import SearchBar from "./SearchBar";
-import GridTableNewItem from "./GridTableNewItem";
+import GridTableNewItem from "src/components/GridTable/GridTableNewItem";
 import makeStyles from "@mui/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
