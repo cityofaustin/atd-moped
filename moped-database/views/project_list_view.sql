@@ -1,4 +1,4 @@
--- latest version 1695052574993_parent_child_list_view
+-- latest version 1695755972720_project_list_view_signals
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
