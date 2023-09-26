@@ -363,7 +363,7 @@ export const ProjectsListViewFiltersConf = {
     {
       name: "children_project_ids",
       label: "Has Subprojects",
-      placeholder: "thing",
+      placeholder: "Subproject",
       type: "array",
       operators: [
         "subprojects_array_is_null",
