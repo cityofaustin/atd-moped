@@ -24,6 +24,7 @@ import makeStyles from '@mui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import { get } from "lodash";
+import Papa from 'papaparse';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -150,17 +151,19 @@ const GridTableSearch = ({
    * @return {string}
    */
   const dataToCSV = (headers, data) => {
-    return (
-      headers.join(",") +
-      "\n" +
-      data
-        .map((item) => {
-          return headers
-            .map((key) => dataSanitizeValueExport(item[key]))
-            .join(",");
-        })
-        .join("\n")
-    );
+    // return (
+    //   headers.join(",") +
+    //   "\n" +
+    //   data
+    //     .map((item) => {
+    //       console.log(item)
+    //       return headers
+    //         .map((key) => dataSanitizeValueExport(item[key]))
+    //         .join(",");
+    //     })
+    //     .join("\n")
+    // );
+    return Papa.unparse(data)
   };
 
   /**
@@ -209,6 +212,20 @@ const GridTableSearch = ({
     return entry;
   };
 
+
+  const renameColumns = (record) => {
+    // Allocate an empty object
+    const entry = {};
+    // For each column in the export configuration
+    Object.keys(query.config.export).forEach((column) => {
+      const { label } = query.config.export[column];
+      // Determine the new column name, if available.
+      const newColumnName = label ? label : column;
+      entry[newColumnName] = record[column];
+    });
+    return entry;
+  };
+
   /**
    * Returns an array of objects (each object is a row and each key of that object is a column in the export file)
    * @param {array} data - Data returned from DB with nested data structures
@@ -217,7 +234,7 @@ const GridTableSearch = ({
   const formatExportData = (data) => {
     if (data) {
       return data.map((record) => {
-        return buildRecordEntry(record);
+        return renameColumns(record);
       });
     }
     return [];
