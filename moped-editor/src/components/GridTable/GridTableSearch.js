@@ -240,7 +240,9 @@ const GridTableSearch = ({
       if (dialogOpen && downloading && data && !loading) {
         const formattedData = formatExportData(data[query.table]);
         // use the papaparse library to "unparse" a json object to csv 
-        const csvString = Papa.unparse(formattedData);
+        // escapeFormulae: "field values that begin with =, +, -, @, \t, or \r, will be prepended with a ' to defend 
+        // against injection attacks because Excel and LibreOffice will automatically parse such cells as formulae." 
+        const csvString = Papa.unparse(formattedData, {escapeFormulae: true});
         setTimeout(() => {
           // Update the state
           setDialogOpen(false);
