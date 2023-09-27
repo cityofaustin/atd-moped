@@ -1,4 +1,3 @@
--- latest version 1695755972720_project_list_view_signals
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -66,8 +65,7 @@ AS WITH project_person_list_lookup AS (
         WHERE TRUE
           AND components.is_deleted = false
           AND components.project_id = mp.project_id
-          AND feature_signals.signal_id is not null
-          AND feature_signals.is_deleted = false
+          and feature_signals.signal_id is not null
         ) as project_feature,
     fsl.funding_source_name,
     ptl.type_name,
