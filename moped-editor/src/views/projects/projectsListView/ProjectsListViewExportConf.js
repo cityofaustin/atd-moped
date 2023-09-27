@@ -3,6 +3,7 @@ import {
   filterProjectTeamMembers,
   filterProjectSignals,
   filterTaskOrderName,
+  filterStatusUpdate,
 } from "./helpers.js";
 
 /**
@@ -72,7 +73,7 @@ export const ProjectsListViewExportConf = {
   },
   project_note: {
     label: "Status Update",
-    filter: filterNullValues,
+    filter: filterStatusUpdate,
   },
   construction_start_date: {
     label: "Construction start",

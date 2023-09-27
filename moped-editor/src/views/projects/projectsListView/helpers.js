@@ -56,3 +56,19 @@ export const filterTaskOrderName = (value) => {
   });
   return taskOrderArray.join(", ");
 };
+
+export const filterStatusUpdate = (value) => {
+  if (!value || value === "-") {
+    return "";
+  } else {
+    // escape " by preceding it with another "
+    if (value.includes('"')) {
+      value = value.replace(/"/g, '""');
+    }
+    // escape , by wrapping it in ""
+    if (value.includes(",")) {
+      value = value.replace(/,/g, '"",""');
+    }
+    return value;
+  }
+};
