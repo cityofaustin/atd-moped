@@ -3,6 +3,7 @@ import {
   filterProjectTeamMembers,
   filterProjectSignals,
   filterTaskOrderName,
+  resolveHasSubprojects,
 } from "./helpers.js";
 
 /**
@@ -108,5 +109,13 @@ export const ProjectsListViewExportConf = {
   public_process_status: {
     label: "Public process status",
     filter: filterNullValues,
+  },
+  parent_project_name: {
+    label: "Parent project name",
+    filter: filterNullValues,
+  },
+  children_project_ids: {
+    label: "Has subprojects",
+    filter: resolveHasSubprojects,
   },
 };
