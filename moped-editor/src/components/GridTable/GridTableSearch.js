@@ -19,11 +19,10 @@ import {
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
-import GridTableNewItem from "./GridTableNewItem";
 import makeStyles from '@mui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
-import { get } from "lodash";
+import Papa from 'papaparse';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -85,7 +84,6 @@ const GridTableSearch = ({
   query,
   searchState,
   filterState,
-  children,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
@@ -124,52 +122,12 @@ const GridTableSearch = ({
   );
 
   /**
-   * Generates a sanitized string for CSV
-   * @param {*} value - Any value
-   * @return {string}
-   */
-  const dataSanitizeValueExport = (value) => {
-    return typeof value !== "number" ? `"${value}"` : String(value);
-  };
-
-  /**
-   * Retrieves a list of headers for the data
-   * @param {Array} data - The data payload
-   * @return {string[]}
-   */
-  const dataGetHeaders = (data) => {
-    return Array.isArray(data)
-      ? Object.keys(data[0]).filter((key) => key !== "__typename")
-      : [];
-  };
-
-  /**
-   * Converts a single data entry into a CSV line
-   * @param {string[]} headers - The list of headers that determines the order
-   * @param {Object} data - The data as provided by Hasura
-   * @return {string}
-   */
-  const dataToCSV = (headers, data) => {
-    return (
-      headers.join(",") +
-      "\n" +
-      data
-        .map((item) => {
-          return headers
-            .map((key) => dataSanitizeValueExport(item[key]))
-            .join(",");
-        })
-        .join("\n")
-    );
-  };
-
-  /**
    * Downloads the contents of fileContents into a file
    * @param {string} fileContents
    */
   const downloadFile = (fileContents) => {
     const exportFileName =
-      query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
+      "moped-" + query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
     const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
     const link = document.createElement("a");
     if (link.download !== undefined) {
@@ -193,19 +151,13 @@ const GridTableSearch = ({
     const entry = {};
     // For each column in the export configuration
     Object.keys(query.config.export).forEach((column) => {
-      // Extract the label, filter, and path
-      const { label, filter, path } = query.config.export[column];
+      // column label and data formatting function
+      const { label, filter } = query.config.export[column];
       // Determine the new column name, if available.
       const newColumnName = label ? label : column;
-      // If it's a nested graphql expression, use lodash get and
-      // the path to get to the value, otherwise, assign the value.
-      const value = query.isNestedKey(column)
-        ? get(record, path)
-        : record[column];
       // If there is a filter, use it. Assign the value to the new column name.
-      entry[newColumnName] = filter ? filter(value) : value;
+      entry[newColumnName] = filter ? filter(record[column]) : record[column];
     });
-    // Return new object
     return entry;
   };
 
@@ -284,8 +236,10 @@ const GridTableSearch = ({
 
       if (dialogOpen && downloading && data && !loading) {
         const formattedData = formatExportData(data[query.table]);
-        const headers = dataGetHeaders(formattedData);
-        const csvString = dataToCSV(headers, formattedData);
+        // use the papaparse library to "unparse" a json object to csv 
+        // escapeFormulae: "field values that begin with =, +, -, @, \t, or \r, will be prepended with a ' to defend 
+        // against injection attacks because Excel and LibreOffice will automatically parse such cells as formulae." 
+        const csvString = Papa.unparse(formattedData, {escapeFormulae: true});
         setTimeout(() => {
           // Update the state
           setDialogOpen(false);
@@ -299,8 +253,6 @@ const GridTableSearch = ({
 
   return (
     <div>
-      {query.config.showNewItemButton && <GridTableNewItem query={query} />}
-      {children}
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
