@@ -56,3 +56,12 @@ export const filterTaskOrderName = (value) => {
   });
   return taskOrderArray.join(", ");
 };
+
+export const resolveHasSubprojects = (array) => {
+  if (array) {
+    if (array.length > 0) {
+      return "Yes";
+    }
+  }
+  return "No";
+};
