@@ -237,9 +237,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
-  // I tried putting useEffect around this to only update the where clause when the filters were updated
-  // however the component does not refresh to display new data
-  // useEffect(() => {
   Object.keys(filters).forEach((filter) => {
     let { envelope, field, gqlOperator, value, type, specialNullValue } =
       filters[filter];
@@ -272,7 +269,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     }
     query.setWhere(field, `${gqlOperator}: ${value}`);
   });
-  //}, [filters, query]);
 
   /**
    * Returns a ProjectStatusBadge component based on the status and phase of project
