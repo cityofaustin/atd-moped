@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
@@ -7,7 +7,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
-import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
 import Pagination from "../../../components/GridTable/Pagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -15,7 +14,7 @@ import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
-import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
+import MaterialTable, { MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -98,6 +97,28 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
+const useFilterQuery = (locationSearch) =>
+  useMemo(() => {
+    return new URLSearchParams(locationSearch);
+  }, [locationSearch]);
+
+/**
+ * if filter exists in url, decodes base64 string and returns as object
+ * Used to initialize filter state
+ * @return Object
+ */
+const useMakeFilterState = (filterQuery) =>
+  useMemo(() => {
+    if (Array.from(filterQuery).length > 0) {
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")));
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }, [filterQuery]);
+
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -126,23 +147,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   // create URLSearchParams from url
-  const filterQuery = new URLSearchParams(useLocation().search);
-
-  /**
-   * if filter exists in url, decodes base64 string and returns as object
-   * Used to initialize filter state
-   * @return Object if valid JSON otherwise false
-   */
-  const getFilterQuery = () => {
-    if (Array.from(filterQuery).length > 0) {
-      try {
-        return JSON.parse(atob(filterQuery.get("filter")));
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
+  const filterQuery = useFilterQuery(useLocation().search);
+  const initialFilterState = useMakeFilterState(filterQuery);
 
   /**
    * Stores objects storing a random id, column, operator, and value.
@@ -150,7 +156,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @function setFilter - Sets the state of filters
    * @default {if filter in url, use those params, otherwise {}}
    */
-  const [filters, setFilter] = useState(getFilterQuery() || {});
+  const [filters, setFilter] = useState(initialFilterState);
 
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
@@ -519,7 +525,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const columnsToReturn = columns.map((column) => column.field);
 
   const {
-    query,
+    query: projectListViewQuery,
     setQueryLimit,
     setQueryOffset,
     queryLimit,
@@ -530,7 +536,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     setOrderByDirection,
   } = useGetProjectListView({ columnsToReturn });
 
-  const { data, loading, error } = useQuery(query, {
+  const { data, loading, error } = useQuery(projectListViewQuery, {
     fetchPolicy: "cache-first",
   });
 
@@ -576,24 +582,21 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        {/*Toolbar Space*/}
-        <GridTableToolbar>
-          <GridTableSearch
-            parentData={data}
-            query={query}
-            searchState={{
-              searchParameters: search,
-              setSearchParameters: setSearch,
-            }}
-            filterState={{
-              filterParameters: filters,
-              setFilterParameters: setFilter,
-            }}
-            filterQuery={filterQuery}
-            advancedSearchAnchor={advancedSearchAnchor}
-            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
-          />
-        </GridTableToolbar>
+        <GridTableSearch
+          parentData={data}
+          query={query}
+          searchState={{
+            searchParameters: search,
+            setSearchParameters: setSearch,
+          }}
+          filterState={{
+            filterParameters: filters,
+            setFilterParameters: setFilter,
+          }}
+          filterQuery={filterQuery}
+          advancedSearchAnchor={advancedSearchAnchor}
+          setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+        />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box mt={3}>
@@ -642,24 +645,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                         orderDirection={orderByDirection}
                       />
                     ),
-                    Body: (props) => {
-                      // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
-                      // we have configured MT to use local data but are technically using remote data
-                      // this results in inconsistencies with how MT displays filtered data
-                      const indexedData = data["project_list_view"].map(
-                        (row, index) => ({
-                          tableData: { id: index, uuid: row.project_id },
-                          ...row,
-                        })
-                      );
-                      return (
-                        <MTableBody
-                          {...props}
-                          renderData={indexedData}
-                          pageSize={indexedData.length}
-                        />
-                      );
-                    },
                   }}
                 />
               </Card>
