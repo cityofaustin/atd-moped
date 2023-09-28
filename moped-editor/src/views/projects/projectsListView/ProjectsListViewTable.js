@@ -89,7 +89,9 @@ const DEFAULT_HIDDEN_COLS = {
  * @param {Bool} hidden - the hidden state of the column
  */
 const handleColumnChange = ({ field }, hidden) => {
-  let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+  let storedConfig =
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
+    DEFAULT_HIDDEN_COLS;
   storedConfig = { ...storedConfig, [field]: hidden };
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };

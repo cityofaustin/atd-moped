@@ -360,6 +360,16 @@ export const ProjectsListViewFiltersConf = {
         "*", // All of them (shortcut)
       ],
     },
+    {
+      name: "children_project_ids",
+      label: "Has Subprojects",
+      placeholder: "Subproject",
+      type: "array",
+      operators: [
+        "subprojects_array_is_null",
+        "subprojects_array_is_not_null"
+      ],
+    },
   ],
 
   operators: {
