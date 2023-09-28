@@ -58,17 +58,16 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Renders a search bar with optional filters
- * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param {Object} searchState - The current state/state-modifier bundle for search
  * @param {Object} filterState - The current state/state-modifier bundle for filter
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
+ * @param {String} searchTerm - the current search term set in the query
+ * @param {Function} setSearchTerm - set the current search term set in the query
+ * @param {Object} queryConfig - the query configuration object with placeholder text
  * @return {JSX.Element}
  * @constructor
  */
 const SearchBar = ({
-  query,
-  searchState,
   filterState,
   toggleAdvancedSearch,
   advancedSearchAnchor,
@@ -99,7 +98,7 @@ const SearchBar = ({
   const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
 
   const handleSearchValueChange = (value) => {
-    if (value === "" && searchTerm !== "") {
+    if (value === "" && searchFieldValue !== "") {
       handleClearSearchResults();
     } else {
       setSearchFieldValue(value);
@@ -128,6 +127,7 @@ const SearchBar = ({
    */
   const handleClearSearchResults = () => {
     setSearchTerm("");
+    setSearchFieldValue("");
   };
 
   /**
