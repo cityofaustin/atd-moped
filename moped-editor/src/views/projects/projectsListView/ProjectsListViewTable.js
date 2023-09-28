@@ -20,6 +20,7 @@ import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 
 /**
  * GridTable Style
@@ -522,7 +523,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     },
   ];
 
-  const columnsToReturn = columns.map((column) => column.field);
+  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
   const {
     query: projectListViewQuery,
