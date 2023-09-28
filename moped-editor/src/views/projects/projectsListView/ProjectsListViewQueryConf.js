@@ -30,6 +30,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [250, 1000],
+    defaultOffset: 0,
+    defaultLimit: 250,
+  },
+  order: {
+    defaultOrderByColumn: "updated_at",
+    defaultOrderByDirection: "desc",
   },
   filters: PROJECT_LIST_VIEW_FILTERS_CONFIG,
   export: PROJECT_LIST_VIEW_EXPORT_CONFIG,

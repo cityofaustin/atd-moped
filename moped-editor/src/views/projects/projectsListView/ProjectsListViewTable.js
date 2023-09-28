@@ -535,7 +535,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-  } = useGetProjectListView({ columnsToReturn });
+  } = useGetProjectListView({
+    columnsToReturn,
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+  });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
     fetchPolicy: "cache-first",
