@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({
+const SearchBar = ({
   query,
   searchState,
   filterState,
@@ -231,8 +231,8 @@ const GridTableSearchBar = ({
   );
 };
 
-GridTableSearchBar.propTypes = {
+SearchBar.propTypes = {
   className: PropTypes.string,
 };
 
-export default GridTableSearchBar;
+export default SearchBar;

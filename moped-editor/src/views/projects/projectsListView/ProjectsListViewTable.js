@@ -7,7 +7,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
-import GridTableSearch from "../../../components/GridTable/GridTableSearch";
+import Search from "../../../components/GridTable/Search";
 import Pagination from "../../../components/GridTable/Pagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
@@ -143,7 +143,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     column: "",
   });
 
-  // anchor element for advanced search popper in GridTableSearch to "attach" to
+  // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
@@ -171,7 +171,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   query.cleanWhere();
 
   // If we have a search value in state, initiate search
-  // GridTableSearchBar in GridTableSearch updates search value
+  // SearchBar in Search updates search value
   if (search.value && search.value !== "") {
     /**
      * Iterate through all column keys, if they are searchable
@@ -583,7 +583,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <GridTableSearch
+        <Search
           parentData={data}
           query={query}
           searchState={{

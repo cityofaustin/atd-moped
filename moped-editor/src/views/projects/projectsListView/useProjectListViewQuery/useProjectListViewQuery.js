@@ -3,7 +3,10 @@ import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
 
-export const useGetProjectListView = ({ columnsToReturn }) => {
+export const useGetProjectListView = ({
+  columnsToReturn,
+  defaultSearchTerm,
+}) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({ defaultLimit: 250, defaultOffset: 0 });
 
@@ -17,12 +20,20 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     defaultOrderByDirection: "desc",
   });
 
+  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    defaultSearchTerm,
+  });
+
+  // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
+  // TODO: Add hook for advanced filters
+
   const query = useMemo(() => {
     return gql`{
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
+            where: {${searchWhereString}}
         ) {
             ${columnsToReturn.join("\n")}
         },
@@ -38,6 +49,7 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     columnsToReturn,
     orderByColumn,
     orderByDirection,
+    searchWhereString,
   ]);
 
   return {
