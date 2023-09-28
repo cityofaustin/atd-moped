@@ -7,7 +7,7 @@ import Page from "src/components/Page";
 // Abstract
 import GQLAbstract from "../../../libs/GQLAbstract";
 
-import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./PROJECT_LIST_VIEW_QUERY_CONFIG";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import ProjectsListViewTable from "./ProjectsListViewTable";
 
 // Styles

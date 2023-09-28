@@ -1,6 +1,6 @@
 import React from "react";
-import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./PROJECT_LIST_VIEW_FILTERS_CONFIG";
-import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./PROJECT_LIST_VIEW_EXPORT_CONFIG";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";

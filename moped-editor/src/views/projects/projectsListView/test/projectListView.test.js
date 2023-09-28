@@ -3,7 +3,7 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GQLAbstract from "src/libs/GQLAbstract";
 import GridTableFilters from "src/components/GridTable/GridTableFilters";
-import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../PROJECT_LIST_VIEW_QUERY_CONFIG";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../ProjectsListViewQueryConf";
 import { createBrowserHistory } from "history";
 
 let projectsQuery = new GQLAbstract(PROJECT_LIST_VIEW_QUERY_CONFIG);
