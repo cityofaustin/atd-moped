@@ -10,7 +10,10 @@ export const useGetProjectListView = ({
   queryConfig,
 }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
-    usePagination({ defaultLimit: 250, defaultOffset: 0 });
+    usePagination({
+      defaultLimit: queryConfig.pagination.defaultLimit,
+      defaultOffset: queryConfig.pagination.defaultOffset,
+    });
 
   const {
     orderByColumn,
@@ -18,8 +21,8 @@ export const useGetProjectListView = ({
     orderByDirection,
     setOrderByDirection,
   } = useOrderBy({
-    defaultOrderByColumn: "updated_at",
-    defaultOrderByDirection: "desc",
+    defaultOrderByColumn: queryConfig.order.defaultOrderByColumn,
+    defaultOrderByDirection: queryConfig.order.defaultOrderByDirection,
   });
 
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({

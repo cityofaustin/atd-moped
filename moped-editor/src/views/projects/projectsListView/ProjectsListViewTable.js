@@ -517,8 +517,8 @@ const ProjectsListViewTable = ({ query }) => {
     searchTerm,
     setSearchTerm,
   } = useGetProjectListView({
-    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
     columnsToReturn,
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
     defaultSearchTerm: navSearchTerm,
   });
 
