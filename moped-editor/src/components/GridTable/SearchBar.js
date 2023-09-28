@@ -72,6 +72,9 @@ const SearchBar = ({
   filterState,
   toggleAdvancedSearch,
   advancedSearchAnchor,
+  searchTerm,
+  setSearchTerm,
+  queryConfig,
 }) => {
   const classes = useStyles();
 
@@ -81,7 +84,7 @@ const SearchBar = ({
    */
   const getSearchPlaceholder = () => {
     try {
-      return query.config.search.placeholder;
+      return queryConfig.search.placeholder;
     } catch {
       return "Enter search value";
     }
@@ -93,12 +96,10 @@ const SearchBar = ({
    * @function setSearchFieldValue - Sets the state of the field
    * @default {?searchState.searchParameters.value}
    */
-  const [searchFieldValue, setSearchFieldValue] = useState(
-    (searchState.searchParameters && searchState.searchParameters.value) || ""
-  );
+  const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
 
   const handleSearchValueChange = (value) => {
-    if (value === "" && searchFieldValue !== "") {
+    if (value === "" && searchTerm !== "") {
       handleClearSearchResults();
     } else {
       setSearchFieldValue(value);
@@ -119,17 +120,14 @@ const SearchBar = ({
     if (event) event.preventDefault();
 
     // Update state if we are ready, triggers search.
-    searchState.setSearchParameters({
-      value: searchFieldValue,
-    });
+    setSearchTerm(searchFieldValue);
   };
 
   /**
    * Clears the search results
    */
   const handleClearSearchResults = () => {
-    setSearchFieldValue("");
-    searchState.setSearchParameters({});
+    setSearchTerm("");
   };
 
   /**

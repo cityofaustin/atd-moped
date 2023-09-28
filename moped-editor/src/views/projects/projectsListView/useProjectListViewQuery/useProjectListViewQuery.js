@@ -33,7 +33,7 @@ export const useGetProjectListView = ({
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
-            where: {${searchWhereString}}
+            where: { ${searchWhereString ? `_or: [${searchWhereString}]` : ""} }
         ) {
             ${columnsToReturn.join("\n")}
         },

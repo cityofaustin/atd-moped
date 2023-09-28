@@ -517,6 +517,7 @@ const ProjectsListViewTable = ({ query }) => {
     searchTerm,
     setSearchTerm,
   } = useGetProjectListView({
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
     columnsToReturn,
     defaultSearchTerm: navSearchTerm,
   });
@@ -583,6 +584,7 @@ const ProjectsListViewTable = ({ query }) => {
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

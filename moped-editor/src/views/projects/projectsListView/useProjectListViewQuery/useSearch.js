@@ -45,12 +45,12 @@ export const useSearch = ({ queryConfig, defaultSearchTerm }) => {
             ? `"${envelope.replace("{VALUE}", searchValue)}"`
             : searchValue;
 
-          return `${column}: {${operator}: ${graphqlSearchValue}}`;
+          return `{ ${column}: {${operator}: ${graphqlSearchValue}} }`;
         });
 
       return searchOperatorsAndValues.join(", ");
     } else {
-      return "";
+      return null;
     }
   }, [searchTerm, queryConfig]);
 
