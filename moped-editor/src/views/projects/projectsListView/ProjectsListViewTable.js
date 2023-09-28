@@ -20,6 +20,7 @@ import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
+import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 
 /**
  * GridTable Style
@@ -106,43 +107,6 @@ const handleColumnChange = ({ field }, hidden) => {
  */
 const ProjectsListViewTable = ({ query, searchTerm }) => {
   const classes = useStyles();
-
-  /**
-   * @type {Object} pagination
-   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
-   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
-   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
-   * @function setPagination - Sets the state of pagination
-   * @default {{limit: query.limit, offset: query.offset, page: 0}}
-   */
-  const [pagination, setPagination] = useState({
-    limit: query.limit,
-    offset: query.offset,
-    page: 0,
-  });
-
-  /**
-   * The default sorting properties applied to the table.
-   * This overrides MaterialTable props and determines how
-   * the table is sorted when the page loads. Must remain consistent
-   * with the sorting order passed in from ProjectsListViewQueryConf.
-   * @property {string} column - The column name in graphql to sort by
-   * @property {integer} columnId - The column id in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or ""
-   */
-  const defaultSortingProperties = {
-    column: "updated_at",
-    columnId: 8,
-    order: "desc",
-  };
-
-  /**
-   * Stores the column name and the order to order by
-   * @type {Object} sort
-   * @function setSort - Sets the state of sort
-   * @default {defaultSortingProperties}
-   */
-  const [sort, setSort] = useState(defaultSortingProperties);
 
   /**
    * Stores the string to search for and the column to search against
@@ -274,12 +238,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const buildStatusBadge = ({ phaseName, phaseKey }) => (
     <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
-  // Data Management
-  const { data, loading, error } = useQuery(
-    query.gql,
-    query.config.options.useQuery
-  );
-  console.log(query.gql);
 
   const linkStateFilters = Object.keys(filters).length
     ? btoa(JSON.stringify(filters))
@@ -568,6 +526,26 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     },
   ];
 
+  const columnsToReturn = columns.map((column) => column.field);
+
+  const {
+    data,
+    loading,
+    error,
+    setQueryLimit,
+    setQueryOffset,
+    queryLimit,
+    queryOffset,
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useGetProjectListView({ columnsToReturn });
+
+  const sortByColumnIndex = columns.findIndex(
+    (column) => column.field === orderByColumn
+  );
+
   /**
    * Handles the header click for sorting asc/desc.
    * @param {int} columnId
@@ -576,32 +554,19 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
   const handleTableHeaderClick = (columnId, newOrderDirection) => {
-    // Before anything, let's clear all current conditions
-    query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // Resets pagination to 0 when user clicks a header to display most relevant results
-    setPagination({
-      limit: query.limit,
-      offset: query.offset,
-      page: 0,
-    });
+    // Resets pagination offset to 0 when user clicks a header to display most relevant results
+    setQueryOffset(0);
 
-    if (sort.column === columnName) {
+    if (orderByColumn === columnName) {
       // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
-      setSort({
-        order: sort.order === "desc" ? "asc" : "desc",
-        column: columnName,
-        columnId: columnId,
-      });
-    } else if (sort.column !== columnName) {
+      const direction = orderByDirection === "desc" ? "asc" : "desc";
+      setOrderByDirection(direction);
+    } else {
       // Sort different column in same order as previous column
-      setSort({
-        order: sort.order,
-        column: columnName,
-        columnId: columnId,
-      });
+      setOrderByColumn(columnName);
     }
   };
 
@@ -655,7 +620,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    pageSize: Math.min(query.limit, data[query.table].length),
+                    // pageSize: Math.min(queryLimit, data[query.table].length),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
@@ -668,18 +633,23 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                   components={{
                     Pagination: (props) => (
                       <GridTablePagination
-                        query={query}
                         data={data}
-                        pagination={pagination}
-                        setPagination={setPagination}
+                        recordCount={
+                          data["project_list_view_aggregate"].aggregate.count
+                        }
+                        queryLimit={queryLimit}
+                        setQueryLimit={setQueryLimit}
+                        queryOffset={queryOffset}
+                        setQueryOffset={setQueryOffset}
+                        rowsPerPageOptions={[1, 250, 1000]}
                       />
                     ),
                     Header: (props) => (
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
-                        orderBy={sort.columnId}
-                        orderDirection={sort.order}
+                        orderBy={sortByColumnIndex}
+                        orderDirection={orderByDirection}
                       />
                     ),
                     Body: (props) => {
@@ -713,4 +683,4 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   );
 };
 
-export default ProjectsListViewTable;
+export default ProjectsListViewTableTest;

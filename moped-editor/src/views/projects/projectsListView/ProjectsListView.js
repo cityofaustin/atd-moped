@@ -8,7 +8,7 @@ import Page from "src/components/Page";
 import GQLAbstract from "../../../libs/GQLAbstract";
 
 import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
-import ProjectsListViewTableTest from "./ProjectListViewTest/ProjectListViewTableTest";
+import ProjectsListViewTable from "./ProjectsListViewTable";
 
 // Styles
 const useStyles = makeStyles((theme) => ({
@@ -36,7 +36,7 @@ const ProjectsListView = () => {
 
   return (
     <Page className={classes.root} title="Projects">
-      <ProjectsListViewTableTest
+      <ProjectsListViewTable
         title={"Projects"}
         query={projectsQuery}
         searchTerm={navSearchTerm}

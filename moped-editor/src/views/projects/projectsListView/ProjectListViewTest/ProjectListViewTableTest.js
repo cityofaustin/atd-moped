@@ -19,7 +19,7 @@ import { filterProjectTeamMembers as renderProjectTeamMembers } from "../helpers
 import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
-import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
+import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 
 /**
  * GridTable Style

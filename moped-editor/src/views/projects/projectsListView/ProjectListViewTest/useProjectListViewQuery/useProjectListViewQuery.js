@@ -3,13 +3,9 @@ import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
-import { useSearch } from "./useSearch";
 
 // TODO: We could add a table parameter to this function to allow for different tables to be queried
-export const useGetProjectListView = ({
-  columnsToReturn,
-  defaultSearchTerm,
-}) => {
+export const useGetProjectListView = ({ columnsToReturn }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({ defaultLimit: 250, defaultOffset: 0 });
 
@@ -22,13 +18,6 @@ export const useGetProjectListView = ({
     defaultOrderByColumn: "updated_at",
     defaultOrderByDirection: "desc",
   });
-
-  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
-    defaultSearchTerm,
-  });
-
-  // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
-  // TODO: Add hook for advanced filters
 
   const query = useMemo(() => {
     return gql`{
