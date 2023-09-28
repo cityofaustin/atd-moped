@@ -19,7 +19,6 @@ import {
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import GridTableFilters from "./GridTableFilters";
 import GridTableSearchBar from "./GridTableSearchBar";
-import GridTableNewItem from "./GridTableNewItem";
 import makeStyles from '@mui/styles/makeStyles';
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
@@ -85,7 +84,6 @@ const GridTableSearch = ({
   query,
   searchState,
   filterState,
-  children,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
@@ -160,7 +158,6 @@ const GridTableSearch = ({
       // If there is a filter, use it. Assign the value to the new column name.
       entry[newColumnName] = filter ? filter(record[column]) : record[column];
     });
-    // Return new object
     return entry;
   };
 
@@ -256,8 +253,6 @@ const GridTableSearch = ({
 
   return (
     <div>
-      {query.config.showNewItemButton && <GridTableNewItem query={query} />}
-      {children}
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>

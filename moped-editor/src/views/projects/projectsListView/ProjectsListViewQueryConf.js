@@ -2,10 +2,8 @@ import React from "react";
 import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
 import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
-import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
-import theme from "src/theme/index";
 
 /**
  * The Query configuration (now also including filters)
@@ -24,7 +22,6 @@ export const ProjectsListViewQueryConf = {
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
-  showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,
@@ -75,18 +72,6 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: (values) => {
-        const jsonValues = JSON.parse(values);
-        return (
-          <RouterLink
-            to={`/${jsonValues.singleItem}/${jsonValues.link}/`}
-            state={jsonValues.state}
-            style={{ color: theme.palette.primary.main }}
-          >
-            {jsonValues.data}
-          </RouterLink>
-        );
-      },
     },
     project_description: {
       hidden: true,
