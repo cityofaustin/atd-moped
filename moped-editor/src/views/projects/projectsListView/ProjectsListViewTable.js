@@ -20,7 +20,7 @@ import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
-import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
+import { useGetProjectListView } from "./ProjectListViewTest/useProjectListViewQuery/useProjectListViewQuery";
 
 /**
  * GridTable Style
@@ -159,16 +159,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   /**
    * Query Management
    */
-  // Manage the ORDER BY clause of our query
-  query.setOrder(sort.column, sort.order);
-
-  // Set limit, offset based on pagination state
-  if (query.config.showPagination) {
-    query.limit = pagination.limit;
-    query.offset = pagination.offset;
-  } else {
-    query.limit = 0;
-  }
 
   // Resets the value of "where" "and" "or" to empty
   query.cleanWhere();
@@ -620,7 +610,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    // pageSize: Math.min(queryLimit, data[query.table].length),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
@@ -683,4 +672,4 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   );
 };
 
-export default ProjectsListViewTableTest;
+export default ProjectsListViewTable;

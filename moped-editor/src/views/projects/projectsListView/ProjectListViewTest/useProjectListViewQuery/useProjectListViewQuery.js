@@ -4,7 +4,6 @@ import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
 
-// TODO: We could add a table parameter to this function to allow for different tables to be queried
 export const useGetProjectListView = ({ columnsToReturn }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({ defaultLimit: 250, defaultOffset: 0 });
@@ -25,7 +24,6 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
-            where: {${searchWhereString}}
         ) {
             ${columnsToReturn.join("\n")}
         },
@@ -41,7 +39,6 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     columnsToReturn,
     orderByColumn,
     orderByDirection,
-    searchWhereString,
   ]);
 
   const { data, loading, error } = useQuery(query, {
@@ -60,8 +57,6 @@ export const useGetProjectListView = ({ columnsToReturn }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-    searchTerm,
-    setSearchTerm,
   };
 };
 
