@@ -20,7 +20,7 @@ import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.
 import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
-import { useGetProjectListView } from "./ProjectListViewTest/useProjectListViewQuery/useProjectListViewQuery";
+import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 
 /**
  * GridTable Style
@@ -519,9 +519,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   const columnsToReturn = columns.map((column) => column.field);
 
   const {
-    data,
-    loading,
-    error,
+    query,
     setQueryLimit,
     setQueryOffset,
     queryLimit,
@@ -531,6 +529,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     orderByDirection,
     setOrderByDirection,
   } = useGetProjectListView({ columnsToReturn });
+
+  const { data, loading, error } = useQuery(query, {
+    fetchPolicy: "cache-first",
+  });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
