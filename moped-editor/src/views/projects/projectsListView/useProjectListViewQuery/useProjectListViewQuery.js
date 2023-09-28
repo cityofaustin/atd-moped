@@ -2,10 +2,12 @@ import { useMemo } from "react";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
+import { useSearch } from "./useSearch";
 
 export const useGetProjectListView = ({
   columnsToReturn,
   defaultSearchTerm,
+  queryConfig,
 }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({ defaultLimit: 250, defaultOffset: 0 });
@@ -21,11 +23,9 @@ export const useGetProjectListView = ({
   });
 
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    queryConfig,
     defaultSearchTerm,
   });
-
-  // TODO: Add hook to get columns to query (columnsToReturn filtered by hidden: false)
-  // TODO: Add hook for advanced filters
 
   const query = useMemo(() => {
     return gql`{
@@ -62,5 +62,7 @@ export const useGetProjectListView = ({
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
+    searchTerm,
+    setSearchTerm,
   };
 };

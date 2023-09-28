@@ -1,5 +1,4 @@
 import React from "react";
-import { useLocation } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
 import Page from "src/components/Page";
@@ -32,15 +31,10 @@ let projectsQuery = new GQLAbstract(PROJECT_LIST_VIEW_QUERY_CONFIG);
  */
 const ProjectsListView = () => {
   const classes = useStyles();
-  const navSearchTerm = useLocation()?.state?.searchTerm;
 
   return (
     <Page className={classes.root} title="Projects">
-      <ProjectsListViewTable
-        title={"Projects"}
-        query={projectsQuery}
-        searchTerm={navSearchTerm}
-      />
+      <ProjectsListViewTable title={"Projects"} query={projectsQuery} />
     </Page>
   );
 };

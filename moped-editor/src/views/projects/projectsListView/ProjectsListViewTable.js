@@ -16,7 +16,6 @@ import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
 import MaterialTable, { MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
-import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
@@ -127,8 +126,13 @@ const useMakeFilterState = (filterQuery) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query, searchTerm }) => {
+const ProjectsListViewTable = ({ query }) => {
   const classes = useStyles();
+
+  // create URLSearchParams from url
+  const navSearchTerm = useLocation()?.state?.searchTerm;
+  const filterQuery = useFilterQuery(useLocation().search);
+  const initialFilterState = useMakeFilterState(filterQuery);
 
   /**
    * Stores the string to search for and the column to search against
@@ -139,17 +143,13 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * @default {{value: "", column: ""}}
    */
   const [search, setSearch] = useState({
-    value: searchTerm ?? "",
+    value: navSearchTerm ?? "",
     column: "",
   });
 
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
-
-  // create URLSearchParams from url
-  const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
 
   /**
    * Stores objects storing a random id, column, operator, and value.
@@ -169,27 +169,6 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
 
   // Resets the value of "where" "and" "or" to empty
   query.cleanWhere();
-
-  // If we have a search value in state, initiate search
-  // SearchBar in Search updates search value
-  if (search.value && search.value !== "") {
-    /**
-     * Iterate through all column keys, if they are searchable
-     * add the to the Or list.
-     */
-    Object.keys(query.config.columns)
-      .filter((column) => query.config.columns[column]?.searchable)
-      .forEach((column) => {
-        const { operator, quoted, envelope } =
-          query.config.columns[column].search;
-        const searchValue = getSearchValue(query, column, search.value);
-        const graphqlSearchValue = quoted
-          ? `"${envelope.replace("{VALUE}", searchValue)}"`
-          : searchValue;
-
-        query.setOr(column, `${operator}: ${graphqlSearchValue}`);
-      });
-  }
 
   // For each filter added to state, add a where clause in GraphQL
   // Advanced Search
@@ -535,7 +514,12 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
     setOrderByColumn,
     orderByDirection,
     setOrderByDirection,
-  } = useGetProjectListView({ columnsToReturn });
+    searchTerm,
+    setSearchTerm,
+  } = useGetProjectListView({
+    columnsToReturn,
+    defaultSearchTerm: navSearchTerm,
+  });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
     fetchPolicy: "cache-first",
@@ -597,6 +581,8 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
           filterQuery={filterQuery}
           advancedSearchAnchor={advancedSearchAnchor}
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

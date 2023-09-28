@@ -1,5 +1,4 @@
 import { useState, useMemo } from "react";
-import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../../ProjectsListViewQueryConf";
 
 /**
  * Attempts to retrieve a valid graphql search value, for example when searching on an
@@ -9,14 +8,12 @@ import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../../ProjectsListViewQueryConf"
  * @param {*} value - The value in question
  * @returns {*} - The value output
  */
-export const getSearchValue = (column, value) => {
+export const getSearchValue = (column, value, queryConfig) => {
   // Retrieve the type of field (string, float, int, etc)
-  const type =
-    PROJECT_LIST_VIEW_QUERY_CONFIG.columns[column].type.toLowerCase();
+  const type = queryConfig.columns[column].type.toLowerCase();
   // Get the invalidValueDefault in the search config object
   const invalidValueDefault =
-    PROJECT_LIST_VIEW_QUERY_CONFIG.columns[column].search
-      ?.invalidValueDefault ?? null;
+    queryConfig.columns[column].search?.invalidValueDefault ?? null;
   // If the type is number of float, attempt to parse as such
   if (["number", "float", "double"].includes(type)) {
     value = Number.parseFloat(value) || invalidValueDefault;
@@ -29,7 +26,7 @@ export const getSearchValue = (column, value) => {
   return value;
 };
 
-export const useSearch = ({ defaultSearchTerm }) => {
+export const useSearch = ({ queryConfig, defaultSearchTerm }) => {
   const [searchTerm, setSearchTerm] = useState(defaultSearchTerm ?? "");
 
   const searchWhereString = useMemo(() => {
@@ -38,16 +35,12 @@ export const useSearch = ({ defaultSearchTerm }) => {
        * Iterate through all column keys, if they are searchable
        * add the to the Or list.
        */
-      const searchOperatorsAndValues = Object.keys(
-        PROJECT_LIST_VIEW_QUERY_CONFIG.columns
-      )
-        .filter(
-          (column) => PROJECT_LIST_VIEW_QUERY_CONFIG.columns[column]?.searchable
-        )
+      const searchOperatorsAndValues = Object.keys(queryConfig.columns)
+        .filter((column) => queryConfig.columns[column]?.searchable)
         .map((column) => {
           const { operator, quoted, envelope } =
-            ProjectsListViewQueryConf.columns[column].search;
-          const searchValue = getSearchValue(column, searchTerm);
+            queryConfig.columns[column].search;
+          const searchValue = getSearchValue(column, searchTerm, queryConfig);
           const graphqlSearchValue = quoted
             ? `"${envelope.replace("{VALUE}", searchValue)}"`
             : searchValue;
@@ -59,7 +52,7 @@ export const useSearch = ({ defaultSearchTerm }) => {
     } else {
       return "";
     }
-  }, [searchTerm]);
+  }, [searchTerm, queryConfig]);
 
   return {
     searchTerm,

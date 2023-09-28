@@ -90,6 +90,8 @@ const Search = ({
   parentData = null,
   advancedSearchAnchor,
   setAdvancedSearchAnchor,
+  searchTerm,
+  setSearchTerm,
 }) => {
   const classes = useStyles();
   const queryPath = useLocation().pathname;
@@ -317,6 +319,8 @@ const Search = ({
                 filterState={filterState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
+                searchTerm={searchTerm}
+                setSearchTerm={setSearchTerm}
               />
             </Grid>
             <Grid
