@@ -7,7 +7,7 @@ import Page from "src/components/Page";
 // Abstract
 import GQLAbstract from "../../../libs/GQLAbstract";
 
-import { ProjectsListViewQueryConf } from "./ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./PROJECT_LIST_VIEW_QUERY_CONFIG";
 import ProjectsListViewTable from "./ProjectsListViewTable";
 
 // Styles
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
  * Load Query Configuration as a mutable object
  * @type {GQLAbstract}
  */
-let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
+let projectsQuery = new GQLAbstract(PROJECT_LIST_VIEW_QUERY_CONFIG);
 
 /**
  * Projects List View

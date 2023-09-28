@@ -3,10 +3,10 @@ import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GQLAbstract from "src/libs/GQLAbstract";
 import GridTableFilters from "src/components/GridTable/GridTableFilters";
-import { ProjectsListViewQueryConf } from "../ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../PROJECT_LIST_VIEW_QUERY_CONFIG";
 import { createBrowserHistory } from "history";
 
-let projectsQuery = new GQLAbstract(ProjectsListViewQueryConf);
+let projectsQuery = new GQLAbstract(PROJECT_LIST_VIEW_QUERY_CONFIG);
 const filterQuery = new URLSearchParams("");
 const history = createBrowserHistory();
 

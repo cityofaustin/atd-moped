@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { useQuery } from "@apollo/client";
 import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
