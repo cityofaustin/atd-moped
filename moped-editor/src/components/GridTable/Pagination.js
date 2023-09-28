@@ -3,10 +3,12 @@ import { TablePagination } from "@mui/material";
 
 /**
  * Pagination Component
- * @param {GQLAbstract} query - The GQLAbstract class being passed down for reference
- * @param {Object} data - It's the GraphQL query results as provided by Apollo in the form of an array of objects.
- * @param {Object} pagination - The current state of Page
- * @param {func} setPagination - The method to use to update the state of Page
+ * @param {Number} recordCount - total number of records
+ * @param {Number} queryLimit - limit of records per page
+ * @param {Function} setQueryLimit - set the limit of records per page
+ * @param {Number} offset - offset
+ * @param {Function} setOffset - set offset
+ * @param {Array} rowsPerPageOptions - array of numbers for rows per page
  * @return {JSX.Element}
  * @constructor
  */

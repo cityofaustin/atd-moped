@@ -19,13 +19,13 @@ import {
   Typography,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 // Abstract & GridTable
 import { useQuery } from "@apollo/client";
 import GridTableToolbar from "./GridTableToolbar";
 import GridTableListHeader from "./GridTableListHeader";
-import GridTablePagination from "./GridTablePagination";
+import GridTablePagination from "./Pagination";
 import GridTableSearch from "./GridTableSearch";
 import ApolloErrorHandler from "../ApolloErrorHandler";
 import { getSearchValue } from "../../utils/gridTableHelpers";

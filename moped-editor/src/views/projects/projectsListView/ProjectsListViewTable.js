@@ -9,7 +9,7 @@ import typography from "../../../theme/typography";
 import { useQuery } from "@apollo/client";
 import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
 import GridTableSearch from "../../../components/GridTable/GridTableSearch";
-import GridTablePagination from "../../../components/GridTable/GridTablePagination";
+import Pagination from "../../../components/GridTable/Pagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
@@ -621,16 +621,15 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                   }}
                   components={{
                     Pagination: (props) => (
-                      <GridTablePagination
-                        data={data}
+                      <Pagination
                         recordCount={
-                          data["project_list_view_aggregate"].aggregate.count
+                          data["project_list_view_aggregate"]?.aggregate.count
                         }
                         queryLimit={queryLimit}
                         setQueryLimit={setQueryLimit}
                         queryOffset={queryOffset}
                         setQueryOffset={setQueryOffset}
-                        rowsPerPageOptions={[1, 250, 1000]}
+                        rowsPerPageOptions={[250, 1000]}
                       />
                     ),
                     Header: (props) => (
