@@ -20,7 +20,6 @@ import { getSearchValue } from "src/utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./dataProvider/useGetProjectListView";
-// import { useGetProjectListViewWithLibrary } from "./dataProvider/useGetProjectListViewWithLibrary";
 
 /**
  * GridTable Style
@@ -532,23 +531,6 @@ const ProjectsListViewTableTest = ({
     orderByDirection,
     setOrderByDirection,
   } = useGetProjectListView({ columnsToReturn });
-
-  // with json-to-graphql-query library
-  // const {
-  //   data,
-  //   loading,
-  //   error,
-  //   setQueryLimit,
-  //   setQueryOffset,
-  //   queryLimit,
-  //   queryOffset,
-  //   orderByColumn,
-  //   setOrderByColumn,
-  //   orderByDirection,
-  //   setOrderByDirection,
-  //   searchTerm,
-  //   setSearchTerm,
-  // } = useGetProjectListViewWithLibrary({ columnsToReturn, defaultSearchTerm });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
