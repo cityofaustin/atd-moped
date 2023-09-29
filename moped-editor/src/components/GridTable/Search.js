@@ -84,7 +84,6 @@ const Search = ({
   query,
   searchState,
   filterState,
-  children,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
