@@ -40,7 +40,9 @@ export const useGetProjectListView = ({
         ) {
             ${columnsToReturn.join("\n")}
         },
-        project_list_view_aggregate {
+        project_list_view_aggregate (
+          where: { ${searchWhereString ? `_or: [${searchWhereString}]` : ""} }
+        ) {
           aggregate {
             count
           }
