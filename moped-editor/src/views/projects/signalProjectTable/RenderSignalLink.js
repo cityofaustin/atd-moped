@@ -5,7 +5,7 @@ const RenderSignalLink = ({ signals }) => {
   return (
     <span>
       {signals.map((signal, index) => (
-        <React.Fragment key={`${signal.signal_id}-${index}`}>
+        <React.Fragment key={signal.signal_id}>
           {signal?.knack_id ? (
             <Link
               href={`https://atd.knack.com/amd#signals/signal-details/${signal.knack_id}`}
