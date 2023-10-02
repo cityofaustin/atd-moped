@@ -3,6 +3,7 @@ import { gql } from "apollo-boost";
 import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
 import { useSearch } from "./useSearch";
+import { useAdvancedSearch } from "./useAdvancedSearch";
 
 export const useGetProjectListView = ({ columnsToReturn, queryConfig }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -24,6 +25,8 @@ export const useGetProjectListView = ({ columnsToReturn, queryConfig }) => {
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
     queryConfig,
   });
+
+  const { filterQuery, filters, setFilter } = useAdvancedSearch();
 
   const query = useMemo(() => {
     return gql`{

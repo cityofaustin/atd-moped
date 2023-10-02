@@ -23,13 +23,15 @@ const useMakeFilterState = (filterQuery) =>
     return {};
   }, [filterQuery]);
 
-export const useAdvancedSearch = ({ queryConfig, defaultAdvancedSearch }) => {
+export const useAdvancedSearch = () => {
   // TODO: Accept filters from URL as parameter (or handle in here?)
   // TODO: If handling in here, move custom hooks here
   // TODO: Accept config as parameter
   // TODO: Clear when advanced search is used. Search term stays in UI, but not in query
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
+  console.log(filterQuery);
+  console.log(initialFilterState);
 
   // filterState
   /**
@@ -74,14 +76,14 @@ export const useAdvancedSearch = ({ queryConfig, defaultAdvancedSearch }) => {
   //     query.setWhere(field, `${gqlOperator}: ${value}`);
   //   });
 
-  const advancedSearchWhereString = useMemo(() => {
-    // Build the the advanced search part of the query
-  }, [searchTerm, queryConfig]);
+  //   const advancedSearchWhereString = useMemo(() => {
+  // Build the the advanced search part of the query
+  //   }, []);
 
   return {
-    searchTerm,
-    setSearchTerm,
-    searchWhereString,
+    filterQuery,
+    filters,
+    setFilter,
   };
 };
 
