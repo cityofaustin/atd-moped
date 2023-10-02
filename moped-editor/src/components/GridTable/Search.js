@@ -262,7 +262,6 @@ const Search = ({
               className={classes.gridSearchPadding}
             >
               <SearchBar
-                query={query}
                 filterState={filterState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}

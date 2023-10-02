@@ -27,8 +27,6 @@ export const useAdvancedSearch = () => {
   // TODO: Clear when advanced search is used. Search term stays in UI, but not in query
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
-  console.log(filterQuery);
-  console.log(initialFilterState);
 
   // filterState
   /**
