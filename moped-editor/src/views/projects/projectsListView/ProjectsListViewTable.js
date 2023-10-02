@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { NavLink as RouterLink, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
@@ -132,7 +132,8 @@ const ProjectsListViewTable = ({ query }) => {
     <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
   );
 
-  const { filterQuery, filters, setFilter } = useAdvancedSearch();
+  const { filterQuery, filters, setFilter, advancedSearchWhereString } =
+    useAdvancedSearch();
 
   const linkStateFilters = Object.keys(filters).length
     ? btoa(JSON.stringify(filters))
@@ -438,6 +439,7 @@ const ProjectsListViewTable = ({ query }) => {
   } = useGetProjectListView({
     columnsToReturn,
     queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+    advancedSearchWhereString,
   });
 
   // For each filter added to state, add a where clause in GraphQL
