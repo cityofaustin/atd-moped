@@ -133,6 +133,7 @@ const ProjectsListViewTable = ({ query }) => {
   const navSearchTerm = useLocation()?.state?.searchTerm;
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
+  console.log({ initialFilterState });
 
   /**
    * Stores the string to search for and the column to search against
