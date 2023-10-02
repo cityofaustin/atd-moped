@@ -1361,6 +1361,7 @@
           - phase_description
           - phase_name
           - phase_key
+          - phase_name_simple
         filter: {}
     - role: moped-editor
       permission:
@@ -1372,6 +1373,7 @@
           - phase_description
           - phase_name
           - phase_key
+          - phase_name_simple
         filter: {}
     - role: moped-viewer
       permission:
@@ -1383,6 +1385,7 @@
           - phase_description
           - phase_name
           - phase_key
+          - phase_name_simple
         filter: {}
 - table:
     name: moped_proj_component_tags
