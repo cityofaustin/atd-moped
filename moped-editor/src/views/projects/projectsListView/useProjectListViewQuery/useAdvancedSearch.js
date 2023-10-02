@@ -48,7 +48,7 @@ export const useAdvancedSearch = () => {
 
         // If we have no operator, then there is nothing we can do.
         if (field === null || gqlOperator === null) {
-          return;
+          return null;
         }
 
         if (gqlOperator.includes("is_null")) {
@@ -69,11 +69,12 @@ export const useAdvancedSearch = () => {
             value = type in ["number", "boolean"] ? value : `"${value}"`;
           } else {
             // We don't have a value
-            return;
+            return null;
           }
         }
         return `${field}: { ${gqlOperator}: ${value} }`;
       })
+      .filter((value) => value !== null)
       .join(", ");
   }, [filters]);
 

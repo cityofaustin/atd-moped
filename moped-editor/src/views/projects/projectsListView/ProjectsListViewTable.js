@@ -438,6 +438,7 @@ const ProjectsListViewTable = ({ query }) => {
   const { data, loading, error } = useQuery(projectListViewQuery, {
     fetchPolicy: "cache-first",
   });
+  console.log(data);
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
