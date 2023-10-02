@@ -4,7 +4,8 @@ CREATE VIEW public.current_phase_view AS (
         mpp.project_phase_id,
         mpp.phase_id,
         mp.phase_name,
-        mp.phase_key
+        mp.phase_key,
+        mp.phase_name_simple
     FROM
         moped_proj_phases mpp
     LEFT JOIN moped_phases mp ON mp.phase_id = mpp.phase_id
