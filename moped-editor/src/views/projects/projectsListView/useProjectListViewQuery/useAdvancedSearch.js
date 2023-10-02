@@ -1,7 +1,11 @@
 import { useState, useMemo } from "react";
 
-export const useAdvancedSearch = ({ queryConfig, defaultSearchTerm }) => {
+export const useAdvancedSearch = ({ queryConfig, defaultAdvancedSearch }) => {
   const [searchTerm, setSearchTerm] = useState(defaultSearchTerm ?? "");
+
+  // TODO: Accept filters from URL as parameter (or handle in here?)
+  // TODO: If handling in here, move custom hooks here
+  // TODO: Accept config as parameter
 
   // searchState
   /**
@@ -121,3 +125,80 @@ export const useAdvancedSearch = ({ queryConfig, defaultSearchTerm }) => {
 //       __typename
 //     }
 //   }
+
+// Shape of filters from url:
+// {
+//     "9e00baa0-72a3-4804-ba03-79b984a28e42": {
+//         "id": "9e00baa0-72a3-4804-ba03-79b984a28e42",
+//         "field": "project_sponsor",
+//         "operator": "string_contains_case_insensitive",
+//         "availableOperators": [
+//             {
+//                 "operator": "_ilike",
+//                 "label": "contains",
+//                 "description": "String is contained in field (case-insensitive)",
+//                 "envelope": "%{VALUE}%",
+//                 "type": "string",
+//                 "id": "string_contains_case_insensitive"
+//             },
+//             {
+//                 "operator": "_ilike",
+//                 "label": "begins with",
+//                 "description": "Field content begins with string (case-insensitive)",
+//                 "envelope": "{VALUE}%",
+//                 "type": "string",
+//                 "id": "string_begins_with_case_insensitive"
+//             },
+//             {
+//                 "operator": "_ilike",
+//                 "label": "ends with",
+//                 "description": "Field content ends with string (case-insensitive)",
+//                 "envelope": "%{VALUE}",
+//                 "type": "string",
+//                 "id": "string_ends_with_case_insensitive"
+//             },
+//             {
+//                 "operator": "_ilike",
+//                 "label": "is",
+//                 "description": "Field content equals string (case-sensitive)",
+//                 "envelope": null,
+//                 "type": "string",
+//                 "id": "string_equals_case_sensitive"
+//             },
+//             {
+//                 "operator": "_neq",
+//                 "label": "is not",
+//                 "description": "Field content does not equal string (case-sensitive)",
+//                 "envelope": null,
+//                 "type": "string",
+//                 "id": "string_does_not_equal_case_sensitive"
+//             },
+//             {
+//                 "operator": "_is_null",
+//                 "label": "is blank",
+//                 "description": "Selected field does not have meaningful content",
+//                 "envelope": "true",
+//                 "specialNullValue": "\"None\"",
+//                 "type": "string",
+//                 "id": "string_is_null_special_case"
+//             },
+//             {
+//                 "operator": "_is_null",
+//                 "label": "is not blank",
+//                 "description": "String field does not match special null value",
+//                 "envelope": "false",
+//                 "specialNullValue": "\"None\"",
+//                 "type": "string",
+//                 "id": "string_is_not_null_special_case"
+//             }
+//         ],
+//         "gqlOperator": "_ilike",
+//         "envelope": "%{VALUE}%",
+//         "placeholder": "Project sponsor",
+//         "value": "COA",
+//         "type": "string",
+//         "label": "Sponsor",
+//         "lookup_table": "moped_entity",
+//         "lookup_field": "entity_name"
+//     }
+// }
