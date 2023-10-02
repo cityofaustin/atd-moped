@@ -93,7 +93,6 @@ const SearchBar = ({
    * The contents of the search box
    * @type {string} searchFieldValue
    * @function setSearchFieldValue - Sets the state of the field
-   * @default {?searchState.searchParameters.value}
    */
   const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
 

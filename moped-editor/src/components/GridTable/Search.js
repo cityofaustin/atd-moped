@@ -73,7 +73,6 @@ const history = createBrowserHistory();
 /**
  * Renders a table search component with a search bar and search filters
  * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param {Object} searchState - The current state/state-modifier bundle for search
  * @param {Object} filterState - The current state/state-modifier bundle for filters
  * @param {JSX.Element} children - Any components to be rendered above the search bar
  * @param {Object} parentData - Response data (if any) from the parent component
@@ -82,7 +81,6 @@ const history = createBrowserHistory();
  */
 const Search = ({
   query,
-  searchState,
   filterState,
   filterQuery,
   parentData = null,
@@ -206,10 +204,7 @@ const Search = ({
    * Clears the simple search when switching to filters
    */
   const handleSwitchToAdvancedSearch = () => {
-    searchState.setSearchParameters({
-      value: "",
-      column: "",
-    });
+    setSearchTerm("");
   };
 
   const toggleAdvancedSearch = () => {
@@ -268,7 +263,6 @@ const Search = ({
             >
               <SearchBar
                 query={query}
-                searchState={searchState}
                 filterState={filterState}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}

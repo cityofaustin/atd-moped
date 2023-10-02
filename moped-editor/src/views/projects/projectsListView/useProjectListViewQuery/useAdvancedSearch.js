@@ -6,6 +6,7 @@ export const useAdvancedSearch = ({ queryConfig, defaultAdvancedSearch }) => {
   // TODO: Accept filters from URL as parameter (or handle in here?)
   // TODO: If handling in here, move custom hooks here
   // TODO: Accept config as parameter
+  // TODO: Clear when advanced search is used. Search term stays in UI, but not in query
 
   // searchState
   /**
