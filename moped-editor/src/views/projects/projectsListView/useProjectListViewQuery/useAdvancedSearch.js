@@ -1,26 +1,35 @@
 import { useState, useMemo } from "react";
+import { useLocation } from "react-router-dom";
+
+const useFilterQuery = (locationSearch) =>
+  useMemo(() => {
+    return new URLSearchParams(locationSearch);
+  }, [locationSearch]);
+
+/**
+ * if filter exists in url, decodes base64 string and returns as object
+ * Used to initialize filter state
+ * @return Object
+ */
+const useMakeFilterState = (filterQuery) =>
+  useMemo(() => {
+    if (Array.from(filterQuery).length > 0) {
+      try {
+        return JSON.parse(atob(filterQuery.get("filter")));
+      } catch {
+        return {};
+      }
+    }
+    return {};
+  }, [filterQuery]);
 
 export const useAdvancedSearch = ({ queryConfig, defaultAdvancedSearch }) => {
-  const [searchTerm, setSearchTerm] = useState(defaultSearchTerm ?? "");
-
   // TODO: Accept filters from URL as parameter (or handle in here?)
   // TODO: If handling in here, move custom hooks here
   // TODO: Accept config as parameter
   // TODO: Clear when advanced search is used. Search term stays in UI, but not in query
-
-  // searchState
-  /**
-   * Stores the string to search for and the column to search against
-   * @type {Object} search
-   * @property {string} value - The string to be searched for
-   * @property {string} column - The name of the column to search against
-   * @function setSearch - Sets the state of search
-   * @default {{value: "", column: ""}}
-   */
-  //   const [search, setSearch] = useState({
-  //     value: navSearchTerm ?? "",
-  //     column: "",
-  //   });
+  const filterQuery = useFilterQuery(useLocation().search);
+  const initialFilterState = useMakeFilterState(filterQuery);
 
   // filterState
   /**

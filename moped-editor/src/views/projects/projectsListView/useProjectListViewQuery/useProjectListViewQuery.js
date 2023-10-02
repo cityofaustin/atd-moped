@@ -4,11 +4,7 @@ import { usePagination } from "./usePagination";
 import { useOrderBy } from "./useOrderBy";
 import { useSearch } from "./useSearch";
 
-export const useGetProjectListView = ({
-  columnsToReturn,
-  defaultSearchTerm,
-  queryConfig,
-}) => {
+export const useGetProjectListView = ({ columnsToReturn, queryConfig }) => {
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({
       defaultLimit: queryConfig.pagination.defaultLimit,
@@ -27,7 +23,6 @@ export const useGetProjectListView = ({
 
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
     queryConfig,
-    defaultSearchTerm,
   });
 
   const query = useMemo(() => {

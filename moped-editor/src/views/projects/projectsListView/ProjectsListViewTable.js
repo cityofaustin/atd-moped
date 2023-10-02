@@ -97,28 +97,6 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
-const useFilterQuery = (locationSearch) =>
-  useMemo(() => {
-    return new URLSearchParams(locationSearch);
-  }, [locationSearch]);
-
-/**
- * if filter exists in url, decodes base64 string and returns as object
- * Used to initialize filter state
- * @return Object
- */
-const useMakeFilterState = (filterQuery) =>
-  useMemo(() => {
-    if (Array.from(filterQuery).length > 0) {
-      try {
-        return JSON.parse(atob(filterQuery.get("filter")));
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  }, [filterQuery]);
-
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -128,36 +106,9 @@ const useMakeFilterState = (filterQuery) =>
 const ProjectsListViewTable = ({ query }) => {
   const classes = useStyles();
 
-  // create URLSearchParams from url
-  const navSearchTerm = useLocation()?.state?.searchTerm;
-  const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
-  console.log({ initialFilterState });
-
-  /**
-   * Stores the string to search for and the column to search against
-   * @type {Object} search
-   * @property {string} value - The string to be searched for
-   * @property {string} column - The name of the column to search against
-   * @function setSearch - Sets the state of search
-   * @default {{value: "", column: ""}}
-   */
-  const [search, setSearch] = useState({
-    value: navSearchTerm ?? "",
-    column: "",
-  });
-
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
-
-  /**
-   * Stores objects storing a random id, column, operator, and value.
-   * @type {Object} filters
-   * @function setFilter - Sets the state of filters
-   * @default {if filter in url, use those params, otherwise {}}
-   */
-  const [filters, setFilter] = useState(initialFilterState);
 
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
@@ -519,7 +470,6 @@ const ProjectsListViewTable = ({ query }) => {
   } = useGetProjectListView({
     columnsToReturn,
     queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
-    defaultSearchTerm: navSearchTerm,
   });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
@@ -571,10 +521,6 @@ const ProjectsListViewTable = ({ query }) => {
         <Search
           parentData={data}
           query={query}
-          searchState={{
-            searchParameters: search,
-            setSearchParameters: setSearch,
-          }}
           filterState={{
             filterParameters: filters,
             setFilterParameters: setFilter,
