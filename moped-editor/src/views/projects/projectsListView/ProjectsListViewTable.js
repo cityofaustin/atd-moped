@@ -20,6 +20,9 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import { usePagination } from "./useProjectListViewQuery/usePagination";
+import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
+import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 
 /**
@@ -99,6 +102,16 @@ const handleColumnChange = ({ field }, hidden) => {
 };
 
 /**
+ * Returns a ProjectStatusBadge component based on the status and phase of project
+ * @param {string} phase - A project's current phase
+ * @param {number} statusId - Project's status id
+ * @return {JSX.Element}
+ */
+const buildStatusBadge = ({ phaseName, phaseKey }) => (
+  <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
+);
+
+/**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
  * @return {JSX.Element}
@@ -115,15 +128,27 @@ const ProjectsListViewTable = ({ query }) => {
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  /**
-   * Returns a ProjectStatusBadge component based on the status and phase of project
-   * @param {string} phase - A project's current phase
-   * @param {number} statusId - Project's status id
-   * @return {JSX.Element}
-   */
-  const buildStatusBadge = ({ phaseName, phaseKey }) => (
-    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
-  );
+  /* Project list query */
+  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
+    usePagination({
+      defaultLimit: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultLimit,
+      defaultOffset: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultOffset,
+    });
+
+  const {
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useOrderBy({
+    defaultOrderByColumn: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn,
+    defaultOrderByDirection:
+      PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection,
+  });
+
+  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    PROJECT_LIST_VIEW_QUERY_CONFIG,
+  });
 
   const { filterQuery, filters, setFilter, advancedSearchWhereString } =
     useAdvancedSearch();
@@ -417,21 +442,14 @@ const ProjectsListViewTable = ({ query }) => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const {
-    query: projectListViewQuery,
-    setQueryLimit,
-    setQueryOffset,
+  const { query: projectListViewQuery } = useGetProjectListView({
+    columnsToReturn,
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
     queryLimit,
     queryOffset,
     orderByColumn,
-    setOrderByColumn,
     orderByDirection,
-    setOrderByDirection,
-    searchTerm,
-    setSearchTerm,
-  } = useGetProjectListView({
-    columnsToReturn,
-    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+    searchWhereString,
     advancedSearchWhereString,
   });
 

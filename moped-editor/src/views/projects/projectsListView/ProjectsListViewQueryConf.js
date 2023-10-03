@@ -34,8 +34,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     defaultLimit: 250,
   },
   order: {
-    defaultOrderByColumn: "updated_at",
-    defaultOrderByDirection: "desc",
+    defaultColumn: "updated_at",
+    defaultDirection: "desc",
   },
   filters: PROJECT_LIST_VIEW_FILTERS_CONFIG,
   export: PROJECT_LIST_VIEW_EXPORT_CONFIG,

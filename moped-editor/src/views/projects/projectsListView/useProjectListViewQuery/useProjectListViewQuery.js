@@ -1,34 +1,15 @@
 import { useMemo } from "react";
 import { gql } from "apollo-boost";
-import { usePagination } from "./usePagination";
-import { useOrderBy } from "./useOrderBy";
-import { useSearch } from "./useSearch";
 
 export const useGetProjectListView = ({
   columnsToReturn,
-  queryConfig,
+  queryLimit,
+  queryOffset,
+  orderByColumn,
+  orderByDirection,
+  searchWhereString,
   advancedSearchWhereString,
 }) => {
-  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
-    usePagination({
-      defaultLimit: queryConfig.pagination.defaultLimit,
-      defaultOffset: queryConfig.pagination.defaultOffset,
-    });
-
-  const {
-    orderByColumn,
-    setOrderByColumn,
-    orderByDirection,
-    setOrderByDirection,
-  } = useOrderBy({
-    defaultOrderByColumn: queryConfig.order.defaultOrderByColumn,
-    defaultOrderByDirection: queryConfig.order.defaultOrderByDirection,
-  });
-
-  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
-    queryConfig,
-  });
-
   const query = useMemo(() => {
     return gql`{
         project_list_view (
@@ -65,15 +46,5 @@ export const useGetProjectListView = ({
 
   return {
     query,
-    setQueryLimit,
-    setQueryOffset,
-    queryLimit,
-    queryOffset,
-    orderByColumn,
-    setOrderByColumn,
-    orderByDirection,
-    setOrderByDirection,
-    searchTerm,
-    setSearchTerm,
   };
 };
