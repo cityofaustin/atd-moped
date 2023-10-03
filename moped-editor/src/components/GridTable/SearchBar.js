@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const SearchBar = ({
-  filterState,
+  filters,
   toggleAdvancedSearch,
   advancedSearchAnchor,
   searchTerm,
@@ -153,11 +153,11 @@ const SearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filterState.filterParameters).length;
+  const filterStateActive = !!Object.keys(filters).length;
   const filtersApplied = [];
   if (filterStateActive) {
-    Object.keys(filterState.filterParameters).map((parameter) =>
-      filtersApplied.push(filterState.filterParameters[parameter]["label"])
+    Object.keys(filters).map((parameter) =>
+      filtersApplied.push(filters[parameter]["label"])
     );
   }
 

@@ -81,7 +81,8 @@ const history = createBrowserHistory();
  */
 const Search = ({
   query,
-  filterState,
+  filters,
+  setFilters,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
@@ -196,7 +197,7 @@ const Search = ({
    * Clears the filters when switching to simple search
    */
   const handleSwitchToSearch = () => {
-    filterState.setFilterParameters({});
+    setFilters({});
     filterQuery.delete("filter");
     history.replace(`${queryPath}?`);
   };
@@ -263,7 +264,8 @@ const Search = ({
               className={classes.gridSearchPadding}
             >
               <SearchBar
-                filterState={filterState}
+                filters={filters}
+                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
                 searchTerm={searchTerm}
@@ -309,7 +311,8 @@ const Search = ({
         <Paper className={classes.advancedSearchPaper}>
           <Filters
             query={query}
-            filterState={filterState}
+            filters={filters}
+            setFilters={setFilters}
             filterQuery={filterQuery}
             history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}

@@ -124,7 +124,8 @@ const generateEmptyField = (uuid) => {
  * @constructor
  */
 const Filters = ({
-  filterState,
+  filters,
+  setFilters,
   filterQuery,
   history,
   handleAdvancedSearchClose,
@@ -144,14 +145,13 @@ const Filters = ({
   if (error) console.error(error);
 
   /**
-   * The current local filter parameters
+   * The current local filter parameters so that we can store updated filters and
+   * then apply them to the query when the search button is clicked.
    * @type {Object} filterParameters - Contains all the current filters
    * @function setFilterParameters - Update the state of filterParameters
-   * @default {filterState.filterParameters}
+   * @default {filters}
    */
-  const [filterParameters, setFilterParameters] = useState(
-    filterState.filterParameters
-  );
+  const [filterParameters, setFilterParameters] = useState(filters);
 
   /**
    * Tracks whether the user has added a complete filter
@@ -365,7 +365,7 @@ const Filters = ({
    */
   const handleClearFilters = () => {
     setFilterParameters({});
-    filterState.setFilterParameters({});
+    setFilters({});
     filterQuery.set("filter", btoa(JSON.stringify({})));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
   };
@@ -408,7 +408,7 @@ const Filters = ({
   const handleApplyButtonClick = () => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
-    filterState.setFilterParameters(filterParameters);
+    setFilters(filterParameters);
     handleAdvancedSearchClose();
   };
 
@@ -427,11 +427,11 @@ const Filters = ({
    */
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
-      filterState.setFilterParameters(filterParameters);
+      setFilters(filterParameters);
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       generateEmptyFilter();
     }
-  }, [filterParameters, filterState, generateEmptyFilter]);
+  }, [filterParameters, setFilters, generateEmptyFilter]);
 
   /**
    * This side effect monitors whether the user has added a complete filter

@@ -150,7 +150,7 @@ const ProjectsListViewTable = ({ query }) => {
     PROJECT_LIST_VIEW_QUERY_CONFIG,
   });
 
-  const { filterQuery, filters, setFilter, advancedSearchWhereString } =
+  const { filterQuery, filters, setFilters, advancedSearchWhereString } =
     useAdvancedSearch();
 
   const linkStateFilters = useMemo(() => {
@@ -502,10 +502,8 @@ const ProjectsListViewTable = ({ query }) => {
         <Search
           parentData={data}
           query={query}
-          filterState={{
-            filterParameters: filters,
-            setFilterParameters: setFilter,
-          }}
+          filters={filters}
+          setFilters={setFilters}
           filterQuery={filterQuery}
           advancedSearchAnchor={advancedSearchAnchor}
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}

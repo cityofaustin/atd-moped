@@ -35,7 +35,7 @@ export const useAdvancedSearch = () => {
    * @function setFilter - Sets the state of filters
    * @default {if filter in url, use those params, otherwise {}}
    */
-  const [filters, setFilter] = useState(initialFilterState);
+  const [filters, setFilters] = useState(initialFilterState);
 
   // Advanced Search from ProjectListTable
 
@@ -81,7 +81,7 @@ export const useAdvancedSearch = () => {
   return {
     filterQuery,
     filters,
-    setFilter,
+    setFilters,
     advancedSearchWhereString,
   };
 };
