@@ -142,9 +142,8 @@ const ProjectsListViewTable = ({ query }) => {
     orderByDirection,
     setOrderByDirection,
   } = useOrderBy({
-    defaultOrderByColumn: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn,
-    defaultOrderByDirection:
-      PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection,
+    defaultColumn: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn,
+    defaultDirection: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection,
   });
 
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({

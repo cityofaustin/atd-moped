@@ -124,7 +124,6 @@ const generateEmptyField = (uuid) => {
  * @constructor
  */
 const Filters = ({
-  query,
   filterState,
   filterQuery,
   history,
@@ -198,12 +197,12 @@ const Filters = ({
       const filtersNewState = { ...filterParameters };
 
       // Find the field we need to gather options from
-      const fieldIndex = query.config.filters.fields.findIndex(
+      const fieldIndex = filtersConfig.fields.findIndex(
         (filter) => filter.name === field
       );
 
       // Gather field details
-      const fieldDetails = query.config.filters.fields[fieldIndex];
+      const fieldDetails = filtersConfig.fields[fieldIndex];
 
       if (!fieldDetails) {
         filtersNewState[filterId] = generateEmptyField(filterId);
@@ -221,16 +220,15 @@ const Filters = ({
         ) {
           // Add all operators and filter by specific type (defined in fieldDetails.type)
           filtersNewState[filterId].availableOperators = Object.keys(
-            query.config.filters.operators
+            filtersConfig.operators
           )
             .filter(
               (operator) =>
-                query.config.filters.operators[operator].type ===
-                fieldDetails.type
+                filtersConfig.operators[operator].type === fieldDetails.type
             )
             .map((operator) => {
               return {
-                ...query.config.filters.operators[operator],
+                ...filtersConfig.operators[operator],
                 ...{ id: operator },
               };
             });
@@ -239,7 +237,7 @@ const Filters = ({
           filtersNewState[filterId].availableOperators =
             fieldDetails.operators.map((operator) => {
               return {
-                ...query.config.filters.operators[operator],
+                ...filtersConfig.operators[operator],
                 ...{ id: operator },
               };
             });
@@ -288,18 +286,18 @@ const Filters = ({
       // Clone state
       const filtersNewState = { ...filterParameters };
 
-      if (operator in query.config.filters.operators) {
+      if (operator in filtersConfig.operators) {
         // Update Operator Value
         filtersNewState[filterId].operator = operator;
         // Get the GraphQL operator details
         filtersNewState[filterId].gqlOperator =
-          query.config.filters.operators[operator].operator;
+          filtersConfig.operators[operator].operator;
         // Copy the envelope if available
         filtersNewState[filterId].envelope =
-          query.config.filters.operators[operator].envelope;
+          filtersConfig.operators[operator].envelope;
         // Copy special null value if available
         filtersNewState[filterId].specialNullValue =
-          query.config.filters.operators[operator].specialNullValue;
+          filtersConfig.operators[operator].specialNullValue;
 
         // if we are switching to an autocomplete input, clear the search value
         if (renderAutocompleteInput(filtersNewState[filterId])) {
@@ -481,7 +479,7 @@ const Filters = ({
                   <Autocomplete
                     value={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
-                    options={query.config.filters.fields}
+                    options={filtersConfig.fields}
                     getOptionLabel={(f) =>
                       Object.hasOwn(f, "label") ? f.label : f
                     }

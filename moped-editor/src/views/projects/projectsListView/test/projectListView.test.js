@@ -2,7 +2,7 @@ import { render, screen } from "src/utils/testUtils";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import GQLAbstract from "src/libs/GQLAbstract";
-import GridTableFilters from "src/components/GridTable/GridTableFilters";
+import Filters from "src/components/GridTable/Filters";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "../ProjectsListViewQueryConf";
 import { createBrowserHistory } from "history";
 
@@ -11,7 +11,7 @@ const filterQuery = new URLSearchParams("");
 const history = createBrowserHistory();
 
 const GridTableFiltersWithMockedProps = () => (
-  <GridTableFilters
+  <Filters
     query={projectsQuery}
     filterState={{ filterParameters: {}, setFilterParameters: () => true }}
     filterQuery={filterQuery}
