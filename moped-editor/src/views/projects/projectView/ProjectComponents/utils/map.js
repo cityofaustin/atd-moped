@@ -84,7 +84,7 @@ export function useAppBarHeight() {
     currentToolbarMinHeight = toolbar;
   }
 
-  return currentToolbarMinHeight.minHeight;
+  return currentToolbarMinHeight?.minHeight;
 }
 
 /**
