@@ -18,9 +18,9 @@ import {
   Grow,
 } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
-import { Autocomplete } from '@mui/material';
+import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
@@ -53,13 +53,13 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: "2px",
     paddingRight: "16px",
     paddingLeft: "16px",
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       paddingLeft: 0,
     },
   },
   bottomButton: {
     margin: theme.spacing(1),
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       margin: 0,
     },
     minWidth: "100px",
@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
   filtersContainer: {
     paddingLeft: "8px",
     marginBottom: "8px",
-    [theme.breakpoints.down('md')]: {
+    [theme.breakpoints.down("md")]: {
       paddingLeft: 0,
     },
   },
@@ -123,12 +123,13 @@ const generateEmptyField = (uuid) => {
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableFilters = ({
+const Filters = ({
   query,
   filterState,
   filterQuery,
   history,
   handleAdvancedSearchClose,
+  filtersConfig,
 }) => {
   /**
    * The styling of the search bar
@@ -137,6 +138,7 @@ const GridTableFilters = ({
    */
   const classes = useStyles();
   const queryPath = useLocation().pathname;
+  console.log("rendering");
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
@@ -455,7 +457,8 @@ const GridTableFilters = ({
         <IconButton
           onClick={handleAdvancedSearchClose}
           className={classes.closeButton}
-          size="large">
+          size="large"
+        >
           <Icon fontSize={"small"}>close</Icon>
         </IconButton>
       </Grid>
@@ -470,7 +473,11 @@ const GridTableFilters = ({
             >
               {/*Select Field to search from drop-down menu*/}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
-                <FormControl variant="standard" fullWidth className={classes.formControl}>
+                <FormControl
+                  variant="standard"
+                  fullWidth
+                  className={classes.formControl}
+                >
                   <Autocomplete
                     value={filterParameters[filterId].label || null}
                     id={`filter-field-select-${filterId}`}
@@ -501,7 +508,11 @@ const GridTableFilters = ({
 
               {/*Select the operator from drop-down menu*/}
               <Grid item xs={12} md={3} className={classes.gridItemPadding}>
-                <FormControl variant="standard" fullWidth className={classes.formControl}>
+                <FormControl
+                  variant="standard"
+                  fullWidth
+                  className={classes.formControl}
+                >
                   <InputLabel id={`filter-operator-select-${filterId}-label`}>
                     Operator
                   </InputLabel>
@@ -522,7 +533,8 @@ const GridTableFilters = ({
                       handleFilterOperatorClick(filterId, e.target.value)
                     }
                     label="field"
-                    data-testid="operator-select">
+                    data-testid="operator-select"
+                  >
                     {filterParameters[filterId].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (
@@ -605,10 +617,14 @@ const GridTableFilters = ({
               <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={Object.keys(filterParameters).length === 1 && !filterComplete}
+                    disabled={
+                      Object.keys(filterParameters).length === 1 &&
+                      !filterComplete
+                    }
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
-                    size="large">
+                    size="large"
+                  >
                     <Icon className={classes.deleteIcon}>delete_outline</Icon>
                   </IconButton>
                 </Grid>
@@ -616,7 +632,10 @@ const GridTableFilters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={Object.keys(filterParameters).length === 1 && !filterComplete}
+                    disabled={
+                      Object.keys(filterParameters).length === 1 &&
+                      !filterComplete
+                    }
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
@@ -684,8 +703,8 @@ const GridTableFilters = ({
   );
 };
 
-GridTableFilters.propTypes = {
+Filters.propTypes = {
   className: PropTypes.string,
 };
 
-export default GridTableFilters;
+export default Filters;

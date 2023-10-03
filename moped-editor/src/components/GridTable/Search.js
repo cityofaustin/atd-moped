@@ -17,7 +17,7 @@ import {
   Popper,
 } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import GridTableFilters from "src/components/GridTable/GridTableFilters";
+import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { useLazyQuery } from "@apollo/client";
@@ -89,6 +89,7 @@ const Search = ({
   searchTerm,
   setSearchTerm,
   queryConfig,
+  filtersConfig,
 }) => {
   const classes = useStyles();
   const queryPath = useLocation().pathname;
@@ -306,12 +307,13 @@ const Search = ({
         className={classes.advancedSearchRoot}
       >
         <Paper className={classes.advancedSearchPaper}>
-          <GridTableFilters
+          <Filters
             query={query}
             filterState={filterState}
             filterQuery={filterQuery}
             history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
+            filtersConfig={filtersConfig}
           />
         </Paper>
       </Popper>

@@ -20,6 +20,7 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
 import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
@@ -456,7 +457,6 @@ const ProjectsListViewTable = ({ query }) => {
   const { data, loading, error } = useQuery(projectListViewQuery, {
     fetchPolicy: "cache-first",
   });
-  console.log(data);
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
@@ -513,6 +513,7 @@ const ProjectsListViewTable = ({ query }) => {
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
+          filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
@@ -555,7 +556,10 @@ const ProjectsListViewTable = ({ query }) => {
                         setQueryLimit={setQueryLimit}
                         queryOffset={queryOffset}
                         setQueryOffset={setQueryOffset}
-                        rowsPerPageOptions={[250, 1000]}
+                        rowsPerPageOptions={
+                          PROJECT_LIST_VIEW_QUERY_CONFIG.pagination
+                            .rowsPerPageOptions
+                        }
                       />
                     ),
                     Header: (props) => (
