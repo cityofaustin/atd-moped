@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
+import "./utils/map.css"
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 /**
