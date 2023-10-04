@@ -1,4 +1,5 @@
 -- https://austin.maps.arcgis.com/home/item.html?id=4736ec7436d24d809f327a367adb638e#overview
+CREATE OR REPLACE VIEW component_arcgis_online_view as (
 SELECT
     comp_geography.project_component_id,
     mpc.project_id,
@@ -52,7 +53,7 @@ FROM
         SELECT
             component_id AS project_component_id,
             STRING_AGG(DISTINCT id::text, ', ') AS feature_ids,
-            ST_AsGeoJSON(ST_Union(ARRAY_AGG(geography))) AS "geometry",
+            ST_AsGeoJSON(ST_Union(ARRAY_AGG(geography)))::json AS "geometry",
             STRING_AGG(DISTINCT signal_id::text, ', ') AS signal_ids
             -- NULLIF(ARRAY_AGG(DISTINCT signal_id ORDER BY signal_id), '{NULL}') AS signal_ids
         FROM (
@@ -128,4 +129,4 @@ FROM
     LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
     LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
     WHERE
-        mpc.is_deleted = FALSE;
+        mpc.is_deleted = FALSE);
