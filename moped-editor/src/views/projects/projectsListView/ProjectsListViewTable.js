@@ -147,7 +147,7 @@ const ProjectsListViewTable = ({ query }) => {
   });
 
   const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
-    PROJECT_LIST_VIEW_QUERY_CONFIG,
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
   });
 
   const { filterQuery, filters, setFilters, advancedSearchWhereString } =
