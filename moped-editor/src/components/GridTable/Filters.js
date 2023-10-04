@@ -124,6 +124,8 @@ const generateEmptyField = (uuid) => {
  * @param {Object} history - The history to update query string parameters
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
+ * @param {Function} setSearchFieldValue - Used to set the search field value
+ * @param {Function} setSearchTerm - Used to set the search term for simple search
  * @return {JSX.Element}
  * @constructor
  */
@@ -134,6 +136,8 @@ const Filters = ({
   history,
   handleAdvancedSearchClose,
   filtersConfig,
+  setSearchFieldValue,
+  setSearchTerm,
 }) => {
   /**
    * The styling of the search bar
@@ -350,7 +354,7 @@ const Filters = ({
   };
 
   /**
-   * The user will type a new search value, wait 1/3rd of a second to update state.
+   * The user will type a new search value
    * @param {string} filterId - The FilterID uuid
    * @param {string} value - The value to assign to that filter
    */
@@ -413,6 +417,9 @@ const Filters = ({
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     setFilters(filterParameters);
     handleAdvancedSearchClose();
+    // Clear simple search field in UI and state since we are using advanced search
+    setSearchFieldValue("");
+    setSearchTerm("");
   };
 
   /**

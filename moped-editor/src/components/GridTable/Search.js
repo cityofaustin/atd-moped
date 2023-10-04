@@ -103,6 +103,13 @@ const Search = ({
   const divRef = React.useRef();
 
   /**
+   * The contents of the search box in SearchBar
+   * @type {string} searchFieldValue
+   * @function setSearchFieldValue - Sets the state of the field
+   */
+  const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
+
+  /**
    * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
    * @function setDialogOpen - Sets the state of dialogOpen
@@ -270,6 +277,8 @@ const Search = ({
               className={classes.gridSearchPadding}
             >
               <SearchBar
+                searchFieldValue={searchFieldValue}
+                setSearchFieldValue={setSearchFieldValue}
                 filters={filters}
                 setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
@@ -323,6 +332,8 @@ const Search = ({
             history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}
+            setSearchFieldValue={setSearchFieldValue}
+            setSearchTerm={setSearchTerm}
           />
         </Paper>
       </Popper>
