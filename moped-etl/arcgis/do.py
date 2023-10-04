@@ -1,25 +1,62 @@
-"""
-Create component geojson files which can be imported to ArcGIS.
-
-Merges component features into a single feature per component and ouputs two feature collections:
-- lines.geojson: component features of type line
-- points.geojson: component featuers of type point
-"""
 import argparse
 import json
-import os
 
 import requests
 
-from settings import PROJECT_LIST_KEYS, QUERY_TEMPLATE, OUTPUT_DIR
+# from settings import PROJECT_LIST_KEYS, QUERY_TEMPLATE, OUTPUT_DIR
 from secrets import HASURA
 
 
-def get_query(query_template, project_list_keys):
-    """Formats a Hasura query with the columns of interest"""
-    key_string = "\n".join(project_list_keys)
-    return query_template.replace("$keys", key_string)
-
+def get_query():
+    return """
+    {
+    component_arcgis_online_view {
+        added_by
+        completion_date
+        completion_end_date
+        component_id
+        component_phase_id
+        component_phase_name
+        construction_start_date
+        contract_numbers
+        contractors
+        council_districts
+        current_phase_name
+        description
+        ecapris_subproject_id
+        feature_ids
+        funding_source_name
+        geometry
+        interim_project_component_id
+        interim_project_id
+        is_project_component_deleted
+        is_project_deleted
+        location_description
+        project_component_id
+        project_description
+        project_designer
+        project_feature
+        project_id
+        project_inspector
+        project_lead
+        project_name
+        project_note
+        project_partner
+        project_phase_id
+        project_phase_name
+        project_sponsor
+        project_tags
+        project_team_members
+        public_process_status
+        signal_ids
+        srts_id
+        subphase_id
+        task_order_name
+        type_name
+        updated_at
+    } 
+    }
+"""
 
 def make_hasura_request(*, query, env):
     """Fetch data from hasura
@@ -50,173 +87,19 @@ def make_hasura_request(*, query, env):
         raise ValueError(data)
 
 
-def get_merged_geom_type(feature):
-    """Determines the *merged* component geometry type of a geojson feature. Because we
-    are merging multiple component features into one feature, we use the MultiPoint
-    or MultiLineString geojson type based on input type.
-
-    Args:
-        feature (dict): a geojson feature from `moped_proj_features`
-
-    Returns:
-        string: `MultiPoint` or `MultiLineString`
-    """
-    if "Point" in feature["geometry"]["type"]:
-        return "MultiPoint"
-    else:
-        return "MultiLineString"
-
-
-def has_uniform_geometry(features):
-    """Check if all of a component's featuers have the same geometry type.
-
-    A component must have all "Point" types, or a mix of "LineString" and
-    "MultiLineString". We enforce this through the editor UI"""
-    return all(["Line" in feature["geometry"]["type"] for feature in features]) or all(
-        ["Point" in feature["geometry"]["type"] for feature in features]
-    )
-
-
-def merge_geoms(features):
-    """Merge multiple features into a single feature geometry
-
-    Args:
-        features (list): list of `moped_proj_features` which belong to a single
-        `moped_proj_component`.
-
-    Return:
-        dict: a geojson geometry object which holds geometries of all input features
-    """
-    if not has_uniform_geometry(features):
-        raise ValueError("Geometry is not uniform")
-
-    merged_geom_type = get_merged_geom_type(features[0])
-    geometry = {"type": merged_geom_type, "coordinates": []}
-
-    for feature in features:
-        # for point features, we can append each feature's coordinates to our
-        # coordinate array
-        geometry_type = feature["geometry"]["type"]
-        if geometry_type == "MultiPoint":
-            geometry["coordinates"] += feature["geometry"]["coordinates"]
-        elif geometry_type == "MultiLineString":
-            coords = feature["geometry"]["coordinates"]
-            geometry["coordinates"] += coords
-        else:
-            raise ValueError("Feature has unsupported geometry type")
-    return geometry
-
-
-def get_component_properties(component):
-    """Extracts `moped_components` properties and converts array types
-    to strings.
-
-    Args:
-        component (dict): a `moped_component` object
-
-    Returns:
-        dict: a dict of component properties
-    """
-    properties = {}
-    properties["component_name"] = component["component_name"]
-    properties["component_subtype"] = component["component_subtype"]
-    return properties
-
-
-def add_project_properties(properties, project_data, project_list_keys):
-    """Adds data from the `project_list_view` to component properties
-
-    Args:
-        properties (dict): a dict of component properties
-        project_data (dict): a dict of project data from `project_list_view`
-        project_list_keys (list): a list of column names to be added from project
-            data to the component properties
-    """
-    for key in project_list_keys:
-        properties[key] = project_data[key]
-
-
-def add_council_districts(properties, features):
-    properties["council_districts"] = None
-    if not features:
-        return
-    all_districts = [
-        str(district)
-        for feature in features
-        if feature["council_districts"]
-        for district in feature["council_districts"]
-    ]
-    properties["council_districts"] = ",".join(list(set(all_districts)))
-
-
-def add_project_tags(properties, moped_proj_tags):
-    tags = [proj_tag["moped_tag"]["name"] for proj_tag in moped_proj_tags]
-    properties["moped_proj_tags"] = ",".join(tags) if tags else None
-    return
-
-
-def add_subcomponents(properties, proj_component):
-    properties["moped_subcomponents"] = None
-    if proj_component["moped_proj_components_subcomponents"]:
-        subcomponents = [
-            sub["moped_subcomponent"]["subcomponent_name"]
-            for sub in proj_component["moped_proj_components_subcomponents"]
-        ]
-        properties["moped_subcomponents"] = ", ".join(subcomponents)
-
-
 def main(env):
-    query = get_query(QUERY_TEMPLATE, PROJECT_LIST_KEYS)
+    query = get_query()
     print("Fetching project data...")
-    data = make_hasura_request(query=query, env=env)
-
-    component_features = []
-    projects_components = data["moped_project"]
-    projects_list = data["project_list_view"]
-    print(f"Processing {len(projects_components)} projects")
-
-    for proj in projects_components:
-        # find matching project in the project_list_view
-        project_id = proj["project_id"]
-        project_data = next(p for p in projects_list if p["project_id"] == project_id)
-        if not project_data:
-            raise ValueError("Unable to find project - this should never happen :/")
-
-        for proj_component in proj["moped_proj_components"]:
-            # create a single geojson feature with merged geometry from all
-            features = [
-                f
-                for f in data["project_geography"]
-                if f["component_id"] == proj_component["project_component_id"]
-            ]
-            geometry = merge_geoms(features)
-            properties = get_component_properties(proj_component["moped_components"])
-            add_council_districts(properties, features)
-            add_project_properties(properties, project_data, PROJECT_LIST_KEYS)
-            add_project_tags(properties, proj["moped_proj_tags"])
-            add_subcomponents(properties, proj_component)
-            component_features.append(
-                {
-                    "type": "Feature",
-                    "properties": properties,
-                    "geometry": geometry,
-                }
-            )
-
-    # filter features by geometry type and write geojson files
-    print("Writing files...")
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    for geom_type in [
-        {"key": "MultiLineString", "name": "lines"},
-        {"key": "MultiPoint", "name": "points"},
-    ]:
-        features = [
-            f for f in component_features if f["geometry"]["type"] == geom_type["key"]
-        ]
-        geojson = {"type": "FeatureCollection", "features": features}
-
-        with open(f"{OUTPUT_DIR}/{geom_type['name']}.geojson", "w") as fout:
-            json.dump(geojson, fout)
+    data = make_hasura_request(query=query, env=env)["component_arcgis_online_view"]
+    features = []
+    for row in data:
+        geometry = row.pop("geometry")
+        features.append(
+            { "type": "Feature", "properties": row, "geometry": geometry }
+        )
+    fc = { "type": "FeatureCollection", "features": features }
+    with open("test.geojson", "w") as fout:
+        json.dump(fc, fout)
 
 
 if __name__ == "__main__":
