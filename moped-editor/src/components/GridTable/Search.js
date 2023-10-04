@@ -72,10 +72,16 @@ const history = createBrowserHistory();
 
 /**
  * Renders a table search component with a search bar and search filters
- * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param {Object} filterState - The current state/state-modifier bundle for filters
- * @param {JSX.Element} children - Any components to be rendered above the search bar
+ * * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
+ * @param {Object} filters - The current filters from useAdvancedSearch hook
+ * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Object} parentData - Response data (if any) from the parent component
+ * @param {Object} advancedSearchAnchor - The anchor element for the advanced search popper
+ * @param {Function} setAdvancedSearchAnchor - Set the anchor element for the advanced search popper
+ * @param {String} searchTerm - The current search term from useSearch hook
+ * @param {Function} setSearchTerm - Set the current search term from useSearch hook
+ * @param {Object} queryConfig - The query configuration for the current table
+ * @param {Object} filtersConfig - The filters configuration for the current table
  * @return {JSX.Element}
  * @constructor
  */

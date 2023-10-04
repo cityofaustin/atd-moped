@@ -118,8 +118,12 @@ const generateEmptyField = (uuid) => {
 
 /**
  * Filter Search Component aka Advanced Search
- * @param {Object} query - The main query object
- * @param {Object} filterState - The current state/state-modifier bundle for filters
+ * @param {Object} filters - The current filters from useAdvancedSearch hook
+ * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
+ * @param {Object} filterQuery - The current filter query string from useAdvancedSearch hook
+ * @param {Object} history - The history to update query string parameters
+ * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
+ * @param {Object} filtersConfig - The configuration object for the filters
  * @return {JSX.Element}
  * @constructor
  */
@@ -138,7 +142,6 @@ const Filters = ({
    */
   const classes = useStyles();
   const queryPath = useLocation().pathname;
-  console.log("rendering");
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 

@@ -28,7 +28,6 @@ export const useAdvancedSearch = () => {
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
 
-  // filterState
   /**
    * Stores objects storing a random id, column, operator, and value.
    * @type {Object} filters
@@ -36,8 +35,6 @@ export const useAdvancedSearch = () => {
    * @default {if filter in url, use those params, otherwise {}}
    */
   const [filters, setFilters] = useState(initialFilterState);
-
-  // Advanced Search from ProjectListTable
 
   const advancedSearchWhereString = useMemo(() => {
     //   Build the the advanced search part of the query
