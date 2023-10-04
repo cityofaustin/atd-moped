@@ -47,9 +47,8 @@ SELECT
     added_by
 FROM
     moped_proj_components mpc
-    -------- COMPNENTS JOIN GEOGRPAHY  --------
     LEFT JOIN (
-        -------- COMPNENTS  JOIN FEATURES --------
+        -- group feature properties by project component ID
         SELECT
             component_id AS project_component_id,
             STRING_AGG(DISTINCT id::text, ', ') AS feature_ids,
@@ -57,7 +56,7 @@ FROM
             STRING_AGG(DISTINCT signal_id::text, ', ') AS signal_ids
             -- NULLIF(ARRAY_AGG(DISTINCT signal_id ORDER BY signal_id), '{NULL}') AS signal_ids
         FROM (
-            -------- FEATUERS UNION --------
+            -- union all features
             SELECT
                 id,
                 feature_signals.component_id,
@@ -107,14 +106,12 @@ FROM
                 feature_drawn_lines
             WHERE
                 feature_drawn_lines.is_deleted = FALSE
-                -------- END FEATUERS UNION --------
         ) feature_union
                 GROUP BY
                     component_id
-                    -------- END COMPNENTS JOIN FEATURES --------
     ) comp_geography ON comp_geography.project_component_id = mpc.project_component_id
     LEFT JOIN (
-        -------- JOIN COUNCIL DISTRICTS  --------
+        -- group council districts by project component id
         SELECT
             component_id AS project_component_id,
             STRING_AGG(DISTINCT council_district_id::text, ', ') AS council_districts
