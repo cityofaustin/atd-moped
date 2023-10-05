@@ -1,0 +1,1 @@
+DROP VIEW component_arcgis_online_view;
