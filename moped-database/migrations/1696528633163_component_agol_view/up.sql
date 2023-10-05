@@ -1,4 +1,4 @@
-DROP VIEW component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT
         mpc.project_id,
@@ -31,6 +31,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         current_phase.phase_id AS project_phase_id,
         current_phase.phase_name AS project_phase_name,
         COALESCE(mph.phase_name, current_phase.phase_name) AS current_phase_name,
+        'placeholder_text' as current_phase_name_simple,
         project_team_members,
         project_sponsor,
         project_lead,
@@ -38,7 +39,6 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         interim_project_id,
         project_partner,
         task_order_name,
-        project_feature,
         funding_source_name,
         type_name,
         project_note,
