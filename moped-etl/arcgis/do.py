@@ -9,20 +9,25 @@ from secrets import HASURA
 
 def get_query():
     return """
-    {
+    query {
     component_arcgis_online_view {
         added_by
         completion_date
         completion_end_date
+        component_description
         component_id
+        component_name
+        component_name_full
         component_phase_id
         component_phase_name
+        component_subtype
+        component_tags
         construction_start_date
         contract_numbers
         contractors
         council_districts
         current_phase_name
-        description
+        current_phase_name_simple
         ecapris_subproject_id
         feature_ids
         funding_source_name
@@ -35,7 +40,6 @@ def get_query():
         project_component_id
         project_description
         project_designer
-        project_feature
         project_id
         project_inspector
         project_lead
@@ -50,12 +54,13 @@ def get_query():
         public_process_status
         signal_ids
         srts_id
-        subphase_id
+        subcomponents
         task_order_name
         type_name
         updated_at
-    } 
+        work_types
     }
+}
 """
 
 def make_hasura_request(*, query, env):
