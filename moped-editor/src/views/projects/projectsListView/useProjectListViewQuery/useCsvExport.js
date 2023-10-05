@@ -123,10 +123,22 @@ export const useCsvExport = ({
    * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
-  let [getExport, { called, stopPolling, loading, data }] = useLazyQuery(
+  let [getExport, { loading, data }] = useLazyQuery(
     query,
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
-    fetchPolicy
+    {
+      ...fetchPolicy,
+      //   When data is returned, format, parse, and download CSV
+      onCompleted: (data) => {
+        const formattedData = formatExportData(
+          data[queryTableName],
+          exportConfig
+        );
+        const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
+        downloadFile(csvString, queryTableName);
+        setDialogOpen(false);
+      },
+    }
   );
 
   /**
@@ -134,46 +146,17 @@ export const useCsvExport = ({
    */
   const handleExportButtonClick = () => {
     setDialogOpen(true);
+    setTimeout(() => {
+      getExport();
+    }, 1500);
   };
 
   /**
    * Handles the closing of the dialog
    */
   const handleDialogClose = () => {
-    if (called) stopPolling();
     setDialogOpen(false);
   };
-
-  /**
-   * Update the export whenever limit or selectall change
-   */
-  useEffect(
-    () => {
-      if (dialogOpen && !downloading) {
-        getExport();
-        setDownloading(true);
-      }
-
-      if (dialogOpen && downloading && data && !loading) {
-        const formattedData = formatExportData(
-          data[queryTableName],
-          exportConfig
-        );
-        // use the papaparse library to "unparse" a json object to csv
-        // escapeFormulae: "field values that begin with =, +, -, @, \t, or \r, will be prepended with a ' to defend
-        // against injection attacks because Excel and LibreOffice will automatically parse such cells as formulae."
-        const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-        setTimeout(() => {
-          // Update the state
-          setDialogOpen(false);
-          downloadFile(csvString, queryTableName);
-          setDownloading(false);
-        }, 1500);
-      }
-    },
-    // eslint-disable-next-line
-    [dialogOpen, downloading, loading, limit, getExport, setQueryLimit]
-  );
 
   return { handleExportButtonClick, dialogOpen, handleDialogClose };
 };
