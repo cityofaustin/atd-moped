@@ -1,4 +1,4 @@
-import React, { useRef, /* useState */ } from "react";
+import React, { useRef,  useState } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
 import "./utils/map.css"
@@ -12,6 +12,7 @@ import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
  * @param {Function} setIsDrawing - function to update if we are drawing or not
  * @returns {JSX.Element}
  */
+
 const CreateComponentDrawTools = ({
   createDispatch,
   linkMode,
@@ -19,7 +20,14 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  // const [showTrash, toggleShowTrash] = useState(false);
+  const [showTrash, toggleShowTrash] = useState(false);
+  React.useEffect(() => {
+    if (showTrash) {
+      document.getElementsByClassName("mapbox-gl-draw_trash")[0].classList.remove("disable-trash")
+    } else {
+      document.getElementsByClassName("mapbox-gl-draw_trash")[0].classList.add("disable-trash")
+    }
+  }, [showTrash]);
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -60,6 +68,8 @@ const CreateComponentDrawTools = ({
       payload: deletedFeaturesArray,
     });
     setIsDrawing(false);
+    // after we have deleted, disable trash button
+    toggleShowTrash(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -72,9 +82,7 @@ const CreateComponentDrawTools = ({
   };
 
   const onSelectionChange = (props) => {
-
-    console.log(props.features.length)
-    // toggleShowTrash(!!props.features.length>0)
+    toggleShowTrash(!!props.features.length>0)
   }
 
   return (

@@ -3,7 +3,7 @@
 }
 
 button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_line.active {
-    background-color: rgb(18,118,209);
+    background-color: #1275d1;
 }
 
 .mapbox-gl-draw_point.active {
@@ -11,5 +11,10 @@ button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_line.active {
 }
 
 button.mapbox-gl-draw_ctrl-draw-btn.mapbox-gl-draw_point.active {
-    background-color: rgb(18,118,209);
+    background-color: #1275d1;
+}
+
+.mapbox-gl-draw_trash.disable-trash {
+    pointer-events: none;
+    background-color: #e6e6e6;
 }
