@@ -21,8 +21,7 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
-  useTrashButtonClickable(isTrashButtonClickable)
+  const toggleTrashButtonClickable = useTrashButtonClickable()
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features

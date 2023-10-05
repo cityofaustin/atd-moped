@@ -158,10 +158,11 @@ export const useZoomToExistingComponents = (
 
 /**
  * Adds or removes custom css class based on if drawn features are selected
- * @param {boolean} isTrashButtonClickable - if true add class, if false remove
+ * returns function to update trashbutton state
  */
-export const useTrashButtonClickable = (isTrashButtonClickable) =>
+export const useTrashButtonClickable = () =>
 {
+  const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
   useEffect(() => {
     if (isTrashButtonClickable) {
       document
@@ -173,4 +174,5 @@ export const useTrashButtonClickable = (isTrashButtonClickable) =>
         .classList.add("disable-trash");
     }
   }, [isTrashButtonClickable]);
+  return toggleTrashButtonClickable;
 }
