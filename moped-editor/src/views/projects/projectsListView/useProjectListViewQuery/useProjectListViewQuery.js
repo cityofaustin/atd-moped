@@ -3,6 +3,7 @@ import { gql } from "apollo-boost";
 
 export const useGetProjectListView = ({
   columnsToReturn,
+  exportColumnsToReturn,
   queryLimit,
   queryOffset,
   orderByColumn,

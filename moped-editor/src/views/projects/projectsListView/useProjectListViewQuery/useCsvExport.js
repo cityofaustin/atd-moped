@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import Papa from "papaparse";
-
 import {
   Button,
   CircularProgress,
@@ -45,9 +44,9 @@ export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => {
  * Downloads the contents of fileContents into a file
  * @param {string} fileContents
  */
-const downloadFile = (fileContents) => {
+const downloadFile = (fileContents, queryTableName) => {
   const exportFileName =
-    "moped-" + query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
+    "moped-" + queryTableName + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
   const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   if (link.download !== undefined) {
@@ -57,7 +56,6 @@ const downloadFile = (fileContents) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    setDownloading(false);
   }
 };
 
@@ -66,13 +64,13 @@ const downloadFile = (fileContents) => {
  * @param {object} record - The record to build
  * @return {object}
  */
-const buildRecordEntry = (record) => {
+const buildRecordEntry = (record, exportConfig) => {
   // Allocate an empty object
   const entry = {};
   // For each column in the export configuration
-  Object.keys(query.config.export).forEach((column) => {
+  Object.keys(exportConfig).forEach((column) => {
     // column label and data formatting function
-    const { label, filter } = query.config.export[column];
+    const { label, filter } = exportConfig[column];
     // Determine the new column name, if available.
     const newColumnName = label ? label : column;
     // If there is a filter, use it. Assign the value to the new column name.
@@ -86,16 +84,22 @@ const buildRecordEntry = (record) => {
  * @param {array} data - Data returned from DB with nested data structures
  * @returns {array}
  */
-const formatExportData = (data) => {
+const formatExportData = (data, exportConfig) => {
   if (data) {
     return data.map((record) => {
-      return buildRecordEntry(record);
+      return buildRecordEntry(record, exportConfig);
     });
   }
   return [];
 };
 
-export const useCsvExport = ({ query, exportConfig }) => {
+export const useCsvExport = ({
+  query,
+  exportConfig,
+  queryTableName,
+  fetchPolicy,
+  limit,
+}) => {
   /**
    * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
@@ -118,10 +122,11 @@ export const useCsvExport = ({ query, exportConfig }) => {
    * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
+  console.log(query);
   let [getExport, { called, stopPolling, loading, data }] = useLazyQuery(
-    query.queryCSV(Object.keys(query.config.export).join(" \n")),
+    query,
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
-    query.config.useQuery
+    fetchPolicy
   );
 
   /**
@@ -145,13 +150,16 @@ export const useCsvExport = ({ query, exportConfig }) => {
   useEffect(
     () => {
       if (dialogOpen && !downloading) {
-        query.limit = 0;
+        limit = 0;
         getExport();
         setDownloading(true);
       }
 
       if (dialogOpen && downloading && data && !loading) {
-        const formattedData = formatExportData(data[query.table]);
+        const formattedData = formatExportData(
+          data[queryTableName],
+          exportConfig
+        );
         // use the papaparse library to "unparse" a json object to csv
         // escapeFormulae: "field values that begin with =, +, -, @, \t, or \r, will be prepended with a ' to defend
         // against injection attacks because Excel and LibreOffice will automatically parse such cells as formulae."
@@ -159,12 +167,13 @@ export const useCsvExport = ({ query, exportConfig }) => {
         setTimeout(() => {
           // Update the state
           setDialogOpen(false);
-          downloadFile(csvString);
+          downloadFile(csvString, queryTableName);
+          setDownloading(false);
         }, 1500);
       }
     },
     // eslint-disable-next-line
-    [dialogOpen, downloading, loading, query.limit, getExport]
+    [dialogOpen, downloading, loading, limit, getExport]
   );
 
   return { handleExportButtonClick };

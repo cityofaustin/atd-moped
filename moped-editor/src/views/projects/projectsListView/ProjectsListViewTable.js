@@ -444,8 +444,9 @@ const ProjectsListViewTable = ({ query }) => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const { query: projectListViewQuery } = useGetProjectListView({
+  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn,
+    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
     queryOffset,
@@ -460,8 +461,11 @@ const ProjectsListViewTable = ({ query }) => {
   });
 
   const { handleExportButtonClick } = useCsvExport({
-    query,
+    query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery,
+    limit: queryLimit,
   });
 
   const sortByColumnIndex = columns.findIndex(
