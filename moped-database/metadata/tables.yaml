@@ -17,7 +17,6 @@
           - project_id
           - project_phase_id
           - geometry
-          - project_feature
           - added_by
           - component_description
           - component_name
@@ -70,7 +69,6 @@
           - project_id
           - project_phase_id
           - geometry
-          - project_feature
           - added_by
           - component_description
           - component_name
@@ -123,7 +121,6 @@
           - project_id
           - project_phase_id
           - geometry
-          - project_feature
           - added_by
           - component_description
           - component_name
