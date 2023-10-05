@@ -123,7 +123,7 @@ const buildStatusBadge = ({ phaseName, phaseKey }) => (
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query }) => {
+const ProjectsListViewTable = () => {
   const classes = useStyles();
 
   // anchor element for advanced search popper in Search to "attach" to
@@ -521,7 +521,6 @@ const ProjectsListViewTable = ({ query }) => {
         />
         <Search
           parentData={data}
-          query={query}
           filters={filters}
           setFilters={setFilters}
           filterQuery={filterQuery}

@@ -57,7 +57,6 @@ const history = createBrowserHistory();
 
 /**
  * Renders a table search component with a search bar and search filters
- * * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Object} parentData - Response data (if any) from the parent component
@@ -72,7 +71,6 @@ const history = createBrowserHistory();
  * @constructor
  */
 const Search = ({
-  query,
   filters,
   setFilters,
   filterQuery,
@@ -161,7 +159,7 @@ const Search = ({
               {queryConfig.showExport && (
                 <Button
                   disabled={
-                    (parentData?.[query.config.table] ?? []).length === 0
+                    (parentData?.[queryConfig.table] ?? []).length === 0
                   }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
@@ -187,7 +185,6 @@ const Search = ({
       >
         <Paper className={classes.advancedSearchPaper}>
           <Filters
-            query={query}
             filters={filters}
             setFilters={setFilters}
             filterQuery={filterQuery}
