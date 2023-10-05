@@ -1,7 +1,7 @@
-import React, { useRef,  useState } from "react";
+import React, { useRef, useState } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
-import "./utils/map.css"
+import "./utils/map.css";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 /**
@@ -20,14 +20,18 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const [showTrash, toggleShowTrash] = useState(false);
+  const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
   React.useEffect(() => {
-    if (showTrash) {
-      document.getElementsByClassName("mapbox-gl-draw_trash")[0].classList.remove("disable-trash")
+    if (isTrashButtonClickable) {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.remove("disable-trash");
     } else {
-      document.getElementsByClassName("mapbox-gl-draw_trash")[0].classList.add("disable-trash")
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.add("disable-trash");
     }
-  }, [showTrash]);
+  }, [isTrashButtonClickable]);
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -52,7 +56,8 @@ const CreateComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    const wasComponentDragged = action === "move" || action === "change_coordinates";
+    const wasComponentDragged =
+      action === "move" || action === "change_coordinates";
 
     if (wasComponentDragged) {
       createDispatch({
@@ -69,7 +74,7 @@ const CreateComponentDrawTools = ({
     });
     setIsDrawing(false);
     // after we have deleted, disable trash button
-    toggleShowTrash(false);
+    toggleTrashButtonClickable(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -82,8 +87,8 @@ const CreateComponentDrawTools = ({
   };
 
   const onSelectionChange = (props) => {
-    toggleShowTrash(!!props.features.length>0)
-  }
+    toggleTrashButtonClickable(!!props.features.length > 0);
+  };
 
   return (
     <ComponentsDrawControl

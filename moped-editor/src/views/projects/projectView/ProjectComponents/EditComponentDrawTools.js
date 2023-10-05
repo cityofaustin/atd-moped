@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature, useExistingDrawnFeatures } from "./utils/features";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
@@ -24,6 +24,19 @@ const EditComponentDrawTools = ({
     draftEditComponent,
     linkMode,
   });
+
+  const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
+  React.useEffect(() => {
+    if (isTrashButtonClickable) {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.remove("disable-trash");
+    } else {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.add("disable-trash");
+    }
+  }, [isTrashButtonClickable]);
 
   // We must override the features in the draw control's internal state with ones
   // that have our properties so that we can find them later in onDelete
@@ -104,6 +117,8 @@ const EditComponentDrawTools = ({
       });
     }
     setIsDrawing(false);
+    // after we have deleted, disable trash button
+    toggleTrashButtonClickable(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -115,6 +130,10 @@ const EditComponentDrawTools = ({
     }
   };
 
+  const onSelectionChange = (props) => {
+    toggleTrashButtonClickable(!!props.features.length > 0);
+  };
+
   return (
     <ComponentsDrawControl
       ref={drawControlsRef}
@@ -124,6 +143,7 @@ const EditComponentDrawTools = ({
       linkMode={linkMode}
       onModeChange={onModeChange}
       styleOverrides={mapboxDrawStylesOverrides}
+      onSelectionChange={onSelectionChange}
     />
   );
 };
