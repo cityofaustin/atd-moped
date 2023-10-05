@@ -25,6 +25,7 @@ import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import { useCsvExport } from "./useProjectListViewQuery/useCsvExport";
 
 /**
  * GridTable Style
@@ -457,6 +458,8 @@ const ProjectsListViewTable = ({ query }) => {
     fetchPolicy: "cache-first",
   });
 
+  const { handleExportButtonClick } = useCsvExport({ query });
+
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
   );
@@ -511,6 +514,7 @@ const ProjectsListViewTable = ({ query }) => {
           setSearchTerm={setSearchTerm}
           queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
           filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+          handleExportButtonClick={handleExportButtonClick}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
