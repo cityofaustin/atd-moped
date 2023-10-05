@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
+import {useTrashButtonClickable} from "./utils/map"
 import "./utils/map.css";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
@@ -21,17 +22,7 @@ const CreateComponentDrawTools = ({
 }) => {
   const drawControlsRef = useRef();
   const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
-  React.useEffect(() => {
-    if (isTrashButtonClickable) {
-      document
-        .getElementsByClassName("mapbox-gl-draw_trash")[0]
-        .classList.remove("disable-trash");
-    } else {
-      document
-        .getElementsByClassName("mapbox-gl-draw_trash")[0]
-        .classList.add("disable-trash");
-    }
-  }, [isTrashButtonClickable]);
+  useTrashButtonClickable(isTrashButtonClickable)
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features

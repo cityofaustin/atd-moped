@@ -155,3 +155,22 @@ export const useZoomToExistingComponents = (
     refreshOnComponentsUpdate,
   ]);
 };
+
+/**
+ * Adds or removes custom css class based on if drawn features are selected
+ * @param {boolean} isTrashButtonClickable - if true add class, if false remove
+ */
+export const useTrashButtonClickable = (isTrashButtonClickable) =>
+{
+  useEffect(() => {
+    if (isTrashButtonClickable) {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.remove("disable-trash");
+    } else {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.add("disable-trash");
+    }
+  }, [isTrashButtonClickable]);
+}
