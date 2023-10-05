@@ -91,15 +91,22 @@ def main(env):
     query = get_query()
     print("Fetching project data...")
     data = make_hasura_request(query=query, env=env)["component_arcgis_online_view"]
-    features = []
+    features = { 'lines': [], 'points': []}
+    
     for row in data:
         geometry = row.pop("geometry")
-        features.append(
-            { "type": "Feature", "properties": row, "geometry": geometry }
-        )
-    fc = { "type": "FeatureCollection", "features": features }
-    with open("test.geojson", "w") as fout:
-        json.dump(fc, fout)
+        feature =  { "type": "Feature", "properties": row, "geometry": geometry }
+        if geometry["type"] == 'MultiLineString':
+            features["lines"].append(feature)
+        elif geometry["type"] == 'MultiPoint':
+            features["points"].append(feature)
+        else:
+            raise ValueError(f"Found unsupported feature type: {geometry['type']}")
+
+    for feature_type in ["points", "lines"]:
+        with open(f"{feature_type}.geojson", "w") as fout:
+            fc = { "type": "FeatureCollection", "features": features[feature_type] }
+            json.dump(fc, fout)
 
 
 if __name__ == "__main__":
