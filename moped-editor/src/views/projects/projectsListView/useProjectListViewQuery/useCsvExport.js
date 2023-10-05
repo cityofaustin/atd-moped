@@ -13,7 +13,7 @@ import {
   Grid,
 } from "@mui/material";
 
-export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => {
+export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => (
   <Dialog
     open={dialogOpen}
     onClose={handleDialogClose}
@@ -37,8 +37,8 @@ export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => {
         Cancel
       </Button>
     </DialogActions>
-  </Dialog>;
-};
+  </Dialog>
+);
 
 /**
  * Downloads the contents of fileContents into a file
@@ -99,6 +99,7 @@ export const useCsvExport = ({
   queryTableName,
   fetchPolicy,
   limit,
+  setQueryLimit,
 }) => {
   /**
    * When True, the download csv dialog is open.
@@ -122,7 +123,6 @@ export const useCsvExport = ({
    * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
-  console.log(query);
   let [getExport, { called, stopPolling, loading, data }] = useLazyQuery(
     query,
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
@@ -150,7 +150,6 @@ export const useCsvExport = ({
   useEffect(
     () => {
       if (dialogOpen && !downloading) {
-        limit = 0;
         getExport();
         setDownloading(true);
       }
@@ -173,8 +172,8 @@ export const useCsvExport = ({
       }
     },
     // eslint-disable-next-line
-    [dialogOpen, downloading, loading, limit, getExport]
+    [dialogOpen, downloading, loading, limit, getExport, setQueryLimit]
   );
 
-  return { handleExportButtonClick };
+  return { handleExportButtonClick, dialogOpen, handleDialogClose };
 };

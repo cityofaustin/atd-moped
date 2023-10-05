@@ -46,7 +46,7 @@ export const useGetProjectListView = ({
             ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
           }
       ) {
-          ${columnsToReturn.join("\n")}
+          ${exportColumnsToReturn.join("\n")}
       },
       project_list_view_aggregate (
         where: { 
@@ -65,6 +65,7 @@ export const useGetProjectListView = ({
     queryLimit,
     queryOffset,
     columnsToReturn,
+    exportColumnsToReturn,
     orderByColumn,
     orderByDirection,
     searchWhereString,

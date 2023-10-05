@@ -26,7 +26,10 @@ import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
-import { useCsvExport } from "./useProjectListViewQuery/useCsvExport";
+import {
+  useCsvExport,
+  CsvDownloadDialog,
+} from "./useProjectListViewQuery/useCsvExport";
 
 /**
  * GridTable Style
@@ -460,13 +463,15 @@ const ProjectsListViewTable = ({ query }) => {
     fetchPolicy: "cache-first",
   });
 
-  const { handleExportButtonClick } = useCsvExport({
-    query: exportQuery,
-    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
-    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
-    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery,
-    limit: queryLimit,
-  });
+  const { handleExportButtonClick, dialogOpen, handleDialogClose } =
+    useCsvExport({
+      query: exportQuery,
+      exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+      queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+      fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery,
+      limit: queryLimit,
+      setQueryLimit,
+    });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
@@ -510,6 +515,10 @@ const ProjectsListViewTable = ({ query }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
+        <CsvDownloadDialog
+          dialogOpen={dialogOpen}
+          handleDialogClose={handleDialogClose}
+        />
         <Search
           parentData={data}
           query={query}
