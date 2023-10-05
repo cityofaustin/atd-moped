@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, /* useState */ } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
 import "./utils/map.css"
@@ -19,6 +19,7 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
+  // const [showTrash, toggleShowTrash] = useState(false);
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -70,6 +71,12 @@ const CreateComponentDrawTools = ({
     }
   };
 
+  const onSelectionChange = (props) => {
+
+    console.log(props.features.length)
+    // toggleShowTrash(!!props.features.length>0)
+  }
+
   return (
     <ComponentsDrawControl
       ref={drawControlsRef}
@@ -79,6 +86,7 @@ const CreateComponentDrawTools = ({
       linkMode={linkMode}
       onModeChange={onModeChange}
       styleOverrides={mapboxDrawStylesOverrides}
+      onSelectionChange={onSelectionChange}
     />
   );
 };
