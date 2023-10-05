@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import Papa from "papaparse";
@@ -98,8 +98,6 @@ export const useCsvExport = ({
   exportConfig,
   queryTableName,
   fetchPolicy,
-  limit,
-  setQueryLimit,
 }) => {
   /**
    * When True, the download csv dialog is open.
@@ -110,20 +108,12 @@ export const useCsvExport = ({
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
-   * When True, the download happens.
-   * @type {boolean} downloading
-   * @function setDownloading - Sets the state of downloading
-   * @default false
-   */
-  const [downloading, setDownloading] = useState(false);
-
-  /**
    * Instantiates getExport, loading and data variables
    * @function getExport - It is called to load the data
    * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
-  let [getExport, { loading, data }] = useLazyQuery(
+  let [getExport] = useLazyQuery(
     query,
     // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
     {
