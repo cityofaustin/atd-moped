@@ -21,6 +21,7 @@ import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
@@ -445,7 +446,7 @@ const ProjectsListViewTable = ({ query }) => {
 
   const { query: projectListViewQuery } = useGetProjectListView({
     columnsToReturn,
-    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
     queryOffset,
     orderByColumn,
@@ -458,7 +459,10 @@ const ProjectsListViewTable = ({ query }) => {
     fetchPolicy: "cache-first",
   });
 
-  const { handleExportButtonClick } = useCsvExport({ query });
+  const { handleExportButtonClick } = useCsvExport({
+    query,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+  });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
