@@ -162,7 +162,7 @@ export const useZoomToExistingComponents = (
  */
 export const useTrashButtonClickable = () =>
 {
-  const [isTrashButtonClickable, toggleTrashButtonClickable] = useState(false);
+  const [isTrashButtonClickable, setTrashButtonClickable] = useState(false);
   useEffect(() => {
     if (isTrashButtonClickable) {
       document
@@ -174,5 +174,5 @@ export const useTrashButtonClickable = () =>
         .classList.add("disable-trash");
     }
   }, [isTrashButtonClickable]);
-  return toggleTrashButtonClickable;
+  return setTrashButtonClickable;
 }

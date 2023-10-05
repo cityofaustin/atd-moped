@@ -26,7 +26,7 @@ const EditComponentDrawTools = ({
     linkMode,
   });
 
-  const toggleTrashButtonClickable = useTrashButtonClickable()
+  const setTrashButtonClickable = useTrashButtonClickable()
 
   // We must override the features in the draw control's internal state with ones
   // that have our properties so that we can find them later in onDelete
@@ -109,7 +109,7 @@ const EditComponentDrawTools = ({
     }
     setIsDrawing(false);
     // after we have deleted, disable trash button
-    toggleTrashButtonClickable(false);
+    setTrashButtonClickable(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -122,7 +122,7 @@ const EditComponentDrawTools = ({
   };
 
   const onSelectionChange = (props) => {
-    toggleTrashButtonClickable(!!props.features.length > 0);
+    setTrashButtonClickable(!!props.features.length > 0);
   };
 
   return (

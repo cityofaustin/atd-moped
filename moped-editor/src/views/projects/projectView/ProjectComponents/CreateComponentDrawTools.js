@@ -21,7 +21,7 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const toggleTrashButtonClickable = useTrashButtonClickable()
+  const setTrashButtonClickable = useTrashButtonClickable()
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -64,7 +64,7 @@ const CreateComponentDrawTools = ({
     });
     setIsDrawing(false);
     // after we have deleted, disable trash button
-    toggleTrashButtonClickable(false);
+    setTrashButtonClickable(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -77,7 +77,7 @@ const CreateComponentDrawTools = ({
   };
 
   const onSelectionChange = (props) => {
-    toggleTrashButtonClickable(!!props.features.length > 0);
+    setTrashButtonClickable(!!props.features.length > 0);
   };
 
   return (
