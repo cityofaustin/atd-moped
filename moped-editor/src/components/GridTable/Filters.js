@@ -204,12 +204,9 @@ const Filters = ({
       const filtersNewState = { ...filterParameters };
 
       // Find the field we need to gather options from
-      const fieldIndex = filtersConfig.fields.findIndex(
+      const fieldDetails = filtersConfig.fields.find(
         (filter) => filter.name === field
       );
-
-      // Gather field details
-      const fieldDetails = filtersConfig.fields[fieldIndex];
 
       if (!fieldDetails) {
         filtersNewState[filterId] = generateEmptyField(filterId);
