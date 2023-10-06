@@ -80,7 +80,7 @@ SELECT
     feature_drawn_lines.id,
     feature_drawn_lines.component_id,
     'feature_drawn_lines'::text AS "table",
-    json_build_object('length_feet', feature_drawn_lines.length_feet),
+    json_build_object('length_feet', feature_drawn_lines.length_feet) AS attributes,
     feature_drawn_lines.geography,
     districts.council_districts
 FROM
