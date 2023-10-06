@@ -4702,6 +4702,7 @@
           - contractors
           - current_phase
           - current_phase_key
+          - current_phase_simple
           - date_added
           - ecapris_subproject_id
           - funding_source_name
@@ -4739,6 +4740,7 @@
           - contractors
           - current_phase
           - current_phase_key
+          - current_phase_simple
           - date_added
           - ecapris_subproject_id
           - funding_source_name
@@ -4776,6 +4778,7 @@
           - contractors
           - current_phase
           - current_phase_key
+          - current_phase_simple
           - date_added
           - ecapris_subproject_id
           - funding_source_name
