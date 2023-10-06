@@ -46,6 +46,11 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         },
       },
       {
+        headerName: "ID",
+        field: "id",
+        minWidth: 50,
+      },
+      {
         headerName: "Workgroup/Contractor",
         field: "contractor",
         minWidth: 175,
@@ -111,11 +116,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 150,
         valueGetter: ({ row }) =>
           row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
-      },
-      {
-        headerName: "ID",
-        field: "id",
-        minWidth: 50,
       },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
