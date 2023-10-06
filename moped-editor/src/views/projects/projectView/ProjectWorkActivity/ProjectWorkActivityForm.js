@@ -108,8 +108,6 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     );
   }
 
-  console.log("formaerrors", formErrors);
-
   return (
     <form
       onSubmit={handleSubmit((data) =>
@@ -248,7 +246,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
             <ControlledTextInput
               control={control}
               fullWidth
-              error={formErrors?.work_order_url}
+              error={!!formErrors?.work_order_url}
               label="Work Order Link"
               name="work_order_url"
               size="small"
