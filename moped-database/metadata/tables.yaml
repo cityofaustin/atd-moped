@@ -3273,8 +3273,7 @@
           - is_deleted
           - work_assignment_id
           - contract_amount
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3294,8 +3293,7 @@
           - is_deleted
           - work_assignment_id
           - contract_amount
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3313,8 +3311,7 @@
           - description
           - id
           - implementation_workgroup
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - is_deleted
           - project_id
           - status_id
@@ -3324,6 +3321,7 @@
           - updated_by_user_id
           - work_assignment_id
           - work_order_url
+          - reference_id
         filter: {}
     - role: moped-editor
       permission:
@@ -3340,13 +3338,13 @@
           - contractor
           - description
           - implementation_workgroup
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - status_note
           - work_assignment_id
           - created_at
           - updated_at
           - work_order_url
+          - reference_id
         filter: {}
     - role: moped-viewer
       permission:
@@ -3363,13 +3361,13 @@
           - contractor
           - description
           - implementation_workgroup
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - status_note
           - work_assignment_id
           - created_at
           - updated_at
           - work_order_url
+          - reference_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3382,8 +3380,7 @@
           - is_deleted
           - work_assignment_id
           - contract_amount
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - implementation_workgroup
           - task_orders
           - status_id
@@ -3403,8 +3400,7 @@
           - is_deleted
           - work_assignment_id
           - contract_amount
-          - interim_work_order_id_old
-          - interim_work_order_id
+          - interim_work_activity_id
           - implementation_workgroup
           - task_orders
           - status_id
