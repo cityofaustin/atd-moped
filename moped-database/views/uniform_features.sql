@@ -1,5 +1,5 @@
 -- latest version 1696624355279_add-length-to-views
-REPLACE VIEW "public"."uniform_features" AS
+CREATE OR REPLACE VIEW "public"."uniform_features" AS
 SELECT
     feature_signals.id,
     feature_signals.component_id,
