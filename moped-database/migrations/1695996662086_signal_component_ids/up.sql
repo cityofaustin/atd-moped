@@ -1,4 +1,3 @@
--- latest version 1695996662086_signal_component_ids
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
