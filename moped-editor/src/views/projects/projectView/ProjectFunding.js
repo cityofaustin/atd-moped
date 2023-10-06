@@ -1,10 +1,9 @@
 import React from "react";
+import Grid from "@mui/material/Grid";
+import CardContent from "@mui/material/CardContent";
 import ProjectFundingTable from "./ProjectFundingTable";
-
 import ProjectWorkActivitiesTable from "./ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
-
-import { CardContent, Grid } from "@mui/material";
 
 const ProjectFunding = () => {
   const { projectId } = useParams();
