@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 /**
  * Defines the callback handler for when a field value changes. This function keeps
  * react-hook-form state in sync with the field input state. Since this is the default
- * handler, it merely saves the exact value(s) selected into RFH state
+ * handler, it merely saves the exact value(s) selected into react-hook-form state
  * @param {any} the value of the selected option
  * @param {any} the value of the selected menu option
  * @param {*} field the react-hook-form field object
