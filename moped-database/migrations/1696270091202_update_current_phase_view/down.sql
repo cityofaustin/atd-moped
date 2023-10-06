@@ -73,7 +73,7 @@ AS WITH project_person_list_lookup AS (
     cpl.children_project_ids,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
     string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
-    (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type))
+    (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id))
         FROM moped_proj_components components   
         LEFT JOIN feature_signals
           ON (feature_signals.component_id = components.project_component_id)
