@@ -71,6 +71,9 @@ export const useTaskOrderOptions = (taskOrderData) =>
     return taskOrderData.map((tk) => ({ label: tk.display_name, value: tk }));
   }, [taskOrderData]);
 
+/**
+ * Only these fields will be included in the form submit payload
+ */
 const FORM_PAYLOAD_FIELDS = [
   "contractor",
   "contract_number",
