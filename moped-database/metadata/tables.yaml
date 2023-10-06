@@ -3279,6 +3279,7 @@
           - task_orders
           - status_id
           - status_note
+          - work_order_url
     - role: moped-editor
       permission:
         check: {}
@@ -3299,6 +3300,7 @@
           - task_orders
           - status_id
           - status_note
+          - work_order_url
   select_permissions:
     - role: moped-admin
       permission:
@@ -3321,6 +3323,7 @@
           - updated_at
           - updated_by_user_id
           - work_assignment_id
+          - work_order_url
         filter: {}
     - role: moped-editor
       permission:
@@ -3343,6 +3346,7 @@
           - work_assignment_id
           - created_at
           - updated_at
+          - work_order_url
         filter: {}
     - role: moped-viewer
       permission:
@@ -3365,6 +3369,7 @@
           - work_assignment_id
           - created_at
           - updated_at
+          - work_order_url
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3383,6 +3388,7 @@
           - task_orders
           - status_id
           - status_note
+          - work_order_url
         filter: {}
         check: {}
         set:
@@ -3403,6 +3409,7 @@
           - task_orders
           - status_id
           - status_note
+          - work_order_url
         filter: {}
         check: {}
         set:
