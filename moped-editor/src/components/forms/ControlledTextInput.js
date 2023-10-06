@@ -49,7 +49,6 @@ export default function ControlledTextInput({
             {...inputProps}
             onChange={(e) => onChangeHandler(e.target.value, field)}
             value={valueHandler(field.value)}
-            error={!!inputProps?.error}
           />
         );
       }}
