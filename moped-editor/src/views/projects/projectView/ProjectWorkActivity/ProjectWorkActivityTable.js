@@ -49,7 +49,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       },
       {
         headerName: "ID",
-        field: "id",
+        field: "reference_id",
         minWidth: 50,
       },
       {
