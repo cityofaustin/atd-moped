@@ -29,6 +29,7 @@
           - project_phase_id
           - phase_key
           - phase_name
+          - phase_name_simple
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -39,6 +40,7 @@
           - project_phase_id
           - phase_key
           - phase_name
+          - phase_name_simple
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -49,6 +51,7 @@
           - project_phase_id
           - phase_key
           - phase_name
+          - phase_name_simple
         filter: {}
         allow_aggregations: true
 - table:
