@@ -4,6 +4,7 @@ import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
 } from "src/utils/numberFormatters";
+
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Arterial Management",
   "Markings",
@@ -11,7 +12,6 @@ export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
   "Sidewalks & Special Projects",
   "General contractor",
   "Other",
-  
 ];
 
 const DEFAULT_ACTIVITY_VALUES = {
@@ -31,6 +31,7 @@ export const activityValidationSchema = yup.object().shape({
   task_orders: yup.array().nullable(),
   id: yup.number().optional(),
   project_id: yup.number().required(),
+  work_order_url: yup.string().url("Must be a valid link").nullable(),
 });
 
 /**
@@ -80,6 +81,7 @@ const FORM_PAYLOAD_FIELDS = [
   "status_id",
   "status_note",
   "task_orders",
+  "work_order_url",
 ];
 
 export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {

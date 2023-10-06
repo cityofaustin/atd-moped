@@ -108,6 +108,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
     );
   }
 
+  console.log("formaerrors", formErrors);
+
   return (
     <form
       onSubmit={handleSubmit((data) =>
@@ -131,7 +133,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </Grid>
         )}
         <Grid item xs={12}>
-          <FormControl fullWidth error={formErrors.status_id}>
+          <FormControl fullWidth error={!!formErrors.status_id}>
             <InputLabel id="status-label" required={true}>
               Status
             </InputLabel>
@@ -239,6 +241,23 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={!!formErrors?.work_order_url}>
+            <ControlledTextInput
+              control={control}
+              fullWidth
+              error={formErrors?.work_order_url}
+              label="Work Order Link"
+              name="work_order_url"
+              size="small"
+            />
+            {formErrors?.work_order_url && (
+              <FormHelperText>
+                {formErrors.work_order_url.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
       </Grid>
