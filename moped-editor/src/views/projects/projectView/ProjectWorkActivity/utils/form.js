@@ -5,10 +5,13 @@ import {
   removeNonIntegers,
 } from "src/utils/numberFormatters";
 export const IMPLEMENTATION_WORKGROUP_OPTIONS = [
+  "Arterial Management",
   "Markings",
   "Signs",
-  "Arterial Management",
+  "Sidewalks & Special Projects",
+  "General contractor",
   "Other",
+  
 ];
 
 const DEFAULT_ACTIVITY_VALUES = {
