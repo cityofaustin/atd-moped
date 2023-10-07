@@ -45,8 +45,6 @@ mapboxgl.workerClass =
   require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
 export default function TheMap({
-  setHoveredOnMapFeature,
-  hoveredOnMapFeature,
   projectComponents,
   allRelatedComponents,
   isCreatingComponent,
@@ -56,8 +54,6 @@ export default function TheMap({
   draftEditComponent,
   editDispatch,
   mapRef,
-  clickedProjectFeature,
-  setClickedProjectFeature,
   clickedComponent,
   setClickedComponent,
   linkMode,
@@ -267,10 +263,6 @@ export default function TheMap({
       if (draftEditComponent && !isEditingComponent) {
         editDispatch({ type: "clear_draft_component" });
       }
-      /* clear clickedProjectFeature to close FeaturePopup  */
-      if (clickedProjectFeature) {
-        setClickedProjectFeature(null);
-      }
       return;
     }
 
@@ -299,8 +291,8 @@ export default function TheMap({
 
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
-        clickedComponentFromMap && setClickedComponent(clickedComponentFromMap);
-
+       setClickedComponent(clickedComponentFromMap);
+       editDispatch({ type: "set_draft_component", payload: clickedComponentFromMap });
         // Make sure that state reflects whether the clicked component is related or not
         // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);
@@ -309,8 +301,6 @@ export default function TheMap({
         const ref = clickedComponentFromMap?._ref;
         ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
       }
-
-      setClickedProjectFeature(clickedProjectFeature);
       return;
     }
 
@@ -427,12 +417,6 @@ export default function TheMap({
             />
           </>
         )}
-        {/* <FeaturePopup
-        onClose={() => setClickedProjectFeature(null)}
-        feature={clickedProjectFeature}
-        components={components}
-        setClickedComponent={setClickedComponent}
-      /> */}
       </MapGL>
     </>
   );

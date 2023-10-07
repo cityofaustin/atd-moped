@@ -75,9 +75,6 @@ export default function MapView({
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
 
-  /* tracks a projectFeature clicked from the map */
-  const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
-
   /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
 
@@ -183,8 +180,7 @@ export default function MapView({
     const featureCollection = { type: "FeatureCollection", features };
 
     setClickedComponent(component);
-    // close the map projectFeature map popup
-    setClickedProjectFeature(null);
+
     // move the map
     zoomMapToFeatureCollection(
       mapRef,
@@ -286,8 +282,6 @@ export default function MapView({
               setClickedComponent={setClickedComponent}
               isClickedComponentRelated={isClickedComponentRelated}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
-              clickedProjectFeature={clickedProjectFeature}
-              setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               isDrawing={isDrawing}
