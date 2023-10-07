@@ -135,7 +135,7 @@ const MilestoneTemplateModal = ({
       open={isDialogOpen}
       onClose={handleDialogClose}
       fullWidth
-      maxWidth={"md"}
+      maxWidth="md"
     >
       <DialogTitle className={classes.dialogTitle}>
         <h3>Select milestone template</h3>

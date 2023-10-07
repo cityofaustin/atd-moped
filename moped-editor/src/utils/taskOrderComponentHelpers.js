@@ -5,7 +5,7 @@ import { TextField } from "@mui/material";
  * Socrata Endpoint
  */
 export const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/ggav-ufvc.json?$limit=9999";
+  "https://data.austintexas.gov/resource/ggav-ufvc.json?$limit=99999";
 
 /*
 / Defines text input to render in MUI autocomplete
