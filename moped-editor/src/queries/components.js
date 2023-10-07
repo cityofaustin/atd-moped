@@ -13,6 +13,9 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       feature_layer {
         internal_table
       }
+      asset_feature_layer {
+        internal_table
+      }
       moped_components_subcomponents(
         order_by: { moped_subcomponent: { subcomponent_name: asc } }
       ) {
@@ -69,6 +72,9 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       component_name
       component_subtype
       feature_layer {
+        internal_table
+      }
+      asset_feature_layer {
         internal_table
       }
       line_representation
