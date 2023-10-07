@@ -50,6 +50,10 @@ const EditAttributesModal = ({
   };
 
   const onSave = (formData) => {
+    const isSignalComponent =
+      formData.component.data.asset_feature_layer?.internal_table ===
+      "feature_signals";
+
     const isSavingSignalFeature = Boolean(formData.signal);
 
     const {
@@ -94,15 +98,22 @@ const EditAttributesModal = ({
         }))
       : [];
 
-    if (isSavingSignalFeature) {
+    if (isSignalComponent) {
       const signalFromForm = formData.signal;
-      const featureSignalRecord =
-        knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+      let signalToInsert = [];
+      let featureSignalRecord;
 
-      const signalToInsert = {
-        ...featureSignalRecord,
-        component_id: projectComponentId,
-      };
+      if (signalFromForm) {
+        // inserting a new signal feature
+        
+        featureSignalRecord =
+          knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+
+        signalToInsert.push({
+          ...featureSignalRecord,
+          component_id: projectComponentId,
+        });
+      }
 
       updateSignalComponent({
         variables: {
@@ -110,7 +121,7 @@ const EditAttributesModal = ({
           description,
           subcomponents: subcomponentsArray,
           workTypes: workTypesArray,
-          signals: [signalToInsert],
+          signals: signalToInsert,
           phaseId: phase?.value,
           subphaseId: subphase?.value,
           componentTags: tagsArray,
@@ -122,21 +133,24 @@ const EditAttributesModal = ({
         .then(() => {
           onSaveSuccess();
 
-          const [existingLongitude, existingLatitude] =
-            featureSignalRecord.geography.coordinates[0];
-          const [newLongitude, newLatitude] =
-            signalFromForm.geometry.coordinates;
-          const hasLocationChanged =
-            existingLongitude !== newLongitude ||
-            existingLatitude !== newLatitude;
+          if (signalFromForm) {
+            // todo: this has no effect: it's comparing lat/lon from the same object
+            const [existingLongitude, existingLatitude] =
+              featureSignalRecord.geography.coordinates[0];
+            const [newLongitude, newLatitude] =
+              signalFromForm.geometry.coordinates;
+            const hasLocationChanged =
+              existingLongitude !== newLongitude ||
+              existingLatitude !== newLatitude;
 
-          // Zoom to the new signal location if it updated
-          hasLocationChanged &&
-            zoomMapToFeatureCollection(
-              mapRef,
-              { type: "FeatureCollection", features: [signalFromForm] },
-              fitBoundsOptions.zoomToClickedComponent
-            );
+            // Zoom to the new signal location if it updated
+            hasLocationChanged &&
+              zoomMapToFeatureCollection(
+                mapRef,
+                { type: "FeatureCollection", features: [signalFromForm] },
+                fitBoundsOptions.zoomToClickedComponent
+              );
+          }
         })
         .catch((error) => {
           console.log(error);

@@ -277,7 +277,8 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
 `;
 
 // This mutation updates component subcomponents in same way as UPDATE_COMPONENT_ATTRIBUTES.
-// It also updates all component feature_signals to is_deleted = true and then inserts the new signal.
+// It also updates all component feature_signals, feature_intersections, and feature_drawn_points
+// to is_deleted = true and then inserts the new signal.
 export const UPDATE_SIGNAL_COMPONENT = gql`
   mutation UpdateSignalComponent(
     $projectComponentId: Int!
@@ -311,6 +312,18 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
       affected_rows
     }
     update_feature_signals(
+      where: { component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_feature_drawn_points(
+      where: { component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
+    ) {
+      affected_rows
+    }
+    update_feature_intersections(
       where: { component_id: { _eq: $projectComponentId } }
       _set: { is_deleted: true }
     ) {
