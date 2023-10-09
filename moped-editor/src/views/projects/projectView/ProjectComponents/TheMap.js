@@ -127,11 +127,11 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    setCursor("pointer");
+    !isDrawing && setCursor("pointer");
   };
 
   const onMouseLeave = (e) => {
-    setCursor("grab");
+    !isDrawing && setCursor("grab");
   };
 
   const handleCreateOnClick = (e) => {
@@ -367,6 +367,7 @@ export default function TheMap({
             linkMode={linkMode}
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
+            isDrawing={isDrawing}
           />
         )}
         {shouldShowEditDrawControls && (
