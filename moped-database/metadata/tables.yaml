@@ -4664,6 +4664,7 @@
           - project_name
           - geography
           - council_districts
+          - length_feet
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4681,6 +4682,7 @@
           - attributes
           - geography
           - council_districts
+          - length_feet
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4698,6 +4700,7 @@
           - project_name
           - geography
           - council_districts
+          - length_feet
         filter: {}
         allow_aggregations: true
 - table:

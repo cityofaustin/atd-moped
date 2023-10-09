@@ -19,3 +19,16 @@ export const useComponentListItemText = (component) =>
     listItemText.secondary = component.location_description;
     return listItemText;
   }, [component]);
+
+/**
+ * Identify if a component is map by checking all potential feature layers
+ * for features.
+ * @param {object} component - the moped_component object
+ * @returns {object} true if any layer has features else false
+ */
+export const getIsComponentMapped = (component) =>
+  component.feature_drawn_points?.length > 0 ||
+  component.feature_drawn_lines?.length > 0 ||
+  component.feature_intersections?.length > 0 ||
+  component.feature_signals?.length > 0 ||
+  component.feature_street_segments?.length > 0;
