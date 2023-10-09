@@ -27,13 +27,9 @@ export const useComponentListItemText = (component) =>
  * @param {object} component - the moped_component object
  * @returns {object} true if any layer has features else false
  */
-export const useIsComponentMapped = (component) =>
-  useMemo(
-    () =>
-      component.feature_drawn_points?.length > 0 ||
-      component.feature_drawn_lines?.length > 0 ||
-      component.feature_intersections?.length > 0 ||
-      component.feature_signals?.length > 0 ||
-      component.feature_street_segments?.length > 0,
-    [component]
-  );
+export const getIsComponentMapped = (component) =>
+  component.feature_drawn_points?.length > 0 ||
+  component.feature_drawn_lines?.length > 0 ||
+  component.feature_intersections?.length > 0 ||
+  component.feature_signals?.length > 0 ||
+  component.feature_street_segments?.length > 0;

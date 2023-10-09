@@ -12,7 +12,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { COLORS } from "./mapStyleSettings";
 import {
   useComponentListItemText,
-  useIsComponentMapped,
+  getIsComponentMapped,
 } from "./utils/componentList";
 
 const useStyles = makeStyles((theme) => ({
@@ -43,7 +43,7 @@ export default function ComponentListItem({
   const classes = useStyles();
 
   const { primary, secondary } = useComponentListItemText(component);
-  const isComponentMapped = useIsComponentMapped(component);
+  const isComponentMapped = getIsComponentMapped(component);
 
   return (
     <Box
