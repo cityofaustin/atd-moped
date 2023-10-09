@@ -9,6 +9,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
 import {
   useComponentListItemText,
@@ -59,7 +60,7 @@ export default function ComponentListItem({
         className={classes.listItem}
         ref={component._ref}
       >
-        {Icon}
+        {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <ListItemText
           className={classes.listItemText}
           primary={primary}
@@ -78,15 +79,17 @@ export default function ComponentListItem({
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
-      {!isComponentMapped && (
-        <ListItem dense className={classes.listItem}>
-          <ListItemText
-            primary={<Alert severity="error">Component is not mapped</Alert>}
-          />
-        </ListItem>
-      )}
       <Collapse in={isExpanded}>
         <List component="div" disablePadding dense>
+          {!isComponentMapped && (
+            <ListItem dense className={classes.listItem}>
+              <ListItemText
+                primary={
+                  <Alert severity="error">Component is not mapped</Alert>
+                }
+              />
+            </ListItem>
+          )}
           {component.description && (
             <ListItem className={classes.nested}>
               <ListItemText secondary={component.description} />
