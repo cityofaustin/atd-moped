@@ -33,7 +33,6 @@ const CreateComponentModal = ({
           component_subtype,
           line_representation,
           feature_layer: { internal_table },
-          asset_feature_layer: { internal_table: internal_asset_table }
         },
       },
       subcomponents,
@@ -50,7 +49,8 @@ const CreateComponentModal = ({
     if (isSavingSignalFeature) {
       // disgusting hacky override to set the internal table to the asset table
       // when an asset has been selected in the form
-      internal_table = internal_asset_table;
+      internal_table =
+        formData.component.data.asset_feature_layer.internal_table;
     }
 
     const newComponent = {
