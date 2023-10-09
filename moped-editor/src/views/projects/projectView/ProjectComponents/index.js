@@ -196,7 +196,6 @@ export default function MapView({
     setClickedComponent(null);
   };
 
-  console.log("editState", editState)
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
