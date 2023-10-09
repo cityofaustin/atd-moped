@@ -58,25 +58,8 @@ const EditAttributesModal = ({
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
   const onSaveSuccess = () => {
-    refetchProjectComponents().then(({ data }) => {
-      // check if this component is now unmapped
-      // if so — trigger component map flow
-      const updatedComponent = data?.moped_proj_components?.find(
-        (component) =>
-          component.project_component_id ===
-          clickedComponent.project_component_id
-      );
-      if (!getIsComponentMapped(updatedComponent)) {
-        const linkMode =
-          updatedComponent.line_representation === true ? "lines" : "points";
-        setLinkMode(linkMode);
-        editDispatch({
-          type: "start_unmapped_component_edit",
-          payload: updatedComponent,
-        });
-      } else {
-        onClose();
-      }
+    refetchProjectComponents().then(() => {
+      onClose();
     });
   };
 
@@ -152,6 +135,7 @@ const EditAttributesModal = ({
       updateSignalComponent({
         variables: {
           projectComponentId: projectComponentId,
+          componentId,
           description,
           subcomponents: subcomponentsArray,
           workTypes: workTypesArray,

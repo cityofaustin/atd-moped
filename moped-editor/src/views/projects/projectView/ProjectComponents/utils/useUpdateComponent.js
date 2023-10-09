@@ -14,7 +14,6 @@ import { useComponentFeatureCollection } from "./makeFeatureCollections";
 import { fitBoundsOptions } from "../mapSettings";
 
 const editReducer = (state, action) => {
-  console.log("REDUCEACTION", action.type);
   switch (action.type) {
     case "set_draft_component":
       const clickedComponent = action.payload;
@@ -37,13 +36,6 @@ const editReducer = (state, action) => {
       return {
         ...state,
         isEditingComponent: true,
-      };
-    case "start_unmapped_component_edit":
-      return {
-        ...state,
-        draftEditComponent: action.payload,
-        isEditingComponent: true,
-        showEditAttributesDialog: false,
       };
     case "cancel_attributes_edit":
       return {
