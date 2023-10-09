@@ -108,28 +108,23 @@ export const useCsvExport = ({
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
-   * Instantiates getExport, loading and data variables
+   * Instantiates getExport and data variables
    * @function getExport - It is called to load the data
-   * @property {boolean} loading - True whenever the data is being loaded
    * @property {object} data - The data as retrieved from query (if available)
    */
-  let [getExport] = useLazyQuery(
-    query,
-    // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
-    {
-      ...fetchPolicy,
-      //   When data is returned, format, parse, and download CSV
-      onCompleted: (data) => {
-        const formattedData = formatExportData(
-          data[queryTableName],
-          exportConfig
-        );
-        const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-        downloadFile(csvString, queryTableName);
-        setDialogOpen(false);
-      },
-    }
-  );
+  const [getExport] = useLazyQuery(query, {
+    ...fetchPolicy,
+    //   When data is returned, format, parse, and download CSV
+    onCompleted: (data) => {
+      const formattedData = formatExportData(
+        data[queryTableName],
+        exportConfig
+      );
+      const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
+      downloadFile(csvString, queryTableName);
+      setDialogOpen(false);
+    },
+  });
 
   /**
    * Handles export button (to open the csv download dialog)
