@@ -200,6 +200,8 @@ export const GET_PROJECT_COMPONENTS = gql`
 // subcomponents and tags to is_deleted = true and then inserting the new subcomponents and tags
 // with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user
 // are switched to is_deleted = false by the mutation)
+// Also deletes any feature_signals records which may be necessary due to a component switching from 
+// a signal asset feature to a non-signal component
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateComponentAttributes(
     $projectComponentId: Int!
@@ -270,6 +272,12 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
         constraint: unique_component_and_tag
         update_columns: [is_deleted]
       }
+    ) {
+      affected_rows
+    }
+    update_feature_signals(
+      where: { component_id: { _eq: $projectComponentId } }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }
