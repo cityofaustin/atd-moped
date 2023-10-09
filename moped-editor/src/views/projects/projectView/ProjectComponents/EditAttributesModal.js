@@ -31,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const areSignalComponentsEqual = (clickedComponent, signalFromForm) => {
+  const previousSignalId = clickedComponent.feature_signals?.[0]?.signal_id;
+  const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
+  return previousSignalId === newSignalId;
+};
+
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
@@ -53,8 +59,6 @@ const EditAttributesModal = ({
     const isSignalComponent =
       formData.component.data.asset_feature_layer?.internal_table ===
       "feature_signals";
-
-    const isSavingSignalFeature = Boolean(formData.signal);
 
     const {
       subcomponents,
@@ -103,9 +107,12 @@ const EditAttributesModal = ({
       let signalToInsert = [];
       let featureSignalRecord;
 
-      if (signalFromForm) {
+      const signalHasChanged =
+        signalFromForm &&
+        !areSignalComponentsEqual(clickedComponent, signalFromForm);
+
+      if (signalHasChanged) {
         // inserting a new signal feature
-        
         featureSignalRecord =
           knackSignalRecordToFeatureSignalsRecord(signalFromForm);
 
@@ -132,25 +139,13 @@ const EditAttributesModal = ({
       })
         .then(() => {
           onSaveSuccess();
-
-          if (signalFromForm) {
-            // todo: this has no effect: it's comparing lat/lon from the same object
-            const [existingLongitude, existingLatitude] =
-              featureSignalRecord.geography.coordinates[0];
-            const [newLongitude, newLatitude] =
-              signalFromForm.geometry.coordinates;
-            const hasLocationChanged =
-              existingLongitude !== newLongitude ||
-              existingLatitude !== newLatitude;
-
-            // Zoom to the new signal location if it updated
-            hasLocationChanged &&
-              zoomMapToFeatureCollection(
-                mapRef,
-                { type: "FeatureCollection", features: [signalFromForm] },
-                fitBoundsOptions.zoomToClickedComponent
-              );
-          }
+          // Zoom to the new signal location if it updated
+          signalHasChanged &&
+            zoomMapToFeatureCollection(
+              mapRef,
+              { type: "FeatureCollection", features: [signalFromForm] },
+              fitBoundsOptions.zoomToClickedComponent
+            );
         })
         .catch((error) => {
           console.log(error);
