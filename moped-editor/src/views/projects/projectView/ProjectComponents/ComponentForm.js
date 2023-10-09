@@ -207,13 +207,11 @@ const ComponentForm = ({
             )}
             name="component"
             control={control}
-            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
             required={true}
           />
         </Grid>
-
         {isSignalComponent && (
           <Grid item xs={12}>
             <Controller
