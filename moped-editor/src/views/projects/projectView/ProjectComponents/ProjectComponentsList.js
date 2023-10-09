@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
+import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 
 const ProjectComponentsList = ({
@@ -109,7 +110,9 @@ const ProjectComponentsList = ({
                     onClick={onEditMap}
                     disabled={isSignal}
                   >
-                    <EditLocationAltOutlinedIcon />
+                    <EditLocationAltOutlinedIcon
+                      color={getIsComponentMapped(component) ? undefined : "error"}
+                    />
                   </IconButton>
                 </span>
               </Tooltip>
