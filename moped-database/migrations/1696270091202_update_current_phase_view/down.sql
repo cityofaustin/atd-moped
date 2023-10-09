@@ -1,5 +1,19 @@
--- latest version 1696553602101_add_phase_simple_project_list_view
-DROP VIEW project_list_view;
+-- have to drop view in order to remove a column
+-- project list view depends on current phase view, so must drop that too
+
+DROP VIEW current_phase_view CASCADE;
+
+CREATE OR REPLACE VIEW "public"."current_phase_view" AS 
+ SELECT DISTINCT ON (mpp.project_id, mpp.is_current_phase) mpp.project_id,
+    mpp.project_phase_id,
+    mpp.phase_id,
+    mp.phase_name,
+    mp.phase_key
+   FROM (moped_proj_phases mpp
+     LEFT JOIN moped_phases mp ON ((mp.phase_id = mpp.phase_id)))
+  WHERE ((mpp.is_deleted = false) AND (mpp.is_current_phase = true))
+  ORDER BY mpp.project_id, mpp.is_current_phase, mpp.project_phase_id;
+
 
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
@@ -46,7 +60,6 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at,
     current_phase.phase_name as current_phase,
     current_phase.phase_key as current_phase_key,
-    current_phase.phase_name_simple as current_phase_simple,
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,

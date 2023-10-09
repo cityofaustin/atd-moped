@@ -1,4 +1,3 @@
--- latest version 1696553602101_add_phase_simple_project_list_view
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -177,6 +176,7 @@ AS WITH project_person_list_lookup AS (
     mp.parent_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
+    current_phase.phase_name_simple,
     ptl.type_name, 
     fsl.funding_source_name,
     added_by_user.first_name,

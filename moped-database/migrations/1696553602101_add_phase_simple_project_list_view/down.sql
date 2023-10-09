@@ -1,4 +1,3 @@
--- latest version 1696553602101_add_phase_simple_project_list_view
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -46,7 +45,6 @@ AS WITH project_person_list_lookup AS (
     mp.updated_at,
     current_phase.phase_name as current_phase,
     current_phase.phase_key as current_phase_key,
-    current_phase.phase_name_simple as current_phase_simple,
     ppll.project_team_members,
     me.entity_name AS project_sponsor,
     mel.entity_name AS project_lead,
