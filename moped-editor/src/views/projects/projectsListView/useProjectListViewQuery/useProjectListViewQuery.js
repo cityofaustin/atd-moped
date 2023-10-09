@@ -38,8 +38,6 @@ export const useGetProjectListView = ({
 
     const exportQuery = gql`{
       project_list_view (
-          limit: ${queryLimit}
-          offset: ${queryOffset}
           order_by: {${orderByColumn}: ${orderByDirection}}
           where: { 
             ${advancedSearchWhereString ? advancedSearchWhereString : ""}

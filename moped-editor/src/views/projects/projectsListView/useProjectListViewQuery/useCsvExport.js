@@ -114,16 +114,6 @@ export const useCsvExport = ({
    */
   const [getExport] = useLazyQuery(query, {
     fetchPolicy: fetchPolicy,
-    //   When data is returned, format, parse, and download CSV
-    onCompleted: (data) => {
-      const formattedData = formatExportData(
-        data[queryTableName],
-        exportConfig
-      );
-      const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-      downloadFile(csvString, queryTableName);
-      setDialogOpen(false);
-    },
   });
 
   /**
@@ -131,9 +121,17 @@ export const useCsvExport = ({
    */
   const handleExportButtonClick = () => {
     setDialogOpen(true);
-    setTimeout(() => {
-      getExport();
-    }, 1500);
+
+    // Fetch data and format, parse, and download CSV when returned
+    getExport().then(({ data }) => {
+      const formattedData = formatExportData(
+        data[queryTableName],
+        exportConfig
+      );
+      const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
+      downloadFile(csvString, queryTableName);
+      setDialogOpen(false);
+    });
   };
 
   /**
