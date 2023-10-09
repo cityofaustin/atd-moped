@@ -113,7 +113,7 @@ export const useCsvExport = ({
    * @property {object} data - The data as retrieved from query (if available)
    */
   const [getExport] = useLazyQuery(query, {
-    ...fetchPolicy,
+    fetchPolicy: fetchPolicy,
     //   When data is returned, format, parse, and download CSV
     onCompleted: (data) => {
       const formattedData = formatExportData(

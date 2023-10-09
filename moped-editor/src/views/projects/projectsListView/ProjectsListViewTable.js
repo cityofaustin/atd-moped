@@ -460,7 +460,7 @@ const ProjectsListViewTable = () => {
   });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
-    fetchPolicy: "cache-first",
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
 
   const { handleExportButtonClick, dialogOpen, handleDialogClose } =
@@ -468,7 +468,7 @@ const ProjectsListViewTable = () => {
       query: exportQuery,
       exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
       queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
-      fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery,
+      fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
       limit: queryLimit,
       setQueryLimit,
     });
