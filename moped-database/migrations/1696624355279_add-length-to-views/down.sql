@@ -1,3 +1,6 @@
+DROP VIEW "public"."project_geography";
+DROP VIEW "public"."uniform_features";
+
 -- reverts to 1691698449987_add-district-columns-to-views
 CREATE OR REPLACE VIEW "public"."uniform_features" AS
 SELECT
@@ -94,3 +97,51 @@ FROM
         GROUP BY
             d.feature_id) districts ON districts.feature_id = feature_drawn_lines.id
 WHERE (feature_drawn_lines.is_deleted = FALSE);
+
+
+-- reverts to 1691698449987_add-district-columns-to-views
+CREATE
+OR REPLACE VIEW "public"."project_geography" AS
+SELECT
+  moped_project.project_id,
+  uniform_features.id AS feature_id,
+  moped_components.component_id AS component_archtype_id,
+  moped_proj_components.project_component_id AS component_id,
+  moped_proj_components.is_deleted,
+  moped_project.project_name,
+  feature_layers.internal_table AS "table",
+  feature_layers.reference_layer_primary_key_column AS original_fk,
+  moped_components.component_name,
+  uniform_features.attributes,
+  uniform_features.geography,
+  uniform_features.council_districts
+FROM
+  (
+    (
+      (
+        (
+          moped_project
+          JOIN moped_proj_components ON (
+            (
+              moped_proj_components.project_id = moped_project.project_id
+            )
+          )
+        )
+        JOIN moped_components ON (
+          (
+            moped_proj_components.component_id = moped_components.component_id
+          )
+        )
+      )
+      JOIN feature_layers ON (
+        (
+          moped_components.feature_layer_id = feature_layers.id
+        )
+      )
+    )
+    JOIN uniform_features ON (
+      (
+        moped_proj_components.project_component_id = uniform_features.component_id
+      )
+    )
+  );
