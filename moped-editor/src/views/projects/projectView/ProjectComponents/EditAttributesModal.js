@@ -37,11 +37,19 @@ const areSignalComponentsEqual = (clickedComponent, signalFromForm) => {
   return previousSignalId === newSignalId;
 };
 
+const getIsComponentMapped = (component) =>
+  component.feature_drawn_points?.length > 0 ||
+  component.feature_drawn_lines?.length > 0 ||
+  component.feature_intersections?.length > 0 ||
+  component.feature_signals?.length > 0 ||
+  component.feature_street_segments?.length > 0;
+
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
   clickedComponent,
   refetchProjectComponents,
+  setLinkMode,
   mapRef,
 }) => {
   const classes = useStyles();
@@ -50,8 +58,25 @@ const EditAttributesModal = ({
   const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
   const onSaveSuccess = () => {
-    refetchProjectComponents().then(() => {
-      onClose();
+    refetchProjectComponents().then(({ data }) => {
+      // check if this component is now unmapped
+      // if so — trigger component map flow
+      const updatedComponent = data?.moped_proj_components?.find(
+        (component) =>
+          component.project_component_id ===
+          clickedComponent.project_component_id
+      );
+      if (!getIsComponentMapped(updatedComponent)) {
+        const linkMode =
+          updatedComponent.line_representation === true ? "lines" : "points";
+        setLinkMode(linkMode);
+        editDispatch({
+          type: "start_unmapped_component_edit",
+          payload: updatedComponent,
+        });
+      } else {
+        onClose();
+      }
     });
   };
 
@@ -59,6 +84,8 @@ const EditAttributesModal = ({
     const isSignalComponent =
       formData.component.data.asset_feature_layer?.internal_table ===
       "feature_signals";
+
+    const wasSignalComponent = clickedComponent.feature_signals.length > 0;
 
     const {
       subcomponents,

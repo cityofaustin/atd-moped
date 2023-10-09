@@ -196,6 +196,7 @@ export default function MapView({
     setClickedComponent(null);
   };
 
+  console.log("editState", editState)
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -307,6 +308,7 @@ export default function MapView({
             showDialog={editState.showEditAttributesDialog}
             editDispatch={editDispatch}
             clickedComponent={clickedComponent}
+            setLinkMode={setLinkMode}
             refetchProjectComponents={refetchProjectComponents}
             mapRef={mapRef}
           />
