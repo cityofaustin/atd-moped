@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
+// reduce the array of geography objects into an array of city council districts
 const getCouncilDistricts = (data) => {
   const initialValue = [];
   const districts = data.reduce(

@@ -72,7 +72,12 @@ export const useProjectComponents = (data) => {
         return component;
       }
     );
-  }, [parentComponents, siblingComponents, childComponents]);
+  }, [
+    parentComponents,
+    siblingComponents,
+    childComponents,
+    data?.project_geography,
+  ]);
 
   return {
     projectComponents,
