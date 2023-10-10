@@ -23,7 +23,6 @@ const getCouncilDistricts = (data) => {
  * @constructor
  */
 const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
-
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>

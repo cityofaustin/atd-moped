@@ -9,7 +9,6 @@ import {
   Switch,
   FormControlLabel,
   FormHelperText,
-  Divider,
 } from "@mui/material";
 import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
@@ -376,10 +375,7 @@ const ComponentForm = ({
         )}
       </Grid>
       {initialFormValues && (
-        <>
-          <Divider sx={{paddingTop:"15px"}}/>
-          <ComponentProperties component={initialFormValues}/>
-        </>
+        <ComponentProperties component={initialFormValues} />
       )}
       <Grid container spacing={4} display="flex" justifyContent="flex-end">
         <Grid item style={{ margin: 5 }}>
