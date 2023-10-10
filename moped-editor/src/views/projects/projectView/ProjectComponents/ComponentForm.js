@@ -30,6 +30,7 @@ import {
 } from "./utils/form";
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
 import ControlledAutocomplete from "./ControlledAutocomplete";
+import ComponentProperties from "./ComponentProperties";
 
 import * as yup from "yup";
 
@@ -112,13 +113,7 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [
-    component,
-    phase,
-    completionDate,
-    subcomponents,
-    signal,
-  ] = watch([
+  const [component, phase, completionDate, subcomponents, signal] = watch([
     "component",
     "phase",
     "completionDate",
@@ -183,11 +178,10 @@ const ComponentForm = ({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties.id",
-    valueToSet:
-      signal
-      // if the signal exists and the locationDescription is empty, set to option label
-        ? getSignalOptionLabel(signal)
-        : "",
+    valueToSet: signal
+      ? // if the signal exists and the locationDescription is empty, set to option label
+        getSignalOptionLabel(signal)
+      : "",
     setValue,
   });
 
@@ -381,7 +375,12 @@ const ComponentForm = ({
           </>
         )}
       </Grid>
-      <Divider />
+      {initialFormValues && (
+        <>
+          <Divider sx={{paddingTop:"15px"}}/>
+          <ComponentProperties component={initialFormValues}/>
+        </>
+      )}
       <Grid container spacing={4} display="flex" justifyContent="flex-end">
         <Grid item style={{ margin: 5 }}>
           <Button

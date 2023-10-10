@@ -1,5 +1,14 @@
 import { useMemo, createRef } from "react";
 
+const setComponentCouncilDistrict = (component, projectGeography) => {
+  const componentID = component.project_component_id;
+  const councilDistricts = projectGeography
+    .filter((f) => f.component_id === componentID)
+    .map((f) => f.council_districts)
+    .flat();
+  component.council_districts = [...new Set(councilDistricts)];
+};
+
 export const useProjectComponents = (data) => {
   /* holds this project's components */
   const projectComponents = useMemo(() => {
@@ -7,6 +16,7 @@ export const useProjectComponents = (data) => {
 
     return data.moped_proj_components.map((component) => {
       component._ref = createRef();
+      setComponentCouncilDistrict(component, data.project_geography);
       return component;
     });
   }, [data]);
@@ -44,10 +54,16 @@ export const useProjectComponents = (data) => {
       (component) => {
         /* these refs will feed component list items so that we can scroll to them */
         component._ref = createRef();
+        setComponentCouncilDistrict(component, data.project_geography);
         return component;
       }
     );
-  }, [parentComponents, siblingComponents, childComponents]);
+  }, [
+    parentComponents,
+    siblingComponents,
+    childComponents,
+    data?.project_geography,
+  ]);
 
   return {
     projectComponents,
