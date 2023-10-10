@@ -4,11 +4,8 @@ import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  UPDATE_COMPONENT_ATTRIBUTES,
-  UPDATE_SIGNAL_COMPONENT,
-} from "src/queries/components";
-import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
+import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
+import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
 import {
@@ -31,52 +28,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const areSignalComponentsEqual = (clickedComponent, signalFromForm) => {
-  const previousSignalId = clickedComponent.feature_signals?.[0]?.signal_id;
-  const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
-  return previousSignalId === newSignalId;
-};
-
-const getIsComponentMapped = (component) =>
-  component.feature_drawn_points?.length > 0 ||
-  component.feature_drawn_lines?.length > 0 ||
-  component.feature_intersections?.length > 0 ||
-  component.feature_signals?.length > 0 ||
-  component.feature_street_segments?.length > 0;
-
-const getFeatureChanges = (signalFromForm, clickedComponent) => {
-  let signalFeatureToCreate = null;
-  const featureIdsToDelete = [];
-  const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
-  const previousSignal = clickedComponent.feature_signals?.[0];
-  const previousIntersectionFeatures = clickedComponent.feature_intersections;
-  const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
-
-  if (newSignalId) {
-    // signal is selected in form
-    if (previousSignal && newSignalId !== previousSignal?.signal_id) {
-      // signal selection changed
-      signalFeatureToCreate = signalFromForm;
-      featureIdsToDelete.push(previousSignal.id);
-    } else if (!previousSignal) {
-      // signal was previously blank
-      signalFeatureToCreate = signalFromForm;
-    }
-    if (previousIntersectionFeatures) {
-      // delete all intersection features
-      featureIdsToDelete.push(...previousIntersectionFeatures.map((f) => f.id));
-    }
-    if (previousDrawnPointFeatures) {
-      // delete all drawn point features
-      featureIdsToDelete.push(...previousDrawnPointFeatures.map((f) => f.id));
-    }
-  } else if (previousSignal) {
-    // signal selection was cleared
-    featureIdsToDelete.push(previousSignal.id);
-  }
-  return { signalFeatureToCreate, featureIdsToDelete };
-};
-
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
@@ -87,7 +38,6 @@ const EditAttributesModal = ({
   const classes = useStyles();
 
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
-  const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
   const onSaveSuccess = () => {
     refetchProjectComponents().then(() => {
@@ -96,13 +46,10 @@ const EditAttributesModal = ({
   };
 
   const onSave = (formData) => {
-    const isSignalComponent =
-      formData.component.data.asset_feature_layer?.internal_table ===
-      "feature_signals";
-
-    const wasSignalComponent = clickedComponent.feature_signals.length > 0;
-
     const {
+      component: {
+        data: { component_id: componentId },
+      },
       subcomponents,
       phase,
       subphase,
@@ -113,8 +60,6 @@ const EditAttributesModal = ({
       locationDescription,
       description,
     } = formData;
-
-    const componentId = formData.component.data.component_id;
 
     const { project_component_id: projectComponentId } = clickedComponent;
 
@@ -145,92 +90,40 @@ const EditAttributesModal = ({
       : [];
 
     const signalFromForm = formData.signal;
-    const { signalFeatureToCreate, featureIdsToDelete } = getFeatureChanges(
-      signalFromForm,
-      clickedComponent
-    );
-    // signalFromForm;
-    // feature_drawn_points;
-    // feature_intersections;
-    // feature_signals;
-    debugger;
-    const needToCreateSignal = null;
-    const needToDeleteSignal = null;
-    const needToUpdateSignal = null;
+    const { signalsToCreate, featureIdsToDelete } =
+      getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
 
-    if (isSignalComponent) {
-      let signalToInsert = [];
-      let featureSignalRecord;
-
-      const signalHasChanged =
-        signalFromForm &&
-        !areSignalComponentsEqual(clickedComponent, signalFromForm);
-
-      if (signalHasChanged) {
-        // inserting a new signal feature
-        featureSignalRecord =
-          knackSignalRecordToFeatureSignalsRecord(signalFromForm);
-
-        signalToInsert.push({
-          ...featureSignalRecord,
-          component_id: projectComponentId,
-        });
-      }
-      debugger;
-
-      // throw `what happens if signal edit form is submitted before socrata request is done?`
-      updateSignalComponent({
-        variables: {
-          projectComponentId: projectComponentId,
-          componentId,
-          description,
-          subcomponents: subcomponentsArray,
-          workTypes: workTypesArray,
-          signals: signalToInsert,
-          phaseId: phase?.value,
-          subphaseId: subphase?.value,
-          drawnPoints: [],
-          intersections: [],
-          componentTags: tagsArray,
-          completionDate,
-          srtsId,
-          locationDescription,
-        },
+    // throw `what happens if signal edit form is submitted before socrata request is done?`
+    updateComponentAttributes({
+      variables: {
+        projectComponentId: projectComponentId,
+        componentId,
+        description,
+        subcomponents: subcomponentsArray,
+        workTypes: workTypesArray,
+        signalsToCreate: signalsToCreate,
+        featureIdsToDelete: featureIdsToDelete,
+        phaseId: phase?.value,
+        subphaseId: subphase?.value,
+        componentTags: tagsArray,
+        completionDate,
+        srtsId,
+        locationDescription,
+      },
+    })
+      .then(() => {
+        onSaveSuccess();
+        // Zoom to the new signal location if it was updated
+        signalsToCreate.length > 0 &&
+          zoomMapToFeatureCollection(
+            mapRef,
+            { type: "FeatureCollection", features: [signalFromForm] },
+            fitBoundsOptions.zoomToClickedComponent
+          );
       })
-        .then(() => {
-          onSaveSuccess();
-          // Zoom to the new signal location if it updated
-          signalHasChanged &&
-            zoomMapToFeatureCollection(
-              mapRef,
-              { type: "FeatureCollection", features: [signalFromForm] },
-              fitBoundsOptions.zoomToClickedComponent
-            );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      updateComponentAttributes({
-        variables: {
-          projectComponentId: projectComponentId,
-          componentId,
-          description,
-          subcomponents: subcomponentsArray,
-          workTypes: workTypesArray,
-          phaseId: phase?.value,
-          subphaseId: subphase?.value,
-          componentTags: tagsArray,
-          completionDate,
-          srtsId,
-          locationDescription,
-        },
-      })
-        .then(() => onSaveSuccess())
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const onClose = () => {
