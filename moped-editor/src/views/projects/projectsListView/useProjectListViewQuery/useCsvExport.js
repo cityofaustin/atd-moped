@@ -44,9 +44,8 @@ export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => (
  * Downloads the contents of fileContents into a file
  * @param {string} fileContents
  */
-const downloadFile = (fileContents, queryTableName) => {
-  const exportFileName =
-    "moped-" + queryTableName + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
+const downloadFile = (fileContents) => {
+  const exportFileName = `moped_projects_${format(Date.now(), "yyyy-MM-dd")}`;
   const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
   const link = document.createElement("a");
   if (link.download !== undefined) {
@@ -62,6 +61,7 @@ const downloadFile = (fileContents, queryTableName) => {
 /**
  * Builds a record entry given a specific configuration and filters
  * @param {object} record - The record to build
+ * @param {object} exportConfig - The export configuration
  * @return {object}
  */
 const buildRecordEntry = (record, exportConfig) => {
@@ -82,6 +82,7 @@ const buildRecordEntry = (record, exportConfig) => {
 /**
  * Returns an array of objects (each object is a row and each key of that object is a column in the export file)
  * @param {array} data - Data returned from DB with nested data structures
+ * @param {object} exportConfig - The export configuration
  * @returns {array}
  */
 const formatExportData = (data, exportConfig) => {
@@ -129,7 +130,7 @@ export const useCsvExport = ({
         exportConfig
       );
       const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-      downloadFile(csvString, queryTableName);
+      downloadFile(csvString);
       setDialogOpen(false);
     });
   };
