@@ -26,6 +26,9 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "",
         field: "_edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
