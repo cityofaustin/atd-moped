@@ -67,6 +67,8 @@ export const useProjectComponents = (data) => {
       (component) => {
         /* these refs will feed component list items so that we can scroll to them */
         component._ref = createRef();
+        setComponentCouncilDistrict(component, data.project_geography);
+        setLengthFeet(component, data.project_geography);
         return component;
       }
     );
