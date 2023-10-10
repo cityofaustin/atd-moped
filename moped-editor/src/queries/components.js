@@ -295,6 +295,8 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $workTypes: [moped_proj_component_work_types_insert_input!]!
     $signals: [feature_signals_insert_input!]!
+    $drawnPoints: [feature_drawn_points_insert_input!]!
+    $intersections: [feature_intersections_insert_input!]!
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
@@ -368,6 +370,12 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
         update_columns: [is_deleted]
       }
     ) {
+      affected_rows
+    }
+    insert_feature_intersections(objects: $intersections) {
+      affected_rows
+    }
+    insert_feature_drawn_points(objects: $drawnPoints) {
       affected_rows
     }
     insert_feature_signals(objects: $signals) {

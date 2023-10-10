@@ -307,7 +307,6 @@ export default function MapView({
             showDialog={editState.showEditAttributesDialog}
             editDispatch={editDispatch}
             clickedComponent={clickedComponent}
-            setLinkMode={setLinkMode}
             refetchProjectComponents={refetchProjectComponents}
             mapRef={mapRef}
           />

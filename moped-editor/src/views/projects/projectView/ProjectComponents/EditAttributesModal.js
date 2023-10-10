@@ -44,12 +44,44 @@ const getIsComponentMapped = (component) =>
   component.feature_signals?.length > 0 ||
   component.feature_street_segments?.length > 0;
 
+const getFeatureChanges = (signalFromForm, clickedComponent) => {
+  let signalFeatureToCreate = null;
+  const featureIdsToDelete = [];
+  const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
+  const previousSignal = clickedComponent.feature_signals?.[0];
+  const previousIntersectionFeatures = clickedComponent.feature_intersections;
+  const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
+
+  if (newSignalId) {
+    // signal is selected in form
+    if (previousSignal && newSignalId !== previousSignal?.signal_id) {
+      // signal selection changed
+      signalFeatureToCreate = signalFromForm;
+      featureIdsToDelete.push(previousSignal.id);
+    } else if (!previousSignal) {
+      // signal was previously blank
+      signalFeatureToCreate = signalFromForm;
+    }
+    if (previousIntersectionFeatures) {
+      // delete all intersection features
+      featureIdsToDelete.push(...previousIntersectionFeatures.map((f) => f.id));
+    }
+    if (previousDrawnPointFeatures) {
+      // delete all drawn point features
+      featureIdsToDelete.push(...previousDrawnPointFeatures.map((f) => f.id));
+    }
+  } else if (previousSignal) {
+    // signal selection was cleared
+    featureIdsToDelete.push(previousSignal.id);
+  }
+  return { signalFeatureToCreate, featureIdsToDelete };
+};
+
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
   clickedComponent,
   refetchProjectComponents,
-  setLinkMode,
   mapRef,
 }) => {
   const classes = useStyles();
@@ -112,8 +144,21 @@ const EditAttributesModal = ({
         }))
       : [];
 
+    const signalFromForm = formData.signal;
+    const { signalFeatureToCreate, featureIdsToDelete } = getFeatureChanges(
+      signalFromForm,
+      clickedComponent
+    );
+    // signalFromForm;
+    // feature_drawn_points;
+    // feature_intersections;
+    // feature_signals;
+    debugger;
+    const needToCreateSignal = null;
+    const needToDeleteSignal = null;
+    const needToUpdateSignal = null;
+
     if (isSignalComponent) {
-      const signalFromForm = formData.signal;
       let signalToInsert = [];
       let featureSignalRecord;
 
@@ -131,7 +176,9 @@ const EditAttributesModal = ({
           component_id: projectComponentId,
         });
       }
+      debugger;
 
+      // throw `what happens if signal edit form is submitted before socrata request is done?`
       updateSignalComponent({
         variables: {
           projectComponentId: projectComponentId,
@@ -142,6 +189,8 @@ const EditAttributesModal = ({
           signals: signalToInsert,
           phaseId: phase?.value,
           subphaseId: subphase?.value,
+          drawnPoints: [],
+          intersections: [],
           componentTags: tagsArray,
           completionDate,
           srtsId,
