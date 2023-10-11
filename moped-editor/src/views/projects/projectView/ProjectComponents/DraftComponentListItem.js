@@ -6,15 +6,17 @@ import ListItemText from "@mui/material/ListItemText";
 import Cancel from "@mui/icons-material/Cancel";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import { COLORS } from "./mapStyleSettings";
+import { useComponentListItemText } from "./utils/componentList";
 
 const DraftComponentListItem = ({
-  primaryText,
-  secondaryText,
+  component,
   onSave,
   onCancel,
   saveButtonText,
   saveButtonDisabled,
 }) => {
+  const { primary, secondary } = useComponentListItemText(component);
+
   return (
     <Box
       borderLeft={7}
@@ -23,7 +25,7 @@ const DraftComponentListItem = ({
       }}
     >
       <ListItem dense>
-        <ListItemText primary={primaryText} secondary={secondaryText} />
+        <ListItemText primary={primary} secondary={secondary} />
       </ListItem>
       <ListItem dense>
         <ListItemText
