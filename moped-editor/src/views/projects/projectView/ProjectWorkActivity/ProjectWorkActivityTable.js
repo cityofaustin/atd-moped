@@ -36,12 +36,14 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
             <div>
               <IconButton
                 aria-label="edit"
+                sx={{ color: "inherit" }}
                 onClick={() => setEditActivity(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
                 aria-label="delete"
+                sx={{ color: "inherit" }}
                 onClick={() => onDeleteActivity({ id: row.id })}
               >
                 <DeleteOutlineIcon />
