@@ -6,7 +6,9 @@ const setComponentCouncilDistrict = (component, projectGeography) => {
     .filter((f) => f.component_id === componentID)
     .map((f) => f.council_districts)
     .flat();
-  component.council_districts = [...new Set(councilDistricts)];
+  component.council_districts = [
+    ...new Set(councilDistricts.sort((a, b) => a - b)),
+  ];
 };
 
 const setLengthFeet = (component, projectGeography) => {
