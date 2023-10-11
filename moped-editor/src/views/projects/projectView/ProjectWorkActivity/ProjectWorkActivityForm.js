@@ -125,7 +125,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
                 fullWidth
                 label="ID"
                 size="small"
-                value={activity.id}
+                value={activity.reference_id}
               />
             </FormControl>
           </Grid>
