@@ -27,7 +27,7 @@ const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>
-        Council district(s):
+        Council district(s)
       </Typography>
       <Box className={classes.fieldBox}>
         <Typography className={classes.fieldLabelTextNoHover}>
