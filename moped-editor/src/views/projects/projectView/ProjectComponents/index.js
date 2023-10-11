@@ -120,18 +120,6 @@ export default function MapView({
   const { projectComponents, allRelatedComponents } =
     useProjectComponents(data);
 
-  // Keep clickedComponent state up to date with edits made to project components
-  useEffect(() => {
-    if (clickedComponent === null) return;
-
-    const clickedComponentId = clickedComponent?.project_component_id;
-    const updatedClickedComponent = projectComponents.find(
-      (component) => component.project_component_id === clickedComponentId
-    );
-
-    setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents]);
-
   const {
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
@@ -162,6 +150,30 @@ export default function MapView({
     setIsDrawing,
     mapRef,
   });
+
+  // Keep clickedComponent state up to date with edits made to project components
+  useEffect(() => {
+    if (clickedComponent === null) return;
+
+    const clickedComponentId = clickedComponent?.project_component_id;
+    const updatedClickedComponent = projectComponents.find(
+      (component) => component.project_component_id === clickedComponentId
+    );
+
+    setClickedComponent(updatedClickedComponent);
+  }, [clickedComponent, projectComponents]);
+
+  // Keep draft component state up to date with edits made via component form
+  useEffect(() => {
+    if (clickedComponent && !editState.isEditingComponent) {
+      editDispatch({ type: "set_draft_component", payload: clickedComponent });
+    }
+  }, [
+    clickedComponent,
+    editDispatch,
+    editState.draftEditComponent,
+    editState.isEditingComponent,
+  ]);
 
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({

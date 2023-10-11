@@ -291,8 +291,7 @@ export default function TheMap({
 
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
-       setClickedComponent(clickedComponentFromMap);
-       editDispatch({ type: "set_draft_component", payload: clickedComponentFromMap });
+        setClickedComponent(clickedComponentFromMap);
         // Make sure that state reflects whether the clicked component is related or not
         // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);
