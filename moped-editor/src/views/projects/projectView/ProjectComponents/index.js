@@ -163,7 +163,7 @@ export default function MapView({
     setClickedComponent(updatedClickedComponent);
   }, [clickedComponent, projectComponents]);
 
-  // Keep draft component state up to date with edits made via component form
+  // Keep draft component state in sync wiht clicked component (when editing)
   useEffect(() => {
     if (clickedComponent && !editState.isEditingComponent) {
       editDispatch({ type: "set_draft_component", payload: clickedComponent });
