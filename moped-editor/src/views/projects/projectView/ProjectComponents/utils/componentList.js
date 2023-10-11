@@ -12,8 +12,13 @@ export const isSignalComponent = (component) =>
 export const useComponentListItemText = (component) =>
   useMemo(() => {
     const listItemText = { primary: "", secondary: "-" };
-    const componentName = component?.moped_components?.component_name;
-    const componentSubtype = component?.moped_components?.component_subtype;
+    // New components that are being created don't have a moped_components property
+    const componentName = component?.moped_components
+      ? component?.moped_components?.component_name
+      : component?.component_name;
+    const componentSubtype = component?.moped_components
+      ? component?.moped_components?.component_subtype
+      : component?.component_subtype;
     listItemText.primary = componentSubtype
       ? `${componentName} - ${componentSubtype}`
       : componentName;
