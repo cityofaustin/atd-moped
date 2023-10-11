@@ -352,11 +352,11 @@ export const ProjectActivityLogTableMaps = {
         label: "completion date",
       },
       location_description: {
-        label: "location description"
+        label: "location description",
       },
       srts_id: {
-        label: "Safe Routes to School infrastructure plan record identifier"
-      }
+        label: "Safe Routes to School infrastructure plan record identifier",
+      },
     },
   },
   moped_project_files: {
@@ -528,36 +528,7 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
-  moped_proj_contract: {
-    label: "Contract",
-    fields: {
-      id: {
-        label: "ID",
-      },
-      contractor: {
-        label: "contractor",
-      },
-      contract_number: {
-        label: "contract number",
-      },
-      description: {
-        label: "description",
-      },
-      project_id: {
-        label: "project ID",
-      },
-      work_assignment_id: {
-        label: "work assignment ID",
-      },
-      contract_amount: {
-        label: "contract amount",
-      },
-      is_deleted: {
-        label: "is deleted",
-      },
-    },
-  },
-    moped_proj_work_activity: {
+  moped_proj_work_activity: {
     label: "Contract",
     fields: {
       id: {
@@ -585,7 +556,7 @@ export const ProjectActivityLogTableMaps = {
         label: "is deleted",
       },
       interim_work_activity_id: {
-        label: "interim work activity ID"
+        label: "interim work activity ID",
       },
       implementation_workgroup: {
         label: "implementation workgroup",
