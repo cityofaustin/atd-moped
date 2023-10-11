@@ -8,7 +8,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   propertyItem: {
-    marginBottom: theme.spacing(3),
+    marginBottom: theme.spacing(2),
+    display: "inline-block",
+    marginRight: theme.spacing(4),
   },
   propertyLabel: {
     width: "100%",
