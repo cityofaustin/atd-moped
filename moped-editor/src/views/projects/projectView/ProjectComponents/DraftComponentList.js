@@ -18,8 +18,7 @@ const DraftComponentList = ({
     <>
       {shouldShowCreateListItem && (
         <DraftComponentListItem
-          primaryText={createState.draftComponent.component_name}
-          secondaryText={createState.draftComponent.component_subtype}
+          component={createState.draftComponent}
           onSave={onSaveDraftComponent}
           onCancel={onCancelComponentCreate}
           saveButtonDisabled={!createState.draftComponent?.features.length > 0}
@@ -28,12 +27,7 @@ const DraftComponentList = ({
       )}
       {shouldShowEditListItem && (
         <DraftComponentListItem
-          primaryText={
-            editState.draftEditComponent?.moped_components?.component_name
-          }
-          secondaryText={
-            editState.draftEditComponent?.moped_components?.component_subtype
-          }
+          component={editState.draftEditComponent}
           onSave={onSaveEditedComponent}
           onCancel={onCancelComponentMapEdit}
           saveButtonDisabled={!doesDraftEditComponentHaveFeatures}
