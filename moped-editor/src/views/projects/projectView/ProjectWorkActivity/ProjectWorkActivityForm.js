@@ -259,8 +259,8 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container spacing={2} display="flex" justifyContent="flex-end">
-        <Grid item style={{ margin: 5 }}>
+      <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
