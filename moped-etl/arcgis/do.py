@@ -6,6 +6,10 @@ import requests
 # from settings import PROJECT_LIST_KEYS, QUERY_TEMPLATE, OUTPUT_DIR
 from secrets import HASURA
 
+layer_ids = {
+    "points": "997555f6e0904aa88eafe73f19ee65c0",
+    "lines": "e8f03d2cec154cacae539b630bcaa70b"
+}
 
 def get_query():
     return """
@@ -92,6 +96,15 @@ def make_hasura_request(*, query, env):
         raise ValueError(data)
 
 
+def make_esri_feature(feature):
+    breakpoint()
+
+def thing(features):
+    esri_features = []
+    for f in features:
+        esri_features.append(make_esri_feature(f))
+
+
 def main(env):
     query = get_query()
     print("Fetching project data...")
@@ -109,9 +122,11 @@ def main(env):
             raise ValueError(f"Found unsupported feature type: {geometry['type']}")
 
     for feature_type in ["points", "lines"]:
-        with open(f"{feature_type}.geojson", "w") as fout:
-            fc = { "type": "FeatureCollection", "features": features[feature_type] }
-            json.dump(fc, fout)
+        thing(features[feature_type])
+
+        # with open(f"{feature_type}.geojson", "w") as fout:
+        #     fc = { "type": "FeatureCollection", "features": features[feature_type] }
+        #     json.dump(fc, fout)
 
 
 if __name__ == "__main__":
