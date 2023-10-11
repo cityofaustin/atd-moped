@@ -1,6 +1,8 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
+import {useTrashButtonClickable} from "./utils/map"
+import "./utils/map.css";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
 /**
@@ -11,6 +13,7 @@ import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
  * @param {Function} setIsDrawing - function to update if we are drawing or not
  * @returns {JSX.Element}
  */
+
 const CreateComponentDrawTools = ({
   createDispatch,
   linkMode,
@@ -18,6 +21,7 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
+  const setTrashButtonClickable = useTrashButtonClickable()
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -42,7 +46,8 @@ const CreateComponentDrawTools = ({
   };
 
   const onUpdate = ({ features: updatedFeaturesArray, action }) => {
-    const wasComponentDragged = action === "move" || action === "change_coordinates";
+    const wasComponentDragged =
+      action === "move" || action === "change_coordinates";
 
     if (wasComponentDragged) {
       createDispatch({
@@ -58,6 +63,8 @@ const CreateComponentDrawTools = ({
       payload: deletedFeaturesArray,
     });
     setIsDrawing(false);
+    // after we have deleted, disable trash button
+    setTrashButtonClickable(false);
   };
 
   const onModeChange = ({ mode }) => {
@@ -69,6 +76,10 @@ const CreateComponentDrawTools = ({
     }
   };
 
+  const onSelectionChange = (props) => {
+    setTrashButtonClickable(!!props.features.length > 0);
+  };
+
   return (
     <ComponentsDrawControl
       ref={drawControlsRef}
@@ -78,6 +89,7 @@ const CreateComponentDrawTools = ({
       linkMode={linkMode}
       onModeChange={onModeChange}
       styleOverrides={mapboxDrawStylesOverrides}
+      onSelectionChange={onSelectionChange}
     />
   );
 };

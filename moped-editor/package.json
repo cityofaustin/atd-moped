@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "1.33.0",
+  "version": "1.34.0",
   "homepage": "/moped",
   "private": false,
   "repository": {
@@ -79,6 +79,7 @@
     "lodash.get": "^4.4.2",
     "lodash.isequal": "^4.5.0",
     "lodash.toarray": "^4.4.0",
+    "papaparse": "^5.4.1",
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",

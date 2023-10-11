@@ -163,4 +163,18 @@ export const GridTableFiltersCommonOperators = {
     envelope: null,
     type: "string",
   },
+  subprojects_array_is_null: {
+    operator: "_is_null",
+    label: "No",
+    description: "Project does not have subprojects",
+    type: "array",
+    envelope: "true",
+  },
+  subprojects_array_is_not_null: {
+    operator: "_is_null",
+    label: "Yes",
+    description: "Project has subprojects",
+    type: "array",
+    envelope: "false",
+  },
 };
