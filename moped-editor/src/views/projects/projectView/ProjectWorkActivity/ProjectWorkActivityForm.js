@@ -131,7 +131,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </Grid>
         )}
         <Grid item xs={12}>
-          <FormControl fullWidth error={!!formErrors.status_id}>
+          <FormControl fullWidth error={!!formErrors?.status_id}>
             <InputLabel id="status-label" required={true}>
               Status
             </InputLabel>
@@ -151,7 +151,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.contractor}>
             <ControlledAutocomplete
               control={control}
               name="contractor"
@@ -162,21 +162,30 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               error={formErrors?.contractor}
               valueHandler={(value) => value || null}
             />
+            {formErrors?.contractor && (
+              <FormHelperText>{formErrors.contractor.message}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.contract_number}>
             <ControlledTextInput
               fullWidth
               label="Contract #"
               name="contract_number"
               control={control}
               size="small"
+              error={formErrors?.contract_number}
             />
+            {formErrors?.contract_number && (
+              <FormHelperText>
+                {formErrors.contract_number.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.work_assignment_id}>
             <ControlledTextInput
               fullWidth
               label="Work Assignment ID"
@@ -184,6 +193,11 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.work_assignment_id && (
+              <FormHelperText>
+                {formErrors.work_assignment_id.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
@@ -216,7 +230,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.description}>
             <ControlledTextInput
               fullWidth
               label="Description"
@@ -226,10 +240,13 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.description && (
+              <FormHelperText>{formErrors.description.message}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.status_note}>
             <ControlledTextInput
               fullWidth
               label="Status update"
@@ -239,6 +256,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.status_note && (
+              <FormHelperText>{formErrors.status_note.message}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>

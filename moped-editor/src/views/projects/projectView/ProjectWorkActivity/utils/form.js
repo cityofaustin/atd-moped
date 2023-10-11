@@ -20,14 +20,13 @@ const DEFAULT_ACTIVITY_VALUES = {
 };
 
 export const activityValidationSchema = yup.object().shape({
-  contractor: yup.string().nullable(),
-  contract_number: yup.string().nullable(),
-  description: yup.string().nullable(),
-  work_assignment_id: yup.string().nullable(),
+  contractor: yup.string().max(500, "Must be less than 500 characters").nullable(),
+  contract_number: yup.string().max(500, "Must be less than 500 characters").nullable(),
+  description: yup.string().max(5000, "Must be less than 5,000 characters").nullable(),
+  work_assignment_id: yup.string().max(500, "Must be less than 500 characters").nullable(),
   contract_amount: yup.number().nullable(),
-  implementation_workgroup: yup.string().nullable(),
   status_id: yup.number().required(),
-  status_note: yup.string().nullable(),
+  status_note: yup.string().max(5000, "Must be less than 5,000 characters").nullable(),
   task_orders: yup.array().nullable(),
   id: yup.number().optional(),
   project_id: yup.number().required(),
@@ -80,7 +79,6 @@ const FORM_PAYLOAD_FIELDS = [
   "description",
   "work_assignment_id",
   "contract_amount",
-  "implementation_workgroup",
   "status_id",
   "status_note",
   "task_orders",
