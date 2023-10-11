@@ -59,11 +59,6 @@ const validationSchema = yup.object().shape({
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().nullable(),
-  // .when("component", {
-  //   is: (val) =>
-  //     val?.data?.feature_layer?.internal_table === "feature_signals",
-  //   then: yup.object().required(),
-  // }),
   srtsId: yup.string().nullable().optional(),
   locationDescription: yup.string().nullable().optional(),
 });

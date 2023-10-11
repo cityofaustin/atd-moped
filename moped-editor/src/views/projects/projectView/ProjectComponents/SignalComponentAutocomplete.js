@@ -67,8 +67,6 @@ const SignalComponentAutocomplete = React.forwardRef(
             error={error}
             InputLabelProps={{ required: false }}
             label="Signal"
-            // required
-            // helperText="Required"
             variant="outlined"
             size="small"
           />

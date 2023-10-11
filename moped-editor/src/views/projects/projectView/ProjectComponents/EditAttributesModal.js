@@ -93,7 +93,6 @@ const EditAttributesModal = ({
     const { signalsToCreate, featureIdsToDelete } =
       getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
 
-    // throw `what happens if signal edit form is submitted before socrata request is done?`
     updateComponentAttributes({
       variables: {
         projectComponentId: projectComponentId,
