@@ -3,10 +3,8 @@ import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import Papa from "papaparse";
 import {
-  Button,
   CircularProgress,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
@@ -32,11 +30,6 @@ export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => (
         </Grid>
       </Grid>
     </DialogContent>
-    <DialogActions>
-      <Button onClick={handleDialogClose} color="primary">
-        Cancel
-      </Button>
-    </DialogActions>
   </Dialog>
 );
 
