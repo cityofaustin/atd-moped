@@ -11,12 +11,8 @@ import {
   Grid,
 } from "@mui/material";
 
-export const CsvDownloadDialog = ({ dialogOpen, handleDialogClose }) => (
-  <Dialog
-    open={dialogOpen}
-    onClose={handleDialogClose}
-    aria-labelledby="form-dialog-title"
-  >
+export const CsvDownloadDialog = ({ dialogOpen }) => (
+  <Dialog open={dialogOpen} aria-labelledby="form-dialog-title">
     <DialogTitle id="form-dialog-title"> </DialogTitle>
     <DialogContent>
       <Grid container spacing={3}>
@@ -124,7 +120,7 @@ export const useCsvExport = ({
       );
       const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
       downloadFile(csvString);
-      setDialogOpen(false);
+      handleDialogClose();
     });
   };
 
@@ -135,5 +131,5 @@ export const useCsvExport = ({
     setDialogOpen(false);
   };
 
-  return { handleExportButtonClick, dialogOpen, handleDialogClose };
+  return { handleExportButtonClick, dialogOpen };
 };

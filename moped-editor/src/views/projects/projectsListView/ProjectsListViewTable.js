@@ -463,15 +463,14 @@ const ProjectsListViewTable = () => {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
 
-  const { handleExportButtonClick, dialogOpen, handleDialogClose } =
-    useCsvExport({
-      query: exportQuery,
-      exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
-      queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
-      fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-      limit: queryLimit,
-      setQueryLimit,
-    });
+  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+    query: exportQuery,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+    limit: queryLimit,
+    setQueryLimit,
+  });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
@@ -515,10 +514,7 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <CsvDownloadDialog
-          dialogOpen={dialogOpen}
-          handleDialogClose={handleDialogClose}
-        />
+        <CsvDownloadDialog dialogOpen={dialogOpen} />
         <Search
           parentData={data}
           filters={filters}
