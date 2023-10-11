@@ -557,4 +557,51 @@ export const ProjectActivityLogTableMaps = {
       },
     },
   },
+    moped_proj_work_activity: {
+    label: "Contract",
+    fields: {
+      id: {
+        label: "ID",
+      },
+      contractor: {
+        label: "contractor",
+      },
+      contract_number: {
+        label: "contract number",
+      },
+      description: {
+        label: "description",
+      },
+      project_id: {
+        label: "project ID",
+      },
+      work_assignment_id: {
+        label: "work assignment ID",
+      },
+      contract_amount: {
+        label: "contract amount",
+      },
+      is_deleted: {
+        label: "is deleted",
+      },
+      interim_work_activity_id: {
+        label: "interim work activity ID"
+      },
+      implementation_workgroup: {
+        label: "implementation workgroup",
+      },
+      task_orders: {
+        label: "task orders",
+      },
+      status_id: {
+        label: "status ID",
+      },
+      status_note: {
+        label: "status note",
+      },
+      work_order_url: {
+        label: "work order URL",
+      },
+    },
+  },
 };
