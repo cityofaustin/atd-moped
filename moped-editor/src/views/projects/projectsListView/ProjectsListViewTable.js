@@ -21,10 +21,15 @@ import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import {
+  useCsvExport,
+  CsvDownloadDialog,
+} from "./useProjectListViewQuery/useCsvExport";
 
 /**
  * GridTable Style
@@ -118,7 +123,7 @@ const buildStatusBadge = ({ phaseName, phaseKey }) => (
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query }) => {
+const ProjectsListViewTable = () => {
   const classes = useStyles();
 
   // anchor element for advanced search popper in Search to "attach" to
@@ -442,9 +447,10 @@ const ProjectsListViewTable = ({ query }) => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const { query: projectListViewQuery } = useGetProjectListView({
+  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn,
-    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
     queryOffset,
     orderByColumn,
@@ -454,7 +460,16 @@ const ProjectsListViewTable = ({ query }) => {
   });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
-    fetchPolicy: "cache-first",
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+  });
+
+  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+    query: exportQuery,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+    limit: queryLimit,
+    setQueryLimit,
   });
 
   const sortByColumnIndex = columns.findIndex(
@@ -499,9 +514,9 @@ const ProjectsListViewTable = ({ query }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
+        <CsvDownloadDialog dialogOpen={dialogOpen} />
         <Search
           parentData={data}
-          query={query}
           filters={filters}
           setFilters={setFilters}
           filterQuery={filterQuery}
@@ -511,6 +526,7 @@ const ProjectsListViewTable = ({ query }) => {
           setSearchTerm={setSearchTerm}
           queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
           filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+          handleExportButtonClick={handleExportButtonClick}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

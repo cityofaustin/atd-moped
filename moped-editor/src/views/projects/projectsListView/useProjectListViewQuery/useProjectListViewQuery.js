@@ -3,6 +3,7 @@ import { gql } from "apollo-boost";
 
 export const useGetProjectListView = ({
   columnsToReturn,
+  exportColumnsToReturn,
   queryLimit,
   queryOffset,
   orderByColumn,
@@ -10,8 +11,8 @@ export const useGetProjectListView = ({
   searchWhereString,
   advancedSearchWhereString,
 }) => {
-  const query = useMemo(() => {
-    return gql`{
+  const { query, exportQuery } = useMemo(() => {
+    const query = gql`{
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
@@ -34,10 +35,35 @@ export const useGetProjectListView = ({
           }
         }
       }`;
+
+    const exportQuery = gql`{
+      project_list_view (
+          order_by: {${orderByColumn}: ${orderByDirection}}
+          where: { 
+            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+          }
+      ) {
+          ${exportColumnsToReturn.join("\n")}
+      },
+      project_list_view_aggregate (
+        where: { 
+          ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+          ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+        }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }`;
+
+    return { query, exportQuery };
   }, [
     queryLimit,
     queryOffset,
     columnsToReturn,
+    exportColumnsToReturn,
     orderByColumn,
     orderByDirection,
     searchWhereString,
@@ -46,5 +72,6 @@ export const useGetProjectListView = ({
 
   return {
     query,
+    exportQuery,
   };
 };
