@@ -4,11 +4,8 @@ import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  UPDATE_COMPONENT_ATTRIBUTES,
-  UPDATE_SIGNAL_COMPONENT,
-} from "src/queries/components";
-import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
+import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
+import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
 import {
@@ -41,7 +38,6 @@ const EditAttributesModal = ({
   const classes = useStyles();
 
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
-  const [updateSignalComponent] = useMutation(UPDATE_SIGNAL_COMPONENT);
 
   const onSaveSuccess = () => {
     refetchProjectComponents().then(() => {
@@ -50,9 +46,10 @@ const EditAttributesModal = ({
   };
 
   const onSave = (formData) => {
-    const isSavingSignalFeature = Boolean(formData.signal);
-
     const {
+      component: {
+        data: { component_id: componentId },
+      },
       subcomponents,
       phase,
       subphase,
@@ -63,8 +60,6 @@ const EditAttributesModal = ({
       locationDescription,
       description,
     } = formData;
-
-    const componentId = formData.component.data.component_id;
 
     const { project_component_id: projectComponentId } = clickedComponent;
 
@@ -94,74 +89,40 @@ const EditAttributesModal = ({
         }))
       : [];
 
-    if (isSavingSignalFeature) {
-      const signalFromForm = formData.signal;
-      const featureSignalRecord =
-        knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+    const signalFromForm = formData.signal;
+    const { signalsToCreate, featureIdsToDelete } =
+      getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
 
-      const signalToInsert = {
-        ...featureSignalRecord,
-        component_id: projectComponentId,
-      };
-
-      updateSignalComponent({
-        variables: {
-          projectComponentId: projectComponentId,
-          description,
-          subcomponents: subcomponentsArray,
-          workTypes: workTypesArray,
-          signals: [signalToInsert],
-          phaseId: phase?.value,
-          subphaseId: subphase?.value,
-          componentTags: tagsArray,
-          completionDate,
-          srtsId,
-          locationDescription,
-        },
+    updateComponentAttributes({
+      variables: {
+        projectComponentId: projectComponentId,
+        componentId,
+        description,
+        subcomponents: subcomponentsArray,
+        workTypes: workTypesArray,
+        signalsToCreate: signalsToCreate,
+        featureIdsToDelete: featureIdsToDelete,
+        phaseId: phase?.value,
+        subphaseId: subphase?.value,
+        componentTags: tagsArray,
+        completionDate,
+        srtsId,
+        locationDescription,
+      },
+    })
+      .then(() => {
+        onSaveSuccess();
+        // Zoom to the new signal location if it was updated
+        signalsToCreate.length > 0 &&
+          zoomMapToFeatureCollection(
+            mapRef,
+            { type: "FeatureCollection", features: [signalFromForm] },
+            fitBoundsOptions.zoomToClickedComponent
+          );
       })
-        .then(() => {
-          onSaveSuccess();
-
-          const [existingLongitude, existingLatitude] =
-            featureSignalRecord.geography.coordinates[0];
-          const [newLongitude, newLatitude] =
-            signalFromForm.geometry.coordinates;
-          const hasLocationChanged =
-            existingLongitude !== newLongitude ||
-            existingLatitude !== newLatitude;
-
-          // Zoom to the new signal location if it updated
-          hasLocationChanged &&
-            zoomMapToFeatureCollection(
-              mapRef,
-              { type: "FeatureCollection", features: [signalFromForm] },
-              fitBoundsOptions.zoomToClickedComponent
-            );
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } else {
-      updateComponentAttributes({
-        variables: {
-          projectComponentId: projectComponentId,
-          componentId,
-          description,
-          subcomponents: subcomponentsArray,
-          workTypes: workTypesArray,
-          phaseId: phase?.value,
-          subphaseId: subphase?.value,
-          componentTags: tagsArray,
-          completionDate,
-          srtsId,
-          locationDescription,
-        },
-      })
-        .then(() => onSaveSuccess())
-        .catch((error) => {
-          console.log(error);
-        });
-    }
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const onClose = () => {
@@ -194,6 +155,11 @@ const EditAttributesModal = ({
           clickedComponent.location_description?.length > 0
             ? clickedComponent.location_description
             : "",
+        councilDistrict: !!clickedComponent.council_districts[0]
+          ? clickedComponent.council_districts.join(", ")
+          : "-",
+        projectComponentId: clickedComponent.project_component_id,
+        componentLength: clickedComponent.component_length,
       }
     : null;
 

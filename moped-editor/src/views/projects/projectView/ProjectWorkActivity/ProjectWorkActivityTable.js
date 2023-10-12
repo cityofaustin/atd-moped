@@ -54,7 +54,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "ID",
         field: "reference_id",
-        minWidth: 50,
+        minWidth: 125,
       },
       {
         headerName: "Workgroup/Contractor",
@@ -67,14 +67,13 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 150,
       },
       {
-        headerName: "Work Assignment",
-        field: "work_assignment_id",
+        headerName: "Description",
+        field: "description",
         minWidth: 150,
       },
       {
-        headerName: "Status",
-        field: "status",
-        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
+        headerName: "Work Assignment",
+        field: "work_assignment_id",
         minWidth: 150,
       },
       {
@@ -92,8 +91,24 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         ),
       },
       {
-        headerName: "Description",
-        field: "description",
+        headerName: "Work Order Link",
+        field: "work_order_url",
+        minWidth: 150,
+        renderCell: ({ row }) =>
+          row.work_order_url ? (
+            <Link
+              href={row.work_order_url}
+              target={"_blank"}
+              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            >
+              {row.work_order_url}
+            </Link>
+          ) : null,
+      },
+      {
+        headerName: "Status",
+        field: "status",
+        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
         minWidth: 150,
       },
       {
@@ -109,21 +124,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "Status update",
         field: "status_note",
         minWidth: 150,
-      },
-      {
-        headerName: "Work Order Link",
-        field: "work_order_url",
-        minWidth: 150,
-        renderCell: ({ row }) =>
-          row.work_order_url ? (
-            <Link
-              href={row.work_order_url}
-              target={"_blank"}
-              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-            >
-              {row.work_order_url}
-            </Link>
-          ) : null,
       },
       {
         headerName: "Updated by",

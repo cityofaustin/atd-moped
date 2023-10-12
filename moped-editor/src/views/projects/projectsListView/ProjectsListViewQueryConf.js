@@ -1,6 +1,6 @@
 import React from "react";
-import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
-import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -9,10 +9,10 @@ import { formatTimeStampTZType } from "src/utils/dateAndTime";
  * The Query configuration (now also including filters)
  * @constant
  * @type {object}
- * @augments ProjectsListViewFiltersConf
+ * @augments PROJECT_LIST_VIEW_FILTERS_CONFIG
  * @default
  */
-export const ProjectsListViewQueryConf = {
+export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   options: {
     useQuery: {
       fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
@@ -30,9 +30,15 @@ export const ProjectsListViewQueryConf = {
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [250, 1000],
+    defaultOffset: 0,
+    defaultLimit: 250,
   },
-  filters: ProjectsListViewFiltersConf,
-  export: ProjectsListViewExportConf,
+  order: {
+    defaultColumn: "updated_at",
+    defaultDirection: "desc",
+  },
+  filters: PROJECT_LIST_VIEW_FILTERS_CONFIG,
+  export: PROJECT_LIST_VIEW_EXPORT_CONFIG,
   search: {
     placeholder:
       "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
@@ -230,11 +236,11 @@ export const ProjectsListViewQueryConf = {
       type: "array",
     },
     parent_project_id: {
-      type: "Int"
+      type: "Int",
     },
     parent_project_name: {
       type: "string",
-    }
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },

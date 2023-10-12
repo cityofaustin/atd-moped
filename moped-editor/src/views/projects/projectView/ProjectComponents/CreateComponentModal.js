@@ -25,7 +25,7 @@ const CreateComponentModal = ({
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
-    const {
+    let {
       component: {
         data: {
           component_id,
@@ -45,6 +45,13 @@ const CreateComponentModal = ({
       srtsId,
       locationDescription,
     } = formData;
+
+    if (isSavingSignalFeature) {
+      // disgusting hacky override to set the internal table to the asset table
+      // when an asset has been selected in the form
+      internal_table =
+        formData.component.data.asset_feature_layer.internal_table;
+    }
 
     const newComponent = {
       component_id,
@@ -74,7 +81,6 @@ const CreateComponentModal = ({
         ...newComponent,
         features: [formData.signal],
       };
-
       onSaveDraftSignalComponent(newComponentWithSignalFeature);
     } else {
       createDispatch({ type: "store_draft_component", payload: newComponent });

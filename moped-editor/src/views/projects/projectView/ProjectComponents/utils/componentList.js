@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 
 export const isSignalComponent = (component) =>
-  component?.moped_components?.feature_layer?.internal_table ===
-  "feature_signals";
+  component.feature_signals?.length > 0;
 
 /**
  * Format the list item's primary and secondary text
@@ -12,8 +11,13 @@ export const isSignalComponent = (component) =>
 export const useComponentListItemText = (component) =>
   useMemo(() => {
     const listItemText = { primary: "", secondary: "-" };
-    const componentName = component?.moped_components?.component_name;
-    const componentSubtype = component?.moped_components?.component_subtype;
+    // New components that are being created don't have a moped_components property
+    const componentName = component?.moped_components
+      ? component?.moped_components?.component_name
+      : component?.component_name;
+    const componentSubtype = component?.moped_components
+      ? component?.moped_components?.component_subtype
+      : component?.component_subtype;
     listItemText.primary = componentSubtype
       ? `${componentName} - ${componentSubtype}`
       : componentName;

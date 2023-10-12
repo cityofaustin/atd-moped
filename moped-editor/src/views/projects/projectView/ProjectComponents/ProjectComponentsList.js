@@ -38,7 +38,6 @@ const ProjectComponentsList = ({
       editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
       setClickedComponent(component);
-      editDispatch({ type: "set_draft_component", payload: component });
     }
   };
 
@@ -53,7 +52,6 @@ const ProjectComponentsList = ({
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
-    editDispatch({ type: "set_draft_component", payload: component });
   };
 
   return (
@@ -111,7 +109,9 @@ const ProjectComponentsList = ({
                     disabled={isSignal}
                   >
                     <EditLocationAltOutlinedIcon
-                      color={getIsComponentMapped(component) ? undefined : "error"}
+                      color={
+                        getIsComponentMapped(component) ? undefined : "error"
+                      }
                     />
                   </IconButton>
                 </span>
