@@ -62,6 +62,11 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 175,
       },
       {
+        headerName: "Description",
+        field: "description",
+        minWidth: 150,
+      },
+      {
         headerName: "Contract #",
         field: "contract_number",
         minWidth: 150,
@@ -69,12 +74,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Work Assignment",
         field: "work_assignment_id",
-        minWidth: 150,
-      },
-      {
-        headerName: "Status",
-        field: "status",
-        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
         minWidth: 150,
       },
       {
@@ -92,25 +91,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         ),
       },
       {
-        headerName: "Description",
-        field: "description",
-        minWidth: 150,
-      },
-      {
-        headerName: "Amount",
-        field: "contract_amount",
-        minWidth: 50,
-        valueGetter: ({ row }) =>
-          isNaN(parseInt(row.contract_amount))
-            ? null
-            : currencyFormatter.format(row.contract_amount),
-      },
-      {
-        headerName: "Status update",
-        field: "status_note",
-        minWidth: 150,
-      },
-      {
         headerName: "Work Order Link",
         field: "work_order_url",
         minWidth: 150,
@@ -125,6 +105,28 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
             </Link>
           ) : null,
       },
+      {
+        headerName: "Status",
+        field: "status",
+        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
+        minWidth: 150,
+      },
+      
+      {
+        headerName: "Amount",
+        field: "contract_amount",
+        minWidth: 50,
+        valueGetter: ({ row }) =>
+          isNaN(parseInt(row.contract_amount))
+            ? null
+            : currencyFormatter.format(row.contract_amount),
+      },
+      {
+        headerName: "Status update",
+        field: "status_note",
+        minWidth: 150,
+      },
+
       {
         headerName: "Updated by",
         field: "updated_by_user",
