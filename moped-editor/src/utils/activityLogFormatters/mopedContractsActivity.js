@@ -12,7 +12,7 @@ export const formatContractsActivity = (change) => {
     style: "boldText",
   };
 
-  // add a new contract
+  // add a new work activity
   if (change.description.length === 0) {
     if (contractor) {
       // with contractor populated
@@ -21,26 +21,26 @@ export const formatContractsActivity = (change) => {
         changeText: [
           { text: "Added ", style: null },
           contractorText,
-          { text: " as a new contract", style: null },
+          { text: " as a new work activity", style: null },
         ],
       };
     } else {
       // without contractor populated
       return {
         changeIcon,
-        changeText: [{ text: "Added a new contract", style: null }],
+        changeText: [{ text: "Added a new work activity", style: null }],
       };
     }
   }
 
-  // delete an existing contract
+  // delete an existing work activity
   if (change.description[0].field === "is_deleted") {
     if (contractor) {
       // with contractor populated
       return {
         changeIcon,
         changeText: [
-          { text: "Removed the contract for ", style: null },
+          { text: "Removed the work activity for ", style: null },
           contractorText,
         ],
       };
@@ -48,7 +48,7 @@ export const formatContractsActivity = (change) => {
       // without contractor populated
       return {
         changeIcon,
-        changeText: [{ text: "Removed a contract", style: null }],
+        changeText: [{ text: "Removed a work activity", style: null }],
       };
     }
   }
@@ -82,7 +82,7 @@ export const formatContractsActivity = (change) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Edited the contract for ", style: null },
+        { text: "Edited the work activity for ", style: null },
         contractorText,
         { text: " by updating the ", style: null },
         {
@@ -96,7 +96,7 @@ export const formatContractsActivity = (change) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Edited a contract by updating the ", style: null },
+        { text: "Edited a work activity by updating the ", style: null },
         {
           text: changes.join(", "),
           style: "boldText",
