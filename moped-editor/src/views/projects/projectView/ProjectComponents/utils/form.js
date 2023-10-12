@@ -394,3 +394,16 @@ export const useResetDependentFieldOnParentFieldChange = ({
     disable,
   ]);
 };
+
+/**
+ * Defines how to get the autocomplete option label value.
+ * See MUI autocomplete docs.
+ */
+export const getOptionLabel = (option) => option?.label || "";
+
+/**
+ * Defines how to match the current select option to an object
+ * in the options array. See MUI autocomplete docs.
+ */
+export const isOptionEqualToValue = (option, selectedOption) =>
+  option?.value === selectedOption?.value;
