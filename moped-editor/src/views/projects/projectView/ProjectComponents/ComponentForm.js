@@ -31,6 +31,7 @@ import {
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
+import ComponentProperties from "./ComponentProperties";
 
 import * as yup from "yup";
 
@@ -372,6 +373,9 @@ const ComponentForm = ({
           </>
         )}
       </Grid>
+      {initialFormValues && (
+        <ComponentProperties component={initialFormValues} />
+      )}
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button

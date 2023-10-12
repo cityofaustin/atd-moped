@@ -194,6 +194,11 @@ const EditAttributesModal = ({
           clickedComponent.location_description?.length > 0
             ? clickedComponent.location_description
             : "",
+        councilDistrict: !!clickedComponent.council_districts[0]
+          ? clickedComponent.council_districts.join(", ")
+          : "-",
+        projectComponentId: clickedComponent.project_component_id,
+        componentLength: clickedComponent.component_length,
       }
     : null;
 
