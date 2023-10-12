@@ -111,7 +111,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         valueGetter: ({ row }) => row.moped_work_activity_status?.name,
         minWidth: 150,
       },
-      
       {
         headerName: "Amount",
         field: "contract_amount",
@@ -126,7 +125,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "status_note",
         minWidth: 150,
       },
-
       {
         headerName: "Updated by",
         field: "updated_by_user",
