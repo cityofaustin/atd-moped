@@ -29,7 +29,7 @@ export const formatContractsActivity = (change) => {
     return {
       changeIcon,
       changeText: [
-        { text: "Removed the work activity for ", style: null },
+        { text: "Removed work activity ", style: null },
         referenceIdText,
       ],
     };
@@ -62,7 +62,7 @@ export const formatContractsActivity = (change) => {
   return {
     changeIcon,
     changeText: [
-      { text: "Edited the work activity for ", style: null },
+      { text: "Edited work activity ", style: null },
       referenceIdText,
       { text: " by updating the ", style: null },
       {
