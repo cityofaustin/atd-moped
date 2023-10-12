@@ -1,15 +1,22 @@
 import argparse
-import json
+import os
+import time
 
+import arcgis
 import requests
 
 # from settings import PROJECT_LIST_KEYS, QUERY_TEMPLATE, OUTPUT_DIR
 from secrets import HASURA
 
-layer_ids = {
+AGOL_URL = "https://austin.maps.arcgis.com"
+AGOL_USERNAME = os.getenv("AGOL_USERNAME")
+AGOL_PASSWORD = os.getenv("AGOL_PASSWORD")
+
+service_ids = {
     "points": "997555f6e0904aa88eafe73f19ee65c0",
-    "lines": "e8f03d2cec154cacae539b630bcaa70b"
+    "lines": "e8f03d2cec154cacae539b630bcaa70b",
 }
+
 
 def get_query():
     return """
@@ -67,6 +74,7 @@ def get_query():
 }
 """
 
+
 def make_hasura_request(*, query, env):
     """Fetch data from hasura
 
@@ -97,36 +105,92 @@ def make_hasura_request(*, query, env):
 
 
 def make_esri_feature(feature):
-    breakpoint()
+    # init feature obj with all properties and  WGS84 spatial ref
+    esri_feature = {
+        "attributes": feature["properties"],
+        "geometry": {"spatialReference": {"wkid": 4326}},
+    }
+    # convert geojson geoms to esri
+    if feature["geometry"]["type"] == "MultiPoint":
+        esri_feature["geometry"]["points"] = feature["geometry"]["coordinates"]
+    elif feature["geometry"]["type"] == "MultiLineString":
+        esri_feature["geometry"]["paths"] = feature["geometry"]["coordinates"]
+    else:
+        raise ValueError(
+            f"Unknown/unsupported geomtery type: {feature['geometry']['type']}"
+        )
+    return esri_feature
 
-def thing(features):
+
+def make_esri_features(features):
     esri_features = []
     for f in features:
         esri_features.append(make_esri_feature(f))
+    return esri_features
+
+
+def handle_response(response):
+    """arcgis does not raise HTTP errors for data-related issues; we must manually
+    parse the response"""
+    if not response:
+        return
+    keys = ["addResults", "updateResults", "deleteResults"]
+    # parsing something like this
+    # {'addResults': [{'objectId': 3977021, 'uniqueId': 3977021, 'globalId': None, 'success': True},...], ...}
+    for key in keys:
+        if response.get(key):
+            for feature_status in response.get(key):
+                if feature_status.get("success"):
+                    continue
+                else:
+                    raise ValueError(feature_status["error"])
+    return
+
+
+def delete_features(layer):
+    res = layer.delete_features(where="1=1", future=True)
+    # returns a "<Future>" response class which does not appear to be documented
+    breakpoint()
+    while res._state != "FINISHED":
+        print(f"Response state: {res._state}. Sleeping for 1 second")
+        time.sleep(1)
+    handle_response(res._result)
+
+
+def chunks(lst, n):
+    """Yield successive n-sized chunks from lst."""
+    for i in range(0, len(lst), n):
+        yield lst[i : i + n]
 
 
 def main(env):
+    gis = arcgis.GIS(url=AGOL_URL, username=AGOL_USERNAME, password=AGOL_PASSWORD)
+
     query = get_query()
     print("Fetching project data...")
     data = make_hasura_request(query=query, env=env)["component_arcgis_online_view"]
-    features = { 'lines': [], 'points': []}
-    
+    features = {"lines": [], "points": []}
+
     for row in data:
         geometry = row.pop("geometry")
-        feature =  { "type": "Feature", "properties": row, "geometry": geometry }
-        if geometry["type"] == 'MultiLineString':
+        feature = {"type": "Feature", "properties": row, "geometry": geometry}
+        if geometry["type"] == "MultiLineString":
             features["lines"].append(feature)
-        elif geometry["type"] == 'MultiPoint':
+        elif geometry["type"] == "MultiPoint":
             features["points"].append(feature)
         else:
             raise ValueError(f"Found unsupported feature type: {geometry['type']}")
 
     for feature_type in ["points", "lines"]:
-        thing(features[feature_type])
-
-        # with open(f"{feature_type}.geojson", "w") as fout:
-        #     fc = { "type": "FeatureCollection", "features": features[feature_type] }
-        #     json.dump(fc, fout)
+        service = gis.content.get(service_ids[feature_type])
+        layer = service.layers[0]
+        esri_features = make_esri_features(features[feature_type])
+        print("deleting features...")
+        delete_features(layer)
+        for features_chunk in chunks(esri_features, 100):
+            print("Uploading chunk...")
+            res = layer.edit_features(adds=features_chunk, rollback_on_failure=False)
+            handle_response(res)
 
 
 if __name__ == "__main__":
