@@ -54,7 +54,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "ID",
         field: "reference_id",
-        minWidth: 50,
+        minWidth: 125,
       },
       {
         headerName: "Workgroup/Contractor",
@@ -62,13 +62,13 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 175,
       },
       {
-        headerName: "Description",
-        field: "description",
+        headerName: "Contract #",
+        field: "contract_number",
         minWidth: 150,
       },
       {
-        headerName: "Contract #",
-        field: "contract_number",
+        headerName: "Description",
+        field: "description",
         minWidth: 150,
       },
       {
