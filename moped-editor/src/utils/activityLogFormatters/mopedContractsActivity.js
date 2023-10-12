@@ -1,6 +1,6 @@
 import AssignmentIndIconOutlined from "@mui/icons-material/AssignmentIndOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
-import {isEqual} from "lodash"
+import { isEqual } from "lodash";
 
 export const formatContractsActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_work_activity"];
@@ -59,6 +59,7 @@ export const formatContractsActivity = (change) => {
   const oldRecord = change.record_data.event.data.old;
 
   let changes = [];
+  const fieldsToSkip = ["updated_at", "updated_by_user_id"];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
@@ -68,7 +69,10 @@ export const formatContractsActivity = (change) => {
       if (!isEqual(newRecord[field], oldRecord[field])) {
         changes.push(entryMap.fields[field]?.label);
       }
-    } else if (newRecord[field] !== oldRecord[field] && field !== "updated_at") {
+    } else if (
+      newRecord[field] !== oldRecord[field] &&
+      !fieldsToSkip.includes(field)
+    ) {
       changes.push(entryMap.fields[field]?.label);
     }
   });

@@ -565,13 +565,13 @@ export const ProjectActivityLogTableMaps = {
         label: "task orders",
       },
       status_id: {
-        label: "status ID",
+        label: "status",
       },
       status_note: {
         label: "status note",
       },
       work_order_url: {
-        label: "work order URL",
+        label: "work order link",
       },
     },
   },
