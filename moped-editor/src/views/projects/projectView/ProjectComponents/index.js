@@ -75,9 +75,6 @@ export default function MapView({
   /* tracks a component clicked from the list or the projectFeature popup */
   const [clickedComponent, setClickedComponent] = useState(null);
 
-  /* tracks a projectFeature clicked from the map */
-  const [clickedProjectFeature, setClickedProjectFeature] = useState(null);
-
   /* tracks a projectFeature hovered on map */
   const [hoveredOnMapFeature, setHoveredOnMapFeature] = useState(null);
 
@@ -123,18 +120,6 @@ export default function MapView({
   const { projectComponents, allRelatedComponents } =
     useProjectComponents(data);
 
-  // Keep clickedComponent state up to date with edits made to project components
-  useEffect(() => {
-    if (clickedComponent === null) return;
-
-    const clickedComponentId = clickedComponent?.project_component_id;
-    const updatedClickedComponent = projectComponents.find(
-      (component) => component.project_component_id === clickedComponentId
-    );
-
-    setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents]);
-
   const {
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
@@ -166,6 +151,30 @@ export default function MapView({
     mapRef,
   });
 
+  // Keep clickedComponent state up to date with edits made to project components
+  useEffect(() => {
+    if (clickedComponent === null) return;
+
+    const clickedComponentId = clickedComponent?.project_component_id;
+    const updatedClickedComponent = projectComponents.find(
+      (component) => component.project_component_id === clickedComponentId
+    );
+
+    setClickedComponent(updatedClickedComponent);
+  }, [clickedComponent, projectComponents]);
+
+  // Keep draft component state in sync wiht clicked component (when editing)
+  useEffect(() => {
+    if (clickedComponent && !editState.isEditingComponent) {
+      editDispatch({ type: "set_draft_component", payload: clickedComponent });
+    }
+  }, [
+    clickedComponent,
+    editDispatch,
+    editState.draftEditComponent,
+    editState.isEditingComponent,
+  ]);
+
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({
       clickedComponent,
@@ -183,8 +192,7 @@ export default function MapView({
     const featureCollection = { type: "FeatureCollection", features };
 
     setClickedComponent(component);
-    // close the map projectFeature map popup
-    setClickedProjectFeature(null);
+
     // move the map
     zoomMapToFeatureCollection(
       mapRef,
@@ -286,8 +294,6 @@ export default function MapView({
               setClickedComponent={setClickedComponent}
               isClickedComponentRelated={isClickedComponentRelated}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
-              clickedProjectFeature={clickedProjectFeature}
-              setClickedProjectFeature={setClickedProjectFeature}
               setIsFetchingFeatures={setIsFetchingFeatures}
               linkMode={linkMode}
               isDrawing={isDrawing}

@@ -59,14 +59,7 @@ const validationSchema = yup.object().shape({
   description: yup.string(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
-  signal: yup
-    .object()
-    .nullable()
-    .when("component", {
-      is: (val) =>
-        val?.data?.feature_layer?.internal_table === "feature_signals",
-      then: yup.object().required(),
-    }),
+  signal: yup.object().nullable(),
   srtsId: yup.string().nullable().optional(),
   locationDescription: yup.string().nullable().optional(),
 });
@@ -121,8 +114,9 @@ const ComponentForm = ({
     "signal",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
-  const internalTable = component?.data?.feature_layer?.internal_table;
-  const isSignalComponent = internalTable === "feature_signals";
+  const assetFeatureTable =
+    component?.data?.asset_feature_layer?.internal_table;
+  const isSignalComponent = assetFeatureTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const workTypeOptions = useWorkTypeOptions(
@@ -209,13 +203,11 @@ const ComponentForm = ({
             )}
             name="component"
             control={control}
-            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
             required={true}
           />
         </Grid>
-
         {isSignalComponent && (
           <Grid item xs={12}>
             <Controller
@@ -385,7 +377,7 @@ const ComponentForm = ({
             type="submit"
             disabled={!isDirty || areFormErrors}
           >
-            {isSignalComponent ? "Save" : formButtonText}
+            {isSignalComponent && signal ? "Save" : formButtonText}
           </Button>
         </Grid>
       </Grid>

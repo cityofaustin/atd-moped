@@ -1,8 +1,7 @@
 import { useMemo } from "react";
 
 export const isSignalComponent = (component) =>
-  component?.moped_components?.feature_layer?.internal_table ===
-  "feature_signals";
+  component.feature_signals?.length > 0;
 
 /**
  * Format the list item's primary and secondary text

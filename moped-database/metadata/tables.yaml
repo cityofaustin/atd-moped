@@ -1013,6 +1013,9 @@
     - name: feature_layer
       using:
         foreign_key_constraint_on: feature_layer_id
+    - name: asset_feature_layer
+      using:
+        foreign_key_constraint_on: asset_feature_layer_id
   array_relationships:
     - name: moped_component_work_types
       using:
@@ -1045,6 +1048,7 @@
           - component_subtype
           - line_representation
           - feature_layer_id
+          - asset_feature_layer_id
         filter: {}
     - role: moped-editor
       permission:
@@ -1055,6 +1059,7 @@
           - component_subtype
           - line_representation
           - feature_layer_id
+          - asset_feature_layer_id
         filter: {}
     - role: moped-viewer
       permission:
@@ -1065,6 +1070,7 @@
           - component_subtype
           - line_representation
           - feature_layer_id
+          - asset_feature_layer_id
         filter: {}
 - table:
     name: moped_components_subcomponents
