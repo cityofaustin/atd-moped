@@ -156,6 +156,8 @@ export const GET_PROJECT_COMPONENTS = gql`
       geometry: geography
       component_id
       attributes
+      council_districts
+      length_feet
     }
     parentProjectComponents: moped_proj_components(
       where: {
