@@ -1,4 +1,4 @@
-import { GridTableFiltersCommonOperators } from "../../../components/GridTable/GridTableFiltersCommonOperators";
+import { FiltersCommonOperators } from "../../../components/GridTable/FiltersCommonOperators";
 
 /**
  * Filter Configuration
@@ -6,7 +6,7 @@ import { GridTableFiltersCommonOperators } from "../../../components/GridTable/G
  * @type {object}
  * @default
  */
-export const ProjectsListViewFiltersConf = {
+export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   fields: [
     {
       name: "project_name",
@@ -365,14 +365,11 @@ export const ProjectsListViewFiltersConf = {
       label: "Has Subprojects",
       placeholder: "Subproject",
       type: "array",
-      operators: [
-        "subprojects_array_is_null",
-        "subprojects_array_is_not_null"
-      ],
+      operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
     },
   ],
 
   operators: {
-    ...GridTableFiltersCommonOperators,
+    ...FiltersCommonOperators,
   },
 };
