@@ -6,51 +6,33 @@ export const formatContractsActivity = (change) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_work_activity"];
 
   const changeIcon = <AssignmentIndIconOutlined />;
-  const contractor = change.record_data.event.data.new.contractor;
-  const contractorText = {
-    text: contractor,
+  const referenceID = change.record_data.event.data.new.reference_id;
+  const referenceIdText = {
+    text: referenceID,
     style: "boldText",
   };
 
   // add a new work activity
   if (change.description.length === 0) {
-    if (contractor) {
-      // with contractor populated
-      return {
-        changeIcon,
-        changeText: [
-          { text: "Added ", style: null },
-          contractorText,
-          { text: " as a new work activity", style: null },
-        ],
-      };
-    } else {
-      // without contractor populated
-      return {
-        changeIcon,
-        changeText: [{ text: "Added a new work activity", style: null }],
-      };
-    }
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Added ", style: null },
+        referenceIdText,
+        { text: " as a new work activity", style: null },
+      ],
+    };
   }
 
   // delete an existing work activity
   if (change.description[0].field === "is_deleted") {
-    if (contractor) {
-      // with contractor populated
-      return {
-        changeIcon,
-        changeText: [
-          { text: "Removed the work activity for ", style: null },
-          contractorText,
-        ],
-      };
-    } else {
-      // without contractor populated
-      return {
-        changeIcon,
-        changeText: [{ text: "Removed a work activity", style: null }],
-      };
-    }
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Removed the work activity for ", style: null },
+        referenceIdText,
+      ],
+    };
   }
 
   // Multiple fields in the moped_proj_contract table can be updated at once
@@ -77,31 +59,16 @@ export const formatContractsActivity = (change) => {
     }
   });
 
-  if (contractor) {
-    // with contractor populated
-    return {
-      changeIcon,
-      changeText: [
-        { text: "Edited the work activity for ", style: null },
-        contractorText,
-        { text: " by updating the ", style: null },
-        {
-          text: changes.join(", "),
-          style: "boldText",
-        },
-      ],
-    };
-  } else {
-    // without contractor populated
-    return {
-      changeIcon,
-      changeText: [
-        { text: "Edited a work activity by updating the ", style: null },
-        {
-          text: changes.join(", "),
-          style: "boldText",
-        },
-      ],
-    };
-  }
+  return {
+    changeIcon,
+    changeText: [
+      { text: "Edited the work activity for ", style: null },
+      referenceIdText,
+      { text: " by updating the ", style: null },
+      {
+        text: changes.join(", "),
+        style: "boldText",
+      },
+    ],
+  };
 };
