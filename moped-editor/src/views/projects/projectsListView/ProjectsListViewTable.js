@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { NavLink as RouterLink, useLocation } from "react-router-dom";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
@@ -20,6 +20,16 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
+import { usePagination } from "./useProjectListViewQuery/usePagination";
+import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
+import { useSearch } from "./useProjectListViewQuery/useSearch";
+import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import {
+  useCsvExport,
+  CsvDownloadDialog,
+} from "./useProjectListViewQuery/useCsvExport";
 
 /**
  * GridTable Style
@@ -97,127 +107,60 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
-const useFilterQuery = (locationSearch) =>
-  useMemo(() => {
-    return new URLSearchParams(locationSearch);
-  }, [locationSearch]);
-
 /**
- * if filter exists in url, decodes base64 string and returns as object
- * Used to initialize filter state
- * @return Object
+ * Returns a ProjectStatusBadge component based on the status and phase of project
+ * @param {string} phase - A project's current phase
+ * @param {number} statusId - Project's status id
+ * @return {JSX.Element}
  */
-const useMakeFilterState = (filterQuery) =>
-  useMemo(() => {
-    if (Array.from(filterQuery).length > 0) {
-      try {
-        return JSON.parse(atob(filterQuery.get("filter")));
-      } catch {
-        return {};
-      }
-    }
-    return {};
-  }, [filterQuery]);
+const buildStatusBadge = ({ phaseName, phaseKey }) => (
+  <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
+);
 
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
- * @param {String} searchTerm - The initial term
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query }) => {
+const ProjectsListViewTable = () => {
   const classes = useStyles();
-
-  // create URLSearchParams from url
-  const navSearchTerm = useLocation()?.state?.searchTerm;
-  const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
-
-  /**
-   * Stores the string to search for and the column to search against
-   * @type {Object} search
-   * @property {string} value - The string to be searched for
-   * @property {string} column - The name of the column to search against
-   * @function setSearch - Sets the state of search
-   * @default {{value: "", column: ""}}
-   */
-  const [search, setSearch] = useState({
-    value: navSearchTerm ?? "",
-    column: "",
-  });
 
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
-  /**
-   * Stores objects storing a random id, column, operator, and value.
-   * @type {Object} filters
-   * @function setFilter - Sets the state of filters
-   * @default {if filter in url, use those params, otherwise {}}
-   */
-  const [filters, setFilter] = useState(initialFilterState);
-
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  /**
-   * Query Management
-   */
+  /* Project list query */
+  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
+    usePagination({
+      defaultLimit: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultLimit,
+      defaultOffset: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultOffset,
+    });
 
-  // Resets the value of "where" "and" "or" to empty
-  query.cleanWhere();
-
-  // For each filter added to state, add a where clause in GraphQL
-  // Advanced Search
-  Object.keys(filters).forEach((filter) => {
-    let { envelope, field, gqlOperator, value, type, specialNullValue } =
-      filters[filter];
-
-    // If we have no operator, then there is nothing we can do.
-    if (field === null || gqlOperator === null) {
-      return;
-    }
-
-    if (gqlOperator.includes("is_null")) {
-      // Some fields when empty are not null but rather an empty string or "None"
-      if (specialNullValue) {
-        gqlOperator = envelope === "true" ? "_eq" : "_neq";
-        value = specialNullValue;
-      } else {
-        value = envelope;
-      }
-    } else {
-      if (value !== null) {
-        // If there is an envelope, insert value in envelope.
-        value = envelope ? envelope.replace("{VALUE}", value) : value;
-
-        // If it is a number or boolean, it does not need quotation marks
-        // Otherwise, add quotation marks for the query to identify as string
-        value = type in ["number", "boolean"] ? value : `"${value}"`;
-      } else {
-        // We don't have a value
-        return;
-      }
-    }
-    query.setWhere(field, `${gqlOperator}: ${value}`);
+  const {
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useOrderBy({
+    defaultColumn: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn,
+    defaultDirection: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection,
   });
 
-  /**
-   * Returns a ProjectStatusBadge component based on the status and phase of project
-   * @param {string} phase - A project's current phase
-   * @param {number} statusId - Project's status id
-   * @return {JSX.Element}
-   */
-  const buildStatusBadge = ({ phaseName, phaseKey }) => (
-    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
-  );
+  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+  });
 
-  const linkStateFilters = Object.keys(filters).length
-    ? btoa(JSON.stringify(filters))
-    : false;
+  const { filterQuery, filters, setFilters, advancedSearchWhereString } =
+    useAdvancedSearch();
+
+  const linkStateFilters = useMemo(() => {
+    return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
+  }, [filters]);
 
   const columns = [
     {
@@ -504,26 +447,29 @@ const ProjectsListViewTable = ({ query }) => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const {
-    query: projectListViewQuery,
-    setQueryLimit,
-    setQueryOffset,
+  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
+    columnsToReturn,
+    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
     queryOffset,
     orderByColumn,
-    setOrderByColumn,
     orderByDirection,
-    setOrderByDirection,
-    searchTerm,
-    setSearchTerm,
-  } = useGetProjectListView({
-    columnsToReturn,
-    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
-    defaultSearchTerm: navSearchTerm,
+    searchWhereString,
+    advancedSearchWhereString,
   });
 
   const { data, loading, error } = useQuery(projectListViewQuery, {
-    fetchPolicy: "cache-first",
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+  });
+
+  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+    query: exportQuery,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+    limit: queryLimit,
+    setQueryLimit,
   });
 
   const sortByColumnIndex = columns.findIndex(
@@ -568,23 +514,19 @@ const ProjectsListViewTable = ({ query }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
+        <CsvDownloadDialog dialogOpen={dialogOpen} />
         <Search
           parentData={data}
-          query={query}
-          searchState={{
-            searchParameters: search,
-            setSearchParameters: setSearch,
-          }}
-          filterState={{
-            filterParameters: filters,
-            setFilterParameters: setFilter,
-          }}
+          filters={filters}
+          setFilters={setFilters}
           filterQuery={filterQuery}
           advancedSearchAnchor={advancedSearchAnchor}
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
           queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
+          filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+          handleExportButtonClick={handleExportButtonClick}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
@@ -627,7 +569,10 @@ const ProjectsListViewTable = ({ query }) => {
                         setQueryLimit={setQueryLimit}
                         queryOffset={queryOffset}
                         setQueryOffset={setQueryOffset}
-                        rowsPerPageOptions={[250, 1000]}
+                        rowsPerPageOptions={
+                          PROJECT_LIST_VIEW_QUERY_CONFIG.pagination
+                            .rowsPerPageOptions
+                        }
                       />
                     ),
                     Header: (props) => (

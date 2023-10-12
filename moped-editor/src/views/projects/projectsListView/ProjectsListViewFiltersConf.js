@@ -1,4 +1,4 @@
-import { GridTableFiltersCommonOperators } from "../../../components/GridTable/GridTableFiltersCommonOperators";
+import { FiltersCommonOperators } from "../../../components/GridTable/FiltersCommonOperators";
 
 /**
  * Filter Configuration
@@ -370,6 +370,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   ],
 
   operators: {
-    ...GridTableFiltersCommonOperators,
+    ...FiltersCommonOperators,
   },
 };

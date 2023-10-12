@@ -1,13 +1,11 @@
 import { useState } from "react";
 
 export const useOrderBy = ({
-  defaultOrderByColumn = null,
-  defaultOrderByDirection = null,
+  defaultColumn = null,
+  defaultDirection = null,
 }) => {
-  const [orderByColumn, setOrderByColumn] = useState(defaultOrderByColumn);
-  const [orderByDirection, setOrderByDirection] = useState(
-    defaultOrderByDirection
-  );
+  const [orderByColumn, setOrderByColumn] = useState(defaultColumn);
+  const [orderByDirection, setOrderByDirection] = useState(defaultDirection);
 
   return {
     orderByColumn,

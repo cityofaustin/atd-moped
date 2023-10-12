@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -58,20 +58,22 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Renders a search bar with optional filters
- * @param {Object} filterState - The current state/state-modifier bundle for filter
+ * @param {string} searchFieldValue - The current value of the search field
+ * @param {function} setSearchFieldValue - function to set the current value of the search field
+ * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
- * @param {String} searchTerm - the current search term set in the query
  * @param {Function} setSearchTerm - set the current search term set in the query
  * @param {Object} queryConfig - the query configuration object with placeholder text
  * @return {JSX.Element}
  * @constructor
  */
 const SearchBar = ({
-  filterState,
+  searchFieldValue,
+  setSearchFieldValue,
+  filters,
   toggleAdvancedSearch,
   advancedSearchAnchor,
-  searchTerm,
   setSearchTerm,
   queryConfig,
 }) => {
@@ -88,14 +90,6 @@ const SearchBar = ({
       return "Enter search value";
     }
   };
-
-  /**
-   * The contents of the search box
-   * @type {string} searchFieldValue
-   * @function setSearchFieldValue - Sets the state of the field
-   * @default {?searchState.searchParameters.value}
-   */
-  const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
 
   const handleSearchValueChange = (value) => {
     if (value === "" && searchFieldValue !== "") {
@@ -154,11 +148,11 @@ const SearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filterState.filterParameters).length;
+  const filterStateActive = !!Object.keys(filters).length;
   const filtersApplied = [];
   if (filterStateActive) {
-    Object.keys(filterState.filterParameters).map((parameter) =>
-      filtersApplied.push(filterState.filterParameters[parameter]["label"])
+    Object.keys(filters).map((parameter) =>
+      filtersApplied.push(filters[parameter]["label"])
     );
   }
 

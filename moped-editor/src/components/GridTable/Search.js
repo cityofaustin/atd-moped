@@ -1,28 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
 import { useLocation } from "react-router-dom";
 
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Paper,
-  Popper,
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
-import GridTableFilters from "src/components/GridTable/GridTableFilters";
+import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
-import { useLazyQuery } from "@apollo/client";
-import { format } from "date-fns";
-import Papa from "papaparse";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -72,18 +57,22 @@ const history = createBrowserHistory();
 
 /**
  * Renders a table search component with a search bar and search filters
- * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param {Object} searchState - The current state/state-modifier bundle for search
- * @param {Object} filterState - The current state/state-modifier bundle for filters
- * @param {JSX.Element} children - Any components to be rendered above the search bar
+ * @param {Object} filters - The current filters from useAdvancedSearch hook
+ * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Object} parentData - Response data (if any) from the parent component
+ * @param {Object} advancedSearchAnchor - The anchor element for the advanced search popper
+ * @param {Function} setAdvancedSearchAnchor - Set the anchor element for the advanced search popper
+ * @param {String} searchTerm - The current search term from useSearch hook
+ * @param {Function} setSearchTerm - Set the current search term from useSearch hook
+ * @param {Object} queryConfig - The query configuration for the current table
+ * @param {Object} filtersConfig - The filters configuration for the current table
+ * @param {Function} handleExportButtonClick - The function to handle the export button click
  * @return {JSX.Element}
  * @constructor
  */
 const Search = ({
-  query,
-  searchState,
-  filterState,
+  filters,
+  setFilters,
   filterQuery,
   parentData = null,
   advancedSearchAnchor,
@@ -91,113 +80,25 @@ const Search = ({
   searchTerm,
   setSearchTerm,
   queryConfig,
+  filtersConfig,
+  handleExportButtonClick,
 }) => {
   const classes = useStyles();
   const queryPath = useLocation().pathname;
   const divRef = React.useRef();
 
   /**
-   * When True, the download csv dialog is open.
-   * @type {boolean} dialogOpen
-   * @function setDialogOpen - Sets the state of dialogOpen
-   * @default false
+   * The contents of the search box in SearchBar
+   * @type {string} searchFieldValue
+   * @function setSearchFieldValue - Sets the state of the field
    */
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  /**
-   * When True, the download happens.
-   * @type {boolean} downloading
-   * @function setDownloading - Sets the state of downloading
-   * @default false
-   */
-  const [downloading, setDownloading] = useState(false);
-
-  /**
-   * Instantiates getExport, loading and data variables
-   * @function getExport - It is called to load the data
-   * @property {boolean} loading - True whenever the data is being loaded
-   * @property {object} data - The data as retrieved from query (if available)
-   */
-  let [getExport, { called, stopPolling, loading, data }] = useLazyQuery(
-    query.queryCSV(Object.keys(query.config.export).join(" \n")),
-    // Temporary fix for https://github.com/apollographql/react-apollo/issues/3361
-    query.config.useQuery
-  );
-
-  /**
-   * Downloads the contents of fileContents into a file
-   * @param {string} fileContents
-   */
-  const downloadFile = (fileContents) => {
-    const exportFileName =
-      "moped-" + query.table + format(Date.now(), "yyyy-MM-dd'T'HH:mm:ssxxx");
-    const blob = new Blob([fileContents], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    if (link.download !== undefined) {
-      link.style.visibility = "hidden";
-      link.setAttribute("href", URL.createObjectURL(blob));
-      link.setAttribute("download", exportFileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setDownloading(false);
-    }
-  };
-
-  /**
-   * Builds a record entry given a specific configuration and filters
-   * @param {object} record - The record to build
-   * @return {object}
-   */
-  const buildRecordEntry = (record) => {
-    // Allocate an empty object
-    const entry = {};
-    // For each column in the export configuration
-    Object.keys(query.config.export).forEach((column) => {
-      // column label and data formatting function
-      const { label, filter } = query.config.export[column];
-      // Determine the new column name, if available.
-      const newColumnName = label ? label : column;
-      // If there is a filter, use it. Assign the value to the new column name.
-      entry[newColumnName] = filter ? filter(record[column]) : record[column];
-    });
-    return entry;
-  };
-
-  /**
-   * Returns an array of objects (each object is a row and each key of that object is a column in the export file)
-   * @param {array} data - Data returned from DB with nested data structures
-   * @returns {array}
-   */
-  const formatExportData = (data) => {
-    if (data) {
-      return data.map((record) => {
-        return buildRecordEntry(record);
-      });
-    }
-    return [];
-  };
-
-  /**
-   * Handles export button (to open the csv download dialog)
-   */
-  const handleExportButtonClick = () => {
-    setDialogOpen(true);
-  };
-
-  /**
-   * Handles the closing of the dialog
-   */
-  const handleDialogClose = () => {
-    if (called) stopPolling();
-    setDialogOpen(false);
-  };
+  const [searchFieldValue, setSearchFieldValue] = useState(searchTerm);
 
   /**
    * Clears the filters when switching to simple search
    */
   const handleSwitchToSearch = () => {
-    filterState.setFilterParameters({});
+    setFilters({});
     filterQuery.delete("filter");
     history.replace(`${queryPath}?`);
   };
@@ -206,10 +107,7 @@ const Search = ({
    * Clears the simple search when switching to filters
    */
   const handleSwitchToAdvancedSearch = () => {
-    searchState.setSearchParameters({
-      value: "",
-      column: "",
-    });
+    setSearchTerm("");
   };
 
   const toggleAdvancedSearch = () => {
@@ -226,34 +124,6 @@ const Search = ({
     setAdvancedSearchAnchor(null);
   };
 
-  /**
-   * Update the export whenever limit or selectall change
-   */
-  useEffect(
-    () => {
-      if (dialogOpen && !downloading) {
-        query.limit = 0;
-        getExport();
-        setDownloading(true);
-      }
-
-      if (dialogOpen && downloading && data && !loading) {
-        const formattedData = formatExportData(data[query.table]);
-        // use the papaparse library to "unparse" a json object to csv
-        // escapeFormulae: "field values that begin with =, +, -, @, \t, or \r, will be prepended with a ' to defend
-        // against injection attacks because Excel and LibreOffice will automatically parse such cells as formulae."
-        const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-        setTimeout(() => {
-          // Update the state
-          setDialogOpen(false);
-          downloadFile(csvString);
-        }, 1500);
-      }
-    },
-    // eslint-disable-next-line
-    [dialogOpen, downloading, loading, query.limit, getExport]
-  );
-
   return (
     <div>
       <Box mt={3}>
@@ -267,9 +137,10 @@ const Search = ({
               className={classes.gridSearchPadding}
             >
               <SearchBar
-                query={query}
-                searchState={searchState}
-                filterState={filterState}
+                searchFieldValue={searchFieldValue}
+                setSearchFieldValue={setSearchFieldValue}
+                filters={filters}
+                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
                 searchTerm={searchTerm}
@@ -285,10 +156,10 @@ const Search = ({
               lg={2}
               className={classes.downloadButtonGrid}
             >
-              {query.config.showExport && (
+              {queryConfig.showExport && (
                 <Button
                   disabled={
-                    (parentData?.[query.config.table] ?? []).length === 0
+                    (parentData?.[queryConfig.table] ?? []).length === 0
                   }
                   className={classes.downloadCsvButton}
                   onClick={handleExportButtonClick}
@@ -313,39 +184,18 @@ const Search = ({
         className={classes.advancedSearchRoot}
       >
         <Paper className={classes.advancedSearchPaper}>
-          <GridTableFilters
-            query={query}
-            filterState={filterState}
+          <Filters
+            filters={filters}
+            setFilters={setFilters}
             filterQuery={filterQuery}
             history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
+            filtersConfig={filtersConfig}
+            setSearchFieldValue={setSearchFieldValue}
+            setSearchTerm={setSearchTerm}
           />
         </Paper>
       </Popper>
-      <Dialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
-        aria-labelledby="form-dialog-title"
-      >
-        <DialogTitle id="form-dialog-title"> </DialogTitle>
-        <DialogContent>
-          <Grid container spacing={3}>
-            <Grid item xs={2} lg={2}>
-              <CircularProgress />
-            </Grid>
-            <Grid item xs={10} lg={10}>
-              <DialogContentText>
-                Preparing download, please wait.
-              </DialogContentText>
-            </Grid>
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleDialogClose} color="primary">
-            Cancel
-          </Button>
-        </DialogActions>
-      </Dialog>
     </div>
   );
 };
