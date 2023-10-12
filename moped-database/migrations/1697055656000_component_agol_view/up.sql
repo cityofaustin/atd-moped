@@ -161,4 +161,5 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     LEFT JOIN moped_components mc ON mc.component_id = mpc.component_id
 WHERE
     mpc.is_deleted = FALSE
+    AND plv.is_deleted = FALSE
 );
