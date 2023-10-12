@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
+import { isEqual } from "lodash";
 
 import {
   Box,
@@ -153,7 +154,11 @@ const usePrepareActivityData = (activityData) =>
           const oldData = outputEvent.record_data.event.data.old;
           let changedField = "";
           Object.keys(newData).forEach((key) => {
-            if (newData[key] !== oldData[key]) {
+            if (!!newData[key] && typeof newData[key] === "object") {
+              if (!isEqual(newData[key], oldData[key])) {
+                changedField = key;
+              }
+            } else if (newData[key] !== oldData[key] && key !== "updated_at") {
               changedField = key;
             }
           });
