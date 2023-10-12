@@ -108,3 +108,61 @@ export const makeComponentInsertData = (projectId, component) => {
     feature_signals: { data: signalFeaturesToInsert },
   };
 };
+
+/**
+ * Assembles feature data based on I/O from the component attribute form. 
+ * It handles when a signal component changes to a non-signal component, 
+ * when a selected signal asset is cleared from the from the form input,
+ * or when the selected signal asset is changed to a different signal
+ * asset.
+ * @param {Object} signalFromForm - signal objected as returned by the signal
+ * autoomplete form option (which is essentially a signalr ecord from
+ *  socrata)
+ * @param {Object} clickedComponent  - the moped_project_component record that is
+ * currently being edited, including it's related feature data
+ * @returns {Object[]} signalsToCreate - an array of length 1 or 0 which optionally
+ * contains the signal feature record to be inserted
+ * @returns {Number[]} featureIdsToDelete - array of 0 or more feature record IDs
+ * which will be deleted
+ */
+export const getFeatureChangesFromComponentForm = (
+  signalFromForm,
+  clickedComponent
+) => {
+  let signalToCreate = null;
+  const featureIdsToDelete = [];
+  const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
+  const previousSignal = clickedComponent.feature_signals?.[0];
+  const previousIntersectionFeatures = clickedComponent.feature_intersections;
+  const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
+
+  if (newSignalId) {
+    // signal is selected in form
+    if (previousSignal && newSignalId !== previousSignal?.signal_id) {
+      // signal selection changed
+      signalToCreate = knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+      signalToCreate.component_id = clickedComponent.project_component_id;
+      featureIdsToDelete.push(previousSignal.id);
+    } else if (!previousSignal) {
+      // signal was previously blank
+      signalToCreate = knackSignalRecordToFeatureSignalsRecord(signalFromForm);
+      signalToCreate.component_id = clickedComponent.project_component_id;
+    }
+    if (previousIntersectionFeatures) {
+      // delete all intersection features
+      featureIdsToDelete.push(...previousIntersectionFeatures.map((f) => f.id));
+    }
+    if (previousDrawnPointFeatures) {
+      // delete all drawn point features
+      featureIdsToDelete.push(...previousDrawnPointFeatures.map((f) => f.id));
+    }
+  } else if (previousSignal) {
+    // signal selection was cleared
+    featureIdsToDelete.push(previousSignal.id);
+  }
+  // wrap signal in array to match hasura type
+  // we do this because it's allowed to insert an empty array, but
+  // but not a null object
+  const signalsToCreate = signalToCreate ? [signalToCreate] : [];
+  return { signalsToCreate, featureIdsToDelete };
+};

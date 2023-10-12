@@ -11,7 +11,7 @@ import {
  * @type {object}
  * @default
  */
-export const ProjectsListViewExportConf = {
+export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_id: {
     label: "ID",
   },

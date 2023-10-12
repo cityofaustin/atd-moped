@@ -4,25 +4,19 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
-  Box,
   Button,
-  Chip,
   CircularProgress,
-  Icon,
-  IconButton,
   Snackbar,
   TextField,
-  Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert, Autocomplete } from '@mui/material';
+import { Alert, Autocomplete } from "@mui/material";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
-import makeStyles from '@mui/styles/makeStyles';
-import ControlPointIcon from "@mui/icons-material/ControlPoint";
+import makeStyles from "@mui/styles/makeStyles";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
@@ -41,19 +35,16 @@ import {
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-  UPDATE_FUNDING_TASK_ORDERS,
 } from "../../../queries/funding";
 
 import { getDatabaseId, useUser } from "../../../auth/user";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
-import TaskOrderAutocomplete from "../signalProjectTable/TaskOrderAutocomplete";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -180,20 +171,13 @@ const ProjectFundingTable = () => {
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
-  const [updateProjectTaskOrders] = useMutation(UPDATE_FUNDING_TASK_ORDERS);
-
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
     message: null,
     severity: "success",
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-  const [addTaskOrderMode, setAddTaskOrderMode] = useState(false);
-  const [newTaskOrderList, setNewTaskOrderList] = useState([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
-    useState(false);
-  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -220,74 +204,6 @@ const ProjectFundingTable = () => {
   };
 
   const userId = getDatabaseId(user);
-
-  /**
-   * An array of objects that contain the task order data
-   * @type {Array[Object]}
-   */
-  const taskOrderData = data?.moped_project?.[0]?.task_order ?? [];
-
-  /**
-   * Deletes a task order from the list
-   * @param {Object} task -The task to be deleted
-   */
-  const handleTaskOrderDelete = (task) =>
-    updateProjectTaskOrders({
-      variables: {
-        projectId: projectId,
-        taskOrders: taskOrderData.filter(
-          (t) => t.task_order !== task.task_order
-        ),
-      },
-    })
-      .then(() => refetch())
-      .catch((error) => {
-        setSnackbarState({
-          open: true,
-          message: (
-            <span>
-              There was a problem removing the task order. Error message:{" "}
-              {error.message}
-            </span>
-          ),
-          severity: "error",
-        });
-      });
-
-  /**
-   * Handle Task Order OnChange event
-   * @param {Object} value - Data from the task order list
-   */
-  const handleTaskOrderOnChange = (value) => {
-    setNewTaskOrderList(value);
-  };
-
-  /**
-   * Triggers migration to Update the task order list
-   * Resets adding new task order to initial state
-   */
-  const handleNewTaskOrderSave = () =>
-    updateProjectTaskOrders({
-      variables: {
-        projectId: projectId,
-        taskOrders: [
-          ...taskOrderData,
-          ...newTaskOrderList.filter(
-            (n) => !taskOrderData.find((t) => t.task_order === n.task_order)
-          ),
-        ],
-      },
-    })
-      .then(() => refetch())
-      .then(() => handleNewTaskOrderCancel());
-
-  /**
-   * Cancel action for adding new task orders
-   */
-  const handleNewTaskOrderCancel = () => {
-    setNewTaskOrderList([]);
-    setAddTaskOrderMode(false);
-  };
 
   /**
    * Wrapper around snackbar state setter
@@ -337,7 +253,9 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={props.name}
       options={props.data}
-      renderInput={(params) => <TextField variant="standard" {...params} multiline />}
+      renderInput={(params) => (
+        <TextField variant="standard" {...params} multiline />
+      )}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
@@ -366,7 +284,9 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={"moped_funds"}
       options={props.data}
-      renderInput={(params) => <TextField variant="standard" {...params} multiline />}
+      renderInput={(params) => (
+        <TextField variant="standard" {...params} multiline />
+      )}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string
         typeof option === "string"
@@ -381,13 +301,6 @@ const ProjectFundingTable = () => {
       }}
     />
   );
-
-  /**
-   * Handles the click for adding new task orders
-   */
-  const handleAddTaskOrder = () => {
-    setAddTaskOrderMode(true);
-  };
 
   /**
    * Return Snackbar state to default, closed state
@@ -451,7 +364,8 @@ const ProjectFundingTable = () => {
           name="funding_description"
           multiline
           value={props.value}
-          onChange={(e) => props.onChange(e.target.value)} />
+          onChange={(e) => props.onChange(e.target.value)}
+        />
       ),
     },
     {
@@ -521,11 +435,6 @@ const ProjectFundingTable = () => {
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
-  const handleDeleteOpen = (task) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(task);
-  };
-
   return (
     <ApolloErrorHandler errors={error}>
       <MaterialTable
@@ -580,7 +489,7 @@ const ProjectFundingTable = () => {
             <div style={{ marginLeft: "-10px" }}>
               <MTableToolbar {...props} />
             </div>
-          )
+          ),
         }}
         data={data.moped_proj_funding}
         title={
@@ -600,64 +509,6 @@ const ProjectFundingTable = () => {
               classes={classes}
               noWrapper
             />
-            <Box component={"ul"} className={classes.chipContainer}>
-              <Typography className={classes.fieldLabel}>Task order</Typography>
-              <DeleteConfirmationModal
-                type="tag"
-                submitDelete={() => handleTaskOrderDelete(deleteConfirmationId)}
-                isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-                setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
-              >
-                {taskOrderData.map((task) => (
-                  <li key={task.task_order}>
-                    <Chip
-                      label={task.display_name}
-                      onDelete={() => handleDeleteOpen(task)}
-                      className={classes.chip}
-                    />
-                  </li>
-                ))}
-              </DeleteConfirmationModal>
-              {!addTaskOrderMode && (
-                <li key={`add-task-order`}>
-                  <Tooltip title="Add New Task Order">
-                    <ControlPointIcon
-                      className={classes.editIconFunding}
-                      onClick={handleAddTaskOrder}
-                    />
-                  </Tooltip>
-                </li>
-              )}
-              {addTaskOrderMode && (
-                <Box
-                  display="flex"
-                  justifyContent="flex-start"
-                  className={classes.chipAddContainer}
-                >
-                  <TaskOrderAutocomplete
-                    classes={classes.chipAddMultiselect}
-                    props={{ onChange: handleTaskOrderOnChange }}
-                    value={newTaskOrderList}
-                  />
-                  <div className={classes.editIconContainer}>
-                    <IconButton
-                      className={classes.editIconButton}
-                      aria-label="Add"
-                      onClick={handleNewTaskOrderSave}
-                      size="large">
-                      <Icon fontSize={"small"}>check</Icon>
-                    </IconButton>
-                    <IconButton
-                      className={classes.editIconButton}
-                      aria-label="Cancel"
-                      onClick={handleNewTaskOrderCancel}
-                      size="large">
-                      <Icon fontSize={"small"}>close</Icon>
-                    </IconButton>
-                  </div>
-                </Box>
-              )}
-            </Box>
           </div>
         }
         options={{
@@ -670,7 +521,7 @@ const ProjectFundingTable = () => {
           },
           actionsColumnIndex: -1,
           addRowPosition: "first",
-          idSynonym: "proj_funding_id"
+          idSynonym: "proj_funding_id",
         }}
         localization={{
           header: {

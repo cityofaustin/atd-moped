@@ -5,7 +5,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   Button,
   Grid,
-  TextField,
   Switch,
   FormControlLabel,
   FormHelperText,
@@ -26,9 +25,13 @@ import {
   useComponentTagsOptions,
   useWorkTypeOptions,
   useResetDependentFieldOnParentFieldChange,
+  getOptionLabel,
+  isOptionEqualToValue,
 } from "./utils/form";
+import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
-import ControlledAutocomplete from "./ControlledAutocomplete";
+import ComponentProperties from "./ComponentProperties";
 
 import * as yup from "yup";
 
@@ -56,14 +59,7 @@ const validationSchema = yup.object().shape({
   description: yup.string(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
-  signal: yup
-    .object()
-    .nullable()
-    .when("component", {
-      is: (val) =>
-        val?.data?.feature_layer?.internal_table === "feature_signals",
-      then: yup.object().required(),
-    }),
+  signal: yup.object().nullable(),
   srtsId: yup.string().nullable().optional(),
   locationDescription: yup.string().nullable().optional(),
 });
@@ -74,7 +70,6 @@ const ComponentForm = ({
   initialFormValues = null,
 }) => {
   const {
-    register,
     handleSubmit,
     control,
     watch,
@@ -111,13 +106,7 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [
-    component,
-    phase,
-    completionDate,
-    subcomponents,
-    signal,
-  ] = watch([
+  const [component, phase, completionDate, subcomponents, signal] = watch([
     "component",
     "phase",
     "completionDate",
@@ -125,8 +114,9 @@ const ComponentForm = ({
     "signal",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
-  const internalTable = component?.data?.feature_layer?.internal_table;
-  const isSignalComponent = internalTable === "feature_signals";
+  const assetFeatureTable =
+    component?.data?.asset_feature_layer?.internal_table;
+  const isSignalComponent = assetFeatureTable === "feature_signals";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const workTypeOptions = useWorkTypeOptions(
@@ -182,11 +172,10 @@ const ComponentForm = ({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties.id",
-    valueToSet:
-      signal
-      // if the signal exists and the locationDescription is empty, set to option label
-        ? getSignalOptionLabel(signal)
-        : "",
+    valueToSet: signal
+      ? // if the signal exists and the locationDescription is empty, set to option label
+        getSignalOptionLabel(signal)
+      : "",
     setValue,
   });
 
@@ -202,6 +191,8 @@ const ComponentForm = ({
                 ? componentOptionsWithoutSignals
                 : unfilteredComponentOptions
             }
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             renderOption={(props, option, state) => (
               <ComponentOptionWithIcon
                 key={option.value}
@@ -212,12 +203,11 @@ const ComponentForm = ({
             )}
             name="component"
             control={control}
-            disabled={isSignalComponent && isEditingExistingComponent}
             autoFocus
             helperText="Required"
+            required={true}
           />
         </Grid>
-
         {isSignalComponent && (
           <Grid item xs={12}>
             <Controller
@@ -240,10 +230,13 @@ const ComponentForm = ({
             label="Work Type(s)"
             multiple
             options={workTypeOptions}
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             name="work_types"
             control={control}
             error={!!errors?.work_types}
             helperText="Required"
+            required={true}
           />
         </Grid>
         {/* Hide unless there are subcomponents for the chosen component
@@ -255,6 +248,8 @@ const ComponentForm = ({
               label="Subcomponents"
               multiple
               options={subcomponentOptions}
+              getOptionLabel={getOptionLabel}
+              isOptionEqualToValue={isOptionEqualToValue}
               name="subcomponents"
               control={control}
             />
@@ -266,49 +261,39 @@ const ComponentForm = ({
             label="Tags"
             multiple
             options={componentTagsOptions}
+            getOptionLabel={getOptionLabel}
+            isOptionEqualToValue={isOptionEqualToValue}
             name="tags"
             control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("locationDescription")}
+          <ControlledTextInput
             fullWidth
+            label="Location description"
+            name="locationDescription"
             size="small"
-            id="locationDescription"
-            label={"Location description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("description")}
+          <ControlledTextInput
             fullWidth
+            label="Description"
+            name="description"
             size="small"
-            id="description"
-            label={"Description"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
             multiline
             minRows={4}
+            control={control}
           />
         </Grid>
         <Grid item xs={12}>
-          <TextField
-            {...register("srtsId")}
+          <ControlledTextInput
             fullWidth
+            label="SRTS Infrastructure ID"
+            name="srtsId"
             size="small"
-            id="srtsId"
-            label={"SRTS Infrastructure ID"}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            variant="outlined"
+            control={control}
             helperText={
               "The Safe Routes to School infrastructure plan record identifier"
             }
@@ -380,8 +365,11 @@ const ComponentForm = ({
           </>
         )}
       </Grid>
-      <Grid container spacing={4} display="flex" justifyContent="flex-end">
-        <Grid item style={{ margin: 5 }}>
+      {initialFormValues && (
+        <ComponentProperties component={initialFormValues} />
+      )}
+      <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"
@@ -389,7 +377,7 @@ const ComponentForm = ({
             type="submit"
             disabled={!isDirty || areFormErrors}
           >
-            {isSignalComponent ? "Save" : formButtonText}
+            {isSignalComponent && signal ? "Save" : formButtonText}
           </Button>
         </Grid>
       </Grid>

@@ -8,6 +8,7 @@ import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
 import { ComponentIconByLineRepresentation } from "./utils/form";
+import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 
 const ProjectComponentsList = ({
@@ -37,7 +38,6 @@ const ProjectComponentsList = ({
       editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
       setClickedComponent(component);
-      editDispatch({ type: "set_draft_component", payload: component });
     }
   };
 
@@ -52,7 +52,6 @@ const ProjectComponentsList = ({
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
-    editDispatch({ type: "set_draft_component", payload: component });
   };
 
   return (
@@ -109,7 +108,11 @@ const ProjectComponentsList = ({
                     onClick={onEditMap}
                     disabled={isSignal}
                   >
-                    <EditLocationAltOutlinedIcon />
+                    <EditLocationAltOutlinedIcon
+                      color={
+                        getIsComponentMapped(component) ? undefined : "error"
+                      }
+                    />
                   </IconButton>
                 </span>
               </Tooltip>
