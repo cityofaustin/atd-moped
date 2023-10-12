@@ -1,57 +1,77 @@
 import { useMemo } from "react";
 import { gql } from "apollo-boost";
-import { usePagination } from "./usePagination";
-import { useOrderBy } from "./useOrderBy";
 
-export const useGetProjectListView = ({ columnsToReturn, queryConfig }) => {
-  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
-    usePagination({
-      defaultLimit: queryConfig.pagination.defaultLimit,
-      defaultOffset: queryConfig.pagination.defaultOffset,
-    });
-
-  const {
-    orderByColumn,
-    setOrderByColumn,
-    orderByDirection,
-    setOrderByDirection,
-  } = useOrderBy({
-    defaultOrderByColumn: queryConfig.order.defaultOrderByColumn,
-    defaultOrderByDirection: queryConfig.order.defaultOrderByDirection,
-  });
-
-  const query = useMemo(() => {
-    return gql`{
+export const useGetProjectListView = ({
+  columnsToReturn,
+  exportColumnsToReturn,
+  queryLimit,
+  queryOffset,
+  orderByColumn,
+  orderByDirection,
+  searchWhereString,
+  advancedSearchWhereString,
+}) => {
+  const { query, exportQuery } = useMemo(() => {
+    const query = gql`{
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
+            where: { 
+              ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+              ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+            }
         ) {
             ${columnsToReturn.join("\n")}
         },
-        project_list_view_aggregate {
+        project_list_view_aggregate (
+          where: { 
+            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+          }
+        ) {
           aggregate {
             count
           }
         }
       }`;
+
+    const exportQuery = gql`{
+      project_list_view (
+          order_by: {${orderByColumn}: ${orderByDirection}}
+          where: { 
+            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+          }
+      ) {
+          ${exportColumnsToReturn.join("\n")}
+      },
+      project_list_view_aggregate (
+        where: { 
+          ${advancedSearchWhereString ? advancedSearchWhereString : ""}
+          ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+        }
+      ) {
+        aggregate {
+          count
+        }
+      }
+    }`;
+
+    return { query, exportQuery };
   }, [
     queryLimit,
     queryOffset,
     columnsToReturn,
+    exportColumnsToReturn,
     orderByColumn,
     orderByDirection,
+    searchWhereString,
+    advancedSearchWhereString,
   ]);
 
   return {
     query,
-    setQueryLimit,
-    setQueryOffset,
-    queryLimit,
-    queryOffset,
-    orderByColumn,
-    setOrderByColumn,
-    orderByDirection,
-    setOrderByDirection,
+    exportQuery,
   };
 };
