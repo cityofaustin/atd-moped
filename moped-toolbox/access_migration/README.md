@@ -77,29 +77,19 @@ $ node index.js local
 
 
 ### Todo
--> add checkbox to create staus update from comments tab. rename to notes.
 - adding this is real fields for start and end dates—and use it in the cases
-  -> work activities column order: 
-    ->
-- need to scope out estimated date UI with forms
+  - need to scope out estimated date UI with forms
 - audit fields: on phases and components
 - get columns for tracking if record was migrated and even the id resets
-- phase simple in phase overrides in agol view
 - fiscal year and calendar year: completion date:
-- need to update project list view with task orders from work activities :/
-- project types :/
+- project types
+  - mostly done
+  - see items highlighted in yellow on project_types tab
+  - https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1679186191
 - move "School zone beacon" to not be a signal component
-- rework signal component mapping so that they create drawn points if needed
 - john to check on unmapped project groups
-- move location description to below component type - and make required?
-- unmapped components: add location detail to list. add ui visual to show unmapped component - WarningAmberOutlined
 - work types:
-  - any remaining mappings?
-  - options not implemented? https://docs.google.com/spreadsheets/d/1bQD0xBQm4BOdTJ1U4hbk98dywJVJZ7O6G-VYLRbviQU/edit#gid=0
-- work authorizations:
   - can we backfill SMO links based on work order ID old?
-  - decide how to migrate task orders :/ --?
-  - merge workgroup + contractor?
 - finish transit - bust stop component/subcomponent maps.
 - there are facility spatial records with multiple features within one layer and across geom types.
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
@@ -132,8 +122,6 @@ $ node index.js local
 
 
 -> issues to make: merge fund and dept-unit
-- protection type:
-  - it's subcomponent now. check out the allowed subcomponents list to verify it's ok
 - add project funding status order integer
 - does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
 - should we assign "New" work type to anything that doesn't have a work type?
@@ -141,16 +129,8 @@ $ node index.js local
 - we are converting unmatched signals to intersection improvement components: review these with AMD
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 
-- some project descriptions missing
-- after the migration, maybe we should import the moped project IDs into the Access DB?
-- 
 - not migrating these project facility colummns:
   - PerfMeasureCategory
   - PerfMeasureName
   - PerfMeasureType
   - Categories
-
-### Test deployment notes:
-- how to deal w/ login?
-- nearmap imagery will not work
-- file uploads will not work (but file links will)
