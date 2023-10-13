@@ -73,33 +73,34 @@ $ node index.js local
 
 ### On deck
 
-- project_dates
 - project types
-- files?
+
 
 ### Todo
-- sort projects by interim project ID before we migrate them, so that older projects have a lower project ID
-- work activities: how to hand activities wiht no status date/created date?
-- it would appear that the task order edit input is broken on the work auth form for imported tks :/
-- do we need to test project length reporting?
-- we need some way to undo:
-  - the project inserts
-  - the activity log records
-- do we need to check if we are duping phases from milestones that already exist from status updates?
-- interim project 164 has two "start project developmment" milestones. are there more? why?
+-> add checkbox to create staus update from comments tab. rename to notes.
+- adding this is real fields for start and end dates—and use it in the cases
+  -> work activities column order: 
+    ->
+- need to scope out estimated date UI with forms
+- audit fields: on phases and components
+- get columns for tracking if record was migrated and even the id resets
+- phase simple in phase overrides in agol view
+- fiscal year and calendar year: completion date:
+- need to update project list view with task orders from work activities :/
 - project types :/
+- move "School zone beacon" to not be a signal component
+- rework signal component mapping so that they create drawn points if needed
+- john to check on unmapped project groups
+- move location description to below component type - and make required?
+- unmapped components: add location detail to list. add ui visual to show unmapped component - WarningAmberOutlined
 - work types:
-  - decide how to migrate task orders :/
-  - merge workgroup + contractor?
   - any remaining mappings?
   - options not implemented? https://docs.google.com/spreadsheets/d/1bQD0xBQm4BOdTJ1U4hbk98dywJVJZ7O6G-VYLRbviQU/edit#gid=0
 - work authorizations:
-  - WAPRefix and ID and workorderid_old :/
-  - implementation workgroup options:
-    - Sidewalks & Special Projects Div
-    - Add "Other" and "General Contractor" (PDD uses a lot of that)
+  - can we backfill SMO links based on work order ID old?
+  - decide how to migrate task orders :/ --?
+  - merge workgroup + contractor?
 - finish transit - bust stop component/subcomponent maps.
-- disable creative crosswalk component? on indefinite hold per heather b
 - there are facility spatial records with multiple features within one layer and across geom types.
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - check geometry types of components - some may need to be converted to point or line
@@ -107,10 +108,16 @@ $ node index.js local
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
-- 
+- - work activities: how to hand activities wiht no status date/created date?
+- do we need to test project length reporting?
+- we need some way to undo:
+  - the project inserts
+  - the activity log records
+  - - sort projects by interim project ID before we migrate them, so that older projects have a lower project ID
 
 
 ### NW Questions
+- can we concat work auth work order Id into beginning of description?
 - dedupe existing projects with interim_project_id
 - milestones:
   - ok to merge public meeting and public meeting (tentative) ? will use estimated date for tentative? 
