@@ -27,6 +27,6 @@ $ python components_to_agol.py
 
 or, to mount your local copy to a Docker container
 
-```shel
-docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  atd-moped-etl-arcgis:production /bin/bash
+```shell
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  atddocker/atd-moped-etl-arcgis:production python components_to_agol.py
 ```
