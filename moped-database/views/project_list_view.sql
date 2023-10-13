@@ -54,6 +54,8 @@ AS WITH project_person_list_lookup AS (
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
+    proj_notes.project_note,
+    proj_notes.date_created as project_note_date_created,
     (SELECT project_name
       FROM moped_project
       WHERE project_id = mp.parent_project_id
@@ -73,12 +75,6 @@ AS WITH project_person_list_lookup AS (
         ) as project_feature,
     fsl.funding_source_name,
     ptl.type_name,
-    ( -- get the most recent status_update (project note type 2)
-      SELECT mpn.project_note
-      FROM moped_proj_notes mpn
-        WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
-        ORDER BY mpn.date_created DESC
-        LIMIT 1) AS project_note,
     ( -- get the date of the construction phase with the earliest start date
       SELECT min(phases.phase_start)
       FROM moped_proj_phases phases
@@ -160,6 +156,14 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
      left join child_project_lookup cpl on cpl.parent_id = mp.project_id
+     left join lateral 
+      (
+        SELECT mpn.project_note, mpn.date_created
+        FROM moped_proj_notes mpn
+        WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
+        ORDER BY mpn.date_created DESC
+        LIMIT 1
+      ) as proj_notes on true
   WHERE
     mp.is_deleted = false
   GROUP BY
@@ -185,4 +189,6 @@ AS WITH project_person_list_lookup AS (
     added_by_user.first_name,
     added_by_user.last_name,
     mpps.name,
-    cpl.children_project_ids;
+    cpl.children_project_ids,
+    proj_notes.project_note,
+    proj_notes.date_created;
