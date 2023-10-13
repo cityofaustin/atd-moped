@@ -133,7 +133,11 @@ function main() {
             segment.properties.interim_project_component_id = facilityId;
             return segment;
           });
+
+
         if (containedCTNSegments.length > 0) {
+          // now see if facility line segment is contained by all CTN segments it contains
+          // first - we have buffer and dissolve the matched CTN segments
           try {
             const bufferedSegmentsToDissolve = containedCTNSegments.map(
               (segment) =>
@@ -177,6 +181,7 @@ function main() {
       // console.log("didn't match enough");
       return;
     }
+
     // flatten and dedupe matched segments
     // see: https://stackoverflow.com/questions/2218999/how-to-remove-all-duplicates-from-an-array-of-objects
     const uniqueMatchedCTNSegments = matchedFeatureChunks
