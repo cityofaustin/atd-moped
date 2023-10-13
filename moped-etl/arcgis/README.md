@@ -15,7 +15,7 @@ The AGOL layers can be found here:
 
 ### Get it running
 
-1. Configure an `env_file` according to the `env_template` example.
+1. Configure an `env_file` according to the `env_template` example. You can find the AGOL username and password in the API Secrets vault in the team password store.
 
 2. Create and activate a Python environment that meets the requirments in `reuirements.txt`. Alternatively, you can use the provided Dockerfile.
  
