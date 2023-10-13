@@ -10,10 +10,20 @@ HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET")
 AGOL_ORG_BASE_URL = "https://austin.maps.arcgis.com"
 
-# https://developers.arcgis.com/rest/services-reference/enterprise/delete-features.htm
-
 
 def get_endpoint(method, feature_type):
+    """Get the AGOL REST API endpoint.
+
+    The docs are bad—but we only care about `addFeatures` or `deleteFeatures`.
+    https://developers.arcgis.com/rest/services-reference/enterprise/
+
+    Args:
+        method (Str): the REST API operation: addFeatures or deleteFeatures
+        feature_type (Str): the feature type we're adding: "points" or "lines"
+
+    Returns:
+        Str: an endpoint URL
+    """
     service_name = SERVICE_NAMES[feature_type]
     return f"https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/{service_name}/FeatureServer/0/{method}"
 
@@ -50,17 +60,22 @@ def make_hasura_request(*, query):
         raise ValueError(data)
 
 
-def handle_arcgis_response(response):
-    """arcgis does not raise HTTP errors for data-related issues; we must manually
-    parse the response"""
-    if not response:
+def handle_arcgis_response(responseData):
+    """Checks AGOL response data and tries to determine if there was an error.
+    Args:
+        responseData (Dict): the JSON response data from the AGOL REST api
+
+    Arcgis does not raise HTTP errors for data-related issues; we must manually
+    parse the response
+    """
+    if not responseData:
         return
     keys = ["addResults", "updateResults", "deleteResults"]
     # parsing something like this
     # {'addResults': [{'objectId': 3977021, 'uniqueId': 3977021, 'globalId': None, 'success': True},...], ...}
     for key in keys:
-        if response.get(key):
-            for feature_status in response.get(key):
+        if responseData.get(key):
+            for feature_status in responseData.get(key):
                 if feature_status.get("success"):
                     continue
                 else:
@@ -69,6 +84,14 @@ def handle_arcgis_response(response):
 
 
 def delete_features(feature_type):
+    """Deletes all features from an arcgis online feature service
+
+    Args:
+        feature_type (Str): the feature type we're adding: "points" or "lines"
+
+    Raises:
+        Exception: if the deletion failes
+    """
     endpoint = get_endpoint("deleteFeatures", feature_type)
     data = {
         "token": os.getenv("AGOL_TOKEN"),
@@ -86,6 +109,15 @@ def delete_features(feature_type):
 
 
 def add_features(feature_type, features):
+    """Inserts feature objects into AGOL feature service
+
+    Read more about the feature json spec here:
+    https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
+
+    Args:
+        feature_type (Str): the feature type we're adding: "points" or "lines"
+        features (List): Esri feature objects to upload
+    """
     endpoint = get_endpoint("addFeatures", feature_type)
     data = {
         "token": os.getenv("AGOL_TOKEN"),
@@ -100,6 +132,11 @@ def add_features(feature_type, features):
 
 
 def get_token():
+    """Get an Esri REST API Token and save it to env var AGOL_TOKEN
+
+    Raises:
+        ValueError: If something goes wrong
+    """
     url = f"{AGOL_ORG_BASE_URL}/sharing/rest/generateToken"
     data = {
         "username": AGOL_USERNAME,
