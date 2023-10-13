@@ -13,8 +13,8 @@ import {
   ListItem,
   TextField,
 } from "@mui/material";
-import { Autocomplete } from '@mui/material';
-import makeStyles from '@mui/styles/makeStyles';
+import { Autocomplete } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { returnArterialManagementPhaseTemplate } from "../../../utils/timelineTemplates";
@@ -133,8 +133,8 @@ const PhaseTemplateModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Select phase template</h3>
+      <DialogTitle className={classes.dialogTitle} variant="h4">
+        Select phase template
         <IconButton onClick={closeDialog} size="large">
           <CloseIcon />
         </IconButton>

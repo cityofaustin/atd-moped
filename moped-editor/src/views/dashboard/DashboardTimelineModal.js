@@ -70,8 +70,8 @@ const DashboardTimelineModal = ({
         fullWidth
         maxWidth={"xl"}
       >
-        <DialogTitle className={classes.dialogTitle}>
-          <h4>{`Update ${table} - ${projectName}`}</h4>
+        <DialogTitle className={classes.dialogTitle} variant="h4">
+          {`Update ${table} - ${projectName}`}
           <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />
           </IconButton>

@@ -71,8 +71,8 @@ const MoveProjectComponentModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Move component to another project</h3>
+      <DialogTitle className={classes.dialogTitle} variant="h4">
+        Move component to another project
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>

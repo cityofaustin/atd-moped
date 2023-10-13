@@ -21,7 +21,7 @@ const StaffFormErrorModal = ({ apiErrors, clearApiErrors }) => (
     aria-labelledby="alert-dialog-title"
     aria-describedby="alert-dialog-description"
   >
-    <DialogTitle id="alert-dialog-title">
+    <DialogTitle id="alert-dialog-title" variant="h4">
       {"Error While Creating User"}
     </DialogTitle>
     <DialogContent>

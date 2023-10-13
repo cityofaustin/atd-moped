@@ -8,7 +8,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
@@ -117,8 +117,8 @@ const SubprojectFundingModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Subproject funding sources</h3>
+      <DialogTitle className={classes.dialogTitle} variant="h4">
+        Subproject funding sources
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
         </IconButton>
