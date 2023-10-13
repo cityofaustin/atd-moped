@@ -1,5 +1,4 @@
--- current version 1696528633163_component_agol_view
-DROP VIEW component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT
         mpc.project_id,
@@ -9,6 +8,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         comp_geography.geometry,
         comp_geography.signal_ids,
         council_districts.council_districts,
+        length_feet_total,
         mc.component_name AS component_name,
         mc.component_subtype AS component_subtype,
         mc.component_name || ' - ' || mc.component_subtype AS component_name_full,
@@ -29,10 +29,12 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         updated_at,
         mpc.phase_id AS component_phase_id,
         mph.phase_name AS component_phase_name,
+        mph.phase_name_simple as component_phase_name_simple,
         current_phase.phase_id AS project_phase_id,
         current_phase.phase_name AS project_phase_name,
+        current_phase.phase_name_simple AS project_phase_name_simple,
         COALESCE(mph.phase_name, current_phase.phase_name) AS current_phase_name,
-        'placeholder_text' as current_phase_name_simple,
+        COALESCE(mph.phase_name_simple, current_phase.phase_name_simple) AS current_phase_name_simple,
         project_team_members,
         project_sponsor,
         project_lead,
@@ -43,6 +45,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         funding_source_name,
         type_name,
         project_note,
+        '2000-01-01T00:00:00' as project_note_date,
         construction_start_date,
         completion_end_date,
         project_inspector,
@@ -59,15 +62,16 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
             component_id AS project_component_id,
             STRING_AGG(DISTINCT id::text, ', ') AS feature_ids,
             ST_AsGeoJSON(ST_Union(ARRAY_AGG(geography)))::json AS "geometry",
-            STRING_AGG(DISTINCT signal_id::text, ', ') AS signal_ids
-            -- NULLIF(ARRAY_AGG(DISTINCT signal_id ORDER BY signal_id), '{NULL}') AS signal_ids
+            STRING_AGG(DISTINCT signal_id::text, ', ') AS signal_ids,
+            SUM(length_feet) as length_feet_total
         FROM (
             -- union all features
             SELECT
                 id,
                 feature_signals.component_id,
                 feature_signals.geography::geometry,
-                feature_signals.signal_id
+                feature_signals.signal_id,
+                NULL AS length_feet
             FROM
                 feature_signals
             WHERE
@@ -77,7 +81,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 id,
                 feature_street_segments.component_id,
                 feature_street_segments.geography::geometry,
-                NULL AS signal_id
+                NULL AS signal_id,
+                length_feet
             FROM
                 feature_street_segments
             WHERE
@@ -87,7 +92,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 id,
                 feature_intersections.component_id,
                 feature_intersections.geography::geometry,
-                NULL AS signal_id
+                NULL AS signal_id,
+                NULL AS length_feet
             FROM
                 feature_intersections
             WHERE
@@ -97,7 +103,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 id,
                 feature_drawn_points.component_id,
                 feature_drawn_points.geography::geometry,
-                NULL AS signal_id
+                NULL AS signal_id,
+                NULL AS length_feet
             FROM
                 feature_drawn_points
             WHERE
@@ -107,7 +114,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 id,
                 feature_drawn_lines.component_id,
                 feature_drawn_lines.geography::geometry,
-                NULL AS signal_id
+                NULL AS signal_id,
+                length_feet
             FROM
                 feature_drawn_lines
             WHERE
@@ -162,4 +170,5 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     LEFT JOIN moped_components mc ON mc.component_id = mpc.component_id
 WHERE
     mpc.is_deleted = FALSE
+    AND plv.is_deleted = FALSE
 );

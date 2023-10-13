@@ -5,6 +5,7 @@
     - role: moped-admin
       permission:
         columns:
+          - length_feet_total
           - is_project_component_deleted
           - is_project_deleted
           - completion_end_date
@@ -22,12 +23,14 @@
           - component_name
           - component_name_full
           - component_phase_name
+          - component_phase_name_simple
           - component_subtype
           - component_tags
           - contract_numbers
           - contractors
           - council_districts
           - current_phase_name
+          - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
@@ -38,8 +41,10 @@
           - project_lead
           - project_name
           - project_note
+          - project_note_date
           - project_partner
           - project_phase_name
+          - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
@@ -57,6 +62,7 @@
     - role: moped-editor
       permission:
         columns:
+          - length_feet_total
           - is_project_component_deleted
           - is_project_deleted
           - completion_end_date
@@ -74,12 +80,14 @@
           - component_name
           - component_name_full
           - component_phase_name
+          - component_phase_name_simple
           - component_subtype
           - component_tags
           - contract_numbers
           - contractors
           - council_districts
           - current_phase_name
+          - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
@@ -90,8 +98,10 @@
           - project_lead
           - project_name
           - project_note
+          - project_note_date
           - project_partner
           - project_phase_name
+          - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
@@ -109,6 +119,7 @@
     - role: moped-viewer
       permission:
         columns:
+          - length_feet_total
           - is_project_component_deleted
           - is_project_deleted
           - completion_end_date
@@ -126,12 +137,14 @@
           - component_name
           - component_name_full
           - component_phase_name
+          - component_phase_name_simple
           - component_subtype
           - component_tags
           - contract_numbers
           - contractors
           - council_districts
           - current_phase_name
+          - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
@@ -142,8 +155,10 @@
           - project_lead
           - project_name
           - project_note
+          - project_note_date
           - project_partner
           - project_phase_name
+          - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
@@ -1170,12 +1185,12 @@
     name: moped_components
     schema: public
   object_relationships:
-    - name: feature_layer
-      using:
-        foreign_key_constraint_on: feature_layer_id
     - name: asset_feature_layer
       using:
         foreign_key_constraint_on: asset_feature_layer_id
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
     - name: moped_component_work_types
       using:

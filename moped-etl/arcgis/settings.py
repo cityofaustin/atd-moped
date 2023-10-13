@@ -14,6 +14,7 @@ COMPONENTS_QUERY = """
           component_name_full
           component_phase_id
           component_phase_name
+          component_phase_name_simple
           component_subtype
           component_tags
           construction_start_date
@@ -30,6 +31,7 @@ COMPONENTS_QUERY = """
           interim_project_id
           is_project_component_deleted
           is_project_deleted
+          length_feet_total
           location_description
           project_component_id
           project_description
@@ -39,9 +41,11 @@ COMPONENTS_QUERY = """
           project_lead
           project_name
           project_note
+          project_note_date
           project_partner
           project_phase_id
           project_phase_name
+          project_phase_name_simple
           project_sponsor
           project_tags
           project_team_members
