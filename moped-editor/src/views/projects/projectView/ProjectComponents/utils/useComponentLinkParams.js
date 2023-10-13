@@ -1,9 +1,11 @@
+import { set } from "lodash";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // Example link: https://localhost:3000/moped/projects/225?tab=map&component_id=277
 
 export const useComponentLinkParams = ({
+  clickedComponent,
   setClickedComponent,
   projectComponents,
 }) => {
@@ -26,4 +28,12 @@ export const useComponentLinkParams = ({
       ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [searchParams, projectComponents, setClickedComponent]);
+
+  useEffect(() => {
+    if (clickedComponent?.project_component_id) {
+      console.log(searchParams);
+      // TODO: This is returning "summary" not "map"
+      console.log(searchParams.get("tab"));
+    }
+  }, [clickedComponent, setSearchParams, searchParams]);
 };

@@ -152,7 +152,11 @@ export default function MapView({
     mapRef,
   });
 
-  useComponentLinkParams({ setClickedComponent, projectComponents });
+  useComponentLinkParams({
+    clickedComponent,
+    setClickedComponent,
+    projectComponents,
+  });
 
   // Keep clickedComponent state up to date with edits made to project components
   useEffect(() => {
