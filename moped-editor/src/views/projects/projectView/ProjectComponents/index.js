@@ -20,6 +20,7 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
+import { useComponentLinkParams } from "./utils/useComponentLinkParams";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
@@ -150,6 +151,8 @@ export default function MapView({
     setIsDrawing,
     mapRef,
   });
+
+  useComponentLinkParams({ setClickedComponent });
 
   // Keep clickedComponent state up to date with edits made to project components
   useEffect(() => {
