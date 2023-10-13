@@ -76,14 +76,14 @@ const componentFields = [
   },
   {
     in: "LocationDetail",
-    out: "description",
-    transform(oldRow, newRow) {
-      // we're dumping data into description from other transforms,
-      // so we can't just overwrite it here.
-      const prevDescription = newRow.description || "";
-      const locationDetail = oldRow.LocationDetail || "";
-      newRow.description = `${prevDescription} ${locationDetail}`.trim();
-    },
+    out: "location_description",
+    // transform(oldRow, newRow) {
+    //   // we're dumping data into description from other transforms,
+    //   // so we can't just overwrite it here.
+    //   const prevDescription = newRow.description || "";
+    //   const locationDetail = oldRow.LocationDetail || "";
+    //   newRow.description = `${prevDescription} ${locationDetail}`.trim();
+    // },
   },
   {
     in: "FacilityPhaseOverride",
