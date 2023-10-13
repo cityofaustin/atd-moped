@@ -1,20 +1,29 @@
+import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-export const useComponentLinkParams = ({ setClickedComponent }) => {
+// Example link: https://localhost:3000/moped/projects/225?tab=map&component_id=277
+
+export const useComponentLinkParams = ({
+  setClickedComponent,
+  projectComponents,
+}) => {
   let [searchParams, setSearchParams] = useSearchParams();
-  // const { path } = useRouteMatch();
-  // const { url } = useRouteMatch();
-
-  // TODO: searchParams.get("component_id") returns null if not present
-  // TODO: if present, set clickedComponent to component_id
   // TODO: if a component is clicked, set params to component_id
-  console.log(searchParams.get("component_id"));
+  // TODO: Show alert when component is not found
+  // TODO: How to handle related components?
 
-  return {
-    searchParams,
-    // projectId,
-    // componentId,
-    // path,
-    // url,
-  };
+  // Set clicked component from params once data loads
+  useEffect(() => {
+    const componentId = parseInt(searchParams.get("project_component_id"));
+    if (componentId === null) return;
+    const componentFromParams = projectComponents.find(
+      (component) => component.project_component_id === componentId
+    );
+    if (componentFromParams) {
+      setClickedComponent(componentFromParams);
+
+      const ref = componentFromParams?._ref;
+      ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [searchParams, projectComponents, setClickedComponent]);
 };
