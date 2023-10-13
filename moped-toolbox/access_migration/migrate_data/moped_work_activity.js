@@ -34,7 +34,20 @@ const fields = [
   },
   {
     in: "WorkOrderID_Old",
-    out: "interim_work_order_id_old",
+    out: "interim_work_activity_id",
+    transform: (oldRow, newRow) => {
+      // if there is an "old" ID—use that
+      let activityId = oldRow.WorkOrderID_Old;
+      if (!activityId) {
+        // construct the "old" id from the prefix and ID sequence
+        // this is the convention used in the access DB
+        activityId = `${oldRow.WAPrefix}-${oldRow.WorkAuthorizationID}`
+        if (!oldRow.WAPrefix || !oldRow.WorkAuthorizationID) {
+          throw `Cannot construct work activity ID - wtf?`
+        }
+      }
+      newRow.interim_work_activity_id = activityId
+    },
   },
   {
     in: "DO_Number",
