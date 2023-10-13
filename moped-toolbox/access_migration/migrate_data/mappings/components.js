@@ -122,6 +122,36 @@ const COMPONENTS_MAP = [
   { in: "Vegetated Channel", out: 71 },
 ];
 
+const COMPONENT_WORK_TYPES_MAP = [
+  { in: "Construction Inspection", out: null },
+  { in: "Const / Curb Mod / Widening", out: 2 },
+  { in: "Design Review", out: null },
+  { in: "Lane Conv", out: 4 },
+  { in: "Maintenance/Repair", out: 5 },
+  { in: "Modification", out: 6 },
+  { in: "New", out: 7 },
+  { in: "Other", out: null },
+  { in: "Parking Mod", out: 8 },
+  { in: "Reinstall", out: 9 },
+  { in: "Remove BL (spell out BL as Bike Lane)", out: 10 },
+  { in: "Remove DY (spell out DY as Double Yellow)", out: 11 },
+  { in: "Replacement", out: 12 },
+  { in: "Signal Take Over", out: 13 },
+  { in: "Bicycle Lane Protection - New", out: 7 },
+  { in: "Bicycle Lane Protection - Upgrade", out: 6 },
+  
+  { in: "Pedestrian", out: null },
+  { in: "Markings / Signage Only", out: null },
+  { in: "RTurn Only - BL Fix", out: null },
+  { in: "Temp Closure", out: null },
+  { in: "Feasibility Study", out: null },
+  { in: "Neighborhood Bikeway (BBlvd)", out: null },
+  { in: "Neighborhood Bikeway (BBlvd) - Existing TCalming", out: null },
+  { in: "TBD", out: null },
+  { in: "Road Closed", out: null },
+];
+
 module.exports = {
   COMPONENTS_MAP,
+  COMPONENT_WORK_TYPES_MAP,
 };

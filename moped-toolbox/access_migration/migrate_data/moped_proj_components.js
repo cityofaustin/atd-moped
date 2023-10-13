@@ -1,6 +1,9 @@
 const { v4: uuidv4 } = require("uuid");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
-const { COMPONENTS_MAP } = require("./mappings/components");
+const {
+  COMPONENTS_MAP,
+  COMPONENT_WORK_TYPES_MAP,
+} = require("./mappings/components");
 const {
   SUBCOMPONENTS_MAP,
   PROTECTION_SUBCOMPONENTS_MAP,
@@ -61,6 +64,38 @@ const componentFields = [
         newRow.description = "Fix sidewalk obstructions.";
       } else if (componentName === "Trim Vegetation") {
         newRow.description = "Trim vegetation. ";
+      }
+    },
+  },
+  {
+    in: "ProjectType",
+    out: "",
+    required: true,
+    transform(oldRow, newRow) {
+      const projectType = oldRow.ProjectType;
+      if (!projectType) {
+        return;
+      }
+      const work_type_id = COMPONENT_WORK_TYPES_MAP.find(
+        (c) => c.in === projectType
+      )?.out;
+
+      if (projectType === "Lane Width") {
+        // update description
+        // we're dumping data into description from other transforms,
+        // so we can't just overwrite it here.
+        const prevDescription = newRow.description || "";
+        const separator = prevDescription ? " - " : "";
+        newRow.description = `${prevDescription}${separator}"reduce lane width"`;
+        return;
+      }
+      if (work_type_id) {
+        // make sure not to overwrite any other work types that might
+        // already be present
+        newRow.moped_proj_component_work_types ??= { data: [] };
+        newRow.moped_proj_component_work_types.data.push({
+          work_type_id,
+        });
       }
     },
   },
@@ -260,12 +295,12 @@ function getComponents() {
       /**
        * check if unmatched signal component - which needs special handling
        */
-      const unMatchedSignalComponent =
-        isSignalComponent(comp.component_id) && !signalFeature;
+      // const unMatchedSignalComponent =
+      //   isSignalComponent(comp.component_id) && !signalFeature;
 
-      if (unMatchedSignalComponent) {
-        convertSignalToIntersectionComponent(comp);
-      }
+      // if (unMatchedSignalComponent) {
+      //   convertSignalToIntersectionComponent(comp);
+      // }
 
       if (isSignalComponent(comp.component_id) && signalFeature) {
         const featureRecord = {
@@ -282,7 +317,6 @@ function getComponents() {
           featureRecord.geography.coordinates = [
             featureRecord.geography.coordinates,
           ];
-
           comp.feature_signals = { data: featureRecord };
         }
       } else if (drawnLineFeature) {
@@ -325,6 +359,7 @@ function getComponents() {
       delete comp.interim_project_id;
       index[projectId].push(comp);
 
+      //
       // if (ctnLineFeatures?.length > 0) {
       //   // todo: temp duplicate component with snapped segments
       //   const comp2 = { ...comp };
