@@ -8,6 +8,11 @@ The script `components_to_agol.py` is used to publish component record data to A
 
 The data is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
 
+The AGOL layers can be found here:
+
+- [Project component points](https://austin.maps.arcgis.com/home/item.html?id=997555f6e0904aa88eafe73f19ee65c0)
+- [Project component lines](https://austin.maps.arcgis.com/home/item.html?id=e8f03d2cec154cacae539b630bcaa70b)
+
 ### Get it running
 
 1. Configure an `env_file` according to the `env_template` example.
