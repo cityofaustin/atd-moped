@@ -1,1 +1,27 @@
-# ArcGIS
+# ArcGIS ETLs
+
+Scripts which integrate Moped data with Esri ArcGIS
+
+## Publish components to ArcGIS Online (AGOL)
+
+The script `components_to_agol.py` is used to publish component record data to ArcGIS Online (AGOL). It replaces all records in the AGOL feature services with the latest component data in Moped.
+
+The data is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
+
+### Get it running
+
+1. Configure an `env_file` according to the `env_template` example.
+
+2. Create and activate a Python environment that meets the requirments in `reuirements.txt`. Alternatively, you can use the provided Dockerfile.
+ 
+3. Run the script.
+
+```shell
+$ python components_to_agol.py
+```
+
+or, to mount your local copy to a Docker container
+
+```shel
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  atd-moped-etl-arcgis:production /bin/bash
+```
