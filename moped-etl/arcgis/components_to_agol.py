@@ -23,13 +23,6 @@ def make_esri_feature(feature):
     return esri_feature
 
 
-def make_esri_features(features):
-    esri_features = []
-    for f in features:
-        esri_features.append(make_esri_feature(f))
-    return esri_features
-
-
 def main():
     print("Initializing ArcGIS instance...")
     get_token()
@@ -48,13 +41,13 @@ def main():
             raise ValueError(f"Found unsupported feature type: {geometry['type']}")
 
     for feature_type in ["points", "lines"]:
-        esri_features = make_esri_features(features[feature_type])
+        esri_features = [make_esri_feature(f) for f in features[feature_type]]
         print("deleting features...")
         delete_features(feature_type)
         print("adding features...")
         for feature_chunk in chunks(esri_features, UPLOAD_CHUNK_SIZE):
             print("Uploading chunk....")
-            add_features(feature_chunk, esri_features)
+            add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
