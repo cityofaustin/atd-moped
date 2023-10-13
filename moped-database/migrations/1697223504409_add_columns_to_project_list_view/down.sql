@@ -1,4 +1,3 @@
--- latest version 
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -53,7 +52,6 @@ AS WITH project_person_list_lookup AS (
     mpps.name AS public_process_status,
     mp.interim_project_id,
     mp.parent_project_id,
-    mp.knack_project_id,
     (SELECT project_name
       FROM moped_project
       WHERE project_id = mp.parent_project_id
@@ -176,7 +174,6 @@ AS WITH project_person_list_lookup AS (
     mp.task_order,
     mp.interim_project_id,
     mp.parent_project_id,
-    mp.knack_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
     current_phase.phase_name_simple,
