@@ -2,53 +2,90 @@
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
 # docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  moped-agol /bin/bash
 from settings import COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
-from utils import make_hasura_request, get_token, delete_features, add_features, chunks
+from utils import (
+    make_hasura_request,
+    get_token,
+    delete_features,
+    add_features,
+    chunks,
+    get_logger,
+)
 
 
-def make_esri_feature(feature):
-    # init feature obj with all properties and  WGS84 spatial ref
-    esri_feature = {
-        "attributes": feature["properties"],
-        "geometry": {"spatialReference": {"wkid": 4326}},
+def get_geometry_key(geometry):
+    """Identify the name of the geometry property that will hold coordinate data in an
+    Esri feature object.
+
+    See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
+
+    Args:
+        geometry (dict): A geojson geomtery object
+
+    Returns:
+        Str: "points" or "paths"
+    """
+    return "points" if geometry["type"] == "MultiPoint" else "paths"
+
+
+def make_esri_feature(*, geometry, **attributes):
+    """Create an Esri feature object that can be uploaded to the AGOL REST API.
+
+    See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
+
+    Args:
+        geometry (Dict): A geojson geometry object, such as one returned from our
+            component view in Moped
+        attribute (Dict): Any additional properties to be included as feature attributes
+
+    Returns:
+        Dict: An Esri feature object
+        Bool: if the feature is a point feature type
+    """
+    geometry_key = get_geometry_key(geometry)
+    feature = {
+        "attributes": attributes,
+        "geometry": {
+            "spatialReference": {"wkid": 4326},
+        },
     }
-    # convert geojson geoms to esri
-    if feature["geometry"]["type"] == "MultiPoint":
-        esri_feature["geometry"]["points"] = feature["geometry"]["coordinates"]
-    elif feature["geometry"]["type"] == "MultiLineString":
-        esri_feature["geometry"]["paths"] = feature["geometry"]["coordinates"]
-    else:
-        raise ValueError(
-            f"Unknown/unsupported geomtery type: {feature['geometry']['type']}"
-        )
-    return esri_feature
+    feature[geometry_key] = geometry["coordinates"]
+    return feature, geometry_key == "points"
 
 
 def main():
-    print("Initializing ArcGIS instance...")
+    logger.info("Getting token...")
     get_token()
-    print("Fetching project data...")
-    data = make_hasura_request(query=COMPONENTS_QUERY)["component_arcgis_online_view"]
-    features = {"lines": [], "points": []}
 
-    for row in data:
-        geometry = row.pop("geometry")
-        feature = {"type": "Feature", "properties": row, "geometry": geometry}
-        if geometry["type"] == "MultiLineString":
-            features["lines"].append(feature)
-        elif geometry["type"] == "MultiPoint":
-            features["points"].append(feature)
+    logger.info("Downloading component data...")
+    data = make_hasura_request(query=COMPONENTS_QUERY)["component_arcgis_online_view"]
+
+    logger.info(f"{len(data)} component records to process")
+
+    # lines and points must be stored in different layers in AGOL
+    all_features = {"lines": [], "points": []}
+
+    for component in data:
+        feature, is_point_feature = make_esri_feature(**component)
+        if is_point_feature:
+            all_features["points"].append(feature)
         else:
-            raise ValueError(f"Found unsupported feature type: {geometry['type']}")
+            all_features["points"].append(feature)
 
     for feature_type in ["points", "lines"]:
-        esri_features = [make_esri_feature(f) for f in features[feature_type]]
-        print("deleting features...")
+        logger.info(f"Processing {feature_type} features...")
+        features = all_features[feature_type]
+
+        logger.info("Deleting all existing features...")
         delete_features(feature_type)
-        print("adding features...")
-        for feature_chunk in chunks(esri_features, UPLOAD_CHUNK_SIZE):
-            print("Uploading chunk....")
+
+        logger.info(
+            f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+        )
+        for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+            logger.info("Uploading chunk....")
             add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
+    logger = get_logger(__file__)
     main()

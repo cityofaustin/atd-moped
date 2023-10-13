@@ -1,4 +1,6 @@
 import os
+import logging
+import sys
 
 import requests
 
@@ -152,3 +154,14 @@ def get_token():
         os.environ["AGOL_TOKEN"] = res.json()["token"]
     except Exception as e:
         raise ValueError(f"Unable to get token: {e.response.text}")
+
+
+def get_logger(name, level=logging.INFO):
+    """Return a module logger that streams to stdout"""
+    logger = logging.getLogger(name)
+    handler = logging.StreamHandler(stream=sys.stdout)
+    formatter = logging.Formatter(fmt=" %(name)s.%(levelname)s: %(message)s")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+    logger.setLevel(level)
+    return logger
