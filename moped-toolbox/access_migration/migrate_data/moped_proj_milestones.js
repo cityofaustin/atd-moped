@@ -43,7 +43,7 @@ const milestoneMap = [
     in: "Actual End Date",
     phase_id: 10, // post-construction
     subphase_id: 24, // substantially complete
-    dateField: "phase_end",
+    dateField: "phase_start",
   },
   {
     in: "Estimated Construction Start Date",
