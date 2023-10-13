@@ -1,0 +1,1 @@
+DROP INDEX moped_project_parent_id_idx;

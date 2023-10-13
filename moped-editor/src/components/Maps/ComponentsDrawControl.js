@@ -13,6 +13,7 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.on("draw.update", props.onUpdate);
       map.on("draw.delete", props.onDelete);
       map.on("draw.modechange", props.onModeChange);
+      map.on("draw.selectionchange", props.onSelectionChange);
 
       return new MapboxDraw(props);
     },
@@ -21,6 +22,7 @@ export const DrawControl = React.forwardRef((props, ref) => {
       map.off("draw.update", props.onUpdate);
       map.off("draw.delete", props.onDelete);
       map.off("draw.modechange", props.onModeChange);
+      map.off("draw.selectionchange", props.onSelectionChange);
     },
     {
       position: props.position,
@@ -85,7 +87,15 @@ const DrawLinesControl = React.forwardRef((props, ref) => {
 
 const ComponentsDrawControl = React.forwardRef(
   (
-    { onCreate, onUpdate, onDelete, linkMode, onModeChange, styleOverrides },
+    {
+      onCreate,
+      onUpdate,
+      onDelete,
+      linkMode,
+      onModeChange,
+      onSelectionChange,
+      styleOverrides,
+    },
     ref
   ) => {
     const shouldDrawLines = linkMode === "lines";
@@ -100,6 +110,7 @@ const ComponentsDrawControl = React.forwardRef(
       onUpdate,
       onDelete,
       onModeChange,
+      onSelectionChange,
       styles: styleOverrides,
     };
 

@@ -1,4 +1,4 @@
-export const GridTableFiltersCommonOperators = {
+export const FiltersCommonOperators = {
   string_contains_case_insensitive: {
     operator: "_ilike",
     label: "contains",
@@ -156,11 +156,25 @@ export const GridTableFiltersCommonOperators = {
     envelope: null,
     type: "string",
   },
-    string_does_not_equal_case_sensitive: {
+  string_does_not_equal_case_sensitive: {
     operator: "_neq",
     label: "is not",
     description: "Field content does not equal string (case-sensitive)",
     envelope: null,
     type: "string",
+  },
+  subprojects_array_is_null: {
+    operator: "_is_null",
+    label: "No",
+    description: "Project does not have subprojects",
+    type: "array",
+    envelope: "true",
+  },
+  subprojects_array_is_not_null: {
+    operator: "_is_null",
+    label: "Yes",
+    description: "Project has subprojects",
+    type: "array",
+    envelope: "false",
   },
 };

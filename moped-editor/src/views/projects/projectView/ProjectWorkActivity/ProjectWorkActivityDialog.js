@@ -19,6 +19,7 @@ const ProjectWorkActivitiesDialog = ({
           justifyContent: "space-between",
           alignItems: "center",
         }}
+        variant="h4"
       >
         <span>{titleText}</span>
         <IconButton onClick={onClose} size="large">

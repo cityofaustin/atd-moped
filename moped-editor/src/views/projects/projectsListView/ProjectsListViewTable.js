@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { NavLink as RouterLink, useLocation } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 
@@ -7,19 +7,29 @@ import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 
 import { useQuery } from "@apollo/client";
-import GridTableToolbar from "../../../components/GridTable/GridTableToolbar";
-import GridTableSearch from "../../../components/GridTable/GridTableSearch";
-import GridTablePagination from "../../../components/GridTable/GridTablePagination";
+import Search from "../../../components/GridTable/Search";
+import Pagination from "../../../components/GridTable/Pagination";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "./../projectView/ProjectStatusBadge";
 import ExternalLink from "../../../components/ExternalLink";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 
-import MaterialTable, { MTableBody, MTableHeader } from "@material-table/core";
+import MaterialTable, { MTableHeader } from "@material-table/core";
 import { filterProjectTeamMembers as renderProjectTeamMembers } from "./helpers.js";
-import { getSearchValue } from "../../../utils/gridTableHelpers";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import parse from "html-react-parser";
+import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
+import { usePagination } from "./useProjectListViewQuery/usePagination";
+import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
+import { useSearch } from "./useProjectListViewQuery/useSearch";
+import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import {
+  useCsvExport,
+  CsvDownloadDialog,
+} from "./useProjectListViewQuery/useCsvExport";
 
 /**
  * GridTable Style
@@ -70,16 +80,18 @@ const DEFAULT_HIDDEN_COLS = {
   type_name: true,
   funding_source_name: true,
   project_note: true,
-  construction_start_date: false,
-  completion_end_date: false,
+  construction_start_date: true,
+  completion_end_date: true,
   project_inspector: true,
   project_designer: true,
   contractors: true,
   contract_numbers: true,
-  project_tags: false,
+  project_tags: true,
   added_by: true,
   public_process_status: true,
   interim_project_id: true,
+  children_project_ids: true,
+  parent_project_id: true,
 };
 
 /**
@@ -88,193 +100,67 @@ const DEFAULT_HIDDEN_COLS = {
  * @param {Bool} hidden - the hidden state of the column
  */
 const handleColumnChange = ({ field }, hidden) => {
-  let storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+  let storedConfig =
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
+    DEFAULT_HIDDEN_COLS;
   storedConfig = { ...storedConfig, [field]: hidden };
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
 /**
+ * Returns a ProjectStatusBadge component based on the status and phase of project
+ * @param {string} phase - A project's current phase
+ * @param {number} statusId - Project's status id
+ * @return {JSX.Element}
+ */
+const buildStatusBadge = ({ phaseName, phaseKey }) => (
+  <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
+);
+
+/**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
- * @param {String} searchTerm - The initial term
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectsListViewTable = ({ query, searchTerm }) => {
+const ProjectsListViewTable = () => {
   const classes = useStyles();
 
-  /**
-   * @type {Object} pagination
-   * @property {integer} limit - The limit of records to be shown in a single page (default: query.limit)
-   * @property {integer} offset - The number of records to be skipped in GraphQL (default: query.limit)
-   * @property {integer} page - Current page being shown (0 to N) where 0 is the first page (default: 0)
-   * @function setPagination - Sets the state of pagination
-   * @default {{limit: query.limit, offset: query.offset, page: 0}}
-   */
-  const [pagination, setPagination] = useState({
-    limit: query.limit,
-    offset: query.offset,
-    page: 0,
-  });
-
-  /**
-   * The default sorting properties applied to the table.
-   * This overrides MaterialTable props and determines how
-   * the table is sorted when the page loads. Must remain consistent
-   * with the sorting order passed in from ProjectsListViewQueryConf.
-   * @property {string} column - The column name in graphql to sort by
-   * @property {integer} columnId - The column id in graphql to sort by
-   * @property {string} order - Either "asc" or "desc" or ""
-   */
-  const defaultSortingProperties = {
-    column: "updated_at",
-    columnId: 8,
-    order: "desc",
-  };
-
-  /**
-   * Stores the column name and the order to order by
-   * @type {Object} sort
-   * @function setSort - Sets the state of sort
-   * @default {defaultSortingProperties}
-   */
-  const [sort, setSort] = useState(defaultSortingProperties);
-
-  /**
-   * Stores the string to search for and the column to search against
-   * @type {Object} search
-   * @property {string} value - The string to be searched for
-   * @property {string} column - The name of the column to search against
-   * @function setSearch - Sets the state of search
-   * @default {{value: "", column: ""}}
-   */
-  const [search, setSearch] = useState({
-    value: searchTerm ?? "",
-    column: "",
-  });
-
-  // anchor element for advanced search popper in GridTableSearch to "attach" to
+  // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
-
-  // create URLSearchParams from url
-  const filterQuery = new URLSearchParams(useLocation().search);
-
-  /**
-   * if filter exists in url, decodes base64 string and returns as object
-   * Used to initialize filter state
-   * @return Object if valid JSON otherwise false
-   */
-  const getFilterQuery = () => {
-    if (Array.from(filterQuery).length > 0) {
-      try {
-        return JSON.parse(atob(filterQuery.get("filter")));
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  };
-
-  /**
-   * Stores objects storing a random id, column, operator, and value.
-   * @type {Object} filters
-   * @function setFilter - Sets the state of filters
-   * @default {if filter in url, use those params, otherwise {}}
-   */
-  const [filters, setFilter] = useState(getFilterQuery() || {});
 
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
-  /**
-   * Query Management
-   */
-  // Manage the ORDER BY clause of our query
-  query.setOrder(sort.column, sort.order);
+  /* Project list query */
+  const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
+    usePagination({
+      defaultLimit: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultLimit,
+      defaultOffset: PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.defaultOffset,
+    });
 
-  // Set limit, offset based on pagination state
-  if (query.config.showPagination) {
-    query.limit = pagination.limit;
-    query.offset = pagination.offset;
-  } else {
-    query.limit = 0;
-  }
-
-  // Resets the value of "where" "and" "or" to empty
-  query.cleanWhere();
-
-  // If we have a search value in state, initiate search
-  // GridTableSearchBar in GridTableSearch updates search value
-  if (search.value && search.value !== "") {
-    /**
-     * Iterate through all column keys, if they are searchable
-     * add the to the Or list.
-     */
-    Object.keys(query.config.columns)
-      .filter((column) => query.config.columns[column]?.searchable)
-      .forEach((column) => {
-        const { operator, quoted, envelope } =
-          query.config.columns[column].search;
-        const searchValue = getSearchValue(query, column, search.value);
-        const graphqlSearchValue = quoted
-          ? `"${envelope.replace("{VALUE}", searchValue)}"`
-          : searchValue;
-
-        query.setOr(column, `${operator}: ${graphqlSearchValue}`);
-      });
-  }
-
-  // For each filter added to state, add a where clause in GraphQL
-  // Advanced Search
-  Object.keys(filters).forEach((filter) => {
-    let { envelope, field, gqlOperator, value, type, specialNullValue } =
-      filters[filter];
-
-    // If we have no operator, then there is nothing we can do.
-    if (field === null || gqlOperator === null) {
-      return;
-    }
-
-    if (gqlOperator.includes("is_null")) {
-      // Some fields when empty are not null but rather an empty string or "None"
-      if (specialNullValue) {
-        gqlOperator = envelope === "true" ? "_eq" : "_neq";
-        value = specialNullValue;
-      } else {
-        value = envelope;
-      }
-    } else {
-      if (value !== null) {
-        // If there is an envelope, insert value in envelope.
-        value = envelope ? envelope.replace("{VALUE}", value) : value;
-
-        // If it is a number or boolean, it does not need quotation marks
-        // Otherwise, add quotation marks for the query to identify as string
-        value = type in ["number", "boolean"] ? value : `"${value}"`;
-      } else {
-        // We don't have a value
-        return;
-      }
-    }
-    query.setWhere(field, `${gqlOperator}: ${value}`);
+  const {
+    orderByColumn,
+    setOrderByColumn,
+    orderByDirection,
+    setOrderByDirection,
+  } = useOrderBy({
+    defaultColumn: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn,
+    defaultDirection: PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection,
   });
 
-  /**
-   * Returns a ProjectStatusBadge component based on the status and phase of project
-   * @param {string} phase - A project's current phase
-   * @param {number} statusId - Project's status id
-   * @return {JSX.Element}
-   */
-  const buildStatusBadge = ({ phaseName, phaseKey }) => (
-    <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
-  );
-  // Data Management
-  const { data, loading, error } = useQuery(
-    query.gql,
-    query.config.options.useQuery
-  );
+  const { searchTerm, setSearchTerm, searchWhereString } = useSearch({
+    queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
+  });
+
+  const { filterQuery, filters, setFilters, advancedSearchWhereString } =
+    useAdvancedSearch();
+
+  const linkStateFilters = useMemo(() => {
+    return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
+  }, [filters]);
 
   const columns = [
     {
@@ -289,11 +175,7 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       render: (entry) => (
         <RouterLink
           to={`/moped/projects/${entry.project_id}`}
-          state={{
-            filters: Object.keys(filters).length
-              ? btoa(JSON.stringify(filters))
-              : false,
-          }}
+          state={{ filters: linkStateFilters }}
           className={classes.colorPrimary}
         >
           {entry.project_name}
@@ -534,9 +416,65 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
       title: "Interim MPD (Access) ID",
       field: "interim_project_id",
       hidden: hiddenColumns["interim_project_id"],
-      emptyValue: "-"
-    }
+      emptyValue: "-",
+    },
+    {
+      title: "Parent project",
+      field: "parent_project_id",
+      hidden: hiddenColumns["parent_project_id"],
+      emptyValue: "-",
+      render: (entry) => (
+        <RouterLink
+          to={`/moped/projects/${entry.parent_project_id}`}
+          state={{ filters: linkStateFilters }}
+          className={classes.colorPrimary}
+        >
+          {entry.parent_project_name}
+        </RouterLink>
+      ),
+    },
+    {
+      title: "Has subprojects",
+      field: "children_project_ids",
+      hidden: hiddenColumns["children_project_ids"],
+      render: (entry) => {
+        const hasChildren = entry.children_project_ids.length > 0;
+        return <span> {hasChildren ? "Yes" : "-"} </span>;
+      },
+      emptyValue: "-",
+    },
   ];
+
+  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
+
+  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
+    columnsToReturn,
+    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryLimit,
+    queryOffset,
+    orderByColumn,
+    orderByDirection,
+    searchWhereString,
+    advancedSearchWhereString,
+  });
+
+  const { data, loading, error } = useQuery(projectListViewQuery, {
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+  });
+
+  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+    query: exportQuery,
+    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
+    limit: queryLimit,
+    setQueryLimit,
+  });
+
+  const sortByColumnIndex = columns.findIndex(
+    (column) => column.field === orderByColumn
+  );
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -546,32 +484,19 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
   const handleTableHeaderClick = (columnId, newOrderDirection) => {
-    // Before anything, let's clear all current conditions
-    query.clearOrderBy();
     const columnName = columns[columnId]?.field;
 
-    // Resets pagination to 0 when user clicks a header to display most relevant results
-    setPagination({
-      limit: query.limit,
-      offset: query.offset,
-      page: 0,
-    });
+    // Resets pagination offset to 0 when user clicks a header to display most relevant results
+    setQueryOffset(0);
 
-    if (sort.column === columnName) {
+    if (orderByColumn === columnName) {
       // If the current sortColumn is the same as the new
       // then invert values and repeat sort on column
-      setSort({
-        order: sort.order === "desc" ? "asc" : "desc",
-        column: columnName,
-        columnId: columnId,
-      });
-    } else if (sort.column !== columnName) {
+      const direction = orderByDirection === "desc" ? "asc" : "desc";
+      setOrderByDirection(direction);
+    } else {
       // Sort different column in same order as previous column
-      setSort({
-        order: sort.order,
-        column: columnName,
-        columnId: columnId,
-      });
+      setOrderByColumn(columnName);
     }
   };
 
@@ -589,24 +514,20 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        {/*Toolbar Space*/}
-        <GridTableToolbar>
-          <GridTableSearch
-            parentData={data}
-            query={query}
-            searchState={{
-              searchParameters: search,
-              setSearchParameters: setSearch,
-            }}
-            filterState={{
-              filterParameters: filters,
-              setFilterParameters: setFilter,
-            }}
-            filterQuery={filterQuery}
-            advancedSearchAnchor={advancedSearchAnchor}
-            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
-          />
-        </GridTableToolbar>
+        <CsvDownloadDialog dialogOpen={dialogOpen} />
+        <Search
+          parentData={data}
+          filters={filters}
+          setFilters={setFilters}
+          filterQuery={filterQuery}
+          advancedSearchAnchor={advancedSearchAnchor}
+          setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
+          filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+          handleExportButtonClick={handleExportButtonClick}
+        />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box mt={3}>
@@ -625,7 +546,10 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                       fontFamily: typography.fontFamily,
                       fontSize: "14px",
                     },
-                    pageSize: Math.min(query.limit, data[query.table].length),
+                    pageSize: Math.min(
+                      queryLimit,
+                      data["project_list_view"]?.length
+                    ),
                     headerStyle: {
                       // material table header row has a zIndex of 10, which
                       // is conflicting with the search/filter dropdown
@@ -637,39 +561,28 @@ const ProjectsListViewTable = ({ query, searchTerm }) => {
                   }}
                   components={{
                     Pagination: (props) => (
-                      <GridTablePagination
-                        query={query}
-                        data={data}
-                        pagination={pagination}
-                        setPagination={setPagination}
+                      <Pagination
+                        recordCount={
+                          data["project_list_view_aggregate"]?.aggregate.count
+                        }
+                        queryLimit={queryLimit}
+                        setQueryLimit={setQueryLimit}
+                        queryOffset={queryOffset}
+                        setQueryOffset={setQueryOffset}
+                        rowsPerPageOptions={
+                          PROJECT_LIST_VIEW_QUERY_CONFIG.pagination
+                            .rowsPerPageOptions
+                        }
                       />
                     ),
                     Header: (props) => (
                       <MTableHeader
                         {...props}
                         onOrderChange={handleTableHeaderClick}
-                        orderBy={sort.columnId}
-                        orderDirection={sort.order}
+                        orderBy={sortByColumnIndex}
+                        orderDirection={orderByDirection}
                       />
                     ),
-                    Body: (props) => {
-                      // see PR #639 https://github.com/cityofaustin/atd-moped/pull/639 for context
-                      // we have configured MT to use local data but are technically using remote data
-                      // this results in inconsistencies with how MT displays filtered data
-                      const indexedData = data["project_list_view"].map(
-                        (row, index) => ({
-                          tableData: { id: index, uuid: row.project_id },
-                          ...row,
-                        })
-                      );
-                      return (
-                        <MTableBody
-                          {...props}
-                          renderData={indexedData}
-                          pageSize={indexedData.length}
-                        />
-                      );
-                    },
                   }}
                 />
               </Card>

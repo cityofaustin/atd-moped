@@ -1,6 +1,5 @@
--- latest version from 1691698449987_add-district-columns-to-views
-CREATE
-OR REPLACE VIEW "public"."project_geography" AS
+-- latest version 1696622988854_add_feature_length_column
+CREATE VIEW "public"."project_geography" AS
 SELECT
   moped_project.project_id,
   uniform_features.id AS feature_id,
@@ -13,7 +12,8 @@ SELECT
   moped_components.component_name,
   uniform_features.attributes,
   uniform_features.geography,
-  uniform_features.council_districts
+  uniform_features.council_districts,
+  uniform_features.length_feet
 FROM
   (
     (

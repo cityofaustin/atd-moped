@@ -1,14 +1,15 @@
 import { useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
-import Alert from "@mui/material/Alert"
-import Button from "@mui/material/Button"
+import Alert from "@mui/material/Alert";
+import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
-import CircularProgress from "@mui/material/CircularProgress"
-import FormControl from "@mui/material/FormControl"
-import FormHelperText from "@mui/material/FormHelperText"
-import Grid from "@mui/material/Grid"
-import InputLabel from "@mui/material/InputLabel"
+import CircularProgress from "@mui/material/CircularProgress";
+import FormControl from "@mui/material/FormControl";
+import FormHelperText from "@mui/material/FormHelperText";
+import Grid from "@mui/material/Grid";
+import InputLabel from "@mui/material/InputLabel";
+import TextField from "@mui/material/TextField";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { SOCRATA_ENDPOINT } from "src/utils/taskOrderComponentHelpers";
@@ -115,8 +116,22 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
       autoComplete="off"
     >
       <Grid container spacing={2}>
+        {!isNewActivity && (
+          <Grid item xs={12}>
+            <FormControl fullWidth>
+              <TextField
+                id="id"
+                disabled
+                fullWidth
+                label="ID"
+                size="small"
+                value={activity.reference_id}
+              />
+            </FormControl>
+          </Grid>
+        )}
         <Grid item xs={12}>
-          <FormControl fullWidth error={formErrors.status_id}>
+          <FormControl fullWidth error={!!formErrors?.status_id}>
             <InputLabel id="status-label" required={true}>
               Status
             </InputLabel>
@@ -136,7 +151,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.contractor}>
             <ControlledAutocomplete
               control={control}
               name="contractor"
@@ -147,21 +162,30 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               error={formErrors?.contractor}
               valueHandler={(value) => value || null}
             />
+            {formErrors?.contractor && (
+              <FormHelperText>{formErrors.contractor.message}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.contract_number}>
             <ControlledTextInput
               fullWidth
               label="Contract #"
               name="contract_number"
               control={control}
               size="small"
+              error={formErrors?.contract_number}
             />
+            {formErrors?.contract_number && (
+              <FormHelperText>
+                {formErrors.contract_number.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.work_assignment_id}>
             <ControlledTextInput
               fullWidth
               label="Work Assignment ID"
@@ -169,6 +193,11 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.work_assignment_id && (
+              <FormHelperText>
+                {formErrors.work_assignment_id.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
@@ -201,7 +230,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.description}>
             <ControlledTextInput
               fullWidth
               label="Description"
@@ -211,10 +240,13 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.description && (
+              <FormHelperText>{formErrors.description.message}</FormHelperText>
+            )}
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth>
+          <FormControl fullWidth error={!!formErrors?.status_note}>
             <ControlledTextInput
               fullWidth
               label="Status update"
@@ -224,11 +256,31 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               control={control}
               size="small"
             />
+            {formErrors?.status_note && (
+              <FormHelperText>{formErrors.status_note.message}</FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={!!formErrors?.work_order_url}>
+            <ControlledTextInput
+              control={control}
+              fullWidth
+              error={!!formErrors?.work_order_url}
+              label="Work Order Link"
+              name="work_order_url"
+              size="small"
+            />
+            {formErrors?.work_order_url && (
+              <FormHelperText>
+                {formErrors.work_order_url.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container spacing={2} display="flex" justifyContent="flex-end">
-        <Grid item style={{ margin: 5 }}>
+      <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
           <Button
             variant="contained"
             color="primary"

@@ -1,0 +1,1 @@
+CREATE INDEX moped_project_parent_id_idx on moped_project (parent_project_id);

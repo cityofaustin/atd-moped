@@ -7,6 +7,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
+import Link from "@mui/material/Link";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import WorkActivityToolbar from "./ProjectWorkActivityToolbar";
 import ProjectWorkActivitiesDialog from "./ProjectWorkActivityDialog";
@@ -24,6 +25,9 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "",
         field: "_edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
@@ -31,12 +35,14 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
             <div>
               <IconButton
                 aria-label="edit"
+                sx={{ color: "inherit" }}
                 onClick={() => setEditActivity(row)}
               >
                 <EditOutlinedIcon />
               </IconButton>
               <IconButton
                 aria-label="delete"
+                sx={{ color: "inherit" }}
                 onClick={() => onDeleteActivity({ id: row.id })}
               >
                 <DeleteOutlineIcon />
@@ -44,6 +50,11 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
             </div>
           );
         },
+      },
+      {
+        headerName: "ID",
+        field: "reference_id",
+        minWidth: 125,
       },
       {
         headerName: "Workgroup/Contractor",
@@ -56,14 +67,13 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 150,
       },
       {
-        headerName: "Work Assignment",
-        field: "work_assignment_id",
+        headerName: "Description",
+        field: "description",
         minWidth: 150,
       },
       {
-        headerName: "Status",
-        field: "status",
-        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
+        headerName: "Work Assignment",
+        field: "work_assignment_id",
         minWidth: 150,
       },
       {
@@ -81,8 +91,24 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         ),
       },
       {
-        headerName: "Description",
-        field: "description",
+        headerName: "Work Order Link",
+        field: "work_order_url",
+        minWidth: 150,
+        renderCell: ({ row }) =>
+          row.work_order_url ? (
+            <Link
+              href={row.work_order_url}
+              target={"_blank"}
+              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+            >
+              {row.work_order_url}
+            </Link>
+          ) : null,
+      },
+      {
+        headerName: "Status",
+        field: "status",
+        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
         minWidth: 150,
       },
       {
@@ -111,11 +137,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 150,
         valueGetter: ({ row }) =>
           row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
-      },
-      {
-        headerName: "ID",
-        field: "id",
-        minWidth: 50,
       },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);

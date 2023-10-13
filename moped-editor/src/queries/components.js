@@ -13,6 +13,9 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       feature_layer {
         internal_table
       }
+      asset_feature_layer {
+        internal_table
+      }
       moped_components_subcomponents(
         order_by: { moped_subcomponent: { subcomponent_name: asc } }
       ) {
@@ -69,6 +72,9 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       component_name
       component_subtype
       feature_layer {
+        internal_table
+      }
+      asset_feature_layer {
         internal_table
       }
       line_representation
@@ -156,6 +162,8 @@ export const GET_PROJECT_COMPONENTS = gql`
       geometry: geography
       component_id
       attributes
+      council_districts
+      length_feet
     }
     parentProjectComponents: moped_proj_components(
       where: {
@@ -193,14 +201,17 @@ export const GET_PROJECT_COMPONENTS = gql`
 // This mutation updates component subcomponents and component tags by first updating *all* existing
 // subcomponents and tags to is_deleted = true and then inserting the new subcomponents and tags
 // with is_deleted = false on conflict (Attributes that are not deleted in the UI by the user
-// are switched to is_deleted = false by the mutation)
+// are switched to is_deleted = false by the mutation). It also handles deleting/creating of signal
+// features and intersection/point features as needed when component type is changed
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
-  mutation UpdateComponentAttributes(
+  mutation UpdateSignalComponent(
     $projectComponentId: Int!
     $componentId: Int!
     $description: String!
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $workTypes: [moped_proj_component_work_types_insert_input!]!
+    $signalsToCreate: [feature_signals_insert_input!]!
+    $featureIdsToDelete: [Int!]!
     $phaseId: Int
     $subphaseId: Int
     $completionDate: timestamptz
@@ -258,90 +269,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     ) {
       affected_rows
     }
-    insert_moped_proj_component_tags(
-      objects: $componentTags
-      on_conflict: {
-        constraint: unique_component_and_tag
-        update_columns: [is_deleted]
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-// This mutation updates component subcomponents in same way as UPDATE_COMPONENT_ATTRIBUTES.
-// It also updates all component feature_signals to is_deleted = true and then inserts the new signal.
-export const UPDATE_SIGNAL_COMPONENT = gql`
-  mutation UpdateSignalComponent(
-    $projectComponentId: Int!
-    $description: String!
-    $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
-    $workTypes: [moped_proj_component_work_types_insert_input!]!
-    $signals: [feature_signals_insert_input!]!
-    $phaseId: Int
-    $subphaseId: Int
-    $completionDate: timestamptz
-    $componentTags: [moped_proj_component_tags_insert_input!]!
-    $srtsId: String
-    $locationDescription: String
-  ) {
-    update_moped_proj_components_subcomponents(
-      where: { project_component_id: { _eq: $projectComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_component_work_types(
-      where: { project_component_id: { _eq: $projectComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_component_tags(
-      where: { project_component_id: { _eq: $projectComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_feature_signals(
-      where: { component_id: { _eq: $projectComponentId } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_components_by_pk(
-      pk_columns: { project_component_id: $projectComponentId }
-      _set: {
-        description: $description
-        phase_id: $phaseId
-        subphase_id: $subphaseId
-        completion_date: $completionDate
-        srts_id: $srtsId
-        location_description: $locationDescription
-      }
-    ) {
-      project_component_id
-    }
-    insert_moped_proj_components_subcomponents(
-      objects: $subcomponents
-      on_conflict: {
-        constraint: unique_component_and_subcomponent
-        update_columns: [is_deleted]
-      }
-    ) {
-      affected_rows
-    }
-    insert_moped_proj_component_work_types(
-      objects: $workTypes
-      on_conflict: {
-        constraint: moped_proj_component_work_types_project_component_id_work_type_
-        update_columns: [is_deleted]
-      }
-    ) {
-      affected_rows
-    }
-    insert_feature_signals(objects: $signals) {
+    insert_feature_signals(objects: $signalsToCreate) {
       affected_rows
     }
     insert_moped_proj_component_tags(
@@ -350,6 +278,12 @@ export const UPDATE_SIGNAL_COMPONENT = gql`
         constraint: unique_component_and_tag
         update_columns: [is_deleted]
       }
+    ) {
+      affected_rows
+    }
+    update_features(
+      where: { id: { _in: $featureIdsToDelete } }
+      _set: { is_deleted: true }
     ) {
       affected_rows
     }

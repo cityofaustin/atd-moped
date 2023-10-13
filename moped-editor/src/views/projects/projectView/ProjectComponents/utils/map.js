@@ -84,7 +84,7 @@ export function useAppBarHeight() {
     currentToolbarMinHeight = toolbar;
   }
 
-  return currentToolbarMinHeight.minHeight;
+  return currentToolbarMinHeight?.minHeight;
 }
 
 /**
@@ -155,3 +155,24 @@ export const useZoomToExistingComponents = (
     refreshOnComponentsUpdate,
   ]);
 };
+
+/**
+ * Adds or removes custom css class based on if drawn features are selected
+ * returns function to update trashbutton state
+ */
+export const useTrashButtonClickable = () =>
+{
+  const [isTrashButtonClickable, setTrashButtonClickable] = useState(false);
+  useEffect(() => {
+    if (isTrashButtonClickable) {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.remove("disable-trash");
+    } else {
+      document
+        .getElementsByClassName("mapbox-gl-draw_trash")[0]
+        .classList.add("disable-trash");
+    }
+  }, [isTrashButtonClickable]);
+  return setTrashButtonClickable;
+}

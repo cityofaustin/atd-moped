@@ -1,8 +1,8 @@
 import {
-  filterNullValues,
   filterProjectTeamMembers,
   filterProjectSignals,
   filterTaskOrderName,
+  resolveHasSubprojects,
 } from "./helpers.js";
 
 /**
@@ -11,25 +11,21 @@ import {
  * @type {object}
  * @default
  */
-export const ProjectsListViewExportConf = {
+export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_id: {
     label: "ID",
   },
   project_name: {
     label: "Name",
-    filter: filterNullValues,
   },
   project_description: {
     label: "Project Description",
-    filter: filterNullValues,
   },
   current_phase_key: {
     label: "Current Phase Key",
-    filter: filterNullValues,
   },
   current_phase: {
     label: "Status",
-    filter: filterNullValues,
   },
   project_team_members: {
     label: "Team",
@@ -37,19 +33,15 @@ export const ProjectsListViewExportConf = {
   },
   ecapris_subproject_id: {
     label: "eCapris ID",
-    filter: filterNullValues,
   },
   project_lead: {
     label: "Lead",
-    filter: filterNullValues,
   },
   project_sponsor: {
     label: "Sponsor",
-    filter: filterNullValues,
   },
   project_partner: {
     label: "Partners",
-    filter: filterNullValues,
   },
   updated_at: {
     label: "Modified",
@@ -64,49 +56,45 @@ export const ProjectsListViewExportConf = {
   },
   type_name: {
     label: "Type",
-    filter: filterNullValues,
   },
   funding_source_name: {
     label: "Funding",
-    filter: filterNullValues,
   },
   project_note: {
     label: "Status Update",
-    filter: filterNullValues,
   },
   construction_start_date: {
     label: "Construction start",
-    filter: filterNullValues,
   },
   completion_end_date: {
     label: "Completion date",
-    filter: filterNullValues,
   },
   project_inspector: {
     label: "Inspector",
-    filter: filterNullValues,
   },
   project_designer: {
     label: "Designer",
-    filter: filterNullValues,
   },
   contractors: {
     label: "Contractors",
-    filter: filterNullValues,
   },
   contract_numbers: {
     label: "Contract numbers",
-    filter: filterNullValues,
   },
   project_tags: {
     label: "Tags",
-    filter: filterNullValues,
   },
   added_by: {
     label: "Created by",
   },
   public_process_status: {
     label: "Public process status",
-    filter: filterNullValues,
+  },
+  parent_project_name: {
+    label: "Parent project name",
+  },
+  children_project_ids: {
+    label: "Has subprojects",
+    filter: resolveHasSubprojects,
   },
 };

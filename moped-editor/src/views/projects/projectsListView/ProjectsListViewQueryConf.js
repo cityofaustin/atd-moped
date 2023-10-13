@@ -1,20 +1,18 @@
 import React from "react";
-import { ProjectsListViewFiltersConf } from "./ProjectsListViewFiltersConf";
-import { ProjectsListViewExportConf } from "./ProjectsListViewExportConf";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import ExternalLink from "../../../components/ExternalLink";
-import { NavLink as RouterLink } from "react-router-dom";
 import { filterProjectTeamMembers } from "./helpers.js";
 import { formatTimeStampTZType } from "src/utils/dateAndTime";
-import theme from "src/theme/index";
 
 /**
  * The Query configuration (now also including filters)
  * @constant
  * @type {object}
- * @augments ProjectsListViewFiltersConf
+ * @augments PROJECT_LIST_VIEW_FILTERS_CONFIG
  * @default
  */
-export const ProjectsListViewQueryConf = {
+export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   options: {
     useQuery: {
       fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
@@ -24,7 +22,6 @@ export const ProjectsListViewQueryConf = {
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
-  showDateRange: false,
   showSearchBar: true,
   showFilters: false,
   showExport: true,
@@ -33,9 +30,15 @@ export const ProjectsListViewQueryConf = {
   showPagination: true,
   pagination: {
     rowsPerPageOptions: [250, 1000],
+    defaultOffset: 0,
+    defaultLimit: 250,
   },
-  filters: ProjectsListViewFiltersConf,
-  export: ProjectsListViewExportConf,
+  order: {
+    defaultColumn: "updated_at",
+    defaultDirection: "desc",
+  },
+  filters: PROJECT_LIST_VIEW_FILTERS_CONFIG,
+  export: PROJECT_LIST_VIEW_EXPORT_CONFIG,
   search: {
     placeholder:
       "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
@@ -75,18 +78,6 @@ export const ProjectsListViewQueryConf = {
       },
       width: "*",
       type: "String",
-      filter: (values) => {
-        const jsonValues = JSON.parse(values);
-        return (
-          <RouterLink
-            to={`/${jsonValues.singleItem}/${jsonValues.link}/`}
-            state={jsonValues.state}
-            style={{ color: theme.palette.primary.main }}
-          >
-            {jsonValues.data}
-          </RouterLink>
-        );
-      },
     },
     project_description: {
       hidden: true,
@@ -240,7 +231,16 @@ export const ProjectsListViewQueryConf = {
     },
     interim_project_id: {
       type: "Int",
-    }
+    },
+    children_project_ids: {
+      type: "array",
+    },
+    parent_project_id: {
+      type: "Int",
+    },
+    parent_project_name: {
+      type: "string",
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import {
@@ -58,20 +58,24 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Renders a search bar with optional filters
- * @param {GQLAbstract} query - The GQLAbstract object as provided by the parent component
- * @param {Object} searchState - The current state/state-modifier bundle for search
- * @param {Object} filterState - The current state/state-modifier bundle for filter
+ * @param {string} searchFieldValue - The current value of the search field
+ * @param {function} setSearchFieldValue - function to set the current value of the search field
+ * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
+ * @param {Function} setSearchTerm - set the current search term set in the query
+ * @param {Object} queryConfig - the query configuration object with placeholder text
  * @return {JSX.Element}
  * @constructor
  */
-const GridTableSearchBar = ({
-  query,
-  searchState,
-  filterState,
+const SearchBar = ({
+  searchFieldValue,
+  setSearchFieldValue,
+  filters,
   toggleAdvancedSearch,
   advancedSearchAnchor,
+  setSearchTerm,
+  queryConfig,
 }) => {
   const classes = useStyles();
 
@@ -81,21 +85,11 @@ const GridTableSearchBar = ({
    */
   const getSearchPlaceholder = () => {
     try {
-      return query.config.search.placeholder;
+      return queryConfig.search.placeholder;
     } catch {
       return "Enter search value";
     }
   };
-
-  /**
-   * The contents of the search box
-   * @type {string} searchFieldValue
-   * @function setSearchFieldValue - Sets the state of the field
-   * @default {?searchState.searchParameters.value}
-   */
-  const [searchFieldValue, setSearchFieldValue] = useState(
-    (searchState.searchParameters && searchState.searchParameters.value) || ""
-  );
 
   const handleSearchValueChange = (value) => {
     if (value === "" && searchFieldValue !== "") {
@@ -119,17 +113,15 @@ const GridTableSearchBar = ({
     if (event) event.preventDefault();
 
     // Update state if we are ready, triggers search.
-    searchState.setSearchParameters({
-      value: searchFieldValue,
-    });
+    setSearchTerm(searchFieldValue);
   };
 
   /**
    * Clears the search results
    */
   const handleClearSearchResults = () => {
+    setSearchTerm("");
     setSearchFieldValue("");
-    searchState.setSearchParameters({});
   };
 
   /**
@@ -156,11 +148,11 @@ const GridTableSearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filterState.filterParameters).length;
+  const filterStateActive = !!Object.keys(filters).length;
   const filtersApplied = [];
   if (filterStateActive) {
-    Object.keys(filterState.filterParameters).map((parameter) =>
-      filtersApplied.push(filterState.filterParameters[parameter]["label"])
+    Object.keys(filters).map((parameter) =>
+      filtersApplied.push(filters[parameter]["label"])
     );
   }
 
@@ -231,8 +223,8 @@ const GridTableSearchBar = ({
   );
 };
 
-GridTableSearchBar.propTypes = {
+SearchBar.propTypes = {
   className: PropTypes.string,
 };
 
-export default GridTableSearchBar;
+export default SearchBar;
