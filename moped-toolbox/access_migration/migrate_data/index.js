@@ -155,11 +155,7 @@ fields = [
       if (entity) {
         return entity.out;
       } else {
-        // todo - fix unmatched entities
-        // COA
-        // UniversityOfTexas
-        // ProjectConnect
-        throw `Entity not found`
+        throw `Entity not found`;
       }
     },
   },
@@ -498,7 +494,7 @@ async function main(env) {
     }
 
     logger.info("Sleeping...");
-    await new Promise((r) => setTimeout(r, 2));
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
   logger.info("Restoring event triggers...");
