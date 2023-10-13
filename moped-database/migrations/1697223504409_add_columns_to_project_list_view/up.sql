@@ -154,8 +154,8 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
-     left join child_project_lookup cpl on cpl.parent_id = mp.project_id
-     left join lateral 
+     LEFT JOIN child_project_lookup cpl on cpl.parent_id = mp.project_id
+     LEFT JOIN LATERAL
       (
         SELECT mpn.project_note, mpn.date_created
         FROM moped_proj_notes mpn

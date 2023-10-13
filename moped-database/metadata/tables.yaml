@@ -4749,6 +4749,8 @@
           - task_order_name
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4787,6 +4789,8 @@
           - task_order_name
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4825,6 +4829,8 @@
           - task_order_name
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
 - table:
