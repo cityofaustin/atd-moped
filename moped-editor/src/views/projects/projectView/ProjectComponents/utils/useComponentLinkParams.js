@@ -17,13 +17,11 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
     .filter(Boolean)
     .join("?");
   // alright, let's talk about this...
-  // Normally with remix, you'd update the params via useSearchParams from react-router-dom
-  // and updating the search params will trigger the search to update for you.
-  // However, it also triggers a navigation to the new url, which will trigger
-  // the loader to run which we do not want because all our data is already
-  // on the client and we're just doing client-side filtering of data we
-  // already have. So we manually call `window.history.pushState` to avoid
-  // the router from triggering the loader.
+  // Normally, you'd update the params via useSearchParams from react-router-dom
+  // and updating the search params. However, it also triggers a navigation to the new url,
+  // which will trigger the map to re-render which we do not want because all our data
+  // is already loaded. So, we manually call `window.history.pushState` to avoid
+  // the router from triggering the render.
   window.history.replaceState(null, "", newUrl);
 };
 
@@ -47,17 +45,21 @@ export const useComponentLinkParams = ({
       currentSearchParams.get("project_component_id")
     );
 
-    // Set clicked component when project component data loads
+    // If there wasn't an initial search parameter, we don't need to set clickedComponent
+    if (!componentParamId) {
+      setHasComponentSetFromUrl(true);
+      return;
+    }
+
+    // Set clicked component from search parameter once data loads
     if (
       !hasComponentSetFromUrl &&
       componentParamId &&
-      !clickedComponent &&
       projectComponents.length > 0
     ) {
       const componentFromParams = projectComponents.find(
         (component) => component.project_component_id === componentParamId
       );
-      console.log(componentFromParams, componentParamId);
 
       if (componentFromParams) {
         setClickedComponent(componentFromParams);
@@ -69,7 +71,6 @@ export const useComponentLinkParams = ({
         // Track that initial component has been set from initial params
         setHasComponentSetFromUrl(true);
       } else {
-        console.log("not found");
         errorMessageDispatch({
           type: "show_error",
           payload: {
@@ -77,13 +78,16 @@ export const useComponentLinkParams = ({
             The component may have been moved to another project or deleted. 
             Please check this project's activity log for more details.`,
             severity: "error",
+            onClose: () => {
+              errorMessageDispatch({ type: "hide_error" });
+              updateParamsWithoutRender("project_component_id", null);
+            },
           },
         });
       }
     }
   }, [
     hasComponentSetFromUrl,
-    clickedComponent,
     projectComponents,
     setClickedComponent,
     setHasComponentSetFromUrl,
