@@ -83,15 +83,17 @@ const NoteInputQuill = ({
             />
           </Box>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          style={{ justifyContent: "flex-end" }}
-        >
-          <NewNoteTypeButton noteTypeId={1}>Internal Note</NewNoteTypeButton>
-          <NewNoteTypeButton noteTypeId={2}>Status Update</NewNoteTypeButton>
-        </Grid>
+        {!editingNote && (
+          <Grid
+            item
+            xs={12}
+            display="flex"
+            style={{ justifyContent: "flex-end" }}
+          >
+            <NewNoteTypeButton noteTypeId={1}>Internal Note</NewNoteTypeButton>
+            <NewNoteTypeButton noteTypeId={2}>Status Update</NewNoteTypeButton>
+          </Grid>
+        )}
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
             {editingNote && (
