@@ -152,14 +152,14 @@ export default function MapView({
     mapRef,
   });
 
-  const { setClickedComponentSearchParams } = useComponentLinkParams({
+  useComponentLinkParams({
     setClickedComponent,
     projectComponents,
+    clickedComponent,
   });
 
   // Keep clickedComponent state up to date with edits made to project components
   useEffect(() => {
-    setClickedComponentSearchParams(clickedComponent);
     if (clickedComponent === null) return;
 
     const clickedComponentId = clickedComponent?.project_component_id;
@@ -168,7 +168,7 @@ export default function MapView({
     );
 
     setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents, setClickedComponentSearchParams]);
+  }, [clickedComponent, projectComponents]);
 
   // Keep draft component state in sync wiht clicked component (when editing)
   useEffect(() => {
