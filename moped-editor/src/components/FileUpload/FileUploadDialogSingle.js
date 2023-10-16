@@ -173,7 +173,7 @@ const FileUploadDialogSingle = (props) => {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title" variant="h4">
+      <DialogTitle variant="h4">
         {props?.title ? props.title : "Upload Media"}
       </DialogTitle>
       <DialogContent>

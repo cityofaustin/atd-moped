@@ -14,23 +14,12 @@ import {
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { returnArterialManagementPhaseTemplate } from "../../../utils/timelineTemplates";
 
 import { ADD_PROJECT_PHASE } from "../../../queries/project";
 import { useMutation } from "@apollo/client";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const templateChoices = ["Arterial Management"];
 
@@ -80,8 +69,6 @@ const PhaseTemplateModal = ({
   phaseNameLookup,
   subphaseNameLookup,
 }) => {
-  const classes = useStyles();
-
   const [template, setTemplate] = useState(null);
   const [phasesToAdd, setPhasesToAdd] = useState([]);
 
@@ -133,7 +120,14 @@ const PhaseTemplateModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle className={classes.dialogTitle} variant="h4">
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
         Select phase template
         <IconButton onClick={closeDialog} size="large">
           <CloseIcon />
@@ -158,7 +152,6 @@ const PhaseTemplateModal = ({
             )}
           />
           <Button
-            className={classes.fundingButton}
             variant="contained"
             color="primary"
             size="medium"

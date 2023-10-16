@@ -58,7 +58,14 @@ const DashboardStatusModal = ({
         fullWidth
         maxWidth={"md"}
       >
-        <DialogTitle className={classes.dialogTitle} variant="h4">
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          variant="h4"
+        >
           {`Status update - ${projectName}`}
           <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />

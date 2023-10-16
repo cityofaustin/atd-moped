@@ -1,18 +1,7 @@
 import React from "react";
 import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const CreateComponentModal = ({
   showDialog,
@@ -20,8 +9,6 @@ const CreateComponentModal = ({
   createDispatch,
   onSaveDraftSignalComponent,
 }) => {
-  const classes = useStyles();
-
   const onSave = (formData) => {
     const isSavingSignalFeature = Boolean(formData.signal);
 
@@ -96,7 +83,14 @@ const CreateComponentModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle className={classes.dialogTitle} variant="h4">
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
         New component
         <IconButton onClick={onClose} size="large">
           <CloseIcon />

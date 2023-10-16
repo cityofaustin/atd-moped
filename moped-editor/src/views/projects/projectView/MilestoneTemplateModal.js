@@ -14,7 +14,6 @@ import {
   TextField,
 } from "@mui/material";
 import { Autocomplete } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import {
@@ -25,16 +24,6 @@ import {
 
 import { ADD_PROJECT_MILESTONE } from "../../../queries/project";
 import { useMutation } from "@apollo/client";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const templateChoices = [
   "AMD Signal Infrastructure",
@@ -81,8 +70,6 @@ const MilestoneTemplateModal = ({
   selectedMilestones,
   refetch,
 }) => {
-  const classes = useStyles();
-
   const [template, setTemplate] = useState(null);
   const [milestonesToAdd, setMilestonesToAdd] = useState([]);
 
@@ -137,7 +124,14 @@ const MilestoneTemplateModal = ({
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle className={classes.dialogTitle} variant="h4">
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
         Select milestone template
         <IconButton onClick={closeDialog} size="large">
           <CloseIcon />
@@ -162,7 +156,6 @@ const MilestoneTemplateModal = ({
             )}
           />
           <Button
-            className={classes.fundingButton}
             variant="contained"
             color="primary"
             size="medium"

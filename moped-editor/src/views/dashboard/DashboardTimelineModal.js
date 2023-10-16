@@ -17,13 +17,6 @@ import ProjectMilestones from "../projects/projectView/ProjectMilestones";
 import ProjectPhases from "../projects/projectView/ProjectPhases";
 
 const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   clickableDiv: {
     cursor: "pointer",
   },
@@ -70,7 +63,14 @@ const DashboardTimelineModal = ({
         fullWidth
         maxWidth={"xl"}
       >
-        <DialogTitle className={classes.dialogTitle} variant="h4">
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          variant="h4"
+        >
           {`Update ${table} - ${projectName}`}
           <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />

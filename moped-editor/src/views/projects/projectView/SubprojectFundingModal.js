@@ -8,23 +8,12 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import MaterialTable from "@material-table/core";
 
 import typography from "../../../theme/typography";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const columns = [
   {
@@ -49,7 +38,6 @@ const SubprojectFundingModal = ({
   projectId,
   setSnackbarState,
 }) => {
-  const classes = useStyles();
   const typographyStyle = {
     fontFamily: typography.fontFamily,
     fontSize: "14px",
@@ -117,7 +105,14 @@ const SubprojectFundingModal = ({
       fullWidth
       maxWidth={"md"}
     >
-      <DialogTitle className={classes.dialogTitle} variant="h4">
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
         Subproject funding sources
         <IconButton onClick={() => handleDialogClose()} size="large">
           <CloseIcon />
@@ -150,7 +145,6 @@ const SubprojectFundingModal = ({
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
-            className={classes.fundingButton}
             variant="contained"
             color="primary"
             size="medium"
