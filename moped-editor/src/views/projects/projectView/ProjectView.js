@@ -1,8 +1,12 @@
 import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
-import { createBrowserHistory } from "history";
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Link as RouterLink,
+  useParams,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   Breadcrumbs,
@@ -31,7 +35,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -128,10 +132,6 @@ function a11yProps(index) {
   };
 }
 
-function useQueryParams() {
-  return new URLSearchParams(useLocation().search);
-}
-
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Map", Component: MapView, param: "map" },
@@ -147,8 +147,6 @@ const TABS = [
   },
 ];
 
-const history = createBrowserHistory();
-
 /**
  * The project summary view
  * @return {JSX.Element}
@@ -156,7 +154,7 @@ const history = createBrowserHistory();
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let query = useQueryParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const classes = useStyles();
   const previousFilters = useLocation()?.state?.filters;
   const allProjectsLink = !!previousFilters
@@ -165,8 +163,8 @@ const ProjectView = () => {
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
-  let activeTabIndex = !!query.get("tab")
-    ? TABS.findIndex((tab) => tab.param === query.get("tab"))
+  let activeTabIndex = !!searchParams.get("tab")
+    ? TABS.findIndex((tab) => tab.param === searchParams.get("tab"))
     : 0;
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -218,7 +216,10 @@ const ProjectView = () => {
     // While the refetch works, it doesn't force a component re-render. For now we use forceUpdate...
     if (newTab === 0) refetch();
     setActiveTab(newTab);
-    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set("tab", TABS[newTab].param);
+      return prevSearchParams;
+    });
   };
 
   /**

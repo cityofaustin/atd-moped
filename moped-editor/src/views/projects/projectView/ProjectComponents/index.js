@@ -168,7 +168,7 @@ export default function MapView({
     );
 
     setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents]);
+  }, [clickedComponent, projectComponents, setClickedComponentSearchParams]);
 
   // Keep draft component state in sync wiht clicked component (when editing)
   useEffect(() => {
