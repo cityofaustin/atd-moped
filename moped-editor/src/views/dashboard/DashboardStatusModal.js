@@ -10,7 +10,7 @@ import {
 import clsx from "clsx";
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import ProjectComments from "../projects/projectView/ProjectComments";
+import ProjectNotes from "../projects/projectView/ProjectNotes";
 
 const DashboardStatusModal = ({
   projectId,
@@ -65,7 +65,7 @@ const DashboardStatusModal = ({
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <ProjectComments
+          <ProjectNotes
             modal
             projectId={projectId}
             currentPhaseId={currentPhaseId}
