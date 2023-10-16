@@ -67,10 +67,6 @@ const ProjectComponentsList = ({
     return navigator.clipboard.writeText(currentUrl);
   };
 
-  const handleToolTipClose = () => {
-    setCopiedUrl(null);
-  };
-
   useEffect(() => {
     /**
      * Effect which closes the tooltip after a brief pause
@@ -78,10 +74,9 @@ const ProjectComponentsList = ({
     if (!copiedUrl) return;
     const timeout = setTimeout(() => {
       setCopiedUrl(null);
-      handleToolTipClose();
     }, 500);
     return () => clearTimeout(timeout);
-  }, [copiedUrl, handleToolTipClose]);
+  }, [copiedUrl, setCopiedUrl]);
 
   return (
     isNotCreatingOrEditing &&
@@ -150,7 +145,6 @@ const ProjectComponentsList = ({
                 PopperProps={{
                   disablePortal: true,
                 }}
-                onClose={handleToolTipClose}
                 open={copiedUrl}
                 disableFocusListener
                 disableHoverListener

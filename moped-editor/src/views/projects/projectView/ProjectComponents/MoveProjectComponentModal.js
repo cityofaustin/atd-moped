@@ -81,7 +81,6 @@ const MoveProjectComponentModal = ({
         {!updatedComponentFormData ? (
           <MoveComponentForm component={component} onSave={onSave} />
         ) : (
-          // TODO: Should we add project_component_id to the url here too?
           <Typography>
             Component moved to{" "}
             <RouterLink
