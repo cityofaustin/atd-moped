@@ -1,11 +1,9 @@
-import { set } from "lodash";
 import { useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 // Example link: https://localhost:3000/moped/projects/225?tab=map&component_id=277
 
 export const useComponentLinkParams = ({
-  clickedComponent,
   setClickedComponent,
   projectComponents,
 }) => {
@@ -29,11 +27,29 @@ export const useComponentLinkParams = ({
     }
   }, [searchParams, projectComponents, setClickedComponent]);
 
-  useEffect(() => {
-    if (clickedComponent?.project_component_id) {
+  // Set params from clicked component
+  const setClickedComponentSearchParams = (clickedComponent) => {
+    const clickedComponentId = clickedComponent?.project_component_id;
+
+    if (clickedComponentId) {
+      setSearchParams((prevSearchParams) => ({
+        ...prevSearchParams,
+        project_component_id: clickedComponentId,
+      }));
+    } else {
       console.log(searchParams);
-      // TODO: This is returning "summary" not "map"
       console.log(searchParams.get("tab"));
+      // searchParams.set("b", 3);
+      //     // TODO: This is returning "summary" not "map"
+      //     console.log(searchParams.get("tab"));
+      // setSearchParams((prevSearchParams) => {
+      //   const { project_component_id, paramsWithoutProjectComponentId } =
+      //     prevSearchParams;
+
+      //   return paramsWithoutProjectComponentId;
+      // });
     }
-  }, [clickedComponent, setSearchParams, searchParams]);
+  };
+
+  return { setClickedComponentSearchParams };
 };
