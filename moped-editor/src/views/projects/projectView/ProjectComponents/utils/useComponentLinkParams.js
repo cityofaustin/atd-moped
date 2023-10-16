@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 
-// Example link: https://localhost:3000/moped/projects/225?tab=map&project_component_id=277
-
 /** @see https://github.com/kentcdodds/kentcdodds.com/blob/027070cdb2742452f98011c114a03ee325052cc7/app/utils/misc.tsx#L298-L325 */
 const updateParamsWithoutRender = (queryKey, queryValue) => {
   const currentSearchParams = new URLSearchParams(window.location.search);
@@ -16,8 +14,7 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
   const newUrl = [window.location.pathname, currentSearchParams.toString()]
     .filter(Boolean)
     .join("?");
-  // alright, let's talk about this...
-  // Normally, you'd update the params via useSearchParams from react-router-dom
+  // Normally, we'd update the params via useSearchParams from react-router-dom
   // and updating the search params. However, it also triggers a navigation to the new url,
   // which will trigger the map to re-render which we do not want because all our data
   // is already loaded. So, we manually call `window.history.pushState` to avoid
@@ -28,12 +25,9 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
 export const useComponentLinkParams = ({
   setClickedComponent,
   projectComponents,
-  clickedComponent,
   errorMessageDispatch,
 }) => {
   const [hasComponentSetFromUrl, setHasComponentSetFromUrl] = useState(false);
-
-  // TODO: Show alert when component is not found
 
   // Set clicked component from initial params once data loads
   useEffect(() => {
@@ -45,18 +39,14 @@ export const useComponentLinkParams = ({
       currentSearchParams.get("project_component_id")
     );
 
-    // If there wasn't an initial search parameter, we don't need to set clickedComponent
+    // If there wasn't an initial search parameter, we don't need to set clickedComponent from it
     if (!componentParamId) {
       setHasComponentSetFromUrl(true);
       return;
     }
 
-    // Set clicked component from search parameter once data loads
-    if (
-      !hasComponentSetFromUrl &&
-      componentParamId &&
-      projectComponents.length > 0
-    ) {
+    // Set clicked component from search parameter once projectComponents data loads
+    if (projectComponents.length > 0) {
       const componentFromParams = projectComponents.find(
         (component) => component.project_component_id === componentParamId
       );
