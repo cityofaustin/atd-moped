@@ -15,7 +15,6 @@ const DeleteConfirmationModal = ({
   setIsDeleteConfirmationOpen,
   children,
 }) => {
-
   const handleDeleteClose = () => {
     setIsDeleteConfirmationOpen(false);
   };
@@ -35,11 +34,7 @@ const DeleteConfirmationModal = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
-            color="primary"
-            onClick={handleDeleteClose}
-            autoFocus
-          >
+          <Button color="primary" onClick={handleDeleteClose} autoFocus>
             Cancel
           </Button>
           <Button
