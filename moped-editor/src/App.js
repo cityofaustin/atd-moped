@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
@@ -22,35 +22,44 @@ const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
 
+const useClient = (user) =>
+  useMemo(() => {
+    // see: https://www.apollographql.com/docs/react/networking/authentication/#header
+    const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
+
+    const authLink = setContext((_, { headers }) => {
+      // Get the authentication token and role from user if it exists
+      const token = getJwt(user);
+      const role = getHighestRole(user);
+
+      // Return the headers and role to the context so httpLink can read them
+      return {
+        headers: {
+          ...headers,
+          authorization: token ? `Bearer ${token}` : "",
+          "x-hasura-role": role ? role : "",
+        },
+      };
+    });
+
+    return new ApolloClient({
+      // Join authLink and httpLink to handle auth in each request
+      link: authLink.concat(httpLink),
+      cache: new InMemoryCache({
+        typePolicies: {
+          project_list_view: {
+            keyFields: ["project_id"],
+          },
+        },
+      }),
+    });
+  }, [user]);
+
 const App = () => {
-  const restrictedRoutes = restrictRoutes(routes);
+  const restrictedRoutes = useMemo(() => restrictRoutes(routes), [routes]);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
-
-  // https://www.apollographql.com/docs/react/networking/authentication/#header
-  const httpLink = createHttpLink({ uri: HASURA_ENDPOINT });
-
-  const authLink = setContext((_, { headers }) => {
-    // Get the authentication token and role from user if it exists
-    const token = getJwt(user);
-    const role = getHighestRole(user);
-
-    // Return the headers and role to the context so httpLink can read them
-    return {
-      headers: {
-        ...headers,
-        authorization: token ? `Bearer ${token}` : "",
-        "x-hasura-role": role ? role : "",
-      },
-    };
-  });
-
-  const client = new ApolloClient({
-    // Join authLink and httpLink to handle auth in each request
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
-  });
-
+  const client = useClient(user);
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>
