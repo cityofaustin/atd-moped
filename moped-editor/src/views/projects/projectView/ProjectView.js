@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   Breadcrumbs,
@@ -31,7 +31,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -39,7 +39,7 @@ import MapView from "./ProjectComponents/index";
 import ProjectFunding from "./ProjectFunding";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
-import ProjectComments from "./ProjectComments";
+import ProjectNotes from "./ProjectNotes";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import {
@@ -138,7 +138,7 @@ const TABS = [
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Funding", Component: ProjectFunding, param: "funding" },
-  { label: "Comments", Component: ProjectComments, param: "comments" },
+  { label: "Notes", Component: ProjectNotes, param: "notes" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   {
     label: "Activity",
