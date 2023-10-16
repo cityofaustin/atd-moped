@@ -4745,8 +4745,8 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
           - type_name
           - updated_at
           - knack_project_id
@@ -4785,8 +4785,8 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
           - type_name
           - updated_at
           - knack_project_id
@@ -4825,8 +4825,8 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
           - type_name
           - updated_at
           - knack_project_id
