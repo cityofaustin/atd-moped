@@ -37,7 +37,7 @@ def build_note(note, user_name, user_id, note_type=2):
     # 1 = internal note
     return {
         "status_id": 1,  # active / not deleted status
-        # project note types are hardcoded. see here: https://github.com/cityofaustin/atd-moped/blob/9c6cac2598da48f1e06ab20ac0f7e5074b14cc8e/moped-editor/src/views/projects/projectView/ProjectComments.js#L271
+        # project note types are hardcoded. see here: https://github.com/cityofaustin/atd-moped/blob/9c6cac2598da48f1e06ab20ac0f7e5074b14cc8e/moped-editor/src/views/projects/projectView/ProjectNotes.js#L271
         "project_note_type": note_type,
         "added_by": user_name,
         "added_by_user_id": user_id,
