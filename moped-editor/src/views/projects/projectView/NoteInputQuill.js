@@ -50,7 +50,7 @@ const NoteInputQuill = ({
   useEffect(() => {
     // autofocuses the quill input
     ref?.current.focus();
-  }, []); /**
+  }, []);
 
   /**
    * Defines the NewNoteTypeButton with a toggle style-change behavior.
