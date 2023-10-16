@@ -1,4 +1,5 @@
 import { useMemo, createRef } from "react";
+import { cloneDeep } from "lodash";
 
 const setComponentCouncilDistrict = (component, projectGeography) => {
   const componentID = component.project_component_id;
@@ -29,10 +30,11 @@ export const useProjectComponents = (data) => {
     if (!data?.moped_proj_components) return [];
 
     return data.moped_proj_components.map((component) => {
-      component._ref = createRef();
-      setComponentCouncilDistrict(component, data.project_geography);
-      setLengthFeet(component, data.project_geography);
-      return component;
+      const newComponet = cloneDeep(component);
+      newComponet._ref = createRef();
+      setComponentCouncilDistrict(newComponet, data.project_geography);
+      setLengthFeet(newComponet, data.project_geography);
+      return newComponet;
     });
   }, [data]);
 

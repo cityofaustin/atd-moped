@@ -8,7 +8,7 @@ import Button from "@mui/material/Button";
 import ProjectStatusBadge from "../ProjectStatusBadge";
 import ProjectName from "./ProjectName";
 import MapAlert from "./MapAlert";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -25,9 +25,9 @@ export default function ComponentMapToolbar({
   phaseKey,
   phaseName,
   errorMessageState,
+  onCloseTab,
 }) {
   const classes = useStyles();
-  const navigate = useNavigate();
   const { projectId } = useParams();
   const { message, severity, isOpen } = errorMessageState;
 
@@ -56,9 +56,7 @@ export default function ComponentMapToolbar({
             color="primary"
             fullWidth
             endIcon={<CloseIcon />}
-            onClick={() => {
-              navigate(`/moped/projects/${projectId}?tab=summary`);
-            }}
+            onClick={onCloseTab}
           >
             Close map
           </Button>

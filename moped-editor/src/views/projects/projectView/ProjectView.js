@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   Breadcrumbs,
@@ -31,7 +31,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -165,8 +165,9 @@ const ProjectView = () => {
 
   // Get the tab query string value and associated tab index.
   // If there's no query string, default to first tab in TABS array
-  let activeTabIndex = !!query.get("tab")
-    ? TABS.findIndex((tab) => tab.param === query.get("tab"))
+
+  const activeTabIndex = query.get("tab")
+    ? TABS.findIndex((tab) => tab.param === query.get("tab")) || 0
     : 0;
 
   const DEFAULT_SNACKBAR_STATE = {
@@ -204,7 +205,6 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
-    fetchPolicy: "no-cache",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;
@@ -214,12 +214,14 @@ const ProjectView = () => {
    * @param {Object} event - The click event
    * @param {int} newTab - The number of the tab
    */
-  const handleChange = (event, newTab) => {
-    // While the refetch works, it doesn't force a component re-render. For now we use forceUpdate...
-    if (newTab === 0) refetch();
-    setActiveTab(newTab);
-    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
-  };
+  const handleChange = useCallback(
+    (event, newTab) => {
+      if (newTab === 0) refetch();
+      setActiveTab(newTab);
+      history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
+    },
+    [refetch, setActiveTab, projectId]
+  );
 
   /**
    * The mutation to soft-delete the project
@@ -380,6 +382,13 @@ const ProjectView = () => {
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted;
+
+  /**
+   * This function exists to enable closing the Map tab
+   */
+  const onCloseTab = useCallback(() => {
+    handleChange(null, 0);
+  }, [handleChange]);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -543,6 +552,7 @@ const ProjectView = () => {
                           parentProjectId={
                             data.moped_project[0].parent_project_id
                           }
+                          onCloseTab={onCloseTab}
                         />
                       </TabPanel>
                     );
