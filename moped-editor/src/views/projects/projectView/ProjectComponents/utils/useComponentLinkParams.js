@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
 
 // Example link: https://localhost:3000/moped/projects/225?tab=map&project_component_id=277
 
@@ -88,6 +87,7 @@ export const useComponentLinkParams = ({
     projectComponents,
     setClickedComponent,
     setHasComponentSetFromUrl,
+    errorMessageDispatch,
   ]);
 
   const updateClickedComponentIdInSearchParams = (clickedComponent) => {

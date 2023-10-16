@@ -28,7 +28,6 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
-import { set } from "date-fns";
 
 const drawerWidth = 350;
 
