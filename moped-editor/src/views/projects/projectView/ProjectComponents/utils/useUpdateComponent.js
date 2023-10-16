@@ -222,6 +222,7 @@ export const useUpdateComponent = ({
   refetchProjectComponents,
   setIsDrawing,
   mapRef,
+  updateClickedComponentIdInSearchParams,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -401,6 +402,7 @@ export const useUpdateComponent = ({
       .then(() => {
         refetchProjectComponents().then(() => {
           setClickedComponent(null);
+          updateClickedComponentIdInSearchParams(null);
           editDispatch({ type: "save_edit" });
           setIsDrawing(false);
 

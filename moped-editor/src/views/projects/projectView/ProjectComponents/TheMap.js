@@ -64,6 +64,7 @@ export default function TheMap({
   shouldShowRelatedProjects,
   isClickedComponentRelated,
   setIsClickedComponentRelated,
+  updateClickedComponentIdInSearchParams,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -255,6 +256,7 @@ export default function TheMap({
       /* clear clickedComponent to collapse list item  */
       if (clickedComponent) {
         setClickedComponent(null);
+        updateClickedComponentIdInSearchParams(null);
         setIsClickedComponentRelated(false);
       }
 
@@ -292,6 +294,7 @@ export default function TheMap({
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
         setClickedComponent(clickedComponentFromMap);
+        updateClickedComponentIdInSearchParams(clickedComponentFromMap);
         // Make sure that state reflects whether the clicked component is related or not
         // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);

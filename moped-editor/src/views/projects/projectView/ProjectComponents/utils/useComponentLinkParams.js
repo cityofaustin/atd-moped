@@ -32,58 +32,69 @@ export const useComponentLinkParams = ({
   setClickedComponent,
   projectComponents,
   clickedComponent,
+  errorMessageDispatch,
 }) => {
-  let [searchParams] = useSearchParams();
-  const [
-    hasClickedComponentBeenSetFromParam,
-    setHasClickedComponentBeenSetFromParam,
-  ] = useState(false);
+  const [hasComponentSetFromUrl, setHasComponentSetFromUrl] = useState(false);
 
   // TODO: Show alert when component is not found
-  // TODO: How to handle related components?
 
-  // Set clicked component from params once data loads
-  // useEffect(() => {
-  //   const componentParamId = parseInt(searchParams.get("project_component_id"));
+  // Set clicked component from initial params once data loads
+  useEffect(() => {
+    if (hasComponentSetFromUrl) return;
 
-  //   if (
-  //     !hasClickedComponentBeenSetFromParam &&
-  //     componentParamId &&
-  //     !clickedComponent &&
-  //     projectComponents.length > 0
-  //   ) {
-  //     console.log("initializing from params");
-  //     const componentFromParams = projectComponents.find(
-  //       (component) => component.project_component_id === componentParamId
-  //     );
-  //     if (componentFromParams) {
-  //       setClickedComponent(componentFromParams);
+    // Get component id from url if there is one
+    const currentSearchParams = new URLSearchParams(window.location.search);
+    const componentParamId = parseInt(
+      currentSearchParams.get("project_component_id")
+    );
 
-  //       const ref = componentFromParams?._ref;
-  //       ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
+    // Set clicked component when project component data loads
+    if (
+      !hasComponentSetFromUrl &&
+      componentParamId &&
+      !clickedComponent &&
+      projectComponents.length > 0
+    ) {
+      const componentFromParams = projectComponents.find(
+        (component) => component.project_component_id === componentParamId
+      );
+      console.log(componentFromParams, componentParamId);
 
-  //       setHasClickedComponentBeenSetFromParam(true);
-  //     }
-  //   }
+      if (componentFromParams) {
+        setClickedComponent(componentFromParams);
 
-  //   if (!componentParamId && clickedComponent) {
-  //     console.log("adding param after clicking component");
-  //     const clickedComponentId = clickedComponent?.project_component_id;
+        // Bring clicked component into view
+        const ref = componentFromParams?._ref;
+        ref?.current && ref.current.scrollIntoView({ behavior: "smooth" });
 
-  //     updateParamsWithoutRender("project_component_id", clickedComponentId);
-  //   }
+        // Track that initial component has been set from initial params
+        setHasComponentSetFromUrl(true);
+      } else {
+        console.log("not found");
+        errorMessageDispatch({
+          type: "show_error",
+          payload: {
+            message: `Component ID #${componentParamId} could not be found. 
+            The component may have been moved to another project or deleted. 
+            Please check this project's activity log for more details.`,
+            severity: "error",
+          },
+        });
+      }
+    }
+  }, [
+    hasComponentSetFromUrl,
+    clickedComponent,
+    projectComponents,
+    setClickedComponent,
+    setHasComponentSetFromUrl,
+  ]);
 
-  //   if (componentParamId && !clickedComponent) {
-  //     console.log("removing param after clicking away from component");
-  //     updateParamsWithoutRender("project_component_id", null);
-  //   }
-  // }, [searchParams, clickedComponent, projectComponents, setClickedComponent]);
-
-  const setClickedComponentIdInSearchParams = (clickedComponent) => {
+  const updateClickedComponentIdInSearchParams = (clickedComponent) => {
     const clickedComponentId = clickedComponent?.project_component_id ?? null;
 
     updateParamsWithoutRender("project_component_id", clickedComponentId);
   };
 
-  return { setClickedComponentIdInSearchParams };
+  return { updateClickedComponentIdInSearchParams };
 };

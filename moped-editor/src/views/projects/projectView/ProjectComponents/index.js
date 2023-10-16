@@ -28,6 +28,7 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
+import { set } from "date-fns";
 
 const drawerWidth = 350;
 
@@ -121,6 +122,15 @@ export default function MapView({
   const { projectComponents, allRelatedComponents } =
     useProjectComponents(data);
 
+  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
+
+  const { updateClickedComponentIdInSearchParams } = useComponentLinkParams({
+    setClickedComponent,
+    projectComponents,
+    clickedComponent,
+    errorMessageDispatch,
+  });
+
   const {
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
@@ -150,18 +160,11 @@ export default function MapView({
     refetchProjectComponents,
     setIsDrawing,
     mapRef,
-  });
-
-  const { setClickedComponentIdInSearchParams } = useComponentLinkParams({
-    setClickedComponent,
-    projectComponents,
-    clickedComponent,
+    updateClickedComponentIdInSearchParams,
   });
 
   // Keep clickedComponent state up to date with edits made to project components
   useEffect(() => {
-    setClickedComponentIdInSearchParams(clickedComponent);
-
     if (clickedComponent === null) return;
 
     const clickedComponentId = clickedComponent?.project_component_id;
@@ -170,11 +173,7 @@ export default function MapView({
     );
 
     setClickedComponent(updatedClickedComponent);
-  }, [
-    clickedComponent,
-    projectComponents,
-    setClickedComponentIdInSearchParams,
-  ]);
+  }, [clickedComponent, projectComponents]);
 
   // Keep draft component state in sync wiht clicked component (when editing)
   useEffect(() => {
@@ -193,9 +192,8 @@ export default function MapView({
       clickedComponent,
       setClickedComponent,
       refetchProjectComponents,
+      updateClickedComponentIdInSearchParams,
     });
-
-  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
 
   if (error) console.log(error);
 
@@ -205,6 +203,7 @@ export default function MapView({
     const featureCollection = { type: "FeatureCollection", features };
 
     setClickedComponent(component);
+    updateClickedComponentIdInSearchParams(component);
 
     // move the map
     zoomMapToFeatureCollection(
@@ -219,6 +218,7 @@ export default function MapView({
     createDispatch({ type: "start_create" });
     editDispatch({ type: "clear_draft_component" });
     setClickedComponent(null);
+    updateClickedComponentIdInSearchParams(null);
   };
 
   return (
@@ -274,6 +274,9 @@ export default function MapView({
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
+                updateClickedComponentIdInSearchParams={
+                  updateClickedComponentIdInSearchParams
+                }
               />
               <RelatedComponentsList
                 createState={createState}
@@ -313,6 +316,9 @@ export default function MapView({
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
               shouldShowRelatedProjects={shouldShowRelatedProjects}
+              updateClickedComponentIdInSearchParams={
+                updateClickedComponentIdInSearchParams
+              }
             />
           </div>
           <CreateComponentModal

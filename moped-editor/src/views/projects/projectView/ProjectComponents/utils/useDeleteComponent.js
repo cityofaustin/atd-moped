@@ -6,6 +6,7 @@ export const useDeleteComponent = ({
   clickedComponent,
   setClickedComponent,
   refetchProjectComponents,
+  updateClickedComponentIdInSearchParams,
 }) => {
   /* if a component is being deleted */
   const [isDeletingComponent, setIsDeletingComponent] = useState(false);
@@ -19,6 +20,7 @@ export const useDeleteComponent = ({
       .then(() => {
         refetchProjectComponents().then(() => {
           setClickedComponent(null);
+          updateClickedComponentIdInSearchParams(null);
           setIsDeletingComponent(false);
         });
       })
