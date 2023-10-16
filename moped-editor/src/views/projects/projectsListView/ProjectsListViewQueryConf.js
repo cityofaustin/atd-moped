@@ -15,7 +15,7 @@ import { formatTimeStampTZType } from "src/utils/dateAndTime";
 export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   options: {
     useQuery: {
-      fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
+      fetchPolicy: "cache-and-network", // Default is "cache-first", or use "no-cache"
     },
   },
   table: "project_list_view",
