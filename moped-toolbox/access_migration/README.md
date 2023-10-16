@@ -77,6 +77,7 @@ $ node index.js local
 
 
 ### Todo
+- CONFIRM: interim Sponsor > project lead
 - adding this is real fields for start and end dates—and use it in the cases
   - need to scope out estimated date UI with forms
 - audit fields: on phases and components
