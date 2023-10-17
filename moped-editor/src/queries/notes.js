@@ -41,9 +41,10 @@ export const UPDATE_PROJECT_NOTE = gql`
     $projectId: Int!
     $projectNoteId: Int!
     $projectNote: String!
+    $projectNoteType: Int
   ) {
     update_moped_proj_notes(
-      _set: { project_note: $projectNote }
+      _set: { project_note: $projectNote, project_note_type: $projectNoteType }
       where: {
         project_id: { _eq: $projectId }
         project_note_id: { _eq: $projectNoteId }
