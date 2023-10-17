@@ -48,7 +48,7 @@ def make_esri_feature(*, geometry, **attributes):
             "spatialReference": {"wkid": 4326},
         },
     }
-    feature[geometry_key] = geometry["coordinates"]
+    feature["geometry"][geometry_key] = geometry["coordinates"]
     return feature, geometry_key == "points"
 
 
@@ -69,7 +69,7 @@ def main():
         if is_point_feature:
             all_features["points"].append(feature)
         else:
-            all_features["points"].append(feature)
+            all_features["lines"].append(feature)
 
     for feature_type in ["points", "lines"]:
         logger.info(f"Processing {feature_type} features...")
