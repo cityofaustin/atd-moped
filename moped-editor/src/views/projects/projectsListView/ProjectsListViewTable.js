@@ -233,19 +233,20 @@ const ProjectsListViewTable = () => {
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
   /*
-   * Store column configution before data change triggers page refresh
-   * or opening advanced search dropdown triggers page refresh
+   * Store column configution before data change
    */
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
     if (storedConfig) {
       setHiddenColumns(storedConfig);
     }
-    // }, [data, advancedSearchAnchor]);
   }, [data]);
 
+  /**
+   * Store the most recent version of the query in app context so that it 
+   * can be refetched elswhere
+   */
   useEffect(() => {
-    console.log("I saved the query in context");
     queryContext.setListViewQuery(projectListViewQuery);
   }, [refetch, queryContext, projectListViewQuery]);
 
