@@ -277,17 +277,17 @@ const ProjectsListViewTable = () => {
     },
     {
       title: "Task order",
-      field: "task_order",
+      field: "task_orders",
       hidden: hiddenColumns["task_order"],
       cellStyle: { whiteSpace: "noWrap" },
       emptyValue: "-",
       render: (entry) => {
         // Empty value won't work in some cases where task_order is an empty array.
-        if (entry?.task_order.length < 1) {
+        if (entry?.task_orders.length < 1) {
           return "-";
         }
         // Render values as a comma seperated string
-        return entry.task_order.map((taskOrder) => (
+        return entry.task_orders.map((taskOrder) => (
           <span key={taskOrder.task_order} style={{ display: "block" }}>
             {taskOrder.display_name}
           </span>
