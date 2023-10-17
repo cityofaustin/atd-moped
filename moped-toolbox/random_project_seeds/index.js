@@ -205,11 +205,11 @@ const chunkProjects = (projects, chunkSize = 10) => {
 };
 
 async function main() {
-  // console.log("Deleting all projects...");
+  console.log("Deleting all projects...");
 
-  // await makeHasuraRequest({
-  //   query: DELETE_ALL_PROJECTS_MUTATION,
-  // });
+  await makeHasuraRequest({
+    query: DELETE_ALL_PROJECTS_MUTATION,
+  });
 
   console.log(`Generating ${settings.projects} random projects...`);
 
