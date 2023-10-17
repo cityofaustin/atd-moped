@@ -217,12 +217,11 @@ const editReducer = (state, action) => {
 export const useUpdateComponent = ({
   projectComponents,
   clickedComponent,
-  setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
   setIsDrawing,
   mapRef,
-  updateClickedComponentIdInSearchParams,
+  makeClickedComponentUpdates,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -401,8 +400,7 @@ export const useUpdateComponent = ({
     })
       .then(() => {
         refetchProjectComponents().then(() => {
-          setClickedComponent(null);
-          updateClickedComponentIdInSearchParams(null);
+          makeClickedComponentUpdates(null);
           editDispatch({ type: "save_edit" });
           setIsDrawing(false);
 

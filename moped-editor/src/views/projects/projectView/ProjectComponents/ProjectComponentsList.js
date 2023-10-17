@@ -18,14 +18,13 @@ const ProjectComponentsList = ({
   editState,
   editDispatch,
   clickedComponent,
-  setClickedComponent,
   onClickZoomToComponent,
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
   setIsMovingComponent,
   setIsClickedComponentRelated,
-  updateClickedComponentIdInSearchParams,
+  makeClickedComponentUpdates,
 }) => {
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
@@ -37,12 +36,10 @@ const ProjectComponentsList = ({
     setIsClickedComponentRelated(false);
     // Clear clickedComponent and draftEditComponent when we are not selecting for edit
     if (isExpanded(component)) {
-      setClickedComponent(null);
-      updateClickedComponentIdInSearchParams(null);
+      makeClickedComponentUpdates(null);
       editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
-      setClickedComponent(component);
-      updateClickedComponentIdInSearchParams(component);
+      makeClickedComponentUpdates(component);
     }
   };
 

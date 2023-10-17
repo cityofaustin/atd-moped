@@ -130,6 +130,12 @@ export default function MapView({
     errorMessageDispatch,
   });
 
+  /* Bundle updates that need to be made any time a component UI element is clicked */
+  const makeClickedComponentUpdates = (clickedComponent) => {
+    setClickedComponent(clickedComponent);
+    updateClickedComponentIdInSearchParams(clickedComponent);
+  };
+
   const {
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
@@ -154,12 +160,11 @@ export default function MapView({
   } = useUpdateComponent({
     projectComponents,
     clickedComponent,
-    setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
     mapRef,
-    updateClickedComponentIdInSearchParams,
+    makeClickedComponentUpdates,
   });
 
   // Keep clickedComponent state up to date with edits made to project components
@@ -189,9 +194,8 @@ export default function MapView({
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({
       clickedComponent,
-      setClickedComponent,
       refetchProjectComponents,
-      updateClickedComponentIdInSearchParams,
+      makeClickedComponentUpdates,
     });
 
   if (error) console.log(error);
@@ -201,8 +205,7 @@ export default function MapView({
     const features = getAllComponentFeatures(component);
     const featureCollection = { type: "FeatureCollection", features };
 
-    setClickedComponent(component);
-    updateClickedComponentIdInSearchParams(component);
+    makeClickedComponentUpdates(component);
 
     // move the map
     zoomMapToFeatureCollection(
@@ -216,8 +219,7 @@ export default function MapView({
   const onStartCreatingComponent = () => {
     createDispatch({ type: "start_create" });
     editDispatch({ type: "clear_draft_component" });
-    setClickedComponent(null);
-    updateClickedComponentIdInSearchParams(null);
+    makeClickedComponentUpdates(null);
   };
 
   return (
@@ -266,16 +268,12 @@ export default function MapView({
                 editState={editState}
                 editDispatch={editDispatch}
                 clickedComponent={clickedComponent}
-                setClickedComponent={setClickedComponent}
                 onClickZoomToComponent={onClickZoomToComponent}
                 onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
-                updateClickedComponentIdInSearchParams={
-                  updateClickedComponentIdInSearchParams
-                }
               />
               <RelatedComponentsList
                 createState={createState}
@@ -306,7 +304,6 @@ export default function MapView({
               isCreatingComponent={createState.isCreatingComponent}
               isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
-              setClickedComponent={setClickedComponent}
               isClickedComponentRelated={isClickedComponentRelated}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
               setIsFetchingFeatures={setIsFetchingFeatures}
@@ -315,9 +312,6 @@ export default function MapView({
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
               shouldShowRelatedProjects={shouldShowRelatedProjects}
-              updateClickedComponentIdInSearchParams={
-                updateClickedComponentIdInSearchParams
-              }
             />
           </div>
           <CreateComponentModal
