@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
   editableNote: {
     marginRight: "30px",
   },
-  noteType: {
+  filterNoteType: {
     display: "inline",
     marginLeft: "12px",
     color: theme.palette.primary.main,
@@ -102,12 +102,15 @@ const ProjectNotes = (props) => {
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(1);
+  const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
   const [editingNote, setEditingNote] = useState(false);
   const [noteId, setNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
-  const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [filterNoteType, setFilterNoteType] = useState(
+    isStatusEditModal ? 2 : 0
+  );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
@@ -193,19 +196,21 @@ const ProjectNotes = (props) => {
     });
   };
 
-  const editNote = (index, project_note_id) => {
+  const editNote = (index, item) => {
+    setEditingNoteType(item.project_note_type);
     setEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setNoteId(project_note_id);
+    setNoteId(item.project_note_id);
   };
 
   const cancelNoteEdit = () => {
+    setEditingNoteType(null);
     setNoteText("");
     setEditingNote(false);
     setNoteId(null);
   };
 
-  const submitEditNote = (project_note_id) => {
+  const submitEditNote = () => {
     setNoteAddLoading(true);
     setNoteId(null);
     editExistingNote({
@@ -213,8 +218,11 @@ const ProjectNotes = (props) => {
         projectNote: DOMPurify.sanitize(noteText),
         projectId: Number(projectId),
         projectNoteId: noteId,
+        projectNoteType: editingNoteType,
       },
     });
+
+    setEditingNoteType(null);
   };
 
   const submitDeleteNote = (project_note_id) => {
@@ -227,10 +235,10 @@ const ProjectNotes = (props) => {
   };
 
   /**
-   * Updates the type based on conditions
+   * Updates the note type based on conditions
    * @param {Number} typeId
    */
-  const filterNoteType = (typeId) => setNoteType(Number(typeId));
+  const changeFilterNoteType = (typeId) => setFilterNoteType(Number(typeId));
 
   // when the data changes, update the display notes state
   useEffect(() => {
@@ -240,21 +248,21 @@ const ProjectNotes = (props) => {
   }, [loading, data]);
 
   /**
-   * Whenever noteType changes, filter the notes being displayed
+   * Whenever filterNoteType changes, filter the notes being displayed
    */
   useEffect(() => {
-    if (noteType === 0) {
+    if (filterNoteType === 0) {
       // show all the notes
       setDisplayNotes(mopedProjNotes);
     } else {
       // on first few renders, mopedProjNotes is still undefined.
       // Check to see if array exists before trying to filter
       const filteredNotes = mopedProjNotes
-        ? mopedProjNotes.filter((n) => n.project_note_type === noteType)
+        ? mopedProjNotes.filter((n) => n.project_note_type === filterNoteType)
         : [];
       setDisplayNotes(filteredNotes);
     }
-  }, [noteType, mopedProjNotes]);
+  }, [filterNoteType, mopedProjNotes]);
 
   if (error) return console.log(error);
 
@@ -268,8 +276,8 @@ const ProjectNotes = (props) => {
     <Button
       color="primary"
       className={classes.showButtonItem}
-      variant={noteType === props.noteTypeId ? "contained" : "outlined"}
-      onClick={() => filterNoteType(props.noteTypeId)}
+      variant={filterNoteType === props.noteTypeId ? "contained" : "outlined"}
+      onClick={() => changeFilterNoteType(props.noteTypeId)}
     >
       {props.children}
     </Button>
@@ -365,7 +373,7 @@ const ProjectNotes = (props) => {
                                 </Typography>
                                 <Typography
                                   component={"span"}
-                                  className={classes.noteType}
+                                  className={classes.filterNoteType}
                                 >
                                   {` ${
                                     projectNoteTypes[item.project_note_type]
@@ -395,6 +403,8 @@ const ProjectNotes = (props) => {
                                   submitNewNote={submitNewNote}
                                   submitEditNote={submitEditNote}
                                   cancelNoteEdit={cancelNoteEdit}
+                                  editingNoteType={editingNoteType}
+                                  setEditingNoteType={setEditingNoteType}
                                 />
                               ) : (
                                 <Typography
@@ -417,9 +427,7 @@ const ProjectNotes = (props) => {
                                   <IconButton
                                     edge="end"
                                     aria-label="edit"
-                                    onClick={() =>
-                                      editNote(i, item.project_note_id)
-                                    }
+                                    onClick={() => editNote(i, item)}
                                     size="large"
                                   >
                                     <EditIcon
