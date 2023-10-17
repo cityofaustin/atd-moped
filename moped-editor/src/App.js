@@ -48,9 +48,20 @@ const useClient = (user) =>
       link: authLink.concat(httpLink),
       cache: new InMemoryCache({
         typePolicies: {
+          // a type policy must be added for any type we want to cache that
+          // does not use a column called `id` as the PK
           project_list_view: {
             keyFields: ["project_id"],
           },
+          moped_entity: {
+            keyFields: ["entity_id"],
+          },
+          moped_phases: {
+            keyFields: ["phase_id"],
+          },
+          moped_types: {
+            keyFields: ["type_id"],
+          }
         },
       }),
     });
