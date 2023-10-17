@@ -3,7 +3,7 @@ import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
-import { routes, restrictRoutes } from "src/routes";
+import { restrictedRoutes } from "src/routes";
 import { useUser, getJwt, getHighestRole } from "./auth/user";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -61,7 +61,7 @@ const useClient = (user) =>
           },
           moped_types: {
             keyFields: ["type_id"],
-          }
+          },
         },
       }),
     });
@@ -69,7 +69,6 @@ const useClient = (user) =>
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
-  const restrictedRoutes = useMemo(() => restrictRoutes(routes), []);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
