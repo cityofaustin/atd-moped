@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 
-/** @see https://github.com/kentcdodds/kentcdodds.com/blob/027070cdb2742452f98011c114a03ee325052cc7/app/utils/misc.tsx#L298-L325 */
+/** Update search params without the router triggering a re-render
+ * @see https://github.com/remix-run/react-router/discussions/9851#discussioncomment-5934435
+ * @see https://github.com/kentcdodds/kentcdodds.com/blob/027070cdb2742452f98011c114a03ee325052cc7/app/utils/misc.tsx#L298-L325
+ * Comment below is adapted from the linked code to apply to our use case in the project components map
+ */
 const updateParamsWithoutRender = (queryKey, queryValue) => {
   const currentSearchParams = new URLSearchParams(window.location.search);
   const oldQuery = currentSearchParams.get(queryKey) ?? "";
