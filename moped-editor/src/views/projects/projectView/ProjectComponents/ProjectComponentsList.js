@@ -150,7 +150,7 @@ const ProjectComponentsList = ({
                 title="Copied!"
                 placement="top"
               >
-                {/* this prevents warning about providing title prop to child of Tooltip */}
+                {/* This span prevents warning about providing title prop to child of Tooltip */}
                 <span>
                   <Tooltip title="Copy link to component" placement="bottom">
                     <IconButton
