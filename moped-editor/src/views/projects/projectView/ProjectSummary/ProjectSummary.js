@@ -128,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -166,6 +166,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 refetch={refetch}
                 classes={classes}
                 snackbarHandle={snackbarHandle}
+                listViewQuery={listViewQuery}
               />
               {data.moped_project[0]?.parent_project_id && (
                 <ProjectSummaryParentProjectLink

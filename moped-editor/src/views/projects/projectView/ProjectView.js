@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useContext, useEffect } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
@@ -61,6 +61,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
+import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -192,6 +193,8 @@ const ProjectView = () => {
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
+
+  const queryContext = useContext(ProjectListViewQueryContext);
 
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
@@ -553,6 +556,7 @@ const ProjectView = () => {
                             data.moped_project[0].parent_project_id
                           }
                           onCloseTab={onCloseTab}
+                          listViewQuery={queryContext.listViewQuery}
                         />
                       </TabPanel>
                     );
