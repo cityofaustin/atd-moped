@@ -30,11 +30,11 @@ export const useProjectComponents = (data) => {
     if (!data?.moped_proj_components) return [];
 
     return data.moped_proj_components.map((component) => {
-      const newComponet = cloneDeep(component);
-      newComponet._ref = createRef();
-      setComponentCouncilDistrict(newComponet, data.project_geography);
-      setLengthFeet(newComponet, data.project_geography);
-      return newComponet;
+      const newComponent = cloneDeep(component);
+      newComponent._ref = createRef();
+      setComponentCouncilDistrict(newComponent, data.project_geography);
+      setLengthFeet(newComponent, data.project_geography);
+      return newComponent;
     });
   }, [data]);
 
