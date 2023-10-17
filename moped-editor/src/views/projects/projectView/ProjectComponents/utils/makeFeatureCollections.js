@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { featureTableFieldMap } from "./makeFeatures";
-
+import { cloneDeep } from "@apollo/client/utilities";
 /**
  * Take a project_geography record and return a valid GeoJSON feature
  * TODO: We should look into returning GeoJSON features directly from the DB
@@ -23,9 +23,10 @@ export const makeFeatureFromProjectGeographyRecord = (record) => ({
 export const getAllComponentFeatures = (component) => {
   const allComponentFeatures = [];
 
-  Object.keys(featureTableFieldMap).forEach((key) => {
-    if (component.hasOwnProperty(key)) {
-      allComponentFeatures.push(component[key]);
+  Object.keys(featureTableFieldMap).forEach((featureTableName) => {
+    if (component.hasOwnProperty(featureTableName)) {
+      const feature = cloneDeep(component[featureTableName]);
+      allComponentFeatures.push(feature);
     }
   });
   // Flatten array of arrays containing features from each feature table

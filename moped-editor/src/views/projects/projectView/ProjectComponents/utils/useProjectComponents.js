@@ -69,11 +69,12 @@ export const useProjectComponents = (data) => {
   const allRelatedComponents = useMemo(() => {
     return [...parentComponents, ...siblingComponents, ...childComponents].map(
       (component) => {
+        const newComponent = cloneDeep(component);
         /* these refs will feed component list items so that we can scroll to them */
-        component._ref = createRef();
-        setComponentCouncilDistrict(component, data.project_geography);
-        setLengthFeet(component, data.project_geography);
-        return component;
+        newComponent._ref = createRef();
+        setComponentCouncilDistrict(newComponent, data.project_geography);
+        setLengthFeet(newComponent, data.project_geography);
+        return newComponent;
       }
     );
   }, [
