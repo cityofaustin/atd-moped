@@ -1,5 +1,6 @@
-import os
+import json
 import logging
+import os
 import sys
 
 import requests
@@ -72,6 +73,11 @@ def handle_arcgis_response(responseData):
     """
     if not responseData:
         return
+    
+    if responseData.get("error"):
+        # sometimes there is an error in the root of the response object 👍
+        raise ValueError(responseData["error"])
+
     keys = ["addResults", "updateResults", "deleteResults"]
     # parsing something like this
     # {'addResults': [{'objectId': 3977021, 'uniqueId': 3977021, 'globalId': None, 'success': True},...], ...}
@@ -123,7 +129,7 @@ def add_features(feature_type, features):
     endpoint = get_endpoint("addFeatures", feature_type)
     data = {
         "token": os.getenv("AGOL_TOKEN"),
-        "features": features,
+        "features": json.dumps(features),
         "rollbackOnFailure": False,
         "f": "json",
     }
@@ -131,6 +137,7 @@ def add_features(feature_type, features):
     res.raise_for_status()
     responseData = res.json()
     handle_arcgis_response(responseData)
+
 
 
 def get_token():
