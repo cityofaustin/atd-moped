@@ -618,14 +618,10 @@ const ProjectsListViewTable = () => {
   }, [data]);
 
   useEffect(() => {
-    console.log("I savedit");
+    console.log("I saved the query in context");
     queryContext.setListViewQuery(projectListViewQuery);
   }, [refetch, queryContext, projectListViewQuery]);
 
-  console.log(
-    "rppops",
-    PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
-  );
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
