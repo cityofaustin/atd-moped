@@ -167,7 +167,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "task_order_name",
+      name: "task_order_names",
       label: "Task orders",
       placeholder: "Task order",
       type: "string",

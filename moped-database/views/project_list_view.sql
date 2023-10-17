@@ -42,8 +42,8 @@ AS WITH project_person_list_lookup AS (
     mp.ecapris_subproject_id,
     mp.date_added,
     mp.is_deleted,
-    mp.task_order,
     mp.updated_at,
+    mpwa.task_orders,
     current_phase.phase_name as current_phase,
     current_phase.phase_key as current_phase_key,
     current_phase.phase_name_simple as current_phase_simple,
@@ -62,7 +62,6 @@ AS WITH project_person_list_lookup AS (
     ) as parent_project_name,
     cpl.children_project_ids,
     string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
-    string_agg(task_order_filter.value ->> 'display_name'::text, ','::text) AS task_order_name,
     (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id))
         FROM moped_proj_components components   
         LEFT JOIN feature_signals
@@ -141,7 +140,17 @@ AS WITH project_person_list_lookup AS (
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
       GROUP BY contract.project_id) AS contract_numbers,
-    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
+    ( -- get all of the task order names added to a project
+      SELECT
+        string_agg(
+            task_order_filter.value ->> 'display_name'::text, ', '::text
+        ) AS string_agg
+      FROM moped_proj_work_activity task_order
+      WHERE 1 = 1
+        AND task_order.is_deleted = FALSE
+        AND task_order.project_id = mp.project_id
+      GROUP BY task_order.project_id) AS task_order_names,
+     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -150,7 +159,8 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN moped_entity mel ON mel.entity_id = mp.project_lead_id
      LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
      LEFT JOIN moped_entity me2 ON mpp2.entity_id = me2.entity_id
-     LEFT JOIN LATERAL jsonb_array_elements(mp.task_order) task_order_filter(value) ON true
+     left join moped_proj_work_activity mpwa on mpwa.project_id = mp.project_id
+     LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_filter(value) ON true
      LEFT JOIN moped_proj_work_activity contracts ON (mp.project_id = contracts.project_id) AND contracts.is_deleted = false
      LEFT JOIN moped_users added_by_user ON mp.added_by = added_by_user.user_id
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
@@ -173,18 +183,18 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members, 
     mp.ecapris_subproject_id, 
     mp.date_added,
-    mp.is_deleted, 
-    me.entity_name, 
-    mel.entity_name, 
+    mp.is_deleted,
+    me.entity_name,
+    mel.entity_name,
     mp.updated_at, 
-    mp.task_order,
+    mpwa.task_orders,
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
     current_phase.phase_name,
     current_phase.phase_key,
     current_phase.phase_name_simple,
-    ptl.type_name, 
+    ptl.type_name,
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,

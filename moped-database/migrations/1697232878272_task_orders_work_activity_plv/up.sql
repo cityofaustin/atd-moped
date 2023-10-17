@@ -142,7 +142,7 @@ AS WITH project_person_list_lookup AS (
     ( -- get all of the task order names added to a project
       SELECT
         string_agg(
-            task_order_filter.value ->> 'display_name'::text, ','::text
+            task_order_filter.value ->> 'display_name'::text, ', '::text
         ) AS string_agg
       FROM moped_proj_work_activity task_order
       WHERE 1 = 1
@@ -182,9 +182,9 @@ AS WITH project_person_list_lookup AS (
     ppll.project_team_members, 
     mp.ecapris_subproject_id, 
     mp.date_added,
-    mp.is_deleted, 
-    me.entity_name, 
-    mel.entity_name, 
+    mp.is_deleted,
+    me.entity_name,
+    mel.entity_name,
     mp.updated_at, 
     mpwa.task_orders,
     mp.interim_project_id,
@@ -193,7 +193,7 @@ AS WITH project_person_list_lookup AS (
     current_phase.phase_name,
     current_phase.phase_key,
     current_phase.phase_name_simple,
-    ptl.type_name, 
+    ptl.type_name,
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,
