@@ -7,12 +7,11 @@ import React, {
 } from "react";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import typography from "../../../theme/typography";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import MaterialTable from "@material-table/core";
-import { useTableComponents, useColumns } from "./helpers.js";
+import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
@@ -103,27 +102,6 @@ const handleColumnChange = ({ field }, hidden) => {
   localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
 };
 
-const useTableOptions = ({ typography, queryLimit, data }) =>
-  useMemo(
-    () => ({
-      search: false,
-      rowStyle: {
-        fontFamily: typography.fontFamily,
-        fontSize: "14px",
-      },
-      pageSize: Math.min(queryLimit, data?.project_list_view?.length),
-      headerStyle: {
-        // material table header row has a zIndex of 10, which
-        // is conflicting with the search/filter dropdown
-        zIndex: 1,
-        whiteSpace: "nowrap",
-      },
-      columnsButton: true,
-      idSynonym: "project_id",
-    }),
-    [typography, queryLimit, data]
-  );
-
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -202,7 +180,7 @@ const ProjectsListViewTable = () => {
     setQueryLimit,
   });
 
-  const tableOptions = useTableOptions({ typography, queryLimit, data });
+  const tableOptions = useTableOptions({ queryLimit, data });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn

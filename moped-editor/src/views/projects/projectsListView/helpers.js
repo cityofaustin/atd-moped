@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
+import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import Pagination from "../../../components/GridTable/Pagination";
@@ -76,6 +77,9 @@ export const resolveHasSubprojects = (array) => {
   return "No";
 };
 
+/**
+ * Various custom components for Material Table
+ */
 export const useTableComponents = ({
   data,
   queryLimit,
@@ -121,6 +125,9 @@ export const useTableComponents = ({
     ]
   );
 
+/**
+ * The Material Table column settings
+ */
 export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
   useMemo(
     () => [
@@ -408,4 +415,31 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
       },
     ],
     [hiddenColumns, linkStateFilters, classes]
+  );
+
+/**
+ * Defines various Material Table options
+ * @param {integer} queryLimit - the current rows per page option
+ * @param {object[]} data - the project list view data
+ * @returns {boject} the material table setings options
+ */
+export const useTableOptions = ({ queryLimit, data }) =>
+  useMemo(
+    () => ({
+      search: false,
+      rowStyle: {
+        fontFamily: typography.fontFamily,
+        fontSize: "14px",
+      },
+      pageSize: Math.min(queryLimit, data?.project_list_view?.length),
+      headerStyle: {
+        // material table header row has a zIndex of 10, which
+        // is conflicting with the search/filter dropdown
+        zIndex: 1,
+        whiteSpace: "nowrap",
+      },
+      columnsButton: true,
+      idSynonym: "project_id",
+    }),
+    [queryLimit, data]
   );
