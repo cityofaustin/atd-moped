@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useContext, useEffect } from "react";
+import React, { useState, useCallback, useContext } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
