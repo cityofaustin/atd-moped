@@ -1,4 +1,4 @@
--- latest version 1697223504409_add_columns_to_project_list_view
+-- latest version 1697232878272_task_orders_work_activity_plv
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -140,6 +140,7 @@ AS WITH project_person_list_lookup AS (
         AND contract.is_deleted = FALSE
         AND contract.project_id = mp.project_id
       GROUP BY contract.project_id) AS contract_numbers,
+    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     ( -- get all of the task order names added to a project
       SELECT
         string_agg(
@@ -149,8 +150,7 @@ AS WITH project_person_list_lookup AS (
       WHERE 1 = 1
         AND task_order.is_deleted = FALSE
         AND task_order.project_id = mp.project_id
-      GROUP BY task_order.project_id) AS task_order_names,
-     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
+      GROUP BY task_order.project_id) AS task_order_names
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
