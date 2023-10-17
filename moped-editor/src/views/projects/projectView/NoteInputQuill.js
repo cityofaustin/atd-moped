@@ -1,5 +1,15 @@
 import React, { useRef, useEffect } from "react";
-import { Box, Button, Container, Grid } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  FormControl,
+  Radio,
+  RadioGroup,
+  FormLabel,
+  FormControlLabel,
+} from "@mui/material";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import makeStyles from "@mui/styles/makeStyles";
@@ -32,11 +42,32 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * Defines the NoteTypeRadioButtons with a toggle style-change behavior.
+ * @param {Object} props
+ * @return {JSX.Element}
+ * @constructor
+ */
+const NoteTypeRadioButtons = (props) => (
+  <RadioGroup
+    row
+    aria-labelledby="demo-radio-buttons-group-label"
+    defaultValue={props.defaultValue}
+    name="radio-buttons-group"
+    onChange={props.onChange}
+  >
+    <FormControlLabel value={1} control={<Radio />} label="Internal" />
+    <FormControlLabel value={2} control={<Radio />} label="Status update" />
+  </RadioGroup>
+);
+
 const NoteInputQuill = ({
   noteText,
   setNoteText,
   newNoteType,
   setNewNoteType,
+  editingNoteType,
+  setEditingNoteType,
   editingNote,
   noteAddLoading,
   noteAddSuccess,
@@ -47,27 +78,13 @@ const NoteInputQuill = ({
   const classes = useStyles();
   const ref = useRef();
 
+  console.log(noteText, "this is note text");
+  // console.log(editingNoteType);
+
   useEffect(() => {
     // autofocuses the quill input
     ref?.current.focus();
   }, []);
-
-  /**
-   * Defines the NewNoteTypeButton with a toggle style-change behavior.
-   * @param {Object} props
-   * @return {JSX.Element}
-   * @constructor
-   */
-  const NewNoteTypeButton = (props) => (
-    <Button
-      color="primary"
-      className={classes.showButtonItem}
-      variant={newNoteType === props.noteTypeId ? "contained" : "outlined"}
-      onClick={() => setNewNoteType(props.noteTypeId)}
-    >
-      {props.children}
-    </Button>
-  );
 
   return (
     <Container>
@@ -83,17 +100,27 @@ const NoteInputQuill = ({
             />
           </Box>
         </Grid>
-        {!editingNote && (
-          <Grid
-            item
-            xs={12}
-            display="flex"
-            style={{ justifyContent: "flex-end" }}
-          >
-            <NewNoteTypeButton noteTypeId={1}>Internal Note</NewNoteTypeButton>
-            <NewNoteTypeButton noteTypeId={2}>Status Update</NewNoteTypeButton>
-          </Grid>
-        )}
+        <Grid
+          item
+          xs={12}
+          display="flex"
+          style={{ justifyContent: "flex-end" }}
+        >
+          <FormControl>
+            <FormLabel id="demo-radio-buttons-group-label">Note type</FormLabel>
+            {!editingNote ? (
+              <NoteTypeRadioButtons
+                onChange={(e) => setNewNoteType(e.target.value)}
+                defaultValue={newNoteType}
+              ></NoteTypeRadioButtons>
+            ) : (
+              <NoteTypeRadioButtons
+                onChange={(e) => setEditingNoteType(e.target.value)}
+                defaultValue={editingNoteType}
+              ></NoteTypeRadioButtons>
+            )}
+          </FormControl>
+        </Grid>
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
             {editingNote && (
