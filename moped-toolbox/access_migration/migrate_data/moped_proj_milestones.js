@@ -1,12 +1,6 @@
 const { logger } = require("./utils/logger");
 const { loadJsonFile } = require("./utils/loader");
-const { mapRow } = require("./utils/misc");
-const {
-  MOPED_FUNDS,
-  FUND_PROGRAMS_MAP,
-  FUND_SOURCES_MAP,
-  FUND_STATUS_MAP,
-} = require("./mappings/fund_sources");
+
 const PROJ_DATES_FNAME = "./data/raw/project_dates.json";
 
 const PROJ_DATES = loadJsonFile(PROJ_DATES_FNAME);
