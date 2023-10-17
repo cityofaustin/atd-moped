@@ -35,10 +35,7 @@ const ProjectSummaryProjectDescription = ({
   const [editMode, setEditMode] = useState(false);
   const [description, setDescription] = useState(originalDescription);
 
-  const [updateProjectDescription] = useMutation(
-    PROJECT_UPDATE_DESCRIPTION,
-    {}
-  );
+  const [updateProjectDescription] = useMutation(PROJECT_UPDATE_DESCRIPTION);
 
   /**
    * Resets the project description to original value
