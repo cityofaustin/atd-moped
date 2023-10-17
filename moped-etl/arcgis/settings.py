@@ -1,4 +1,4 @@
-UPLOAD_CHUNK_SIZE = 200
+UPLOAD_CHUNK_SIZE = 100
 
 SERVICE_NAMES = {"points": "MOPED_Points", "lines": "MOPED_Lines"}
 
