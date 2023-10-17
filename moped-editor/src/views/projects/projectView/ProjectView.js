@@ -165,8 +165,8 @@ const ProjectView = () => {
     : "/moped/projects";
 
   // Get the tab query string value and associated tab index.
-  // If there's no query string, default to first tab in TABS array
-
+  // If there's no query string (or the string does not match
+  // a tab name), default to first tab in TABS array
   const activeTabIndex = query.get("tab")
     ? TABS.findIndex((tab) => tab.param === query.get("tab")) || 0
     : 0;
