@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
 import GlobalStyles from "src/components/GlobalStyles";
@@ -8,6 +8,7 @@ import { useUser, getJwt, getHighestRole } from "./auth/user";
 import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import ProjectListViewQueryContext from "./components/QueryContextProvider";
 
 // Apollo GraphQL Client
 import {
@@ -56,7 +57,8 @@ const useClient = (user) =>
   }, [user]);
 
 const App = () => {
-  const restrictedRoutes = useMemo(() => restrictRoutes(routes), [routes]);
+  const [listViewQuery, setListViewQuery] = useState(null);
+  const restrictedRoutes = useMemo(() => restrictRoutes(routes), []);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
@@ -66,7 +68,11 @@ const App = () => {
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
             <GlobalStyles />
-            {routing}
+            <ProjectListViewQueryContext.Provider
+              value={{ listViewQuery, setListViewQuery }}
+            >
+              {routing}
+            </ProjectListViewQueryContext.Provider>
           </ThemeProvider>
         </LocalizationProvider>
       </StyledEngineProvider>
