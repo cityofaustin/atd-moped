@@ -29,9 +29,9 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [250, 1000],
+    rowsPerPageOptions: [100, 250, 1000],
     defaultOffset: 0,
-    defaultLimit: 250,
+    defaultLimit: 100,
   },
   order: {
     defaultColumn: "updated_at",
