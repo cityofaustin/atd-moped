@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useContext,
+  useCallback,
+} from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
@@ -26,6 +32,7 @@ import { usePagination } from "./useProjectListViewQuery/usePagination";
 import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
   CsvDownloadDialog,
@@ -117,6 +124,359 @@ const buildStatusBadge = ({ phaseName, phaseKey }) => (
   <ProjectStatusBadge phaseName={phaseName} phaseKey={phaseKey} condensed />
 );
 
+const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
+  useMemo(
+    () => [
+      {
+        title: "ID",
+        field: "project_id",
+        hidden: hiddenColumns["project_id"],
+      },
+      {
+        title: "Name",
+        field: "project_name",
+        hidden: hiddenColumns["project_name"],
+        render: (entry) => (
+          <RouterLink
+            to={`/moped/projects/${entry.project_id}`}
+            state={{ filters: linkStateFilters }}
+            className={classes.colorPrimary}
+          >
+            {entry.project_name}
+          </RouterLink>
+        ),
+        cellStyle: {
+          position: "sticky",
+          left: 0,
+          backgroundColor: "white",
+          minWidth: "20rem",
+          zIndex: 1,
+        },
+      },
+      {
+        title: "Status",
+        field: "current_phase",
+        hidden: hiddenColumns["current_phase"],
+        render: (entry) =>
+          buildStatusBadge({
+            phaseName: entry.current_phase,
+            phaseKey: entry.current_phase_key,
+          }),
+      },
+      {
+        title: "Team",
+        field: "project_team_members",
+        hidden: hiddenColumns["project_team_members"],
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) =>
+          renderProjectTeamMembers(
+            entry.project_team_members,
+            "projectsListView"
+          ),
+      },
+      {
+        title: "Lead",
+        field: "project_lead",
+        hidden: hiddenColumns["project_lead"],
+        editable: "never",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) =>
+          entry.project_lead === null ? "-" : entry.project_lead,
+      },
+      {
+        title: "Sponsor",
+        field: "project_sponsor",
+        hidden: hiddenColumns["project_sponsor"],
+        editable: "never",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) =>
+          entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
+      },
+      {
+        title: "Partners",
+        field: "project_partner",
+        hidden: hiddenColumns["project_partner"],
+        emptyValue: "-",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) => {
+          return entry.project_partner.split(",").map((partner) => (
+            <span key={partner} style={{ display: "block" }}>
+              {partner}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "eCAPRIS ID",
+        field: "ecapris_subproject_id",
+        hidden: hiddenColumns["ecapris_subproject_id"],
+        render: (entry) => (
+          <ExternalLink
+            text={entry.ecapris_subproject_id}
+            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
+          />
+        ),
+      },
+      {
+        title: "Modified",
+        field: "updated_at",
+        hidden: hiddenColumns["updated_at"],
+        render: (entry) => formatTimeStampTZType(entry.updated_at),
+      },
+      {
+        title: "Signal IDs",
+        field: "project_feature",
+        hidden: hiddenColumns["project_feature"],
+        sorting: false,
+        render: (entry) => {
+          if (!entry?.project_feature) {
+            return "-";
+          } else {
+            const signals = entry.project_feature.filter(
+              (signal) => signal.signal_id && signal.knack_id
+            );
+            return <RenderSignalLink signals={signals} />;
+          }
+        },
+      },
+      {
+        title: "Task order",
+        field: "task_order",
+        hidden: hiddenColumns["task_order"],
+        cellStyle: { whiteSpace: "noWrap" },
+        emptyValue: "-",
+        render: (entry) => {
+          // Empty value won't work in some cases where task_order is an empty array.
+          if (entry?.task_order.length < 1) {
+            return "-";
+          }
+          // Render values as a comma seperated string
+          return entry.task_order.map((taskOrder) => (
+            <span key={taskOrder.task_order} style={{ display: "block" }}>
+              {taskOrder.display_name}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "Type",
+        field: "type_name",
+        hidden: hiddenColumns["type_name"],
+        emptyValue: "-",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) => {
+          return entry.type_name.split(",").map((type_name) => (
+            <span key={type_name} style={{ display: "block" }}>
+              {type_name}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "Funding",
+        field: "funding_source_name",
+        hidden: hiddenColumns["funding_source_name"],
+        emptyValue: "-",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) => {
+          return entry.funding_source_name
+            .split(",")
+            .map((funding_source_name, i) => (
+              <span key={i} style={{ display: "block" }}>
+                {funding_source_name}
+              </span>
+            ));
+        },
+      },
+      {
+        title: "Status update",
+        field: "project_note",
+        hidden: hiddenColumns["project_note"],
+        emptyValue: "-",
+        cellStyle: { maxWidth: "30rem" },
+        render: (entry) => parse(String(entry.project_note)),
+      },
+      {
+        title: "Construction start",
+        field: "construction_start_date",
+        hidden: hiddenColumns["construction_start_date"],
+        emptyValue: "-",
+        render: (entry) => formatDateType(entry.construction_start_date),
+      },
+      {
+        title: "Completion date",
+        field: "completion_end_date",
+        hidden: hiddenColumns["completion_end_date"],
+        emptyValue: "-",
+        render: (entry) => formatDateType(entry.completion_end_date),
+      },
+      {
+        title: "Designer",
+        field: "project_designer",
+        hidden: hiddenColumns["project_designer"],
+        emptyValue: "-",
+      },
+      {
+        title: "Inspector",
+        field: "project_inspector",
+        hidden: hiddenColumns["project_inspector"],
+        emptyValue: "-",
+      },
+      {
+        title: "Contractors",
+        field: "contractors",
+        hidden: hiddenColumns["contractors"],
+        emptyValue: "-",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) => {
+          return entry.contractors.split(",").map((contractor, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {contractor}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "Contract numbers",
+        field: "contract_numbers",
+        hidden: hiddenColumns["contract_numbers"],
+        emptyValue: "-",
+        cellStyle: { whiteSpace: "noWrap" },
+        render: (entry) => {
+          return entry.contract_numbers.split(",").map((contractNumber, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {contractNumber}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "Tags",
+        field: "project_tags",
+        hidden: hiddenColumns["project_tags"],
+        cellStyle: { whiteSpace: "noWrap" },
+        emptyValue: "-",
+        render: (entry) => {
+          return entry.project_tags.split(",").map((tag) => (
+            <span key={tag} style={{ display: "block" }}>
+              {tag}
+            </span>
+          ));
+        },
+      },
+      {
+        title: "Created by",
+        field: "added_by",
+        hidden: hiddenColumns["added_by"],
+        emptyValue: "-",
+      },
+      {
+        title: "Public process status",
+        field: "public_process_status",
+        hidden: hiddenColumns["public_process_status"],
+        emptyValue: "-",
+      },
+      {
+        title: "Interim MPD (Access) ID",
+        field: "interim_project_id",
+        hidden: hiddenColumns["interim_project_id"],
+        emptyValue: "-",
+      },
+      {
+        title: "Parent project",
+        field: "parent_project_id",
+        hidden: hiddenColumns["parent_project_id"],
+        emptyValue: "-",
+        render: (entry) => (
+          <RouterLink
+            to={`/moped/projects/${entry.parent_project_id}`}
+            state={{ filters: linkStateFilters }}
+            className={classes.colorPrimary}
+          >
+            {entry.parent_project_name}
+          </RouterLink>
+        ),
+      },
+      {
+        title: "Has subprojects",
+        field: "children_project_ids",
+        hidden: hiddenColumns["children_project_ids"],
+        render: (entry) => {
+          const hasChildren = entry.children_project_ids.length > 0;
+          return <span> {hasChildren ? "Yes" : "-"} </span>;
+        },
+        emptyValue: "-",
+      },
+    ],
+    [hiddenColumns, linkStateFilters, classes]
+  );
+
+const useTableOptions = ({ typography, queryLimit, data }) =>
+  useMemo(
+    () => ({
+      search: false,
+      rowStyle: {
+        fontFamily: typography.fontFamily,
+        fontSize: "14px",
+      },
+      pageSize: Math.min(queryLimit, data?.project_list_view?.length),
+      headerStyle: {
+        // material table header row has a zIndex of 10, which
+        // is conflicting with the search/filter dropdown
+        zIndex: 1,
+        whiteSpace: "nowrap",
+      },
+      columnsButton: true,
+      idSynonym: "project_id",
+    }),
+    [typography, queryLimit, data]
+  );
+
+const useTableComponents = ({
+  data,
+  queryLimit,
+  queryOffset,
+  setQueryLimit,
+  setQueryOffset,
+  handleTableHeaderClick,
+  sortByColumnIndex,
+  orderByDirection,
+}) =>
+  useMemo(
+    () => ({
+      Pagination: (props) => (
+        <Pagination
+          recordCount={data.project_list_view_aggregate?.aggregate.count}
+          queryLimit={queryLimit}
+          setQueryLimit={setQueryLimit}
+          queryOffset={queryOffset}
+          setQueryOffset={setQueryOffset}
+          rowsPerPageOptions={
+            PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
+          }
+        />
+      ),
+      Header: (props) => (
+        <MTableHeader
+          {...props}
+          onOrderChange={handleTableHeaderClick}
+          orderBy={sortByColumnIndex}
+          orderDirection={orderByDirection}
+        />
+      ),
+    }),
+    [
+      data,
+      queryLimit,
+      queryOffset,
+      setQueryLimit,
+      setQueryOffset,
+      handleTableHeaderClick,
+      sortByColumnIndex,
+      orderByDirection,
+    ]
+  );
+
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
@@ -124,8 +484,8 @@ const buildStatusBadge = ({ phaseName, phaseKey }) => (
  * @constructor
  */
 const ProjectsListViewTable = () => {
+  const queryContext = useContext(ProjectListViewQueryContext);
   const classes = useStyles();
-
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
@@ -162,288 +522,11 @@ const ProjectsListViewTable = () => {
     return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
   }, [filters]);
 
-  const columns = [
-    {
-      title: "ID",
-      field: "project_id",
-      hidden: hiddenColumns["project_id"],
-    },
-    {
-      title: "Name",
-      field: "project_name",
-      hidden: hiddenColumns["project_name"],
-      render: (entry) => (
-        <RouterLink
-          to={`/moped/projects/${entry.project_id}`}
-          state={{ filters: linkStateFilters }}
-          className={classes.colorPrimary}
-        >
-          {entry.project_name}
-        </RouterLink>
-      ),
-      cellStyle: {
-        position: "sticky",
-        left: 0,
-        backgroundColor: "white",
-        minWidth: "20rem",
-        zIndex: 1,
-      },
-    },
-    {
-      title: "Status",
-      field: "current_phase",
-      hidden: hiddenColumns["current_phase"],
-      render: (entry) =>
-        buildStatusBadge({
-          phaseName: entry.current_phase,
-          phaseKey: entry.current_phase_key,
-        }),
-    },
-    {
-      title: "Team",
-      field: "project_team_members",
-      hidden: hiddenColumns["project_team_members"],
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        renderProjectTeamMembers(
-          entry.project_team_members,
-          "projectsListView"
-        ),
-    },
-    {
-      title: "Lead",
-      field: "project_lead",
-      hidden: hiddenColumns["project_lead"],
-      editable: "never",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        entry.project_lead === null ? "-" : entry.project_lead,
-    },
-    {
-      title: "Sponsor",
-      field: "project_sponsor",
-      hidden: hiddenColumns["project_sponsor"],
-      editable: "never",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) =>
-        entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
-    },
-    {
-      title: "Partners",
-      field: "project_partner",
-      hidden: hiddenColumns["project_partner"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.project_partner.split(",").map((partner) => (
-          <span key={partner} style={{ display: "block" }}>
-            {partner}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "eCAPRIS ID",
-      field: "ecapris_subproject_id",
-      hidden: hiddenColumns["ecapris_subproject_id"],
-      render: (entry) => (
-        <ExternalLink
-          text={entry.ecapris_subproject_id}
-          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
-        />
-      ),
-    },
-    {
-      title: "Modified",
-      field: "updated_at",
-      hidden: hiddenColumns["updated_at"],
-      render: (entry) => formatTimeStampTZType(entry.updated_at),
-    },
-    {
-      title: "Signal IDs",
-      field: "project_feature",
-      hidden: hiddenColumns["project_feature"],
-      sorting: false,
-      render: (entry) => {
-        if (!entry?.project_feature) {
-          return "-";
-        } else {
-          const signals = entry.project_feature.filter(
-            (signal) => signal.signal_id && signal.knack_id
-          );
-          return <RenderSignalLink signals={signals} />;
-        }
-      },
-    },
-    {
-      title: "Task order",
-      field: "task_order",
-      hidden: hiddenColumns["task_order"],
-      cellStyle: { whiteSpace: "noWrap" },
-      emptyValue: "-",
-      render: (entry) => {
-        // Empty value won't work in some cases where task_order is an empty array.
-        if (entry?.task_order.length < 1) {
-          return "-";
-        }
-        // Render values as a comma seperated string
-        return entry.task_order.map((taskOrder) => (
-          <span key={taskOrder.task_order} style={{ display: "block" }}>
-            {taskOrder.display_name}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Type",
-      field: "type_name",
-      hidden: hiddenColumns["type_name"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.type_name.split(",").map((type_name) => (
-          <span key={type_name} style={{ display: "block" }}>
-            {type_name}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Funding",
-      field: "funding_source_name",
-      hidden: hiddenColumns["funding_source_name"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.funding_source_name
-          .split(",")
-          .map((funding_source_name, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {funding_source_name}
-            </span>
-          ));
-      },
-    },
-    {
-      title: "Status update",
-      field: "project_note",
-      hidden: hiddenColumns["project_note"],
-      emptyValue: "-",
-      cellStyle: { maxWidth: "30rem" },
-      render: (entry) => parse(String(entry.project_note)),
-    },
-    {
-      title: "Construction start",
-      field: "construction_start_date",
-      hidden: hiddenColumns["construction_start_date"],
-      emptyValue: "-",
-      render: (entry) => formatDateType(entry.construction_start_date),
-    },
-    {
-      title: "Completion date",
-      field: "completion_end_date",
-      hidden: hiddenColumns["completion_end_date"],
-      emptyValue: "-",
-      render: (entry) => formatDateType(entry.completion_end_date),
-    },
-    {
-      title: "Designer",
-      field: "project_designer",
-      hidden: hiddenColumns["project_designer"],
-      emptyValue: "-",
-    },
-    {
-      title: "Inspector",
-      field: "project_inspector",
-      hidden: hiddenColumns["project_inspector"],
-      emptyValue: "-",
-    },
-    {
-      title: "Contractors",
-      field: "contractors",
-      hidden: hiddenColumns["contractors"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.contractors.split(",").map((contractor, i) => (
-          <span key={i} style={{ display: "block" }}>
-            {contractor}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Contract numbers",
-      field: "contract_numbers",
-      hidden: hiddenColumns["contract_numbers"],
-      emptyValue: "-",
-      cellStyle: { whiteSpace: "noWrap" },
-      render: (entry) => {
-        return entry.contract_numbers.split(",").map((contractNumber, i) => (
-          <span key={i} style={{ display: "block" }}>
-            {contractNumber}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Tags",
-      field: "project_tags",
-      hidden: hiddenColumns["project_tags"],
-      cellStyle: { whiteSpace: "noWrap" },
-      emptyValue: "-",
-      render: (entry) => {
-        return entry.project_tags.split(",").map((tag) => (
-          <span key={tag} style={{ display: "block" }}>
-            {tag}
-          </span>
-        ));
-      },
-    },
-    {
-      title: "Created by",
-      field: "added_by",
-      hidden: hiddenColumns["added_by"],
-      emptyValue: "-",
-    },
-    {
-      title: "Public process status",
-      field: "public_process_status",
-      hidden: hiddenColumns["public_process_status"],
-      emptyValue: "-",
-    },
-    {
-      title: "Interim MPD (Access) ID",
-      field: "interim_project_id",
-      hidden: hiddenColumns["interim_project_id"],
-      emptyValue: "-",
-    },
-    {
-      title: "Parent project",
-      field: "parent_project_id",
-      hidden: hiddenColumns["parent_project_id"],
-      emptyValue: "-",
-      render: (entry) => (
-        <RouterLink
-          to={`/moped/projects/${entry.parent_project_id}`}
-          state={{ filters: linkStateFilters }}
-          className={classes.colorPrimary}
-        >
-          {entry.parent_project_name}
-        </RouterLink>
-      ),
-    },
-    {
-      title: "Has subprojects",
-      field: "children_project_ids",
-      hidden: hiddenColumns["children_project_ids"],
-      render: (entry) => {
-        const hasChildren = entry.children_project_ids.length > 0;
-        return <span> {hasChildren ? "Yes" : "-"} </span>;
-      },
-      emptyValue: "-",
-    },
-  ];
+  const columns = useColumns({
+    hiddenColumns,
+    linkStateFilters,
+    classes,
+  });
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
@@ -459,7 +542,7 @@ const ProjectsListViewTable = () => {
     advancedSearchWhereString,
   });
 
-  const { data, loading, error } = useQuery(projectListViewQuery, {
+  const { data, error, refetch } = useQuery(projectListViewQuery, {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
 
@@ -472,6 +555,8 @@ const ProjectsListViewTable = () => {
     setQueryLimit,
   });
 
+  const tableOptions = useTableOptions({ typography, queryLimit, data });
+
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
   );
@@ -483,23 +568,43 @@ const ProjectsListViewTable = () => {
    * Note: this is a GridTable function that we are using to override a Material Table sorting function
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
-  const handleTableHeaderClick = (columnId, newOrderDirection) => {
-    const columnName = columns[columnId]?.field;
+  const handleTableHeaderClick = useCallback(
+    (columnId, newOrderDirection) => {
+      const columnName = columns[columnId]?.field;
 
-    // Resets pagination offset to 0 when user clicks a header to display most relevant results
-    setQueryOffset(0);
+      // Resets pagination offset to 0 when user clicks a header to display most relevant results
+      setQueryOffset(0);
 
-    if (orderByColumn === columnName) {
-      // If the current sortColumn is the same as the new
-      // then invert values and repeat sort on column
-      const direction = orderByDirection === "desc" ? "asc" : "desc";
-      setOrderByDirection(direction);
-    } else {
-      // Sort different column in same order as previous column
-      setOrderByColumn(columnName);
-    }
-  };
+      if (orderByColumn === columnName) {
+        // If the current sortColumn is the same as the new
+        // then invert values and repeat sort on column
+        const direction = orderByDirection === "desc" ? "asc" : "desc";
+        setOrderByDirection(direction);
+      } else {
+        // Sort different column in same order as previous column
+        setOrderByColumn(columnName);
+      }
+    },
+    [
+      setQueryOffset,
+      orderByColumn,
+      orderByDirection,
+      columns,
+      setOrderByDirection,
+      setOrderByColumn,
+    ]
+  );
 
+  const tableComponents = useTableComponents({
+    data,
+    queryLimit,
+    queryOffset,
+    setQueryLimit,
+    setQueryOffset,
+    handleTableHeaderClick,
+    sortByColumnIndex,
+    orderByDirection,
+  });
   /*
    * Store column configution before data change triggers page refresh
    * or opening advanced search dropdown triggers page refresh
@@ -509,8 +614,18 @@ const ProjectsListViewTable = () => {
     if (storedConfig) {
       setHiddenColumns(storedConfig);
     }
-  }, [data, advancedSearchAnchor]);
+    // }, [data, advancedSearchAnchor]);
+  }, [data]);
 
+  useEffect(() => {
+    console.log("I savedit");
+    queryContext.setListViewQuery(projectListViewQuery);
+  }, [refetch, queryContext, projectListViewQuery]);
+
+  console.log(
+    "rppops",
+    PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
+  );
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
@@ -531,59 +646,17 @@ const ProjectsListViewTable = () => {
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box mt={3}>
-            {loading ? (
+            {!data && !error ? (
               <CircularProgress />
-            ) : data && data["project_list_view"] ? (
+            ) : data && data.project_list_view ? (
               <Card className={classes.root}>
                 <MaterialTable
                   onChangeColumnHidden={handleColumnChange}
-                  data={data["project_list_view"]}
+                  data={data.project_list_view}
                   columns={columns}
                   title=""
-                  options={{
-                    search: false,
-                    rowStyle: {
-                      fontFamily: typography.fontFamily,
-                      fontSize: "14px",
-                    },
-                    pageSize: Math.min(
-                      queryLimit,
-                      data["project_list_view"]?.length
-                    ),
-                    headerStyle: {
-                      // material table header row has a zIndex of 10, which
-                      // is conflicting with the search/filter dropdown
-                      zIndex: 1,
-                      whiteSpace: "nowrap",
-                    },
-                    columnsButton: true,
-                    idSynonym: "project_id",
-                  }}
-                  components={{
-                    Pagination: (props) => (
-                      <Pagination
-                        recordCount={
-                          data["project_list_view_aggregate"]?.aggregate.count
-                        }
-                        queryLimit={queryLimit}
-                        setQueryLimit={setQueryLimit}
-                        queryOffset={queryOffset}
-                        setQueryOffset={setQueryOffset}
-                        rowsPerPageOptions={
-                          PROJECT_LIST_VIEW_QUERY_CONFIG.pagination
-                            .rowsPerPageOptions
-                        }
-                      />
-                    ),
-                    Header: (props) => (
-                      <MTableHeader
-                        {...props}
-                        onOrderChange={handleTableHeaderClick}
-                        orderBy={sortByColumnIndex}
-                        orderDirection={orderByDirection}
-                      />
-                    ),
-                  }}
+                  options={tableOptions}
+                  components={tableComponents}
                 />
               </Card>
             ) : (
