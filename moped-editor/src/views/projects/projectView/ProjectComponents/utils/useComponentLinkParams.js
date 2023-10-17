@@ -22,6 +22,13 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
   window.history.replaceState(null, "", newUrl);
 };
 
+/**
+ * Hook to handle updating the clicked component in the url search params on load and during UI interactions
+ * @param {Function} setClickedComponent - function to set the clicked component from params on load
+ * @param {Array} projectComponents - array of project components to find the linked component from
+ * @param {Function} errorMessageDispatch - function to dispatch error messages to show in MapAlert
+ * @returns {Object} - object with function to update clicked component in search params
+ */
 export const useComponentLinkParams = ({
   setClickedComponent,
   projectComponents,

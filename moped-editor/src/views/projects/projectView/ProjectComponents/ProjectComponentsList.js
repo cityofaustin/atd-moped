@@ -56,6 +56,7 @@ const ProjectComponentsList = ({
     setIsClickedComponentRelated(false);
   };
 
+  /* Component link copy button */
   const [copiedUrl, setCopiedUrl] = useState(null);
 
   const copyLinkToClipboard = () => {

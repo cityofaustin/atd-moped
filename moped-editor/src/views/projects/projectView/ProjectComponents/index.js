@@ -274,6 +274,7 @@ export default function MapView({
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
               />
               <RelatedComponentsList
                 createState={createState}
@@ -312,6 +313,7 @@ export default function MapView({
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
               shouldShowRelatedProjects={shouldShowRelatedProjects}
+              makeClickedComponentUpdates={makeClickedComponentUpdates}
             />
           </div>
           <CreateComponentModal
