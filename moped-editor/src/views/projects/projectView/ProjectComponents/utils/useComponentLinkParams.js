@@ -73,11 +73,10 @@ export const useComponentLinkParams = ({
         // Zoom to its extent
         const features = getAllComponentFeatures(componentFromParams);
         const featureCollection = { type: "FeatureCollection", features };
-        zoomMapToFeatureCollection(
-          mapRef,
-          featureCollection,
-          fitBoundsOptions.zoomToClickedComponent
-        );
+        zoomMapToFeatureCollection(mapRef, featureCollection, {
+          ...fitBoundsOptions.zoomToClickedComponent,
+          duration: 0,
+        });
 
         // Bring clicked component into view
         const ref = componentFromParams?._ref;
