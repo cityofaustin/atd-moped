@@ -128,6 +128,7 @@ export default function MapView({
     projectComponents,
     clickedComponent,
     errorMessageDispatch,
+    mapRef,
   });
 
   /* Bundle updates that need to be made any time a component UI element is clicked */

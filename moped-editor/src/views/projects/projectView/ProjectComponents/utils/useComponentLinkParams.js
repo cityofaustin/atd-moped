@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { getAllComponentFeatures } from "./makeFeatureCollections";
+import { fitBoundsOptions } from "../mapSettings";
+import { zoomMapToFeatureCollection } from "./map";
 
 /** Update search params without the router triggering a re-render
  * @see https://github.com/remix-run/react-router/discussions/9851#discussioncomment-5934435
@@ -37,6 +40,7 @@ export const useComponentLinkParams = ({
   setClickedComponent,
   projectComponents,
   errorMessageDispatch,
+  mapRef,
 }) => {
   const [hasComponentSetFromUrl, setHasComponentSetFromUrl] = useState(false);
 
@@ -63,7 +67,17 @@ export const useComponentLinkParams = ({
       );
 
       if (componentFromParams) {
+        // Set clickedComponent found from params
         setClickedComponent(componentFromParams);
+
+        // Zoom to its extent
+        const features = getAllComponentFeatures(componentFromParams);
+        const featureCollection = { type: "FeatureCollection", features };
+        zoomMapToFeatureCollection(
+          mapRef,
+          featureCollection,
+          fitBoundsOptions.zoomToClickedComponent
+        );
 
         // Bring clicked component into view
         const ref = componentFromParams?._ref;
@@ -93,6 +107,7 @@ export const useComponentLinkParams = ({
     setClickedComponent,
     setHasComponentSetFromUrl,
     errorMessageDispatch,
+    mapRef,
   ]);
 
   const updateClickedComponentIdInSearchParams = (clickedComponent) => {
