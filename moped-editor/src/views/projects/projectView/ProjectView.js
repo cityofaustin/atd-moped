@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
 import { createBrowserHistory } from "history";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   Breadcrumbs,
@@ -31,7 +31,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -558,9 +558,7 @@ const ProjectView = () => {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                <h2>{dialogState?.title}</h2>
-              </DialogTitle>
+              <DialogTitle variant="h4">{dialogState?.title}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   {dialogState?.body}

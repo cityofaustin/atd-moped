@@ -100,12 +100,6 @@ const useStyles = makeStyles((theme) => ({
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
   },
-  dialogTitle: {
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   newStatusIconDiv: {
     display: "flex",
     alignItems: "center",
