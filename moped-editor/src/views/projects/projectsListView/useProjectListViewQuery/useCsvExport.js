@@ -13,7 +13,7 @@ import {
 
 export const CsvDownloadDialog = ({ dialogOpen }) => (
   <Dialog open={dialogOpen} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title"> </DialogTitle>
+    <DialogTitle variant="h4" />
     <DialogContent>
       <Grid container spacing={3}>
         <Grid item xs={2} lg={2}>

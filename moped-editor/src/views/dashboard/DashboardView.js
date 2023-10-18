@@ -73,12 +73,6 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
-  dialogTitle: {
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   statusUpdateText: {
     cursor: "pointer",
   },
@@ -331,7 +325,7 @@ const DashboardView = () => {
                       }),
                       pageSize: 50,
                       pageSizeOptions: [10, 50, 100],
-                      idSynonym:"project_id"
+                      idSynonym: "project_id",
                     }}
                   />
                 )}
