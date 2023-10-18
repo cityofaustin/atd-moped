@@ -402,6 +402,7 @@ export const useUpdateComponent = ({
         refetchProjectComponents().then(() => {
           makeClickedComponentUpdates(null);
           editDispatch({ type: "save_edit" });
+          setLinkMode(null);
           setIsDrawing(false);
 
           zoomMapToFeatureCollection(
