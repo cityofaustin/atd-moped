@@ -143,7 +143,7 @@ const ProjectComponentsList = ({
                 PopperProps={{
                   disablePortal: true,
                 }}
-                open={copiedUrl}
+                open={!!copiedUrl}
                 disableFocusListener
                 disableHoverListener
                 disableTouchListener
