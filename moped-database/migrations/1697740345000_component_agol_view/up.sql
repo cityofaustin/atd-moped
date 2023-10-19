@@ -40,11 +40,11 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.public_process_status,
         plv.interim_project_id,
         plv.project_partner,
-        plv.task_order_name,
+        plv.task_order_names,
         plv.funding_source_name,
         plv.type_name,
         plv.project_note,
-        '2000-01-01T00:00:00' as project_note_date,
+        plv.project_note_date_created,
         plv.construction_start_date,
         plv.completion_end_date,
         plv.project_inspector,
@@ -52,7 +52,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_tags,
         plv.contractors,
         plv.contract_numbers,
-        -- plv.knack_project_id as knack_data_tracker_project_record_id,
+        plv.knack_project_id as knack_data_tracker_project_record_id,
         added_by
     FROM
         moped_proj_components mpc
