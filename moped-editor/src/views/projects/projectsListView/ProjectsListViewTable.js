@@ -71,7 +71,7 @@ const DEFAULT_HIDDEN_COLS = {
   ecapris_subproject_id: false,
   updated_at: false,
   project_feature: true, // signal_ids
-  task_order: true,
+  task_orders: true,
   type_name: true,
   funding_source_name: true,
   project_note: true,
