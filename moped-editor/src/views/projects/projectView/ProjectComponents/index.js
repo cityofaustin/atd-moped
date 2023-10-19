@@ -66,6 +66,7 @@ export default function MapView({
   phaseKey,
   phaseName,
   parentProjectId,
+  onCloseTab,
 }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
@@ -236,6 +237,7 @@ export default function MapView({
           phaseKey={phaseKey}
           phaseName={phaseName}
           errorMessageState={errorMessageState}
+          onCloseTab={onCloseTab}
         />
         <Drawer
           className={classes.drawer}
