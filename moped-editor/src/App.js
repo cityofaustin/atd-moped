@@ -53,6 +53,8 @@ const useClient = (user) =>
           project_list_view: {
             keyFields: ["project_id"],
           },
+          // todo: these type policies only come into play when the 
+          // query that fetches them uses an appropriate caching policy
           moped_entity: {
             keyFields: ["entity_id"],
           },
