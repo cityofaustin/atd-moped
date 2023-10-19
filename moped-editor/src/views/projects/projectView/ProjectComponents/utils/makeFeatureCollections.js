@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import { featureTableFieldMap } from "./makeFeatures";
-import { cloneDeep } from "@apollo/client/utilities";
+import { cloneDeep } from "lodash";
 /**
  * Take a project_geography record and return a valid GeoJSON feature
  * TODO: We should look into returning GeoJSON features directly from the DB
