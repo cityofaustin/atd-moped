@@ -100,12 +100,6 @@ const useStyles = makeStyles((theme) => ({
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
   },
-  dialogTitle: {
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   newStatusIconDiv: {
     display: "flex",
     alignItems: "center",
@@ -128,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -166,6 +160,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 refetch={refetch}
                 classes={classes}
                 snackbarHandle={snackbarHandle}
+                listViewQuery={listViewQuery}
               />
               {data.moped_project[0]?.parent_project_id && (
                 <ProjectSummaryParentProjectLink

@@ -96,6 +96,7 @@ export const SUMMARY_QUERY = gql`
       entity_id
       moped_entity {
         entity_name
+        entity_id
       }
     }
     moped_phases(order_by: { phase_order: asc }) {

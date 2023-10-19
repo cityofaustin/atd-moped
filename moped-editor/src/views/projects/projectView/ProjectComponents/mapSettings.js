@@ -41,6 +41,7 @@ export const fitBoundsOptions = {
   zoomToExtent: {
     maxZoom: 15,
     padding: 50,
+    duration: 0,
   },
   zoomToClickedComponent: {
     maxZoom: 19,

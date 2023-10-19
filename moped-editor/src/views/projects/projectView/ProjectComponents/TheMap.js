@@ -55,7 +55,6 @@ export default function TheMap({
   editDispatch,
   mapRef,
   clickedComponent,
-  setClickedComponent,
   linkMode,
   setIsFetchingFeatures,
   isDrawing,
@@ -64,6 +63,7 @@ export default function TheMap({
   shouldShowRelatedProjects,
   isClickedComponentRelated,
   setIsClickedComponentRelated,
+  makeClickedComponentUpdates,
 }) {
   const [cursor, setCursor] = useState("grab");
 
@@ -111,7 +111,7 @@ export default function TheMap({
         type: "show_error",
         payload: { message: "Zoom in to select features", severity: "error" },
       });
-    } else {
+    } else if (isCreatingComponent || isEditingComponent) {
       errorMessageDispatch({ type: "hide_error" });
     }
   }, [
@@ -254,7 +254,7 @@ export default function TheMap({
     if (e.features.length === 0) {
       /* clear clickedComponent to collapse list item  */
       if (clickedComponent) {
-        setClickedComponent(null);
+        makeClickedComponentUpdates(null);
         setIsClickedComponentRelated(false);
       }
 
@@ -291,7 +291,7 @@ export default function TheMap({
 
       /* Assign to clickedComponent and trigger side-panel scroll  */
       if (clickedComponentFromMap) {
-        setClickedComponent(clickedComponentFromMap);
+        makeClickedComponentUpdates(clickedComponentFromMap);
         // Make sure that state reflects whether the clicked component is related or not
         // so that we see the map display features with the corresponding color
         isNewClickedComponentRelated && setIsClickedComponentRelated(true);
