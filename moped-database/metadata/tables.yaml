@@ -2991,6 +2991,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
     - role: moped-editor
       permission:
         check: {}
@@ -3005,6 +3007,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
   select_permissions:
     - role: moped-admin
       permission:
@@ -3019,6 +3023,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-editor
       permission:
@@ -3033,6 +3039,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-viewer
       permission:
@@ -3047,6 +3055,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3062,6 +3072,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
     - role: moped-editor
@@ -3077,6 +3089,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
   event_triggers:
