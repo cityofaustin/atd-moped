@@ -108,12 +108,9 @@ export const useComponentLinkParams = ({
     errorMessageDispatch,
     mapRef,
   ]);
+};
 
-  const updateClickedComponentIdInSearchParams = (clickedComponent) => {
-    const clickedComponentId = clickedComponent?.project_component_id ?? null;
-
-    updateParamsWithoutRender("project_component_id", clickedComponentId);
-  };
-
-  return { updateClickedComponentIdInSearchParams };
+export const updateClickedComponentIdInSearchParams = (clickedComponent) => {
+  const clickedComponentId = clickedComponent?.project_component_id ?? null;
+  updateParamsWithoutRender("project_component_id", clickedComponentId);
 };

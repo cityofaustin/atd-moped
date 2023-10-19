@@ -20,7 +20,10 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
-import { useComponentLinkParams } from "./utils/useComponentLinkParams";
+import {
+  useComponentLinkParams,
+  updateClickedComponentIdInSearchParams,
+} from "./utils/useComponentLinkParams";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
@@ -123,7 +126,7 @@ export default function MapView({
 
   const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
 
-  const { updateClickedComponentIdInSearchParams } = useComponentLinkParams({
+  useComponentLinkParams({
     setClickedComponent,
     projectComponents,
     clickedComponent,
