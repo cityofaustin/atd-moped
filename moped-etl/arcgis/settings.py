@@ -17,6 +17,7 @@ query {
     component_phase_name_simple
     component_subtype
     component_tags
+    component_url
     construction_start_date
     contract_numbers
     contractors
@@ -31,6 +32,7 @@ query {
     interim_project_id
     is_project_component_deleted
     is_project_deleted
+    knack_data_tracker_project_record_id
     length_feet_total
     location_description
     project_component_id
@@ -41,7 +43,7 @@ query {
     project_lead
     project_name
     project_note
-    project_note_date
+    project_note_date_created
     project_partner
     project_phase_id
     project_phase_name
@@ -49,11 +51,12 @@ query {
     project_sponsor
     project_tags
     project_team_members
+    project_url
     public_process_status
     signal_ids
     srts_id
     subcomponents
-    task_order_name
+    task_order_names
     type_name
     updated_at
     work_types
