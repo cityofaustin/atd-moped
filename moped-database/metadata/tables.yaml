@@ -26,6 +26,7 @@
           - component_phase_name_simple
           - component_subtype
           - component_tags
+          - component_url
           - contract_numbers
           - contractors
           - council_districts
@@ -41,13 +42,14 @@
           - project_lead
           - project_name
           - project_note
-          - project_note_date
+          - project_note_date_created
           - project_partner
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
+          - project_url
           - public_process_status
           - signal_ids
           - srts_id
@@ -83,6 +85,7 @@
           - component_phase_name_simple
           - component_subtype
           - component_tags
+          - component_url
           - contract_numbers
           - contractors
           - council_districts
@@ -98,13 +101,14 @@
           - project_lead
           - project_name
           - project_note
-          - project_note_date
+          - project_note_date_created
           - project_partner
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
+          - project_url
           - public_process_status
           - signal_ids
           - srts_id
@@ -140,6 +144,7 @@
           - component_phase_name_simple
           - component_subtype
           - component_tags
+          - component_url
           - contract_numbers
           - contractors
           - council_districts
@@ -155,13 +160,14 @@
           - project_lead
           - project_name
           - project_note
-          - project_note_date
+          - project_note_date_created
           - project_partner
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
           - project_tags
           - project_team_members
+          - project_url
           - public_process_status
           - signal_ids
           - srts_id
