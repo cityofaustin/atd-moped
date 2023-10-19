@@ -187,10 +187,10 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     // the following column configurations only work with material table and do not have the
     // necessary details to work with Grid Table
-    task_order: {
+    task_orders: {
       type: "array",
     },
-    task_order_name: {
+    task_order_names: {
       type: "string",
     },
     project_feature: {
