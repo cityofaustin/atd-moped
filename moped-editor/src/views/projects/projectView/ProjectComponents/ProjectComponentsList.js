@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import ComponentListItem from "./ComponentListItem";
 import IconButton from "@mui/material/IconButton";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import EditLocationAltOutlinedIcon from "@mui/icons-material/EditLocationAltOutlined";
 import DriveFileMoveOutlinedIcon from "@mui/icons-material/DriveFileMoveOutlined";
+import LinkIcon from "@mui/icons-material/Link";
 import Stack from "@mui/material/Stack";
 import Tooltip from "@mui/material/Tooltip";
 import { isSignalComponent } from "./utils/componentList";
@@ -16,13 +18,13 @@ const ProjectComponentsList = ({
   editState,
   editDispatch,
   clickedComponent,
-  setClickedComponent,
   onClickZoomToComponent,
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
   setIsMovingComponent,
   setIsClickedComponentRelated,
+  makeClickedComponentUpdates,
 }) => {
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
@@ -34,10 +36,10 @@ const ProjectComponentsList = ({
     setIsClickedComponentRelated(false);
     // Clear clickedComponent and draftEditComponent when we are not selecting for edit
     if (isExpanded(component)) {
-      setClickedComponent(null);
+      makeClickedComponentUpdates(null);
       editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
-      setClickedComponent(component);
+      makeClickedComponentUpdates(component);
     }
   };
 
@@ -53,6 +55,26 @@ const ProjectComponentsList = ({
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
   };
+
+  /* Component link copy button */
+  const [copiedUrl, setCopiedUrl] = useState(null);
+
+  const copyLinkToClipboard = () => {
+    const currentUrl = window.location.href;
+    setCopiedUrl(currentUrl);
+    return navigator.clipboard.writeText(currentUrl);
+  };
+
+  useEffect(() => {
+    /**
+     * Effect which closes the tooltip after a brief pause
+     */
+    if (!copiedUrl) return;
+    const timeout = setTimeout(() => {
+      setCopiedUrl(null);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [copiedUrl, setCopiedUrl]);
 
   return (
     isNotCreatingOrEditing &&
@@ -114,6 +136,31 @@ const ProjectComponentsList = ({
                       }
                     />
                   </IconButton>
+                </span>
+              </Tooltip>
+
+              <Tooltip
+                PopperProps={{
+                  disablePortal: true,
+                }}
+                open={!!copiedUrl}
+                disableFocusListener
+                disableHoverListener
+                disableTouchListener
+                title="Copied!"
+                placement="top"
+              >
+                {/* This span prevents warning about providing title prop to child of Tooltip */}
+                <span>
+                  <Tooltip title="Copy link to component" placement="bottom">
+                    <IconButton
+                      color="primary"
+                      aria-label="link"
+                      onClick={copyLinkToClipboard}
+                    >
+                      <LinkIcon />
+                    </IconButton>
+                  </Tooltip>
                 </span>
               </Tooltip>
 
