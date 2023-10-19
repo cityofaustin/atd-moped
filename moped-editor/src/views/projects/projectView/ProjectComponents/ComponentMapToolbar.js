@@ -29,7 +29,7 @@ export default function ComponentMapToolbar({
   const classes = useStyles();
   const navigate = useNavigate();
   const { projectId } = useParams();
-  const { message, severity, isOpen } = errorMessageState;
+  const { message, severity, isOpen, onClose } = errorMessageState;
 
   return (
     <AppBar position="fixed" className={classes.appBar}>
@@ -45,7 +45,12 @@ export default function ComponentMapToolbar({
           />
         </Box>
         <Box mr={2}>
-          <MapAlert message={message} severity={severity} isOpen={isOpen} />
+          <MapAlert
+            message={message}
+            severity={severity}
+            isOpen={isOpen}
+            onClose={onClose ? onClose : null}
+          />
         </Box>
         <Box color="primary" display="flex" flexGrow={1}>
           {isFetchingFeatures && <CircularProgress />}
