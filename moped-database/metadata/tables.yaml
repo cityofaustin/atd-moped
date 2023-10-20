@@ -4761,6 +4761,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
@@ -4801,6 +4802,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
@@ -4841,6 +4843,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
