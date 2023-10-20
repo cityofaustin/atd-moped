@@ -17,8 +17,8 @@ const CTN_POINTS_FNAME = "./data/agol/ctn_intersections.geojson";
 const FACILITY_POINTS_FNAME = "./data/agol/interim_facility_points.geojson";
 const SIGNALS_FNAME = "./data/agol/signals.geojson";
 
-const POINT_BUFFER_DIST = 10; // feet - per discussion w/ NW
-const POINT_BUFFER_DIST_SIGNAL = 100; // fee
+const POINT_BUFFER_DIST = 20; // feet - per discussion w/ NW
+const POINT_BUFFER_DIST_SIGNAL = 100; // feet
 
 // reduce coordinate precision
 const trimCoords = (coords, factor = 1000000) =>
