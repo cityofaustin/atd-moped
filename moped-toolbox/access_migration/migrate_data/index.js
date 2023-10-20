@@ -404,6 +404,9 @@ async function main(env) {
     let phases = projPhases[interim_project_id] || [];
     // add phases from dates into the mix
     phases = [...phases, ...(projPhasesFromDates[interim_project_id] || [])];
+
+    debugger;
+    throw `Merge dupe phase/subphase based on phase ID + subphase ID and take earliest date - depdupe phase estimated vs actual milestones and set real/confirmed date. e.g. actual vs estimated construction start`
     if (phases?.length) {
       proj.moped_proj_phases = { data: phases };
     }
