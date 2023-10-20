@@ -363,7 +363,7 @@ const ProjectNotes = (props) => {
                                 </Typography>
                                 <Typography
                                   component={"span"}
-                                  className={classes.NoteDate}
+                                  className={classes.noteDate}
                                 >
                                   {` - ${makeUSExpandedFormDateFromTimeStampTZ(
                                     item.date_created
