@@ -1,4 +1,3 @@
--- latest version 1697768359465_dedupe_plv_tks DROP VIEW project_list_view;
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view AS
