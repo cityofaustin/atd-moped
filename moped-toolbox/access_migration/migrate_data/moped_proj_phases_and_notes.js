@@ -16,9 +16,11 @@ const FNAME = "./data/raw/project_statusupdate.json";
 /* Given a status update text, find it's corresponding phase data */
 const setPhaseId = (statusUpdate) => {
   const phaseIn = statusUpdate.ProjectPhase;
-  const mopedPhaseId = PHASES_MAP.find((phase) => phase.in === phaseIn)?.out
-    ?.phase_id;
-  statusUpdate.phase_id = mopedPhaseId || null;
+  const matchedPhase = PHASES_MAP.find((phase) => phase.in === phaseIn)?.out;
+  const mopedPhaseId = matchedPhase?.phase_id || null;
+  const mopedSubphaseId = matchedPhase?.subphase_id || null;
+  statusUpdate.phase_id = mopedPhaseId;
+  statusUpdate.subphase_id = mopedSubphaseId;
 };
 
 /* Groups status updates by project ID and phase */
@@ -26,24 +28,30 @@ const groupByProjectAndPhase = (statusUpdates) =>
   statusUpdates.reduce((grouped, statusUpdate) => {
     const projectId = statusUpdate.ProjectID;
     const phaseId = statusUpdate.phase_id;
+    const subphaseId = statusUpdate.subphase_id;
     if (!phaseId) {
       // todo: think about how were handling status updates with no mapped phase
       return grouped;
     }
+    const key = `${phaseId}_${subphaseId || null}`;
     // create entry phase object if not exists
     grouped[projectId] ??= {};
     // create object which will become moped_proj_phase
-    grouped[projectId][phaseId] ??= { phase_id: phaseId, dates: [] };
-    grouped[projectId][phaseId].dates.push(statusUpdate.StatusDate);
+    grouped[projectId][key] ??= {
+      phase_id: phaseId,
+      dates: [],
+      subphase_id: subphaseId,
+    };
+    grouped[projectId][key].dates.push(statusUpdate.StatusDate);
     return grouped;
   }, {});
 
 const createProjPhases = (groupedStatusUpdates) => {
-  let currentPhaseDate = { phase_id: null, date: null };
-  const projPhases = Object.keys(groupedStatusUpdates).map((phase_id) => {
+  let currentPhaseDate = { phase_id: null, date: null, subphase_id: null };
+  const projPhases = Object.keys(groupedStatusUpdates).map((key) => {
     // find the earliest date of all status updates with this phase
     // thats the start date
-    const { dates } = groupedStatusUpdates[phase_id];
+    const { dates, phase_id, subphase_id } = groupedStatusUpdates[key];
     const phaseStart = dates.reduce((prev, curr) => {
       return prev < curr ? prev : curr;
     });
@@ -53,18 +61,22 @@ const createProjPhases = (groupedStatusUpdates) => {
     });
     // update current phase date if needed
     if (!currentPhaseDate.date || currentPhaseDate.date < maxDate) {
-      currentPhaseDate = { phase_id, date: maxDate };
+      currentPhaseDate = { phase_id, date: maxDate, subphase_id };
     }
     return {
       phase_id,
+      subphase_id,
       phase_start: phaseStart,
       is_current_phase: false,
+      is_phase_start_confirmed: true,
     };
   });
   // now find the phase that is current
   if (currentPhaseDate.phase_id) {
     const currPhase = projPhases.find(
-      (phase) => phase.phase_id === currentPhaseDate.phase_id
+      (phase) =>
+        phase.phase_id === currentPhaseDate.phase_id &&
+        phase.subphase_id === currentPhaseDate.subphase_id
     );
     currPhase.is_current_phase = true;
   }
@@ -83,11 +95,10 @@ const getProjNotes = (statusUpdates) =>
     }
 
     if (!project_note) {
-      project_note = "This update was migrated from the legacy database"
+      project_note = "This update was migrated from the legacy database";
     }
     setPhaseId(status);
     const phase_id = status.phase_id;
-
     const date_created = status.StatusDate;
 
     const project_note_type = 2;

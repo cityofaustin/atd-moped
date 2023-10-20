@@ -31,25 +31,29 @@ const milestoneMap = [
     in: "Actual Construction Start Date",
     phase_id: 9, // construction
     subphase_id: 7, // above-ground construction
-    dateField: "phase_end",
+    dateField: "phase_start",
+    is_phase_start_confirmed: true,
   },
   {
     in: "Actual End Date",
     phase_id: 10, // post-construction
     subphase_id: 24, // substantially complete
     dateField: "phase_start",
+    is_phase_start_confirmed: true,
   },
   {
     in: "Estimated Construction Start Date",
     phase_id: 9, // construction
     subphase_id: 7, // above-ground
     dateField: "phase_start",
+    is_phase_start_confirmed: false,
   },
   {
     in: "Estimated End Date",
     phase_id: 10, // post-construction
     subphase_id: 24, // substantially complete
     dateField: "phase_start",
+    is_phase_start_confirmed: false,
   },
 ];
 
@@ -71,6 +75,8 @@ function getMilestones() {
 
     if (match.milestone_id) {
       const { dateField, milestone_id, description } = match;
+      // we always use phase_start as the dateField—and our phase de-duping
+      // makes this assumption
       const milestone = {
         [dateField]: dateString,
         milestone_id,

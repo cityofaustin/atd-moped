@@ -405,8 +405,44 @@ async function main(env) {
     // add phases from dates into the mix
     phases = [...phases, ...(projPhasesFromDates[interim_project_id] || [])];
 
-    debugger;
-    throw `Merge dupe phase/subphase based on phase ID + subphase ID and take earliest date - depdupe phase estimated vs actual milestones and set real/confirmed date. e.g. actual vs estimated construction start`
+    const newPhasesIndex = {};
+    phases.forEach(
+      ({
+        phase_id,
+        subphase_id,
+        phase_start,
+        is_current_phase,
+        is_phase_start_confirmed,
+      }) => {
+        const key = `${phase_id}_${subphase_id || null}`;
+        newPhasesIndex[key] ??= {
+          phase_id,
+          subphase_id,
+          phase_start,
+          is_current_phase: false,
+          is_phase_start_confirmed: false,
+        };
+        if (is_current_phase) {
+          newPhasesIndex[key].is_current_phase = is_current_phase;
+        }
+        if (is_phase_start_confirmed) {
+          // phase start is going to be confirmed if
+          // - it came from a status update
+          // - it came from a milestone with an "actual date"
+          newPhasesIndex[key].is_phase_start_confirmed = true;
+          // make sure we take the earliest confirmed start date
+          const oldPhaseStart = new Date(newPhasesIndex[key].phase_start);
+          const newPhaseStart = new Date(phase_start);
+          if (newPhaseStart.getTime() < oldPhaseStart.getTime()) {
+            newPhasesIndex[key].phase_start = phase_start;
+          }
+        }
+      }
+    );
+
+    phases = Object.values(newPhasesIndex);
+
+    // throw `Merge dupe phase/subphase based on phase ID + subphase ID and take earliest date - depdupe phase estimated vs actual milestones and set real/confirmed date. e.g. actual vs estimated construction start`;
     if (phases?.length) {
       proj.moped_proj_phases = { data: phases };
     }

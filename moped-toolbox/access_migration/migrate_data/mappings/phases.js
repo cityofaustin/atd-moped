@@ -180,7 +180,7 @@ const PHASES_MAP = [
   },
   {
     in: "Substantially Complete",
-    out: { phase_id: 10, subphase_id: null, milestone_id: null },
+    out: { phase_id: 10, subphase_id: 24, milestone_id: null },
   },
   { in: "TBD", out: { phase_id: null, subphase_id: null, milestone_id: null } },
   {
