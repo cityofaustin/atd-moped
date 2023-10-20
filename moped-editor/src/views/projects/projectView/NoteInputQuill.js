@@ -45,10 +45,9 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Defines the NoteTypeRadioButtons that allow a user to select the note type of a
  * note they are creating or editing.
- * @param {object} props
- * @param {integer} props.defaultValue - The note type id that determines which button option
+ * @param {integer} defaultValue - The note type id that determines which button option
  * should be selected/highlighted by default
- * @param {function} props.onChange - Callback function that runs when the note type is changed via button click
+ * @param {function} onChange - Callback function that runs when the note type is changed via button click
  * @return {JSX.Element}
  * @constructor
  */
