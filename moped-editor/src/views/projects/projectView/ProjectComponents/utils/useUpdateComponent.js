@@ -217,11 +217,11 @@ const editReducer = (state, action) => {
 export const useUpdateComponent = ({
   projectComponents,
   clickedComponent,
-  setClickedComponent,
   setLinkMode,
   refetchProjectComponents,
   setIsDrawing,
   mapRef,
+  makeClickedComponentUpdates,
 }) => {
   const [editState, editDispatch] = useReducer(editReducer, {
     isEditingComponent: false,
@@ -400,8 +400,9 @@ export const useUpdateComponent = ({
     })
       .then(() => {
         refetchProjectComponents().then(() => {
-          setClickedComponent(null);
+          makeClickedComponentUpdates(null);
           editDispatch({ type: "save_edit" });
+          setLinkMode(null);
           setIsDrawing(false);
 
           zoomMapToFeatureCollection(

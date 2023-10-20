@@ -15,7 +15,7 @@ import { formatTimeStampTZType } from "src/utils/dateAndTime";
 export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   options: {
     useQuery: {
-      fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
+      fetchPolicy: "cache-and-network", // Default is "cache-first", or use "no-cache"
     },
   },
   table: "project_list_view",
@@ -29,9 +29,9 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [250, 1000],
+    rowsPerPageOptions: [100, 250, 1000],
     defaultOffset: 0,
-    defaultLimit: 250,
+    defaultLimit: 100,
   },
   order: {
     defaultColumn: "updated_at",
@@ -187,10 +187,10 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     // the following column configurations only work with material table and do not have the
     // necessary details to work with Grid Table
-    task_order: {
+    task_orders: {
       type: "array",
     },
-    task_order_name: {
+    task_order_names: {
       type: "string",
     },
     project_feature: {

@@ -12,7 +12,7 @@ export const useGetProjectListView = ({
   advancedSearchWhereString,
 }) => {
   const { query, exportQuery } = useMemo(() => {
-    const query = gql`{
+    const query = gql`query ProjectListView {
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
