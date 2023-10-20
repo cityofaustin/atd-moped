@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 const ComponentProperties = ({ component }) => {
   const classes = useStyles();
 
-  console.log(component);
   return (
     <>
       <Divider className={classes.dividerSpacing} />

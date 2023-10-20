@@ -49,8 +49,6 @@ const randomDate = () => {
 };
 
 const randomProjPhase = () => ({
-  completion_percentage: 0,
-  completed: false,
   phase_start: randomDate(),
   phase_end: randomDate(),
   phase_id: randomArrElement(lookups.phases),
@@ -59,18 +57,18 @@ const randomProjPhase = () => ({
 
 const randomProjMilestone = () => ({
   milestone_id: randomArrElement(lookups.milestones),
-  milestone_description: randomString(80),
-  completion_percentage: 0,
+  description: randomString(80),
   completed: randomBool(),
-  milestone_start: randomDate(),
-  milestone_end: randomDate(),
-  milestone_estimate: randomDate(),
+  date_actual: randomDate(),
+  date_estimate: randomDate(),
 });
 
-const randomProjContract = () => ({
+const randomProjWorkActivity = () => ({
   contractor: randomString(),
   contract_number: randomString(),
   description: randomString(80),
+  work_assignment_id: randomString(),
+  task_orders: lookups.task_orders,
 });
 
 const randomProjPartner = () => ({
@@ -122,29 +120,49 @@ const randomProjFunding = () => ({
 
 const randomProjComponent = () => ({
   component_id: randomArrElement(lookups.components),
-  name: randomString(),
+  srts_id: randomString(),
   description: randomString(),
+  location_description: randomString(),
+  feature_drawn_points: {
+    data: [
+      {
+        geography: {
+          type: "MultiPoint",
+          crs: {
+            type: "name",
+            properties: {
+              name: "urn:ogc:def:crs:EPSG::4326",
+            },
+          },
+          coordinates: [[-97.706305, 30.256902]],
+        },
+        project_extent_id: randomString(),
+        source_layer: "feature_drawn_points",
+      },
+    ],
+  },
 });
 
 const randomProject = () => ({
-  project_name: randomString(),
+  project_name: randomString(75),
   project_description: randomString(),
   project_lead_id: randomArrElement(lookups.entities),
   project_sponsor: randomArrElement(lookups.entities),
   project_website: "https://data.mobility.austin.gov",
   added_by: randomArrElement(lookups.users),
   knack_project_id: randomString(),
-  work_assignment_id: randomString(),
   interim_project_id: randomInteger(3),
-  ecapris_subproject_id: 7333.001,
+  ecapris_subproject_id: "7333.001",
   moped_proj_partners: {
     data: [...new Array(settings.partners)].map((_) => randomProjPartner()),
   },
   moped_proj_funding: {
     data: [...new Array(settings.fund_sources)].map((_) => randomProjFunding()),
   },
-  moped_proj_contracts: {
-    data: [...new Array(settings.contracts)].map((_) => randomProjContract()),
+  moped_proj_work_activities: {
+    data: [...new Array(settings.contracts)].map((_) =>
+      randomProjWorkActivity()
+    ),
   },
   moped_proj_personnel: {
     data: [...new Array(settings.personnel)].map((_) => randomPersonnel()),
@@ -176,10 +194,9 @@ const randomProject = () => ({
   moped_proj_components: {
     data: [...new Array(settings.components)].map((_) => randomProjComponent()),
   },
-  task_order: lookups.task_orders,
 });
 
-const chunkProjects = (projects, chunkSize = 50) => {
+const chunkProjects = (projects, chunkSize = 10) => {
   const chunks = [];
   for (let i = 0; i < projects.length; i += chunkSize) {
     chunks.push(projects.slice(i, i + chunkSize));
@@ -205,7 +222,7 @@ async function main() {
   for (let i = 0; i < chunks.length; i++) {
     try {
       console.log(
-        `${i+1}/${chunks.length} - uploading ${chunks[i].length} projects...`
+        `${i + 1}/${chunks.length} - uploading ${chunks[i].length} projects...`
       );
       await makeHasuraRequest({
         query: INSERT_PROJECTS_MUTATION,

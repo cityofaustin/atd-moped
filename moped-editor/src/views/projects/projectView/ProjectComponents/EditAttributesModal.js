@@ -2,7 +2,6 @@ import React from "react";
 import { useMutation } from "@apollo/client";
 import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
 import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
@@ -18,16 +17,6 @@ import {
   makeWorkTypesFormFieldValues,
 } from "./utils/form";
 
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
-
 const EditAttributesModal = ({
   showDialog,
   editDispatch,
@@ -35,8 +24,6 @@ const EditAttributesModal = ({
   refetchProjectComponents,
   mapRef,
 }) => {
-  const classes = useStyles();
-
   const [updateComponentAttributes] = useMutation(UPDATE_COMPONENT_ATTRIBUTES);
 
   const onSaveSuccess = () => {
@@ -165,8 +152,15 @@ const EditAttributesModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Edit component</h3>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
+        Edit component
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>
