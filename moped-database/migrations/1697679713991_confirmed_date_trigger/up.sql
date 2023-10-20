@@ -15,7 +15,7 @@ CREATE OR REPLACE FUNCTION moped_proj_phases_confirmed_dates() RETURNS trigger
             new.is_phase_start_confirmed := false;
         END IF;
         IF NEW.phase_end > current_date THEN
-            new.is_phase_start_confirmed := false;
+            new.is_phase_end_confirmed := false;
         END IF;
         RETURN NEW;
     END;
