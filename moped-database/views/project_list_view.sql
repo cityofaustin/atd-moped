@@ -1,4 +1,4 @@
--- latest version 1697232878272_task_orders_work_activity_plv
+-- latest version 1697768359465_dedupe_plv_tks
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
