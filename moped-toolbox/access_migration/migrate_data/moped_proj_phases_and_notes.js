@@ -83,15 +83,13 @@ const getProjNotes = (statusUpdates) =>
     }
 
     if (!project_note) {
-      // nothing to do here
-      return index;
+      project_note = "This update was migrated from the legacy database"
     }
     setPhaseId(status);
     const phase_id = status.phase_id;
 
     const date_created = status.StatusDate;
 
-    // note type 2 = status update. is this ok?
     const project_note_type = 2;
 
     // set added by user
