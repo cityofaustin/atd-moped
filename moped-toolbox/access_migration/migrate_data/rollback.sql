@@ -1,4 +1,4 @@
--- delete migrated projects
+-- delete migrated projects: this cascades most related records
 DELETE FROM moped_project WHERE is_migrated_from_access_db = TRUE; 
 
 -- delete orphaned features (we cannot cascade this bc of table inheritance)
