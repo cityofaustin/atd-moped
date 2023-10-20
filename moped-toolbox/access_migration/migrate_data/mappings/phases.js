@@ -25,7 +25,7 @@ const PHASES_MAP = [
   },
   {
     in: "Complete - Minor Modifications in Progress",
-    out: { phase_id: 10, subphase_id: null, milestone_id: null },
+    out: { phase_id: 10, subphase_id: 24, milestone_id: null },
   },
   {
     in: "Construction",
