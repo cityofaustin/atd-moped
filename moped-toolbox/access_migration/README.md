@@ -58,7 +58,10 @@ $ npm install
 3. Prepare the geospatial data for import - this may take 5+ minutes
 
 ```shell
-$ node facility_line_matcher.js
+# optionally run facility line matcher—we've decided not to use this. all
+# line features will be imported as drawn lines
+$ node facility_line_matcher.js 
+
 $ node facility_point_matcher.js
 ```
 
@@ -77,6 +80,7 @@ $ node index.js local
 
 
 ### Todo
+- load metadata from database dir—instead of backing it up?
 - agree will not do street segment line snapping 
 - Any status update date can be considred real/confirmed
 - get columns for tracking if record was migrated and even the id resets
