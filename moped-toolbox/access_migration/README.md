@@ -80,10 +80,15 @@ $ node index.js local
 
 
 ### Todo
+- we gotta manually disable DB-level event triggers :/
+  - work activity
+  - ?????
+  - also just confirm that event triggers are not firing during migration.
+    - inspect logs
+- ability to rollback:
+  - need to write statement to delete orphaned features, activitiy log events, features_council_districts
+
 - load metadata from database dir—instead of backing it up?
-- agree will not do street segment line snapping 
-- Any status update date can be considred real/confirmed
-- get columns for tracking if record was migrated and even the id resets
 - fiscal year and calendar year: completion date:
 - project types
   - mostly done
