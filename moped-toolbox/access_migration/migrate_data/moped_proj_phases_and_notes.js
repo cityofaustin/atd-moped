@@ -95,7 +95,7 @@ const getProjNotes = (statusUpdates) =>
     }
 
     if (!project_note) {
-      project_note = "This update was migrated from the legacy database";
+      project_note = "(This phase update was migrated from the legacy Access database without a note)";
     }
     setPhaseId(status);
     const phase_id = status.phase_id;
