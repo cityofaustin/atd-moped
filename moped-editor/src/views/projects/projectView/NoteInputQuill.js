@@ -43,19 +43,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Defines the NoteTypeRadioButtons with a toggle style-change behavior.
- * @param {Object} props
+ * Defines the NoteTypeRadioButtons that allow a user to select the note type of a
+ * note they are creating or editing.
+ * @param {object} props
+ * @param {integer} props.defaultValue - The note type id that determines which button option
+ * should be selected/highlighted by default
+ * @param {function} props.onChange - Callback function that runs when the note type is changed via button click
  * @return {JSX.Element}
  * @constructor
  */
-const NoteTypeRadioButtons = (props) => (
-  <RadioGroup
-    row
-    aria-labelledby="demo-radio-buttons-group-label"
-    defaultValue={props.defaultValue}
-    name="radio-buttons-group"
-    onChange={props.onChange}
-  >
+const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
+  <RadioGroup row value={defaultValue} onChange={onChange}>
     <FormControlLabel value={1} control={<Radio />} label="Internal" />
     <FormControlLabel value={2} control={<Radio />} label="Status update" />
   </RadioGroup>
@@ -77,9 +75,6 @@ const NoteInputQuill = ({
 }) => {
   const classes = useStyles();
   const ref = useRef();
-
-  console.log(noteText, "this is note text");
-  // console.log(editingNoteType);
 
   useEffect(() => {
     // autofocuses the quill input
@@ -107,16 +102,16 @@ const NoteInputQuill = ({
           style={{ justifyContent: "flex-end" }}
         >
           <FormControl>
-            <FormLabel id="demo-radio-buttons-group-label">Note type</FormLabel>
+            <FormLabel>Note type</FormLabel>
             {!editingNote ? (
               <NoteTypeRadioButtons
-                onChange={(e) => setNewNoteType(e.target.value)}
                 defaultValue={newNoteType}
+                onChange={(e) => setNewNoteType(e.target.value)}
               ></NoteTypeRadioButtons>
             ) : (
               <NoteTypeRadioButtons
-                onChange={(e) => setEditingNoteType(e.target.value)}
                 defaultValue={editingNoteType}
+                onChange={(e) => setEditingNoteType(e.target.value)}
               ></NoteTypeRadioButtons>
             )}
           </FormControl>
