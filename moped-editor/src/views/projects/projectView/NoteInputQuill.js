@@ -52,7 +52,12 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
-  <RadioGroup row value={defaultValue} onChange={onChange}>
+  <RadioGroup
+    row
+    value={defaultValue}
+    onChange={onChange}
+    sx={{ color: "black" }}
+  >
     <FormControlLabel value={1} control={<Radio />} label="Internal" />
     <FormControlLabel value={2} control={<Radio />} label="Status update" />
   </RadioGroup>
