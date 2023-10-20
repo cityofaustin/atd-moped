@@ -58,7 +58,7 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
     onChange={onChange}
     sx={{ color: "black" }}
   >
-    <FormControlLabel value={1} control={<Radio />} label="Internal" />
+    <FormControlLabel value={1} control={<Radio />} label="Internal note" />
     <FormControlLabel value={2} control={<Radio />} label="Status update" />
   </RadioGroup>
 );
@@ -106,7 +106,6 @@ const NoteInputQuill = ({
           style={{ justifyContent: "flex-end" }}
         >
           <FormControl>
-            <FormLabel>Note type</FormLabel>
             {!editingNote ? (
               <NoteTypeRadioButtons
                 defaultValue={newNoteType}
