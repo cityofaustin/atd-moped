@@ -273,8 +273,10 @@ function getComponents() {
       const drawnLineFeature =
         LINE_FEATURES[interim_project_component_id]?.originalFeature;
 
-      const ctnLineFeatures =
-        LINE_FEATURES[interim_project_component_id]?.ctnFeatures;
+      // we've decided not to corporate the line-matched features
+      // due to too many mismatches
+      // const ctnLineFeatures =
+      //   LINE_FEATURES[interim_project_component_id]?.ctnFeatures;
 
       const drawnPointFeature =
         POINT_FEATURES[interim_project_component_id]?.originalFeature;
