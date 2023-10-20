@@ -1,3 +1,4 @@
+-- latest version 1697232878272_task_orders_work_activity_plv
 DROP VIEW project_list_view;
 
 CREATE OR REPLACE VIEW public.project_list_view
