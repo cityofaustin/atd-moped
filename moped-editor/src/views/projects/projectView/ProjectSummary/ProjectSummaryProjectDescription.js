@@ -7,7 +7,6 @@ import {
   Typography,
   IconButton,
 } from "@mui/material";
-
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import { PROJECT_UPDATE_DESCRIPTION } from "../../../../queries/project";
@@ -26,9 +25,9 @@ import { useMutation } from "@apollo/client";
 const ProjectSummaryProjectDescription = ({
   projectId,
   data,
-  refetch,
   classes,
   snackbarHandle,
+  listViewQuery,
 }) => {
   const originalDescription =
     data?.moped_project?.[0]?.project_description ?? null;
@@ -55,10 +54,10 @@ const ProjectSummaryProjectDescription = ({
         projectId: projectId,
         description: description,
       },
+      refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
     })
-      .then(() => {
+      .then((data) => {
         setEditMode(false);
-        refetch();
         snackbarHandle(true, "Project description updated.", "success");
       })
       .catch((err) => {
@@ -101,7 +100,8 @@ const ProjectSummaryProjectDescription = ({
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
-              value={description} />
+              value={description}
+            />
 
             <IconButton onClick={handleProjectDescriptionSave} size="large">
               <Icon>check</Icon>

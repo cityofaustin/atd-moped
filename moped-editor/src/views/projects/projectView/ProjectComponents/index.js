@@ -20,6 +20,10 @@ import { fitBoundsOptions } from "./mapSettings";
 import { useCreateComponent } from "./utils/useCreateComponent";
 import { useUpdateComponent } from "./utils/useUpdateComponent";
 import { useDeleteComponent } from "./utils/useDeleteComponent";
+import {
+  useComponentLinkParams,
+  updateClickedComponentIdInSearchParams,
+} from "./utils/useComponentLinkParams";
 import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
@@ -62,6 +66,7 @@ export default function MapView({
   phaseKey,
   phaseName,
   parentProjectId,
+  onCloseTab,
 }) {
   const appBarHeight = useAppBarHeight();
   const classes = useStyles({ appBarHeight });
@@ -120,6 +125,22 @@ export default function MapView({
   const { projectComponents, allRelatedComponents } =
     useProjectComponents(data);
 
+  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
+
+  useComponentLinkParams({
+    setClickedComponent,
+    projectComponents,
+    clickedComponent,
+    errorMessageDispatch,
+    mapRef,
+  });
+
+  /* Bundle updates that need to be made any time a component UI element is clicked */
+  const makeClickedComponentUpdates = (clickedComponent) => {
+    setClickedComponent(clickedComponent);
+    updateClickedComponentIdInSearchParams(clickedComponent);
+  };
+
   const {
     onSaveDraftComponent,
     onSaveDraftSignalComponent,
@@ -144,11 +165,11 @@ export default function MapView({
   } = useUpdateComponent({
     projectComponents,
     clickedComponent,
-    setClickedComponent,
     setLinkMode,
     refetchProjectComponents,
     setIsDrawing,
     mapRef,
+    makeClickedComponentUpdates,
   });
 
   // Keep clickedComponent state up to date with edits made to project components
@@ -178,11 +199,9 @@ export default function MapView({
   const { isDeletingComponent, setIsDeletingComponent, onDeleteComponent } =
     useDeleteComponent({
       clickedComponent,
-      setClickedComponent,
       refetchProjectComponents,
+      makeClickedComponentUpdates,
     });
-
-  const { errorMessageDispatch, errorMessageState } = useToolbarErrorMessage();
 
   if (error) console.log(error);
 
@@ -191,7 +210,7 @@ export default function MapView({
     const features = getAllComponentFeatures(component);
     const featureCollection = { type: "FeatureCollection", features };
 
-    setClickedComponent(component);
+    makeClickedComponentUpdates(component);
 
     // move the map
     zoomMapToFeatureCollection(
@@ -205,7 +224,7 @@ export default function MapView({
   const onStartCreatingComponent = () => {
     createDispatch({ type: "start_create" });
     editDispatch({ type: "clear_draft_component" });
-    setClickedComponent(null);
+    makeClickedComponentUpdates(null);
   };
 
   return (
@@ -218,6 +237,7 @@ export default function MapView({
           phaseKey={phaseKey}
           phaseName={phaseName}
           errorMessageState={errorMessageState}
+          onCloseTab={onCloseTab}
         />
         <Drawer
           className={classes.drawer}
@@ -254,13 +274,13 @@ export default function MapView({
                 editState={editState}
                 editDispatch={editDispatch}
                 clickedComponent={clickedComponent}
-                setClickedComponent={setClickedComponent}
                 onClickZoomToComponent={onClickZoomToComponent}
                 onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
               />
               <RelatedComponentsList
                 createState={createState}
@@ -291,7 +311,6 @@ export default function MapView({
               isCreatingComponent={createState.isCreatingComponent}
               isEditingComponent={editState.isEditingComponent}
               clickedComponent={clickedComponent}
-              setClickedComponent={setClickedComponent}
               isClickedComponentRelated={isClickedComponentRelated}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
               setIsFetchingFeatures={setIsFetchingFeatures}
@@ -300,6 +319,7 @@ export default function MapView({
               setIsDrawing={setIsDrawing}
               errorMessageDispatch={errorMessageDispatch}
               shouldShowRelatedProjects={shouldShowRelatedProjects}
+              makeClickedComponentUpdates={makeClickedComponentUpdates}
             />
           </div>
           <CreateComponentModal

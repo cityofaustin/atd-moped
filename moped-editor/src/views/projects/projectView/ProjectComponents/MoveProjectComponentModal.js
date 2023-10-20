@@ -8,21 +8,10 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import CloseIcon from "@mui/icons-material/Close";
 import { Link as RouterLink } from "react-router-dom";
 import { UPDATE_COMPONENT_PROJECT_ID } from "src/queries/components";
 import theme from "src/theme/index";
-
-const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-}));
 
 const MoveProjectComponentModal = ({
   component,
@@ -30,7 +19,6 @@ const MoveProjectComponentModal = ({
   setIsMovingComponent,
   refetchProjectComponents,
 }) => {
-  const classes = useStyles();
   const [updatedComponentFormData, setUpdatedComponentFormData] =
     React.useState(null);
   const updatedProjectId = updatedComponentFormData?.project?.value;
@@ -71,8 +59,15 @@ const MoveProjectComponentModal = ({
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Move component to another project</h3>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
+        Move component to another project
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>

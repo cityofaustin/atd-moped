@@ -160,6 +160,7 @@ const SearchBar = ({
     <>
       <TextField
         fullWidth
+        autoFocus
         inputProps={{
           style: {
             paddingTop: 12,

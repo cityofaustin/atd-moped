@@ -17,13 +17,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import theme from "src/theme/index";
 
 const useStyles = makeStyles((theme) => ({
-  dialogTitle: {
-    color: theme.palette.text.primary,
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   dialogContent: {
     paddingBottom: theme.spacing(3),
   },
@@ -44,8 +37,15 @@ const DeleteComponentModal = ({
   if (!clickedComponent) return null;
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth>
-      <DialogTitle className={classes.dialogTitle}>
-        <h3>Are you sure you want to delete this component?</h3>
+      <DialogTitle
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+        variant="h4"
+      >
+        Are you sure you want to delete this component?
         <IconButton onClick={onClose} size="large">
           <CloseIcon />
         </IconButton>

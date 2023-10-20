@@ -4745,10 +4745,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4783,10 +4786,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4821,10 +4827,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
 - table:
