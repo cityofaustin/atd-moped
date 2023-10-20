@@ -77,10 +77,8 @@ $ node index.js local
 
 
 ### Todo
-- CONFIRM: interim Sponsor > project lead
-- adding this is real fields for start and end dates—and use it in the cases
-  - need to scope out estimated date UI with forms
-- audit fields: on phases and components
+- agree will not do street segment line snapping 
+- Any status update date can be considred real/confirmed
 - get columns for tracking if record was migrated and even the id resets
 - fiscal year and calendar year: completion date:
 - project types
@@ -95,11 +93,9 @@ $ node index.js local
 - there are facility spatial records with multiple features within one layer and across geom types.
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - check geometry types of components - some may need to be converted to point or line
-- moped editor: nix summary map zoom animation
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
-- - work activities: how to hand activities wiht no status date/created date?
 - do we need to test project length reporting?
 - we need some way to undo:
   - the project inserts
