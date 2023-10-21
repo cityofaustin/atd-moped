@@ -75,11 +75,12 @@ $ node index.js local
 
 ### Recovering from failure
 
-1. Delete all migrated projects + reset ID sequences: `rollback.sql`
-
-2. Restore all DB event triggers using table-level syntax
+1. DO NOT DELETE projects if Hasura event triggers are enabled
+   
+2. Delete all migrated projects, reset ID sequences, and restore DB triggers: `rollback.sql`
 
 3. Restore Hasura event triggers by re-applying metadata
+
 
 ### Todo
 
