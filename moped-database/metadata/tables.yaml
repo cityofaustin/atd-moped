@@ -587,6 +587,8 @@
     - name: activity_log_feature_signals
       definition:
         enable_manual: false
+        insert:
+          columns: '*'
         update:
           columns: '*'
       retry_conf:
