@@ -43,3 +43,12 @@ select setval('moped_proj_personnel_project_personnel_id_seq', (select coalesce(
 select setval('moped_proj_personnel_roles_id_seq', (select coalesce(max(id), 1) from moped_proj_personnel_roles));
 select setval('moped_purchase_order_id_seq', (select coalesce(max(id), 1) from moped_proj_work_activity));
 select setval('features_council_districts_id_seq', (select coalesce(max(id), 1) from features_council_districts));
+
+-- restore misc triggers 
+ALTER TABLE feature_drawn_lines ENABLE TRIGGER all;
+ALTER TABLE feature_drawn_points ENABLE TRIGGER all;
+ALTER TABLE feature_intersections ENABLE TRIGGER all;
+ALTER TABLE feature_signals ENABLE TRIGGER all;
+ALTER TABLE feature_street_segments ENABLE TRIGGER all;
+ALTER TABLE moped_proj_phases ENABLE TRIGGER all;
+ALTER TABLE moped_proj_work_activity ENABLE TRIGGER all;
