@@ -34,8 +34,6 @@ const FNAME = "./data/raw/projects.json";
 
 let users;
 
-const COUNCIL_DISTRICTS_FNAME = "./backup/council_districts.json";
-
 const DELETE_ALL_PROJECTS_MUTATION = gql`
   mutation DeleteAllProjects {
     delete_moped_project(where: { project_id: { _is_null: false } }) {
@@ -76,21 +74,20 @@ const INSERT_ACTIVITY_LOG_EVENT_MUTATION = gql`
   }
 `;
 
-const GET_COUNCIL_DISTRICTS_QUERY = gql`
-  query getDistricts {
-    layer_council_district {
-      geography
-      council_district
-    }
-  }
-`;
-const DELETE_COUNCIL_DISTRICTS_MUTATION = gql`
-  mutation DeleteCouncilDistricts {
-    delete_layer_council_district(where: { id: { _gt: 0 } }) {
-      affected_rows
-    }
-  }
-`;
+const TABLES_TO_DISABLE_TRIGGERS = [
+  "feature_drawn_lines",
+  "feature_drawn_points",
+  "feature_intersections",
+  "feature_signals",
+  "feature_street_segments",
+  "moped_proj_phases",
+  "moped_proj_work_activity",
+];
+
+const getSetTriggerStateSql = (state) =>
+  TABLES_TO_DISABLE_TRIGGERS.map(
+    (t) => `ALTER TABLE ${t} ${state} TRIGGER all`
+  ).join(";\n");
 
 fields = [
   {
@@ -292,7 +289,7 @@ async function main(env) {
     logger.info(`✅ Loaded metadata backup from '${metadataFilename}'`);
   }
 
-  logger.info("Disabling event triggers...");
+  logger.info("Disabling hasura event triggers...");
   removeEventTriggers(metadata);
 
   try {
@@ -302,7 +299,16 @@ async function main(env) {
     return;
   }
 
-  logger.info("✅ Event triggers disabled");
+  logger.info("✅ Hasura Event triggers disabled");
+
+  logger.info("Disabling DB event triggers...");
+
+  await runSql({
+    env,
+    sql: getSetTriggerStateSql("disable"),
+  });
+
+  logger.info("✅ DB event triggers disabled");
 
   logger.info("Downloading users from production...");
 
@@ -338,28 +344,6 @@ async function main(env) {
     });
 
     logger.info("✅ Projects ID sequence reset");
-
-    logger.info("Backing up council districts...");
-    const districts = await makeHasuraRequest({
-      query: GET_COUNCIL_DISTRICTS_QUERY,
-      env,
-    });
-
-    if (districts["layer_council_district"].length > 0) {
-      saveJsonFile(
-        COUNCIL_DISTRICTS_FNAME,
-        districts["layer_council_district"]
-      );
-
-      logger.info("✅ Council districts backed-up");
-      logger.info("🏎️ Deleting council districts (gotta go fast)...");
-
-      await makeHasuraRequest({
-        query: DELETE_COUNCIL_DISTRICTS_MUTATION,
-        env,
-      });
-      logger.info("✅ Council districts deleted");
-    }
 
     logger.info("Deleting users and resetting ID sequence....");
     await runSql({
@@ -485,6 +469,9 @@ async function main(env) {
     if (milestones) {
       proj.moped_proj_milestones = { data: milestones };
     }
+
+    // set flag to track that this is a migrated project
+    proj.is_migrated_from_access_db = true;
   });
 
   logger.info(`Inserting ${projects.length} projects...`);
@@ -535,6 +522,16 @@ async function main(env) {
     logger.info("Sleeping...");
     await new Promise((r) => setTimeout(r, 1000));
   }
+
+  logger.info("Re-enabling DB event triggers...");
+
+  await runSql({
+    env,
+    sql: getSetTriggerStateSql("enable"),
+  });
+
+  logger.info("✅ DB event triggers re-enables");
+
 
   logger.info("Restoring event triggers...");
   const metadataBackup = loadJsonFile(metadataFilename);
