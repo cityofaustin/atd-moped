@@ -60,7 +60,7 @@ $ npm install
 ```shell
 # optionally run facility line matcher—we've decided not to use this. all
 # line features will be imported as drawn lines
-$ node facility_line_matcher.js 
+$ node facility_line_matcher.js
 
 $ node facility_point_matcher.js
 ```
@@ -73,21 +73,17 @@ $ node index.js local
 
 5. Open the Moped Editor to inspect projects ✨
 
+### Recovering from failure
 
-### On deck
+1. Delete all migrated projects + reset ID sequences: `rollback.sql`
 
-- project types
+2. Restore all DB event triggers using table-level syntax
 
+3. Restore Hasura event triggers by re-applying metadata
 
 ### Todo
-- we gotta manually disable DB-level event triggers :/
-  - work activity
-  - ?????
-  - also just confirm that event triggers are not firing during migration.
-    - inspect logs
-- ability to rollback:
-  - need to write statement to delete orphaned features, activitiy log events, features_council_districts
 
+- confirm that event triggers are not firing during migration.
 - load metadata from database dir—instead of backing it up?
 - fiscal year and calendar year: completion date:
 - project types
@@ -105,34 +101,15 @@ $ node index.js local
 - moped editor: project list: cannot search for projects with no/unknown status
 - moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
-- do we need to test project length reporting?
-- we need some way to undo:
-  - the project inserts
-  - the activity log records
-  - - sort projects by interim project ID before we migrate them, so that older projects have a lower project ID
-
+- sort projects by interim project ID before we migrate them, so that older projects have a lower project ID?
 
 ### NW Questions
-- can we concat work auth work order Id into beginning of description?
-- dedupe existing projects with interim_project_id
-- milestones:
-  - ok to merge public meeting and public meeting (tentative) ? will use estimated date for tentative? 
-  - in mapping doc NW used the estiamted date for not-tentative. confusing!
 - project personnel:
   - IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
-- project funding:
-  - very few sources have a status. currently defaulting to tentatitve.
-    - OK
 - work authorizations statusID: default to....planned? complete?
   - > futue/potential
-
-
--> issues to make: merge fund and dept-unit
-- add project funding status order integer
-- does the "ProjectPhase" column on the projects table always have a corresponding status update? because the migration is going purely based on status updates
 - should we assign "New" work type to anything that doesn't have a work type?
-- facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these? 
-- we are converting unmatched signals to intersection improvement components: review these with AMD
+- facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these?
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
 
 - not migrating these project facility colummns:
