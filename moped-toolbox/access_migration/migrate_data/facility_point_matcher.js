@@ -2,10 +2,10 @@
  * For every facility (aka component) point, find the nearest:
  * - CTN intersection feature
  * - signal asset feature
- * 
+ *
  * If these features are within our `BUFFER_DIST` tolerance, they are saved
  * and referenced later when we build up component features
- * 
+ *
  * Features are saved as a JSON indexed on the interim facility ID
  */
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
@@ -52,7 +52,15 @@ function main() {
   const results = {};
   facilities.features.forEach((f) => {
     stats.facilities_processed++;
-    console.log("count", stats.facilities_processed);
+
+    stats.facilities_processed % 100 === 0 &&
+      console.log(
+        "Processed ",
+        stats.facilities_processed,
+        " out of ",
+        facilities.features.length,
+        " facilities"
+      );
     const facilityId = f.properties.Project_FacilityID;
     if (!facilityId) {
       // it happens - apparently deleted or malcreated geoms
