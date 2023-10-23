@@ -3581,6 +3581,15 @@
           table:
             name: moped_proj_work_activity
             schema: public
+    - name: project_geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
+            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
