@@ -39,7 +39,7 @@ import MapView from "./ProjectComponents/index";
 import ProjectFunding from "./ProjectFunding";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
-import ProjectComments from "./ProjectComments";
+import ProjectNotes from "./ProjectNotes";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import {
@@ -139,7 +139,7 @@ const TABS = [
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Funding", Component: ProjectFunding, param: "funding" },
-  { label: "Comments", Component: ProjectComments, param: "comments" },
+  { label: "Notes", Component: ProjectNotes, param: "notes" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   {
     label: "Activity",

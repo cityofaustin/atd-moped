@@ -19,25 +19,25 @@ import {
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import CommentInputQuill from "./CommentInputQuill";
+import NoteInputQuill from "./NoteInputQuill";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
-import "./ProjectComments.css";
+import "./ProjectNotes.css";
 
 // Query
 import {
-  COMMENTS_QUERY,
-  ADD_PROJECT_COMMENT,
-  UPDATE_PROJECT_COMMENT,
-  DELETE_PROJECT_COMMENT,
-} from "../../../queries/comments";
+  NOTES_QUERY,
+  ADD_PROJECT_NOTE,
+  UPDATE_PROJECT_NOTE,
+  DELETE_PROJECT_NOTE,
+} from "../../../queries/notes";
 import {
   makeHourAndMinutesFromTimeStampTZ,
   makeUSExpandedFormDateFromTimeStampTZ,
@@ -49,18 +49,18 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     backgroundColor: theme.palette.background.paper,
   },
-  commentorText: {
+  authorText: {
     display: "inline",
     fontWeight: 500,
   },
-  commentDate: {
+  noteDate: {
     display: "inline",
     fontSize: ".875rem",
   },
-  editableComment: {
+  editableNote: {
     marginRight: "30px",
   },
-  noteType: {
+  filterNoteType: {
     display: "inline",
     marginLeft: "12px",
     color: theme.palette.primary.main,
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
-const ProjectComments = (props) => {
+const ProjectNotes = (props) => {
   const isStatusEditModal = props.modal;
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
   // otherwise use data passed from ProjectView
@@ -101,12 +101,16 @@ const ProjectComments = (props) => {
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
-  const [commentAddLoading, setCommentAddLoading] = useState(false);
-  const [commentAddSuccess, setCommentAddSuccess] = useState(false);
-  const [editingComment, setEditingComment] = useState(false);
-  const [commentId, setCommentId] = useState(null);
+  const [newNoteType, setNewNoteType] = useState(1);
+  const [editingNoteType, setEditingNoteType] = useState(null);
+  const [noteAddLoading, setNoteAddLoading] = useState(false);
+  const [noteAddSuccess, setNoteAddSuccess] = useState(false);
+  const [editingNote, setEditingNote] = useState(false);
+  const [noteId, setNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
-  const [noteType, setNoteType] = useState(isStatusEditModal ? 2 : 0);
+  const [filterNoteType, setFilterNoteType] = useState(
+    isStatusEditModal ? 2 : 0
+  );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
@@ -117,7 +121,7 @@ const ProjectComments = (props) => {
     projectId = props.projectId;
   }
 
-  const { loading, error, data, refetch } = useQuery(COMMENTS_QUERY, {
+  const { loading, error, data, refetch } = useQuery(NOTES_QUERY, {
     variables: {
       projectNoteConditions: {
         project_id: { _eq: Number(projectId) },
@@ -129,14 +133,14 @@ const ProjectComments = (props) => {
 
   const mopedProjNotes = data?.moped_proj_notes;
 
-  const [addNewComment] = useMutation(ADD_PROJECT_COMMENT, {
+  const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
       setNoteText("");
       refetch();
-      setCommentAddSuccess(true);
+      setNoteAddSuccess(true);
       setTimeout(() => {
-        setCommentAddLoading(false);
-        setCommentAddSuccess(false);
+        setNoteAddLoading(false);
+        setNoteAddSuccess(false);
         if (isStatusEditModal) {
           props.closeModalDialog();
         }
@@ -144,7 +148,7 @@ const ProjectComments = (props) => {
     },
   });
 
-  const [editExistingComment] = useMutation(UPDATE_PROJECT_COMMENT, {
+  const [editExistingNote] = useMutation(UPDATE_PROJECT_NOTE, {
     onCompleted() {
       setNoteText("");
       refetch();
@@ -154,16 +158,16 @@ const ProjectComments = (props) => {
         // refetch the project summary query passed down from ProjectView
         props.refetch();
       }
-      setCommentAddSuccess(true);
-      setEditingComment(false);
+      setNoteAddSuccess(true);
+      setEditingNote(false);
       setTimeout(() => {
-        setCommentAddLoading(false);
-        setCommentAddSuccess(false);
+        setNoteAddLoading(false);
+        setNoteAddSuccess(false);
       }, 350);
     },
   });
 
-  const [deleteExistingComment] = useMutation(DELETE_PROJECT_COMMENT, {
+  const [deleteExistingNote] = useMutation(DELETE_PROJECT_NOTE, {
     onCompleted() {
       refetch();
       if (isStatusEditModal) {
@@ -175,16 +179,16 @@ const ProjectComments = (props) => {
     },
   });
 
-  const submitNewComment = () => {
-    setCommentAddLoading(true);
-    addNewComment({
+  const submitNewNote = () => {
+    setNoteAddLoading(true);
+    addNewNote({
       variables: {
         objects: [
           {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
             added_by_user_id: Number(userSessionData.user_id),
-            project_note_type: isStatusEditModal ? 2 : 1,
+            project_note_type: newNoteType,
             phase_id: currentPhaseId,
           },
         ],
@@ -192,32 +196,37 @@ const ProjectComments = (props) => {
     });
   };
 
-  const editComment = (index, project_note_id) => {
-    setEditingComment(true);
+  const editNote = (index, item) => {
+    setEditingNoteType(item.project_note_type);
+    setEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setCommentId(project_note_id);
+    setNoteId(item.project_note_id);
   };
 
-  const cancelCommentEdit = () => {
+  const cancelNoteEdit = () => {
+    setEditingNoteType(null);
     setNoteText("");
-    setEditingComment(false);
-    setCommentId(null);
+    setEditingNote(false);
+    setNoteId(null);
   };
 
-  const submitEditComment = (project_note_id) => {
-    setCommentAddLoading(true);
-    setCommentId(null);
-    editExistingComment({
+  const submitEditNote = () => {
+    setNoteAddLoading(true);
+    setNoteId(null);
+    editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
         projectId: Number(projectId),
-        projectNoteId: commentId,
+        projectNoteId: noteId,
+        projectNoteType: editingNoteType,
       },
     });
+
+    setEditingNoteType(null);
   };
 
-  const submitDeleteComment = (project_note_id) => {
-    deleteExistingComment({
+  const submitDeleteNote = (project_note_id) => {
+    deleteExistingNote({
       variables: {
         projectId: Number(projectId),
         projectNoteId: project_note_id,
@@ -226,10 +235,10 @@ const ProjectComments = (props) => {
   };
 
   /**
-   * Updates the type based on conditions
+   * Updates the note type based on conditions
    * @param {Number} typeId
    */
-  const filterNoteType = (typeId) => setNoteType(Number(typeId));
+  const changeFilterNoteType = (typeId) => setFilterNoteType(Number(typeId));
 
   // when the data changes, update the display notes state
   useEffect(() => {
@@ -239,36 +248,36 @@ const ProjectComments = (props) => {
   }, [loading, data]);
 
   /**
-   * Whenever noteType changes, filter the notes being displayed
+   * Whenever filterNoteType changes, filter the notes being displayed
    */
   useEffect(() => {
-    if (noteType === 0) {
+    if (filterNoteType === 0) {
       // show all the notes
       setDisplayNotes(mopedProjNotes);
     } else {
       // on first few renders, mopedProjNotes is still undefined.
       // Check to see if array exists before trying to filter
       const filteredNotes = mopedProjNotes
-        ? mopedProjNotes.filter((n) => n.project_note_type === noteType)
+        ? mopedProjNotes.filter((n) => n.project_note_type === filterNoteType)
         : [];
       setDisplayNotes(filteredNotes);
     }
-  }, [noteType, mopedProjNotes]);
+  }, [filterNoteType, mopedProjNotes]);
 
   if (error) return console.log(error);
 
   /**
-   * Defines the CommentButton with a toggle style-change behavior.
+   * Defines the NoteTypeButton with a toggle style-change behavior.
    * @param {Object} props
    * @return {JSX.Element}
    * @constructor
    */
-  const CommentButton = (props) => (
+  const NoteTypeButton = (props) => (
     <Button
       color="primary"
       className={classes.showButtonItem}
-      variant={noteType === props.noteTypeId ? "contained" : "outlined"}
-      onClick={() => filterNoteType(props.noteTypeId)}
+      variant={filterNoteType === props.noteTypeId ? "contained" : "outlined"}
+      onClick={() => changeFilterNoteType(props.noteTypeId)}
     >
       {props.children}
     </Button>
@@ -283,18 +292,20 @@ const ProjectComments = (props) => {
     <CardContent>
       <Grid container spacing={2}>
         {/*New Note Form*/}
-        {!editingComment && (
+        {!editingNote && (
           <Grid item xs={12}>
             <Card>
-              <CommentInputQuill
+              <NoteInputQuill
                 noteText={noteText}
                 setNoteText={setNoteText}
-                editingComment={editingComment}
-                commentAddLoading={commentAddLoading}
-                commentAddSuccess={commentAddSuccess}
-                submitNewComment={submitNewComment}
-                submitEditComment={submitEditComment}
-                cancelCommentEdit={cancelCommentEdit}
+                newNoteType={newNoteType}
+                setNewNoteType={setNewNoteType}
+                editingNote={editingNote}
+                noteAddLoading={noteAddLoading}
+                noteAddSuccess={noteAddSuccess}
+                submitNewNote={submitNewNote}
+                submitEditNote={submitEditNote}
+                cancelNoteEdit={cancelNoteEdit}
               />
             </Card>
           </Grid>
@@ -307,9 +318,9 @@ const ProjectComments = (props) => {
               label="Show"
               control={<span />}
             />
-            <CommentButton noteTypeId={0}>All</CommentButton>
-            <CommentButton noteTypeId={1}>Internal Notes</CommentButton>
-            <CommentButton noteTypeId={2}>Status Updates</CommentButton>
+            <NoteTypeButton noteTypeId={0}>All</NoteTypeButton>
+            <NoteTypeButton noteTypeId={1}>Internal Notes</NoteTypeButton>
+            <NoteTypeButton noteTypeId={2}>Status Updates</NoteTypeButton>
           </Grid>
         )}
         {/*Now the notes*/}
@@ -320,8 +331,8 @@ const ProjectComments = (props) => {
             ) : displayNotes.length > 0 ? (
               <List className={classes.root}>
                 <DeleteConfirmationModal
-                  type="comment"
-                  submitDelete={() => submitDeleteComment(deleteConfirmationId)}
+                  type="note"
+                  submitDelete={() => submitDeleteNote(deleteConfirmationId)}
                   isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                   setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
                 >
@@ -332,7 +343,7 @@ const ProjectComments = (props) => {
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
-                    const editableComment =
+                    const editableNote =
                       userSessionData.user_id === item.added_by_user_id;
                     return (
                       <React.Fragment key={item.project_note_id}>
@@ -341,20 +352,18 @@ const ProjectComments = (props) => {
                             <Avatar />
                           </ListItemAvatar>
                           <ListItemText
-                            className={
-                              editableComment ? classes.editableComment : ""
-                            }
+                            className={editableNote ? classes.editableNote : ""}
                             primary={
                               <>
                                 <Typography
                                   component={"span"}
-                                  className={classes.commentorText}
+                                  className={classes.authorText}
                                 >
                                   {getUserFullName(item.moped_user)}
                                 </Typography>
                                 <Typography
                                   component={"span"}
-                                  className={classes.commentDate}
+                                  className={classes.noteDate}
                                 >
                                   {` - ${makeUSExpandedFormDateFromTimeStampTZ(
                                     item.date_created
@@ -364,7 +373,7 @@ const ProjectComments = (props) => {
                                 </Typography>
                                 <Typography
                                   component={"span"}
-                                  className={classes.noteType}
+                                  className={classes.filterNoteType}
                                 >
                                   {` ${
                                     projectNoteTypes[item.project_note_type]
@@ -384,16 +393,18 @@ const ProjectComments = (props) => {
                               </>
                             }
                             secondary={
-                              commentId === item.project_note_id ? (
-                                <CommentInputQuill
+                              noteId === item.project_note_id ? (
+                                <NoteInputQuill
                                   noteText={noteText}
                                   setNoteText={setNoteText}
-                                  editingComment={editingComment}
-                                  commentAddLoading={commentAddLoading}
-                                  commentAddSuccess={commentAddSuccess}
-                                  submitNewComment={submitNewComment}
-                                  submitEditComment={submitEditComment}
-                                  cancelCommentEdit={cancelCommentEdit}
+                                  editingNote={editingNote}
+                                  noteAddLoading={noteAddLoading}
+                                  noteAddSuccess={noteAddSuccess}
+                                  submitNewNote={submitNewNote}
+                                  submitEditNote={submitEditNote}
+                                  cancelNoteEdit={cancelNoteEdit}
+                                  editingNoteType={editingNoteType}
+                                  setEditingNoteType={setEditingNoteType}
                                 />
                               ) : (
                                 <Typography
@@ -406,33 +417,33 @@ const ProjectComments = (props) => {
                             }
                           />
                           {
-                            // show edit/delete icons if comment authored by logged in user
+                            // show edit/delete icons if note authored by logged in user
                             // or user is admin
-                            editableComment && (
+                            editableNote && (
                               <ListItemSecondaryAction
                                 className={classes.editControls}
                               >
-                                {commentId !== item.project_note_id && (
+                                {noteId !== item.project_note_id && (
                                   <IconButton
                                     edge="end"
                                     aria-label="edit"
-                                    onClick={() =>
-                                      editComment(i, item.project_note_id)
-                                    }
-                                    size="large">
+                                    onClick={() => editNote(i, item)}
+                                    size="large"
+                                  >
                                     <EditIcon
                                       className={classes.editDeleteButtons}
                                     />
                                   </IconButton>
                                 )}
-                                {!editingComment && (
+                                {!editingNote && (
                                   <IconButton
                                     edge="end"
                                     aria-label="delete"
                                     onClick={() =>
                                       handleDeleteOpen(item.project_note_id)
                                     }
-                                    size="large">
+                                    size="large"
+                                  >
                                     <DeleteIcon
                                       className={classes.editDeleteButtons}
                                     />
@@ -450,7 +461,7 @@ const ProjectComments = (props) => {
               </List>
             ) : (
               <Typography className={classes.emptyState}>
-                No comments to display
+                No notes to display
               </Typography>
             )}
           </Card>
@@ -460,4 +471,4 @@ const ProjectComments = (props) => {
   );
 };
 
-export default ProjectComments;
+export default ProjectNotes;
