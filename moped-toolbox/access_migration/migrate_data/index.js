@@ -329,7 +329,7 @@ async function main(env) {
   // const unknownUserId =
   logger.info("✅ Users downloaded");
 
-  if (env === "local" || env === "test") {
+  if (env === "local") {
     logger.info("Deleting all projects and features...");
     await makeHasuraRequest({
       query: DELETE_ALL_PROJECTS_MUTATION,
@@ -482,11 +482,7 @@ async function main(env) {
     let response;
     // insert each chunk of projects
     try {
-      logger.info(
-        `${i + 1}/${projectChunks.length} - uploading ${
-          projectChunks[i].length
-        } projects...`
-      );
+      logger.info(`⬆️ ${i + 1}/${projectChunks.length} - uploading projects`);
       response = await makeHasuraRequest({
         query: INSERT_PROJECTS_MUTATION,
         variables: { objects: projectChunks[i] },
@@ -507,7 +503,7 @@ async function main(env) {
       .flat();
 
     try {
-      logger.info("Creating activity log events...");
+      logger.info("📖 uploading activity log events...");
       await makeHasuraRequest({
         query: INSERT_ACTIVITY_LOG_EVENT_MUTATION,
         variables: { objects: activityLogRecords },
@@ -519,7 +515,7 @@ async function main(env) {
       break;
     }
 
-    logger.info("Sleeping...");
+    logger.info("⏳ Sleeping...");
     await new Promise((r) => setTimeout(r, 1000));
   }
 
@@ -532,7 +528,6 @@ async function main(env) {
 
   logger.info("✅ DB event triggers re-enables");
 
-
   logger.info("Restoring event triggers...");
   const metadataBackup = loadJsonFile(metadataFilename);
 
@@ -544,7 +539,7 @@ async function main(env) {
   }
   logger.info("✅ Event trigger restored");
 
-  logger.info("Done :)");
+  logger.info("Done 😅");
 }
 
 const getEnv = () => {
