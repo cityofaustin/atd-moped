@@ -41,6 +41,9 @@ def make_esri_feature(*, geometry, **attributes):
         Dict: An Esri feature object
         Bool: if the feature is a point feature type
     """
+    if not geometry:
+        return None, None
+
     geometry_key = get_geometry_key(geometry)
     feature = {
         "attributes": attributes,
@@ -66,6 +69,9 @@ def main():
 
     for component in data:
         feature, is_point_feature = make_esri_feature(**component)
+        if not feature:
+            continue
+
         if is_point_feature:
             all_features["points"].append(feature)
         else:
