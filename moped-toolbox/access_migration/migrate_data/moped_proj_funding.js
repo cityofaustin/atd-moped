@@ -76,7 +76,7 @@ const fields = [
 ];
 
 async function fetchUnit(dept, unit) {
-  logger.info(`Getting fund-unit ${dept}-${unit} from Socrata...`);
+  // logger.info(`Getting fund-unit ${dept}-${unit} from Socrata...`);
   const endpoint = `https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=10000000&dept=${dept}&unit=${unit}`;
   const response = await fetch(endpoint, {
     method: "GET",

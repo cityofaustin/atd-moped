@@ -1,12 +1,12 @@
 const winston = require("winston");
 
 // uncomment to use a unique file per run
-// const dateStr = new Date().toISOString().slice(0, 19);
-// const errorFname = `../logs/${dateStr}_error.log`;
-// const combinedFname = `../logs/${dateStr}_combined.log`;
+const dateStr = new Date().toISOString().slice(0, 19);
+const errorFname = `../logs/${dateStr}_error.log`;
+const combinedFname = `../logs/${dateStr}_combined.log`;
 
-const errorFname = `../logs/error.log`;
-const combinedFname = `../logs/combined.log`;
+// const errorFname = `../logs/error.log`;
+// const combinedFname = `../logs/combined.log`;
 
 const logger = winston.createLogger({
   level: "info",

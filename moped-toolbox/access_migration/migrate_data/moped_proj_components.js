@@ -11,6 +11,7 @@ const {
 const { PHASES_MAP } = require("./mappings/phases");
 const { mapRow, mapRowExpanded } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
+const { logger } = require("./utils/logger");
 
 /** Access DB tables related to components/facilities
  * Facility_Attributes - actuals associated with project facility instances (many to one)
@@ -237,7 +238,6 @@ function getComponents() {
   );
 
   const unmapped = [];
-  const multigeotype = [];
 
   // todo: log when a component is filtered/excluded!
   const componentIndex = components
@@ -289,8 +289,11 @@ function getComponents() {
 
       if (drawnPointFeature && drawnLineFeature) {
         // todo: how to handle?
-        multigeotype.push(comp);
-        console.log("skipping multigeotype - count at ", multigeotype.length);
+        logger.info(
+          "⚠️ skipping geodata for facility ID ",
+          comp.interim_project_component_id,
+          " because it has both point and line geomteries"
+        );
         return index;
       }
 

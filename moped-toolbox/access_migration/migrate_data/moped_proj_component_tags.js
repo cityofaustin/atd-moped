@@ -88,10 +88,10 @@ function getComponentTags() {
       ...matchedTags.map((component_tag_id) => ({ component_tag_id })),
     ];
   });
-  const count = Object.keys(componentTagIndex).filter(
-    (key) => componentTagIndex[key].length > 0
-  ).length;
-  console.log(count, "of", Object.keys(componentTagIndex).length, "have a tag");
+  // const count = Object.keys(componentTagIndex).filter(
+  //   (key) => componentTagIndex[key].length > 0
+  // ).length;
+  // console.log(count, "of", Object.keys(componentTagIndex).length, "have a tag");
   return componentTagIndex;
 }
 
