@@ -326,8 +326,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_lines
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -461,8 +459,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_points
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -596,8 +592,6 @@
   event_triggers:
     - name: activity_log_feature_intersections
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -773,8 +767,6 @@
   event_triggers:
     - name: activity_log_feature_signals
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -943,8 +935,6 @@
   event_triggers:
     - name: activity_log_feature_street_segments
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1647,8 +1637,6 @@
   event_triggers:
     - name: activity_log_proj_component_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1761,8 +1749,6 @@
   event_triggers:
     - name: activity_log_proj_component_work_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2005,8 +1991,6 @@
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2391,8 +2375,6 @@
   event_triggers:
     - name: activity_log_moped_proj_funding
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2554,8 +2536,6 @@
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2709,8 +2689,6 @@
   event_triggers:
     - name: activity_log_moped_proj_notes
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2839,8 +2817,6 @@
   event_triggers:
     - name: activity_log_moped_proj_partners
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2989,8 +2965,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3104,8 +3078,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel_roles
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3277,8 +3249,6 @@
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3398,8 +3368,6 @@
   event_triggers:
     - name: activity_log_moped_project_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3620,8 +3588,6 @@
   event_triggers:
     - name: activity_log_moped_proj_work_activity
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3954,8 +3920,6 @@
   event_triggers:
     - name: activity_log_moped_project
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4166,8 +4130,6 @@
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4340,8 +4302,6 @@
   event_triggers:
     - name: activity_log_moped_project_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
