@@ -19,6 +19,7 @@ Thumbs.db
 .env.development.local
 .env.test.local
 .env.production.local
+env_file
 .venv
 zappa_settings.json
 handler_config.json
