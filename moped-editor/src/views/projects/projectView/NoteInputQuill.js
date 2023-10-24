@@ -75,6 +75,7 @@ const NoteInputQuill = ({
   submitNewNote,
   submitEditNote,
   cancelNoteEdit,
+  isStatusEditModal,
 }) => {
   const classes = useStyles();
   const ref = useRef();
@@ -104,19 +105,21 @@ const NoteInputQuill = ({
           display="flex"
           style={{ justifyContent: "flex-end" }}
         >
-          <FormControl>
-            {!editingNote ? (
-              <NoteTypeRadioButtons
-                defaultValue={newNoteType}
-                onChange={(e) => setNewNoteType(e.target.value)}
-              ></NoteTypeRadioButtons>
-            ) : (
-              <NoteTypeRadioButtons
-                defaultValue={editingNoteType}
-                onChange={(e) => setEditingNoteType(e.target.value)}
-              ></NoteTypeRadioButtons>
-            )}
-          </FormControl>
+          {!isStatusEditModal && (
+            <FormControl>
+              {!editingNote ? (
+                <NoteTypeRadioButtons
+                  defaultValue={newNoteType}
+                  onChange={(e) => setNewNoteType(e.target.value)}
+                ></NoteTypeRadioButtons>
+              ) : (
+                <NoteTypeRadioButtons
+                  defaultValue={editingNoteType}
+                  onChange={(e) => setEditingNoteType(e.target.value)}
+                ></NoteTypeRadioButtons>
+              )}
+            </FormControl>
+          )}
         </Grid>
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
