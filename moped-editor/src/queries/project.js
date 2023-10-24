@@ -47,6 +47,7 @@ export const SUMMARY_QUERY = gql`
         feature_signals(where: { is_deleted: { _eq: false } }) {
           signal_id
           knack_id
+          id
         }
       }
       moped_proj_notes(

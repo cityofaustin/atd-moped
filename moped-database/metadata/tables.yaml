@@ -326,8 +326,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_lines
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -461,8 +459,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_points
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -596,8 +592,6 @@
   event_triggers:
     - name: activity_log_feature_intersections
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -773,8 +767,6 @@
   event_triggers:
     - name: activity_log_feature_signals
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -943,8 +935,6 @@
   event_triggers:
     - name: activity_log_feature_street_segments
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1647,8 +1637,6 @@
   event_triggers:
     - name: activity_log_proj_component_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1761,8 +1749,6 @@
   event_triggers:
     - name: activity_log_proj_component_work_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2005,8 +1991,6 @@
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2391,8 +2375,6 @@
   event_triggers:
     - name: activity_log_moped_proj_funding
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2554,8 +2536,6 @@
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2709,8 +2689,6 @@
   event_triggers:
     - name: activity_log_moped_proj_notes
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2839,8 +2817,6 @@
   event_triggers:
     - name: activity_log_moped_proj_partners
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2989,8 +2965,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3104,8 +3078,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel_roles
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3172,6 +3144,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
     - role: moped-editor
       permission:
         check: {}
@@ -3186,6 +3160,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
   select_permissions:
     - role: moped-admin
       permission:
@@ -3200,6 +3176,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-editor
       permission:
@@ -3214,6 +3192,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-viewer
       permission:
@@ -3228,6 +3208,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3243,6 +3225,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
     - role: moped-editor
@@ -3258,13 +3242,13 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3384,8 +3368,6 @@
   event_triggers:
     - name: activity_log_moped_project_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3606,8 +3588,6 @@
   event_triggers:
     - name: activity_log_moped_proj_work_activity
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3940,8 +3920,6 @@
   event_triggers:
     - name: activity_log_moped_project
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4152,8 +4130,6 @@
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4326,8 +4302,6 @@
   event_triggers:
     - name: activity_log_moped_project_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4920,6 +4894,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
@@ -4960,6 +4935,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
@@ -5000,6 +4976,7 @@
           - public_process_status
           - task_orders
           - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
           - knack_project_id
