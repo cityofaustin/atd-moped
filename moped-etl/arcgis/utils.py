@@ -5,7 +5,7 @@ import sys
 
 import requests
 
-from settings import SERVICE_NAMES
+from settings import LAYER_IDS
 
 AGOL_USERNAME = os.getenv("AGOL_USERNAME")
 AGOL_PASSWORD = os.getenv("AGOL_PASSWORD")
@@ -27,8 +27,8 @@ def get_endpoint(method, feature_type):
     Returns:
         Str: an endpoint URL
     """
-    service_name = SERVICE_NAMES[feature_type]
-    return f"https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/{service_name}/FeatureServer/0/{method}"
+    layer_id = LAYER_IDS[feature_type]
+    return f"https://services.arcgis.com/0L95CJ0VTaxqcmED/ArcGIS/rest/services/Moped_Project_Components/FeatureServer/{layer_id}/{method}"
 
 
 def chunks(lst, n):
@@ -73,7 +73,7 @@ def handle_arcgis_response(responseData):
     """
     if not responseData:
         return
-    
+
     if responseData.get("error"):
         # sometimes there is an error in the root of the response object 👍
         raise ValueError(responseData["error"])
@@ -137,7 +137,6 @@ def add_features(feature_type, features):
     res.raise_for_status()
     responseData = res.json()
     handle_arcgis_response(responseData)
-
 
 
 def get_token():

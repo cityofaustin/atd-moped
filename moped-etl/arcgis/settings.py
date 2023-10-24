@@ -1,6 +1,6 @@
 UPLOAD_CHUNK_SIZE = 100
 
-SERVICE_NAMES = {"points": "MOPED_Points", "lines": "MOPED_Lines"}
+LAYER_IDS = {"points": 0, "lines": 1}
 
 COMPONENTS_QUERY = """
 query {
