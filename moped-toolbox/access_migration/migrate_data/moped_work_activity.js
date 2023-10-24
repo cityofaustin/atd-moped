@@ -2,7 +2,6 @@ const { logger } = require("./utils/logger");
 const { loadJsonFile } = require("./utils/loader");
 const { mapRowExpanded } = require("./utils/misc");
 const { USERS_FNAME } = require("./moped_users");
-const { logger } = require("./utils/logger");
 const WORK_AUTH_FNAME = "./data/raw/workauthorizations.json";
 const WORK_AUTHS = loadJsonFile(WORK_AUTH_FNAME);
 const USERS = loadJsonFile(USERS_FNAME);
