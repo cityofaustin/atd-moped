@@ -27,4 +27,4 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: moped-etl/arcgis
           push: true
-          tags: atddocker/atd-moped-etl-arcgis:${{ github.ref_name }
+          tags: atddocker/atd-moped-etl-arcgis:${{ github.ref_name }}
