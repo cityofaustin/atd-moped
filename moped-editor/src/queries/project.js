@@ -141,6 +141,11 @@ export const SUMMARY_QUERY = gql`
         is_deleted: { _eq: false }
       }
     ) {
+      project_geography(
+      where: { is_deleted: { _eq: false } }
+    ) {
+        council_districts
+      }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         ...projectComponentFields
       }
