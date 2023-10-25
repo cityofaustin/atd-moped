@@ -446,7 +446,7 @@ const Filters = ({
   useEffect(() => {
     Object.keys(filterParameters).forEach((filterKey) => {
       if (
-        filterParameters[filterKey].value ||
+        !!filterParameters[filterKey].value ||
         filterParameters[filterKey].operator === "string_is_null" ||
         filterParameters[filterKey].operator === "string_is_not_null"
       ) {
