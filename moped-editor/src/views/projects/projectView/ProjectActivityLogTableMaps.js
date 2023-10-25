@@ -322,6 +322,12 @@ export const ProjectActivityLogTableMaps = {
       subphase_id: {
         label: "subphase",
       },
+      is_phase_start_confirmed: {
+        label: "start date confirmation"
+      },
+      is_phase_end_confirmed: {
+        label: "end date confirmation"
+      }
     },
   },
   moped_proj_components: {
