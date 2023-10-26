@@ -1,13 +1,16 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
-// reduce the array of geography objects into an array of city council districts
+// reduce the array of project_geography objects into an array of city council districts
 const reduceDistricts = (data) => {
   const initialValue = [];
-  const districts = data.reduce(
-    (acc, component) => [...acc, component["council_districts"]],
-    initialValue
-  );
+  const districts = data.reduce((acc, geography) => {
+    /* Not all components have geography data */
+    const geographyCouncilDistricts = geography
+      ? geography.council_districts
+      : [];
+    return [...acc, geographyCouncilDistricts];
+  }, initialValue);
 
   // flatten the array of arrays and remove empty districts
   const districtsArray = districts.flat().filter((d) => d);
