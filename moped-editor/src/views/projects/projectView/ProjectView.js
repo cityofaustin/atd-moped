@@ -133,11 +133,6 @@ function a11yProps(index) {
   };
 }
 
-const useQueryParams = (search) =>
-  useMemo(() => {
-    return new URLSearchParams(search);
-  }, [search]);
-
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Map", Component: MapView, param: "map" },
@@ -244,7 +239,6 @@ const ProjectView = () => {
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  // and sets phases in moped_proj_phases as is_current_phase: false
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
