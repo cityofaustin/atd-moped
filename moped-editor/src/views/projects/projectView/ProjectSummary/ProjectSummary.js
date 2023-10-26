@@ -128,6 +128,9 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
 
   const [snackbarState, setSnackbarState] = useState(false);
 
+  const childProjectGeography = data?.childProjects.map(
+    (project) => project.project_geography[0]
+  );
   /**
    * Updates the state of snackbar state
    * @param {String|JSX.Element} message - The message to be displayed
@@ -301,6 +304,7 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 <ProjectSummaryCouncilDistricts
                   classes={classes}
                   projectGeography={data.project_geography}
+                  childProjectGeography={childProjectGeography}
                 />
               </Grid>
               <Grid item xs={12}>
