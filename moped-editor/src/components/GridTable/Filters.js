@@ -585,6 +585,7 @@ const Filters = ({
                               value[filterParameters[filterId]?.lookup_field]
                             );
                           } else {
+                            // value is null when the Autocomplete selection is cleared
                             handleSearchValueChange(filterId, value);
                           }
                         }}
