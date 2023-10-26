@@ -219,15 +219,8 @@ const ProjectView = () => {
    */
   const handleChange = useCallback(
     (event, newTab) => {
+      setSearchParams({ tab: TABS[newTab].param });
       if (newTab === 0) refetch();
-      const newTabParam = TABS[newTab].param;
-      setSearchParams(
-        { tab: TABS[newTab].param },
-        // replace history unless navigating to the map tab
-        // so users can use their browser's back button
-        // to return to project summary page
-        { replace: newTabParam !== "map" }
-      );
     },
     [refetch, setSearchParams]
   );
