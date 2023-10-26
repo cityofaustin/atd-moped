@@ -62,6 +62,7 @@ const COMPONENTS_MAP = [
   { in: "Refuge Island - Ped", out: 37 },
   { in: "Remove DY", out: 0 },
   { in: "Road Closed", out: null },
+  { in: "New Street", out: 73 },
   { in: "Roadway - Added Capacity / Lanes", out: null },
   { in: "School Zone - Conduct Study", out: null },
   { in: "School Zone - Flasher", out: 39 },
@@ -105,13 +106,17 @@ const COMPONENTS_MAP = [
   { in: "Trail - Shared Use Path (paved in street)", out: 84 },
   { in: "Trail - Shared Use Path (paved)", out: 85 },
   { in: "Trail - Shared Use Path (paved one-way bike)", out: 86 },
+  { in: "Trail - Shared Use Path (paved, one-way bike)", out: 86 }, // note the comma
   { in: "Trail - Tunnel", out: 87 },
   { in: "Trail - Unpaved", out: 88 },
   { in: "Trail - Urban Trail (paved)", out: 85 },
   { in: "Trail - Urban Trail (paved dual trail)", out: null },
+  { in: "Trail - Urban Trail (paved, dual trail)", out: null }, // note the comma
   { in: "Transit - BRT", out: null },
+  { in: "Transit - Bus Stop", out: 62 },
   { in: "Transit - Bus Stop - Consolidation", out: 62 },
-  { in: "Transit - Bus Stop - Enhanced", out: 62 },
+  { in: "Transit - Bus Stop - Enhanced", out: 97 },
+  { in: "Bus Stop Modification", out: 62 },
   { in: "Transit - Bus Stop - Modification", out: 62 },
   { in: "Transit Lane", out: 52 },
   { in: "Transit Managed Lane Access Point", out: 53 },
@@ -139,7 +144,7 @@ const COMPONENT_WORK_TYPES_MAP = [
   { in: "Signal Take Over", out: 13 },
   { in: "Bicycle Lane Protection - New", out: 7 },
   { in: "Bicycle Lane Protection - Upgrade", out: 6 },
-  
+
   { in: "Pedestrian", out: null },
   { in: "Markings / Signage Only", out: null },
   { in: "RTurn Only - BL Fix", out: null },

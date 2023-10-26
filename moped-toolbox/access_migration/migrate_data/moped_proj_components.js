@@ -39,14 +39,20 @@ const componentFields = [
     out: "component_id",
     required: true,
     transform(oldRow, newRow) {
-      const componentName = oldRow[this.in];
+      const facilityType = oldRow[this.in];
+      if (!facilityType) {
+        // it happens! ignore
+        return;
+      }
+      const componentName = facilityType;
       const component = COMPONENTS_MAP.find(
         (comp) => comp.in === componentName
       );
 
       if (!component) {
-        throw `DO WE NEED TO DOUbLE CHECK THIS?`
+        throw `Unknown FacilityType type encountered: ${facilityType}`;
       }
+
       newRow[this.out] = component ? component.out : null;
       // yep - loads of one-off customizations in here
       if (componentName === "Bike Lane - Removed") {
@@ -69,6 +75,11 @@ const componentFields = [
         newRow.description = "Fix sidewalk obstructions.";
       } else if (componentName === "Trim Vegetation") {
         newRow.description = "Trim vegetation. ";
+      } else if (componentName === "New Street") {
+        newRow.moped_proj_component_work_types = {
+          // add `New` work type
+          data: [{ work_type_id: 7 }],
+        };
       }
     },
   },
@@ -308,7 +319,7 @@ function getComponents() {
 
       // if (unMatchedSignalComponent) {
       //   convertSignalToIntersectionComponent(comp);
-      // 
+      //
       if (isSignalComponent(comp.component_id) && signalFeature) {
         const featureRecord = {
           signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
