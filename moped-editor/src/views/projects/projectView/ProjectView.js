@@ -161,7 +161,8 @@ const DEFAULT_SNACKBAR_STATE = {
  */
 const useActiveTabIndex = (tabName) =>
   useMemo(() => {
-    return tabName ? TABS.findIndex((tab) => tab.param === tabName) || 0 : 0;
+    const activeTabIndex = TABS.findIndex((tab) => tab.param === tabName);
+    return activeTabIndex > -1 ? activeTabIndex : 0;
   }, [tabName]);
 
 /**
