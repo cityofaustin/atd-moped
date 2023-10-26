@@ -43,6 +43,10 @@ const componentFields = [
       const component = COMPONENTS_MAP.find(
         (comp) => comp.in === componentName
       );
+
+      if (!component) {
+        throw `DO WE NEED TO DOUbLE CHECK THIS?`
+      }
       newRow[this.out] = component ? component.out : null;
       // yep - loads of one-off customizations in here
       if (componentName === "Bike Lane - Removed") {
@@ -296,7 +300,6 @@ function getComponents() {
         );
         return index;
       }
-
       /**
        * check if unmatched signal component - which needs special handling
        */
@@ -305,8 +308,7 @@ function getComponents() {
 
       // if (unMatchedSignalComponent) {
       //   convertSignalToIntersectionComponent(comp);
-      // }
-
+      // 
       if (isSignalComponent(comp.component_id) && signalFeature) {
         const featureRecord = {
           signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
