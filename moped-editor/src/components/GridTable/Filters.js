@@ -446,12 +446,13 @@ const Filters = ({
   useEffect(() => {
     Object.keys(filterParameters).forEach((filterKey) => {
       if (
-        filterParameters[filterKey].value === null ||
-        filterParameters[filterKey].value === ""
+        !!filterParameters[filterKey].value ||
+        filterParameters[filterKey].operator === "string_is_null" ||
+        filterParameters[filterKey].operator === "string_is_not_null"
       ) {
-        setFilterComplete(false);
-      } else {
         setFilterComplete(true);
+      } else {
+        setFilterComplete(false);
       }
     });
   }, [filterParameters]);
@@ -578,10 +579,15 @@ const Filters = ({
                             : option
                         }
                         onChange={(e, value) => {
-                          handleSearchValueChange(
-                            filterId,
-                            value[filterParameters[filterId].lookup_field]
-                          );
+                          if (value) {
+                            handleSearchValueChange(
+                              filterId,
+                              value[filterParameters[filterId]?.lookup_field]
+                            );
+                          } else {
+                            // value is null when the Autocomplete selection is cleared
+                            handleSearchValueChange(filterId, value);
+                          }
                         }}
                         isOptionEqualToValue={(option, value) => {
                           if (Object.hasOwn(value, "name")) {
