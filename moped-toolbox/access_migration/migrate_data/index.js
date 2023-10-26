@@ -356,7 +356,6 @@ async function main(env) {
     logger.info("✅ Users created");
   }
   const data = loadJsonFile(FNAME);
-
   const projects = data
     .map((row) => {
       const newRow = mapRow(row, fields);
