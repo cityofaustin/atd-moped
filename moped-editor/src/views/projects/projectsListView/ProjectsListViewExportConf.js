@@ -46,7 +46,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   updated_at: {
     label: "Modified",
   },
-  task_order: {
+  task_orders: {
     label: "Task Order",
     filter: filterTaskOrderName,
   },

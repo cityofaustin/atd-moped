@@ -1,19 +1,28 @@
 import React from "react";
 import { Box, Grid, Typography } from "@mui/material";
 
-// reduce the array of geography objects into an array of city council districts
-const getCouncilDistricts = (data) => {
+// reduce the array of project_geography objects into an array of city council districts
+const reduceDistricts = (data) => {
   const initialValue = [];
-  const districts = data.reduce(
-    (acc, component) => [...acc, component["council_districts"]],
-    initialValue
-  );
+  const districts = data.reduce((acc, geography) => {
+    /* Not all components have geography data */
+    const geographyCouncilDistricts = geography
+      ? geography.council_districts
+      : [];
+    return [...acc, geographyCouncilDistricts];
+  }, initialValue);
 
   // flatten the array of arrays and remove empty districts
   const districtsArray = districts.flat().filter((d) => d);
+  return districtsArray;
+};
 
+const getAllCouncilDistricts = (projectGeography, childProjectGeography) => {
+  const projectDistricts = reduceDistricts(projectGeography);
+  const childDistricts = reduceDistricts(childProjectGeography);
+  const allDistricts = projectDistricts.concat(childDistricts);
   // sort in ascending order and use Set to only return unique districts
-  return [...new Set(districtsArray.sort((a, b) => a - b))];
+  return [...new Set(allDistricts.sort((a, b) => a - b))];
 };
 
 /**
@@ -23,7 +32,11 @@ const getCouncilDistricts = (data) => {
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
+const ProjectSummaryCouncilDistricts = ({
+  projectGeography,
+  classes,
+  childProjectGeography,
+}) => {
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>
@@ -31,7 +44,9 @@ const ProjectSummaryCouncilDistricts = ({ projectGeography, classes }) => {
       </Typography>
       <Box className={classes.fieldBox}>
         <Typography className={classes.fieldLabelTextNoHover}>
-          {getCouncilDistricts(projectGeography).join(", ")}
+          {getAllCouncilDistricts(projectGeography, childProjectGeography).join(
+            ", "
+          )}
         </Typography>
       </Box>
     </Grid>

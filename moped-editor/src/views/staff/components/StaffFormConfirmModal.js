@@ -41,7 +41,7 @@ const StaffFormConfirmModal = ({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
+      <DialogTitle variant="h4">{title}</DialogTitle>
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
           {message}

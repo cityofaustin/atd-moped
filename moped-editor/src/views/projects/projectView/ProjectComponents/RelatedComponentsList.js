@@ -58,7 +58,7 @@ const RelatedComponentsList = ({
             <>
               Part of project{" "}
               <Link
-                href={`/moped/projects/${component.project_id}?tab=map`}
+                href={`/moped/projects/${component.project_id}?tab=map&project_component_id=${component.project_component_id}`}
                 target="blank"
               >{`#${component.project_id}`}</Link>
             </>

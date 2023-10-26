@@ -1,4 +1,185 @@
 - table:
+    name: component_arcgis_online_view
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - length_feet_total
+          - is_project_component_deleted
+          - is_project_deleted
+          - completion_end_date
+          - construction_start_date
+          - component_id
+          - component_phase_id
+          - interim_project_component_id
+          - interim_project_id
+          - project_component_id
+          - project_id
+          - project_phase_id
+          - geometry
+          - added_by
+          - component_description
+          - component_name
+          - component_name_full
+          - component_phase_name
+          - component_phase_name_simple
+          - component_subtype
+          - component_tags
+          - component_url
+          - contract_numbers
+          - contractors
+          - council_districts
+          - current_phase_name
+          - current_phase_name_simple
+          - ecapris_subproject_id
+          - feature_ids
+          - funding_source_name
+          - location_description
+          - project_description
+          - project_designer
+          - project_inspector
+          - project_lead
+          - project_name
+          - project_note
+          - project_note_date_created
+          - project_partner
+          - project_phase_name
+          - project_phase_name_simple
+          - project_sponsor
+          - project_tags
+          - project_team_members
+          - project_url
+          - public_process_status
+          - signal_ids
+          - srts_id
+          - subcomponents
+          - task_order_names
+          - type_name
+          - work_types
+          - completion_date
+          - updated_at
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - length_feet_total
+          - is_project_component_deleted
+          - is_project_deleted
+          - completion_end_date
+          - construction_start_date
+          - component_id
+          - component_phase_id
+          - interim_project_component_id
+          - interim_project_id
+          - project_component_id
+          - project_id
+          - project_phase_id
+          - geometry
+          - added_by
+          - component_description
+          - component_name
+          - component_name_full
+          - component_phase_name
+          - component_phase_name_simple
+          - component_subtype
+          - component_tags
+          - component_url
+          - contract_numbers
+          - contractors
+          - council_districts
+          - current_phase_name
+          - current_phase_name_simple
+          - ecapris_subproject_id
+          - feature_ids
+          - funding_source_name
+          - location_description
+          - project_description
+          - project_designer
+          - project_inspector
+          - project_lead
+          - project_name
+          - project_note
+          - project_note_date_created
+          - project_partner
+          - project_phase_name
+          - project_phase_name_simple
+          - project_sponsor
+          - project_tags
+          - project_team_members
+          - project_url
+          - public_process_status
+          - signal_ids
+          - srts_id
+          - subcomponents
+          - task_order_names
+          - type_name
+          - work_types
+          - completion_date
+          - updated_at
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - length_feet_total
+          - is_project_component_deleted
+          - is_project_deleted
+          - completion_end_date
+          - construction_start_date
+          - component_id
+          - component_phase_id
+          - interim_project_component_id
+          - interim_project_id
+          - project_component_id
+          - project_id
+          - project_phase_id
+          - geometry
+          - added_by
+          - component_description
+          - component_name
+          - component_name_full
+          - component_phase_name
+          - component_phase_name_simple
+          - component_subtype
+          - component_tags
+          - component_url
+          - contract_numbers
+          - contractors
+          - council_districts
+          - current_phase_name
+          - current_phase_name_simple
+          - ecapris_subproject_id
+          - feature_ids
+          - funding_source_name
+          - location_description
+          - project_description
+          - project_designer
+          - project_inspector
+          - project_lead
+          - project_name
+          - project_note
+          - project_note_date_created
+          - project_partner
+          - project_phase_name
+          - project_phase_name_simple
+          - project_sponsor
+          - project_tags
+          - project_team_members
+          - project_url
+          - public_process_status
+          - signal_ids
+          - srts_id
+          - subcomponents
+          - task_order_names
+          - type_name
+          - work_types
+          - completion_date
+          - updated_at
+        filter: {}
+      comment: ""
+- table:
     name: current_phase_view
     schema: public
   object_relationships:
@@ -145,8 +326,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_lines
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -280,8 +459,6 @@
   event_triggers:
     - name: activity_log_feature_drawn_points
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -415,8 +592,6 @@
   event_triggers:
     - name: activity_log_feature_intersections
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -592,8 +767,6 @@
   event_triggers:
     - name: activity_log_feature_signals
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -762,8 +935,6 @@
   event_triggers:
     - name: activity_log_feature_street_segments
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1010,12 +1181,12 @@
     name: moped_components
     schema: public
   object_relationships:
-    - name: feature_layer
-      using:
-        foreign_key_constraint_on: feature_layer_id
     - name: asset_feature_layer
       using:
         foreign_key_constraint_on: asset_feature_layer_id
+    - name: feature_layer
+      using:
+        foreign_key_constraint_on: feature_layer_id
   array_relationships:
     - name: moped_component_work_types
       using:
@@ -1466,8 +1637,6 @@
   event_triggers:
     - name: activity_log_proj_component_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1580,8 +1749,6 @@
   event_triggers:
     - name: activity_log_proj_component_work_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -1824,8 +1991,6 @@
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2210,8 +2375,6 @@
   event_triggers:
     - name: activity_log_moped_proj_funding
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2373,8 +2536,6 @@
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2528,8 +2689,6 @@
   event_triggers:
     - name: activity_log_moped_proj_notes
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2658,8 +2817,6 @@
   event_triggers:
     - name: activity_log_moped_proj_partners
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2808,8 +2965,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2923,8 +3078,6 @@
   event_triggers:
     - name: activity_log_moped_proj_personnel_roles
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -2991,6 +3144,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
     - role: moped-editor
       permission:
         check: {}
@@ -3005,6 +3160,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
   select_permissions:
     - role: moped-admin
       permission:
@@ -3019,6 +3176,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-editor
       permission:
@@ -3033,6 +3192,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
     - role: moped-viewer
       permission:
@@ -3047,6 +3208,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3062,6 +3225,8 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
     - role: moped-editor
@@ -3077,13 +3242,13 @@
           - project_id
           - project_phase_id
           - subphase_id
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3203,8 +3368,6 @@
   event_triggers:
     - name: activity_log_moped_project_tags
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3425,8 +3588,6 @@
   event_triggers:
     - name: activity_log_moped_proj_work_activity
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3601,6 +3762,15 @@
           table:
             name: moped_proj_work_activity
             schema: public
+    - name: project_geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
+            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3626,7 +3796,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3646,7 +3815,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3666,7 +3834,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3687,7 +3854,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3708,7 +3874,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3730,7 +3895,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3751,7 +3915,6 @@
           - project_id
           - project_lead_id
           - project_sponsor
-          - task_order
           - ecapris_subproject_id
           - knack_project_id
           - project_description
@@ -3766,8 +3929,6 @@
   event_triggers:
     - name: activity_log_moped_project
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -3779,7 +3940,6 @@
             - added_by
             - is_deleted
             - project_sponsor
-            - task_order
             - parent_project_id
             - interim_project_id
             - project_lead_id
@@ -3979,8 +4139,6 @@
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4153,8 +4311,6 @@
   event_triggers:
     - name: activity_log_moped_project_types
       definition:
-        delete:
-          columns: '*'
         enable_manual: false
         insert:
           columns: '*'
@@ -4745,10 +4901,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4783,10 +4942,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4821,10 +4983,13 @@
           - project_tags
           - project_team_members
           - public_process_status
-          - task_order
-          - task_order_name
+          - task_orders
+          - task_order_names
+          - task_order_names_short
           - type_name
           - updated_at
+          - knack_project_id
+          - project_note_date_created
         filter: {}
         allow_aggregations: true
 - table:

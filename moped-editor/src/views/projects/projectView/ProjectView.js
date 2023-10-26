@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
-import { createBrowserHistory } from "history";
-import makeStyles from '@mui/styles/makeStyles';
+import {
+  Link as RouterLink,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
+import makeStyles from "@mui/styles/makeStyles";
 
 import {
   Breadcrumbs,
@@ -31,7 +35,7 @@ import {
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from '@mui/material';
+import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -39,7 +43,7 @@ import MapView from "./ProjectComponents/index";
 import ProjectFunding from "./ProjectFunding";
 import ProjectTeam from "./ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
-import ProjectComments from "./ProjectComments";
+import ProjectNotes from "./ProjectNotes";
 import ProjectFiles from "./ProjectFiles";
 import TabPanel from "./TabPanel";
 import {
@@ -61,6 +65,7 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
+import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -128,17 +133,13 @@ function a11yProps(index) {
   };
 }
 
-function useQueryParams() {
-  return new URLSearchParams(useLocation().search);
-}
-
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Map", Component: MapView, param: "map" },
   { label: "Timeline", Component: ProjectTimeline, param: "timeline" },
   { label: "Team", Component: ProjectTeam, param: "team" },
   { label: "Funding", Component: ProjectFunding, param: "funding" },
-  { label: "Comments", Component: ProjectComments, param: "comments" },
+  { label: "Notes", Component: ProjectNotes, param: "notes" },
   { label: "Files", Component: ProjectFiles, param: "files" },
   {
     label: "Activity",
@@ -147,7 +148,22 @@ const TABS = [
   },
 ];
 
-const history = createBrowserHistory();
+const DEFAULT_SNACKBAR_STATE = {
+  open: false,
+  message: "Default State",
+  severity: "warning",
+};
+
+/**
+ * Get the index of the currently active tab
+ * @param {*} tabName - a `tab` name from the url search string
+ * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
+ */
+const useActiveTabIndex = (tabName) =>
+  useMemo(() => {
+    const activeTabIndex = TABS.findIndex((tab) => tab.param === tabName);
+    return activeTabIndex > -1 ? activeTabIndex : 0;
+  }, [tabName]);
 
 /**
  * The project summary view
@@ -156,27 +172,15 @@ const history = createBrowserHistory();
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let query = useQueryParams();
-  const classes = useStyles();
-  const previousFilters = useLocation()?.state?.filters;
+  let [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const activeTab = useActiveTabIndex(searchParams.get("tab"));
+  const previousFilters = location.state?.filters;
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
-  // Get the tab query string value and associated tab index.
-  // If there's no query string, default to first tab in TABS array
-  let activeTabIndex = !!query.get("tab")
-    ? TABS.findIndex((tab) => tab.param === query.get("tab"))
-    : 0;
-
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: "Default State",
-    severity: "warning",
-  };
-
+  const classes = useStyles();
   /**
-   * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
    * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
@@ -184,13 +188,14 @@ const ProjectView = () => {
    * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = anchorElement ?? false;
+
+  const queryContext = useContext(ProjectListViewQueryContext);
 
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
@@ -204,7 +209,6 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
-    fetchPolicy: "no-cache",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;
@@ -214,18 +218,18 @@ const ProjectView = () => {
    * @param {Object} event - The click event
    * @param {int} newTab - The number of the tab
    */
-  const handleChange = (event, newTab) => {
-    // While the refetch works, it doesn't force a component re-render. For now we use forceUpdate...
-    if (newTab === 0) refetch();
-    setActiveTab(newTab);
-    history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
-  };
+  const handleChange = useCallback(
+    (event, newTab) => {
+      setSearchParams({ tab: TABS[newTab].param });
+      if (newTab === 0) refetch();
+    },
+    [refetch, setSearchParams]
+  );
 
   /**
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  // and sets phases in moped_proj_phases as is_current_phase: false
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
@@ -380,6 +384,13 @@ const ProjectView = () => {
   const currentPhase =
     data?.moped_project?.[0]?.moped_proj_phases?.[0]?.moped_phase;
   const isProjectDeleted = data?.moped_project[0]?.is_deleted;
+
+  /**
+   * This function exists to enable closing the Map tab
+   */
+  const onCloseTab = useCallback(() => {
+    handleChange(null, 0);
+  }, [handleChange]);
 
   return (
     <ApolloErrorHandler error={error}>
@@ -543,6 +554,8 @@ const ProjectView = () => {
                           parentProjectId={
                             data.moped_project[0].parent_project_id
                           }
+                          onCloseTab={onCloseTab}
+                          listViewQuery={queryContext.listViewQuery}
                         />
                       </TabPanel>
                     );
@@ -558,9 +571,7 @@ const ProjectView = () => {
               aria-labelledby="alert-dialog-title"
               aria-describedby="alert-dialog-description"
             >
-              <DialogTitle id="alert-dialog-title">
-                <h2>{dialogState?.title}</h2>
-              </DialogTitle>
+              <DialogTitle variant="h4">{dialogState?.title}</DialogTitle>
               <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                   {dialogState?.body}

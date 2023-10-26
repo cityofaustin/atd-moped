@@ -10,7 +10,7 @@ import {
 import clsx from "clsx";
 import CloseIcon from "@mui/icons-material/Close";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import ProjectComments from "../projects/projectView/ProjectComments";
+import ProjectNotes from "../projects/projectView/ProjectNotes";
 
 const DashboardStatusModal = ({
   projectId,
@@ -58,14 +58,21 @@ const DashboardStatusModal = ({
         fullWidth
         maxWidth={"md"}
       >
-        <DialogTitle className={classes.dialogTitle}>
-          <h3>{`Status update - ${projectName}`}</h3>
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+          variant="h4"
+        >
+          {`Status update - ${projectName}`}
           <IconButton onClick={() => handleDialogClose()} size="large">
             <CloseIcon />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <ProjectComments
+          <ProjectNotes
             modal
             projectId={projectId}
             currentPhaseId={currentPhaseId}

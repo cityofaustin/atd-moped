@@ -47,6 +47,7 @@ export const SUMMARY_QUERY = gql`
         feature_signals(where: { is_deleted: { _eq: false } }) {
           signal_id
           knack_id
+          id
         }
       }
       moped_proj_notes(
@@ -96,6 +97,7 @@ export const SUMMARY_QUERY = gql`
       entity_id
       moped_entity {
         entity_name
+        entity_id
       }
     }
     moped_phases(order_by: { phase_order: asc }) {
@@ -139,6 +141,11 @@ export const SUMMARY_QUERY = gql`
         is_deleted: { _eq: false }
       }
     ) {
+      project_geography(
+      where: { is_deleted: { _eq: false } }
+    ) {
+        council_districts
+      }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         ...projectComponentFields
       }

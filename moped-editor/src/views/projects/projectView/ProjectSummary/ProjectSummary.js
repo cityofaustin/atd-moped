@@ -100,12 +100,6 @@ const useStyles = makeStyles((theme) => ({
   fieldSelectItem: {
     width: "calc(100% - 3rem)",
   },
-  dialogTitle: {
-    fontFamily: theme.typography.fontFamily,
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   newStatusIconDiv: {
     display: "flex",
     alignItems: "center",
@@ -128,12 +122,16 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
   const [snackbarState, setSnackbarState] = useState(false);
 
+  /* Not all child components have components and geography data */
+  const childProjectGeography = data?.childProjects
+    .filter((project) => project.project_geography.length > 0)
+    .map((project) => project.project_geography[0]);
   /**
    * Updates the state of snackbar state
    * @param {String|JSX.Element} message - The message to be displayed
@@ -166,6 +164,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 refetch={refetch}
                 classes={classes}
                 snackbarHandle={snackbarHandle}
+                listViewQuery={listViewQuery}
               />
               {data.moped_project[0]?.parent_project_id && (
                 <ProjectSummaryParentProjectLink
@@ -306,6 +305,7 @@ const ProjectSummary = ({ loading, error, data, refetch }) => {
                 <ProjectSummaryCouncilDistricts
                   classes={classes}
                   projectGeography={data.project_geography}
+                  childProjectGeography={childProjectGeography}
                 />
               </Grid>
               <Grid item xs={12}>
