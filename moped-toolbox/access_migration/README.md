@@ -82,6 +82,7 @@ $ node index.js local
 
 ### Todo
 
+- need to explicitly name the triggers to disable :/
 - format signal component location description consistent with existing data tracker picker
 - confirm that event triggers are not firing during migration.
 - load metadata from database dir—instead of backing it up?
@@ -94,14 +95,11 @@ $ node index.js local
 - john to check on unmapped project groups
 - work types:
   - can we backfill SMO links based on work order ID old?
-- finish transit - bust stop component/subcomponent maps.
+- review all the component/subcomponent and component/work type mapping
 - there are facility spatial records with multiple features within one layer and across geom types.
 - list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
 - check geometry types of components - some may need to be converted to point or line
-- moped editor: project list: cannot search for projects with no/unknown status
-- moped editor: projects: should we use "Current phase" instead of "status"? Status is a confusing term because it only appears in search filter
 - search for todos :)
-- sort projects by interim project ID before we migrate them, so that older projects have a lower project ID?
 
 ### NW Questions
 - project personnel:
