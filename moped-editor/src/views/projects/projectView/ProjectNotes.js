@@ -101,7 +101,7 @@ const ProjectNotes = (props) => {
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
-  const [newNoteType, setNewNoteType] = useState(1);
+  const [newNoteType, setNewNoteType] = useState(isStatusEditModal ? 2 : 1);
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
@@ -306,6 +306,7 @@ const ProjectNotes = (props) => {
                 submitNewNote={submitNewNote}
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
+                isStatusEditModal={isStatusEditModal}
               />
             </Card>
           </Grid>
@@ -405,6 +406,7 @@ const ProjectNotes = (props) => {
                                   cancelNoteEdit={cancelNoteEdit}
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
+                                  isStatusEditModal={isStatusEditModal}
                                 />
                               ) : (
                                 <Typography
