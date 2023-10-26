@@ -148,6 +148,12 @@ const TABS = [
   },
 ];
 
+const DEFAULT_SNACKBAR_STATE = {
+  open: false,
+  message: "Default State",
+  severity: "warning",
+};
+
 /**
  * Get the index of the currently active tab
  * @param {*} tabName - a `tab` name from the url search string
@@ -168,21 +174,12 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-
-  const classes = useStyles();
   const previousFilters = location.state?.filters;
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: "Default State",
-    severity: "warning",
-  };
-
+  const classes = useStyles();
   /**
-   * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
    * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
