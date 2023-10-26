@@ -1,7 +1,11 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import {
+  Link as RouterLink,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import makeStyles from "@mui/styles/makeStyles";
 
 import {
@@ -129,10 +133,6 @@ function a11yProps(index) {
   };
 }
 
-function useQueryParams() {
-  return new URLSearchParams(useLocation().search);
-}
-
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
   { label: "Map", Component: MapView, param: "map" },
@@ -148,7 +148,22 @@ const TABS = [
   },
 ];
 
-const history = createBrowserHistory();
+const DEFAULT_SNACKBAR_STATE = {
+  open: false,
+  message: "Default State",
+  severity: "warning",
+};
+
+/**
+ * Get the index of the currently active tab
+ * @param {*} tabName - a `tab` name from the url search string
+ * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
+ */
+const useActiveTabIndex = (tabName) =>
+  useMemo(() => {
+    const activeTabIndex = TABS.findIndex((tab) => tab.param === tabName);
+    return activeTabIndex > -1 ? activeTabIndex : 0;
+  }, [tabName]);
 
 /**
  * The project summary view
@@ -157,28 +172,15 @@ const history = createBrowserHistory();
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let query = useQueryParams();
-  const classes = useStyles();
-  const previousFilters = useLocation()?.state?.filters;
+  let [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const activeTab = useActiveTabIndex(searchParams.get("tab"));
+  const previousFilters = location.state?.filters;
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
-  // Get the tab query string value and associated tab index.
-  // If there's no query string (or the string does not match
-  // a tab name), default to first tab in TABS array
-  const activeTabIndex = query.get("tab")
-    ? TABS.findIndex((tab) => tab.param === query.get("tab")) || 0
-    : 0;
-
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: "Default State",
-    severity: "warning",
-  };
-
+  const classes = useStyles();
   /**
-   * @constant {int} activeTab - The number of the active tab
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
    * @constant {dict} dialogState - Contains the 'title', 'body' and 'actions' as either string or JSX
@@ -186,7 +188,6 @@ const ProjectView = () => {
    * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
@@ -219,18 +220,16 @@ const ProjectView = () => {
    */
   const handleChange = useCallback(
     (event, newTab) => {
+      setSearchParams({ tab: TABS[newTab].param });
       if (newTab === 0) refetch();
-      setActiveTab(newTab);
-      history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
     },
-    [refetch, setActiveTab, projectId]
+    [refetch, setSearchParams]
   );
 
   /**
    * The mutation to soft-delete the project
    */
   const [archiveProject] = useMutation(PROJECT_ARCHIVE);
-  // and sets phases in moped_proj_phases as is_current_phase: false
   const [followProject] = useMutation(PROJECT_FOLLOW);
   const [unfollowProject] = useMutation(PROJECT_UNFOLLOW);
 
