@@ -1,7 +1,11 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback, useContext, useMemo } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Link as RouterLink, useParams, useLocation } from "react-router-dom";
-import { createBrowserHistory } from "history";
+import {
+  Link as RouterLink,
+  useParams,
+  useSearchParams,
+  useLocation,
+} from "react-router-dom";
 import makeStyles from "@mui/styles/makeStyles";
 
 import {
@@ -129,9 +133,10 @@ function a11yProps(index) {
   };
 }
 
-function useQueryParams() {
-  return new URLSearchParams(useLocation().search);
-}
+const useQueryParams = (search) =>
+  useMemo(() => {
+    return new URLSearchParams(search);
+  }, [search]);
 
 const TABS = [
   { label: "Summary", Component: ProjectSummary, param: "summary" },
@@ -148,7 +153,15 @@ const TABS = [
   },
 ];
 
-const history = createBrowserHistory();
+/**
+ * Get the index of the currently active tab
+ * @param {*} tabName - a `tab` name from the url search string
+ * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
+ */
+const useActiveTabIndex = (tabName) =>
+  useMemo(() => {
+    return tabName ? TABS.findIndex((tab) => tab.param === tabName) || 0 : 0;
+  }, [tabName]);
 
 /**
  * The project summary view
@@ -157,19 +170,15 @@ const history = createBrowserHistory();
  */
 const ProjectView = () => {
   const { projectId } = useParams();
-  let query = useQueryParams();
+  let [searchParams, setSearchParams] = useSearchParams();
+  const location = useLocation();
+  const activeTab = useActiveTabIndex(searchParams.get("tab"));
+
   const classes = useStyles();
-  const previousFilters = useLocation()?.state?.filters;
+  const previousFilters = location.state?.filters;
   const allProjectsLink = !!previousFilters
     ? `/moped/projects?filter=${previousFilters}`
     : "/moped/projects";
-
-  // Get the tab query string value and associated tab index.
-  // If there's no query string (or the string does not match
-  // a tab name), default to first tab in TABS array
-  const activeTabIndex = query.get("tab")
-    ? TABS.findIndex((tab) => tab.param === query.get("tab")) || 0
-    : 0;
 
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
@@ -186,7 +195,6 @@ const ProjectView = () => {
    * @constant {object} snackbarState - The current state of the snackbar's configuration
    * @constant {boolean} menuOpen - If true, it shows the menu component. Immutable.
    */
-  const [activeTab, setActiveTab] = useState(activeTabIndex);
   const [isEditing, setIsEditing] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
@@ -220,10 +228,9 @@ const ProjectView = () => {
   const handleChange = useCallback(
     (event, newTab) => {
       if (newTab === 0) refetch();
-      setActiveTab(newTab);
-      history.push(`/moped/projects/${projectId}?tab=${TABS[newTab].param}`);
+      setSearchParams({ tab: TABS[newTab].param });
     },
-    [refetch, setActiveTab, projectId]
+    [refetch, setSearchParams]
   );
 
   /**
