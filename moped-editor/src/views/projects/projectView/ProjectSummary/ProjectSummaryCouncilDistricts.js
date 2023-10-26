@@ -7,7 +7,7 @@ const reduceDistricts = (data) => {
   const districts = data.reduce((acc, geography) => {
     /* Not all components have geography data */
     const geographyCouncilDistricts = geography
-      ? geography["council_districts"]
+      ? geography.council_districts
       : [];
     return [...acc, geographyCouncilDistricts];
   }, initialValue);
