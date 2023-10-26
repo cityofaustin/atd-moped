@@ -82,6 +82,7 @@ $ node index.js local
 
 ### Todo
 
+- format signal component location description consistent with existing data tracker picker
 - confirm that event triggers are not firing during migration.
 - load metadata from database dir—instead of backing it up?
 - fiscal year and calendar year: completion date:
