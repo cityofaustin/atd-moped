@@ -18,7 +18,6 @@ const reduceDistricts = (data) => {
 };
 
 const getAllCouncilDistricts = (projectGeography, childProjectGeography) => {
-  console.log(childProjectGeography);
   const projectDistricts = reduceDistricts(projectGeography);
   const childDistricts = reduceDistricts(childProjectGeography);
   const allDistricts = projectDistricts.concat(childDistricts);
