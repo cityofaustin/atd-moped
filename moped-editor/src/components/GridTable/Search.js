@@ -198,8 +198,8 @@ const Search = ({
             color="primary"
             value={isOr ? "or" : "and"}
             exclusive
-            onChange={(e) => setIsOr(e.value === "or")}
-            aria-label="Platform"
+            onChange={(e) => setIsOr(e.target.value === "or")}
+            aria-label="And or toggle"
           >
             <ToggleButton value="and">and</ToggleButton>
             <ToggleButton value="or">or</ToggleButton>

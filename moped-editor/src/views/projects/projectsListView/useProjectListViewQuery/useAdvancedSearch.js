@@ -80,9 +80,13 @@ export const useAdvancedSearch = () => {
   const [filters, setFilters] = useState(initialFilterState);
 
   const advancedSearchWhereString = useMemo(() => {
-    return makeAdvancedSearchWhereString(filters);
+    if (isOr) {
+      const advancedFilters = makeAdvancedSearchWhereString(filters);
+      return `_or: { ${advancedFilters} }`;
+    } else {
+      return makeAdvancedSearchWhereString(filters);
+    }
   }, [filters, isOr]);
-  console.log(advancedSearchWhereString);
 
   return {
     filterQuery,
