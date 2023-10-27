@@ -74,19 +74,64 @@ const INSERT_ACTIVITY_LOG_EVENT_MUTATION = gql`
   }
 `;
 
-const TABLES_TO_DISABLE_TRIGGERS = [
-  "feature_drawn_lines",
-  "feature_drawn_points",
-  "feature_intersections",
-  "feature_signals",
-  "feature_street_segments",
-  "moped_proj_phases",
-  "moped_proj_work_activity",
+const TRIGGERS_TO_DISABLE = [
+  {
+    table: "moped_proj_work_activity",
+    trigger: "set_proj_work_activity_trigger_updated_at",
+  },
+  {
+    table: "feature_drawn_lines",
+    trigger: "update_feature_drawn_lines_council_district",
+  },
+  {
+    table: "feature_drawn_lines",
+    trigger: "update_feature_drawn_lines_council_district",
+  },
+  {
+    table: "feature_drawn_points",
+    trigger: "update_feature_drawn_points_council_district",
+  },
+  {
+    table: "feature_drawn_points",
+    trigger: "update_feature_drawn_points_council_district",
+  },
+  {
+    table: "feature_intersections",
+    trigger: "update_feature_intersections_council_district",
+  },
+  {
+    table: "feature_intersections",
+    trigger: "update_feature_intersections_council_district",
+  },
+  {
+    table: "feature_signals",
+    trigger: "update_feature_signals_council_district",
+  },
+  {
+    table: "feature_signals",
+    trigger: "update_feature_signals_council_district",
+  },
+  {
+    table: "feature_street_segments",
+    trigger: "update_feature_street_segments_council_district",
+  },
+  {
+    table: "feature_street_segments",
+    trigger: "update_feature_street_segments_council_district",
+  },
+  {
+    table: "moped_proj_phases",
+    trigger: "set_moped_proj_phases_confirmed_dates_trigger",
+  },
+  {
+    table: "moped_proj_phases",
+    trigger: "set_moped_proj_phases_confirmed_dates_trigger",
+  },
 ];
 
 const getSetTriggerStateSql = (state) =>
-  TABLES_TO_DISABLE_TRIGGERS.map(
-    (t) => `ALTER TABLE ${t} ${state} TRIGGER all`
+  TRIGGERS_TO_DISABLE.map(
+    ({ table, trigger }) => `ALTER TABLE ${table} ${state} TRIGGER ${trigger}`
   ).join(";\n");
 
 fields = [
@@ -99,10 +144,6 @@ fields = [
     in: "ProjectName",
     out: "project_name",
     required: true,
-    // example transform - use this!
-    // transform(row) {
-    //   return row[this.in] || "None";
-    // },
   },
   {
     in: "Description",
@@ -330,29 +371,37 @@ async function main(env) {
   logger.info("✅ Users downloaded");
 
   if (env === "local") {
-    logger.info("Deleting all projects and features...");
-    await makeHasuraRequest({
-      query: DELETE_ALL_PROJECTS_MUTATION,
-      env,
-    });
-    logger.info("✅ Projects deleted");
+    if (false) {
+      /** Not necessary when running our final tests! */
+      logger.info("Deleting all projects and features...");
+      await makeHasuraRequest({
+        query: DELETE_ALL_PROJECTS_MUTATION,
+        env,
+      });
+      logger.info("✅ Projects deleted");
 
-    logger.info("Resetting project ID sequence...");
-    await runSql({
-      env,
-      sql: "SELECT setval('moped_project_project_id_simple_seq', 1, FALSE);",
-    });
+      logger.info("Resetting project ID sequence...");
+      await runSql({
+        env,
+        sql: "SELECT setval('moped_project_project_id_simple_seq', 1, FALSE);",
+      });
 
-    logger.info("✅ Projects ID sequence reset");
+      logger.info("✅ Projects ID sequence reset");
 
-    logger.info("Deleting users and resetting ID sequence....");
-    await runSql({
-      env,
-      sql: "DELETE FROM moped_users where 1=1; SELECT setval('moped_users_user_id_seq', 1, FALSE);",
-    });
-    logger.info("✅ Users deleted");
+      logger.info("Deleting users and resetting ID sequence....");
+      await runSql({
+        env,
+        sql: "DELETE FROM moped_users where 1=1; SELECT setval('moped_users_user_id_seq', 1, FALSE);",
+      });
+      logger.info("✅ Users deleted");
+    }
     logger.info("Creating users from production...");
-    await createUsers(env);
+    try {
+      await createUsers(env);
+    } catch (error) {
+      debugger;
+    }
+
     logger.info("✅ Users created");
   }
   const data = loadJsonFile(FNAME);
