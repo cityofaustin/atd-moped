@@ -3,15 +3,7 @@ import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
 import { useLocation } from "react-router-dom";
 
-import {
-  Box,
-  Button,
-  Grid,
-  Paper,
-  Popper,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
+import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
@@ -49,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   advancedSearchPaper: {
-    paddingTop: "0px",
+    paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(2),
@@ -194,16 +186,6 @@ const Search = ({
         className={classes.advancedSearchRoot}
       >
         <Paper className={classes.advancedSearchPaper}>
-          <ToggleButtonGroup
-            color="primary"
-            value={isOr ? "or" : "and"}
-            exclusive
-            onChange={(e) => setIsOr(e.target.value === "or")}
-            aria-label="And or toggle"
-          >
-            <ToggleButton value="and">and</ToggleButton>
-            <ToggleButton value="or">or</ToggleButton>
-          </ToggleButtonGroup>
           <Filters
             filters={filters}
             setFilters={setFilters}
@@ -213,6 +195,8 @@ const Search = ({
             filtersConfig={filtersConfig}
             setSearchFieldValue={setSearchFieldValue}
             setSearchTerm={setSearchTerm}
+            isOr={isOr}
+            setIsOr={setIsOr}
           />
         </Paper>
       </Popper>

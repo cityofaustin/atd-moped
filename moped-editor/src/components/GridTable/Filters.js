@@ -21,6 +21,8 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 
 import { Autocomplete } from "@mui/material";
+import { ToggleButton } from "@mui/material";
+import { ToggleButtonGroup } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
@@ -138,6 +140,8 @@ const Filters = ({
   filtersConfig,
   setSearchFieldValue,
   setSearchTerm,
+  isOr,
+  setIsOr,
 }) => {
   /**
    * The styling of the search bar
@@ -459,14 +463,41 @@ const Filters = ({
 
   return (
     <Grid>
-      <Grid container justifyContent={"flex-end"}>
-        <IconButton
-          onClick={handleAdvancedSearchClose}
-          className={classes.closeButton}
-          size="large"
+      <Grid container className={classes.gridItemPadding}>
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-start"
         >
-          <Icon fontSize={"small"}>close</Icon>
-        </IconButton>
+          <ToggleButtonGroup
+            color="primary"
+            size="small"
+            value={isOr ? "any" : "all"}
+            exclusive
+            onChange={(e) => setIsOr(e.target.value === "any")}
+            aria-label="And or toggle"
+          >
+            <ToggleButton value="all">all</ToggleButton>
+            <ToggleButton value="any">any</ToggleButton>
+          </ToggleButtonGroup>
+        </Grid>
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <IconButton
+            onClick={handleAdvancedSearchClose}
+            className={classes.closeButton}
+            size="large"
+          >
+            <Icon fontSize={"small"}>close</Icon>
+          </IconButton>
+        </Grid>
       </Grid>
       {Object.keys(filterParameters).map((filterId) => {
         return (
