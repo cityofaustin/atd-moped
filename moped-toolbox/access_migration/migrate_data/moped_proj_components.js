@@ -360,6 +360,12 @@ function getComponents() {
         unmapped.push(comp);
       }
 
+      if (comp.component_id === 60 && comp.feature_drawn_points) {
+        // use intersection lighting instead of street lighting because 
+        // component is a point
+        comp.component_id = 61;
+      }
+      
       const projectId = comp.interim_project_id;
       index[projectId] ??= [];
       delete comp.interim_project_id;
