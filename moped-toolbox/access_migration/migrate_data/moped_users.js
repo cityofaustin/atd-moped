@@ -22,7 +22,13 @@ const MOPED_USER_QUERY = gql`
 
 const INSERT_MOPED_USERS_MUTATION = gql`
   mutation CreateUseers($users: [moped_users_insert_input!]!) {
-    insert_moped_users(objects: $users) {
+    insert_moped_users(
+      objects: $users
+      on_conflict: {
+        constraint: moped_users_pkey
+        update_columns: [first_name, last_name, email, workgroup_id, title]
+      }
+    ) {
       affected_rows
     }
   }
