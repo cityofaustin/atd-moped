@@ -440,7 +440,9 @@ async function getComponents(env) {
         const comment =
           "(converted from a line feature during Access DB migration)";
         comp.description = `${comp.description || ""} ${comment}`.trim();
-        logger.info(`converted component ID ${comp.component_id} to point`);
+        logger.info(
+          `converted line to point for interim project component ID ${comp.interim_project_id}`
+        );
       } else if (componentLayer && !isLineComponent && expectLineComponent) {
         // point to very short line
         // extract feature
@@ -475,7 +477,7 @@ async function getComponents(env) {
           "(converted from a point feature during Access DB migration)";
         comp.description = `${comp.description || ""} ${comment}`.trim();
         logger.info(
-          `converted component ID ${comp.component_id} to line for interimprojectid: ${comp.interim_project_id}`
+          `converted point to line for interim project component ID ${comp.interim_project_id}`
         );
       }
 
