@@ -141,7 +141,7 @@ const ProjectsListViewTable = () => {
   });
 
   const { filterQuery, filters, setFilters, advancedSearchWhereString } =
-    useAdvancedSearch();
+    useAdvancedSearch({ isOr: true });
 
   const linkStateFilters = useMemo(() => {
     return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
@@ -243,7 +243,7 @@ const ProjectsListViewTable = () => {
   }, [data]);
 
   /**
-   * Store the most recent version of the query in app context so that it 
+   * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
    */
   useEffect(() => {

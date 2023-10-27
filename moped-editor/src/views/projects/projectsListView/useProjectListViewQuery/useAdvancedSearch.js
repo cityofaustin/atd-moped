@@ -65,7 +65,7 @@ const makeAdvancedSearchWhereString = (filters) =>
     .filter((value) => value !== null)
     .join(", ");
 
-export const useAdvancedSearch = () => {
+export const useAdvancedSearch = ({ isOr }) => {
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
 
@@ -77,10 +77,10 @@ export const useAdvancedSearch = () => {
    */
   const [filters, setFilters] = useState(initialFilterState);
 
-  const advancedSearchWhereString = useMemo(
-    () => makeAdvancedSearchWhereString(filters),
-    [filters]
-  );
+  const advancedSearchWhereString = useMemo(() => {
+    return makeAdvancedSearchWhereString(filters);
+  }, [filters, isOr]);
+  console.log(advancedSearchWhereString);
 
   return {
     filterQuery,
