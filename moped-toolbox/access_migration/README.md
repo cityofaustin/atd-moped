@@ -81,6 +81,9 @@ $ node index.js local
 
 
 ### Todo
+- increase production ECS cpu/ram
+- create line-based sign component
+- use street vs intersection lighting
 - connect to test instance and double check hdb invocation logs
 - confirm that event triggers are not firing during migration.
 - prepare script to backfill council district? or enable council district?
