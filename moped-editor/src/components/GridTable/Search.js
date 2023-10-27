@@ -148,6 +148,7 @@ const Search = ({
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
+                isOr={isOr}
               />
             </Grid>
             <Grid

@@ -76,6 +76,7 @@ const SearchBar = ({
   advancedSearchAnchor,
   setSearchTerm,
   queryConfig,
+  isOr,
 }) => {
   const classes = useStyles();
 
@@ -201,7 +202,7 @@ const SearchBar = ({
       {filterStateActive && (
         <Box className={classes.filtersList}>
           <Typography align="right" className={classes.filtersText}>
-            Filtered by{" "}
+            Filtered by {isOr ? "any" : "all"}{" "}
             <span className={classes.filtersSpan}>{`${filtersApplied.join(
               ", "
             )}`}</span>
