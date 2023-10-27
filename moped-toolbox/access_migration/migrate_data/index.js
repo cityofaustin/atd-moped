@@ -306,51 +306,6 @@ const getEarliestNoteUserId = (notes) => {
 async function main(env) {
   logger.info(`Running Access migration on env ${env} 🚀`);
 
-  const metadataFilename = `./backup/metadata_${env}_${getMetadataFileDateString()}.json`;
-  let metadata;
-
-  try {
-    metadata = loadJsonFile(metadataFilename);
-  } catch {
-    // pass
-  }
-
-  if (!metadata) {
-    // if we dont have a metadata backup, make one
-    logger.info("Backing up metadata...");
-    try {
-      metadata = await exportMetadata({ env });
-    } catch (error) {
-      logger.error(error);
-      return;
-    }
-    saveJsonFile(metadataFilename, metadata);
-    logger.info(`✅ Metadata saved to '${metadataFilename}'`);
-  } else {
-    logger.info(`✅ Loaded metadata backup from '${metadataFilename}'`);
-  }
-
-  logger.info("Disabling hasura event triggers...");
-  removeEventTriggers(metadata);
-
-  try {
-    await replaceMetadata({ env, metadata });
-  } catch (error) {
-    logger.error({ message: error });
-    return;
-  }
-
-  logger.info("✅ Hasura Event triggers disabled");
-
-  logger.info("Disabling DB event triggers...");
-
-  await runSql({
-    env,
-    sql: getSetTriggerStateSql("disable"),
-  });
-
-  logger.info("✅ DB event triggers disabled");
-
   logger.info("Downloading users from production...");
 
   /**
@@ -404,6 +359,9 @@ async function main(env) {
 
     logger.info("✅ Users created");
   }
+  
+  logger.info("⚙️ Transforming project data into Moped schema...");
+
   const data = loadJsonFile(FNAME);
   const projects = data
     .map((row) => {
@@ -521,6 +479,55 @@ async function main(env) {
     // set flag to track that this is a migrated project
     proj.is_migrated_from_access_db = true;
   });
+
+  logger.info(
+    `✅ Data transform complete! There are ${projects.length} projects to create.`
+  );
+
+  const metadataFilename = `./backup/metadata_${env}_${getMetadataFileDateString()}.json`;
+  let metadata;
+
+  try {
+    metadata = loadJsonFile(metadataFilename);
+  } catch {
+    // pass
+  }
+
+  if (!metadata) {
+    // if we dont have a metadata backup, make one
+    logger.info("Backing up metadata...");
+    try {
+      metadata = await exportMetadata({ env });
+    } catch (error) {
+      logger.error(error);
+      return;
+    }
+    saveJsonFile(metadataFilename, metadata);
+    logger.info(`✅ Metadata saved to '${metadataFilename}'`);
+  } else {
+    logger.info(`✅ Loaded metadata backup from '${metadataFilename}'`);
+  }
+
+  logger.info("Disabling hasura event triggers...");
+  removeEventTriggers(metadata);
+
+  try {
+    await replaceMetadata({ env, metadata });
+  } catch (error) {
+    logger.error({ message: error });
+    return;
+  }
+
+  logger.info("✅ Hasura Event triggers disabled");
+
+  logger.info("Disabling DB event triggers...");
+
+  await runSql({
+    env,
+    sql: getSetTriggerStateSql("disable"),
+  });
+
+  logger.info("✅ DB event triggers disabled");
 
   logger.info(`Inserting ${projects.length} projects...`);
 
