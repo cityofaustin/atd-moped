@@ -385,10 +385,16 @@ async function getComponents(env) {
         unmapped.push(comp);
       }
 
-      if (comp.component_id === 60 && comp.feature_drawn_points) {
+      if (
+        (comp.component_id === 60 && comp.feature_drawn_points) ||
+        comp.feature_intersections
+      ) {
         // use intersection lighting instead of street lighting because
         // component is a point
         comp.component_id = 61;
+      } else if (comp.component_id === 59 && comp.feature_drawn_lines) {
+        // use linear signage component
+        comp.component_id = 98;
       }
 
       // note: we are not translating any component geogs
@@ -431,11 +437,13 @@ async function getComponents(env) {
         comp.feature_drawn_points = {
           data: feature,
         };
-        console.log(`converted component ID ${comp.component_id} to point`);
+        const comment =
+          "(converted from a line feature during Access DB migration)";
+        comp.description = `${comp.description || ""} ${comment}`.trim();
+        logger.info(`converted component ID ${comp.component_id} to point`);
       } else if (componentLayer && !isLineComponent && expectLineComponent) {
         // point to very short line
         // extract feature
-
         const oldFeature = comp[componentLayer].data;
         // delete the feature from the component payload
         delete comp[componentLayer];
@@ -462,7 +470,11 @@ async function getComponents(env) {
         comp.feature_drawn_lines = {
           data: feature,
         };
-        console.log(
+
+        const comment =
+          "(converted from a point feature during Access DB migration)";
+        comp.description = `${comp.description || ""} ${comment}`.trim();
+        logger.info(
           `converted component ID ${comp.component_id} to line for interimprojectid: ${comp.interim_project_id}`
         );
       }
