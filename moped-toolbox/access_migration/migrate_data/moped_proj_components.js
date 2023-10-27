@@ -386,8 +386,8 @@ async function getComponents(env) {
       }
 
       if (
-        (comp.component_id === 60 && comp.feature_drawn_points) ||
-        comp.feature_intersections
+        comp.component_id === 60 &&
+        (comp.feature_drawn_points || comp.feature_intersections)
       ) {
         // use intersection lighting instead of street lighting because
         // component is a point
