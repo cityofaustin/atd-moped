@@ -22,14 +22,7 @@ WHERE feature_id in(
         f.id IS NULL);
 
 -- delete orphaned activity log events (we cannot cascade this bc we do not have an FK constraint)
-DELETE FROM moped_activity_log
-WHERE activity_id in(
-        SELECT
-            activity_id FROM moped_activity_log log
-        LEFT JOIN moped_project mp ON log.record_project_id = mp.project_id
-    WHERE
-        log.record_type = 'moped_project'
-        AND mp.project_id IS NULL);
+DELETE FROM moped_activity_log WHERE record_type = 'moped_project_migration';
 
 -- reset all sequence values
 select setval('moped_project_project_id_simple_seq', (select coalesce(max(project_id), 1) from moped_project));
