@@ -70,8 +70,11 @@ async function main(env) {
     env,
     sql,
   });
-  
+
   console.log(`✅ migration rolled back`);
+  console.log(
+    "💀 remember to re-apply metadata if migration did not fail gracefully"
+  );
 }
 
 const getEnv = () => {
