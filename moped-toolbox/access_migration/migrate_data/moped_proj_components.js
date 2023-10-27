@@ -291,7 +291,7 @@ function getComponents() {
       if (drawnPointFeature && drawnLineFeature) {
         // todo: how to handle?
         logger.info(
-          "⚠️ skipping geodata for facility ID ",
+          "🙈 skipping geodata for facility ID ",
           comp.interim_project_component_id,
           " because it has both point and line geomteries"
         );
