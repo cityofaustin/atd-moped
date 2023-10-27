@@ -1,5 +1,7 @@
 const { v4: uuidv4 } = require("uuid");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
+const { gql } = require("graphql-request");
+const { makeHasuraRequest } = require("./utils/graphql");
 const {
   COMPONENTS_MAP,
   COMPONENT_WORK_TYPES_MAP,
@@ -31,6 +33,19 @@ const FACILITIES = loadJsonFile(FACILITIES_FNAME);
 const FACILITY_ATTRS = loadJsonFile(FACILITY_ATTRS_FNAME);
 const LINE_FEATURES = loadJsonFile(FACILITY_GEOM_LINES_FNAME);
 const POINT_FEATURES = loadJsonFile(FACILITY_GEOM_POINTS_FNAME);
+
+/**
+ * We'll use a copy of the component data to identify when the incoming geomgetry type
+ * does not match moped's component geom type expectations
+ */
+const COMPONENT_LOOKUP_QUERY = gql`
+  query GetComponents {
+    moped_components(where: { is_deleted: { _eq: false } }) {
+      component_id
+      line_representation
+    }
+  }
+`;
 
 // we are applying mapRowExpanded on this field set!
 const componentFields = [
@@ -207,7 +222,16 @@ const makeMultiPoint = (geometry) => {
 
 const isSignalComponent = (componentId) => [16, 18].includes(componentId);
 
-function getComponents() {
+async function getComponents(env) {
+  logger.info("Downloading component lookup...");
+  const componentLookupData = await makeHasuraRequest({
+    query: COMPONENT_LOOKUP_QUERY,
+    env,
+  });
+
+  logger.info("✅ Components downloaded");
+  const compLookup = componentLookupData.moped_components;
+
   const tagIndex = getComponentTags();
 
   const components = FACILITIES.map((row) =>
@@ -361,11 +385,34 @@ function getComponents() {
       }
 
       if (comp.component_id === 60 && comp.feature_drawn_points) {
-        // use intersection lighting instead of street lighting because 
+        // use intersection lighting instead of street lighting because
         // component is a point
         comp.component_id = 61;
       }
-      
+
+      // note: we are not translating any component geogs
+      // to feature_street_segments - we can ignore it
+      const layers = [
+        "feature_drawn_lines",
+        "feature_drawn_points",
+        "feature_intersections",
+        "feature_signals",
+      ];
+
+      let componentLayer = layers.find((layerName) => !!comp[layerName]);
+
+      const isLineComponent = componentLayer === "feature_drawn_lines";
+
+      const expectLineComponent = !!compLookup.find(
+        (c) => c.component_id === comp.component_id
+      ).line_representation;
+
+      // if (isLineComponent && !expectLineComponent) {
+      //   logger.info(`____line_to_point ${comp.component_id}`);
+      // } else if (!isLineComponent && expectLineComponent) {
+      //   logger.info(`____point_to_line ${comp.component_id}`);
+      // }
+
       const projectId = comp.interim_project_id;
       index[projectId] ??= [];
       delete comp.interim_project_id;

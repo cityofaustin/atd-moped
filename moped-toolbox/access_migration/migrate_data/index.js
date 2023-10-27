@@ -322,7 +322,6 @@ async function main(env) {
     (x) => x.email.toLowerCase() === "john.clary@austintexas.gov"
   ).user_id;
 
-  // const unknownUserId =
   logger.info("✅ Users downloaded");
 
   if (env === "local") {
@@ -376,7 +375,7 @@ async function main(env) {
 
   const { projPhases, projNotes } = getProjPhasesAndNotes();
   const { projMilestones, projPhasesFromDates } = getMilestones();
-  const projComponents = getComponents();
+  const projComponents = await getComponents(env);
   const workAcivities = await getWorkActivities();
   const personnel = getPersonnel();
   const funding = await getFunding();
