@@ -39,6 +39,7 @@ select setval('moped_phase_history_project_milestone_id_seq', (select coalesce(m
 select setval('moped_proj_milestones_project_milestone_id_seq', (select coalesce(max(project_milestone_id), 1) from moped_proj_milestones));
 select setval('moped_proj_component_tags_id_seq', (select coalesce(max(id), 1) from moped_proj_component_tags));
 select setval('moped_proj_component_work_types_id_seq', (select coalesce(max(id), 1) from moped_proj_component_work_types));
+select setval('moped_proj_components_project_component_id_seq', (select coalesce(max(project_component_id), 1) from moped_proj_components));
 select setval('moped_proj_components_subcomponen_component_subcomponent_id_seq', (select coalesce(max(component_subcomponent_id), 1) from moped_proj_components_subcomponents));
 select setval('moped_proj_fund_source_proj_fund_source_id_seq', (select coalesce(max(proj_funding_id), 1) from moped_proj_funding));
 select setval('moped_proj_notes_project_note_id_seq', (select coalesce(max(project_note_id), 1) from moped_proj_notes));
