@@ -81,12 +81,10 @@ $ node index.js local
 
 
 ### Todo
-
-- need to explicitly name the triggers to disable :/
-- format signal component location description consistent with existing data tracker picker
+- connect to test instance and double check hdb invocation logs
 - confirm that event triggers are not firing during migration.
+- prepare script to backfill council district? or enable council district?
 - load metadata from database dir—instead of backing it up?
-- fiscal year and calendar year: completion date:
 - project types
   - mostly done
   - see items highlighted in yellow on project_types tab
