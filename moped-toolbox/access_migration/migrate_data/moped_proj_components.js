@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require("uuid");
+const centroid = require("@turf/centroid").default;
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { gql } = require("graphql-request");
 const { makeHasuraRequest } = require("./utils/graphql");
@@ -399,6 +400,7 @@ async function getComponents(env) {
         "feature_signals",
       ];
 
+      // we can assume component only has data for one layer because we are dropping cases where that is not true
       let componentLayer = layers.find((layerName) => !!comp[layerName]);
 
       const isLineComponent = componentLayer === "feature_drawn_lines";
@@ -407,43 +409,68 @@ async function getComponents(env) {
         (c) => c.component_id === comp.component_id
       ).line_representation;
 
-      // if (isLineComponent && !expectLineComponent) {
-      //   logger.info(`____line_to_point ${comp.component_id}`);
-      // } else if (!isLineComponent && expectLineComponent) {
-      //   logger.info(`____point_to_line ${comp.component_id}`);
-      // }
+      if (isLineComponent && !expectLineComponent) {
+        // make a point!
+
+        // extract feature
+        const oldFeature = comp[componentLayer].data;
+        // delete the feature from the component payload
+        delete comp[componentLayer];
+        const pointFromLine = makeMultiPoint(
+          centroid(oldFeature.geography).geometry
+        );
+
+        // update feature properties
+        const feature = {
+          project_extent_id: uuidv4(),
+          geography: pointFromLine,
+          source_layer: "drawnByUserPoint",
+        };
+
+        // save to new feature layer property
+        comp.feature_drawn_points = {
+          data: feature,
+        };
+        console.log(`converted component ID ${comp.component_id} to point`);
+      } else if (componentLayer && !isLineComponent && expectLineComponent) {
+        // point to very short line
+        // extract feature
+
+        const oldFeature = comp[componentLayer].data;
+        // delete the feature from the component payload
+        delete comp[componentLayer];
+
+        // do some transform
+        const coordinates = oldFeature.geography.coordinates[0];
+        const newCoordinate = [
+          coordinates[0] + 0.0001,
+          coordinates[1] + 0.0001,
+        ];
+        const lineFromPoint = {
+          type: "MultiLineString",
+          coordinates: [[coordinates, newCoordinate]],
+        };
+
+        // create new feature properties
+        const feature = {
+          project_extent_id: uuidv4(),
+          geography: lineFromPoint,
+          source_layer: "drawnByUserLine",
+        };
+
+        // save to new feature layer property
+        comp.feature_drawn_lines = {
+          data: feature,
+        };
+        console.log(
+          `converted component ID ${comp.component_id} to line for interimprojectid: ${comp.interim_project_id}`
+        );
+      }
 
       const projectId = comp.interim_project_id;
       index[projectId] ??= [];
       delete comp.interim_project_id;
       index[projectId].push(comp);
-
-      //
-      // if (ctnLineFeatures?.length > 0) {
-      //   // todo: temp duplicate component with snapped segments
-      //   const comp2 = { ...comp };
-      //   comp2.description = "CTN SEGMENTS ONLY";
-      //   comp2.feature_drawn_lines = { data: [] };
-      //   comp2.feature_street_segments = {
-      //     data: ctnLineFeatures.map((segment) => {
-      //       const geography = segment.geometry;
-      //       if (geography.type === "LineString") {
-      //         geography.coordinates = [geography.coordinates];
-      //         geography.type = "MultiLineString";
-      //       }
-      //       return {
-      //         ctn_segment_id: segment.properties.CTN_SEGMENT_ID,
-      //         from_address_min: segment.properties.FROM_ADDRESS_MIN,
-      //         to_address_max: segment.properties.TO_ADDRESS_MAX,
-      //         full_street_name: segment.properties.FULL_STREET_NAME,
-      //         line_type: segment.properties.LINE_TYPE,
-      //         source_layer: "ATD_ADMIN.CTN",
-      //         geography,
-      //       };
-      //     }),
-      //   };
-      //   index[projectId].push(comp2);
-      // }
 
       return index;
     }, {});
