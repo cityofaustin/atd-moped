@@ -65,7 +65,9 @@ const makeAdvancedSearchWhereString = (filters) =>
     .filter((value) => value !== null)
     .join(", ");
 
-export const useAdvancedSearch = ({ isOr }) => {
+export const useAdvancedSearch = () => {
+  const [isOr, setIsOr] = useState(false);
+
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
 
@@ -87,5 +89,7 @@ export const useAdvancedSearch = ({ isOr }) => {
     filters,
     setFilters,
     advancedSearchWhereString,
+    isOr,
+    setIsOr,
   };
 };
