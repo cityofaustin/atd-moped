@@ -62,8 +62,7 @@ const makeAdvancedSearchWhereString = (filters) =>
       }
       return `${field}: { ${gqlOperator}: ${value} }`;
     })
-    .filter((value) => value !== null)
-    .join(", ");
+    .filter((value) => value !== null);
 
 export const useAdvancedSearch = () => {
   const [isOr, setIsOr] = useState(false);
@@ -81,10 +80,14 @@ export const useAdvancedSearch = () => {
 
   const advancedSearchWhereString = useMemo(() => {
     if (isOr) {
+      // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
       const advancedFilters = makeAdvancedSearchWhereString(filters);
-      return `_or: { ${advancedFilters} }`;
+      const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
+      return `_or: [ ${bracketedFilters.join(",")} ]`;
     } else {
-      return makeAdvancedSearchWhereString(filters);
+      // Ex. project_lead: {_eq: "COA ATD Project Delivery"}, project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}
+      const advancedFilters = makeAdvancedSearchWhereString(filters);
+      return advancedFilters.join(", ");
     }
   }, [filters, isOr]);
 
