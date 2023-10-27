@@ -51,6 +51,9 @@ const componentFields = [
 
       if (!component) {
         throw `Unknown FacilityType type encountered: ${facilityType}`;
+      } else if (component.out === null) {
+        // known component to ignore
+        return;
       }
 
       newRow[this.out] = component ? component.out : null;
@@ -128,13 +131,6 @@ const componentFields = [
   {
     in: "LocationDetail",
     out: "location_description",
-    // transform(oldRow, newRow) {
-    //   // we're dumping data into description from other transforms,
-    //   // so we can't just overwrite it here.
-    //   const prevDescription = newRow.description || "";
-    //   const locationDetail = oldRow.LocationDetail || "";
-    //   newRow.description = `${prevDescription} ${locationDetail}`.trim();
-    // },
   },
   {
     in: "FacilityPhaseOverride",
@@ -211,20 +207,6 @@ const makeMultiPoint = (geometry) => {
 
 const isSignalComponent = (componentId) => [16, 18].includes(componentId);
 
-/**
- * We cannot bring a signal component into Moped if it does not match
- * a known AMD signal asset. As a work around, we  can convert the
- * component to a generic "Intersection Improvement" component.
- */
-const convertSignalToIntersectionComponent = (component) => {
-  const componentType =
-    component.component_id === 16 ? "Pedestrian" : "Traffic";
-  component.description = `${componentType} signal - ${
-    component.description || ""
-  }`;
-  component.component_id = 66; // "Intersection improvement"
-};
-
 function getComponents() {
   const tagIndex = getComponentTags();
 
@@ -254,9 +236,13 @@ function getComponents() {
 
   const unmapped = [];
 
-  // todo: log when a component is filtered/excluded!
   const componentIndex = components
-    .filter((component) => component.component_id !== null)
+    .filter(
+      (component) =>
+        component &&
+        component.component_id !== null &&
+        component.component_id !== undefined
+    )
     .reduce((index, comp) => {
       const { interim_project_component_id } = comp;
       // attach subcomponents
@@ -324,7 +310,7 @@ function getComponents() {
         const featureRecord = {
           signal_id: parseInt(signalFeature.properties.SIGNAL_ID),
           knack_id: signalFeature.properties.id,
-          location_name: signalFeature.properties.LOCATION_NAME,
+          location_name: signalFeature.properties.LOCATION_NAME.trim(),
           signal_type: signalFeature.properties.SIGNAL_TYPE,
           geography: signalFeature.geometry,
         };
@@ -337,6 +323,8 @@ function getComponents() {
           ];
           comp.feature_signals = { data: featureRecord };
         }
+        // set location as we do for signals in moped editor.
+        comp.location_description = `${featureRecord.signal_id}: ${featureRecord.location_name}`;
       } else if (drawnLineFeature) {
         // convert to multiline: //todo: do this in preprocessign script
         if (drawnLineFeature.geometry.type === "LineString") {
