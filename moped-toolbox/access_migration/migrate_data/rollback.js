@@ -32,6 +32,7 @@ WHERE activity_id in(
         AND mp.project_id IS NULL);
 
 -- reset all sequence values
+select setval('moped_project_project_id_simple_seq', (select coalesce(max(project_id), 1) from moped_project));
 select setval('features_id_seq', (select coalesce(max(id), 1) from features));
 select setval('moped_proj_tags_id_seq', (select coalesce(max(id), 1) from moped_proj_tags));
 select setval('moped_phase_history_project_milestone_id_seq', (select coalesce(max(project_phase_id), 1) from moped_proj_phases));
