@@ -24,11 +24,11 @@ const useMakeFilterState = (filterQuery) =>
   }, [filterQuery]);
 
 /**
- * Build the advanced search part of the graphql query using the filter state.
+ * Build an array of filter strings to be used in generating the advanced search where string
  @ param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
-const makeAdvancedSearchWhereString = (filters) =>
+const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
       let { envelope, field, gqlOperator, value, type, specialNullValue } =
@@ -79,14 +79,15 @@ export const useAdvancedSearch = () => {
   const [filters, setFilters] = useState(initialFilterState);
 
   const advancedSearchWhereString = useMemo(() => {
+    const advancedFilters = makeAdvancedSearchWhereFilters(filters);
+    if (advancedFilters.length === 0) return null;
+
     if (isOr) {
       // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
-      const advancedFilters = makeAdvancedSearchWhereString(filters);
       const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
-      return `_or: [ ${bracketedFilters.join(",")} ]`;
+      return `_or: [${bracketedFilters.join(",")}]`;
     } else {
       // Ex. project_lead: {_eq: "COA ATD Project Delivery"}, project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}
-      const advancedFilters = makeAdvancedSearchWhereString(filters);
       return advancedFilters.join(", ");
     }
   }, [filters, isOr]);
