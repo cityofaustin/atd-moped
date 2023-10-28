@@ -62,6 +62,7 @@ $ npm install
 # line features will be imported as drawn lines
 $ node facility_line_matcher.js
 
+# definitely run this one
 $ node facility_point_matcher.js
 ```
 
@@ -81,11 +82,16 @@ $ node index.js local
 
 
 ### Todo
+
+- merge migrations and deploy on test you fool
+- ask Andrew about weird curvePath geomtries
+- create a report of projects that have no description
+- download the latest copy of the DB :)
 - increase production ECS cpu/ram
+- set parent project ID of existing projects to migrate projects (have to do this after migration)
 - merge geom change pr
 - reasses impact of geom change on moped prod
 - connect to test instance and double check hdb invocation logs
-- confirm that event triggers are not firing during migration.
 - prepare script to backfill council district? or enable council district?
 - load metadata from database dir—instead of backing it up?
 - project types
@@ -98,8 +104,6 @@ $ node index.js local
   - can we backfill SMO links based on work order ID old?
 - review all the component/subcomponent and component/work type mapping
 - there are facility spatial records with multiple features within one layer and across geom types.
-- list view: render nothing instead of "12/31/1969" if the project has no modified date? or default the modified date?
-- check geometry types of components - some may need to be converted to point or line
 - search for todos :)
 
 ### NW Questions
@@ -110,9 +114,3 @@ $ node index.js local
 - should we assign "New" work type to anything that doesn't have a work type?
 - facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these?
 - how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
-
-- not migrating these project facility colummns:
-  - PerfMeasureCategory
-  - PerfMeasureName
-  - PerfMeasureType
-  - Categories

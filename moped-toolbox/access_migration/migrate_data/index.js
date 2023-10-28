@@ -6,6 +6,7 @@ const { getPersonnel, getEmployeeId } = require("./moped_proj_personnel");
 const { downloadUsers, createUsers } = require("./moped_users");
 const { getMilestones } = require("./moped_proj_milestones");
 const { getFunding } = require("./moped_proj_funding");
+const { deDupeProjs } = require("./mappings/deDupe");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { PARTNERS_MAP } = require("./mappings/partners");
 const { TAGS_MAP } = require("./mappings/tags");
@@ -33,6 +34,27 @@ const PROJECT_CHUNK_SIZE = 50;
 const FNAME = "./data/raw/projects.json";
 
 let users;
+
+const EXISTING_PROJECTS_QUERY = gql`
+  query GetExistingProjects {
+    moped_project(where: { is_deleted: { _eq: false } }) {
+      project_id
+      project_description
+      project_website
+      project_lead_id
+      date_added
+      public_process_status_id
+      interim_project_id
+      ecapris_subproject_id
+      moped_proj_tags {
+        tag_id
+      }
+      moped_proj_partners {
+        proj_partner_id
+      }
+    }
+  }
+`;
 
 const DELETE_ALL_PROJECTS_MUTATION = gql`
   mutation DeleteAllProjects {
@@ -148,7 +170,7 @@ fields = [
   {
     in: "Description",
     out: "project_description",
-    required: true,
+    required: false,
   },
   {
     in: "ProjectWebsite",
@@ -358,10 +380,20 @@ async function main(env) {
 
     logger.info("✅ Users created");
   }
-  
+
+  logger.info("⬇️ Downloading existing projects...");
+  const { moped_project: existingProjects } = await makeHasuraRequest({
+    query: EXISTING_PROJECTS_QUERY,
+    env,
+  });
+
   logger.info("⚙️ Transforming project data into Moped schema...");
 
   const data = loadJsonFile(FNAME);
+
+  /**
+   * Construct basic project objects
+   */
   const projects = data
     .map((row) => {
       const newRow = mapRow(row, fields);
@@ -373,6 +405,9 @@ async function main(env) {
     })
     .filter((row) => !!row);
 
+  /**
+   * Build other project properties and related records
+   */
   const { projPhases, projNotes } = getProjPhasesAndNotes();
   const { projMilestones, projPhasesFromDates } = getMilestones();
   const projComponents = await getComponents(env);
@@ -380,6 +415,9 @@ async function main(env) {
   const personnel = getPersonnel();
   const funding = await getFunding();
 
+  /**
+   * Assemble final project objects
+   */
   projects.forEach((proj) => {
     // handle partners array
     const partners = proj.moped_proj_partners;
@@ -394,6 +432,11 @@ async function main(env) {
     // add phases from dates into the mix
     phases = [...phases, ...(projPhasesFromDates[interim_project_id] || [])];
 
+    /**
+     * Munge all the phase data we have to
+     * - dedupe them bc they can be created by phases and special milestones
+     * - figure out of the date is confirmed
+     */
     const newPhasesIndex = {};
     phases.forEach(
       ({
@@ -431,7 +474,6 @@ async function main(env) {
 
     phases = Object.values(newPhasesIndex);
 
-    // throw `Merge dupe phase/subphase based on phase ID + subphase ID and take earliest date - depdupe phase estimated vs actual milestones and set real/confirmed date. e.g. actual vs estimated construction start`;
     if (phases?.length) {
       proj.moped_proj_phases = { data: phases };
     }
@@ -479,6 +521,8 @@ async function main(env) {
     proj.is_migrated_from_access_db = true;
   });
 
+  deDupeProjs(projects, existingProjects);
+  throw `DEDUP HERE!`;
   logger.info(
     `✅ Data transform complete! There are ${projects.length} projects to create.`
   );
