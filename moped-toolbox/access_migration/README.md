@@ -83,6 +83,14 @@ $ node index.js local
 
 ### Todo
 
+- what happened to the `moped_components` id sequence? `moped_components_component_id_seq`???
+
+```
+SELECT
+    setval('moped_components_component_id_seq', (
+            SELECT
+                max(component_id) FROM moped_components));
+```
 - merge migrations and deploy on test you fool
 - ask Andrew about weird curvePath geomtries
 - create a report of projects that have no description
