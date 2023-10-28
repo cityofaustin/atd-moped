@@ -411,9 +411,14 @@ async function getComponents(env) {
 
       const isLineComponent = componentLayer === "feature_drawn_lines";
 
-      const expectLineComponent = !!compLookup.find(
+      const mopedComponent = compLookup.find(
         (c) => c.component_id === comp.component_id
-      ).line_representation;
+      );
+
+      if (!mopedComponent) {
+        debugger;
+      }
+      const expectLineComponent = !!mopedComponent.line_representation;
 
       if (isLineComponent && !expectLineComponent) {
         // make a point!
