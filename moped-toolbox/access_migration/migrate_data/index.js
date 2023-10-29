@@ -6,7 +6,7 @@ const { getPersonnel, getEmployeeId } = require("./moped_proj_personnel");
 const { downloadUsers, createUsers } = require("./moped_users");
 const { getMilestones } = require("./moped_proj_milestones");
 const { getFunding } = require("./moped_proj_funding");
-const { deDupeProjs } = require("./mappings/deDupe");
+const { deDupeProjs } = require("./deDupe");
 const { ENTITIES_MAP } = require("./mappings/entities");
 const { PARTNERS_MAP } = require("./mappings/partners");
 const { TAGS_MAP } = require("./mappings/tags");
@@ -51,6 +51,38 @@ const EXISTING_PROJECTS_QUERY = gql`
       }
       moped_proj_partners {
         proj_partner_id
+      }
+    }
+  }
+`;
+
+const EXISTING_COMPONENTS_QUERY = gql`
+  query GetComponents {
+    moped_proj_components(where: { is_deleted: { _eq: false } }) {
+      project_component_id
+      interim_project_component_id
+      project_id
+      completion_date
+      date_added
+      description
+      location_description
+      location_description
+      phase_id
+      subphase_id
+      srts_id
+      moped_proj_component_tags(where: { is_deleted: { _eq: false } }) {
+        id
+        component_tag_id
+      }
+      moped_proj_component_work_types(where: { is_deleted: { _eq: false } }) {
+        id
+        work_type_id
+      }
+      moped_proj_components_subcomponents(
+        where: { is_deleted: { _eq: false } }
+      ) {
+        component_subcomponent_id
+        subcomponent_id
       }
     }
   }
@@ -387,6 +419,12 @@ async function main(env) {
     env,
   });
 
+  logger.info("⬇️ Downloading existing components...");
+  const { moped_proj_components: existingComponents } = await makeHasuraRequest({
+    query: EXISTING_COMPONENTS_QUERY,
+    env,
+  });
+
   logger.info("⚙️ Transforming project data into Moped schema...");
 
   const data = loadJsonFile(FNAME);
@@ -521,7 +559,7 @@ async function main(env) {
     proj.is_migrated_from_access_db = true;
   });
 
-  deDupeProjs(projects, existingProjects);
+  deDupeProjs(projects, existingProjects, existingComponents);
   throw `DEDUP HERE!`;
   logger.info(
     `✅ Data transform complete! There are ${projects.length} projects to create.`

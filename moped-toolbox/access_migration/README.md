@@ -93,8 +93,10 @@ SELECT
 ```
 
 - clarify: should migrate components for dupe projects? assuming answer is no unless on sheet
+- also: wtf: what does it mean to migrate a component which has a project ocmponent id on the dupe list? i am very oost
 - logging and rollback of dedupe: just make detailed logs and hope it goes well. can reproduce/debug migration if we need to figure more detail
 - set parent project ID of existing projects to migrate projects (have to do this after migration)
+- after migration: send NW list of facility - project component/project IDs
 - merge migrations and deploy on test you fool
 - ask Andrew about weird curvePath geomtries
 - create a report of projects that have no description
