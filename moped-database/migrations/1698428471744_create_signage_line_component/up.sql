@@ -1,3 +1,10 @@
+-- reset coponent id to max componet ID: it appears to be corrupted
+SELECT
+    setval('moped_components_component_id_seq', (
+            SELECT
+                max(component_id)
+                FROM moped_components));
+
 -- create new component
 INSERT INTO public.moped_components (
         component_name,
