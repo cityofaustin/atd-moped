@@ -94,13 +94,14 @@ SELECT
 
 - clarify: should migrate components for dupe projects? assuming answer is no unless on sheet
 - logging and rollback of dedupe: just make detailed logs and hope it goes well. can reproduce/debug migration if we need to figure more detail
+- set parent project ID of existing projects to migrate projects (have to do this after migration)
 - merge migrations and deploy on test you fool
 - ask Andrew about weird curvePath geomtries
 - create a report of projects that have no description
 - download the latest copy of the DB :)
 - increase production ECS cpu/ram
 - decrease/tear down access test instance
-- set parent project ID of existing projects to migrate projects (have to do this after migration)
+
 - reasses impact of geom change on moped prod
 - connect to test instance and double check hdb invocation logs
 - prepare script to backfill council district? or enable council district?
