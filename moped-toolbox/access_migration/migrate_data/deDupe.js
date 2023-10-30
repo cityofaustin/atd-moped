@@ -20,7 +20,7 @@ const COMPONENT_FIELDS_TO_COALESCE = [
 ];
 
 const deDupeProjs = (projects, existingProjects, existingComponents) => {
-  const nonDupeProjects = [];
+  const projectsToCreate = [];
   const dupeProjects = [];
   // collect project updates here
   const allProjectUpdates = [];
@@ -42,7 +42,7 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
       //   DONE: we deal with components later
       return;
     } else {
-      nonDupeProjects.push(project);
+      projectsToCreate.push(project);
     }
 
     // this will hold the new `moped_proj_components` for the project
@@ -115,7 +115,10 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
           if (existingTags.length === 0) {
             // insert all tags
             thisComponentUpdates.moped_proj_component_tags =
-              newComp.moped_proj_component_tags;
+              newComp.moped_proj_component_tags.data.map((tag) => ({
+                ...tag,
+                project_component_id: existingComp.project_component_id,
+              }));
           } else {
             // this case does not occur in data :)
           }
@@ -125,13 +128,19 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
          * Component work types
          */
         if (newComp.moped_proj_component_work_types?.data) {
+          const newWorkTypes = newComp.moped_proj_component_work_types.data.map(
+            (wt) => ({
+              ...wt,
+              project_component_id: existingComp.project_component_id,
+            })
+          );
+
           const existingWorktypes =
             existingComp.moped_proj_component_work_types;
 
           if (existingWorktypes.length === 0) {
             // insert all new work types
-            thisComponentUpdates.moped_proj_component_work_types =
-              newComp.moped_proj_component_work_types.data;
+            thisComponentUpdates.moped_proj_component_work_types = newWorkTypes;
           } else {
             // we have to dedupe incoming vs existing work type
             const existingWorkTypeIds = existingWorktypes.map(
@@ -145,15 +154,14 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
              */
             const existingWorkTypeIsNew = existingWorkTypeIds.includes(7);
 
-            const workTypesToInsert =
-              newComp.moped_proj_component_work_types.data.filter((w) => {
-                return (
-                  // work type is  unique
-                  !existingWorkTypeIds.includes(w.work_type_id) &&
-                  // and work type is not mod when existing type is new
-                  !(w.work_type_id === 6 && existingWorkTypeIsNew)
-                );
-              });
+            const workTypesToInsert = newWorkTypes.filter((w) => {
+              return (
+                // work type is  unique
+                !existingWorkTypeIds.includes(w.work_type_id) &&
+                // and work type is not mod when existing type is new
+                !(w.work_type_id === 6 && existingWorkTypeIsNew)
+              );
+            });
 
             if (workTypesToInsert.length > 0) {
               // we have unique work types to insert
@@ -168,12 +176,18 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
          * Subcomponents
          */
         if (newComp.moped_proj_components_subcomponents?.data) {
+          const newSubcomponents =
+            newComp.moped_proj_components_subcomponents?.data.map((sub) => ({
+              ...sub,
+              project_component_id: existingComp.project_component_id,
+            }));
+
           const existingSubcomps =
             existingComp.moped_proj_components_subcomponents;
           if (existingSubcomps.length === 0) {
             // insert all subcomponents
             thisComponentUpdates.moped_proj_components_subcomponents =
-              newComp.moped_proj_components_subcomponents.data;
+              newSubcomponents;
           } else {
             // dedupe subcomponents - not an issue
             throw `not handled case because it doesn't exist`;
@@ -206,6 +220,7 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
       //   moped_proj_phases: [],
       //   moped_proj_funding: [],
       //   moped_proj_work_activities: [],
+      //   insert_moped_proj_components: []
     };
 
     const existingProject = existingProjects.find(
@@ -295,10 +310,23 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
     }
 
     if (newProject.moped_proj_phases) {
-      const phases = newProject.moped_proj_phases.data.map((phase) => ({
+      let phases = newProject.moped_proj_phases.data.map((phase) => ({
         ...phase,
         project_id: newProject.project_id,
       }));
+
+      if (existingProject.moped_proj_phases) {
+        const currentPhase = existingProject.moped_proj_phases.find(
+          (mp) => mp.is_current_phase === true
+        );
+        if (currentPhase) {
+          // clear current phase from incoming phasees
+          phases = phases.map((phase) => ({
+            ...phase,
+            is_current_phase: false,
+          }));
+        }
+      }
       thisProjectUpdates.moped_proj_phases = phases;
     }
 
@@ -337,8 +365,8 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
      * provided to us
      */
     if (newProject.moped_proj_components) {
-      const componentsToMigrate = newProject.moped_proj_components.data.filter(
-        (comp) => {
+      const componentsToMigrate = newProject.moped_proj_components.data
+        .filter((comp) => {
           const interimCompId = comp.interim_project_component_id;
           const matchComp = DUPE_COMPONENTS.find(
             (existingComp) =>
@@ -352,17 +380,16 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
           }
           // merge attributes - none of the projects flagges as dupes have
           // this requirement
-          throw `merge attributes???`;
-        }
-      );
+          console.log("SKIPPING component", matchComp);
+          return false;
+          // throw `merge attributes???`;
+        })
+        .map((comp) => ({ ...comp, project_id: newProject.project_id }));
       thisProjectUpdates.moped_proj_components = componentsToMigrate;
     }
     allProjectUpdates.push(thisProjectUpdates);
   });
-
-  debugger;
-  throw `DISABLE CURRENT PHASE??`;
-  throw `TIME TO RETURN DATA THAT CAAN BE MUTATED!`
+  return { projectsToCreate, allProjectUpdates, allComponentUpdates };
 };
 
 module.exports = {

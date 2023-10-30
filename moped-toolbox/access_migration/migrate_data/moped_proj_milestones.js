@@ -1,4 +1,3 @@
-const { logger } = require("./utils/logger");
 const { loadJsonFile } = require("./utils/loader");
 
 const PROJ_DATES_FNAME = "./data/raw/project_dates.json";

@@ -14,7 +14,7 @@ const {
 const { PHASES_MAP } = require("./mappings/phases");
 const { mapRow, mapRowExpanded } = require("./utils/misc");
 const { getComponentTags } = require("./moped_proj_component_tags");
-const { logger } = require("./utils/logger");
+const { logger_transform: logger } = require("./utils/logger");
 
 /** Access DB tables related to components/facilities
  * Facility_Attributes - actuals associated with project facility instances (many to one)

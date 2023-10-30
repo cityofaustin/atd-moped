@@ -1,10 +1,10 @@
-const { logger } = require("./utils/logger");
+const { logger_transform: logger } = require("./utils/logger");
 const { loadJsonFile } = require("./utils/loader");
 const { mapRowExpanded } = require("./utils/misc");
 const { USERS_FNAME } = require("./moped_users");
 const WORK_AUTH_FNAME = "./data/raw/workauthorizations.json";
 const WORK_AUTHS = loadJsonFile(WORK_AUTH_FNAME);
-const USERS = loadJsonFile(USERS_FNAME);
+let USERS;
 let TASK_ORDERS;
 
 // Moped status IDs
@@ -40,12 +40,12 @@ const fields = [
       if (!activityId) {
         // construct the "old" id from the prefix and ID sequence
         // this is the convention used in the access DB
-        activityId = `${oldRow.WAPrefix}-${oldRow.WorkAuthorizationID}`
+        activityId = `${oldRow.WAPrefix}-${oldRow.WorkAuthorizationID}`;
         if (!oldRow.WAPrefix || !oldRow.WorkAuthorizationID) {
-          throw `Cannot construct work activity ID - wtf?`
+          throw `Cannot construct work activity ID - wtf?`;
         }
       }
-      newRow.interim_work_activity_id = activityId
+      newRow.interim_work_activity_id = activityId;
     },
   },
   {
@@ -149,6 +149,7 @@ async function downloadTaskOrders() {
 }
 
 async function getWorkActivities() {
+  USERS = loadJsonFile(USERS_FNAME);
   await downloadTaskOrders();
   return (
     WORK_AUTHS.filter((row) => row.ProjectID)

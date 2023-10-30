@@ -9,7 +9,8 @@
 const { loadJsonFile } = require("./utils/loader");
 const { PHASES_MAP } = require("./mappings/phases");
 const { USERS_FNAME } = require("./moped_users");
-const USERS = loadJsonFile(USERS_FNAME);
+
+let USERS;
 
 const FNAME = "./data/raw/project_statusupdate.json";
 
@@ -95,7 +96,8 @@ const getProjNotes = (statusUpdates) =>
     }
 
     if (!project_note) {
-      project_note = "(This phase update was migrated from the legacy Access database without a note)";
+      project_note =
+        "(This phase update was migrated from the legacy Access database without a note)";
     }
     setPhaseId(status);
     const phase_id = status.phase_id;
@@ -130,6 +132,7 @@ const getProjNotes = (statusUpdates) =>
   }, {});
 
 function getProjPhasesAndNotes() {
+  USERS = loadJsonFile(USERS_FNAME);
   const statusUpdates = loadJsonFile(FNAME);
   statusUpdates.forEach((statusUpdate) => setPhaseId(statusUpdate));
   const grouped = groupByProjectAndPhase(statusUpdates);

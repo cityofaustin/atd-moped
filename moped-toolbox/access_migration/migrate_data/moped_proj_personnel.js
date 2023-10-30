@@ -2,7 +2,7 @@ const { loadJsonFile } = require("./utils/loader");
 const { mapRow } = require("./utils/misc");
 const { PROJECT_ROLES_MAP } = require("./mappings/project_roles");
 const { USERS_FNAME } = require("./moped_users");
-const USERS = loadJsonFile(USERS_FNAME);
+let USERS;
 const PROJ_PERSONNEL_FNAME = "./data/raw/project_personnel.json";
 const PROJ_PERSONNEL = loadJsonFile(PROJ_PERSONNEL_FNAME);
 
@@ -66,6 +66,7 @@ const fields = [
 ];
 
 function getPersonnel() {
+  USERS = loadJsonFile(USERS_FNAME);
   // there are some "Inactive" personnel to be ignore
   // and also personnel with a `null` employee
   // todo: check w/ NW this is ok (inactive personnel in Moped are deleted/hidden)

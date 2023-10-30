@@ -2,7 +2,7 @@ const { gql } = require("graphql-request");
 const { getProjPhasesAndNotes } = require("./moped_proj_phases_and_notes");
 const { getComponents } = require("./moped_proj_components");
 const { getWorkActivities } = require("./moped_work_activity");
-const { getPersonnel, getEmployeeId } = require("./moped_proj_personnel");
+const { getPersonnel } = require("./moped_proj_personnel");
 const { downloadUsers, createUsers } = require("./moped_users");
 const { getMilestones } = require("./moped_proj_milestones");
 const { getFunding } = require("./moped_proj_funding");
@@ -13,24 +13,11 @@ const { TAGS_MAP } = require("./mappings/tags");
 const {
   PUBLIC_PROCESS_STATUS_MAP,
 } = require("./mappings/public_process_status");
-const {
-  exportMetadata,
-  replaceMetadata,
-  makeHasuraRequest,
-  runSql,
-} = require("./utils/graphql");
+const { makeHasuraRequest, runSql } = require("./utils/graphql");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
-const { logger } = require("./utils/logger");
-const {
-  mapRow,
-  chunkArray,
-  createProjectActivityRecords,
-} = require("./utils/misc");
+const { logger_transform: logger } = require("./utils/logger");
+const { mapRow } = require("./utils/misc");
 
-const getMetadataFileDateString = () =>
-  new Date().toLocaleDateString().replaceAll("/", "_");
-
-const PROJECT_CHUNK_SIZE = 50;
 const FNAME = "./data/raw/projects.json";
 
 let users;
@@ -46,6 +33,11 @@ const EXISTING_PROJECTS_QUERY = gql`
       public_process_status_id
       interim_project_id
       ecapris_subproject_id
+      moped_proj_phases(where: { is_deleted: { _eq: false } }) {
+        is_current_phase
+        phase_id
+        subphase_id
+      }
       moped_proj_tags {
         tag_id
       }
@@ -105,29 +97,6 @@ const DELETE_ALL_PROJECTS_MUTATION = gql`
   }
 `;
 
-const INSERT_PROJECTS_MUTATION = gql`
-  mutation InsertProjects($objects: [moped_project_insert_input!]!) {
-    insert_moped_project(objects: $objects) {
-      returning {
-        project_id
-        added_by
-        date_added
-        project_name
-      }
-    }
-  }
-`;
-
-const INSERT_ACTIVITY_LOG_EVENT_MUTATION = gql`
-  mutation InsertActivityLogProjectCreate(
-    $objects: [moped_activity_log_insert_input!]!
-  ) {
-    insert_moped_activity_log(objects: $objects) {
-      affected_rows
-    }
-  }
-`;
-
 const TRIGGERS_TO_DISABLE = [
   {
     table: "moped_proj_work_activity",
@@ -183,12 +152,7 @@ const TRIGGERS_TO_DISABLE = [
   },
 ];
 
-const getSetTriggerStateSql = (state) =>
-  TRIGGERS_TO_DISABLE.map(
-    ({ table, trigger }) => `ALTER TABLE ${table} ${state} TRIGGER ${trigger}`
-  ).join(";\n");
-
-fields = [
+const fields = [
   {
     in: "ProjectID",
     out: "interim_project_id",
@@ -203,6 +167,10 @@ fields = [
     in: "Description",
     out: "project_description",
     required: false,
+    transform(row) {
+      // there are projects w/o descriptions :/
+      return row["Description"] || "-";
+    },
   },
   {
     in: "ProjectWebsite",
@@ -331,14 +299,6 @@ const getInvalidFields = (row) => {
   }
 };
 
-const removeEventTriggers = (metadata) => {
-  metadata.sources.forEach((source) => {
-    source.tables.forEach((table) => {
-      delete table.event_triggers;
-    });
-  });
-};
-
 const getEarliestNoteUserId = (notes) => {
   const earliestNote = notes.reduce((prevNote, currNote) => {
     const currNoteDate = new Date(currNote.date_created);
@@ -370,10 +330,6 @@ async function main(env) {
   users = await downloadUsers(env);
   const unknownUserId = users.find(
     (x) => x.first_name.toLowerCase() === "anonymous"
-  ).user_id;
-
-  const john_user_id = users.find(
-    (x) => x.email.toLowerCase() === "john.clary@austintexas.gov"
   ).user_id;
 
   logger.info("✅ Users downloaded");
@@ -420,10 +376,12 @@ async function main(env) {
   });
 
   logger.info("⬇️ Downloading existing components...");
-  const { moped_proj_components: existingComponents } = await makeHasuraRequest({
-    query: EXISTING_COMPONENTS_QUERY,
-    env,
-  });
+  const { moped_proj_components: existingComponents } = await makeHasuraRequest(
+    {
+      query: EXISTING_COMPONENTS_QUERY,
+      env,
+    }
+  );
 
   logger.info("⚙️ Transforming project data into Moped schema...");
 
@@ -559,123 +517,19 @@ async function main(env) {
     proj.is_migrated_from_access_db = true;
   });
 
-  deDupeProjs(projects, existingProjects, existingComponents);
-  throw `DEDUP HERE!`;
-  logger.info(
-    `✅ Data transform complete! There are ${projects.length} projects to create.`
+  const mopedProjectData = deDupeProjs(
+    projects,
+    existingProjects,
+    existingComponents
   );
 
-  const metadataFilename = `./backup/metadata_${env}_${getMetadataFileDateString()}.json`;
-  let metadata;
+  const projectDataFilename = `./data/ready/project_data_${env}.json`;
+  const projectDataBackupFilename = `./backup/project_data_${env}_${new Date().getTime()}.json`;
 
-  try {
-    metadata = loadJsonFile(metadataFilename);
-  } catch {
-    // pass
-  }
+  saveJsonFile(projectDataFilename, mopedProjectData);
+  saveJsonFile(projectDataBackupFilename, mopedProjectData);
 
-  if (!metadata) {
-    // if we dont have a metadata backup, make one
-    logger.info("Backing up metadata...");
-    try {
-      metadata = await exportMetadata({ env });
-    } catch (error) {
-      logger.error(error);
-      return;
-    }
-    saveJsonFile(metadataFilename, metadata);
-    logger.info(`✅ Metadata saved to '${metadataFilename}'`);
-  } else {
-    logger.info(`✅ Loaded metadata backup from '${metadataFilename}'`);
-  }
-
-  logger.info("Disabling hasura event triggers...");
-  removeEventTriggers(metadata);
-
-  try {
-    await replaceMetadata({ env, metadata });
-  } catch (error) {
-    logger.error({ message: error });
-    return;
-  }
-
-  logger.info("✅ Hasura Event triggers disabled");
-
-  logger.info("Disabling DB event triggers...");
-
-  await runSql({
-    env,
-    sql: getSetTriggerStateSql("disable"),
-  });
-
-  logger.info("✅ DB event triggers disabled");
-
-  logger.info(`Inserting ${projects.length} projects...`);
-
-  const projectChunks = chunkArray(projects, PROJECT_CHUNK_SIZE);
-
-  for (let i = 0; i < projectChunks.length; i++) {
-    let response;
-    // insert each chunk of projects
-    try {
-      logger.info(`⬆️ ${i + 1}/${projectChunks.length} - uploading projects`);
-      response = await makeHasuraRequest({
-        query: INSERT_PROJECTS_MUTATION,
-        variables: { objects: projectChunks[i] },
-        env,
-      });
-    } catch (error) {
-      logger.error({ message: error });
-      debugger;
-      break;
-    }
-    // create an activity event for each project
-    const projects = response.insert_moped_project.returning;
-
-    const activityLogRecords = projects
-      .map((proj) => {
-        return createProjectActivityRecords({ ...proj, john_user_id });
-      })
-      .flat();
-
-    try {
-      logger.info("📖 uploading activity log events...");
-      await makeHasuraRequest({
-        query: INSERT_ACTIVITY_LOG_EVENT_MUTATION,
-        variables: { objects: activityLogRecords },
-        env,
-      });
-    } catch (error) {
-      logger.error({ message: error });
-      debugger;
-      break;
-    }
-
-    logger.info("⏳ Sleeping...");
-    await new Promise((r) => setTimeout(r, 1000));
-  }
-
-  logger.info("Re-enabling DB event triggers...");
-
-  await runSql({
-    env,
-    sql: getSetTriggerStateSql("enable"),
-  });
-
-  logger.info("✅ DB event triggers re-enables");
-
-  logger.info("Restoring event triggers...");
-  const metadataBackup = loadJsonFile(metadataFilename);
-
-  try {
-    await replaceMetadata({ env, metadata: metadataBackup });
-  } catch (error) {
-    logger.error({ message: error });
-    return;
-  }
-  logger.info("✅ Event trigger restored");
-
-  logger.info("Done 😅");
+  logger.info(`✅ Data transform complete!`);
 }
 
 const getEnv = () => {
@@ -690,6 +544,3 @@ const getEnv = () => {
 const env = getEnv();
 
 main(env);
-
-// def test_is_valid(row):
-//     assert all([row[field["out"]] for field in fields if field["required"]])
