@@ -128,9 +128,10 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
 
   const [snackbarState, setSnackbarState] = useState(false);
 
-  const childProjectGeography = data?.childProjects.map(
-    (project) => project.project_geography[0]
-  );
+  /* Not all child components have components and geography data */
+  const childProjectGeography = data?.childProjects
+    .filter((project) => project.project_geography.length > 0)
+    .map((project) => project.project_geography[0]);
   /**
    * Updates the state of snackbar state
    * @param {String|JSX.Element} message - The message to be displayed
