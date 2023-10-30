@@ -535,7 +535,7 @@ async function main(env) {
 const getEnv = () => {
   const env = process.argv[2];
   // alter this to enable run against staging or prod 😬
-  if (!["local", "test"].includes(env)) {
+  if (!["local", "test", "prod"].includes(env)) {
     throw "Unknown environment. Choose 'local', 'test'";
   }
   return env;
