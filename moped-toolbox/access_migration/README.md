@@ -89,36 +89,23 @@ $ node load.js local
 ### Todo
 
 - activity log for dedupe projects
-- logging and rollback of dedupe: just make detailed logs and hope it goes well. can reproduce/debug migration if we need to figure more detail
 - merge v1.35.1 migrations and deploy on test
-- dedupe: facility ID 17179 after migration
+- reasses impact of geom change on moped prod
+- after migration: fix projects impacted by geometry changes
+- after migration: facility ID 17179 after migration
 - after migration: set parent project ID of existing projects to migrate projects
 - after migration: send NW list of facility - project component/project IDs
-- create a report of projects that have no description
-- increase production ECS cpu/ram
-- decrease/tear down access test instance
-- reasses impact of geom change on moped prod
-- connect to test instance and double check hdb invocation logs
+- after migration: create a report of projects that have no description
+- after migration: decrease/tear down access test instance
+- after migration: move "School zone beacon" to not be a signal component
+- after migration: can we backfill work activity SMO links based on work activity ID?
 - prepare script to backfill council district? or enable council district?
 - load metadata from database dir—instead of backing it up?
-- project types
-  - mostly done
-  - see items highlighted in yellow on project_types tab
-  - https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1679186191
-- move "School zone beacon" to not be a signal component
 - john to check on unmapped project groups
-- after migration: can we backfill work activity SMO links based on work activity ID?
 - review all the component/subcomponent and component/work type mapping
 - there are facility spatial records with multiple features within one layer and across geom types
 - search for todos :)
-- moped editor: check on weird CTN curvePath geomtries
+- after migration: moped editor: check on weird CTN curvePath geomtries
 
 ### NW Questions
 
-- project personnel:
-  - IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
-- work authorizations statusID: default to....planned? complete?
-  - > futue/potential
-- should we assign "New" work type to anything that doesn't have a work type?
-- facility type "Corridor Plan" (and similalry the ProjecType) attribute - what to do with these?
-- how to handle entities that don't exist in moped. see https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1400142967
