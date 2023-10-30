@@ -189,7 +189,7 @@ const subcomponentFields = [
         (subcomp) => subcomp.in === attrName
       );
       if (!subcomp) {
-        // todo: address these transforms: https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1846025869
+        // todo: send report to NW
         if (
           ![
             "Bicycle Signal TBD",
@@ -314,7 +314,7 @@ async function getComponents(env) {
         POINT_FEATURES[interim_project_component_id]?.signalFeature;
 
       if (drawnPointFeature && drawnLineFeature) {
-        // todo: how to handle?
+        // todo: send report to NW
         logger.info(
           "🙈 skipping geodata for facility ID ",
           comp.interim_project_component_id,
@@ -351,7 +351,7 @@ async function getComponents(env) {
         // set location as we do for signals in moped editor.
         comp.location_description = `${featureRecord.signal_id}: ${featureRecord.location_name}`;
       } else if (drawnLineFeature) {
-        // convert to multiline: //todo: do this in preprocessign script
+        // convert to multiline
         if (drawnLineFeature.geometry.type === "LineString") {
           drawnLineFeature.geometry.type = "MultiLineString";
           drawnLineFeature.geometry.coordinates = [
@@ -381,7 +381,7 @@ async function getComponents(env) {
           comp.feature_drawn_points = { data: featureRecord };
         }
       } else {
-        // todo: how to handle?
+        // todo: send report to NW
         unmapped.push(comp);
       }
 

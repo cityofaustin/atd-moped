@@ -69,7 +69,6 @@ function getPersonnel() {
   USERS = loadJsonFile(USERS_FNAME);
   // there are some "Inactive" personnel to be ignore
   // and also personnel with a `null` employee
-  // todo: check w/ NW this is ok (inactive personnel in Moped are deleted/hidden)
   const peopleRoles = PROJ_PERSONNEL.filter(
     (pers) => pers.Status === "Active" && pers.Employee
   );

@@ -76,9 +76,7 @@ const fields = [
         // array-ify task order, since multiple are allowed in Moped
         newRow.task_orders = [matchedTaskOrder];
       } else {
-        // todo
         logger.info("⚠️ Ignoring unknown task order: ", taskOrder);
-        // throw `not sure what to do with unknown tks`;
       }
     },
   },

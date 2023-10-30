@@ -277,8 +277,8 @@ const fields = [
               "ACTPlan",
             ].includes(groupName)
           ) {
-            // todo: i asked NW if these are ok to ignore
-            // console.log("Ignoring tag: ", groupName);
+            // todo: send NW report
+            logger.info(`Ignoring tag: ${groupName}`);
             // throw `Unknwn group name: ${groupName}`;
           }
           return tag ? { tag_id: tag.out } : null;

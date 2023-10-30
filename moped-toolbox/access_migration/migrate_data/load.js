@@ -423,6 +423,7 @@ async function main(env) {
     const project_id = mpc.moped_proj_components.project_id;
 
     if (!project_id) {
+      debugger;
       throw `WHOOPS`;
     }
 

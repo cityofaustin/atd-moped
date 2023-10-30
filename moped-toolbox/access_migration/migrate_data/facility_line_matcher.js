@@ -27,7 +27,6 @@ const trimCoords = (coords, factor = 1000000) =>
   coords.map((pair) => pair.map((val) => Math.round(val * factor) / factor));
 
 // ignore multilinestring features which cannot be eval'd with booleanContains
-// todo: decide how to handle these 16-ish features
 const makeSimple = (features) =>
   features
     .filter((segment) => segment.geometry.coordinates.length === 1)

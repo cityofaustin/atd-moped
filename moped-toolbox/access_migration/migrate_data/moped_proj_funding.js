@@ -26,7 +26,6 @@ const fields = [
     transform: (row) => {
       const status = row.Status;
       if (!status) {
-        // todo: fallback status
         // currently `tentative`
         return 1;
       }
