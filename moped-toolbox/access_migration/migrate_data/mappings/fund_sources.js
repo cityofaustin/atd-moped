@@ -64,7 +64,15 @@ const FUND_STATUS_MAP = [
   { in: "Set up", out: 5 },
   { in: "Funding setup requested", out: 4 },
   { in: "Confirmed", out: 2 },
-  // todo: available?
+  // todo: available - there is only one: send to NW{
+  //   "Project_FundingID": 453,
+  //   "ProjectID": 2888,
+  //   "Source": null,
+  //   "Program": "Bikeways",
+  //   "Description": "Cost for signals, and final markings and posts",
+  //   "Status": "Available",
+  //   "FDU": null,
+  //   "Amount": null
   { in: "Available", out: 1 },
 ];
 

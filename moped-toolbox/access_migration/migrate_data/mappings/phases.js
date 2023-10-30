@@ -23,6 +23,11 @@ const PHASES_MAP = [
     in: "Complete",
     out: { phase_id: 11, subphase_id: null, milestone_id: null },
   },
+  // note the caps
+  {
+    in: "complete",
+    out: { phase_id: 11, subphase_id: null, milestone_id: null },
+  },
   {
     in: "Complete - Minor Modifications in Progress",
     out: { phase_id: 10, subphase_id: 24, milestone_id: null },
@@ -77,6 +82,11 @@ const PHASES_MAP = [
     in: "Planned",
     out: { phase_id: 2, subphase_id: null, milestone_id: null },
   },
+  // note the lower case
+  {
+    in: "planned",
+    out: { phase_id: 2, subphase_id: null, milestone_id: null },
+  },
   {
     in: "Planned - Coordination Needed",
     out: { phase_id: 2, subphase_id: null, milestone_id: null },
@@ -98,9 +108,8 @@ const PHASES_MAP = [
     out: { phase_id: 2, subphase_id: null, milestone_id: null },
   },
   {
-    // todo
     in: "Plans Under Review by Transportation Engineering",
-    out: { phase_id: null, subphase_id: null, milestone_id: null },
+    out: { phase_id: 6, subphase_id: null, milestone_id: null },
   },
   {
     in: "Post Construction",
@@ -112,6 +121,11 @@ const PHASES_MAP = [
   },
   {
     in: "Potential",
+    out: { phase_id: 1, subphase_id: null, milestone_id: null },
+  },
+  // note the caps
+  {
+    in: "potential",
     out: { phase_id: 1, subphase_id: null, milestone_id: null },
   },
   {

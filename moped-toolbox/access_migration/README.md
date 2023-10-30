@@ -96,8 +96,6 @@ $ node load.js local
 
 ### Todo
 
-- activity log for dedupe projects
-- merge v1.35.1 migrations and deploy on test
 - reasses impact of geom change on moped prod
 - after migration: fix projects impacted by geometry changes
 - after migration: facility ID 17179 after migration
@@ -108,11 +106,8 @@ $ node load.js local
 - after migration: move "School zone beacon" to not be a signal component
 - after migration: can we backfill work activity SMO links based on work activity ID?
 - prepare script to backfill council district? or enable council district?
-- load metadata from database dir—instead of backing it up?
-- john to check on unmapped project groups
-- review all the component/subcomponent and component/work type mapping
-- there are facility spatial records with multiple features within one layer and across geom types
-- search for todos :)
+- after migration: john to check on unmapped project groups
+- after migration: search for reporting todos
 - after migration: moped editor: check on weird CTN curvePath geomtries
 
 ### NW Questions

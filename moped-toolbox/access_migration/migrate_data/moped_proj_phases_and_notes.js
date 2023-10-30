@@ -16,7 +16,7 @@ const FNAME = "./data/raw/project_statusupdate.json";
 
 /* Given a status update text, find it's corresponding phase data */
 const setPhaseId = (statusUpdate) => {
-  const phaseIn = statusUpdate.ProjectPhase;
+  const phaseIn = statusUpdate.ProjectPhase.trim();
   const matchedPhase = PHASES_MAP.find((phase) => phase.in === phaseIn)?.out;
   const mopedPhaseId = matchedPhase?.phase_id || null;
   const mopedSubphaseId = matchedPhase?.subphase_id || null;
@@ -31,8 +31,10 @@ const groupByProjectAndPhase = (statusUpdates) =>
     const phaseId = statusUpdate.phase_id;
     const subphaseId = statusUpdate.subphase_id;
     if (!phaseId) {
-      // todo: think about how were handling status updates with no mapped phase
-      return grouped;
+      if (statusUpdate.ProjectPhase === "TBD") {
+        return grouped;
+      }
+      throw `Unknown phase: ${statusUpdate.ProjectPhase}`;
     }
     const key = `${phaseId}_${subphaseId || null}`;
     // create entry phase object if not exists
@@ -120,12 +122,11 @@ const getProjNotes = (statusUpdates) =>
       debugger;
       throw `User not found`;
     }
-    // todo: stop defaulting added_by
     index[projectId].push({
       project_note,
       project_note_type,
       date_created,
-      added_by_user_id: matchedUser?.user_id || 1,
+      added_by_user_id: matchedUser.user_id,
       phase_id,
     });
     return index;
