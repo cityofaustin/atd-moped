@@ -8,7 +8,11 @@ const {
 } = require("./utils/graphql");
 const { loadJsonFile, saveJsonFile } = require("./utils/loader");
 const { logger_load: logger } = require("./utils/logger");
-const { chunkArray, createProjectActivityRecords } = require("./utils/misc");
+const {
+  chunkArray,
+  createProjectActivityRecords,
+  createProjectUpdateActivityRecords,
+} = require("./utils/misc");
 
 const getMetadataFileDateString = () =>
   new Date().toLocaleDateString().replaceAll("/", "_");
@@ -205,6 +209,7 @@ async function main(env) {
   const { projectsToCreate, allProjectUpdates, allComponentUpdates } =
     loadJsonFile(projectDataFilename);
 
+  debugger;
   logger.info(`Projects to create: ${projectsToCreate.length}`);
   logger.info(`Projects to update: ${allProjectUpdates.length}`);
   logger.info(`Components to update: ${allComponentUpdates.length}`);
@@ -300,7 +305,7 @@ async function main(env) {
     } catch (error) {
       logger.error({ message: error });
       debugger;
-      throw `Cannot continue!`
+      throw `Cannot continue!`;
     }
 
     // save our progress
@@ -347,13 +352,32 @@ async function main(env) {
       });
     } catch (error) {
       logger.error({ message: error });
-      throw `Cannot continue`
+      throw `Cannot continue`;
       debugger;
       break;
     }
 
     loadingProgress.allProjectUpdates.push(project);
     saveJsonFile(projectProgressFilename, loadingProgress);
+
+    logger.info("📖 uploading activity log event...");
+
+    const activityLogRecords = createProjectActivityRecords({
+      project_id,
+      john_user_id,
+    });
+
+    try {
+      await makeHasuraRequest({
+        query: INSERT_ACTIVITY_LOG_EVENT_MUTATION,
+        variables: { objects: activityLogRecords },
+        env,
+      });
+    } catch (error) {
+      logger.error({ message: error });
+      debugger;
+      throw `Cannot continue!`;
+    }
 
     logger.info("⏳ Sleeping...");
     await new Promise((r) => setTimeout(r, 1000));
@@ -388,12 +412,37 @@ async function main(env) {
     } catch (error) {
       logger.error({ message: error });
       debugger;
-      throw `Cannot continue!`
+      throw `Cannot continue!`;
       break;
     }
 
     loadingProgress.allComponentUpdates.push(mpc);
     saveJsonFile(projectProgressFilename, loadingProgress);
+
+    logger.info("📖 uploading activity log event...");
+
+    const project_id = mpc.moped_proj_components.project_id;
+
+    if (!project_id) {
+      throw `WHOOPS`;
+    }
+    
+    const activityLogRecords = createProjectActivityRecords({
+      project_id,
+      john_user_id,
+    });
+
+    try {
+      await makeHasuraRequest({
+        query: INSERT_ACTIVITY_LOG_EVENT_MUTATION,
+        variables: { objects: activityLogRecords },
+        env,
+      });
+    } catch (error) {
+      logger.error({ message: error });
+      debugger;
+      throw `Cannot continue!`;
+    }
 
     logger.info("⏳ Sleeping...");
     await new Promise((r) => setTimeout(r, 2000));

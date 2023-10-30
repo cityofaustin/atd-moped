@@ -91,9 +91,35 @@ const createProjectActivityRecords = ({
   ];
 };
 
+const createProjectUpdateActivityRecords = ({
+  project_id,
+  john_user_id,
+}) => {
+  return [
+    {
+      record_id: project_id,
+      record_type: "moped_project_update_migration",
+      record_project_id: project_id,
+      operation_type: "UPDATE",
+      updated_by_user_id: john_user_id,
+      description: [{ newSchema: true }],
+      record_data: {
+        event: {
+          op: "UPDATE",
+          data: {
+            new: {},
+            old: null,
+          },
+        },
+      },
+    },
+  ];
+};
+
 module.exports = {
   chunkArray,
   mapRow,
   mapRowExpanded,
   createProjectActivityRecords,
+  createProjectUpdateActivityRecords,
 };
