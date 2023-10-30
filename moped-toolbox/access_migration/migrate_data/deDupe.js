@@ -91,6 +91,7 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
         const thisComponentUpdates = {
           moped_proj_components: {
             project_component_id: existingComp.project_component_id,
+            project_id: existingComp.project_id,
           },
           // other props will be added 👇
           // moped_proj_component_tags
@@ -193,9 +194,7 @@ const deDupeProjs = (projects, existingProjects, existingComponents) => {
             throw `not handled case because it doesn't exist`;
           }
         }
-
         // save component
-        // check if there's anything todo?
         allComponentUpdates.push(thisComponentUpdates);
       });
     }
