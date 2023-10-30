@@ -1,4 +1,4 @@
--- reset coponent id to max componet ID: it appears to be corrupted
+-- reset coponent id sequence to max component ID
 SELECT
     setval('moped_components_component_id_seq', (
             SELECT
