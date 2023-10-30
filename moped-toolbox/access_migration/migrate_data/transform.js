@@ -334,7 +334,7 @@ async function main(env) {
 
   logger.info("✅ Users downloaded");
 
-  if (env === "local") {
+  if (env === "pizzaa") {
     if (false) {
       /** Not necessary when running our final tests! */
       logger.info("Deleting all projects and features...");

@@ -13,7 +13,7 @@ const { chunkArray, createProjectActivityRecords } = require("./utils/misc");
 const getMetadataFileDateString = () =>
   new Date().toLocaleDateString().replaceAll("/", "_");
 
-const PROJECT_CHUNK_SIZE = 25;
+const PROJECT_CHUNK_SIZE = 15;
 
 let users;
 
@@ -200,6 +200,8 @@ async function main(env) {
 
   const projectDataFilename = `./data/ready/project_data_${env}.json`;
 
+  const projectProgressFilename = `./data/ready/project_data_in_progress_${env}.json`;
+
   const { projectsToCreate, allProjectUpdates, allComponentUpdates } =
     loadJsonFile(projectDataFilename);
 
@@ -256,6 +258,14 @@ async function main(env) {
 
   const projectChunks = chunkArray(projectsToCreate, PROJECT_CHUNK_SIZE);
 
+  // save a copy of all processed data as we go -
+  // incase we have to untangle this all
+  const loadingProgress = {
+    projectsToCreate: [],
+    allProjectUpdates: [],
+    allComponentUpdates: [],
+  };
+
   for (let i = 0; i < projectChunks.length; i++) {
     let response;
     // insert each chunk of projects
@@ -290,8 +300,12 @@ async function main(env) {
     } catch (error) {
       logger.error({ message: error });
       debugger;
-      break;
+      throw `Cannot continue!`
     }
+
+    // save our progress
+    loadingProgress.projectsToCreate.push(projectChunks[i]);
+    saveJsonFile(projectProgressFilename, loadingProgress);
 
     logger.info("⏳ Sleeping...");
     await new Promise((r) => setTimeout(r, 1000));
@@ -321,7 +335,9 @@ async function main(env) {
 
     try {
       logger.info(
-        `⬆️ ${i + 1}/${allProjectUpdates.length} - uploading project update`
+        `⬆️ ${i + 1}/${
+          allProjectUpdates.length
+        } - uploading project update for project #${project_id}`
       );
 
       response = await makeHasuraRequest({
@@ -331,9 +347,14 @@ async function main(env) {
       });
     } catch (error) {
       logger.error({ message: error });
+      throw `Cannot continue`
       debugger;
       break;
     }
+
+    loadingProgress.allProjectUpdates.push(project);
+    saveJsonFile(projectProgressFilename, loadingProgress);
+
     logger.info("⏳ Sleeping...");
     await new Promise((r) => setTimeout(r, 1000));
   }
@@ -367,10 +388,15 @@ async function main(env) {
     } catch (error) {
       logger.error({ message: error });
       debugger;
+      throw `Cannot continue!`
       break;
     }
+
+    loadingProgress.allComponentUpdates.push(mpc);
+    saveJsonFile(projectProgressFilename, loadingProgress);
+
     logger.info("⏳ Sleeping...");
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 2000));
   }
 
   logger.info("✅✅✅✅✅ Component updates complete ✅✅✅✅✅");
