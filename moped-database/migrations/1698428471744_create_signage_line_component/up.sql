@@ -1,4 +1,4 @@
--- reset coponent id sequence to max component ID
+-- reset component id sequence to max component ID
 SELECT
     setval('moped_components_component_id_seq', (
             SELECT
@@ -12,7 +12,7 @@ INSERT INTO public.moped_components (
         line_representation,
         feature_layer_id
     ) VALUES
-    ('Signage', 'linear', TRUE, 4 );
+    ('Signage', 'Linear', TRUE, 4 );
 
 -- assign available work types to it
 WITH inserts_todo AS (
