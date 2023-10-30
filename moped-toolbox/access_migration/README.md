@@ -82,9 +82,17 @@ $ node load.js local
 
 ### Recovering from failure
 
-1. Delete all migrated projects, reset ID sequences, and restore DB triggers: `rollback.sql`
+1. A copy of all data that was migrated is available at `./data/ready/project_data_in_progress_{env}.json.`
+   
+2. ☝️ Make a backup of this file before you further troubleshoot the migration.
 
-2. Restore Hasura event triggers by re-applying metadata
+3. If the failure occured during the bulk project inserts, you can safely run delete all migrated projects, reset ID sequences, and restore DB triggers: with `node rollback.js <env`.
+
+4. Restore Hasura event triggers by re-applying metadata
+
+
+5. If the failure occured during the project/component updates. You will need to inspect the `project_data_in_progress_{env}.json` and determine a course of actinon. In this case, remember also that there are activty log events to delete as well.
+
 
 ### Todo
 

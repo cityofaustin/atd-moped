@@ -209,7 +209,6 @@ async function main(env) {
   const { projectsToCreate, allProjectUpdates, allComponentUpdates } =
     loadJsonFile(projectDataFilename);
 
-  debugger;
   logger.info(`Projects to create: ${projectsToCreate.length}`);
   logger.info(`Projects to update: ${allProjectUpdates.length}`);
   logger.info(`Components to update: ${allComponentUpdates.length}`);
@@ -362,7 +361,7 @@ async function main(env) {
 
     logger.info("📖 uploading activity log event...");
 
-    const activityLogRecords = createProjectActivityRecords({
+    const activityLogRecords = createProjectUpdateActivityRecords({
       project_id,
       john_user_id,
     });
@@ -426,8 +425,8 @@ async function main(env) {
     if (!project_id) {
       throw `WHOOPS`;
     }
-    
-    const activityLogRecords = createProjectActivityRecords({
+
+    const activityLogRecords = createProjectUpdateActivityRecords({
       project_id,
       john_user_id,
     });
