@@ -11,6 +11,7 @@ import { formatProjectTypesActivity } from "./activityLogFormatters/mopedProject
 import { formatFilesActivity } from "./activityLogFormatters/mopedFilesActivity";
 import { formatContractsActivity } from "./activityLogFormatters/mopedContractsActivity";
 import { formatMigratedProjectActivity } from "./activityLogFormatters/mopedProjectMigrationActivity";
+import { formatMigratedProjectUpdateActivity } from "./activityLogFormatters/mopedProjectUpdateMigrationActivity";
 
 export const formatActivityLogEntry = (change, lookupData, projectId) => {
   const changeText = [{ text: "Project was updated", style: null }];
@@ -70,6 +71,8 @@ export const formatActivityLogEntry = (change, lookupData, projectId) => {
       return formatContractsActivity(change);
     case "moped_project_migration":
       return formatMigratedProjectActivity(change);
+    case "moped_project_update_migration":
+      return formatMigratedProjectUpdateActivity(change);
     default:
       return { changeIcon, changeText };
   }
