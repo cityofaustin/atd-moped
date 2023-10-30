@@ -66,13 +66,19 @@ $ node facility_line_matcher.js
 $ node facility_point_matcher.js
 ```
 
-4. Run the migration!
+4. Run the data transform
 
 ```shell
-$ node index.js local
+$ node transform.js local
 ```
 
-5. Open the Moped Editor to inspect projects ✨
+5. Run the loader
+
+```shell
+$ node load.js local
+```
+
+6. Open the Moped Editor to inspect projects ✨
 
 ### Recovering from failure
 
@@ -80,30 +86,17 @@ $ node index.js local
 
 2. Restore Hasura event triggers by re-applying metadata
 
-
 ### Todo
 
-- what happened to the `moped_components` id sequence? `moped_components_component_id_seq`???
-
-```
-SELECT
-    setval('moped_components_component_id_seq', (
-            SELECT
-                max(component_id) FROM moped_components));
-```
-
-- clarify: should migrate components for dupe projects? assuming answer is no unless on sheet
-- also: wtf: what does it mean to migrate a component which has a project ocmponent id on the dupe list? i am very oost
+- activity log for dedupe projects
 - logging and rollback of dedupe: just make detailed logs and hope it goes well. can reproduce/debug migration if we need to figure more detail
-- set parent project ID of existing projects to migrate projects (have to do this after migration)
+- merge v1.35.1 migrations and deploy on test
+- dedupe: facility ID 17179 after migration
+- after migration: set parent project ID of existing projects to migrate projects
 - after migration: send NW list of facility - project component/project IDs
-- merge migrations and deploy on test you fool
-- ask Andrew about weird curvePath geomtries
 - create a report of projects that have no description
-- download the latest copy of the DB :)
 - increase production ECS cpu/ram
 - decrease/tear down access test instance
-
 - reasses impact of geom change on moped prod
 - connect to test instance and double check hdb invocation logs
 - prepare script to backfill council district? or enable council district?
@@ -114,13 +107,14 @@ SELECT
   - https://docs.google.com/spreadsheets/d/1mRvElKNrswuWKga_I1iHSD4-5J9m4UsOuB8n5oyGvDs/edit#gid=1679186191
 - move "School zone beacon" to not be a signal component
 - john to check on unmapped project groups
-- work types:
-  - can we backfill SMO links based on work order ID old?
+- after migration: can we backfill work activity SMO links based on work activity ID?
 - review all the component/subcomponent and component/work type mapping
-- there are facility spatial records with multiple features within one layer and across geom types.
+- there are facility spatial records with multiple features within one layer and across geom types
 - search for todos :)
+- moped editor: check on weird CTN curvePath geomtries
 
 ### NW Questions
+
 - project personnel:
   - IF NOT DESIGNATED: USE how to handle when role is null? default role? currently falling back to "Project Support". attribute Nathan Wilkes.
 - work authorizations statusID: default to....planned? complete?
