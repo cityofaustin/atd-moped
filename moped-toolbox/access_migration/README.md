@@ -96,7 +96,6 @@ $ node load.js local
 
 ### Todo
 
-- reasses impact of geom change on moped prod
 - after migration: fix projects impacted by geometry changes
 - after migration: facility ID 17179 after migration
 - after migration: set parent project ID of existing projects to migrate projects
@@ -105,10 +104,6 @@ $ node load.js local
 - after migration: decrease/tear down access test instance
 - after migration: move "School zone beacon" to not be a signal component
 - after migration: can we backfill work activity SMO links based on work activity ID?
-- prepare script to backfill council district? or enable council district?
 - after migration: john to check on unmapped project groups
 - after migration: search for reporting todos
 - after migration: moped editor: check on weird CTN curvePath geomtries
-
-### NW Questions
-
