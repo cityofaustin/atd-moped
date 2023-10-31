@@ -445,7 +445,7 @@ async function main(env) {
     }
 
     logger.info("⏳ Sleeping...");
-    await new Promise((r) => setTimeout(r, 2000));
+    await new Promise((r) => setTimeout(r, 1000));
   }
 
   logger.info("✅✅✅✅✅ Component updates complete ✅✅✅✅✅");
