@@ -96,14 +96,13 @@ $ node load.js local
 
 ### Todo
 
-- after migration: fix projects impacted by geometry changes
-- after migration: facility ID 17179 after migration
-- after migration: set parent project ID of existing projects to migrate projects
-- after migration: send NW list of facility - project component/project IDs
-- after migration: create a report of projects that have no description
-- after migration: decrease/tear down access test instance
-- after migration: move "School zone beacon" to not be a signal component
-- after migration: can we backfill work activity SMO links based on work activity ID?
-- after migration: john to check on unmapped project groups
-- after migration: search for reporting todos
-- after migration: moped editor: check on weird CTN curvePath geomtries
+- [x] after migration: set parent project ID of existing projects to migrate projects
+  [x] after migration: send NW list of facility - project component/project IDs
+- [x] after migration: create a report of projects that have no description
+- [x] after migration: john to check on unmapped project groups
+- [x] after migration: search for reporting todos
+- [ ] after migration: fix projects impacted by geometry changes
+- [ ] after migration: facility ID 17179 after migration
+- [ ] after migration: decrease/tear down access test instance
+- [ ] after migration: move "School zone beacon" to not be a signal component
+- [ ] after migration: moped editor: check on weird CTN curvePath geomtries
