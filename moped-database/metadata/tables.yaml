@@ -4908,6 +4908,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - component_name_with_subtype
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4949,6 +4950,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - component_name_with_subtype
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4990,6 +4992,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - component_name_with_subtype
         filter: {}
         allow_aggregations: true
 - table:
