@@ -348,7 +348,11 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)));
+      filterQuery.set(
+        "filter",
+        btoa(JSON.stringify({ ...filtersNewState, isOr }))
+      );
+      console.log(filtersNewState);
       history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
       setFilterParameters(filtersNewState);
     }
@@ -373,7 +377,7 @@ const Filters = ({
    */
   const handleClearFilters = () => {
     setFilterParameters({});
-    setFilters({});
+    setFilters({ isOr: false });
     filterQuery.set("filter", btoa(JSON.stringify({})));
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
   };
@@ -414,7 +418,11 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
+    filterQuery.set(
+      "filter",
+      btoa(JSON.stringify({ ...filterParameters, isOr }))
+    );
+    console.log(filterParameters);
     history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
     setFilters(filterParameters);
     handleAdvancedSearchClose();
