@@ -1220,6 +1220,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
     - role: moped-editor
       permission:
@@ -1231,6 +1232,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
     - role: moped-viewer
       permission:
@@ -1242,6 +1244,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
 - table:
     name: moped_components_subcomponents
