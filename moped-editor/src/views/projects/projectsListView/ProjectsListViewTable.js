@@ -87,7 +87,7 @@ const DEFAULT_HIDDEN_COLS = {
   interim_project_id: true,
   children_project_ids: true,
   parent_project_id: true,
-  component_name_with_subtype: true,
+  components: true,
 };
 
 /**

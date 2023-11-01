@@ -390,8 +390,8 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
       },
       {
         title: "Components",
-        field: "component_name_with_subtype",
-        hidden: hiddenColumns["component_name_with_subtype"],
+        field: "components",
+        hidden: hiddenColumns["components"],
         emptyValue: "-",
       },
       {

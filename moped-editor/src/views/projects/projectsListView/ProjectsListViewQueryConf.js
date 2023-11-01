@@ -241,7 +241,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     parent_project_name: {
       type: "string",
     },
-    component_name_with_subtype: {
+    components: {
       type: "string",
     }
   },

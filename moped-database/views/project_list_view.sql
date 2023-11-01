@@ -52,7 +52,7 @@ AS WITH project_person_list_lookup AS (
   ), moped_proj_components_subtypes AS (
     SELECT
       mpc.project_id,
-      string_agg(DISTINCT mc.component_name_with_subtype, ', '::text) AS component_name_with_subtype
+      string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
     FROM moped_proj_components mpc 
     LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id 
     GROUP BY mpc.project_id
@@ -149,7 +149,7 @@ AS WITH project_person_list_lookup AS (
         AND ptags.project_id = mp.project_id
       GROUP BY ptags.project_id) AS project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
-    mpcs.component_name_with_subtype
+    mpcs.components
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -192,7 +192,7 @@ AS WITH project_person_list_lookup AS (
     current_phase.phase_key,
     current_phase.phase_name_simple,
     ptl.type_name,
-    mpcs.component_name_with_subtype,
+    mpcs.components,
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,
