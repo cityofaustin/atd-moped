@@ -97,4 +97,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
     label: "Has subprojects",
     filter: resolveHasSubprojects,
   },
+  components: {
+    label: "Components"
+  }
 };

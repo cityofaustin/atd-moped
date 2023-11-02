@@ -389,6 +389,12 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         emptyValue: "-",
       },
       {
+        title: "Components",
+        field: "components",
+        hidden: hiddenColumns["components"],
+        emptyValue: "-",
+      },
+      {
         title: "Parent project",
         field: "parent_project_id",
         hidden: hiddenColumns["parent_project_id"],

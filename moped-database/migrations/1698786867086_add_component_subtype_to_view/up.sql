@@ -1,4 +1,3 @@
--- latest version 1698786868086_add_component__subtype_to_view
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT

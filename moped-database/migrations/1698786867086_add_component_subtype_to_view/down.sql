@@ -1,4 +1,5 @@
--- latest version 1698786868086_add_component__subtype_to_view
+DROP VIEW project_list_view;
+
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -49,13 +50,6 @@ AS WITH project_person_list_lookup AS (
       AND mpwa.is_deleted = FALSE
   GROUP BY
       mpwa.project_id
-  ), moped_proj_components_subtypes AS (
-    SELECT
-      mpc.project_id,
-      string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
-    FROM moped_proj_components mpc 
-    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id 
-    GROUP BY mpc.project_id
   )
  SELECT
     mp.project_id,
@@ -148,8 +142,7 @@ AS WITH project_person_list_lookup AS (
         AND ptags.is_deleted = false
         AND ptags.project_id = mp.project_id
       GROUP BY ptags.project_id) AS project_tags,
-    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
-    mpcs.components
+    concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by
    FROM moped_project mp
      LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
      LEFT JOIN funding_sources_lookup fsl ON fsl.project_id = mp.project_id
@@ -163,7 +156,6 @@ AS WITH project_person_list_lookup AS (
      LEFT JOIN current_phase_view current_phase on mp.project_id = current_phase.project_id
      LEFT JOIN moped_public_process_statuses mpps ON mpps.id = mp.public_process_status_id
      LEFT JOIN child_project_lookup cpl on cpl.parent_id = mp.project_id
-     LEFT JOIN moped_proj_components_subtypes mpcs on mpcs.project_id = mp.project_id
      LEFT JOIN LATERAL
       (
         SELECT mpn.project_note, mpn.date_created
@@ -192,7 +184,6 @@ AS WITH project_person_list_lookup AS (
     current_phase.phase_key,
     current_phase.phase_name_simple,
     ptl.type_name,
-    mpcs.components,
     fsl.funding_source_name,
     added_by_user.first_name,
     added_by_user.last_name,
