@@ -1,4 +1,5 @@
 
+-- current version: 1698863094557_component_view_combined_lines
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT
@@ -72,7 +73,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                                                 feature_signals.id,
                                                 feature_signals.component_id,
                                                 (feature_signals.geography)::geometry AS geography,
-                                                ST_ExteriorRing(ST_Buffer(feature_signals.geography,.0001)::geometry) AS line_geography,
+                                                ST_ExteriorRing(ST_Buffer(feature_signals.geography,5)::geometry) AS line_geography,
                                                 feature_signals.signal_id,
                                                 NULL::integer AS length_feet
                                             FROM
@@ -94,7 +95,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                                         feature_intersections.id,
                                         feature_intersections.component_id,
                                         (feature_intersections.geography)::geometry AS geography,
-                                        ST_ExteriorRing(ST_Buffer(feature_intersections.geography,.0001)::geometry) AS line_geography,
+                                        ST_ExteriorRing(ST_Buffer(feature_intersections.geography,5)::geometry) AS line_geography,
                                         NULL::integer AS signal_id,
                                         NULL::integer AS length_feet
                                     FROM
@@ -105,7 +106,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                                     feature_drawn_points.id,
                                     feature_drawn_points.component_id,
                                     (feature_drawn_points.geography)::geometry AS geography,
-                                    ST_ExteriorRing(ST_Buffer(feature_drawn_points.geography,.0001)::geometry) AS line_geography,
+                                    ST_ExteriorRing(ST_Buffer(feature_drawn_points.geography,5)::geometry) AS line_geography,
                                     NULL::integer AS signal_id,
                                     NULL::integer AS length_feet
                                 FROM
