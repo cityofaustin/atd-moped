@@ -1,4 +1,3 @@
-
 -- current version: 1698863094557_component_view_combined_lines
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
