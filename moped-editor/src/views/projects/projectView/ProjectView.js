@@ -209,6 +209,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
+    fetchPolicy: "no-cache",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;
