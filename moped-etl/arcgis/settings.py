@@ -1,6 +1,6 @@
 UPLOAD_CHUNK_SIZE = 100
 
-LAYER_IDS = {"points": 0, "lines": 1}
+LAYER_IDS = {"points": 0, "lines": 1, "combined": 1}
 
 COMPONENTS_QUERY = """
 query {
@@ -28,6 +28,7 @@ query {
     feature_ids
     funding_source_name
     geometry
+    line_geometry
     interim_project_component_id
     interim_project_id
     is_project_component_deleted
