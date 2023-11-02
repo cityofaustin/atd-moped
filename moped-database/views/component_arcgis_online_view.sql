@@ -13,7 +13,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         comp_geography.length_feet_total,
         mc.component_name,
         mc.component_subtype,
-        ((mc.component_name || ' - '::text) || mc.component_subtype) AS component_name_full,
+        mc.component_name_full,
         subcomponents.subcomponents,
         work_types.work_types,
         component_tags.component_tags,
