@@ -77,6 +77,15 @@ export const resolveHasSubprojects = (array) => {
   return "No";
 };
 
+const filterComponentFullNames = (value) => {
+  const componentNamesArray = value.components.split(",");
+  return componentNamesArray.map((comp) => (
+    <span key={comp} style={{ display: "block" }}>
+      {comp}
+    </span>
+  ));
+};
+
 /**
  * Various custom components for Material Table
  */
@@ -387,6 +396,13 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         field: "interim_project_id",
         hidden: hiddenColumns["interim_project_id"],
         emptyValue: "-",
+      },
+      {
+        title: "Components",
+        field: "components",
+        hidden: hiddenColumns["components"],
+        emptyValue: "-",
+        render: (entry) => filterComponentFullNames(entry),
       },
       {
         title: "Parent project",
