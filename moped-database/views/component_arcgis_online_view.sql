@@ -1,3 +1,5 @@
+-- latest version 1699044835114_change_contractor_column_name
+
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT

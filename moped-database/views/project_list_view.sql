@@ -1,4 +1,6 @@
--- latest version 1698786868086_add_component__subtype_to_view
+-- latest version 1699044835114_change_contractor_column_name
+DROP VIEW project_list_view CASCADE;
+
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
