@@ -337,7 +337,7 @@ const Filters = ({
     const filtersValue = filterQuery.get("filter");
     const isOrValue = filterQuery.get("isOr") || false;
 
-    if (filters) {
+    if (filtersValue) {
       history.push(`${queryPath}?filter=${filtersValue}&isOr=${isOrValue}`);
     }
   };
@@ -383,8 +383,10 @@ const Filters = ({
   const handleClearFilters = () => {
     setFilterParameters({});
     setFilters({});
+    setIsOr(false);
     filterQuery.delete("filter");
     filterQuery.delete("isOr");
+    history.push(queryPath);
   };
 
   /**
@@ -448,10 +450,11 @@ const Filters = ({
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
       setFilters(filterParameters);
+      handleClearFilters();
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       generateEmptyFilter();
     }
-  }, [filterParameters, setFilters, generateEmptyFilter]);
+  }, [filterParameters, setFilters, generateEmptyFilter, handleClearFilters]);
 
   /**
    * This side effect monitors whether the user has added a complete filter
