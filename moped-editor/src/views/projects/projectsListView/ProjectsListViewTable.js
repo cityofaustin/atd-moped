@@ -239,7 +239,7 @@ const ProjectsListViewTable = () => {
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
     if (storedConfig) {
-      setHiddenColumns(storedConfig);
+      setHiddenColumns({...DEFAULT_HIDDEN_COLS, ...storedConfig });
     }
   }, [data]);
 
