@@ -65,10 +65,14 @@ const makeAdvancedSearchWhereFilters = (filters) =>
     .filter((value) => value !== null);
 
 export const useAdvancedSearch = () => {
-  const [isOr, setIsOr] = useState(false);
-
+  /* Get advanced filters settings from search params if they exist */
   const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(filterQuery);
+
+  /* Determine or/any from search params if it exists */
+  const isOrFromSearchParams = filterQuery.get("isOr");
+  const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
+  const [isOr, setIsOr] = useState(initialIsOrState);
 
   /**
    * Stores filters assigned random id and nests column, operator, and value.
