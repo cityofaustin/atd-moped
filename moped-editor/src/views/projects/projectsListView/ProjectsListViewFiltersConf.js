@@ -367,6 +367,17 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "array",
       operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
     },
+    {
+      name: "components",
+      label: "Components",
+      placeholder: "component",
+      type: "string",
+      operators: [
+        "string_contains_case_insensitive",
+        "string_is_null",
+        "string_is_not_null",
+      ],
+    },
   ],
 
   operators: {
