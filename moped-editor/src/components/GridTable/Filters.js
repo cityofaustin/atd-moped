@@ -333,6 +333,15 @@ const Filters = ({
     generateEmptyFilter();
   };
 
+  const pushFilterParamsToHistory = () => {
+    const filtersValue = filterQuery.get("filter");
+    const isOrValue = filterQuery.get("isOr") || false;
+
+    if (filters) {
+      history.push(`${queryPath}?filter=${filtersValue}&isOr=${isOrValue}`);
+    }
+  };
+
   /**
    * Deletes a filter from the state
    * @param {string} filterId - The UUID of the filter to be deleted
@@ -349,7 +358,7 @@ const Filters = ({
     } finally {
       // Finally, reset the state
       filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)));
-      history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
+      pushFilterParamsToHistory();
       setFilterParameters(filtersNewState);
     }
   };
@@ -374,8 +383,8 @@ const Filters = ({
   const handleClearFilters = () => {
     setFilterParameters({});
     setFilters({});
-    filterQuery.set("filter", btoa(JSON.stringify({})));
-    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
+    filterQuery.delete("filter");
+    filterQuery.delete("isOr");
   };
 
   /**
@@ -415,7 +424,7 @@ const Filters = ({
    */
   const handleApplyButtonClick = () => {
     filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
-    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
+    pushFilterParamsToHistory();
     setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
@@ -466,6 +475,7 @@ const Filters = ({
     setIsOr(isOr);
 
     filterQuery.set("isOr", isOr);
+    pushFilterParamsToHistory();
   };
 
   return (
