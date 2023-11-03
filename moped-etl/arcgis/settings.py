@@ -1,6 +1,6 @@
 UPLOAD_CHUNK_SIZE = 100
 
-LAYER_IDS = {"points": 0, "lines": 1, "combined": 1}
+LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
 
 COMPONENTS_QUERY = """
 query {
