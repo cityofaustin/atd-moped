@@ -1223,6 +1223,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
     - role: moped-editor
       permission:
@@ -1234,6 +1235,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
     - role: moped-viewer
       permission:
@@ -1245,6 +1247,7 @@
           - line_representation
           - feature_layer_id
           - asset_feature_layer_id
+          - component_name_full
         filter: {}
 - table:
     name: moped_components_subcomponents
@@ -4911,6 +4914,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - components
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -4952,6 +4956,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - components
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -4993,6 +4998,7 @@
           - updated_at
           - knack_project_id
           - project_note_date_created
+          - components
         filter: {}
         allow_aggregations: true
 - table:
