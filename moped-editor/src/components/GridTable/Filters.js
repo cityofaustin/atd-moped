@@ -461,6 +461,13 @@ const Filters = ({
     });
   }, [filterParameters]);
 
+  const handleAndOrToggle = (e) => {
+    const isOr = e.target.value === "any";
+    setIsOr(isOr);
+
+    filterQuery.set("isOr", isOr);
+  };
+
   return (
     <Grid>
       <Grid container className={classes.gridItemPadding}>
@@ -476,7 +483,7 @@ const Filters = ({
             size="small"
             value={isOr ? "any" : "all"}
             exclusive
-            onChange={(e) => setIsOr(e.target.value === "any")}
+            onChange={handleAndOrToggle}
             aria-label="And or toggle"
           >
             <ToggleButton value="all">all</ToggleButton>
