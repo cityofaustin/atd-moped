@@ -338,13 +338,13 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         emptyValue: "-",
       },
       {
-        title: "Contractors",
-        field: "contractors",
-        hidden: hiddenColumns["contractors"],
+        title: "Workgroup/Contractors",
+        field: "workgroup_contractors",
+        hidden: hiddenColumns["workgroup_contractors"],
         emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
         render: (entry) => {
-          return entry.contractors.split(",").map((contractor, i) => (
+          return entry.workgroup_contractors.split(",").map((contractor, i) => (
             <span key={i} style={{ display: "block" }}>
               {contractor}
             </span>

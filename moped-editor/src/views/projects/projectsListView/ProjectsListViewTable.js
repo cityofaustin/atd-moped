@@ -79,7 +79,7 @@ const DEFAULT_HIDDEN_COLS = {
   completion_end_date: true,
   project_inspector: true,
   project_designer: true,
-  contractors: true,
+  workgroup_contractors: true,
   contract_numbers: true,
   project_tags: true,
   added_by: true,

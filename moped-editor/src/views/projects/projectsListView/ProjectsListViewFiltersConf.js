@@ -272,9 +272,9 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "contractors",
-      label: "Contractors",
-      placeholder: "Contractor",
+      name: "workgroup_contractors",
+      label: "Workgroup/Contractors",
+      placeholder: "Workgroup or Contractor",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
