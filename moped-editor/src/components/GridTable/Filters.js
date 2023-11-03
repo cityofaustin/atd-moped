@@ -380,14 +380,14 @@ const Filters = ({
   /**
    * Clears the filters
    */
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setFilterParameters({});
     setFilters({});
     setIsOr(false);
     filterQuery.delete("filter");
     filterQuery.delete("isOr");
     history.push(queryPath);
-  };
+  }, [filterQuery, history, queryPath, setFilters, setIsOr]);
 
   /**
    * Returns an array of strings containing messages about the filters.
