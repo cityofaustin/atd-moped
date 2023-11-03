@@ -28,7 +28,7 @@
           - component_tags
           - component_url
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -87,7 +87,7 @@
           - component_tags
           - component_url
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -146,7 +146,7 @@
           - component_tags
           - component_url
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -4880,7 +4880,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -4922,7 +4922,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -4964,7 +4964,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
-          - contractors
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
