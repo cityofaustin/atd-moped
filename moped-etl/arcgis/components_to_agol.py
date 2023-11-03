@@ -82,6 +82,12 @@ def main():
             esri_geometry_key=esri_geometry_key, geometry=geometry, attributes=component
         )
 
+        # adds a special `source_geometry_type` column that will be useful on the `combined` layer
+        # so that we can keep track of if the original feature was a point or line geometry
+        feature["attributes"]["source_geometry_type"] = (
+            "point" if esri_geometry_key == "points" else "line"
+        )
+
         if not feature:
             continue
 
