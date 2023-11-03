@@ -51,8 +51,6 @@ const useStyles = makeStyles((theme) => ({
 const ProjectNameEditable = (props) => {
   const classes = useStyles();
 
-  console.log("this is Project Name Editable, props.projectName: ", props.projectName)
-
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
     message: null,
