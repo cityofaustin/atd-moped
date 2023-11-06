@@ -140,14 +140,8 @@ const ProjectsListViewTable = () => {
     queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
   });
 
-  const {
-    filterQuery,
-    filters,
-    setFilters,
-    advancedSearchWhereString,
-    isOr,
-    setIsOr,
-  } = useAdvancedSearch();
+  const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
+    useAdvancedSearch();
 
   const linkStateFilters = useMemo(() => {
     return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
@@ -264,7 +258,6 @@ const ProjectsListViewTable = () => {
           parentData={data}
           filters={filters}
           setFilters={setFilters}
-          filterQuery={filterQuery}
           advancedSearchAnchor={advancedSearchAnchor}
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           searchTerm={searchTerm}

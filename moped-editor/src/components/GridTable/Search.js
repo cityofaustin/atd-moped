@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { createBrowserHistory } from "history";
+import { useSearchParams } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -97,6 +97,7 @@ const Search = ({
    */
   const handleSwitchToSearch = () => {
     setFilters({});
+    setIsOr(false);
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete("filters");
       return prevSearchParams;
@@ -147,6 +148,7 @@ const Search = ({
                 setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
                 isOr={isOr}
+                handleSwitchToSearch={handleSwitchToSearch}
               />
             </Grid>
             <Grid

@@ -1,27 +1,22 @@
 import { useState, useMemo } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
-
-const useFilterQuery = (locationSearch) =>
-  useMemo(() => {
-    return new URLSearchParams(locationSearch);
-  }, [locationSearch]);
+import { useSearchParams } from "react-router-dom";
 
 /**
  * if filter exists in url, decodes base64 string and returns as object
  * Used to initialize filter state
  * @return Object
  */
-const useMakeFilterState = (filterQuery) =>
+const useMakeFilterState = (searchParams) =>
   useMemo(() => {
-    if (Array.from(filterQuery).length > 0) {
+    if (Array.from(searchParams).length > 0) {
       try {
-        return JSON.parse(atob(filterQuery.get("filter")));
+        return JSON.parse(atob(searchParams.get("filter")));
       } catch {
         return {};
       }
     }
     return {};
-  }, [filterQuery]);
+  }, [searchParams]);
 
 /**
  * Build an array of filter strings to be used in generating the advanced search where string
@@ -67,7 +62,6 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
   let [searchParams] = useSearchParams();
-  const filterQuery = useFilterQuery(useLocation().search);
   const initialFilterState = useMakeFilterState(searchParams);
 
   /* Determine or/any from search params if it exists */
@@ -98,7 +92,6 @@ export const useAdvancedSearch = () => {
   }, [filters, isOr]);
 
   return {
-    filterQuery,
     filters,
     setFilters,
     advancedSearchWhereString,

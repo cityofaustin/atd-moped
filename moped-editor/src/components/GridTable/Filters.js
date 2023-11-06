@@ -168,8 +168,8 @@ const Filters = ({
 
   /* First filter is an empty placeholder so we check for more than one filter */
   const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
-  const isFirstFilterComplete =
-    Object.keys(filterParameters).length === 1 && filterComplete;
+  const isFirstFilterIncomplete =
+    Object.keys(filterParameters).length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
     // Generate a random UUID string
@@ -486,15 +486,15 @@ const Filters = ({
 
   return (
     <Grid>
-      {areMoreThanOneFilters ? (
-        <Grid container className={classes.gridItemPadding}>
-          <Grid
-            item
-            xs={6}
-            className={classes.filtersContainer}
-            display="flex"
-            justifyContent="flex-start"
-          >
+      <Grid container className={classes.gridItemPadding}>
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-start"
+        >
+          {areMoreThanOneFilters ? (
             <RadioGroup
               row
               value={isOr ? "any" : "all"}
@@ -519,24 +519,25 @@ const Filters = ({
                 }
               />
             </RadioGroup>
-          </Grid>
-          <Grid
-            item
-            xs={6}
-            className={classes.filtersContainer}
-            display="flex"
-            justifyContent="flex-end"
-          >
-            <IconButton
-              onClick={handleAdvancedSearchClose}
-              className={classes.closeButton}
-              size="large"
-            >
-              <Icon fontSize={"small"}>close</Icon>
-            </IconButton>
-          </Grid>
+          ) : null}
         </Grid>
-      ) : null}
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <IconButton
+            onClick={handleAdvancedSearchClose}
+            className={classes.closeButton}
+            size="large"
+          >
+            <Icon fontSize={"small"}>close</Icon>
+          </IconButton>
+        </Grid>
+      </Grid>
+
       {Object.keys(filterParameters).map((filterId) => {
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
@@ -697,7 +698,7 @@ const Filters = ({
               <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={!isFirstFilterComplete}
+                    disabled={isFirstFilterIncomplete}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                     size="large"
@@ -709,7 +710,7 @@ const Filters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={!isFirstFilterComplete}
+                    disabled={isFirstFilterIncomplete}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"

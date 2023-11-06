@@ -77,6 +77,7 @@ const SearchBar = ({
   setSearchTerm,
   queryConfig,
   isOr,
+  handleSwitchToSearch,
 }) => {
   const classes = useStyles();
 
@@ -112,6 +113,9 @@ const SearchBar = ({
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
+
+    // Clear the advanced search filters
+    handleSwitchToSearch();
 
     // Update state if we are ready, triggers search.
     setSearchTerm(searchFieldValue);
