@@ -12,7 +12,7 @@ from utils import (
 )
 
 
-def get_geometry_key(geometry):
+def get_esri_geometry_key(geometry):
     """Identify the name of the geometry property that will hold coordinate data in an
     Esri feature object.
 
@@ -27,32 +27,31 @@ def get_geometry_key(geometry):
     return "points" if geometry["type"] == "MultiPoint" else "paths"
 
 
-def make_esri_feature(*, geometry, **attributes):
+def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     """Create an Esri feature object that can be uploaded to the AGOL REST API.
 
     See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
 
     Args:
-        geometry (Dict): A geojson geometry object, such as one returned from our
+        esri_geometry_key (str): `paths` or `points`: see the `get_esri_geometry_key` docstring
+        geometry (dict): A geojson geometry object, such as one returned from our
             component view in Moped
-        attribute (Dict): Any additional properties to be included as feature attributes
+        attribute (dict): Any additional properties to be included as feature attributes
 
     Returns:
-        Dict: An Esri feature object
-        Bool: if the feature is a point feature type
+        dict: An Esri feature object
     """
     if not geometry:
         return None, None
 
-    geometry_key = get_geometry_key(geometry)
     feature = {
         "attributes": attributes,
         "geometry": {
             "spatialReference": {"wkid": 4326},
         },
     }
-    feature["geometry"][geometry_key] = geometry["coordinates"]
-    return feature, geometry_key == "points"
+    feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    return feature
 
 
 def main():
@@ -65,19 +64,49 @@ def main():
     logger.info(f"{len(data)} component records to process")
 
     # lines and points must be stored in different layers in AGOL
-    all_features = {"lines": [], "points": []}
+    all_features = {"lines": [], "points": [], "combined": []}
 
     for component in data:
-        feature, is_point_feature = make_esri_feature(**component)
+        # extract geometry and line geometry from component data
+        # for line features, the line geometry is redundant/identical to geometry
+        # for point features, it is the buffered ring around the point as defined
+        # in the Moped component view
+        geometry = component.pop("geometry")
+        line_geometry = component.pop("line_geometry")
+
+        if not geometry:
+            continue
+
+        esri_geometry_key = get_esri_geometry_key(geometry)
+        feature = make_esri_feature(
+            esri_geometry_key=esri_geometry_key, geometry=geometry, attributes=component
+        )
+
+        # adds a special `source_geometry_type` column that will be useful on the `combined` layer
+        # so that we can keep track of if the original feature was a point or line geometry
+        feature["attributes"]["source_geometry_type"] = (
+            "point" if esri_geometry_key == "points" else "line"
+        )
+
         if not feature:
             continue
 
-        if is_point_feature:
+        if esri_geometry_key == "points":
             all_features["points"].append(feature)
+            # create the point -> line feature
+            if line_geometry["type"] == "LineString":
+                # if we're converting a single point to a line, we need to convert that line geom to
+                # a multi-line geometry
+                line_geometry["coordinates"] = [line_geometry["coordinates"]]
+            line_feature = make_esri_feature(
+                esri_geometry_key="paths", geometry=line_geometry, attributes=component
+            )
+            all_features["combined"].append(line_feature)
         else:
             all_features["lines"].append(feature)
+            all_features["combined"].append(feature)
 
-    for feature_type in ["points", "lines"]:
+    for feature_type in ["points", "lines", "combined"]:
         logger.info(f"Processing {feature_type} features...")
         features = all_features[feature_type]
 

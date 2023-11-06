@@ -1,5 +1,3 @@
--- current version 1699044835114_change_contractor_column_name
-
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
@@ -53,7 +51,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_inspector, 
         plv.project_designer, 
         plv.project_tags, 
-        plv.workgroup_contractors, 
+        plv.contractors, 
         plv.contract_numbers, 
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text as project_url, 
