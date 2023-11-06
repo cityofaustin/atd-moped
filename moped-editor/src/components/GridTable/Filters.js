@@ -337,7 +337,6 @@ const Filters = ({
   const handleAddFilterButtonClick = () => {
     generateEmptyFilter();
   };
-  console.log(isOr);
 
   /**
    * Deletes a filter from the state
