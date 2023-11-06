@@ -17,12 +17,13 @@ import {
   IconButton,
   Grow,
 } from "@mui/material";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import makeStyles from "@mui/styles/makeStyles";
 
 import { Autocomplete } from "@mui/material";
-import { ToggleButton } from "@mui/material";
-import { ToggleButtonGroup } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
 
@@ -481,44 +482,62 @@ const Filters = ({
     pushFilterParamsToHistory();
   };
 
+  console.log(filterParameters);
+
   return (
     <Grid>
-      <Grid container className={classes.gridItemPadding}>
-        <Grid
-          item
-          xs={6}
-          className={classes.filtersContainer}
-          display="flex"
-          justifyContent="flex-start"
-        >
-          <ToggleButtonGroup
-            color="primary"
-            size="small"
-            value={isOr ? "any" : "all"}
-            exclusive
-            onChange={handleAndOrToggle}
-            aria-label="And or toggle"
+      {/* First filter is an empty placeholder so we check for more than one filter */}
+      {Object.keys(filterParameters).length > 1 ? (
+        <Grid container className={classes.gridItemPadding}>
+          <Grid
+            item
+            xs={6}
+            className={classes.filtersContainer}
+            display="flex"
+            justifyContent="flex-start"
           >
-            <ToggleButton value="all">all</ToggleButton>
-            <ToggleButton value="any">any</ToggleButton>
-          </ToggleButtonGroup>
-        </Grid>
-        <Grid
-          item
-          xs={6}
-          className={classes.filtersContainer}
-          display="flex"
-          justifyContent="flex-end"
-        >
-          <IconButton
-            onClick={handleAdvancedSearchClose}
-            className={classes.closeButton}
-            size="large"
+            <RadioGroup
+              row
+              value={isOr ? "any" : "all"}
+              onChange={handleAndOrToggle}
+            >
+              <FormControlLabel
+                value="all"
+                control={<Radio />}
+                label={
+                  <span>
+                    Match <strong>all</strong> filters
+                  </span>
+                }
+              />
+              <FormControlLabel
+                value="any"
+                control={<Radio />}
+                label={
+                  <span>
+                    Match <strong>any</strong> filters
+                  </span>
+                }
+              />
+            </RadioGroup>
+          </Grid>
+          <Grid
+            item
+            xs={6}
+            className={classes.filtersContainer}
+            display="flex"
+            justifyContent="flex-end"
           >
-            <Icon fontSize={"small"}>close</Icon>
-          </IconButton>
+            <IconButton
+              onClick={handleAdvancedSearchClose}
+              className={classes.closeButton}
+              size="large"
+            >
+              <Icon fontSize={"small"}>close</Icon>
+            </IconButton>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : null}
       {Object.keys(filterParameters).map((filterId) => {
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
