@@ -161,6 +161,9 @@ const Filters = ({
    */
   const [filterParameters, setFilterParameters] = useState(filters);
 
+  /* Track toggle value so we update the query value in handleApplyButtonClick */
+  const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
+
   /**
    * Tracks whether the user has added a complete filter
    */
@@ -424,10 +427,11 @@ const Filters = ({
   const handleApplyButtonClick = () => {
     setSearchParams((prevSearchParams) => {
       prevSearchParams.set("filter", btoa(JSON.stringify(filterParameters)));
-      prevSearchParams.set("isOr", isOr);
+      prevSearchParams.set("isOr", isOrToggleValue);
       return prevSearchParams;
     });
 
+    setIsOr(isOrToggleValue);
     setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
@@ -476,12 +480,7 @@ const Filters = ({
 
   const handleAndOrToggle = (e) => {
     const isOr = e.target.value === "any";
-    setIsOr(isOr);
-
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.set("isOr", isOr);
-      return prevSearchParams;
-    });
+    setIsOrToggleValue(isOr);
   };
 
   return (
@@ -497,7 +496,7 @@ const Filters = ({
           {areMoreThanOneFilters ? (
             <RadioGroup
               row
-              value={isOr ? "any" : "all"}
+              value={isOrToggleValue ? "any" : "all"}
               onChange={handleAndOrToggle}
             >
               <FormControlLabel
