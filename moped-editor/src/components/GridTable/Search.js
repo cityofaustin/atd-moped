@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { createBrowserHistory } from "history";
-import { useLocation } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -53,8 +52,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const history = createBrowserHistory();
-
 /**
  * Renders a table search component with a search bar and search filters
  * @param {Object} filters - The current filters from useAdvancedSearch hook
@@ -73,7 +70,6 @@ const history = createBrowserHistory();
 const Search = ({
   filters,
   setFilters,
-  filterQuery,
   parentData = null,
   advancedSearchAnchor,
   setAdvancedSearchAnchor,
@@ -86,7 +82,7 @@ const Search = ({
   setIsOr,
 }) => {
   const classes = useStyles();
-  const queryPath = useLocation().pathname;
+  let [, setSearchParams] = useSearchParams();
   const divRef = React.useRef();
 
   /**
@@ -101,8 +97,10 @@ const Search = ({
    */
   const handleSwitchToSearch = () => {
     setFilters({});
-    filterQuery.delete("filter");
-    history.replace(`${queryPath}?`);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete("filters");
+      return prevSearchParams;
+    });
   };
 
   /**
@@ -190,8 +188,6 @@ const Search = ({
           <Filters
             filters={filters}
             setFilters={setFilters}
-            filterQuery={filterQuery}
-            history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}
             setSearchFieldValue={setSearchFieldValue}
