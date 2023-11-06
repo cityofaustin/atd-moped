@@ -483,11 +483,14 @@ const Filters = ({
   };
 
   console.log(filterParameters);
+  /* First filter is an empty placeholder so we check for more than one filter */
+  const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
+  const isFirstFilterComplete =
+    Object.keys(filterParameters).length === 1 && filterComplete;
 
   return (
     <Grid>
-      {/* First filter is an empty placeholder so we check for more than one filter */}
-      {Object.keys(filterParameters).length > 1 ? (
+      {areMoreThanOneFilters ? (
         <Grid container className={classes.gridItemPadding}>
           <Grid
             item
@@ -698,10 +701,7 @@ const Filters = ({
               <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={
-                      Object.keys(filterParameters).length === 1 &&
-                      !filterComplete
-                    }
+                    disabled={!isFirstFilterComplete}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                     size="large"
@@ -713,10 +713,7 @@ const Filters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={
-                      Object.keys(filterParameters).length === 1 &&
-                      !filterComplete
-                    }
+                    disabled={!isFirstFilterComplete}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
@@ -746,17 +743,15 @@ const Filters = ({
           </Button>
         </Grid>
         <Grid item xs={12} md={1}>
-          {Object.keys(filterParameters).length > 0 && (
-            <Button
-              className={classes.bottomButton}
-              fullWidth
-              variant="outlined"
-              startIcon={<BackspaceOutlinedIcon />}
-              onClick={handleClearFilters}
-            >
-              Reset
-            </Button>
-          )}
+          <Button
+            className={classes.bottomButton}
+            fullWidth
+            variant="outlined"
+            startIcon={<BackspaceOutlinedIcon />}
+            onClick={handleClearFilters}
+          >
+            Reset
+          </Button>
         </Grid>
         <Hidden mdDown>
           <Grid item xs={12} md={7}>
@@ -764,20 +759,18 @@ const Filters = ({
           </Grid>
         </Hidden>
         <Grid item xs={12} md={2}>
-          {Object.keys(filterParameters).length > 0 && (
-            <Grow in={handleApplyValidation() === null}>
-              <Button
-                fullWidth
-                className={classes.applyButton}
-                variant="contained"
-                color="primary"
-                startIcon={<Icon>search</Icon>}
-                onClick={handleApplyButtonClick}
-              >
-                Search
-              </Button>
-            </Grow>
-          )}
+          <Grow in={handleApplyValidation() === null}>
+            <Button
+              fullWidth
+              className={classes.applyButton}
+              variant="contained"
+              color="primary"
+              startIcon={<Icon>search</Icon>}
+              onClick={handleApplyButtonClick}
+            >
+              Search
+            </Button>
+          </Grow>
         </Grid>
       </Grid>
     </Grid>
