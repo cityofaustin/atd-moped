@@ -99,3 +99,53 @@ export const useAdvancedSearch = () => {
     setIsOr,
   };
 };
+
+// query ProjectListView {
+//   project_list_view(
+//     limit: 100
+//     offset: 0
+//     order_by: {updated_at: desc}
+//     where: {_and: [{project_team_members: {_ilike: "%cecily%"}}, {project_team_members: {_ilike: "%nathan%"}}]}
+//   ) {
+//     project_id
+//     project_name
+//     project_description
+//     current_phase
+//     current_phase_key
+//     project_team_members
+//     project_lead
+//     project_sponsor
+//     project_partner
+//     ecapris_subproject_id
+//     updated_at
+//     public_process_status
+//     task_orders
+//     task_order_names
+//     project_feature
+//     type_name
+//     funding_source_name
+//     project_note
+//     construction_start_date
+//     completion_end_date
+//     project_inspector
+//     project_designer
+//     contractors
+//     contract_numbers
+//     project_tags
+//     added_by
+//     interim_project_id
+//     children_project_ids
+//     parent_project_id
+//     parent_project_name
+//     __typename
+//   }
+//   project_list_view_aggregate(
+//     where: {_and: [{project_team_members: {_ilike: "%cecily%"}}, {project_team_members: {_ilike: "%nathan%"}}]}
+//   ) {
+//     aggregate {
+//       count
+//       __typename
+//     }
+//     __typename
+//   }
+// }
