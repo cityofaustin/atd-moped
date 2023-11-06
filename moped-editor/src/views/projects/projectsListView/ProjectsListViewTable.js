@@ -87,6 +87,7 @@ const DEFAULT_HIDDEN_COLS = {
   interim_project_id: true,
   children_project_ids: true,
   parent_project_id: true,
+  components: true,
 };
 
 /**
@@ -238,7 +239,7 @@ const ProjectsListViewTable = () => {
   useEffect(() => {
     const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
     if (storedConfig) {
-      setHiddenColumns(storedConfig);
+      setHiddenColumns({...DEFAULT_HIDDEN_COLS, ...storedConfig });
     }
   }, [data]);
 

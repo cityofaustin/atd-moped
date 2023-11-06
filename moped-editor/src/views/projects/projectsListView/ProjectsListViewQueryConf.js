@@ -241,6 +241,9 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     parent_project_name: {
       type: "string",
     },
+    components: {
+      type: "string",
+    }
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
