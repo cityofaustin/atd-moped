@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
@@ -123,8 +123,6 @@ const generateEmptyField = (uuid) => {
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
- * @param {Object} filterQuery - The current filter query string from useAdvancedSearch hook
- * @param {Object} history - The history to update query string parameters
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
  * @param {Function} setSearchFieldValue - Used to set the search field value
@@ -135,8 +133,6 @@ const generateEmptyField = (uuid) => {
 const Filters = ({
   filters,
   setFilters,
-  filterQuery,
-  history,
   handleAdvancedSearchClose,
   filtersConfig,
   setSearchFieldValue,
@@ -150,7 +146,7 @@ const Filters = ({
    * @default
    */
   const classes = useStyles();
-  const queryPath = useLocation().pathname;
+  let [, setSearchParams] = useSearchParams();
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
@@ -169,6 +165,11 @@ const Filters = ({
    * Tracks whether the user has added a complete filter
    */
   const [filterComplete, setFilterComplete] = useState(false);
+
+  /* First filter is an empty placeholder so we check for more than one filter */
+  const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
+  const isFirstFilterComplete =
+    Object.keys(filterParameters).length === 1 && filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
     // Generate a random UUID string
@@ -334,15 +335,6 @@ const Filters = ({
     generateEmptyFilter();
   };
 
-  const pushFilterParamsToHistory = () => {
-    const filtersValue = filterQuery.get("filter");
-    const isOrValue = filterQuery.get("isOr") || false;
-
-    if (filtersValue) {
-      history.push(`${queryPath}?filter=${filtersValue}&isOr=${isOrValue}`);
-    }
-  };
-
   /**
    * Deletes a filter from the state
    * @param {string} filterId - The UUID of the filter to be deleted
@@ -358,8 +350,10 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)));
-      pushFilterParamsToHistory();
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set("filter", btoa(JSON.stringify(filtersNewState)));
+        return prevSearchParams;
+      });
       setFilterParameters(filtersNewState);
     }
   };
@@ -385,10 +379,12 @@ const Filters = ({
     setFilterParameters({});
     setFilters({});
     setIsOr(false);
-    filterQuery.delete("filter");
-    filterQuery.delete("isOr");
-    history.push(queryPath);
-  }, [filterQuery, history, queryPath, setFilters, setIsOr]);
+
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete("filter");
+      prevSearchParams.delete("isOr");
+    });
+  }, [setSearchParams, setFilters, setIsOr]);
 
   /**
    * Returns an array of strings containing messages about the filters.
@@ -426,8 +422,12 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
-    pushFilterParamsToHistory();
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set("filter", btoa(JSON.stringify(filterParameters)));
+      prevSearchParams.set("isOr", isOr);
+      return prevSearchParams;
+    });
+
     setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
@@ -478,15 +478,11 @@ const Filters = ({
     const isOr = e.target.value === "any";
     setIsOr(isOr);
 
-    filterQuery.set("isOr", isOr);
-    pushFilterParamsToHistory();
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set("isOr", isOr);
+      return prevSearchParams;
+    });
   };
-
-  console.log(filterParameters);
-  /* First filter is an empty placeholder so we check for more than one filter */
-  const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
-  const isFirstFilterComplete =
-    Object.keys(filterParameters).length === 1 && filterComplete;
 
   return (
     <Grid>

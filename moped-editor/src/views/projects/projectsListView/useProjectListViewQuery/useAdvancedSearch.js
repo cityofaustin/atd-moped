@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 
 const useFilterQuery = (locationSearch) =>
   useMemo(() => {
@@ -66,11 +66,12 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
 export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
+  let [searchParams] = useSearchParams();
   const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
+  const initialFilterState = useMakeFilterState(searchParams);
 
   /* Determine or/any from search params if it exists */
-  const isOrFromSearchParams = filterQuery.get("isOr");
+  const isOrFromSearchParams = searchParams.get("isOr");
   const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
   const [isOr, setIsOr] = useState(initialIsOrState);
 
