@@ -53,7 +53,6 @@ const ProjectTimeline = (props) => {
                 loading={loading}
                 data={data}
                 refetch={refetch}
-                projectViewRefetch={projectViewRefetch}
               />
             </Box>
           </Grid>
