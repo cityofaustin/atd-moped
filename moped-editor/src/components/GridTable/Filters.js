@@ -472,10 +472,19 @@ const Filters = ({
    */
   useEffect(() => {
     Object.keys(filterParameters).forEach((filterKey) => {
+      console.log(filterParameters);
+      const operatorsWithoutSearchValue = [
+        "string_is_null",
+        "string_is_not_null",
+        "string_is_not_null_special_case",
+        "string_is_null_special_case",
+      ];
+
       if (
         !!filterParameters[filterKey].value ||
-        filterParameters[filterKey].operator === "string_is_null" ||
-        filterParameters[filterKey].operator === "string_is_not_null"
+        operatorsWithoutSearchValue.includes(
+          filterParameters[filterKey].operator
+        )
       ) {
         setFilterComplete(true);
       } else {

@@ -81,13 +81,14 @@ export const useAdvancedSearch = () => {
     const advancedFilters = makeAdvancedSearchWhereFilters(filters);
     if (advancedFilters.length === 0) return null;
 
+    const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
+
     if (isOr) {
       // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
-      const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
       return `_or: [${bracketedFilters.join(",")}]`;
     } else {
       // Ex. project_lead: {_eq: "COA ATD Project Delivery"}, project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}
-      return advancedFilters.join(", ");
+      return `_and: [${bracketedFilters.join(",")}]`;
     }
   }, [filters, isOr]);
 
