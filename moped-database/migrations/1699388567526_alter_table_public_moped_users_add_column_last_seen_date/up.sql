@@ -5,10 +5,10 @@ CREATE FUNCTION set_last_seen_date (hasura_session json)
     RETURNS SETOF moped_users
     AS $$
 DECLARE
-    user_id integer;
+    user_db_id integer;
 BEGIN
     SELECT
-        q.* INTO user_id
+        q.* INTO user_db_id
     FROM (
         VALUES(hasura_session ->> 'x-hasura-user-db-id')) q;
     UPDATE
@@ -16,14 +16,14 @@ BEGIN
     SET
         last_seen_date = now()
     WHERE
-        moped_users.user_id = user_id;
+        moped_users.user_id = user_db_id;
     RETURN query
     SELECT
-        user_id
+        *
     FROM
         moped_users
     WHERE
-        moped_users.user_id = user_id;
+        moped_users.user_id = user_db_id;
 END;
 $$
 LANGUAGE PLPGSQL
