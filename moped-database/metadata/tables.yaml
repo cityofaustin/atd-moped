@@ -3765,15 +3765,6 @@
           table:
             name: moped_proj_work_activity
             schema: public
-    - name: project_geography
-      using:
-        manual_configuration:
-          column_mapping:
-            project_id: project_id
-          insertion_order: null
-          remote_table:
-            name: project_geography
-            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3787,6 +3778,15 @@
           column: parent_project_id
           table:
             name: moped_project
+            schema: public
+    - name: project_geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
             schema: public
   insert_permissions:
     - role: moped-admin
@@ -4629,11 +4629,11 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
   select_permissions:
     - role: moped-admin
@@ -4647,6 +4647,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4666,6 +4667,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4685,6 +4687,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4709,7 +4712,6 @@
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
         filter: {}
         check: {}
