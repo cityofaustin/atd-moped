@@ -26,6 +26,10 @@ import makeStyles from "@mui/styles/makeStyles";
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
+import {
+  AUTOCOMPLETE_OPERATORS,
+  OPERATORS_WITHOUT_SEARCH_VALUES,
+} from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 
 /**
  * The styling for the filter components
@@ -194,10 +198,7 @@ const Filters = ({
     return (
       field.lookup_table &&
       !loading &&
-      [
-        "string_equals_case_sensitive",
-        "string_does_not_equal_case_sensitive",
-      ].includes(field.operator)
+      AUTOCOMPLETE_OPERATORS.includes(field.operator)
     );
   };
 
@@ -473,16 +474,10 @@ const Filters = ({
   useEffect(() => {
     Object.keys(filterParameters).forEach((filterKey) => {
       console.log(filterParameters);
-      const operatorsWithoutSearchValue = [
-        "string_is_null",
-        "string_is_not_null",
-        "string_is_not_null_special_case",
-        "string_is_null_special_case",
-      ];
 
       if (
         !!filterParameters[filterKey].value ||
-        operatorsWithoutSearchValue.includes(
+        OPERATORS_WITHOUT_SEARCH_VALUES.includes(
           filterParameters[filterKey].operator
         )
       ) {
