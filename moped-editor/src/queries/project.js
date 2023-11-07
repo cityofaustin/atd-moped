@@ -141,9 +141,7 @@ export const SUMMARY_QUERY = gql`
         is_deleted: { _eq: false }
       }
     ) {
-      project_geography(
-      where: { is_deleted: { _eq: false } }
-    ) {
+      project_geography(where: { is_deleted: { _eq: false } }) {
         council_districts
       }
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
@@ -290,7 +288,10 @@ export const TIMELINE_QUERY = gql`
       project_id
       phase_start
       phase_end
+      phase_id
       subphase_id
+      is_phase_start_confirmed
+      is_phase_end_confirmed
       moped_subphase {
         subphase_id
         subphase_name
@@ -301,9 +302,7 @@ export const TIMELINE_QUERY = gql`
         phase_name
       }
     }
-    moped_milestones(
-      where: { is_deleted: { _eq: false } }
-    ) {
+    moped_milestones(where: { is_deleted: { _eq: false } }) {
       milestone_id
       milestone_name
     }
@@ -326,11 +325,37 @@ export const TIMELINE_QUERY = gql`
   }
 `;
 
+export const ADD_PROJECT_PHASE = gql`
+  mutation AddProjectPhase(
+    $objects: [moped_proj_phases_insert_input!]!
+    $current_phase_ids_to_clear: [Int!]!
+  ) {
+    insert_moped_proj_phases(objects: $objects) {
+      returning {
+        phase_id
+        phase_description
+        phase_start
+        phase_end
+        project_phase_id
+        is_current_phase
+        project_id
+      }
+    }
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
 // use this to update a single moped_proj_phase
-export const UPDATE_PROJECT_PHASES_MUTATION = gql`
+export const UPDATE_PROJECT_PHASE = gql`
   mutation ProjectPhasesMutation(
     $project_phase_id: Int!
     $object: moped_proj_phases_set_input!
+    $current_phase_ids_to_clear: [Int!]!
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
@@ -345,15 +370,21 @@ export const UPDATE_PROJECT_PHASES_MUTATION = gql`
       is_current_phase
       phase_description
     }
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
   }
 `;
 
-// provide an array of project_phase_id's to set them not current
-export const CLEAR_CURRENT_PROJECT_PHASES_MUTATION = gql`
-  mutation ClearCurrentProjectPhasePKs($ids: [Int!]!) {
+// Delete a project phase **and** make it not current
+export const DELETE_PROJECT_PHASE = gql`
+  mutation DeleteProjectPhase($project_phase_id: Int!) {
     update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $ids } }
+      _set: { is_deleted: true, is_current_phase: false }
+      where: { project_phase_id: { _eq: $project_phase_id } }
     ) {
       affected_rows
     }
@@ -389,18 +420,6 @@ export const UPDATE_PROJECT_MILESTONES_MUTATION = gql`
   }
 `;
 
-// Delete a project phase **and** make it not current
-export const DELETE_PROJECT_PHASE = gql`
-  mutation DeleteProjectPhase($project_phase_id: Int!) {
-    update_moped_proj_phases(
-      _set: { is_deleted: true, is_current_phase: false }
-      where: { project_phase_id: { _eq: $project_phase_id } }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const DELETE_PROJECT_MILESTONE = gql`
   mutation DeleteProjectMilestone($project_milestone_id: Int!) {
     update_moped_proj_milestones(
@@ -408,22 +427,6 @@ export const DELETE_PROJECT_MILESTONE = gql`
       where: { project_milestone_id: { _eq: $project_milestone_id } }
     ) {
       affected_rows
-    }
-  }
-`;
-
-export const ADD_PROJECT_PHASE = gql`
-  mutation AddProjectPhase($objects: [moped_proj_phases_insert_input!]!) {
-    insert_moped_proj_phases(objects: $objects) {
-      returning {
-        phase_id
-        phase_description
-        phase_start
-        phase_end
-        project_phase_id
-        is_current_phase
-        project_id
-      }
     }
   }
 `;
