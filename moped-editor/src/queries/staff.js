@@ -10,6 +10,7 @@ export const GET_ALL_USERS = gql`
       roles
       title
       is_deleted
+      last_seen_date
       moped_workgroup {
         workgroup_id
         workgroup_name
@@ -81,6 +82,18 @@ export const UPDATE_NON_MOPED_USER = gql`
       is_deleted
       is_user_group_member
       note
+    }
+  }
+`;
+
+/**
+ * This mutation calls the `set_last_seen` function, which updates the
+ * users' last_seen_date based on the user ID session variable
+ */
+export const LAST_SEEN_MUTATION = gql`
+  mutation SetLastSeenDate {
+    set_last_seen_date {
+      user_id
     }
   }
 `;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { LAST_SEEN_MUTATION } from "src/queries/users";
+import { LAST_SEEN_MUTATION } from "src/queries/staff";
 
 /**
  * This wrapper calls the set_last_seen endpoint, which updates the user's
