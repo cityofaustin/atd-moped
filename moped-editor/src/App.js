@@ -75,7 +75,6 @@ const App = () => {
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
-
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>

@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { LAST_SEEN_MUTATION } from "src/queries/users";
 
@@ -16,5 +16,5 @@ export default function ActivityMetrics({ children }) {
       console.error("Failed to set the last seen date for the current user.");
     }
   }, []);
-  return <Fragment>{children}</Fragment>;
+  return children;
 }
