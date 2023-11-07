@@ -12,7 +12,7 @@ export const AUTOCOMPLETE_OPERATORS = [
 ];
 
 /**
- * Array of operators that do not required a search value Ex. "is blank"
+ * Array of operators that do not require a search value Ex. "is blank"
  * @constant
  * @type {array}
  * @default
