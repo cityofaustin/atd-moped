@@ -473,8 +473,6 @@ const Filters = ({
    */
   useEffect(() => {
     Object.keys(filterParameters).forEach((filterKey) => {
-      console.log(filterParameters);
-
       if (
         !!filterParameters[filterKey].value ||
         OPERATORS_WITHOUT_SEARCH_VALUES.includes(
