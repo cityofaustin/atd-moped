@@ -418,7 +418,7 @@ export const useColumns = ({ hiddenColumns, classes }) => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, linkStateFilters, classes]
+    [hiddenColumns, linkStateFilters, linkStateIsOr, classes]
   );
   return columns;
 };
