@@ -175,10 +175,10 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const { filters: previousFilters, isOr: previousIsOr } = location.state;
-  const allProjectsLink = !!previousFilters
-    ? `/moped/projects?filter=${previousFilters}&isOr=${previousIsOr}`
-    : "/moped/projects";
+  const { queryString: previousProjectListViewQueryString } = location.state;
+  const allProjectsLink = !previousProjectListViewQueryString
+    ? "/moped/projects"
+    : `/moped/projects${previousProjectListViewQueryString}`;
   const classes = useStyles();
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
