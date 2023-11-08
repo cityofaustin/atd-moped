@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
@@ -128,8 +128,11 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
-  useMemo(
+export const useColumns = ({ hiddenColumns, classes }) => {
+  const location = useLocation();
+  const queryString = location.search;
+
+  const columns = useMemo(
     () => [
       {
         title: "ID",
@@ -143,7 +146,7 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         render: (entry) => (
           <RouterLink
             to={`/moped/projects/${entry.project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ queryString }}
             className={classes.colorPrimary}
           >
             {entry.project_name}
@@ -396,7 +399,7 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         render: (entry) => (
           <RouterLink
             to={`/moped/projects/${entry.parent_project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ queryString }}
             className={classes.colorPrimary}
           >
             {entry.parent_project_name}
@@ -414,8 +417,10 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, linkStateFilters, classes]
+    [hiddenColumns, queryString, classes]
   );
+  return columns;
+};
 
 /**
  * Defines various Material Table options
