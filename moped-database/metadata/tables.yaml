@@ -4515,6 +4515,9 @@
           - date_added
         filter: {}
 - table:
+    name: moped_user_events
+    schema: public
+- table:
     name: moped_user_followed_projects
     schema: public
   object_relationships:

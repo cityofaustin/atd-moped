@@ -1,10 +1,11 @@
 ALTER TABLE "public"."moped_users"
     ADD COLUMN "last_seen_date" timestamptz NULL;
 
-COMMENT on COLUMN moped_users.last_seen_date is 'Tracks the last time a user loaded the Moped app in their browser. This value is set by the set_last_seen_date function. This value is not 100% reliable because it is updated by an API call that can be blocked by the client.';
+COMMENT ON COLUMN moped_users.last_seen_date IS 'Tracks the last time a user loaded the Moped app in their browser. This value is set by the set_last_seen_date function. This value is not 100% reliable because it is updated by an API call that can be blocked by the client.';
 
 -- custom function which can be tracked as a hasura mutation
 -- https://hasura.io/docs/latest/schema/postgres/custom-functions/
+
 CREATE FUNCTION set_last_seen_date (hasura_session json)
     RETURNS SETOF moped_users
     AS $$
@@ -21,6 +22,8 @@ BEGIN
         last_seen_date = now()
     WHERE
         moped_users.user_id = user_db_id;
+    INSERT INTO moped_user_events (user_id, description)
+        values(user_db_id, 'app_load');
     RETURN query
     SELECT
         *
@@ -32,4 +35,4 @@ END;
 $$
 LANGUAGE PLPGSQL;
 
-COMMENT on FUNCTION set_last_seen_date is 'Updates the moped_users.last_seen_date based on the user ID extracted from the session variable that invokes this function. It is exposed as a mutation through the Hasura grapql schema.';
+COMMENT ON FUNCTION set_last_seen_date IS 'Updates the moped_users.last_seen_date based on the user ID extracted from the session variable that invokes this function. It is exposed as a mutation through the Hasura grapql schema.';
