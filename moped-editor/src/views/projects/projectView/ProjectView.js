@@ -175,9 +175,10 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const previousFilters = location.state?.filters;
+  const { filters: previousFilters, isOr: previousIsOr } = location.state;
+  console.log(location.state);
   const allProjectsLink = !!previousFilters
-    ? `/moped/projects?filter=${previousFilters}`
+    ? `/moped/projects?filter=${previousFilters}&isOr=${previousIsOr}`
     : "/moped/projects";
   const classes = useStyles();
   /**

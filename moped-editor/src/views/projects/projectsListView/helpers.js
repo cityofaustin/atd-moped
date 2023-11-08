@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useSearchParams } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
@@ -128,8 +128,12 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
-  useMemo(
+export const useColumns = ({ hiddenColumns, classes }) => {
+  const [searchParams] = useSearchParams();
+  const linkStateFilters = searchParams.get("filter");
+  const linkStateIsOr = searchParams.get("isOr") === "true" ? true : false;
+
+  const columns = useMemo(
     () => [
       {
         title: "ID",
@@ -143,7 +147,7 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         render: (entry) => (
           <RouterLink
             to={`/moped/projects/${entry.project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ filters: linkStateFilters, isOr: linkStateIsOr }}
             className={classes.colorPrimary}
           >
             {entry.project_name}
@@ -396,7 +400,7 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         render: (entry) => (
           <RouterLink
             to={`/moped/projects/${entry.parent_project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ filters: linkStateFilters, isOr: linkStateIsOr }}
             className={classes.colorPrimary}
           >
             {entry.parent_project_name}
@@ -416,6 +420,8 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
     ],
     [hiddenColumns, linkStateFilters, classes]
   );
+  return columns;
+};
 
 /**
  * Defines various Material Table options

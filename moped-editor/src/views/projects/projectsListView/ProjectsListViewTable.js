@@ -143,13 +143,8 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const linkStateFilters = useMemo(() => {
-    return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
-  }, [filters]);
-
   const columns = useColumns({
     hiddenColumns,
-    linkStateFilters,
     classes,
   });
 
