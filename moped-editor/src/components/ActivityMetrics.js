@@ -15,6 +15,6 @@ export default function ActivityMetrics({ children }) {
     } catch (error) {
       console.error("Failed to set the last seen date for the current user.");
     }
-  }, []);
+  }, [setLastSeen]);
   return children;
 }
