@@ -15,11 +15,12 @@ export default function ActivityMetrics({ children }) {
       // this event can fire when the user is not logged in
       return;
     }
-    try {
-      setLastSeen();
-    } catch (error) {
-      console.error("Failed to set the last seen date for the current user.");
-    }
+    setLastSeen().catch((error) => {
+      console.error(
+        "Failed to set the last seen date for the current user.",
+        error
+      );
+    });
   }, [setLastSeen, user]);
   return children;
 }
