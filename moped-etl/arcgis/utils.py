@@ -161,6 +161,13 @@ def resilient_layer_request(endpoint, data, max_retries=3, sleep_seconds=2):
         res = requests.post(endpoint, data=data)
         try:
             res.raise_for_status()
+            response_data = res.json()
+            if response_data.get("error"):
+                if response_data.get("error").get("code") == 499:
+                    # this is an inexplicable "token required" error
+                    # which will have a status_code of 200 👍
+                    res.status_code = 499
+                    raise Exception("Token Required")
         except Exception as e:
             if attempts >= max_retries or res.status_code == 400:
                 raise e
