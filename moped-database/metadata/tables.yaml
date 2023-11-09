@@ -1881,116 +1881,140 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
         check: {}
     - role: moped-editor
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
         check: {}
@@ -3768,15 +3792,6 @@
           table:
             name: moped_proj_work_activity
             schema: public
-    - name: project_geography
-      using:
-        manual_configuration:
-          column_mapping:
-            project_id: project_id
-          insertion_order: null
-          remote_table:
-            name: project_geography
-            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3790,6 +3805,15 @@
           column: parent_project_id
           table:
             name: moped_project
+            schema: public
+    - name: project_geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
             schema: public
   insert_permissions:
     - role: moped-admin
