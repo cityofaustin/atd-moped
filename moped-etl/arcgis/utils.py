@@ -139,7 +139,7 @@ def add_features(feature_type, features):
     handle_arcgis_response(response_data)
 
 
-def resilient_layer_request(endpoint, data, max_retries=3, sleep_seconds=2):
+def resilient_layer_request(endpoint, data, max_retries=5, sleep_seconds=2):
     """An ArcGIS request wrapper to enable re-trying. Will try on any HTTP error
     except status code 400. Bear in mind that AGOL returns 200 for most invalid
     request errors, so those will be handled separately.
