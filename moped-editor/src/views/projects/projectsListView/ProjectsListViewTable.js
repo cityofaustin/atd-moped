@@ -60,7 +60,7 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Default column display (if no config in local storage)
  */
-const DEFAULT_HIDDEN_COLS = {
+export const DEFAULT_HIDDEN_COLS = {
   project_id: false,
   project_name: false,
   current_phase: false,
@@ -116,10 +116,6 @@ const ProjectsListViewTable = () => {
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
-  const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
-  );
-
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
     usePagination({
@@ -148,8 +144,7 @@ const ProjectsListViewTable = () => {
     return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
   }, [filters]);
 
-  const columns = useColumns({
-    hiddenColumns,
+  const { columns } = useColumns({
     linkStateFilters,
     classes,
   });
@@ -233,18 +228,9 @@ const ProjectsListViewTable = () => {
     rowsPerPageOptions:
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
-  /*
-   * Store column configution before data change
-   */
-  useEffect(() => {
-    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    if (storedConfig) {
-      setHiddenColumns({...DEFAULT_HIDDEN_COLS, ...storedConfig });
-    }
-  }, [data]);
 
   /**
-   * Store the most recent version of the query in app context so that it 
+   * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
    */
   useEffect(() => {

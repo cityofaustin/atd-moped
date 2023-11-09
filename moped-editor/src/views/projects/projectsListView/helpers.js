@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
 import typography from "../../../theme/typography";
@@ -8,6 +8,7 @@ import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import { DEFAULT_HIDDEN_COLS } from "./ProjectsListViewTable";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -137,8 +138,22 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
-  useMemo(
+export const useColumns = ({ linkStateFilters, classes }) => {
+  const [hiddenColumns, setHiddenColumns] = useState(
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
+  );
+
+  /*
+   * Store column configution before data change
+   */
+  useEffect(() => {
+    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
+    if (storedConfig) {
+      setHiddenColumns({ ...DEFAULT_HIDDEN_COLS, ...storedConfig });
+    }
+  }, []);
+
+  const columns = useMemo(
     () => [
       {
         title: "ID",
@@ -432,6 +447,9 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
     ],
     [hiddenColumns, linkStateFilters, classes]
   );
+
+  return { columns };
+};
 
 /**
  * Defines various Material Table options
