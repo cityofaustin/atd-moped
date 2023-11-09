@@ -175,7 +175,8 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const { queryString: previousProjectListViewQueryString } = location.state;
+  const { queryString: previousProjectListViewQueryString = null } =
+    location.state;
   const allProjectsLink = !previousProjectListViewQueryString
     ? "/moped/projects"
     : `/moped/projects${previousProjectListViewQueryString}`;
