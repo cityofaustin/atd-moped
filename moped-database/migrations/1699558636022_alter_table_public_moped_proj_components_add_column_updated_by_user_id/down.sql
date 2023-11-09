@@ -1,4 +1,0 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_components" add column "updated_by_user_id" integer
---  null;
