@@ -1,34 +1,29 @@
 import { useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
-
-const useFilterQuery = (locationSearch) =>
-  useMemo(() => {
-    return new URLSearchParams(locationSearch);
-  }, [locationSearch]);
+import { useSearchParams } from "react-router-dom";
 
 /**
  * if filter exists in url, decodes base64 string and returns as object
  * Used to initialize filter state
  * @return Object
  */
-const useMakeFilterState = (filterQuery) =>
+const useMakeFilterState = (searchParams) =>
   useMemo(() => {
-    if (Array.from(filterQuery).length > 0) {
+    if (Array.from(searchParams).length > 0) {
       try {
-        return JSON.parse(atob(filterQuery.get("filter")));
+        return JSON.parse(atob(searchParams.get("filter")));
       } catch {
         return {};
       }
     }
     return {};
-  }, [filterQuery]);
+  }, [searchParams]);
 
 /**
- * Build the advanced search part of the graphql query using the filter state.
+ * Build an array of filter strings to be used in generating the advanced search where string
  @ param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
-const makeAdvancedSearchWhereString = (filters) =>
+const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
       let { envelope, field, gqlOperator, value, type, specialNullValue } =
@@ -62,12 +57,17 @@ const makeAdvancedSearchWhereString = (filters) =>
       }
       return `${field}: { ${gqlOperator}: ${value} }`;
     })
-    .filter((value) => value !== null)
-    .join(", ");
+    .filter((value) => value !== null);
 
 export const useAdvancedSearch = () => {
-  const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
+  /* Get advanced filters settings from search params if they exist */
+  let [searchParams] = useSearchParams();
+  const initialFilterState = useMakeFilterState(searchParams);
+
+  /* Determine or/any from search params if it exists */
+  const isOrFromSearchParams = searchParams.get("isOr");
+  const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
+  const [isOr, setIsOr] = useState(initialIsOrState);
 
   /**
    * Stores filters assigned random id and nests column, operator, and value.
@@ -77,15 +77,26 @@ export const useAdvancedSearch = () => {
    */
   const [filters, setFilters] = useState(initialFilterState);
 
-  const advancedSearchWhereString = useMemo(
-    () => makeAdvancedSearchWhereString(filters),
-    [filters]
-  );
+  const advancedSearchWhereString = useMemo(() => {
+    const advancedFilters = makeAdvancedSearchWhereFilters(filters);
+    if (advancedFilters.length === 0) return null;
+
+    const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
+
+    if (isOr) {
+      // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
+      return `_or: [${bracketedFilters.join(",")}]`;
+    } else {
+      // Ex. project_lead: {_eq: "COA ATD Project Delivery"}, project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}
+      return `_and: [${bracketedFilters.join(",")}]`;
+    }
+  }, [filters, isOr]);
 
   return {
-    filterQuery,
     filters,
     setFilters,
     advancedSearchWhereString,
+    isOr,
+    setIsOr,
   };
 };
