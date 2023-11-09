@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
 import Link from "@mui/material/Link";
 import typography from "../../../theme/typography";
@@ -140,7 +140,10 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ linkStateFilters, columnsToReturn }) => {
+export const useColumns = ({ columnsToReturn }) => {
+  const location = useLocation();
+  const queryString = location.search;
+
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
@@ -172,7 +175,7 @@ export const useColumns = ({ linkStateFilters, columnsToReturn }) => {
           <Link
             component={RouterLink}
             to={`/moped/projects/${entry.project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
             {entry.project_name}
@@ -433,7 +436,7 @@ export const useColumns = ({ linkStateFilters, columnsToReturn }) => {
           <Link
             component={RouterLink}
             to={`/moped/projects/${entry.parent_project_id}`}
-            state={{ filters: linkStateFilters }}
+            state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
             {entry.parent_project_name}
@@ -451,7 +454,7 @@ export const useColumns = ({ linkStateFilters, columnsToReturn }) => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, linkStateFilters]
+    [hiddenColumns, queryString]
   );
 
   return { columns };

@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useContext,
-  useCallback,
-} from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
@@ -134,18 +128,12 @@ const ProjectsListViewTable = () => {
     queryConfig: PROJECT_LIST_VIEW_QUERY_CONFIG,
   });
 
-  const { filterQuery, filters, setFilters, advancedSearchWhereString } =
+  const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
-
-  const linkStateFilters = useMemo(() => {
-    return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
-  }, [filters]);
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
   const { columns } = useColumns({
-    linkStateFilters,
-    classes,
     columnsToReturn,
   });
 
@@ -243,7 +231,6 @@ const ProjectsListViewTable = () => {
           parentData={data}
           filters={filters}
           setFilters={setFilters}
-          filterQuery={filterQuery}
           advancedSearchAnchor={advancedSearchAnchor}
           setAdvancedSearchAnchor={setAdvancedSearchAnchor}
           searchTerm={searchTerm}
@@ -251,6 +238,8 @@ const ProjectsListViewTable = () => {
           queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
           filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
           handleExportButtonClick={handleExportButtonClick}
+          isOr={isOr}
+          setIsOr={setIsOr}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

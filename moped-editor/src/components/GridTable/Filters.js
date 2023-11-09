@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
@@ -17,12 +17,19 @@ import {
   IconButton,
   Grow,
 } from "@mui/material";
+import RadioGroup from "@mui/material/RadioGroup";
+import Radio from "@mui/material/Radio";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import makeStyles from "@mui/styles/makeStyles";
 
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
+import {
+  AUTOCOMPLETE_OPERATORS,
+  OPERATORS_WITHOUT_SEARCH_VALUES,
+} from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 
 /**
  * The styling for the filter components
@@ -120,8 +127,6 @@ const generateEmptyField = (uuid) => {
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
- * @param {Object} filterQuery - The current filter query string from useAdvancedSearch hook
- * @param {Object} history - The history to update query string parameters
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
  * @param {Function} setSearchFieldValue - Used to set the search field value
@@ -132,12 +137,12 @@ const generateEmptyField = (uuid) => {
 const Filters = ({
   filters,
   setFilters,
-  filterQuery,
-  history,
   handleAdvancedSearchClose,
   filtersConfig,
   setSearchFieldValue,
   setSearchTerm,
+  isOr,
+  setIsOr,
 }) => {
   /**
    * The styling of the search bar
@@ -145,7 +150,7 @@ const Filters = ({
    * @default
    */
   const classes = useStyles();
-  const queryPath = useLocation().pathname;
+  let [, setSearchParams] = useSearchParams();
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
@@ -160,10 +165,18 @@ const Filters = ({
    */
   const [filterParameters, setFilterParameters] = useState(filters);
 
+  /* Track toggle value so we update the query value in handleApplyButtonClick */
+  const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
+
   /**
    * Tracks whether the user has added a complete filter
    */
   const [filterComplete, setFilterComplete] = useState(false);
+
+  /* First filter is an empty placeholder so we check for more than one filter */
+  const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
+  const isFirstFilterIncomplete =
+    Object.keys(filterParameters).length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
     // Generate a random UUID string
@@ -185,10 +198,7 @@ const Filters = ({
     return (
       field.lookup_table &&
       !loading &&
-      [
-        "string_equals_case_sensitive",
-        "string_does_not_equal_case_sensitive",
-      ].includes(field.operator)
+      AUTOCOMPLETE_OPERATORS.includes(field.operator)
     );
   };
 
@@ -344,9 +354,17 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      filterQuery.set("filter", btoa(JSON.stringify(filtersNewState)));
-      history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set("filter", btoa(JSON.stringify(filtersNewState)));
+        return prevSearchParams;
+      });
       setFilterParameters(filtersNewState);
+
+      /* Reset isOr to false (all/and) if there is only one filter left */
+      if (Object.keys(filtersNewState).length === 1) {
+        setIsOr(false);
+        setIsOrToggleValue(false);
+      }
     }
   };
 
@@ -367,12 +385,16 @@ const Filters = ({
   /**
    * Clears the filters
    */
-  const handleClearFilters = () => {
+  const handleClearFilters = useCallback(() => {
     setFilterParameters({});
     setFilters({});
-    filterQuery.set("filter", btoa(JSON.stringify({})));
-    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
-  };
+    setIsOr(false);
+
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete("filter");
+      prevSearchParams.delete("isOr");
+    });
+  }, [setSearchParams, setFilters, setIsOr]);
 
   /**
    * Returns an array of strings containing messages about the filters.
@@ -410,8 +432,13 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    filterQuery.set("filter", btoa(JSON.stringify(filterParameters)));
-    history.push(`${queryPath}?filter=${filterQuery.get("filter")}`);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set("filter", btoa(JSON.stringify(filterParameters)));
+      prevSearchParams.set("isOr", isOrToggleValue);
+      return prevSearchParams;
+    });
+
+    setIsOr(isOrToggleValue);
     setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
@@ -435,10 +462,11 @@ const Filters = ({
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
       setFilters(filterParameters);
+      handleClearFilters();
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       generateEmptyFilter();
     }
-  }, [filterParameters, setFilters, generateEmptyFilter]);
+  }, [filterParameters, setFilters, generateEmptyFilter, handleClearFilters]);
 
   /**
    * This side effect monitors whether the user has added a complete filter
@@ -447,8 +475,9 @@ const Filters = ({
     Object.keys(filterParameters).forEach((filterKey) => {
       if (
         !!filterParameters[filterKey].value ||
-        filterParameters[filterKey].operator === "string_is_null" ||
-        filterParameters[filterKey].operator === "string_is_not_null"
+        OPERATORS_WITHOUT_SEARCH_VALUES.includes(
+          filterParameters[filterKey].operator
+        )
       ) {
         setFilterComplete(true);
       } else {
@@ -457,17 +486,65 @@ const Filters = ({
     });
   }, [filterParameters]);
 
+  const handleAndOrToggle = (e) => {
+    const isOr = e.target.value === "any";
+    setIsOrToggleValue(isOr);
+  };
+
   return (
     <Grid>
-      <Grid container justifyContent={"flex-end"}>
-        <IconButton
-          onClick={handleAdvancedSearchClose}
-          className={classes.closeButton}
-          size="large"
+      <Grid container className={classes.gridItemPadding}>
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-start"
         >
-          <Icon fontSize={"small"}>close</Icon>
-        </IconButton>
+          {areMoreThanOneFilters ? (
+            <RadioGroup
+              row
+              value={isOrToggleValue ? "any" : "all"}
+              onChange={handleAndOrToggle}
+            >
+              <FormControlLabel
+                value="all"
+                control={<Radio />}
+                label={
+                  <span>
+                    Match <strong>all</strong> filters
+                  </span>
+                }
+              />
+              <FormControlLabel
+                value="any"
+                control={<Radio />}
+                label={
+                  <span>
+                    Match <strong>any</strong> filters
+                  </span>
+                }
+              />
+            </RadioGroup>
+          ) : null}
+        </Grid>
+        <Grid
+          item
+          xs={6}
+          className={classes.filtersContainer}
+          display="flex"
+          justifyContent="flex-end"
+        >
+          <IconButton
+            onClick={handleAdvancedSearchClose}
+            className={classes.closeButton}
+            size="large"
+          >
+            <Icon fontSize={"small"}>close</Icon>
+          </IconButton>
+        </Grid>
       </Grid>
+
       {Object.keys(filterParameters).map((filterId) => {
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
@@ -628,10 +705,7 @@ const Filters = ({
               <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={
-                      Object.keys(filterParameters).length === 1 &&
-                      !filterComplete
-                    }
+                    disabled={isFirstFilterIncomplete}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterId)}
                     size="large"
@@ -643,10 +717,7 @@ const Filters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={
-                      Object.keys(filterParameters).length === 1 &&
-                      !filterComplete
-                    }
+                    disabled={isFirstFilterIncomplete}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
@@ -676,17 +747,15 @@ const Filters = ({
           </Button>
         </Grid>
         <Grid item xs={12} md={1}>
-          {Object.keys(filterParameters).length > 0 && (
-            <Button
-              className={classes.bottomButton}
-              fullWidth
-              variant="outlined"
-              startIcon={<BackspaceOutlinedIcon />}
-              onClick={handleClearFilters}
-            >
-              Reset
-            </Button>
-          )}
+          <Button
+            className={classes.bottomButton}
+            fullWidth
+            variant="outlined"
+            startIcon={<BackspaceOutlinedIcon />}
+            onClick={handleClearFilters}
+          >
+            Reset
+          </Button>
         </Grid>
         <Hidden mdDown>
           <Grid item xs={12} md={7}>
@@ -694,20 +763,18 @@ const Filters = ({
           </Grid>
         </Hidden>
         <Grid item xs={12} md={2}>
-          {Object.keys(filterParameters).length > 0 && (
-            <Grow in={handleApplyValidation() === null}>
-              <Button
-                fullWidth
-                className={classes.applyButton}
-                variant="contained"
-                color="primary"
-                startIcon={<Icon>search</Icon>}
-                onClick={handleApplyButtonClick}
-              >
-                Search
-              </Button>
-            </Grow>
-          )}
+          <Grow in={handleApplyValidation() === null}>
+            <Button
+              fullWidth
+              className={classes.applyButton}
+              variant="contained"
+              color="primary"
+              startIcon={<Icon>search</Icon>}
+              onClick={handleApplyButtonClick}
+            >
+              Search
+            </Button>
+          </Grow>
         </Grid>
       </Grid>
     </Grid>
