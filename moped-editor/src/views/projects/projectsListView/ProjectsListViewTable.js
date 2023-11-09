@@ -52,9 +52,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "25px",
     paddingBottom: "16px",
   },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
 }));
 
 /**
@@ -144,12 +141,13 @@ const ProjectsListViewTable = () => {
     return Object.keys(filters).length ? btoa(JSON.stringify(filters)) : false;
   }, [filters]);
 
+  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
+
   const { columns } = useColumns({
     linkStateFilters,
     classes,
+    columnsToReturn,
   });
-
-  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn,

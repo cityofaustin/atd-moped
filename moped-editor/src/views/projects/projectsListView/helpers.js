@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink as RouterLink } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
+import Link from "@mui/material/Link";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -9,6 +10,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
 import { DEFAULT_HIDDEN_COLS } from "./ProjectsListViewTable";
+import theme from "src/theme";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -138,7 +140,7 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ linkStateFilters, classes }) => {
+export const useColumns = ({ linkStateFilters, columnsToReturn }) => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
@@ -153,6 +155,8 @@ export const useColumns = ({ linkStateFilters, classes }) => {
     }
   }, []);
 
+  console.log(columnsToReturn);
+
   const columns = useMemo(
     () => [
       {
@@ -165,13 +169,14 @@ export const useColumns = ({ linkStateFilters, classes }) => {
         field: "project_name",
         hidden: hiddenColumns["project_name"],
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.project_id}`}
             state={{ filters: linkStateFilters }}
-            className={classes.colorPrimary}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.project_name}
-          </RouterLink>
+          </Link>
         ),
         cellStyle: {
           position: "sticky",
@@ -425,13 +430,14 @@ export const useColumns = ({ linkStateFilters, classes }) => {
         hidden: hiddenColumns["parent_project_id"],
         emptyValue: "-",
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.parent_project_id}`}
             state={{ filters: linkStateFilters }}
-            className={classes.colorPrimary}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.parent_project_name}
-          </RouterLink>
+          </Link>
         ),
       },
       {
@@ -445,7 +451,7 @@ export const useColumns = ({ linkStateFilters, classes }) => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, linkStateFilters, classes]
+    [hiddenColumns, linkStateFilters]
   );
 
   return { columns };
@@ -455,7 +461,7 @@ export const useColumns = ({ linkStateFilters, classes }) => {
  * Defines various Material Table options
  * @param {integer} queryLimit - the current rows per page option
  * @param {object[]} data - the project list view data
- * @returns {boject} the material table setings options
+ * @returns {object} the material table setings options
  */
 export const useTableOptions = ({ queryLimit, data }) =>
   useMemo(
