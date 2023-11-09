@@ -57,6 +57,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Create text to show advanced filters and logic applied in the UI
+ * @param {Object} filters - The current filters applied
+ * @param {Boolean} isOr - The current logic applied
+ * @returns {string} - The text to display
+ */
+const makeFilteredByText = (filters, isOr) => {
+  const filtersCount = Object.keys(filters).length;
+  let filteredByText = "Filtered by ";
+
+  /* Only show logic string if more than one filter applied */
+  if (filtersCount === 1) return filteredByText;
+
+  if (isOr) {
+    filteredByText += "any ";
+  } else {
+    filteredByText += "all ";
+  }
+
+  return filteredByText;
+};
+
+/**
  * Renders a search bar with optional filters
  * @param {string} searchFieldValue - The current value of the search field
  * @param {function} setSearchFieldValue - function to set the current value of the search field
@@ -206,7 +228,7 @@ const SearchBar = ({
       {filterStateActive && (
         <Box className={classes.filtersList}>
           <Typography align="right" className={classes.filtersText}>
-            Filtered by {isOr ? "any" : "all"}{" "}
+            {makeFilteredByText(filters, isOr)}{" "}
             <span className={classes.filtersSpan}>{`${filtersApplied.join(
               ", "
             )}`}</span>
