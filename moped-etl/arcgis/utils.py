@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import sys
+import time
 
 import requests
 
@@ -63,27 +64,27 @@ def make_hasura_request(*, query):
         raise ValueError(data)
 
 
-def handle_arcgis_response(responseData):
+def handle_arcgis_response(response_data):
     """Checks AGOL response data and tries to determine if there was an error.
     Args:
-        responseData (Dict): the JSON response data from the AGOL REST api
+        response_data (Dict): the JSON response data from the AGOL REST api
 
     Arcgis does not raise HTTP errors for data-related issues; we must manually
     parse the response
     """
-    if not responseData:
+    if not response_data:
         return
 
-    if responseData.get("error"):
+    if response_data.get("error"):
         # sometimes there is an error in the root of the response object 👍
-        raise ValueError(responseData["error"])
+        raise ValueError(response_data["error"])
 
     keys = ["addResults", "updateResults", "deleteResults"]
     # parsing something like this
     # {'addResults': [{'objectId': 3977021, 'uniqueId': 3977021, 'globalId': None, 'success': True},...], ...}
     for key in keys:
-        if responseData.get(key):
-            for feature_status in responseData.get(key):
+        if response_data.get(key):
+            for feature_status in response_data.get(key):
                 if feature_status.get("success"):
                     continue
                 else:
@@ -92,7 +93,7 @@ def handle_arcgis_response(responseData):
 
 
 def delete_features(feature_type):
-    """Deletes all features from an arcgis online feature service
+    """Deletes all features from an arcgis online feature service.
 
     Args:
         feature_type (Str): the feature type we're adding: "points" or "lines"
@@ -107,13 +108,12 @@ def delete_features(feature_type):
         "where": "1=1",
         "returnDeleteResults": False,
     }
-    res = requests.post(endpoint, data=data)
-    res.raise_for_status()
-    responseData = res.json()
+    res = resilient_layer_request(endpoint, data=data)
+    response_data = res.json()
     try:
-        assert responseData["success"]
+        assert response_data["success"]
     except AssertionError:
-        raise Exception(f"Delete features failed: {responseData}")
+        raise Exception(f"Delete features failed: {response_data}")
 
 
 def add_features(feature_type, features):
@@ -126,17 +126,50 @@ def add_features(feature_type, features):
         feature_type (Str): the feature type we're adding: "points" or "lines"
         features (List): Esri feature objects to upload
     """
+    token = os.getenv("AGOL_TOKEN")
     endpoint = get_endpoint("addFeatures", feature_type)
     data = {
-        "token": os.getenv("AGOL_TOKEN"),
+        "token": token,
         "features": json.dumps(features),
         "rollbackOnFailure": False,
         "f": "json",
     }
-    res = requests.post(endpoint, data=data)
-    res.raise_for_status()
-    responseData = res.json()
-    handle_arcgis_response(responseData)
+    res = resilient_layer_request(endpoint, data=data)
+    response_data = res.json()
+    handle_arcgis_response(response_data)
+
+
+def resilient_layer_request(endpoint, data, max_retries=3, sleep_seconds=2):
+    """An ArcGIS request wrapper to enable re-trying. Will try on any HTTP error
+    except status code 400. Bear in mind that AGOL returns 200 for most invalid
+    request errors, so those will be handled separately.
+
+    Args:
+        endpoint (str): The AGOL HTTP endpooint
+        data (dict): The request payload
+        max_retries (int, optional): The number of times to retry. Defaults to 3.
+        sleep_seconds (int, optional): The amount of time to sleep between retries.
+            Defaults to 2. This tends to help mitigate strange errors like random
+            404 errors.
+
+    Returns:
+        requests.Response: the request response if successful
+    """
+    attempts = 0
+    while True:
+        attempts += 1
+        res = requests.post(endpoint, data=data)
+        try:
+            res.raise_for_status()
+        except Exception as e:
+            if attempts >= max_retries or res.status_code == 400:
+                raise e
+            logger.warn(
+                f"Retrying after status {res.status_code} on attempt #{attempts} of {max_retries}"
+            )
+            time.sleep(sleep_seconds)
+            continue
+        return res
 
 
 def get_token():
@@ -171,3 +204,5 @@ def get_logger(name, level=logging.INFO):
     logger.addHandler(handler)
     logger.setLevel(level)
     return logger
+
+logger = get_logger(__file__)
