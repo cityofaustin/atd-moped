@@ -1903,6 +1903,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_id
           - created_by_user_id
@@ -1998,6 +2001,8 @@
           - srts_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -2018,6 +2023,8 @@
           - srts_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
