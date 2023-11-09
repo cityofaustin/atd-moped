@@ -1,4 +1,4 @@
--- current version: 1699553498334_increase_agol_point_radius
+-- revert to 1698950636190_component_view_combined_lines
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
@@ -85,7 +85,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_signals.component_id, 
                 feature_signals.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_signals.geography, 7):: geometry
+                    ST_Buffer(feature_signals.geography, 5):: geometry
                 ) AS line_geography, 
                 feature_signals.signal_id, 
                 NULL AS length_feet 
@@ -111,7 +111,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_intersections.component_id, 
                 feature_intersections.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_intersections.geography, 7):: geometry
+                    ST_Buffer(feature_intersections.geography, 5):: geometry
                 ) AS line_geography, 
                 NULL AS signal_id, 
                 NULL AS length_feet 
@@ -125,7 +125,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_drawn_points.component_id, 
                 feature_drawn_points.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_drawn_points.geography, 7):: geometry
+                    ST_Buffer(feature_drawn_points.geography, 5):: geometry
                 ) AS line_geography, 
                 NULL AS signal_id, 
                 NULL AS length_feet 

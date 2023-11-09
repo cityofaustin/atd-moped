@@ -1,4 +1,3 @@
--- current version: 1699553498334_increase_agol_point_radius
 DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
