@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
-import { LAST_SEEN_MUTATION } from "src/queries/staff";
+import { INSERT_USER_EVENT } from "src/queries/staff";
 import { useUser } from "src/auth/user";
 /**
  * This wrapper calls the set_last_seen endpoint, which updates the user's
@@ -9,7 +9,9 @@ import { useUser } from "src/auth/user";
  */
 export default function ActivityMetrics({ children }) {
   const { user } = useUser();
-  const [setLastSeen] = useMutation(LAST_SEEN_MUTATION);
+  const [setLastSeen] = useMutation(INSERT_USER_EVENT, {
+    variables: { event_name: "app_load" },
+  });
   useEffect(() => {
     if (!user) {
       // this event can fire when the user is not logged in

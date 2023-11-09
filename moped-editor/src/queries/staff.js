@@ -87,13 +87,13 @@ export const UPDATE_NON_MOPED_USER = gql`
 `;
 
 /**
- * This mutation calls the `set_last_seen` function, which updates the
- * users' last_seen_date based on the user ID session variable
+ * This mutation insers a new moped_user_events row which will in turn trigger an
+ * updates to users' last_seen_date based on the user ID session variable
  */
-export const LAST_SEEN_MUTATION = gql`
-  mutation SetLastSeenDate {
-    set_last_seen_date {
-      user_id
+export const INSERT_USER_EVENT = gql`
+  mutation InsertUserEvent($event_name: String!) {
+    insert_moped_user_events(objects: { event_name: $event_name }) {
+      affected_rows
     }
   }
 `;
