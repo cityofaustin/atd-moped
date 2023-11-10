@@ -99,7 +99,8 @@ const Search = ({
     setFilters({});
     setIsOr(false);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete("filters");
+      prevSearchParams.delete("filter");
+      prevSearchParams.delete("isOr");
       return prevSearchParams;
     });
   };
