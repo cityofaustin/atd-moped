@@ -140,7 +140,7 @@ export const useTableComponents = ({
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ columnsToReturn }) => {
+export const useColumns = () => {
   const location = useLocation();
   const queryString = location.search;
 
@@ -148,27 +148,25 @@ export const useColumns = ({ columnsToReturn }) => {
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
+  /*
+   * Sync hidden columns state with local storage
+   */
   useEffect(() => {
     localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
   }, [hiddenColumns]);
 
-  console.log({ hiddenColumns });
+  const columnsToReturnInQuery = useMemo(
+    () =>
+      Object.keys(hiddenColumns)
+        .filter((key) => hiddenColumns[key] === false)
+        .map((key) => key),
+    [hiddenColumns]
+  );
 
-  // TODO: Manage hidden columns in local storage in here
-  // TODO: Return setHiddenColumns to be used in the table component
-  // TODO: Use that setter in handleColumnChange in ProjectListViewTable
+  console.log({ columnsToReturnInQuery });
+
   // TODO: That way, we can use state to determine what columns are should be fetched or not
   // TODO: Return columnsToReturnInQuery from this hook to be used by useGetProjectListView
-
-  /*
-   * Store column configution before data change
-   */
-  useEffect(() => {
-    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    if (storedConfig) {
-      setHiddenColumns({ ...DEFAULT_HIDDEN_COLS, ...storedConfig });
-    }
-  }, []);
 
   const columns = useMemo(
     () => [
@@ -467,7 +465,7 @@ export const useColumns = ({ columnsToReturn }) => {
     [hiddenColumns, queryString]
   );
 
-  return { columns, setHiddenColumns };
+  return { columns, setHiddenColumns, columnsToReturnInQuery };
 };
 
 /**

@@ -120,7 +120,7 @@ const ProjectsListViewTable = () => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const { columns, setHiddenColumns } = useColumns({
+  const { columns, setHiddenColumns, columnsToReturnInQuery } = useColumns({
     columnsToReturn,
   });
 
@@ -137,7 +137,7 @@ const ProjectsListViewTable = () => {
   };
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
-    columnsToReturn,
+    columnsToReturn: columnsToReturnInQuery,
     exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
