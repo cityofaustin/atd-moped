@@ -47,6 +47,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   columns: {
     project_id: {
       searchable: true, // useSearch
+      sortable: true,
       label: "Project ID",
       search: {
         label: "Search by project ID",
@@ -64,6 +65,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     project_name: {
       searchable: true,
+      sortable: true,
       link: "project_id",
       label: "Project name",
       search: {
@@ -78,6 +80,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_description: {
       hidden: true,
       searchable: true,
+      sortable: true,
       label: "Project description",
       search: {
         label: "Search by project description",
@@ -90,6 +93,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     current_phase: {
       searchable: true,
+      sortable: true,
       label: "Status",
       width: "15%",
       search: {
@@ -102,10 +106,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     current_phase_key: {
       searchable: false,
+      sortable: true,
       hidden: true,
     },
     project_team_members: {
       searchable: false,
+      sortable: true,
       label: "Team members",
       width: "20%",
       filter: filterProjectTeamMembers,
@@ -113,6 +119,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_lead: {
       label: "Project lead",
       searchable: true,
+      sortable: true,
       search: {
         label: "Search by project lead",
         operator: "_ilike",
@@ -125,6 +132,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_sponsor: {
       label: "Project sponsor",
       searchable: true,
+      sortable: true,
       search: {
         label: "Search by project sponsor",
         operator: "_ilike",
@@ -137,6 +145,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_partner: {
       label: "Project partners",
       searchable: true,
+      sortable: true,
       search: {
         label: "Search by project partners",
         operator: "_ilike",
@@ -148,6 +157,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     ecapris_subproject_id: {
       hidden: false,
       searchable: true,
+      sortable: true,
       label: "eCAPRIS ID",
       filter: (value) => (
         <ExternalLink
@@ -166,6 +176,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     updated_at: {
       hidden: false,
       searchable: false,
+      sortable: true,
       label: "Last modified",
       filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
@@ -179,60 +190,79 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     // necessary details to work with Grid Table
     task_orders: {
       type: "array",
+      sortable: true,
     },
     task_order_names: {
       type: "string",
+      sortable: true,
     },
     project_feature: {
       type: "array",
+      sortable: false,
     },
     type_name: {
       type: "string",
+      sortable: true,
     },
     funding_source_name: {
       type: "string",
+      sortable: true,
     },
     project_note: {
       type: "string",
+      sortable: true,
     },
     construction_start_date: {
       type: "date",
+      sortable: true,
     },
     completion_end_date: {
       type: "date",
+      sortable: true,
     },
     project_inspector: {
       type: "string",
+      sortable: true,
     },
     project_designer: {
       type: "string",
+      sortable: true,
     },
     contractors: {
       type: "string",
+      sortable: true,
     },
     contract_numbers: {
       type: "string",
+      sortable: true,
     },
     project_tags: {
       type: "string",
+      sortable: true,
     },
     added_by: {
       type: "string",
+      sortable: true,
     },
     interim_project_id: {
       type: "Int",
+      sortable: true,
     },
     children_project_ids: {
       type: "array",
+      sortable: true,
     },
     parent_project_id: {
       type: "Int",
+      sortable: true,
     },
     parent_project_name: {
       type: "string",
+      sortable: true,
     },
     components: {
       type: "string",
+      sortable: true,
     },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
