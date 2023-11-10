@@ -175,14 +175,16 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
+  const classes = useStyles();
+
+  /* Create link back to previous filters using queryString state passed with React Router */
   const locationState = location?.state;
   const previousProjectListViewQueryString = locationState
-    ? locationState.previousProjectListViewQueryString
+    ? locationState.queryString
     : null;
   const allProjectsLink = !previousProjectListViewQueryString
     ? "/moped/projects"
     : `/moped/projects${previousProjectListViewQueryString}`;
-  const classes = useStyles();
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
