@@ -163,11 +163,6 @@ export const useColumns = () => {
     [hiddenColumns]
   );
 
-  console.log({ columnsToReturnInQuery });
-
-  // TODO: That way, we can use state to determine what columns are should be fetched or not
-  // TODO: Return columnsToReturnInQuery from this hook to be used by useGetProjectListView
-
   const columns = useMemo(
     () => [
       {

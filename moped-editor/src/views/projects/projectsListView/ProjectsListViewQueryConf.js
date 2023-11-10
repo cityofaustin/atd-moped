@@ -46,10 +46,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   },
   columns: {
     project_id: {
-      hidden: true,
-      primary_key: true,
-      searchable: true,
-      sortable: false,
+      searchable: true, // useSearch
       label: "Project ID",
       search: {
         label: "Search by project ID",
@@ -67,7 +64,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     project_name: {
       searchable: true,
-      sortable: false,
       link: "project_id",
       label: "Project name",
       search: {
@@ -82,7 +78,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_description: {
       hidden: true,
       searchable: true,
-      sortable: false,
       label: "Project description",
       search: {
         label: "Search by project description",
@@ -95,7 +90,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     current_phase: {
       searchable: true,
-      sortable: false,
       label: "Status",
       width: "15%",
       search: {
@@ -108,12 +102,10 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     current_phase_key: {
       searchable: false,
-      sortable: false,
       hidden: true,
     },
     project_team_members: {
       searchable: false,
-      sortable: false,
       label: "Team members",
       width: "20%",
       filter: filterProjectTeamMembers,
@@ -156,7 +148,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     ecapris_subproject_id: {
       hidden: false,
       searchable: true,
-      sortable: true,
       label: "eCAPRIS ID",
       filter: (value) => (
         <ExternalLink
@@ -175,7 +166,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     updated_at: {
       hidden: false,
       searchable: false,
-      sortable: true,
       label: "Last modified",
       filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
@@ -243,7 +233,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     components: {
       type: "string",
-    }
+    },
   },
   // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
   order_by: { updated_at: "desc" },
