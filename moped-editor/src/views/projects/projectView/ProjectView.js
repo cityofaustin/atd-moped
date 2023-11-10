@@ -175,10 +175,13 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const previousFilters = location.state?.filters;
-  const allProjectsLink = !!previousFilters
-    ? `/moped/projects?filter=${previousFilters}`
-    : "/moped/projects";
+  const locationState = location?.state;
+  const previousProjectListViewQueryString = locationState
+    ? locationState.previousProjectListViewQueryString
+    : null;
+  const allProjectsLink = !previousProjectListViewQueryString
+    ? "/moped/projects"
+    : `/moped/projects${previousProjectListViewQueryString}`;
   const classes = useStyles();
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
@@ -209,6 +212,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
+    fetchPolicy: "network-only",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;

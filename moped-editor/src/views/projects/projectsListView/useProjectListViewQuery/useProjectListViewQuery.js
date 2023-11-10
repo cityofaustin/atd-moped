@@ -12,7 +12,7 @@ export const useGetProjectListView = ({
   advancedSearchWhereString,
 }) => {
   const { query, exportQuery } = useMemo(() => {
-    const query = gql`query ProjectListView {
+    const queryString = `query ProjectListView {
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
@@ -35,8 +35,11 @@ export const useGetProjectListView = ({
           }
         }
       }`;
+    const query = gql`
+      ${queryString}
+    `;
 
-    const exportQuery = gql`{
+    const exportQueryString = gql`{
       project_list_view (
           order_by: {${orderByColumn}: ${orderByDirection}}
           where: { 
@@ -57,6 +60,9 @@ export const useGetProjectListView = ({
         }
       }
     }`;
+    const exportQuery = gql`
+      ${exportQueryString}
+    `;
 
     return { query, exportQuery };
   }, [
