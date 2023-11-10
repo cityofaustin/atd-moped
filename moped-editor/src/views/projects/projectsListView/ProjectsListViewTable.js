@@ -82,19 +82,6 @@ export const DEFAULT_HIDDEN_COLS = {
 };
 
 /**
- * Keeps localStorage column config in sync with UI interactions
- * @param {Object} column - the MT column config with the `field` prop - aka the column name
- * @param {Bool} hidden - the hidden state of the column
- */
-const handleColumnChange = ({ field }, hidden) => {
-  let storedConfig =
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
-    DEFAULT_HIDDEN_COLS;
-  storedConfig = { ...storedConfig, [field]: hidden };
-  localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-};
-
-/**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
  * @return {JSX.Element}
@@ -133,9 +120,21 @@ const ProjectsListViewTable = () => {
 
   const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
 
-  const { columns } = useColumns({
+  const { columns, setHiddenColumns } = useColumns({
     columnsToReturn,
   });
+
+  /**
+   * Keeps localStorage column config in sync with UI interactions
+   * @param {Object} column - the MT column config with the `field` prop - aka the column name
+   * @param {Bool} hidden - the hidden state of the column
+   */
+  const handleColumnChange = ({ field }, hidden) => {
+    setHiddenColumns((prevHiddenColumns) => ({
+      ...prevHiddenColumns,
+      [field]: hidden,
+    }));
+  };
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn,

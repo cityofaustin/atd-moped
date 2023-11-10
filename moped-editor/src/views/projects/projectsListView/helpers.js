@@ -148,6 +148,10 @@ export const useColumns = ({ columnsToReturn }) => {
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
 
+  useEffect(() => {
+    localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
+  }, [hiddenColumns]);
+
   console.log({ hiddenColumns });
 
   // TODO: Manage hidden columns in local storage in here
@@ -463,7 +467,7 @@ export const useColumns = ({ columnsToReturn }) => {
     [hiddenColumns, queryString]
   );
 
-  return { columns };
+  return { columns, setHiddenColumns };
 };
 
 /**
