@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// TODO: Move this config into PROJECT_LIST_VIEW_QUERY_CONFIG
 /**
  * Default column display (if no config in local storage)
  */
@@ -118,11 +119,7 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
-
-  const { columns, setHiddenColumns, columnsToReturnInQuery } = useColumns({
-    columnsToReturn,
-  });
+  const { columns, setHiddenColumns, columnsToReturnInQuery } = useColumns();
 
   /**
    * Keeps localStorage column config in sync with UI interactions

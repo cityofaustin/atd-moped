@@ -1,5 +1,5 @@
 /**
- * The Query configuration (now also including filters)
+ * The Query configuration for the ProjectsListView component
  * @constant
  * @type {object}
  * @augments PROJECT_LIST_VIEW_FILTERS_CONFIG
@@ -51,7 +51,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
         name: "edit_road",
         color: "primary",
       },
-      width: "*",
       type: "Int",
     },
     project_name: {
@@ -65,7 +64,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "*",
       type: "String",
     },
     project_description: {
@@ -79,14 +77,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
         quoted: true,
         envelope: "%{VALUE}%",
       },
-      width: "50%",
       type: "String",
     },
     current_phase: {
       searchable: true,
       sortable: true,
       label: "Status",
-      width: "15%",
       search: {
         label: "Search by current phase",
         operator: "_ilike",
@@ -104,7 +100,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: false,
       sortable: true,
       label: "Team members",
-      width: "20%",
     },
     project_lead: {
       label: "Project lead",
