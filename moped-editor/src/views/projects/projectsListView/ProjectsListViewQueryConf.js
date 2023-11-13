@@ -114,7 +114,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       sortable: true,
       label: "Team members",
       width: "20%",
-      filter: filterProjectTeamMembers,
+      // filter: filterProjectTeamMembers,
     },
     project_lead: {
       label: "Project lead",
