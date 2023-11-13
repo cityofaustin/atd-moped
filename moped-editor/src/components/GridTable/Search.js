@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { createBrowserHistory } from "history";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -41,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   advancedSearchPaper: {
-    paddingTop: "0px",
+    paddingTop: theme.spacing(1),
     paddingRight: theme.spacing(2),
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(2),
@@ -52,8 +51,6 @@ const useStyles = makeStyles((theme) => ({
     padding: "12px",
   },
 }));
-
-const history = createBrowserHistory();
 
 /**
  * Renders a table search component with a search bar and search filters
@@ -73,7 +70,6 @@ const history = createBrowserHistory();
 const Search = ({
   filters,
   setFilters,
-  filterQuery,
   parentData = null,
   advancedSearchAnchor,
   setAdvancedSearchAnchor,
@@ -82,9 +78,11 @@ const Search = ({
   queryConfig,
   filtersConfig,
   handleExportButtonClick,
+  isOr,
+  setIsOr,
 }) => {
   const classes = useStyles();
-  const queryPath = useLocation().pathname;
+  let [, setSearchParams] = useSearchParams();
   const divRef = React.useRef();
 
   /**
@@ -99,8 +97,11 @@ const Search = ({
    */
   const handleSwitchToSearch = () => {
     setFilters({});
-    filterQuery.delete("filter");
-    history.replace(`${queryPath}?`);
+    setIsOr(false);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete("filters");
+      return prevSearchParams;
+    });
   };
 
   /**
@@ -146,6 +147,8 @@ const Search = ({
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
+                isOr={isOr}
+                handleSwitchToSearch={handleSwitchToSearch}
               />
             </Grid>
             <Grid
@@ -187,12 +190,12 @@ const Search = ({
           <Filters
             filters={filters}
             setFilters={setFilters}
-            filterQuery={filterQuery}
-            history={history}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}
             setSearchFieldValue={setSearchFieldValue}
             setSearchTerm={setSearchTerm}
+            isOr={isOr}
+            setIsOr={setIsOr}
           />
         </Paper>
       </Popper>

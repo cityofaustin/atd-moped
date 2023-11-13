@@ -1,4 +1,4 @@
-DROP VIEW project_list_view CASCADE;
+drop VIEW project_list_view cascade;
 
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
@@ -43,7 +43,7 @@ AS WITH project_person_list_lookup AS (
               ', '::text) AS task_order_names_short,
           jsonb_agg(task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
           string_agg(DISTINCT mpwa.contractor,
-          ', '::text) AS workgroup_contractors,
+          ', '::text) AS contractors,
           string_agg(mpwa.contract_number,
           ', '::text) AS contract_numbers FROM moped_proj_work_activity mpwa
       LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object) ON TRUE WHERE 1 = 1
@@ -78,7 +78,7 @@ AS WITH project_person_list_lookup AS (
     mp.knack_project_id,
     proj_notes.project_note,
     proj_notes.date_created as project_note_date_created,
-    work_activities.workgroup_contractors,
+    work_activities.contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
@@ -201,14 +201,12 @@ AS WITH project_person_list_lookup AS (
     cpl.children_project_ids,
     proj_notes.project_note,
     proj_notes.date_created,
-    work_activities.workgroup_contractors,
+    work_activities.contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders;
 
--- this view depends on the project list view
-DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
         mpc.project_id, 
@@ -261,7 +259,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_inspector, 
         plv.project_designer, 
         plv.project_tags, 
-        plv.workgroup_contractors, 
+        plv.contractors, 
         plv.contract_numbers, 
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text as project_url, 
@@ -294,7 +292,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_signals.component_id, 
                 feature_signals.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_signals.geography, 5):: geometry
+                    ST_Buffer(feature_signals.geography, 7):: geometry
                 ) AS line_geography, 
                 feature_signals.signal_id, 
                 NULL AS length_feet 
@@ -320,7 +318,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_intersections.component_id, 
                 feature_intersections.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_intersections.geography, 5):: geometry
+                    ST_Buffer(feature_intersections.geography, 7):: geometry
                 ) AS line_geography, 
                 NULL AS signal_id, 
                 NULL AS length_feet 
@@ -334,7 +332,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
                 feature_drawn_points.component_id, 
                 feature_drawn_points.geography :: geometry, 
                 ST_ExteriorRing(
-                    ST_Buffer(feature_drawn_points.geography, 5):: geometry
+                    ST_Buffer(feature_drawn_points.geography, 7):: geometry
                 ) AS line_geography, 
                 NULL AS signal_id, 
                 NULL AS length_feet 
