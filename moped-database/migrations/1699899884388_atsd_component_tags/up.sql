@@ -1,4 +1,5 @@
 ALTER TABLE moped_component_tags DROP CONSTRAINT moped_component_tags_name_key;
+ALTER TABLE public.moped_component_tags add constraint moped_component_tags_name_key UNIQUE ("name", "type");
 
 INSERT INTO public.moped_component_tags (name, "type", slug)
         values
