@@ -175,11 +175,16 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const { queryString: previousProjectListViewQueryString } = location.state;
+  const classes = useStyles();
+
+  /* Create link back to previous filters using queryString state passed with React Router */
+  const locationState = location?.state;
+  const previousProjectListViewQueryString = locationState
+    ? locationState.queryString
+    : null;
   const allProjectsLink = !previousProjectListViewQueryString
     ? "/moped/projects"
     : `/moped/projects${previousProjectListViewQueryString}`;
-  const classes = useStyles();
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
@@ -209,7 +214,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "network-only",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;
