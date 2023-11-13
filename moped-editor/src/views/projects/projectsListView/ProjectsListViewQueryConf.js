@@ -1,9 +1,5 @@
-import React from "react";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
 import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
-import ExternalLink from "../../../components/ExternalLink";
-import { filterProjectTeamMembers } from "./helpers.js";
-import { formatTimeStampTZType } from "src/utils/dateAndTime";
 
 /**
  * The Query configuration (now also including filters)
@@ -114,7 +110,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       sortable: true,
       label: "Team members",
       width: "20%",
-      // filter: filterProjectTeamMembers,
     },
     project_lead: {
       label: "Project lead",
@@ -127,7 +122,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
         envelope: "%{VALUE}%",
       },
       type: "string",
-      filter: (value) => (value === "None" ? "-" : value),
     },
     project_sponsor: {
       label: "Project sponsor",
@@ -140,7 +134,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
         envelope: "%{VALUE}%",
       },
       type: "string",
-      filter: (value) => (value === "None" ? "-" : value),
     },
     project_partner: {
       label: "Project partners",
@@ -159,12 +152,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
-      filter: (value) => (
-        <ExternalLink
-          text={value}
-          url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${value}`}
-        />
-      ),
       type: "string",
       search: {
         label: "Search by eCapris subproject ID",
@@ -178,7 +165,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: false,
       sortable: true,
       label: "Last modified",
-      filter: (value) => formatTimeStampTZType(value),
       type: "date_iso",
     },
     public_process_status: {
@@ -186,8 +172,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: false,
       type: "string",
     },
-    // the following column configurations only work with material table and do not have the
-    // necessary details to work with Grid Table
     task_orders: {
       type: "array",
       sortable: true,
@@ -265,11 +249,4 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       sortable: true,
     },
   },
-  // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
-  order_by: { updated_at: "desc" },
-  where: null,
-  or: null,
-  and: null,
-  limit: 250,
-  offset: 0,
 };
