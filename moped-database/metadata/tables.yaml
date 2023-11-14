@@ -4549,6 +4549,37 @@
           - date_added
         filter: {}
 - table:
+    name: moped_user_events
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+    - role: moped-editor
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+    - role: moped-viewer
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+- table:
     name: moped_user_followed_projects
     schema: public
   object_relationships:
@@ -4663,11 +4694,11 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
   select_permissions:
     - role: moped-admin
@@ -4681,6 +4712,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4700,6 +4732,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4719,6 +4752,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4743,7 +4777,6 @@
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
         filter: {}
         check: {}
