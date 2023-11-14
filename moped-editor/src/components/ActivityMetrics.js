@@ -12,9 +12,9 @@ export default function ActivityMetrics({ children }) {
   const [setLastSeen] = useMutation(INSERT_USER_EVENT, {
     variables: { event_name: "app_load" },
   });
+  const isLoggedIn = !!user;
   useEffect(() => {
-    if (!user) {
-      // this event can fire when the user is not logged in
+    if (!isLoggedIn) {
       return;
     }
     setLastSeen().catch((error) => {
@@ -23,6 +23,6 @@ export default function ActivityMetrics({ children }) {
         error
       );
     });
-  }, [setLastSeen, user]);
+  }, [setLastSeen, isLoggedIn]);
   return children;
 }
