@@ -11,7 +11,7 @@ RETURNS trigger
 LANGUAGE plpgsql
 AS $$ 
 BEGIN
-  NEW.updated_at = now();
+  NEW.updated_at := now();
   RETURN NEW;
 END;
 $$;
