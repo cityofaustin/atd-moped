@@ -1,6 +1,14 @@
 import RoomOutlinedIcon from "@mui/icons-material/RoomOutlined";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 
+/** Fields which do not need to be rendered in the activity log */
+const CHANGE_FIELDS_TO_IGNORE = [
+  "updated_by_user_id",
+  "created_by_user_id",
+  "created_at",
+  "updated_at",
+];
+
 export const formatComponentsActivity = (
   change,
   componentList,
@@ -113,6 +121,9 @@ export const formatComponentsActivity = (
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
     if (newRecord[field] !== oldRecord[field]) {
+      if (CHANGE_FIELDS_TO_IGNORE.includes(field)) {
+        return;
+      }
       changes.push(entryMap.fields[field]?.label);
     }
   });
