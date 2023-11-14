@@ -128,6 +128,11 @@ export const formatComponentsActivity = (
     }
   });
 
+  // handle an edge case where only ignored fields were edited
+  if (changes.length === 0) {
+    return { changeIcon: null, changeText: null };
+  }
+
   return {
     changeIcon,
     changeText: [

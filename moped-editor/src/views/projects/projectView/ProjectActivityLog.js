@@ -230,6 +230,11 @@ const ProjectActivityLog = () => {
                     lookupData,
                     projectId
                   );
+                  // allows log formatters to return a `null` changeText, causing the
+                  // event to not be rendered at all
+                  if (!changeText) {
+                    return null;
+                  }
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell
