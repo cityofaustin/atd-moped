@@ -540,7 +540,7 @@ export const ProjectActivityLogTableMaps = {
       id: {
         label: "ID",
       },
-      contractor: {
+      workgroup_contractor: {
         label: "workgroup/contractor",
       },
       contract_number: {
