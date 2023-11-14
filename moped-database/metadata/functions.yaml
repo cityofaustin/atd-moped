@@ -1,11 +1,1 @@
-- function:
-    name: set_last_seen_date
-    schema: public
-  configuration:
-    custom_root_fields: {}
-    exposed_as: mutation
-    session_argument: hasura_session
-  permissions:
-    - role: moped-viewer
-    - role: moped-editor
-    - role: moped-admin
+[]
