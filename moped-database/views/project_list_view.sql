@@ -1,4 +1,4 @@
--- latest version 1699044835114_change_contractor_column_name
+-- latest version 1699978012000_change_contractor_column_name
 DROP VIEW project_list_view CASCADE;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -42,8 +42,8 @@ AS WITH project_person_list_lookup AS (
               ', '::text) AS task_order_names,
           string_agg(task_order_objects.task_order_object ->> 'task_order'::text,
               ', '::text) AS task_order_names_short,
-          jsonb_agg(task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
-          string_agg(DISTINCT mpwa.contractor,
+          jsonb_agg(DISTINCT task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
+          string_agg(DISTINCT mpwa.workgroup_contractor,
           ', '::text) AS workgroup_contractors,
           string_agg(mpwa.contract_number,
           ', '::text) AS contract_numbers FROM moped_proj_work_activity mpwa
