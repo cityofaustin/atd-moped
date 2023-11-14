@@ -2032,7 +2032,20 @@
         insert:
           columns: '*'
         update:
-          columns: '*'
+          columns:
+            - interim_project_component_id
+            - project_component_id
+            - location_description
+            - component_id
+            - is_deleted
+            - phase_id
+            - completion_date
+            - project_id
+            - created_at
+            - subphase_id
+            - created_by_user_id
+            - description
+            - srts_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
