@@ -6,7 +6,7 @@ DELETE FROM moped_components_subcomponents WHERE id IN (
     JOIN 
         moped_subcomponents ms ON ms.subcomponent_id = mcs.subcomponent_id
     WHERE 
-        subcomponent_name = 'Protection Type - ZICLA Barriers')
+        subcomponent_name = 'Protection Type - ZICLA Barriers');
 
-DELETE FROM moped_subcomponents WHERE subcomponent_name = 'Protection Type - ZICLA Barriers';
+DELETE FROM moped_subcomponents WHERE subcomponent_name = 'Protection Type - ZICLA Barriers'
 
