@@ -466,7 +466,7 @@ export const useColumns = () => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, queryString]
+    [hiddenColumns, queryString, COLUMN_CONFIG]
   );
 
   return { columns, setHiddenColumns, columnsToReturnInQuery };
