@@ -1881,119 +1881,150 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
-          - completion_date
           - component_id
-          - date_added
-          - description
+          - created_by_user_id
           - interim_project_component_id
-          - is_deleted
-          - location_description
           - phase_id
           - project_component_id
           - project_id
           - subphase_id
+          - updated_by_user_id
+          - description
+          - location_description
+          - completion_date
+          - created_at
+          - updated_at
+          - is_deleted
           - srts_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_components
       definition:
@@ -2001,7 +2032,20 @@
         insert:
           columns: '*'
         update:
-          columns: '*'
+          columns:
+            - interim_project_component_id
+            - project_component_id
+            - location_description
+            - component_id
+            - is_deleted
+            - phase_id
+            - completion_date
+            - project_id
+            - created_at
+            - subphase_id
+            - created_by_user_id
+            - description
+            - srts_id
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -3768,15 +3812,6 @@
           table:
             name: moped_proj_work_activity
             schema: public
-    - name: project_geography
-      using:
-        manual_configuration:
-          column_mapping:
-            project_id: project_id
-          insertion_order: null
-          remote_table:
-            name: project_geography
-            schema: public
     - name: moped_project_types
       using:
         foreign_key_constraint_on:
@@ -3790,6 +3825,15 @@
           column: parent_project_id
           table:
             name: moped_project
+            schema: public
+    - name: project_geography
+      using:
+        manual_configuration:
+          column_mapping:
+            project_id: project_id
+          insertion_order: null
+          remote_table:
+            name: project_geography
             schema: public
   insert_permissions:
     - role: moped-admin
@@ -4518,6 +4562,37 @@
           - date_added
         filter: {}
 - table:
+    name: moped_user_events
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+    - role: moped-editor
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+    - role: moped-viewer
+      permission:
+        check: {}
+        set:
+          user_id: x-hasura-user-db-id
+        columns:
+          - event_name
+          - user_id
+      comment: ""
+- table:
     name: moped_user_followed_projects
     schema: public
   object_relationships:
@@ -4632,11 +4707,11 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
   select_permissions:
     - role: moped-admin
@@ -4650,6 +4725,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4669,6 +4745,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4688,6 +4765,7 @@
           - is_deleted
           - is_user_group_member
           - last_name
+          - last_seen_date
           - note
           - picture
           - roles
@@ -4712,7 +4790,6 @@
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
         filter: {}
         check: {}

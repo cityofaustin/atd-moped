@@ -87,6 +87,13 @@ const staffColumns = [
     // if the user has been deleted (is_deleted === True), then they are not active
     valueGetter: (props) => (props.value ? "No" : "Yes"),
   },
+  {
+    headerName: "Last seen",
+    field: "last_seen_date",
+    valueGetter: (props) =>
+      props.value ? new Date(props.value).toLocaleString() : "",
+    width: 200,
+  },
 ];
 
 const StaffListView = () => {
