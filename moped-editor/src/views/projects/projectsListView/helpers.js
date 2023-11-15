@@ -9,7 +9,7 @@ import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
-import { DEFAULT_HIDDEN_COLS } from "./ProjectsListViewTable";
+import { DEFAULT_HIDDEN_COLS } from "./ProjectsListViewQueryConf";
 import theme from "src/theme";
 
 export const filterNullValues = (value) => {
@@ -147,6 +147,7 @@ export const useColumns = () => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
+  console.log(DEFAULT_HIDDEN_COLS);
 
   /*
    * Sync hidden columns state with local storage
@@ -155,13 +156,17 @@ export const useColumns = () => {
     localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
   }, [hiddenColumns]);
 
-  const columnsToReturnInQuery = useMemo(
-    () =>
-      Object.keys(hiddenColumns)
-        .filter((key) => hiddenColumns[key] === false)
-        .map((key) => key),
-    [hiddenColumns]
-  );
+  const columnsToReturnInQuery = useMemo(() => {
+    const columnsShownInUI = Object.keys(hiddenColumns)
+      .filter((key) => hiddenColumns[key] === false)
+      .map((key) => key);
+
+    // Some columns are dependencies of other columns to render, so we need to include them
+    // Ex. Rendering ProjectStatusBadge requires current_phase_key
+    const columnsNeededToRender = ["current_phase_key"];
+
+    return [...columnsShownInUI, ...columnsNeededToRender];
+  }, [hiddenColumns]);
 
   const columns = useMemo(
     () => [

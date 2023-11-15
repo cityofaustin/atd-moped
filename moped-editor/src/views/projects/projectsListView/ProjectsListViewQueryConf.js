@@ -40,6 +40,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true, // useSearch
       sortable: true,
       label: "Project ID",
+      defaultHidden: false,
+      showInTable: true,
       search: {
         label: "Search by project ID",
         operator: "_eq",
@@ -58,6 +60,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       sortable: true,
       link: "project_id",
       label: "Project name",
+      defaultHidden: false,
+      showInTable: true,
       search: {
         label: "Search by project name",
         operator: "_ilike",
@@ -83,6 +87,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true,
       sortable: true,
       label: "Status",
+      defaultHidden: false,
+      showInTable: true,
       search: {
         label: "Search by current phase",
         operator: "_ilike",
@@ -100,11 +106,15 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: false,
       sortable: true,
       label: "Team members",
+      defaultHidden: true,
+      showInTable: true,
     },
     project_lead: {
       label: "Project lead",
       searchable: true,
       sortable: true,
+      defaultHidden: false,
+      showInTable: true,
       search: {
         label: "Search by project lead",
         operator: "_ilike",
@@ -117,6 +127,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       label: "Project sponsor",
       searchable: true,
       sortable: true,
+      defaultHidden: false,
+      showInTable: true,
       search: {
         label: "Search by project sponsor",
         operator: "_ilike",
@@ -129,6 +141,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       label: "Project partners",
       searchable: true,
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
       search: {
         label: "Search by project partners",
         operator: "_ilike",
@@ -142,6 +156,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
+      defaultHidden: false,
+      showInTable: true,
       type: "string",
       search: {
         label: "Search by eCapris subproject ID",
@@ -154,6 +170,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       hidden: false,
       searchable: false,
       sortable: true,
+      defaultHidden: false,
+      showInTable: true,
       label: "Last modified",
       type: "date_iso",
     },
@@ -161,74 +179,109 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       label: "Public process status",
       searchable: false,
       type: "string",
+      defaultHidden: true,
+      showInTable: true,
     },
     task_orders: {
       type: "array",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     task_order_names: {
       type: "string",
       sortable: true,
     },
+    // signal_ids
     project_feature: {
       type: "array",
       sortable: false,
+      defaultHidden: true,
+      showInTable: true,
     },
     type_name: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     funding_source_name: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     project_note: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     construction_start_date: {
       type: "date",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     completion_end_date: {
       type: "date",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     project_inspector: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     project_designer: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     contractors: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     contract_numbers: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     project_tags: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     added_by: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     interim_project_id: {
       type: "Int",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     children_project_ids: {
       type: "array",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     parent_project_id: {
       type: "Int",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     parent_project_name: {
       type: "string",
@@ -237,6 +290,20 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     components: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
   },
 };
+
+/**
+ * Default column display (if no config in local storage)
+ */
+export const DEFAULT_HIDDEN_COLS = Object.entries(
+  PROJECT_LIST_VIEW_QUERY_CONFIG.columns
+).reduce((acc, [columnName, config]) => {
+  if (config.showInTable === true) {
+    acc[columnName] = config.defaultHidden;
+  }
+  return acc;
+}, {});

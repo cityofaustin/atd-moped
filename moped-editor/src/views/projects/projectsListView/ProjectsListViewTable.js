@@ -48,40 +48,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// TODO: Move this config into PROJECT_LIST_VIEW_QUERY_CONFIG
-/**
- * Default column display (if no config in local storage)
- */
-export const DEFAULT_HIDDEN_COLS = {
-  project_id: false,
-  project_name: false,
-  current_phase: false,
-  project_team_members: true,
-  project_lead: false,
-  project_sponsor: false,
-  project_partner: true,
-  ecapris_subproject_id: false,
-  updated_at: false,
-  project_feature: true, // signal_ids
-  task_orders: true,
-  type_name: true,
-  funding_source_name: true,
-  project_note: true,
-  construction_start_date: true,
-  completion_end_date: true,
-  project_inspector: true,
-  project_designer: true,
-  contractors: true,
-  contract_numbers: true,
-  project_tags: true,
-  added_by: true,
-  public_process_status: true,
-  interim_project_id: true,
-  children_project_ids: true,
-  parent_project_id: true,
-  components: true,
-};
-
 /**
  * GridTable Search Capability plus Material Table
  * @param {Object} query - The GraphQL query configuration
