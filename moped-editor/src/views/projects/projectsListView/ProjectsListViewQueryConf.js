@@ -38,20 +38,17 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   columns: {
     project_id: {
       searchable: true, // useSearch
-      sortable: true,
+      sortable: true, // useColumns
       label: "Project ID",
-      defaultHidden: false,
-      showInTable: true,
+      defaultHidden: false, // useColumns
+      showInTable: true, // useColumns
       search: {
+        /* useAdvancedSearch */
         label: "Search by project ID",
         operator: "_eq",
         quoted: false,
         envelope: "%{VALUE}%",
         invalidValueDefault: 0,
-      },
-      icon: {
-        name: "edit_road",
-        color: "primary",
       },
       type: "Int",
     },

@@ -9,7 +9,10 @@ import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
-import { DEFAULT_HIDDEN_COLS } from "./ProjectsListViewQueryConf";
+import {
+  PROJECT_LIST_VIEW_QUERY_CONFIG,
+  DEFAULT_HIDDEN_COLS,
+} from "./ProjectsListViewQueryConf";
 import theme from "src/theme";
 
 export const filterNullValues = (value) => {
@@ -147,7 +150,8 @@ export const useColumns = () => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
-  console.log(DEFAULT_HIDDEN_COLS);
+
+  const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
   /*
    * Sync hidden columns state with local storage
@@ -162,7 +166,7 @@ export const useColumns = () => {
       .map((key) => key);
 
     // Some columns are dependencies of other columns to render, so we need to include them
-    // Ex. Rendering ProjectStatusBadge requires current_phase_key
+    // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
     const columnsNeededToRender = ["current_phase_key"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
@@ -273,7 +277,7 @@ export const useColumns = () => {
         title: "Signal IDs",
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
-        sorting: false,
+        sorting: COLUMN_CONFIG["project_feature"].sortable,
         render: (entry) => {
           if (!entry?.project_feature) {
             return "-";
