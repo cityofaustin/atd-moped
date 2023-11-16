@@ -1,4 +1,3 @@
--- current version: 1700160199724_substantial_completion_date_component_view
 DROP VIEW component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
