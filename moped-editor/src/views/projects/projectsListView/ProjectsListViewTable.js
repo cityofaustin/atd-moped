@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useCallback } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
@@ -111,9 +117,24 @@ const ProjectsListViewTable = () => {
     advancedSearchWhereString,
   });
 
-  const { data, error, refetch } = useQuery(projectListViewQuery, {
+  const {
+    data: projectListViewData,
+    error,
+    refetch,
+  } = useQuery(projectListViewQuery, {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
+
+  const [previousData, setPreviousData] = useState(null);
+
+  const data = useMemo(() => {
+    if (projectListViewData) {
+      setPreviousData(projectListViewData);
+      return projectListViewData;
+    } else {
+      return previousData;
+    }
+  }, [projectListViewData, setPreviousData, previousData]);
 
   const { handleExportButtonClick, dialogOpen } = useCsvExport({
     query: exportQuery,
