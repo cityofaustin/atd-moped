@@ -1,3 +1,5 @@
+alter table "public"."moped_proj_work_activity" rename column "contractor" to "workgroup_contractor";
+
 DROP VIEW project_list_view CASCADE;
 
 CREATE OR REPLACE VIEW public.project_list_view
