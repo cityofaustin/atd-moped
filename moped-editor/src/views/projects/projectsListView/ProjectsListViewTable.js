@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useContext,
-  useCallback,
-  useMemo,
-} from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
@@ -25,6 +19,7 @@ import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
+import { useCurrentData } from "./useProjectListViewQuery/usePreviousData";
 
 /**
  * GridTable Style
@@ -125,16 +120,7 @@ const ProjectsListViewTable = () => {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
 
-  const [previousData, setPreviousData] = useState(null);
-
-  const data = useMemo(() => {
-    if (projectListViewData) {
-      setPreviousData(projectListViewData);
-      return projectListViewData;
-    } else {
-      return previousData;
-    }
-  }, [projectListViewData, setPreviousData, previousData]);
+  const data = useCurrentData(projectListViewData);
 
   const { handleExportButtonClick, dialogOpen } = useCsvExport({
     query: exportQuery,
