@@ -20,7 +20,6 @@ query {
     component_url
     construction_start_date
     contract_numbers
-    contractors
     council_districts
     current_phase_name
     current_phase_name_simple
@@ -61,6 +60,7 @@ query {
     type_name
     updated_at
     work_types
+    workgroup_contractors
   }
 }
 """

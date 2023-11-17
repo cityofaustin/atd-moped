@@ -238,7 +238,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-    contractors: {
+    workgroup_contractors: {
       type: "string",
       sortable: true,
       defaultHidden: true,
