@@ -15,7 +15,6 @@ import ProjectView from "src/views/projects/projectView/ProjectView";
 import ProjectsListView from "./views/projects/projectsListView/ProjectsListView";
 import DeviasStyleView from "./views/dev/DeviasStyleView/DeviasStyleView";
 import LookupsView from "./views/dev/LookupsView";
-import SignalProjectTable from "src/views/projects/signalProjectTable/SignalProjectTable";
 import DashboardView from "./views/dashboard/DashboardView";
 
 export const routes = [
@@ -81,11 +80,6 @@ export const routes = [
         path: "dev/lookups",
         action: "style:visit",
         element: <LookupsView />,
-      },
-      {
-        path: "views/signal-projects",
-        action: "projects:visit",
-        element: <SignalProjectTable />,
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],

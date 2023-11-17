@@ -278,7 +278,7 @@ const DashboardView = () => {
                 </Typography>
               </Grid>
             </Box>
-            <Box px={3} pt={3}>
+            <Box px={3} py={3}>
               <Grid>
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
@@ -330,37 +330,6 @@ const DashboardView = () => {
                   />
                 )}
               </Grid>
-            </Box>
-            <Box px={3} pb={3}>
-              <Card className={classes.cardWrapper}>
-                <CardContent>
-                  <Grid className={classes.cardTitle}>
-                    <Typography variant="h3" color="primary">
-                      Views
-                    </Typography>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Link
-                        href="/moped/views/signal-projects"
-                        noWrap
-                        underline={"hover"}
-                      >
-                        <Card>
-                          <CardContent className={classes.viewsCard}>
-                            <Grid item xs={4}>
-                              <TrafficIcon />
-                            </Grid>
-                            <Grid item xs={8}>
-                              <Typography>Signal Projects</Typography>
-                            </Grid>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
             </Box>
           </Grid>
         </Card>
