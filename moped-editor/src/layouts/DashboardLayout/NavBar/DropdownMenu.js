@@ -29,18 +29,8 @@ import emailToInitials from "../../../utils/emailToInitials";
 export const helpItems = [
   {
     linkType: "external",
-    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D",
-    title: "Report a bug ",
-  },
-  {
-    linkType: "external",
-    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Feature%20or%20Enhancement%20%E2%80%94%20An%20application%20I%20use%20could%20be%20improved%22%2C%22field_399%22%3A%22Moped%22%7D",
-    title: "Request an enhancement ",
-  },
-  {
-    linkType: "external",
-    link: "https://teams.microsoft.com/l/channel/19%3ab1179ddfc92d44ea9abb23db713eb60c%40thread.tacv2/General?groupId=54a90854-d3fa-4053-9173-5352715bab37&tenantId=5c5e19f6-a6ab-4b45-b1d0-be4608a9a67f",
-    title: "Ask a question ",
+    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_399%22%3A%22Moped%22%7D",
+    title: "Ask for help",
   },
   {
     linkType: "external",
