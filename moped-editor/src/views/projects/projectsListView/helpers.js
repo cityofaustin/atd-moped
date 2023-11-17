@@ -140,6 +140,8 @@ export const useTableComponents = ({
     ]
   );
 
+const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+
 /**
  * The Material Table column settings
  */
@@ -150,8 +152,6 @@ export const useColumns = () => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
-
-  const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
   /*
    * Sync hidden columns state with local storage
@@ -466,7 +466,7 @@ export const useColumns = () => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, queryString, COLUMN_CONFIG]
+    [hiddenColumns, queryString]
   );
 
   return { columns, setHiddenColumns, columnsToReturnInQuery };
