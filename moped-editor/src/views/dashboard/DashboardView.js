@@ -7,11 +7,9 @@ import {
   AppBar,
   Box,
   Card,
-  CardContent,
   CircularProgress,
   Container,
   Grid,
-  Link,
   Tab,
   Tabs,
   Typography,
@@ -28,8 +26,6 @@ import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
 
 import typography from "../../theme/typography";
-
-import TrafficIcon from "@mui/icons-material/Traffic";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
