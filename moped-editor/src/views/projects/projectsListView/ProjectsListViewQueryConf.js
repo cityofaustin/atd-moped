@@ -217,7 +217,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_designer: {
       type: "string",
     },
-    contractors: {
+    workgroup_contractors: {
       type: "string",
     },
     contract_numbers: {
