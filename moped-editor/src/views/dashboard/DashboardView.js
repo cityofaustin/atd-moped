@@ -21,7 +21,7 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 
-import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
+import RenderFieldLink from "../../components/RenderFieldLink";
 import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
