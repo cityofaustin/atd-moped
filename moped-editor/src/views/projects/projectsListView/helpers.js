@@ -142,13 +142,7 @@ export const useTableComponents = ({
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
-/**
- * The Material Table column settings
- */
-export const useColumns = () => {
-  const location = useLocation();
-  const queryString = location.search;
-
+export const useHiddenColumns = () => {
   const [hiddenColumns, setHiddenColumns] = useState(
     JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
   );
@@ -159,6 +153,16 @@ export const useColumns = () => {
   useEffect(() => {
     localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
   }, [hiddenColumns]);
+
+  return { hiddenColumns, setHiddenColumns };
+};
+
+/**
+ * The Material Table column settings
+ */
+export const useColumns = ({ hiddenColumns }) => {
+  const location = useLocation();
+  const queryString = location.search;
 
   const columnsToReturnInQuery = useMemo(() => {
     const columnsShownInUI = Object.keys(hiddenColumns)
@@ -469,7 +473,7 @@ export const useColumns = () => {
     [hiddenColumns, queryString]
   );
 
-  return { columns, setHiddenColumns, columnsToReturnInQuery };
+  return { columns, columnsToReturnInQuery };
 };
 
 /**

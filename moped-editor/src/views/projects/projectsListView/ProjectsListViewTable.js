@@ -5,7 +5,12 @@ import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import MaterialTable from "@material-table/core";
-import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
+import {
+  useTableComponents,
+  useColumns,
+  useTableOptions,
+  useHiddenColumns,
+} from "./helpers.js";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
@@ -86,19 +91,24 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const { columns, setHiddenColumns, columnsToReturnInQuery } = useColumns();
+  const { hiddenColumns, setHiddenColumns } = useHiddenColumns();
+
+  const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 
   /**
    * Keeps localStorage column config in sync with UI interactions
    * @param {Object} column - the MT column config with the `field` prop - aka the column name
    * @param {Bool} hidden - the hidden state of the column
    */
-  const handleColumnChange = ({ field }, hidden) => {
-    setHiddenColumns((prevHiddenColumns) => ({
-      ...prevHiddenColumns,
-      [field]: hidden,
-    }));
-  };
+  const handleColumnChange = useCallback(
+    ({ field }, hidden) => {
+      setHiddenColumns((prevHiddenColumns) => ({
+        ...prevHiddenColumns,
+        [field]: hidden,
+      }));
+    },
+    [setHiddenColumns]
+  );
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn: columnsToReturnInQuery,
