@@ -24,7 +24,7 @@ import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
-import { useCurrentData } from "./useProjectListViewQuery/usePreviousData";
+import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
  * GridTable Style
