@@ -29,7 +29,7 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION update_parent_records_audit_logs() IS 'Function to update audit logs for project and components';
+COMMENT ON FUNCTION update_parent_records_audit_logs() IS 'Function to update parent audit fields on update/insert into feature tables';
 
 -- Creating triggers for different feature tables to execute the function after insert or update operations
 
