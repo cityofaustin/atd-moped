@@ -29,6 +29,7 @@ const DEFAULT_VALUES = {
   phase_description: null,
   is_current_phase: false,
   project_id: null,
+  status_update: null,
 };
 
 const useDefaultValues = (phase) =>
@@ -80,10 +81,26 @@ export const onSubmitPhase = ({
   currentPhaseIdsToClear,
   onSubmitCallback,
 }) => {
-  const { project_phase_id } = data;
+  const { project_phase_id, status_update } = data;
   delete data.project_phase_id;
+  delete data.status_update;
 
-  const variables = { current_phase_ids_to_clear: currentPhaseIdsToClear };
+  let project_note = null;
+
+  if (status_update) {
+    project_note = {
+      project_id: data.project_id,
+      project_note: status_update,
+      added_by_user_id: 1,
+      project_note_type: 2,
+      phase_id: data.phase_id,
+    };
+  }
+
+  const variables = {
+    current_phase_ids_to_clear: currentPhaseIdsToClear,
+    project_note,
+  };
 
   if (!project_phase_id) {
     // inserting a new mutation - which has a slightly different
@@ -107,6 +124,7 @@ const ProjectPhaseForm = ({
   onSubmitCallback,
 }) => {
   console.log("TODO: CHECK SEED DATA!");
+  // throw `you need to use metadata preset to handle note added_by_user_id`?
   const isNewPhase = !phase.project_phase_id;
 
   const defaultValues = useDefaultValues(phase);
@@ -125,6 +143,8 @@ const ProjectPhaseForm = ({
 
   const subphases = useSubphases(watch("phase_id"), phases);
 
+  const isCurrentPhase = watch("is_current_phase");
+
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
     dependentFieldName: "subphase_id",
@@ -138,7 +158,7 @@ const ProjectPhaseForm = ({
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
     phase.project_phase_id,
-    watch("is_current_phase"),
+    isCurrentPhase,
     currentProjectPhaseIds
   );
 
@@ -177,15 +197,6 @@ const ProjectPhaseForm = ({
       </Grid>
     );
   }
-  // else if (loadingStatuses || loadingTaskOrders) {
-  //   return (
-  //     <Grid container spacing={2}>
-  //       <Grid item xs={12}>
-  //         <CircularProgress color="primary" size={20} />
-  //       </Grid>
-  //     </Grid>
-  //   );
-  // }
 
   return (
     <form
@@ -313,15 +324,36 @@ const ProjectPhaseForm = ({
             )}
           </FormControl>
         </Grid>
-      </Grid>
-      <Grid item container justifyContent="flex-end">
-        <FormControl>
-          <ControlledSwitch
-            name="is_current_phase"
-            control={control}
-            label="Current phase"
-          />
-        </FormControl>
+        <Grid item container justifyContent="flex-end">
+          <FormControl>
+            <ControlledSwitch
+              name="is_current_phase"
+              control={control}
+              label="Current phase"
+            />
+          </FormControl>
+        </Grid>
+        {isCurrentPhase && isNewPhase && (
+          <Grid item xs={12}>
+            <FormControl fullWidth error={!!formErrors?.status_update}>
+              <ControlledTextInput
+                fullWidth
+                label="Status update"
+                multiline
+                rows={3}
+                name="status_update"
+                control={control}
+                size="small"
+                helperText="Optionally include a project status update"
+              />
+              {formErrors?.status_update && (
+                <FormHelperText>
+                  {formErrors.status_update.message}
+                </FormHelperText>
+              )}
+            </FormControl>
+          </Grid>
+        )}
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>

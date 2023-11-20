@@ -329,6 +329,7 @@ export const ADD_PROJECT_PHASE = gql`
   mutation AddProjectPhase(
     $objects: [moped_proj_phases_insert_input!]!
     $current_phase_ids_to_clear: [Int!]!
+    $project_note: moped_proj_notes_insert_input!
   ) {
     insert_moped_proj_phases(objects: $objects) {
       returning {
@@ -340,6 +341,9 @@ export const ADD_PROJECT_PHASE = gql`
         is_current_phase
         project_id
       }
+    }
+    insert_moped_proj_notes_one(object: $project_note) {
+      project_note_id
     }
     update_moped_proj_phases(
       _set: { is_current_phase: false }

@@ -17,6 +17,7 @@ export const phaseValidationSchema = yup.object().shape({
     .nullable(),
   project_phase_id: yup.number().nullable().optional(),
   project_id: yup.number().required(),
+  status_update: yup.string().nullable().optional().max(5000),
 });
 
 /**
