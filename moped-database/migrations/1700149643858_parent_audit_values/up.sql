@@ -29,7 +29,7 @@ BEGIN
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION update_parent_records_audit_logs() IS 'Function to update audit logs for project components and parent projects';
+COMMENT ON FUNCTION update_parent_records_audit_logs() IS 'Function to update audit logs for project and components';
 
 -- Creating triggers for different feature tables to execute the function after insert or update operations
 
@@ -38,32 +38,32 @@ CREATE TRIGGER feature_drawn_lines_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON feature_drawn_lines
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_drawn_lines_parent_audit_log_trigger ON feature_drawn_lines IS 'Trigger to audit log updates on feature_drawn_lines';
+COMMENT ON TRIGGER feature_drawn_lines_parent_audit_log_trigger ON feature_drawn_lines IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_drawn_points table
 CREATE TRIGGER feature_drawn_points_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON feature_drawn_points
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_drawn_points_parent_audit_log_trigger ON feature_drawn_points IS 'Trigger to audit log updates on feature_drawn_points';
+COMMENT ON TRIGGER feature_drawn_points_parent_audit_log_trigger ON feature_drawn_points IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_intersections table
 CREATE TRIGGER feature_intersections_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON feature_intersections
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_intersections_parent_audit_log_trigger ON feature_intersections IS 'Trigger to audit log updates on feature_intersections';
+COMMENT ON TRIGGER feature_intersections_parent_audit_log_trigger ON feature_intersections IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_signals table
 CREATE TRIGGER feature_signals_trigger
 AFTER INSERT OR UPDATE ON feature_signals
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_signals_trigger ON feature_signals IS 'Trigger to audit log updates on feature_signals';
+COMMENT ON TRIGGER feature_signals_trigger ON feature_signals IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_street_segments table
 CREATE TRIGGER feature_street_segments_trigger
 AFTER INSERT OR UPDATE ON feature_street_segments
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_street_segments_trigger ON feature_street_segments IS 'Trigger to audit log updates on feature_street_segments';
+COMMENT ON TRIGGER feature_street_segments_trigger ON feature_street_segments IS 'Trigger to update parent project and component audit fields';
