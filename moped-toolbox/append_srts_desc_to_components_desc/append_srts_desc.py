@@ -29,7 +29,14 @@ auth = {
 }
 
 # Query for project component with SRTS ID
-query = """"""
+query = """
+query GetProjectComponentsBySrtsId($srtsId: String) {
+  moped_proj_components(where: {srts_id: {_eq: $srtsId}}) {
+    component_id
+    description
+  }
+}
+"""
 
 # Mutate project component description to include SRTS info from csv
 mutation = """"""
@@ -59,16 +66,20 @@ def format_request(request_raw):
 
 def main(env):
     # Consume csv file with SRTS IDs and info to append
+    srts_id = "from csv"
+    srts_csv_rows = [{"id": "an id", "info": "info"}]
 
-    # Fetch existing project component description
-    existing_activity_logs = make_hasura_request(
+    # Fetch existing project components that match an SRTS ID
+    # More than one component can match an SRTS ID
+    existing_project_components = make_hasura_request(
         query=query,
-        variables=None,
+        variables={"srtsId": srts_id},
         endpoint=auth[env]["HASURA_ENDPOINT"],
         admin_secret=auth[env]["HASURA_ADMIN_SECRET"],
     )["moped_proj_components"]
 
     # Collect SRTS IDs from csv with no match to log
+    no_match = []
 
     # Append SRTS info to project component description
 
