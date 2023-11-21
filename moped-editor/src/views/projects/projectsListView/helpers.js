@@ -147,12 +147,39 @@ export const useHiddenColumnsSettings = () => {
     localStorage.getItem("mopedColumnConfig")
   );
 
-  // TODO: Take the existing hidden columns and merge them with the default hidden columns
-  // TODO: Take the existing hidden columns and remove any that are not in the default hidden columns
+  let currentHiddenColumnSettings;
+
+  // If there are no existing hidden column settings, set the default hidden columns
+  if (!existingHiddenColumnSettings) {
+    localStorage.setItem(
+      "mopedColumnConfig",
+      JSON.stringify(DEFAULT_HIDDEN_COLS)
+    );
+
+    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
+  } else {
+    // Take the existing hidden columns and remove any that are not in the default hidden columns
+    currentHiddenColumnSettings = Object.entries(DEFAULT_HIDDEN_COLS).reduce(
+      (acc, [columnName, isHidden]) => {
+        if (!existingHiddenColumnSettings[columnName]) {
+          return {
+            ...acc,
+            [columnName]: DEFAULT_HIDDEN_COLS[columnName],
+          };
+        } else {
+          return { ...acc, [columnName]: isHidden };
+        }
+      },
+      {}
+    );
+  }
+
+  // TODO: Do we need to assume false unless set to true?
 
   const [hiddenColumns, setHiddenColumns] = useState(
-    existingHiddenColumnSettings ?? DEFAULT_HIDDEN_COLS
+    currentHiddenColumnSettings
   );
+  console.log(hiddenColumns);
 
   /*
    * Sync hidden columns state with local storage
@@ -163,6 +190,11 @@ export const useHiddenColumnsSettings = () => {
 
   return { hiddenColumns, setHiddenColumns };
 };
+
+// localStorage examples
+// key: mopedColumnConfig
+// value: {"current_phase":false,"interim_project_id":true,"public_process_status":true,"added_by":true,"project_tags":true,"contract_numbers":true,"contractors":true,"project_inspector":true,"project_designer":true,"completion_end_date":true,"construction_start_date":true,"funding_source_name":true,"type_name":true,"task_order":false,"project_feature":true,"parent_project_id":true,"children_project_ids":true,"project_note":false,"project_sponsor":true,"project_partner":true,"updated_at":true,"ecapris_subproject_id":true,"components":false}
+// value: {"project_team_members":false,"project_lead":true,"project_sponsor":true,"project_partner":false}
 
 /**
  * The Material Table column settings
