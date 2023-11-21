@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
+import Link from "@mui/material/Link";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -8,6 +9,11 @@ import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import {
+  PROJECT_LIST_VIEW_QUERY_CONFIG,
+  DEFAULT_HIDDEN_COLS,
+} from "./ProjectsListViewQueryConf";
+import theme from "src/theme";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -134,12 +140,41 @@ export const useTableComponents = ({
     ]
   );
 
+const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+
+export const useHiddenColumns = () => {
+  const [hiddenColumns, setHiddenColumns] = useState(
+    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
+  );
+
+  /*
+   * Sync hidden columns state with local storage
+   */
+  useEffect(() => {
+    localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
+  }, [hiddenColumns]);
+
+  return { hiddenColumns, setHiddenColumns };
+};
+
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ hiddenColumns, classes }) => {
+export const useColumns = ({ hiddenColumns }) => {
   const location = useLocation();
   const queryString = location.search;
+
+  const columnsToReturnInQuery = useMemo(() => {
+    const columnsShownInUI = Object.keys(hiddenColumns)
+      .filter((key) => hiddenColumns[key] === false)
+      .map((key) => key);
+
+    // Some columns are dependencies of other columns to render, so we need to include them
+    // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
+    const columnsNeededToRender = ["current_phase_key"];
+
+    return [...columnsShownInUI, ...columnsNeededToRender];
+  }, [hiddenColumns]);
 
   const columns = useMemo(
     () => [
@@ -153,13 +188,14 @@ export const useColumns = ({ hiddenColumns, classes }) => {
         field: "project_name",
         hidden: hiddenColumns["project_name"],
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.project_id}`}
             state={{ queryString }}
-            className={classes.colorPrimary}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.project_name}
-          </RouterLink>
+          </Link>
         ),
         cellStyle: {
           position: "sticky",
@@ -245,7 +281,7 @@ export const useColumns = ({ hiddenColumns, classes }) => {
         title: "Signal IDs",
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
-        sorting: false,
+        sorting: COLUMN_CONFIG["project_feature"].sortable,
         render: (entry) => {
           if (!entry?.project_feature) {
             return "-";
@@ -413,13 +449,14 @@ export const useColumns = ({ hiddenColumns, classes }) => {
         hidden: hiddenColumns["parent_project_id"],
         emptyValue: "-",
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.parent_project_id}`}
             state={{ queryString }}
-            className={classes.colorPrimary}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.parent_project_name}
-          </RouterLink>
+          </Link>
         ),
       },
       {
@@ -433,16 +470,17 @@ export const useColumns = ({ hiddenColumns, classes }) => {
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, queryString, classes]
+    [hiddenColumns, queryString]
   );
-  return columns;
+
+  return { columns, columnsToReturnInQuery };
 };
 
 /**
  * Defines various Material Table options
  * @param {integer} queryLimit - the current rows per page option
  * @param {object[]} data - the project list view data
- * @returns {boject} the material table setings options
+ * @returns {object} the material table setings options
  */
 export const useTableOptions = ({ queryLimit, data }) =>
   useMemo(
