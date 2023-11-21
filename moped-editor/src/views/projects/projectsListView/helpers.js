@@ -142,9 +142,16 @@ export const useTableComponents = ({
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
-export const useHiddenColumns = () => {
+export const useHiddenColumnsSettings = () => {
+  const existingHiddenColumnSettings = JSON.parse(
+    localStorage.getItem("mopedColumnConfig")
+  );
+
+  // TODO: Take the existing hidden columns and merge them with the default hidden columns
+  // TODO: Take the existing hidden columns and remove any that are not in the default hidden columns
+
   const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
+    existingHiddenColumnSettings ?? DEFAULT_HIDDEN_COLS
   );
 
   /*
@@ -171,7 +178,7 @@ export const useColumns = ({ hiddenColumns }) => {
 
     // Some columns are dependencies of other columns to render, so we need to include them
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
-    const columnsNeededToRender = ["current_phase_key"];
+    const columnsNeededToRender = ["project_id", "current_phase_key"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
