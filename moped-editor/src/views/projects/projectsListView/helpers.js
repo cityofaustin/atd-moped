@@ -14,6 +14,7 @@ import {
   DEFAULT_HIDDEN_COLS,
 } from "./ProjectsListViewQueryConf";
 import theme from "src/theme";
+import { initial } from "lodash";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -93,6 +94,52 @@ const filterComponentFullNames = (value) => {
 };
 
 /**
+ * Get the user hidden column settings from local storage, clear them of
+ * outdated columns, and supplement with remaining default columns
+ * @returns {Object} hidden column settings from local storage cleared of
+ * outdated columns and supplemented with default columns
+ */
+const getExistingHiddenColumns = () => {
+  const existingHiddenColumnSettings = JSON.parse(
+    localStorage.getItem("mopedColumnConfig")
+  );
+
+  let currentHiddenColumnSettings;
+
+  // If there are no existing hidden column settings, set the default hidden columns
+  if (!existingHiddenColumnSettings) {
+    localStorage.setItem(
+      "mopedColumnConfig",
+      JSON.stringify(DEFAULT_HIDDEN_COLS)
+    );
+
+    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
+  } else {
+    // Use existing settings and add missing default columns.
+    // Using the default config as a reference removes outdated columns.
+    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
+      (acc, columnName) => {
+        if (existingHiddenColumnSettings.hasOwnProperty(columnName)) {
+          return {
+            ...acc,
+            [columnName]: existingHiddenColumnSettings[columnName],
+          };
+        } else {
+          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
+        }
+      },
+      {}
+    );
+  }
+
+  return currentHiddenColumnSettings;
+};
+
+const initialHiddenColumnSettings = getExistingHiddenColumns();
+
+const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+
+/**
  * Various custom components for Material Table
  */
 export const useTableComponents = ({
@@ -140,42 +187,9 @@ export const useTableComponents = ({
     ]
   );
 
-const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
-
 export const useHiddenColumnsSettings = () => {
-  const existingHiddenColumnSettings = JSON.parse(
-    localStorage.getItem("mopedColumnConfig")
-  );
-
-  let currentHiddenColumnSettings;
-
-  // If there are no existing hidden column settings, set the default hidden columns
-  if (!existingHiddenColumnSettings) {
-    localStorage.setItem(
-      "mopedColumnConfig",
-      JSON.stringify(DEFAULT_HIDDEN_COLS)
-    );
-
-    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
-  } else {
-    // Remove outdated columns, use existing settings, and add missing default columns
-    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
-      (acc, columnName) => {
-        if (existingHiddenColumnSettings.hasOwnProperty(columnName)) {
-          return {
-            ...acc,
-            [columnName]: existingHiddenColumnSettings[columnName],
-          };
-        } else {
-          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
-        }
-      },
-      {}
-    );
-  }
-
   const [hiddenColumns, setHiddenColumns] = useState(
-    currentHiddenColumnSettings
+    initialHiddenColumnSettings
   );
 
   /*
@@ -187,11 +201,6 @@ export const useHiddenColumnsSettings = () => {
 
   return { hiddenColumns, setHiddenColumns };
 };
-
-// localStorage examples
-// key: mopedColumnConfig
-// value: {"current_phase":false,"interim_project_id":true,"public_process_status":true,"added_by":true,"project_tags":true,"contract_numbers":true,"contractors":true,"project_inspector":true,"project_designer":true,"completion_end_date":true,"construction_start_date":true,"funding_source_name":true,"type_name":true,"task_order":false,"project_feature":true,"parent_project_id":true,"children_project_ids":true,"project_note":false,"project_sponsor":true,"project_partner":true,"updated_at":true,"ecapris_subproject_id":true,"components":false}
-// value: {"project_team_members":false,"project_lead":true,"project_sponsor":true,"project_partner":false}
 
 /**
  * The Material Table column settings
