@@ -158,28 +158,25 @@ export const useHiddenColumnsSettings = () => {
 
     currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
   } else {
-    // Take the existing hidden columns and remove any that are not in the default hidden columns
-    currentHiddenColumnSettings = Object.entries(DEFAULT_HIDDEN_COLS).reduce(
-      (acc, [columnName, isHidden]) => {
-        if (!existingHiddenColumnSettings[columnName]) {
+    // Remove outdated columns, use existing settings, and add missing default columns
+    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
+      (acc, columnName) => {
+        if (existingHiddenColumnSettings.hasOwnProperty(columnName)) {
           return {
             ...acc,
-            [columnName]: DEFAULT_HIDDEN_COLS[columnName],
+            [columnName]: existingHiddenColumnSettings[columnName],
           };
         } else {
-          return { ...acc, [columnName]: isHidden };
+          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
         }
       },
       {}
     );
   }
 
-  // TODO: Do we need to assume false unless set to true?
-
   const [hiddenColumns, setHiddenColumns] = useState(
     currentHiddenColumnSettings
   );
-  console.log(hiddenColumns);
 
   /*
    * Sync hidden columns state with local storage
