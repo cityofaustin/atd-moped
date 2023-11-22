@@ -95,8 +95,7 @@ const filterComponentFullNames = (value) => {
 /**
  * Get the user hidden column settings from local storage, clear them of
  * outdated columns, and supplement with remaining default columns
- * @returns {Object} hidden column settings from local storage cleared of
- * outdated columns and supplemented with default columns
+ * @returns {Object} hidden column settings from local storage
  */
 const getExistingHiddenColumns = () => {
   const existingHiddenColumnSettings = JSON.parse(
