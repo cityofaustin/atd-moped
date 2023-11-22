@@ -113,8 +113,8 @@ const getExistingHiddenColumns = () => {
 
     currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
   } else {
-    // Use existing settings and add missing default columns.
-    // Using the default config as a reference removes outdated columns.
+    // Use existing settings to override default hidden columns.
+    // By iterating the defaults, we also remove outdated columns no longer in config.
     currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
       (acc, columnName) => {
         if (existingHiddenColumnSettings.hasOwnProperty(columnName)) {
@@ -190,7 +190,6 @@ export const useHiddenColumnsSettings = () => {
    * Initialize hidden columns from existing local storage
    */
   useEffect(() => {
-    console.log("running");
     const initialHiddenColumnSettings = getExistingHiddenColumns();
     setHiddenColumns(initialHiddenColumnSettings);
   }, []);
@@ -217,7 +216,10 @@ export const useColumns = ({ hiddenColumns }) => {
       .filter((key) => hiddenColumns[key] === false)
       .map((key) => key);
 
-    // Some columns are dependencies of other columns to render, so we need to include them
+    // We must include project_id in every query since it is set as a keyField in the Apollo cache.
+    // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
+    // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
+    // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
     const columnsNeededToRender = ["project_id", "current_phase_key"];
 
