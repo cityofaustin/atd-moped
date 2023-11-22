@@ -133,8 +133,6 @@ const getExistingHiddenColumns = () => {
   return currentHiddenColumnSettings;
 };
 
-const initialHiddenColumnSettings = getExistingHiddenColumns();
-
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
 /**
@@ -186,9 +184,16 @@ export const useTableComponents = ({
   );
 
 export const useHiddenColumnsSettings = () => {
-  const [hiddenColumns, setHiddenColumns] = useState(
-    initialHiddenColumnSettings
-  );
+  const [hiddenColumns, setHiddenColumns] = useState({});
+
+  /*
+   * Initialize hidden columns from existing local storage
+   */
+  useEffect(() => {
+    console.log("running");
+    const initialHiddenColumnSettings = getExistingHiddenColumns();
+    setHiddenColumns(initialHiddenColumnSettings);
+  }, []);
 
   /*
    * Sync hidden columns state with local storage
