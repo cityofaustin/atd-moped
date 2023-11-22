@@ -14,7 +14,6 @@ import {
   DEFAULT_HIDDEN_COLS,
 } from "./ProjectsListViewQueryConf";
 import theme from "src/theme";
-import { initial } from "lodash";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
