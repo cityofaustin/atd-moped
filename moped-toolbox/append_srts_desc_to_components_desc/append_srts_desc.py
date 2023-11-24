@@ -7,11 +7,12 @@ import argparse
 import csv
 import json
 import requests
-from secrets import Hasura
+from secrets import HASURA
 
+csv_filename = "ATSD Moped Issue Tracking - SRTSInfo.csv"
 
 # Query for project component with SRTS ID
-query = """
+GET_COMPONENTS_BY_SRTS_ID = """
 query GetProjectComponentsBySrtsId($srtsId: String) {
   moped_proj_components(where: {srts_id: {_eq: $srtsId}}) {
     component_id
@@ -21,7 +22,7 @@ query GetProjectComponentsBySrtsId($srtsId: String) {
 """
 
 # Mutate project component description to include SRTS info from csv
-mutation = """"""
+UPDATE_COMPONENT_DESCRIPTION = """"""
 
 
 def make_hasura_request(*, query, variables, endpoint, admin_secret):
@@ -46,10 +47,34 @@ def format_request(request_raw):
     return req_dict["payload"], headers
 
 
+def get_srts_data_from_csv(filepath):
+    rows = []
+
+    with open(filepath) as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=",")
+
+        line_count = 0
+        for row in csv_reader:
+            if line_count == 0:
+                line_count += 1
+                continue
+            else:
+                rows.append({"srts_id": row[0], "info": row[1]})
+                line_count += 1
+        print(f"Processed {line_count} lines from csv.")
+
+    return rows
+
+
 def main(env):
     # Consume csv file with SRTS IDs and info to append
     srts_id = "from csv"
     srts_csv_rows = [{"id": "an id", "info": "info"}]
+
+    rows = get_srts_data_from_csv(f"data/{csv_filename}")
+    print(rows)
+
+    return
 
     # Fetch existing project components that match an SRTS ID
     # More than one component can match an SRTS ID
@@ -81,11 +106,5 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
-
-    raise Exception(
-        """At the time of writing, this script produces duplicated activity
-        logs due to flaws in our event handling pipeline.  See discussion here:
-        https://github.com/cityofaustin/atd-data-tech/issues/9773"""
-    )
 
     main(args.env)
