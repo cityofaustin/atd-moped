@@ -5,28 +5,10 @@ IDs in a csv file to the moped_proj_components.srts_id column value
 """
 import argparse
 import csv
-import os
-from io import StringIO
 import json
-
-import boto3
 import requests
+from secrets import Hasura
 
-
-auth = {
-    "staging": {
-        "MOPED_API_HASURA_APIKEY": "",
-        "API_EVENT_ENDPOINT": "",
-        "HASURA_ENDPOINT": "",
-        "HASURA_ADMIN_SECRET": "",
-    },
-    "prod": {
-        "MOPED_API_HASURA_APIKEY": "",
-        "API_EVENT_ENDPOINT": "",
-        "HASURA_ENDPOINT": "",
-        "HASURA_ADMIN_SECRET": "",
-    },
-}
 
 # Query for project component with SRTS ID
 query = """
