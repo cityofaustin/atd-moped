@@ -6,7 +6,10 @@
 
 2. Use `secrets_template.py` as a template to create `secrets.py`
 
-3. Create a virtual environment, install requirements.txt, and run:
+3. Export https://docs.google.com/spreadsheets/d/1M2dwi-GqheZLmy-GJwmrf6LAJpu07aoiD3aTEOo7IUQ/edit#gid=102248273
+   as a csv file and place in the /data/ directory 
+
+4. Create a virtual environment, install requirements.txt, and run:
 
 ```
 $ python append_srts_desc.py
