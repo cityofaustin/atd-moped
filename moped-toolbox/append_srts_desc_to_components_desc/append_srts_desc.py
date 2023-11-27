@@ -13,16 +13,22 @@ csv_filename = "ATSD Moped Issue Tracking - SRTSInfo.csv"
 
 # Query for project component with SRTS ID
 GET_COMPONENTS_BY_SRTS_ID = """
-query GetProjectComponentsBySrtsId($srtsId: String) {
-  moped_proj_components(where: {srts_id: {_eq: $srtsId}}) {
-    component_id
+query GetProjectComponentsBySrtsId($srts_id: String) {
+    moped_proj_components(where: {srts_id: {_eq: $srts_id}}) {
+    project_component_id
     description
-  }
+    }
 }
 """
 
 # Mutate project component description to include SRTS info from csv
-UPDATE_COMPONENT_DESCRIPTION = """"""
+UPDATE_COMPONENT_DESCRIPTION = """
+mutation UpdateProjectComponentDescription($project_component_id: Int!, $description: String) {
+  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {description: $description}) {
+    project_component_id
+  }
+}
+"""
 
 
 def make_hasura_request(*, query, variables, endpoint, admin_secret):
@@ -49,7 +55,7 @@ def get_srts_data_from_csv(filepath):
                 line_count += 1
                 continue
             else:
-                rows.append({"srts_id": row[0], "info": row[1]})
+                rows.append({"srts_id": row[0], "srts_info": row[1]})
                 line_count += 1
 
     return rows
@@ -57,30 +63,38 @@ def get_srts_data_from_csv(filepath):
 
 def main(env):
     # Consume csv file with SRTS IDs and info to append
-    srts_id = "from csv"
-    srts_csv_rows = [{"id": "an id", "info": "info"}]
-
-    rows = get_srts_data_from_csv(f"data/{csv_filename}")
+    # rows = get_srts_data_from_csv(f"data/{csv_filename}")
+    rows = [
+        {
+            "srts_id": "3J - 638",
+            "srts_info": "this is some info",
+        },  # project_component_id: 59
+        {"srts_id": "2B - 672", "srts_info": ""},  # project_component_id: 80
+    ]
     print(f"Found {len(rows)} rows in csv file.")
 
     # Fetch existing project components that match SRTS IDs and collect info to update
     updates = []
+    # Collect SRTS IDs from csv with no match to log later
+    no_match = []
+    # Log components that errored
+    errors = []
 
     print(f"Fetching components matching collected SRTS IDs.")
     for row in rows:
         srts_id = row["srts_id"]
-        srts_info = row["info"]
+        srts_info = row["srts_info"]
 
         existing_components_matched_by_srts_id = make_hasura_request(
             query=GET_COMPONENTS_BY_SRTS_ID,
-            variables={"srtsId": srts_id},
+            variables={"srts_id": srts_id},
             endpoint=HASURA["HASURA_ENDPOINT"][env],
             admin_secret=HASURA["HASURA_ADMIN_SECRET"][env],
         )["moped_proj_components"]
 
         if len(existing_components_matched_by_srts_id) > 0:
             for component in existing_components_matched_by_srts_id:
-                component_id = component["component_id"]
+                project_component_id = component["project_component_id"]
                 description = component["description"]
 
                 # Append SRTS info to existing project component description
@@ -91,38 +105,41 @@ def main(env):
 
                 updates.append(
                     {
-                        "component_id": component_id,
+                        "project_component_id": project_component_id,
                         "description": new_description,
                     }
                 )
+        else:
+            no_match.append(srts_id)
 
-    print(f"Found {len(updates)} components to update.")
+    print(f"Found {len(updates)} components to update. Updating...")
 
     # Mutate project component description to include SRTS info from csv
     for update in updates:
-        component_id = update["component_id"]
+        project_component_id = update["project_component_id"]
         description = update["description"]
-        srts_info = update["srts_info"]
 
         # Make request to update component descriptions
+        try:
+            existing_components_matched_by_srts_id = make_hasura_request(
+                query=UPDATE_COMPONENT_DESCRIPTION,
+                variables={
+                    "project_component_id": project_component_id,
+                    "description": description,
+                },
+                endpoint=HASURA["HASURA_ENDPOINT"][env],
+                admin_secret=HASURA["HASURA_ADMIN_SECRET"][env],
+            )["update_moped_proj_components_by_pk"]
+        except Exception as e:
+            print(f"Error updating component {project_component_id}: {e}")
+            errors.append(project_component_id)
 
-    return
-
-    # Fetch existing project components that match an SRTS ID
-    # More than one component can match an SRTS ID
-    # existing_project_components = make_hasura_request(
-    #     query=query,
-    #     variables={"srtsId": srts_id},
-    #     endpoint=auth[env]["HASURA_ENDPOINT"],
-    #     admin_secret=auth[env]["HASURA_ADMIN_SECRET"],
-    # )["moped_proj_components"]
-
-    # Collect SRTS IDs from csv with no match to log
-    no_match = []
-
-    # Append SRTS info to project component description
-
-    # Mutate project component description to include SRTS info from csv
+    print("Done.\n")
+    print(f"Updated {len(updates)} components.")
+    print(
+        f"Found {len(no_match)} SRTS IDs in csv with no match in database: {no_match}"
+    )
+    print(f"Errors on project component IDs: {errors}")
 
 
 if __name__ == "__main__":
