@@ -65,20 +65,17 @@ def get_srts_data_from_csv(filepath):
 def make_updated_component_description(description, srts_info):
     if description == None or len(description) == 0:
         return srts_info
-    elif description != None or len(description) > 0:
+    else:
         return f"{description}\n{srts_info}"
 
 
 def main(env):
-    # Consume csv file with SRTS IDs and info to append
     rows = get_srts_data_from_csv(f"data/{csv_filename}")
     print(f"Found {len(rows)} rows in csv file.")
 
-    # Fetch existing project components that match SRTS IDs and collect info to update
+    # Collect updates, SRTS IDs from csv with no match, and mutation errors
     updates = []
-    # Collect SRTS IDs from csv with no match to log later
     no_match = []
-    # Log components that errored
     errors = []
 
     print(f"Fetching components matching collected SRTS IDs.")
@@ -98,7 +95,6 @@ def main(env):
                 project_component_id = component["project_component_id"]
                 description = component["description"]
 
-                # Append SRTS info to existing project component description
                 new_description = make_updated_component_description(
                     description, srts_info
                 )
@@ -113,13 +109,10 @@ def main(env):
             no_match.append(srts_id)
 
     print(f"Found {len(updates)} components to update. Updating...")
-
-    # Mutate project component description to include SRTS info from csv
     for update in updates:
         project_component_id = update["project_component_id"]
         description = update["description"]
 
-        # Make request to update component descriptions
         try:
             existing_components_matched_by_srts_id = make_hasura_request(
                 query=UPDATE_COMPONENT_DESCRIPTION,
