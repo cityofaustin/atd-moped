@@ -61,15 +61,26 @@ def get_srts_data_from_csv(filepath):
     return rows
 
 
+# This assumes all rows in the csv have a value for srts_info
+def make_updated_component_description(description, srts_info):
+    if description == None or len(description) == 0:
+        return srts_info
+    elif description != None or len(description) > 0:
+        return f"{description}\n{srts_info}"
+
+
 def main(env):
     # Consume csv file with SRTS IDs and info to append
     # rows = get_srts_data_from_csv(f"data/{csv_filename}")
     rows = [
         {
             "srts_id": "3J - 638",
-            "srts_info": "this is some info",
+            "srts_info": "SRTS Recommendation: Add curb extensions +\nSRTS Issue: Difficult crossing\nSRTS Benefit category: High\nSRTS Cost benefit category: High\nSRTS Schools within half mile: HILL ES",
         },  # project_component_id: 59
-        {"srts_id": "2B - 672", "srts_info": ""},  # project_component_id: 80
+        {
+            "srts_id": "2B - 672",
+            "srts_info": "something new",
+        },  # project_component_id: 80
     ]
     print(f"Found {len(rows)} rows in csv file.")
 
@@ -98,10 +109,9 @@ def main(env):
                 description = component["description"]
 
                 # Append SRTS info to existing project component description
-                new_description = description
-
-                if len(srts_info) > 0:
-                    new_description = f"{description}\n{srts_info}"
+                new_description = make_updated_component_description(
+                    description, srts_info
+                )
 
                 updates.append(
                     {
