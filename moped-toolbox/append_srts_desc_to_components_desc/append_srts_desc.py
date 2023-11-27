@@ -71,17 +71,7 @@ def make_updated_component_description(description, srts_info):
 
 def main(env):
     # Consume csv file with SRTS IDs and info to append
-    # rows = get_srts_data_from_csv(f"data/{csv_filename}")
-    rows = [
-        {
-            "srts_id": "3J - 638",
-            "srts_info": "SRTS Recommendation: Add curb extensions +\nSRTS Issue: Difficult crossing\nSRTS Benefit category: High\nSRTS Cost benefit category: High\nSRTS Schools within half mile: HILL ES",
-        },  # project_component_id: 59
-        {
-            "srts_id": "2B - 672",
-            "srts_info": "something new",
-        },  # project_component_id: 80
-    ]
+    rows = get_srts_data_from_csv(f"data/{csv_filename}")
     print(f"Found {len(rows)} rows in csv file.")
 
     # Fetch existing project components that match SRTS IDs and collect info to update

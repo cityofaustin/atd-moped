@@ -12,5 +12,8 @@
 4. Create a virtual environment, install requirements.txt, and run:
 
 ```
-$ python append_srts_desc.py
+$ python append_srts_desc.py -e local
 ```
+## Running on staging or production
+
+1. Update `secrets.py` with the endpoint and secrets for target environment then run with `staging` or `prod` for env arg
