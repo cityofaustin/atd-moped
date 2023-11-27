@@ -81,6 +81,11 @@ export const routes = [
         action: "style:visit",
         element: <LookupsView />,
       },
+      {
+        path: "views/signal-projects",
+        action: "projects:visit",
+        element: <Navigate to="/moped/projects" />,
+      },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
   },
