@@ -9,7 +9,7 @@ import {
   useTableComponents,
   useColumns,
   useTableOptions,
-  useHiddenColumns,
+  useHiddenColumnsSettings,
 } from "./helpers.js";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
@@ -91,7 +91,7 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const { hiddenColumns, setHiddenColumns } = useHiddenColumns();
+  const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings();
 
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 

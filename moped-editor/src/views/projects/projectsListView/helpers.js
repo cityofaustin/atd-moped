@@ -93,6 +93,56 @@ const filterComponentFullNames = (value) => {
 };
 
 /**
+ * Get the user hidden column settings from local storage, clear them of
+ * outdated columns, and supplement with remaining default columns
+ * @returns {Object} hidden column settings from local storage
+ */
+const getPreviousHiddenColumns = () => {
+  let previousHiddenColumnSettings;
+
+  try {
+    previousHiddenColumnSettings = JSON.parse(
+      localStorage.getItem("mopedColumnConfig")
+    );
+  } catch (e) {
+    previousHiddenColumnSettings = null;
+    console.error("Error parsing project list view hidden column settings", e);
+  }
+
+  let currentHiddenColumnSettings;
+
+  // If there are no previous hidden column settings, set the default hidden columns
+  if (!previousHiddenColumnSettings) {
+    localStorage.setItem(
+      "mopedColumnConfig",
+      JSON.stringify(DEFAULT_HIDDEN_COLS)
+    );
+
+    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
+  } else {
+    // Use previous settings to override default hidden columns.
+    // By iterating the defaults, we also remove outdated columns no longer in config.
+    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
+      (acc, columnName) => {
+        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
+          return {
+            ...acc,
+            [columnName]: previousHiddenColumnSettings[columnName],
+          };
+        } else {
+          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
+        }
+      },
+      {}
+    );
+  }
+
+  return currentHiddenColumnSettings;
+};
+
+const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+
+/**
  * Various custom components for Material Table
  */
 export const useTableComponents = ({
@@ -140,12 +190,16 @@ export const useTableComponents = ({
     ]
   );
 
-const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+export const useHiddenColumnsSettings = () => {
+  const [hiddenColumns, setHiddenColumns] = useState({});
 
-export const useHiddenColumns = () => {
-  const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
-  );
+  /*
+   * Initialize hidden columns from previous local storage
+   */
+  useEffect(() => {
+    const initialHiddenColumnSettings = getPreviousHiddenColumns();
+    setHiddenColumns(initialHiddenColumnSettings);
+  }, []);
 
   /*
    * Sync hidden columns state with local storage
@@ -169,9 +223,12 @@ export const useColumns = ({ hiddenColumns }) => {
       .filter((key) => hiddenColumns[key] === false)
       .map((key) => key);
 
-    // Some columns are dependencies of other columns to render, so we need to include them
+    // We must include project_id in every query since it is set as a keyField in the Apollo cache.
+    // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
+    // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
+    // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
-    const columnsNeededToRender = ["current_phase_key"];
+    const columnsNeededToRender = ["project_id", "current_phase_key"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
