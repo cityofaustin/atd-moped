@@ -97,15 +97,22 @@ const filterComponentFullNames = (value) => {
  * outdated columns, and supplement with remaining default columns
  * @returns {Object} hidden column settings from local storage
  */
-const getExistingHiddenColumns = () => {
-  const existingHiddenColumnSettings = JSON.parse(
-    localStorage.getItem("mopedColumnConfig")
-  );
+const getPreviousHiddenColumns = () => {
+  let previousHiddenColumnSettings;
+
+  try {
+    previousHiddenColumnSettings = JSON.parse(
+      localStorage.getItem("mopedColumnConfig")
+    );
+  } catch (e) {
+    previousHiddenColumnSettings = null;
+    console.error("Error parsing project list view hidden column settings", e);
+  }
 
   let currentHiddenColumnSettings;
 
-  // If there are no existing hidden column settings, set the default hidden columns
-  if (!existingHiddenColumnSettings) {
+  // If there are no previous hidden column settings, set the default hidden columns
+  if (!previousHiddenColumnSettings) {
     localStorage.setItem(
       "mopedColumnConfig",
       JSON.stringify(DEFAULT_HIDDEN_COLS)
@@ -113,14 +120,14 @@ const getExistingHiddenColumns = () => {
 
     currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
   } else {
-    // Use existing settings to override default hidden columns.
+    // Use previous settings to override default hidden columns.
     // By iterating the defaults, we also remove outdated columns no longer in config.
     currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
       (acc, columnName) => {
-        if (existingHiddenColumnSettings.hasOwnProperty(columnName)) {
+        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
           return {
             ...acc,
-            [columnName]: existingHiddenColumnSettings[columnName],
+            [columnName]: previousHiddenColumnSettings[columnName],
           };
         } else {
           return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
@@ -187,10 +194,10 @@ export const useHiddenColumnsSettings = () => {
   const [hiddenColumns, setHiddenColumns] = useState({});
 
   /*
-   * Initialize hidden columns from existing local storage
+   * Initialize hidden columns from previous local storage
    */
   useEffect(() => {
-    const initialHiddenColumnSettings = getExistingHiddenColumns();
+    const initialHiddenColumnSettings = getPreviousHiddenColumns();
     setHiddenColumns(initialHiddenColumnSettings);
   }, []);
 
