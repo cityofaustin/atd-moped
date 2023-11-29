@@ -56,16 +56,14 @@ def get_srts_data_from_csv(filepath):
     rows = []
 
     with open(filepath) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=",")
-
-        line_count = 0
-        for row in csv_reader:
-            if line_count == 0:
-                line_count += 1
-                continue
-            else:
-                rows.append({"srts_id": row[0], "srts_info": row[1]})
-                line_count += 1
+        reader = csv.DictReader(csv_file)
+        for row in reader:
+            rows.append(
+                {
+                    "srts_id": row["SRTS_ID"],
+                    "srts_info": row["SRTS Info to add to project description"],
+                }
+            )
 
     return rows
 
