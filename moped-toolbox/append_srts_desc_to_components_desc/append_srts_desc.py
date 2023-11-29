@@ -11,22 +11,31 @@ from secrets import HASURA
 
 csv_filename = "ATSD Moped Issue Tracking - SRTSInfo.csv"
 
-# Query for project component with SRTS ID
+# Query for project components with SRTS ID. This query captures descriptions that are
+# null, empty string, or do not start with "SRTS Recommendation:" so we can repeat this
+# process if needed without appending SRTS info multiple times to the same record.
 GET_COMPONENTS_BY_SRTS_ID = """
 query GetProjectComponentsBySrtsId($srts_id: String) {
-    moped_proj_components(where: {srts_id: {_eq: $srts_id}}) {
+  moped_proj_components(
+    where: { 
+      _and: [
+        { srts_id: { _eq: $srts_id } }, 
+        { _or: [{ description: { _nilike: "%SRTS Recommendation:%" } }, { description: { _is_null: true } }] }
+      ]
+    }
+  ) {
     project_component_id
     description
-    }
+  }
 }
 """
 
 # Mutate project component description to include SRTS info from csv
 UPDATE_COMPONENT_DESCRIPTION = """
 mutation UpdateProjectComponentDescription($project_component_id: Int!, $description: String) {
-  update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {description: $description}) {
-    project_component_id
-  }
+    update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {description: $description}) {
+        project_component_id
+    }
 }
 """
 
