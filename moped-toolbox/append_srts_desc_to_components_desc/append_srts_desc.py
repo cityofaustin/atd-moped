@@ -7,6 +7,7 @@ import argparse
 import csv
 import json
 import requests
+from time import sleep
 from secrets import HASURA
 
 csv_filename = "ATSD Moped Issue Tracking - SRTSInfo.csv"
@@ -40,8 +41,12 @@ mutation UpdateProjectComponentDescription($project_component_id: Int!, $descrip
 """
 
 
-def make_hasura_request(*, query, variables, endpoint, admin_secret):
-    headers = {"X-Hasura-Admin-Secret": admin_secret}
+def make_hasura_request(*, query, variables, endpoint, token):
+    headers = {
+        "authorization": f"Bearer {token}",
+        "x-hasura-role": "moped-admin",
+        "content-type": "application/json",
+    }
     payload = {"query": query, "variables": variables}
     res = requests.post(endpoint, json=payload, headers=headers)
     res.raise_for_status()
@@ -76,7 +81,7 @@ def make_updated_component_description(description, srts_info):
         return f"{description}\n{srts_info}"
 
 
-def main(env):
+def main(env, token):
     rows = get_srts_data_from_csv(f"data/{csv_filename}")
     print(f"Found {len(rows)} rows in csv file.")
 
@@ -94,7 +99,7 @@ def main(env):
             query=GET_COMPONENTS_BY_SRTS_ID,
             variables={"srts_id": srts_id},
             endpoint=HASURA["HASURA_ENDPOINT"][env],
-            admin_secret=HASURA["HASURA_ADMIN_SECRET"][env],
+            token=token,
         )["moped_proj_components"]
 
         if len(existing_components_matched_by_srts_id) > 0:
@@ -128,11 +133,13 @@ def main(env):
                     "description": description,
                 },
                 endpoint=HASURA["HASURA_ENDPOINT"][env],
-                admin_secret=HASURA["HASURA_ADMIN_SECRET"][env],
+                token=token,
             )["update_moped_proj_components_by_pk"]
         except Exception as e:
             print(f"Error updating component {project_component_id}: {e}")
             errors.append(project_component_id)
+
+        sleep(0.5)
 
     print("Done.\n")
     print(f"Updated {len(updates)} components.")
@@ -154,6 +161,13 @@ if __name__ == "__main__":
         help=f"Environment",
     )
 
+    parser.add_argument(
+        "-t",
+        "--token",
+        type=str,
+        help=f"Bearer token for Hasura endpoint",
+    )
+
     args = parser.parse_args()
 
-    main(args.env)
+    main(args.env, args.token)
