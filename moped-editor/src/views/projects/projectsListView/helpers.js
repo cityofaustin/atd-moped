@@ -8,7 +8,7 @@ import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
-import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import RenderSignalLink from "../../../components/RenderSignalLink";
 import {
   PROJECT_LIST_VIEW_QUERY_CONFIG,
   DEFAULT_HIDDEN_COLS,

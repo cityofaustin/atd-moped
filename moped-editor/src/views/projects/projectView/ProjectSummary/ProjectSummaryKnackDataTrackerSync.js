@@ -5,7 +5,7 @@ import { useMutation } from "@apollo/client";
 
 import { UPDATE_PROJECT_KNACK_ID } from "../../../../queries/project";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
-import RenderSignalLink from "../../signalProjectTable/RenderSignalLink";
+import RenderSignalLink from "../../../../components/RenderSignalLink";
 
 /**
  * Function to build the correct Knack URL to interact with based on properties and if there will be an
