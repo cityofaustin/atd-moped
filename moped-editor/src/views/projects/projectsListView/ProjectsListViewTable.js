@@ -183,6 +183,7 @@ const ProjectsListViewTable = () => {
 
   const tableComponents = useTableComponents({
     data,
+    projectListViewData,
     queryLimit,
     queryOffset,
     setQueryLimit,

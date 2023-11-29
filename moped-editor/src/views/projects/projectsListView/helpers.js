@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
-import { MTableHeader } from "@material-table/core";
-import Link from "@mui/material/Link";
+import { MTableHeader, MTableToolbar } from "@material-table/core";
+import { Box, Link, CircularProgress } from "@mui/material";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
@@ -147,6 +147,7 @@ const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
  */
 export const useTableComponents = ({
   data,
+  projectListViewData,
   queryLimit,
   queryOffset,
   setQueryLimit,
@@ -176,9 +177,27 @@ export const useTableComponents = ({
           orderDirection={orderByDirection}
         />
       ),
+      Toolbar: (props) => (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Box sx={{ mt: 2, ml: 2 }}>
+            {/* If there is previous data but no current data (i.e., useQuery
+              is refetching the data, then display a progress spinner) */}
+            {!!data && !projectListViewData && <CircularProgress />}
+          </Box>
+          <Box>
+            <MTableToolbar {...props} />
+          </Box>
+        </Box>
+      ),
     }),
     [
       data,
+      projectListViewData,
       queryLimit,
       queryOffset,
       setQueryLimit,
