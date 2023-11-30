@@ -28,7 +28,6 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {
   isDrawnDraftFeature,
   isDrawnExistingFeature,
-  isDrawnFeature,
   makeCapturedFromLayerFeature,
 } from "./utils/features";
 import {
@@ -151,7 +150,8 @@ export default function TheMap({
     );
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (e.features.some((feature) => isDrawnDraftFeature(feature))) return;
+    if (e.features.some((feature) => isDrawnDraftFeature(feature)) || isDrawing)
+      return;
 
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
@@ -189,7 +189,7 @@ export default function TheMap({
     const clickedFeatureSource = clickedFeature.layer.source;
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (e.features.some((feature) => isDrawnFeature(feature))) return;
+    if (e.features.some((feature) => isDrawnExistingFeature(feature))) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;

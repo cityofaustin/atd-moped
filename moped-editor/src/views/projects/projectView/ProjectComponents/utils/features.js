@@ -123,7 +123,7 @@ export const addDrawnFeatureProperties = (feature) => {
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnFeature = (feature) =>
+export const isDrawnExistingFeature = (feature) =>
   feature.properties.sourceLayer?.includes("drawnByUser");
 
 /**
