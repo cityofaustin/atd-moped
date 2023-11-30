@@ -8,11 +8,15 @@ RETURNS TRIGGER AS $$
 DECLARE
   project_id_variable INTEGER;
   user_id_variable INTEGER;
+  query TEXT;
 BEGIN
-  -- Select the user ID who last updated the project component
-  SELECT updated_by_user_id INTO user_id_variable
-  FROM moped_proj_components
-  WHERE project_component_id = NEW.component_id;
+  
+  -- Constructing a dynamic query to select the user ID from the triggered table
+  query := 'SELECT updated_by_user_id FROM ' || quote_ident(TG_TABLE_NAME) || 
+           ' WHERE id' || ' = ' || NEW.id || ';';
+  
+  -- Executing the dynamic query
+  EXECUTE query INTO user_id_variable;
 
   -- Update the project component with the current timestamp and user ID
   UPDATE moped_proj_components
