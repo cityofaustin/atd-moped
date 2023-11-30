@@ -108,19 +108,21 @@ export const isDrawnDraftFeature = (feature) =>
   getDrawId(feature) ? true : false;
 
 /**
- * Determine if a feature is drawn by the user by checking that the source is
- * not CTN
+ * Add fetched component feature's source layer ("drawnByUserLine" or "drawnByUserPoint")
+ * to feature properties so we can differentiate them from non-drawn features
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnExistingFeature = (feature) =>
-  !feature.source.includes("ATD_ADMIN.CTN_Intersections") &&
-  !feature.source.includes("ATD_ADMIN.CTN");
-
 export const addDrawnFeatureProperties = (feature) => {
   feature.properties.sourceLayer = feature.source_layer;
 };
 
+/**
+ * Determine if a feature is drawn by the user by checking for the source layer
+ * in the feature properties that is added addDrawnFeatureProperties
+ * @param {Object} feature - a feature object
+ * @returns {Boolean} - true if feature is drawn by user
+ */
 export const isDrawnFeature = (feature) =>
   feature.properties.sourceLayer?.includes("drawnByUser");
 
