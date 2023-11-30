@@ -28,6 +28,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import {
   isDrawnDraftFeature,
   isDrawnExistingFeature,
+  isDrawnFeature,
   makeCapturedFromLayerFeature,
 } from "./utils/features";
 import {
@@ -122,26 +123,13 @@ export default function TheMap({
     errorMessageDispatch,
   ]);
 
-  const [isOverDrawnFeature, setIsOverDrawnFeature] = useState(false);
-
   const onMouseEnter = (e) => {
     !isDrawing && setCursor("pointer");
-    console.log(e.featureTarget);
-
-    if (e?.featureTarget?.source.includes("mapbox-gl-draw")) {
-      setIsOverDrawnFeature(true);
-    }
   };
 
   const onMouseLeave = (e) => {
     !isDrawing && setCursor("grab");
-
-    if (!e?.featureTarget?.source.includes("mapbox-gl-draw")) {
-      setIsOverDrawnFeature(false);
-    }
   };
-
-  console.log("TheMap.js: isOverDrawnFeature: ", isOverDrawnFeature);
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
@@ -201,7 +189,7 @@ export default function TheMap({
     const clickedFeatureSource = clickedFeature.layer.source;
 
     /* If drawn feature is clicked, the draw tools take over and we don't need to do anything else  */
-    if (isDrawnExistingFeature(clickedFeature)) return;
+    if (isDrawnFeature(clickedFeature)) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
@@ -278,6 +266,8 @@ export default function TheMap({
       }
       return;
     }
+
+    console.log(e.features);
 
     /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {

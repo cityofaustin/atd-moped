@@ -117,6 +117,13 @@ export const isDrawnExistingFeature = (feature) =>
   !feature.source.includes("ATD_ADMIN.CTN_Intersections") &&
   !feature.source.includes("ATD_ADMIN.CTN");
 
+export const addDrawnFeatureProperties = (feature) => {
+  feature.properties.sourceLayer = feature.source_layer;
+};
+
+export const isDrawnFeature = (feature) =>
+  feature.properties.sourceLayer?.includes("drawnByUser");
+
 /**
  * Initialize the draw tools state with existing features of the component being edited
  * @param {Object} drawControlsRef - ref for the draw controls
