@@ -150,8 +150,8 @@ export default function TheMap({
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    /* If we clicked a drawn feature, we don't need to capture from the CTN layers */
-    if (isDrawnDraftFeature(clickedDraftComponentFeature)) return;
+    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
+    if (e.features.some((feature) => isDrawnDraftFeature(feature))) return;
 
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
@@ -188,8 +188,8 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    /* If drawn feature is clicked, the draw tools take over and we don't need to do anything else  */
-    if (isDrawnFeature(clickedFeature)) return;
+    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
+    if (e.features.some((feature) => isDrawnFeature(feature))) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
@@ -266,8 +266,6 @@ export default function TheMap({
       }
       return;
     }
-
-    console.log(e.features);
 
     /* If not creating or editing, set clickedFeature for FeaturePopup */
     if (!isCreatingComponent && !isEditingComponent) {
