@@ -92,6 +92,8 @@ UNION ALL
           GROUP BY d.feature_id) districts ON districts.feature_id = feature_drawn_lines.id
   WHERE feature_drawn_lines.is_deleted = false;
 
+COMMENT ON VIEW uniform_features IS 'This view unifies various geographical feature data from multiple tables such as signals, street segments, intersections, drawn points, and lines. It provides a view of these features along with their attributes, geographic details, and council district associations.';
+
 CREATE OR REPLACE VIEW public.project_geography
 AS SELECT moped_project.project_id,
     uniform_features.id AS feature_id,
@@ -116,3 +118,4 @@ AS SELECT moped_project.project_id,
      JOIN feature_layers ON moped_components.feature_layer_id = feature_layers.id
      JOIN uniform_features ON moped_proj_components.project_component_id = uniform_features.component_id;
      
+COMMENT ON VIEW public.project_geography IS 'The project_geography view merges project-specific data with the unified geographical features from the uniform_features view. It links projects with their respective geographical components, including type, attributes, and location.';
