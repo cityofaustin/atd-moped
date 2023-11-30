@@ -76,12 +76,14 @@ ADD CONSTRAINT fk_feature_street_segments_updated_by FOREIGN KEY (updated_by_use
 
 
 -- For feature_drawn_points
-drop trigger if exists set_feature_drawn_lines_updated_at on public.feature_drawn_lines;
+DROP TRIGGER IF EXISTS set_feature_drawn_lines_updated_at ON public.feature_drawn_lines;
 
 CREATE TRIGGER set_feature_drawn_lines_updated_at
 BEFORE INSERT OR UPDATE ON feature_drawn_lines
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
+
+COMMENT ON TRIGGER set_feature_drawn_lines_updated_at ON public.feature_drawn_lines IS 'Trigger to set updated_at timestamp for each insert or update on feature_drawn_lines';
 
 -- For feature_drawn_points
 DROP TRIGGER IF EXISTS set_feature_drawn_points_updated_at ON public.feature_drawn_points;
@@ -91,6 +93,8 @@ BEFORE INSERT OR UPDATE ON feature_drawn_points
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
 
+COMMENT ON TRIGGER set_feature_drawn_points_updated_at ON public.feature_drawn_points IS 'Trigger to set updated_at timestamp for each insert or update on feature_drawn_points';
+
 -- For feature_intersections
 DROP TRIGGER IF EXISTS set_feature_intersections_updated_at ON public.feature_intersections;
 
@@ -98,6 +102,8 @@ CREATE TRIGGER set_feature_intersections_updated_at
 BEFORE INSERT OR UPDATE ON feature_intersections
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
+
+COMMENT ON TRIGGER set_feature_intersections_updated_at ON public.feature_intersections IS 'Trigger to set updated_at timestamp for each insert or update on feature_intersections';
 
 -- For feature_signals
 DROP TRIGGER IF EXISTS set_feature_signals_updated_at ON public.feature_signals;
@@ -107,6 +113,8 @@ BEFORE INSERT OR UPDATE ON feature_signals
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
 
+COMMENT ON TRIGGER set_feature_signals_updated_at ON public.feature_signals IS 'Trigger to set updated_at timestamp for each insert or update on feature_signals';
+
 -- For feature_street_segments
 DROP TRIGGER IF EXISTS set_feature_street_segments_updated_at ON public.feature_street_segments;
 
@@ -114,3 +122,5 @@ CREATE TRIGGER set_feature_street_segments_updated_at
 BEFORE INSERT OR UPDATE ON feature_street_segments
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
+
+COMMENT ON TRIGGER set_feature_street_segments_updated_at ON public.feature_street_segments IS 'Trigger to set updated_at timestamp for each insert or update on feature_street_segments';
