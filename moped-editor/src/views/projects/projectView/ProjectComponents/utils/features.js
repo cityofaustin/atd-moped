@@ -111,7 +111,6 @@ export const isDrawnDraftFeature = (feature) =>
  * Add fetched component feature's source layer ("drawnByUserLine" or "drawnByUserPoint")
  * to feature properties so we can differentiate them from non-drawn features
  * @param {Object} feature - a feature object
- * @returns {Boolean} - true if feature is drawn by user
  */
 export const addDrawnFeatureProperties = (feature) => {
   feature.properties.sourceLayer = feature.source_layer;
