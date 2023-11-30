@@ -115,3 +115,4 @@ AS SELECT moped_project.project_id,
      JOIN moped_components ON moped_proj_components.component_id = moped_components.component_id
      JOIN feature_layers ON moped_components.feature_layer_id = feature_layers.id
      JOIN uniform_features ON moped_proj_components.project_component_id = uniform_features.component_id;
+     
