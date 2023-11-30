@@ -26,7 +26,7 @@ const EditComponentDrawTools = ({
     linkMode,
   });
 
-  const setTrashButtonClickable = useTrashButtonClickable()
+  const setTrashButtonClickable = useTrashButtonClickable();
 
   // We must override the features in the draw control's internal state with ones
   // that have our properties so that we can find them later in onDelete

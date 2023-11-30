@@ -122,13 +122,26 @@ export default function TheMap({
     errorMessageDispatch,
   ]);
 
+  const [isOverDrawnFeature, setIsOverDrawnFeature] = useState(false);
+
   const onMouseEnter = (e) => {
     !isDrawing && setCursor("pointer");
+    console.log(e.featureTarget);
+
+    if (e?.featureTarget?.source.includes("mapbox-gl-draw")) {
+      setIsOverDrawnFeature(true);
+    }
   };
 
   const onMouseLeave = (e) => {
     !isDrawing && setCursor("grab");
+
+    if (!e?.featureTarget?.source.includes("mapbox-gl-draw")) {
+      setIsOverDrawnFeature(false);
+    }
   };
+
+  console.log("TheMap.js: isOverDrawnFeature: ", isOverDrawnFeature);
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
