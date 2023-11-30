@@ -72,3 +72,45 @@ ADD CONSTRAINT fk_feature_signals_updated_by FOREIGN KEY (updated_by_user_id) RE
 ALTER TABLE feature_street_segments
 ADD CONSTRAINT fk_feature_street_segments_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
 ADD CONSTRAINT fk_feature_street_segments_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
+
+
+
+-- For feature_drawn_points
+drop trigger if exists set_feature_drawn_lines_updated_at on public.feature_drawn_lines;
+
+CREATE TRIGGER set_feature_drawn_lines_updated_at
+BEFORE INSERT OR UPDATE ON feature_drawn_lines
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
+
+-- For feature_drawn_points
+DROP TRIGGER IF EXISTS set_feature_drawn_points_updated_at ON public.feature_drawn_points;
+
+CREATE TRIGGER set_feature_drawn_points_updated_at
+BEFORE INSERT OR UPDATE ON feature_drawn_points
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
+
+-- For feature_intersections
+DROP TRIGGER IF EXISTS set_feature_intersections_updated_at ON public.feature_intersections;
+
+CREATE TRIGGER set_feature_intersections_updated_at
+BEFORE INSERT OR UPDATE ON feature_intersections
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
+
+-- For feature_signals
+DROP TRIGGER IF EXISTS set_feature_signals_updated_at ON public.feature_signals;
+
+CREATE TRIGGER set_feature_signals_updated_at
+BEFORE INSERT OR UPDATE ON feature_signals
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
+
+-- For feature_street_segments
+DROP TRIGGER IF EXISTS set_feature_street_segments_updated_at ON public.feature_street_segments;
+
+CREATE TRIGGER set_feature_street_segments_updated_at
+BEFORE INSERT OR UPDATE ON feature_street_segments
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
