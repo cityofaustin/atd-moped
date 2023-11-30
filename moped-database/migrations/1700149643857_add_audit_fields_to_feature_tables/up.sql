@@ -53,4 +53,22 @@ COMMENT ON COLUMN feature_street_segments.created_by_user_id IS 'User ID of the 
 COMMENT ON COLUMN feature_street_segments.updated_by_user_id IS 'User ID of the last updater of the street segment feature';
 COMMENT ON COLUMN feature_street_segments.updated_at IS 'Timestamp of the last update of the street segment feature';
 
+ALTER TABLE feature_drawn_lines
+ADD CONSTRAINT fk_feature_drawn_lines_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
+ADD CONSTRAINT fk_feature_drawn_lines_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
 
+ALTER TABLE feature_drawn_points
+ADD CONSTRAINT fk_feature_drawn_points_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
+ADD CONSTRAINT fk_feature_drawn_points_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
+
+ALTER TABLE feature_intersections
+ADD CONSTRAINT fk_feature_intersections_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
+ADD CONSTRAINT fk_feature_intersections_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
+
+ALTER TABLE feature_signals
+ADD CONSTRAINT fk_feature_signals_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
+ADD CONSTRAINT fk_feature_signals_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
+
+ALTER TABLE feature_street_segments
+ADD CONSTRAINT fk_feature_street_segments_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
+ADD CONSTRAINT fk_feature_street_segments_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
