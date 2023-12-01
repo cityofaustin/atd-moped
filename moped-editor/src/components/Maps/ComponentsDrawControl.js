@@ -3,18 +3,29 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 
 /* Mapbox GL Draw modes that we use to determine isDrawing state. */
-export const isDrawingModes = [
+export const areDrawToolsActiveModes = [
   "draw_point",
   "draw_line_string",
   "direct_select",
   "simple_select",
 ];
 
+export const isDrawingModes = ["draw_point", "draw_line_string"];
+
 /**
- * Check if we are in a drawing mode
+ * Check if the draw tools are active (in any draw tools mode that we use)
  * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#modes
  * @param {String} mode - the current Mapbox GL Draw mode
- * @returns {Boolean} - true if we are in a drawing mode
+ * @returns {Boolean} - true if we are in the tools are active
+ */
+export const areDrawToolsActive = (mode) =>
+  areDrawToolsActiveModes.includes(mode);
+
+/**
+ * Check if the draw tools are active and in a drawing mode
+ * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#modes
+ * @param {String} mode - the current Mapbox GL Draw mode
+ * @returns {Boolean} - true if we are in the tools are active
  */
 export const isInDrawingMode = (mode) => isDrawingModes.includes(mode);
 

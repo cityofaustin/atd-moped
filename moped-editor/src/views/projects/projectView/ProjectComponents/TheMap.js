@@ -66,6 +66,9 @@ export default function TheMap({
   makeClickedComponentUpdates,
 }) {
   const [cursor, setCursor] = useState("grab");
+  const [areDrawToolsActive, setAreDrawToolsActive] = useState(false);
+  // TODO: Just track mode instead of isDrawing and areDrawToolsActive
+  // TODO: Use helpers to determine if draw tools are active or if we are in a drawing mode
 
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
@@ -150,7 +153,10 @@ export default function TheMap({
     );
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (e.features.some((feature) => isDrawnDraftFeature(feature)) || isDrawing)
+    if (
+      e.features.some((feature) => isDrawnDraftFeature(feature)) ||
+      areDrawToolsActive
+    )
       return;
 
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
@@ -189,7 +195,11 @@ export default function TheMap({
     const clickedFeatureSource = clickedFeature.layer.source;
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (e.features.some((feature) => isDrawnExistingFeature(feature))) return;
+    if (
+      e.features.some((feature) => isDrawnExistingFeature(feature)) ||
+      areDrawToolsActive
+    )
+      return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
@@ -357,7 +367,7 @@ export default function TheMap({
             linkMode={linkMode}
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
-            isDrawing={isDrawing}
+            setAreDrawToolsActive={setAreDrawToolsActive}
           />
         )}
         {shouldShowEditDrawControls && (
@@ -367,6 +377,7 @@ export default function TheMap({
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
             draftEditComponent={draftEditComponent}
+            setAreDrawToolsActive={setAreDrawToolsActive}
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />
