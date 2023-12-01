@@ -107,7 +107,7 @@ export default function TheMap({
     const shouldShowZoomAlert =
       currentZoom < MIN_SELECT_FEATURE_ZOOM &&
       (isCreatingComponent || isEditingComponent) &&
-      isDrawing === false;
+      isDrawing === null;
 
     if (shouldShowZoomAlert) {
       errorMessageDispatch({
@@ -126,11 +126,11 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    !isDrawing && setCursor("pointer");
+    isDrawing === null && setCursor("pointer");
   };
 
   const onMouseLeave = (e) => {
-    !isDrawing && setCursor("grab");
+    isDrawing === null && setCursor("grab");
   };
 
   const handleCreateOnClick = (e) => {

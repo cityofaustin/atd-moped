@@ -24,11 +24,11 @@ const CTNSourcesAndLayers = ({
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "lines" &&
-    !isDrawing;
+    isDrawing === null;
   const isEditingPoints =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "points" &&
-    !isDrawing;
+    isDrawing == null;
 
   return (
     <>

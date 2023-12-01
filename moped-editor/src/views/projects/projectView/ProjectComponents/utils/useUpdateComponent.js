@@ -403,7 +403,7 @@ export const useUpdateComponent = ({
           makeClickedComponentUpdates(null);
           editDispatch({ type: "save_edit" });
           setLinkMode(null);
-          setIsDrawing(false);
+          setIsDrawing(null);
 
           zoomMapToFeatureCollection(
             mapRef,
@@ -420,7 +420,7 @@ export const useUpdateComponent = ({
   const onCancelComponentMapEdit = () => {
     editDispatch({ type: "cancel_map_edit" });
     setLinkMode(null);
-    setIsDrawing(false);
+    setIsDrawing(null);
   };
 
   return {

@@ -49,7 +49,7 @@ const ProjectSourcesAndLayers = ({
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "lines" &&
-    !isDrawing;
+    isDrawing === null;
 
   const shouldShowMutedFeatures =
     clickedComponent || isCreatingComponent || isEditingComponent;

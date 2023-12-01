@@ -64,7 +64,7 @@ const CreateComponentDrawTools = ({
       type: "delete_drawn_features",
       payload: deletedFeaturesArray,
     });
-    setIsDrawing(false);
+    setIsDrawing(null);
     // after we have deleted, disable trash button
     setTrashButtonClickable(false);
   };
@@ -72,9 +72,9 @@ const CreateComponentDrawTools = ({
   const onModeChange = ({ mode }) => {
     if (isInDrawingMode(mode)) {
       setCursor("crosshair");
-      setIsDrawing(true);
+      setIsDrawing(mode);
     } else {
-      setIsDrawing(false);
+      setIsDrawing(null);
     }
   };
 
