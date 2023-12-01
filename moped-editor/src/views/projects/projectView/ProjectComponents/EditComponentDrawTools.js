@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl, {
   isInDrawingMode,
+  areDrawToolsActive,
 } from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature, useExistingDrawnFeatures } from "./utils/features";
 import { useTrashButtonClickable } from "./utils/map";
@@ -115,11 +116,10 @@ const EditComponentDrawTools = ({
   };
 
   const onModeChange = ({ mode }) => {
+    setIsDrawing(mode);
+
     if (isInDrawingMode(mode)) {
       setCursor("crosshair");
-      setIsDrawing(mode);
-    } else {
-      setIsDrawing(null);
     }
   };
 

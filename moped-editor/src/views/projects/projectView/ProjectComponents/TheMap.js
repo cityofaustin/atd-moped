@@ -37,6 +37,10 @@ import {
 } from "./utils/makeFeatureCollections";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
 import { useHasMapLoaded } from "./utils/useHasMapLoaded";
+import {
+  isInDrawingMode,
+  areDrawToolsActive,
+} from "src/components/Maps/ComponentsDrawControl";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -66,7 +70,6 @@ export default function TheMap({
   makeClickedComponentUpdates,
 }) {
   const [cursor, setCursor] = useState("grab");
-  const [areDrawToolsActive, setAreDrawToolsActive] = useState(false);
   // TODO: Just track mode instead of isDrawing and areDrawToolsActive
   // TODO: Use helpers to determine if draw tools are active or if we are in a drawing mode
 
@@ -126,11 +129,12 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    isDrawing === null && setCursor("pointer");
+    !isInDrawingMode(isDrawing) && setCursor("pointer");
+    isInDrawingMode(isDrawing) && setCursor("crosshair");
   };
 
   const onMouseLeave = (e) => {
-    isDrawing === null && setCursor("grab");
+    !isInDrawingMode(isDrawing) && setCursor("grab");
   };
 
   const handleCreateOnClick = (e) => {
@@ -152,10 +156,11 @@ export default function TheMap({
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
+    console.log(isDrawing);
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
     if (
-      e.features.some((feature) => isDrawnDraftFeature(feature)) ||
-      areDrawToolsActive
+      e.features.some((feature) => isDrawnDraftFeature(feature)) &&
+      areDrawToolsActive(isDrawing)
     )
       return;
 
@@ -196,8 +201,8 @@ export default function TheMap({
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
     if (
-      e.features.some((feature) => isDrawnExistingFeature(feature)) ||
-      areDrawToolsActive
+      e.features.some((feature) => isDrawnExistingFeature(feature)) &&
+      isInDrawingMode(isDrawing)
     )
       return;
 
@@ -367,7 +372,6 @@ export default function TheMap({
             linkMode={linkMode}
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
-            setAreDrawToolsActive={setAreDrawToolsActive}
           />
         )}
         {shouldShowEditDrawControls && (
@@ -377,7 +381,6 @@ export default function TheMap({
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
             draftEditComponent={draftEditComponent}
-            setAreDrawToolsActive={setAreDrawToolsActive}
           />
         )}
         <BaseMapSourceAndLayers basemapKey={basemapKey} />

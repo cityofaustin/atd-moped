@@ -1,6 +1,7 @@
 import { Source, Layer } from "react-map-gl";
 import { SOURCES } from "./mapSettings";
 import { MAP_STYLES } from "./mapStyleSettings";
+import { isInDrawingMode } from "src/components/Maps/ComponentsDrawControl";
 
 /**
  * Component that renders CTN GeoJSON data to be captured into draft or edited components
@@ -24,11 +25,11 @@ const CTNSourcesAndLayers = ({
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "lines" &&
-    isDrawing === null;
+    !isInDrawingMode(isDrawing);
   const isEditingPoints =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "points" &&
-    isDrawing == null;
+    !isInDrawingMode(isDrawing);
 
   return (
     <>

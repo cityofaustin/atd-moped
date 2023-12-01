@@ -70,7 +70,7 @@ const ProjectSummaryMap = ({ data }) => {
               <ProjectSourcesAndLayers
                 isCreatingComponent={false}
                 isEditingComponent={false}
-                isDrawing={false}
+                isDrawing={null}
                 linkMode={null}
                 clickedComponent={null}
                 projectComponentsFeatureCollection={
