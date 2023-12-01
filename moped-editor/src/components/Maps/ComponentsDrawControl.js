@@ -2,6 +2,7 @@ import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 
+/* Mapbox GL Draw modes that we use to determine isDrawing state. */
 export const isDrawingModes = [
   "draw_point",
   "draw_line_string",
@@ -9,6 +10,12 @@ export const isDrawingModes = [
   "simple_select",
 ];
 
+/**
+ * Check if we are in a drawing mode
+ * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#modes
+ * @param {String} mode - the current Mapbox GL Draw mode
+ * @returns {Boolean} - true if we are in a drawing mode
+ */
 export const isInDrawingMode = (mode) => isDrawingModes.includes(mode);
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
