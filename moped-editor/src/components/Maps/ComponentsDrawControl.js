@@ -2,6 +2,15 @@ import React from "react";
 import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 
+export const isDrawingModes = [
+  "draw_point",
+  "draw_line_string",
+  "direct_select",
+  "simple_select",
+];
+
+export const isInDrawingMode = (mode) => isDrawingModes.includes(mode);
+
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.
 // We need to drill it down here so that we can assign the draw instance that exposes the

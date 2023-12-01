@@ -1,5 +1,7 @@
 import React, { useRef } from "react";
-import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+import ComponentsDrawControl, {
+  isInDrawingMode,
+} from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature, useExistingDrawnFeatures } from "./utils/features";
 import { useTrashButtonClickable } from "./utils/map";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
@@ -113,7 +115,7 @@ const EditComponentDrawTools = ({
   };
 
   const onModeChange = ({ mode }) => {
-    if (mode === "draw_point" || mode === "draw_line_string") {
+    if (isInDrawingMode(mode)) {
       setCursor("crosshair");
       setIsDrawing(true);
     } else {
