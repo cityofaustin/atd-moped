@@ -69,15 +69,20 @@ const CreateComponentDrawTools = ({
     setTrashButtonClickable(false);
   };
 
-  const onModeChange = (props) => {
-    if (isInDrawingMode(props.mode)) {
+  // TODO: when in a draw mode, we want isDrawing to be true
+  // TODO: when in a select mode, we want isDrawing to be false
+  const onModeChange = ({ mode }) => {
+    if (isInDrawingMode(mode)) {
       setCursor("crosshair");
       setIsDrawing(true);
     }
   };
 
   const onSelectionChange = (props) => {
-    setTrashButtonClickable(!!props.features.length > 0);
+    if (!!props.features.length > 0) {
+      setTrashButtonClickable(true);
+      setIsDrawing(false);
+    }
   };
 
   return (

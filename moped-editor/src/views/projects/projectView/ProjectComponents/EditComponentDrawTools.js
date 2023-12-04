@@ -118,6 +118,8 @@ const EditComponentDrawTools = ({
     if (isInDrawingMode(mode)) {
       setCursor("crosshair");
       setIsDrawing(true);
+    } else {
+      setIsDrawing(false);
     }
   };
 
