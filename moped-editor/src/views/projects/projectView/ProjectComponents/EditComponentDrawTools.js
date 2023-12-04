@@ -109,7 +109,7 @@ const EditComponentDrawTools = ({
         payload: deletedFeaturesArray,
       });
     }
-    setIsDrawing(null);
+    setIsDrawing(false);
     // after we have deleted, disable trash button
     setTrashButtonClickable(false);
   };

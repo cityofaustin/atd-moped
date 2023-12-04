@@ -3,20 +3,7 @@ import MapboxDraw from "@mapbox/mapbox-gl-draw";
 import { useControl } from "react-map-gl";
 
 /* Mapbox GL Draw modes that we use to determine isDrawing state. */
-export const isSelectingModes = ["direct_select", "simple_select"];
-
 export const isDrawingModes = ["draw_point", "draw_line_string"];
-
-export const areDrawToolsActiveModes = [...isSelectingModes, ...isDrawingModes];
-
-/**
- * Check if the draw tools are active (in any draw tools mode that we use)
- * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#modes
- * @param {String} mode - the current Mapbox GL Draw mode
- * @returns {Boolean} - true if we are in the tools are active
- */
-export const areDrawToolsActive = (mode) =>
-  areDrawToolsActiveModes.includes(mode);
 
 /**
  * Check if the draw tools are active and in a drawing mode
@@ -25,14 +12,6 @@ export const areDrawToolsActive = (mode) =>
  * @returns {Boolean} - true if we are in the tools are active
  */
 export const isInDrawingMode = (mode) => isDrawingModes.includes(mode);
-
-/**
- * Check if the draw tools are active and in a selecting mode
- * @see https://github.com/mapbox/mapbox-gl-draw/blob/main/docs/API.md#modes
- * @param {String} mode - the current Mapbox GL Draw mode
- * @returns {Boolean} - true if we are in the tools are active
- */
-export const isInSelectingMode = (mode) => isSelectingModes.includes(mode);
 
 // See https://github.com/visgl/react-map-gl/blob/7.0-release/examples/draw-polygon/src/draw-control.ts
 // Ref that is forwarded is defined in CreateComponentDrawTools and EditComponentDrawTools.

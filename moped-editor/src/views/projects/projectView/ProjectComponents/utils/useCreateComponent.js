@@ -140,7 +140,7 @@ export const useCreateComponent = ({
   const onCancelComponentCreate = () => {
     createDispatch({ type: "cancel_create" });
     setLinkMode(null);
-    setIsDrawing(null);
+    setIsDrawing(false);
   };
 
   /**
@@ -155,7 +155,7 @@ export const useCreateComponent = ({
         refetchProjectComponents().then(() => {
           createDispatch({ type: "save_create" });
           setLinkMode(null);
-          setIsDrawing(null);
+          setIsDrawing(false);
           zoomMapToFeatureCollection(
             mapRef,
             {
@@ -185,7 +185,7 @@ export const useCreateComponent = ({
         refetchProjectComponents().then(() => {
           createDispatch({ type: "save_create" });
           setLinkMode(null);
-          setIsDrawing(null);
+          setIsDrawing(false);
           zoomMapToFeatureCollection(
             mapRef,
             {

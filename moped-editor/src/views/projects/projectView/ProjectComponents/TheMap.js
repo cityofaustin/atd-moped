@@ -66,8 +66,6 @@ export default function TheMap({
   makeClickedComponentUpdates,
 }) {
   const [cursor, setCursor] = useState("grab");
-  // TODO: Just track mode instead of isDrawing and areDrawToolsActive
-  // TODO: Use helpers to determine if draw tools are active or if we are in a drawing mode
 
   const [bounds, setBounds] = useState();
   const [basemapKey, setBasemapKey] = useState("streets");
@@ -106,7 +104,7 @@ export default function TheMap({
     const shouldShowZoomAlert =
       currentZoom < MIN_SELECT_FEATURE_ZOOM &&
       (isCreatingComponent || isEditingComponent) &&
-      !isDrawing;
+      isDrawing === false;
 
     if (shouldShowZoomAlert) {
       errorMessageDispatch({
@@ -151,13 +149,9 @@ export default function TheMap({
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (
-      e.features.some((feature) => isDrawnDraftFeature(feature)) ||
-      isDrawing
-    ) {
-      return;
-    }
+    /* If we clicked a drawn feature, we don't need to capture from the CTN layers */
+    if (e.features?.some((feature) => isDrawnDraftFeature(feature))) return;
+
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
       createDispatch({
@@ -193,12 +187,8 @@ export default function TheMap({
     const clickedFeature = e.features[0];
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    if (
-      e.features.some((feature) => isDrawnExistingFeature(feature)) ||
-      isDrawing
-    )
-      return;
+    /* If drawn feature is clicked, the draw tools take over and we don't need to do anything else  */
+    if (e.features?.some((feature) => isDrawnExistingFeature(feature))) return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
@@ -344,7 +334,7 @@ export default function TheMap({
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
-        interactiveLayerIds={interactiveLayerIds}
+        interactiveLayerIds={isDrawing ? [] : interactiveLayerIds}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onMoveEnd={onMoveEnd}
@@ -366,6 +356,7 @@ export default function TheMap({
             linkMode={linkMode}
             setCursor={setCursor}
             setIsDrawing={setIsDrawing}
+            isDrawing={isDrawing}
           />
         )}
         {shouldShowEditDrawControls && (

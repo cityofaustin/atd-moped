@@ -64,25 +64,22 @@ const CreateComponentDrawTools = ({
       type: "delete_drawn_features",
       payload: deletedFeaturesArray,
     });
-    setIsDrawing(null);
+    setIsDrawing(false);
     // after we have deleted, disable trash button
     setTrashButtonClickable(false);
   };
 
-  // TODO: when in a draw mode, we want isDrawing to be true
-  // TODO: when in a select mode, we want isDrawing to be false
   const onModeChange = ({ mode }) => {
     if (isInDrawingMode(mode)) {
       setCursor("crosshair");
       setIsDrawing(true);
+    } else {
+      setIsDrawing(false);
     }
   };
 
   const onSelectionChange = (props) => {
-    if (!!props.features.length > 0) {
-      setTrashButtonClickable(true);
-      setIsDrawing(false);
-    }
+    setTrashButtonClickable(!!props.features.length > 0);
   };
 
   return (
