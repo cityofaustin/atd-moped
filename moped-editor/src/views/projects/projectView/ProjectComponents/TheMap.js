@@ -37,11 +37,6 @@ import {
 } from "./utils/makeFeatureCollections";
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
 import { useHasMapLoaded } from "./utils/useHasMapLoaded";
-import {
-  areDrawToolsActive,
-  isInDrawingMode,
-  isInSelectingMode,
-} from "src/components/Maps/ComponentsDrawControl";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
 import mapboxgl from "mapbox-gl";
@@ -111,7 +106,7 @@ export default function TheMap({
     const shouldShowZoomAlert =
       currentZoom < MIN_SELECT_FEATURE_ZOOM &&
       (isCreatingComponent || isEditingComponent) &&
-      isDrawing === null;
+      !isDrawing;
 
     if (shouldShowZoomAlert) {
       errorMessageDispatch({
@@ -130,12 +125,11 @@ export default function TheMap({
   ]);
 
   const onMouseEnter = (e) => {
-    !isInDrawingMode(isDrawing) && setCursor("pointer");
-    isInDrawingMode(isDrawing) && setCursor("crosshair");
+    !isDrawing && setCursor("pointer");
   };
 
   const onMouseLeave = (e) => {
-    !isInDrawingMode(isDrawing) && setCursor("grab");
+    !isDrawing && setCursor("grab");
   };
 
   const handleCreateOnClick = (e) => {
@@ -158,14 +152,9 @@ export default function TheMap({
     );
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
-    console.log(e.features);
-    console.log(isInDrawingMode(isDrawing));
     if (
-      // we need to check if some features are drawn to make sure
-      //we don't unselect selectable features when selecting drawn
-      // features on create before saving
-      e.features.some((feature) => isDrawnDraftFeature(feature)) &&
-      isInDrawingMode(isDrawing)
+      e.features.some((feature) => isDrawnDraftFeature(feature)) ||
+      isDrawing
     ) {
       return;
     }
@@ -206,8 +195,8 @@ export default function TheMap({
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
     if (
-      e.features.some((feature) => isDrawnExistingFeature(feature)) &&
-      isInDrawingMode(isDrawing)
+      e.features.some((feature) => isDrawnExistingFeature(feature)) ||
+      isDrawing
     )
       return;
 

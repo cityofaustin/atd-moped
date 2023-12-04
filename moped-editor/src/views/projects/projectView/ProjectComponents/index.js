@@ -87,9 +87,7 @@ export default function MapView({
   const [isFetchingFeatures, setIsFetchingFeatures] = useState(false);
 
   /* tracks the drawing state of the map */
-  // TODO: Make this hold the mode of the draw tool instead of a boolean
-  const [isDrawing, setIsDrawing] = useState(null);
-  console.log(isDrawing);
+  const [isDrawing, setIsDrawing] = useState(false);
 
   /* tracks when a component is being moved from one project to another */
   const [isMovingComponent, setIsMovingComponent] = useState(false);

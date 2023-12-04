@@ -1,6 +1,5 @@
 import React, { useRef } from "react";
 import ComponentsDrawControl, {
-  areDrawToolsActive,
   isInDrawingMode,
 } from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
@@ -32,8 +31,6 @@ const CreateComponentDrawTools = ({
       makeDrawnFeature(feature, linkMode);
       return feature;
     });
-
-    setIsDrawing(null);
 
     // We must override the features in the draw control's internal state with ones
     // that have our properties so that we can find them later in onDelete
@@ -73,10 +70,9 @@ const CreateComponentDrawTools = ({
   };
 
   const onModeChange = (props) => {
-    setIsDrawing(props.mode);
-
     if (isInDrawingMode(props.mode)) {
       setCursor("crosshair");
+      setIsDrawing(true);
     }
   };
 

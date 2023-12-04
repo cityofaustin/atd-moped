@@ -1,7 +1,6 @@
 import { Source, Layer } from "react-map-gl";
 import { MAP_STYLES } from "./mapStyleSettings";
 import { useFeatureTypes } from "./utils/map";
-import { isInDrawingMode } from "src/components/Maps/ComponentsDrawControl";
 
 /**
  * Component that renders feature collection of existing component features in a project
@@ -50,7 +49,7 @@ const ProjectSourcesAndLayers = ({
   const isEditingLines =
     (isCreatingComponent || isEditingComponent) &&
     linkMode === "lines" &&
-    !isInDrawingMode(isDrawing);
+    !isDrawing;
 
   const shouldShowMutedFeatures =
     clickedComponent || isCreatingComponent || isEditingComponent;
