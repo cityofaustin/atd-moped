@@ -33,6 +33,8 @@ const CreateComponentDrawTools = ({
       return feature;
     });
 
+    setIsDrawing(null);
+
     // We must override the features in the draw control's internal state with ones
     // that have our properties so that we can find them later in onDelete
     const updateMapDrawToolFeatures = (updatedFeatures) =>
@@ -70,10 +72,10 @@ const CreateComponentDrawTools = ({
     setTrashButtonClickable(false);
   };
 
-  const onModeChange = ({ mode }) => {
-    setIsDrawing(mode);
+  const onModeChange = (props) => {
+    setIsDrawing(props.mode);
 
-    if (isInDrawingMode(mode)) {
+    if (isInDrawingMode(props.mode)) {
       setCursor("crosshair");
     }
   };

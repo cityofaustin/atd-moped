@@ -38,8 +38,9 @@ import {
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
 import { useHasMapLoaded } from "./utils/useHasMapLoaded";
 import {
-  isInDrawingMode,
   areDrawToolsActive,
+  isInDrawingMode,
+  isInSelectingMode,
 } from "src/components/Maps/ComponentsDrawControl";
 
 // See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
@@ -156,14 +157,18 @@ export default function TheMap({
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    console.log(isDrawing);
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else  */
+    console.log(e.features);
+    console.log(isInDrawingMode(isDrawing));
     if (
+      // we need to check if some features are drawn to make sure
+      //we don't unselect selectable features when selecting drawn
+      // features on create before saving
       e.features.some((feature) => isDrawnDraftFeature(feature)) &&
-      areDrawToolsActive(isDrawing)
-    )
+      isInDrawingMode(isDrawing)
+    ) {
       return;
-
+    }
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
       createDispatch({
