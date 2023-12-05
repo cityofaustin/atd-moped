@@ -124,6 +124,7 @@ const ProjectsListViewTable = () => {
 
   const {
     data: projectListViewData,
+    loading,
     error,
     refetch,
   } = useQuery(projectListViewQuery, {
@@ -183,7 +184,7 @@ const ProjectsListViewTable = () => {
 
   const tableComponents = useTableComponents({
     data,
-    projectListViewData,
+    loading,
     queryLimit,
     queryOffset,
     setQueryLimit,

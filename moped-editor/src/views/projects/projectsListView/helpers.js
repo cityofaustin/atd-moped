@@ -147,7 +147,7 @@ const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
  */
 export const useTableComponents = ({
   data,
-  projectListViewData,
+  loading,
   queryLimit,
   queryOffset,
   setQueryLimit,
@@ -185,9 +185,8 @@ export const useTableComponents = ({
           }}
         >
           <Box sx={{ mt: 2, ml: 2 }}>
-            {/* If there is previous data but no current data (i.e., useQuery
-              is refetching the data, then display a progress spinner) */}
-            {!!data && !projectListViewData && <CircularProgress />}
+            {/* Display a spinner if data is loading */}
+            {loading && <CircularProgress />}
           </Box>
           <Box>
             <MTableToolbar {...props} />
@@ -197,7 +196,7 @@ export const useTableComponents = ({
     }),
     [
       data,
-      projectListViewData,
+      loading,
       queryLimit,
       queryOffset,
       setQueryLimit,
