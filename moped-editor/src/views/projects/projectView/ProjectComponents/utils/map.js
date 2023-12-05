@@ -22,8 +22,8 @@ export const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
 
 /**
  * Get interactive layers based on whether the user is drawing or not.
- * This prevents drawing clicks from triggering selects and deselects
- * in the interactive layers below the drawing tool layer.
+ * This prevents draw tool clicks from triggering selects and deselects
+ * in the interactive layers below the draw tool layer.
  * @param {Boolean} isDrawing - is the user currently drawing
  * @returns {Array} - array of interactive layers IDs for the map
  */
