@@ -100,12 +100,21 @@ export const getDrawId = (feature) => feature?.properties?.DRAW_ID;
 
 /**
  * Determine if a draft feature is drawn by the user by the draw ID
- * that is added when creating a new drawn feature
+ * that is added when creating a drawn feature that is not yet saved
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
 export const isDrawnDraftFeature = (feature) =>
   getDrawId(feature) ? true : false;
+
+/**
+ * Determine if any features captured in a Mapbox click event are features
+ * that are a drawn and not yet saved
+ * @param {Array} features - array for features from a Mapbox click event
+ * @returns {Boolean} - true if any feature is drawn by user and already saved
+ */
+export const areAnyClickedFeaturesDraftDrawnFeatures = (clickedFeatures) =>
+  clickedFeatures?.some((feature) => isDrawnDraftFeature(feature));
 
 /**
  * Add fetched component feature's source layer ("drawnByUserLine" or "drawnByUserPoint")
@@ -117,13 +126,22 @@ export const addDrawnFeatureProperties = (feature) => {
 };
 
 /**
- * Determine if a feature is drawn by the user by checking for the source layer
- * in the feature properties that is added addDrawnFeatureProperties
+ * Determine if a feature was saved previously by checking for the source layer
+ * data that is only present in saved drawn features
  * @param {Object} feature - a feature object
  * @returns {Boolean} - true if feature is drawn by user
  */
-export const isDrawnExistingFeature = (feature) =>
+export const isDrawnSavedFeature = (feature) =>
   feature.properties.sourceLayer?.includes("drawnByUser");
+
+/**
+ * Determine if any features captured in a Mapbox click event are features
+ * that have already been drawn and saved by the user
+ * @param {Array} features - array for features from a Mapbox click event
+ * @returns {Boolean} - true if any feature is drawn by user and already saved
+ */
+export const areAnyClickedFeaturesSavedDrawnFeatures = (clickedFeatures) =>
+  clickedFeatures?.some((feature) => isDrawnSavedFeature(feature));
 
 /**
  * Initialize the draw tools state with existing features of the component being edited

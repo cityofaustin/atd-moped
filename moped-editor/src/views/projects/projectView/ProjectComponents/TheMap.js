@@ -26,9 +26,9 @@ import {
 } from "./utils/agol";
 import "mapbox-gl/dist/mapbox-gl.css";
 import {
-  isDrawnDraftFeature,
-  isDrawnExistingFeature,
   makeCapturedFromLayerFeature,
+  areAnyClickedFeaturesSavedDrawnFeatures,
+  areAnyClickedFeaturesDraftDrawnFeatures,
 } from "./utils/features";
 import {
   useComponentFeatureCollection,
@@ -132,6 +132,7 @@ export default function TheMap({
 
   const handleCreateOnClick = (e) => {
     const newDraftComponent = cloneDeep(draftComponent);
+    const allClickedFeatures = e.features;
 
     /* Get the details we need to see if the feature is already in the draftComponent or not */
     const { internal_table } = newDraftComponent;
@@ -150,7 +151,7 @@ export default function TheMap({
     );
 
     /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else */
-    if (e.features?.some((feature) => isDrawnDraftFeature(feature))) return;
+    if (areAnyClickedFeaturesSavedDrawnFeatures(allClickedFeatures)) return;
 
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
@@ -185,10 +186,16 @@ export default function TheMap({
 
   const handleEditOnClick = (e) => {
     const clickedFeature = e.features[0];
+    const allClickedFeatures = e.features;
     const clickedFeatureSource = clickedFeature.layer.source;
 
-    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else */
-    if (e.features?.some((feature) => isDrawnExistingFeature(feature))) return;
+    /* If any clicked features are draft drawn or saved drawn features, 
+    the draw tools take over and we don't need to do anything else */
+    if (
+      areAnyClickedFeaturesSavedDrawnFeatures(allClickedFeatures) ||
+      areAnyClickedFeaturesDraftDrawnFeatures(allClickedFeatures)
+    )
+      return;
 
     const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
     const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
