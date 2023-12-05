@@ -19,7 +19,7 @@ import {
   SOURCES,
   MIN_SELECT_FEATURE_ZOOM,
 } from "./mapSettings";
-import { interactiveLayerIds, useZoomToExistingComponents } from "./utils/map";
+import { getInteractiveLayers, useZoomToExistingComponents } from "./utils/map";
 import {
   useAgolFeatures,
   findFeatureInAgolGeojsonFeatures,
@@ -342,7 +342,7 @@ export default function TheMap({
       <MapGL
         ref={mapRef}
         initialViewState={initialViewState}
-        interactiveLayerIds={isDrawing ? [] : interactiveLayerIds}
+        interactiveLayerIds={getInteractiveLayers(isDrawing)}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
         onMoveEnd={onMoveEnd}
