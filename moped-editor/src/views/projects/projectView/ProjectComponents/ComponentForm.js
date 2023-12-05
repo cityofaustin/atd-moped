@@ -56,7 +56,7 @@ const validationSchema = yup.object().shape({
   subphase: yup.object().nullable().optional(),
   tags: yup.array().optional(),
   completionDate: yup.date().nullable().optional(),
-  description: yup.string(),
+  description: yup.string().nullable(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().nullable(),
@@ -82,6 +82,9 @@ const ComponentForm = ({
   });
 
   const areFormErrors = Object.keys(errors).length > 0;
+
+  console.log(errors);
+  console.log(isDirty);
 
   // Get and format component and subcomponent options
   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
