@@ -150,8 +150,9 @@ export default function TheMap({
       existingDraftIds.includes(feature.properties[ctnUniqueIdentifier])
     );
 
-    /* If any clicked features are drawn, the draw tools take over and we don't need to do anything else */
-    if (areAnyClickedFeaturesSavedDrawnFeatures(allClickedFeatures)) return;
+    /* If any clicked features are drawn draft features, the draw tools 
+    take over and we don't need to do anything else */
+    if (areAnyClickedFeaturesDraftDrawnFeatures(allClickedFeatures)) return;
 
     /* If we clicked a feature that's already in the draftComponent, we remove it  */
     if (clickedDraftComponentFeature) {
