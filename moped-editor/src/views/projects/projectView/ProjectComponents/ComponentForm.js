@@ -83,7 +83,6 @@ const ComponentForm = ({
 
   const areFormErrors = Object.keys(errors).length > 0;
 
-
   // Get and format component and subcomponent options
   const { data: optionsData, error } = useQuery(GET_COMPONENTS_FORM_OPTIONS);
 
