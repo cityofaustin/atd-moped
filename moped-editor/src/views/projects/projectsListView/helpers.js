@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
-import MTableHeader from "@material-table/core";
+import { MTableHeader } from "@material-table/core";
 import Link from "@mui/material/Link";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
