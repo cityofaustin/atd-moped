@@ -36,7 +36,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
       );
       const { type, defaultOperator } = filterConfigForField;
       const operatorConfig = FiltersCommonOperators[defaultOperator];
-      const {
+      let {
         envelope,
         specialNullValue,
         operator: gqlOperator,

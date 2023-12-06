@@ -226,10 +226,12 @@ const Filters = ({
         filtersNewState[filterId].label = fieldDetails.label;
 
         // Update Available Operators
-        // TODO: If there is the * symbol - this is set in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields[fieldName].operators config
-        // it is a wildcard that means all operators should be available for that field
+        // TODO: If there is the * symbol - this is set in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields[fieldName].operators
+        // config. It is a wildcard that means all operators should be available for that field.
         // Should we keep this? I found it confusing.
         // TODO: Else there is a list of operators in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields config
+        // so we need to filter the list of operators by the type of the field.
+        // Do we actually need to filter by type? Or just rely on the config to support the type?
         if (
           fieldDetails.operators.length === 1 &&
           fieldDetails.operators[0] === "*"
