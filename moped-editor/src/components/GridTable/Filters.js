@@ -108,17 +108,17 @@ const generateEmptyField = (uuid) => {
    * @default
    */
   const defaultNewFieldState = {
-    id: null,
-    field: null,
-    operator: null,
-    availableOperators: [],
+    id: null, // uuid inside the app
+    field: null, // project_name
+    operator: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).defaultOperator
+    availableOperators: [], // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).operators
+    type: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).type
+    placeholder: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).placeholder
+    label: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).label
+    value: null, // Get from form
     gqlOperator: null,
     envelope: null,
-    placeholder: null,
-    value: null,
-    type: null,
     specialNullValue: null,
-    label: null,
   };
   return { ...defaultNewFieldState, id: uuid };
 };
@@ -212,6 +212,7 @@ const Filters = ({
    * @param {Object} field - The field object being clicked
    */
   const handleFilterFieldMenuClick = (filterId, field) => {
+    console.log(filterId, field);
     // If the filter exists
     if (filterId in filterParameters) {
       // Clone state
