@@ -226,10 +226,22 @@ const Filters = ({
         filtersNewState[filterId].label = fieldDetails.label;
 
         // Update Available Operators
+        // TODO: If there is the * symbol - this is set in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields[fieldName].operators config
+        // it is a wildcard that means all operators should be available for that field
+        // Should we keep this? I found it confusing.
+        // TODO: Else there is a list of operators in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields config
         if (
           fieldDetails.operators.length === 1 &&
           fieldDetails.operators[0] === "*"
         ) {
+          //   {
+          //     "operator": "_ilike",
+          //     "label": "is",
+          //     "description": "Field content equals string (case-sensitive)",
+          //     "envelope": null,
+          //     "type": "string",
+          //     "id": "string_equals_case_sensitive"
+          // }
           // Add all operators and filter by specific type (defined in fieldDetails.type)
           filtersNewState[filterId].availableOperators = Object.keys(
             filtersConfig.operators
