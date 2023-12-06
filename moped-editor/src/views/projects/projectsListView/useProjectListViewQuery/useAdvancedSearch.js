@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
+import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 
 /**
  * if filter exists in url, decodes base64 string and returns as object
@@ -27,14 +28,15 @@ const useMakeFilterState = (searchParams) =>
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { envelope, field, gqlOperator, value, specialNullValue } =
-        filters[filter];
+      let { field, gqlOperator, value, specialNullValue } = filters[filter];
 
       // TODO: One by one replace these with references in Filter.js
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
         (fieldConfig) => fieldConfig.name === field
       );
-      const { type } = filterConfigForField;
+      const { type, defaultOperator } = filterConfigForField;
+      const operatorConfig = FiltersCommonOperators[defaultOperator];
+      const { envelope } = operatorConfig;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {

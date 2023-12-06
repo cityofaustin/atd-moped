@@ -101,9 +101,7 @@ const generateEmptyField = (uuid) => {
    * @property {operator} operator - The name of the operator
    * @property {string[]} availableOperators - A string array containing the names of available operators
    * @property {string} gqlOperator - A string containing the GraphQL operator
-   * @property {string} envelope - The a pattern to use as an envelope
    * @property {string} value - The text value to be searched
-   * @property {string} type - The type of field it is (string, number, etc.)
    * @constant
    * @default
    */
@@ -117,7 +115,6 @@ const generateEmptyField = (uuid) => {
     label: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).label
     value: null, // Get from form
     gqlOperator: null, // FiltersCommonOperators[operator].operator <-- [operator] key is operator above
-    envelope: null, // FiltersCommonOperators[operator].envelope <-- [operator] key is operator above
     specialNullValue: null, // FiltersCommonOperators[operator].specialNullValue <-- [operator] key is operator above
   };
   return { ...defaultNewFieldState, id: uuid };
@@ -309,9 +306,6 @@ const Filters = ({
         // Get the GraphQL operator details
         filtersNewState[filterId].gqlOperator =
           filtersConfig.operators[operator].operator;
-        // Copy the envelope if available
-        filtersNewState[filterId].envelope =
-          filtersConfig.operators[operator].envelope;
         // Copy special null value if available
         filtersNewState[filterId].specialNullValue =
           filtersConfig.operators[operator].specialNullValue;
