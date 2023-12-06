@@ -116,9 +116,9 @@ const generateEmptyField = (uuid) => {
     placeholder: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).placeholder
     label: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).label
     value: null, // Get from form
-    gqlOperator: null,
-    envelope: null,
-    specialNullValue: null,
+    gqlOperator: null, // FiltersCommonOperators[operator].operator <-- [operator] key is operator above
+    envelope: null, // FiltersCommonOperators[operator].envelope <-- [operator] key is operator above
+    specialNullValue: null, // FiltersCommonOperators[operator].specialNullValue <-- [operator] key is operator above
   };
   return { ...defaultNewFieldState, id: uuid };
 };
