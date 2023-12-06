@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 
 /**
  * if filter exists in url, decodes base64 string and returns as object
@@ -26,8 +27,14 @@ const useMakeFilterState = (searchParams) =>
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { envelope, field, gqlOperator, value, type, specialNullValue } =
+      let { envelope, field, gqlOperator, value, specialNullValue } =
         filters[filter];
+
+      // TODO: One by one replace these with references in Filter.js
+      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
+        (fieldConfig) => fieldConfig.name === field
+      );
+      const { type } = filterConfigForField;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {
