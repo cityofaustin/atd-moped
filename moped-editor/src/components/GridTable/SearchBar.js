@@ -11,6 +11,7 @@ import {
   Icon,
   IconButton,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
@@ -100,6 +101,7 @@ const SearchBar = ({
   queryConfig,
   isOr,
   handleSwitchToSearch,
+  loading,
 }) => {
   const classes = useStyles();
 
@@ -206,6 +208,11 @@ const SearchBar = ({
           ),
           endAdornment: (
             <InputAdornment position="end">
+              {!!loading && (
+                <IconButton>
+                  <CircularProgress size="2rem" />
+                </IconButton>
+              )}
               <IconButton
                 onClick={toggleAdvancedSearch}
                 className={clsx({

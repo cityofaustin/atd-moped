@@ -177,22 +177,6 @@ export const useTableComponents = ({
           orderDirection={orderByDirection}
         />
       ),
-      Toolbar: (props) => (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-          }}
-        >
-          <Box sx={{ mt: 2, ml: 2 }}>
-            {/* Display a spinner if data is loading */}
-            {loading && <CircularProgress />}
-          </Box>
-          <Box>
-            <MTableToolbar {...props} />
-          </Box>
-        </Box>
-      ),
     }),
     [
       data,
