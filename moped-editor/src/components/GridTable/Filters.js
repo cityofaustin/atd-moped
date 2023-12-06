@@ -114,7 +114,6 @@ const generateEmptyField = (uuid) => {
     placeholder: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).placeholder
     label: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).label
     value: null, // Get from form
-    gqlOperator: null, // FiltersCommonOperators[operator].operator <-- [operator] key is operator above
   };
   return { ...defaultNewFieldState, id: uuid };
 };
@@ -302,9 +301,6 @@ const Filters = ({
       if (operator in filtersConfig.operators) {
         // Update Operator Value
         filtersNewState[filterId].operator = operator;
-        // Get the GraphQL operator details
-        filtersNewState[filterId].gqlOperator =
-          filtersConfig.operators[operator].operator;
 
         // if we are switching to an autocomplete input, clear the search value
         if (renderAutocompleteInput(filtersNewState[filterId])) {

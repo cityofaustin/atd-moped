@@ -28,15 +28,19 @@ const useMakeFilterState = (searchParams) =>
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { field, gqlOperator, value } = filters[filter];
+      let { field, value } = filters[filter];
 
-      // TODO: One by one replace these with references in Filter.js
+      // Use field name to get the filter config and GraphQL operator config for that field
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
         (fieldConfig) => fieldConfig.name === field
       );
       const { type, defaultOperator } = filterConfigForField;
       const operatorConfig = FiltersCommonOperators[defaultOperator];
-      const { envelope, specialNullValue } = operatorConfig;
+      const {
+        envelope,
+        specialNullValue,
+        operator: gqlOperator,
+      } = operatorConfig;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {
