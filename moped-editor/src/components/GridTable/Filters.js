@@ -123,6 +123,10 @@ const generateEmptyField = (uuid) => {
   return { ...defaultNewFieldState, id: uuid };
 };
 
+// TODO: uuid should be used as keys for the filters consumed from the URL
+// TODO: Use uuid within app code but don't store in URL params
+// TODO: Chip away at state stored in URL params
+
 /**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook

@@ -63,6 +63,7 @@ export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
   let [searchParams] = useSearchParams();
   const initialFilterState = useMakeFilterState(searchParams);
+  console.log(initialFilterState);
 
   /* Determine or/any from search params if it exists */
   const isOrFromSearchParams = searchParams.get("isOr");
