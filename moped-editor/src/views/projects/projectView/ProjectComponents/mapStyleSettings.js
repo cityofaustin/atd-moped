@@ -21,6 +21,7 @@ export const COLORS = {
 
 export const pointsCircleRadiusStops = {
   stops: [
+    // [zoom level, circle radius]
     [10, 1],
     [20, 12],
   ],
@@ -28,6 +29,7 @@ export const pointsCircleRadiusStops = {
 
 export const lineWidthStops = {
   stops: [
+    // [zoom level, line width]
     [10, 2],
     [20, 10],
   ],

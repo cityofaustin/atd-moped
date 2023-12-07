@@ -21,7 +21,7 @@ import MaterialTable, {
 } from "@material-table/core";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
-import RenderFieldLink from "../../../projects/signalProjectTable/RenderFieldLink";
+import RenderFieldLink from "../../../../components/RenderFieldLink";
 
 import {
   SUBPROJECT_QUERY,

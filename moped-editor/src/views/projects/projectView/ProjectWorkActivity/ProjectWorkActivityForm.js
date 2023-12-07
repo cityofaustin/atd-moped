@@ -151,19 +151,19 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
           </FormControl>
         </Grid>
         <Grid item xs={12}>
-          <FormControl fullWidth error={!!formErrors?.contractor}>
+          <FormControl fullWidth error={!!formErrors?.workgroup_contractor}>
             <ControlledAutocomplete
               control={control}
-              name="contractor"
+              name="workgroup_contractor"
               label="Workgroup/Contractor"
               options={IMPLEMENTATION_WORKGROUP_OPTIONS}
               freeSolo
               autoSelect
-              error={formErrors?.contractor}
+              error={formErrors?.workgroup_contractor}
               valueHandler={(value) => value || null}
             />
-            {formErrors?.contractor && (
-              <FormHelperText>{formErrors.contractor.message}</FormHelperText>
+            {formErrors?.workgroup_contractor && (
+              <FormHelperText>{formErrors.workgroup_contractor.message}</FormHelperText>
             )}
           </FormControl>
         </Grid>
