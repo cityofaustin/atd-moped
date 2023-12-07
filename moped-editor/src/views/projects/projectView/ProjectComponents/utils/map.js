@@ -20,6 +20,16 @@ export const interactiveLayerIds = Object.entries(MAP_STYLES).reduce(
   []
 );
 
+/**
+ * Get interactive layers based on whether the user is drawing or not.
+ * This prevents draw tool clicks from triggering selects and deselects
+ * in the interactive layers below the draw tool layer.
+ * @param {Boolean} isDrawing - is the user currently drawing
+ * @returns {Array} - array of interactive layers IDs for the map
+ */
+export const getInteractiveLayers = (isDrawing) =>
+  isDrawing ? [] : interactiveLayerIds;
+
 /* Filters a feature collection down to one type of geometry */
 export const useFeatureTypes = (featureCollection, geomType) =>
   useMemo(() => {
@@ -160,8 +170,7 @@ export const useZoomToExistingComponents = (
  * Adds or removes custom css class based on if drawn features are selected
  * returns function to update trashbutton state
  */
-export const useTrashButtonClickable = () =>
-{
+export const useTrashButtonClickable = () => {
   const [isTrashButtonClickable, setTrashButtonClickable] = useState(false);
   useEffect(() => {
     if (isTrashButtonClickable) {
@@ -175,4 +184,4 @@ export const useTrashButtonClickable = () =>
     }
   }, [isTrashButtonClickable]);
   return setTrashButtonClickable;
-}
+};
