@@ -40,7 +40,7 @@ const ApolloErrorHandler = props => {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : error ? (
-        <p>Error: {error.message}</p>
+        <p>Error: {error.message}</p> // here
       ) : (
         props.children
       )}

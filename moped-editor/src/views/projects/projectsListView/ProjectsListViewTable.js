@@ -221,6 +221,7 @@ const ProjectsListViewTable = () => {
           handleExportButtonClick={handleExportButtonClick}
           isOr={isOr}
           setIsOr={setIsOr}
+          // loading={null.length}
           loading={loading}
         />
         {/*Main Table Body*/}
