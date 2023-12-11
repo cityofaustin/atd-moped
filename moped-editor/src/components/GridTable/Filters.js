@@ -173,6 +173,11 @@ const Filters = ({
    */
   const [filterComplete, setFilterComplete] = useState(false);
 
+  /**
+   * Tracks whether the field input value is invalid
+   */
+  const [isInvalidInput, setIsInvalidInput] = useState(false);
+
   /* First filter is an empty placeholder so we check for more than one filter */
   const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
   const isFirstFilterIncomplete =
@@ -373,7 +378,11 @@ const Filters = ({
    * @param {string} filterId - The FilterID uuid
    * @param {string} value - The value to assign to that filter
    */
-  const handleSearchValueChange = (filterId, value) => {
+  const handleSearchValueChange = (filterId, value, type) => {
+    // Validate input for number type fields and set state accordingly
+    type === "number" && isNaN(value)
+      ? setIsInvalidInput(true)
+      : setIsInvalidInput(false);
     // Clone the state
     const filtersNewState = { ...filterParameters };
     // Patch the new state
@@ -685,16 +694,22 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
+                        error={isInvalidInput(filter)}
+                        helperText={isInvalidInput ? "Invalid input" : ""}
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
                         disabled={!filterParameters[filterId].operator}
                         type={
-                          filterParameters[filterId].type
+                          filterParameters[filterId].type === "date"
                             ? filterParameters[filterId].type
-                            : "text"
+                            : null
                         }
                         onChange={(e) =>
-                          handleSearchValueChange(filterId, e.target.value)
+                          handleSearchValueChange(
+                            filterId,
+                            e.target.value,
+                            filterParameters[filterId].type
+                          )
                         }
                         variant="outlined"
                         value={filterParameters[filterId].value ?? ""}
@@ -763,18 +778,17 @@ const Filters = ({
           </Grid>
         </Hidden>
         <Grid item xs={12} md={2}>
-          <Grow in={handleApplyValidation() === null}>
-            <Button
-              fullWidth
-              className={classes.applyButton}
-              variant="contained"
-              color="primary"
-              startIcon={<Icon>search</Icon>}
-              onClick={handleApplyButtonClick}
-            >
-              Search
-            </Button>
-          </Grow>
+          <Button
+            fullWidth
+            className={classes.applyButton}
+            variant="contained"
+            color="primary"
+            startIcon={<Icon>search</Icon>}
+            onClick={handleApplyButtonClick}
+            disabled={isInvalidInput || handleApplyValidation() != null}
+          >
+            Search
+          </Button>
         </Grid>
       </Grid>
     </Grid>
