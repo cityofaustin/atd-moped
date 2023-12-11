@@ -59,15 +59,15 @@ EXECUTE FUNCTION update_parent_records_audit_logs();
 COMMENT ON TRIGGER feature_intersections_parent_audit_log_trigger ON feature_intersections IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_signals table
-CREATE TRIGGER feature_signals_trigger
+CREATE TRIGGER feature_signals_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON feature_signals
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_signals_trigger ON feature_signals IS 'Trigger to update parent project and component audit fields';
+COMMENT ON TRIGGER feature_signals_parent_audit_log_trigger ON feature_signals IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for feature_street_segments table
-CREATE TRIGGER feature_street_segments_trigger
+CREATE TRIGGER feature_street_segments_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON feature_street_segments
 FOR EACH ROW
 EXECUTE FUNCTION update_parent_records_audit_logs();
-COMMENT ON TRIGGER feature_street_segments_trigger ON feature_street_segments IS 'Trigger to update parent project and component audit fields';
+COMMENT ON TRIGGER feature_street_segments_parent_audit_log_trigger ON feature_street_segments IS 'Trigger to update parent project and component audit fields';
