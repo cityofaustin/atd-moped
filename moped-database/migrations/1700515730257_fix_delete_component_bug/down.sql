@@ -1,4 +1,3 @@
--- latest version 1700515730257_fix_delete_component_bug
 DROP VIEW project_list_view CASCADE;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -55,9 +54,8 @@ AS WITH project_person_list_lookup AS (
     SELECT
       mpc.project_id,
       string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
-    FROM moped_proj_components mpc
+    FROM moped_proj_components mpc 
     LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
-    WHERE mpc.is_deleted = FALSE
     GROUP BY mpc.project_id
   )
  SELECT

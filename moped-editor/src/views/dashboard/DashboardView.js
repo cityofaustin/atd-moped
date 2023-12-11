@@ -7,11 +7,9 @@ import {
   AppBar,
   Box,
   Card,
-  CardContent,
   CircularProgress,
   Container,
   Grid,
-  Link,
   Tab,
   Tabs,
   Typography,
@@ -21,15 +19,13 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 
-import RenderFieldLink from "../projects/signalProjectTable/RenderFieldLink";
+import RenderFieldLink from "../../components/RenderFieldLink";
 import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
 
 import typography from "../../theme/typography";
-
-import TrafficIcon from "@mui/icons-material/Traffic";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -278,7 +274,7 @@ const DashboardView = () => {
                 </Typography>
               </Grid>
             </Box>
-            <Box px={3} pt={3}>
+            <Box px={3} py={3}>
               <Grid>
                 <AppBar className={classes.appBar} position="static">
                   <Tabs
@@ -330,37 +326,6 @@ const DashboardView = () => {
                   />
                 )}
               </Grid>
-            </Box>
-            <Box px={3} pb={3}>
-              <Card className={classes.cardWrapper}>
-                <CardContent>
-                  <Grid className={classes.cardTitle}>
-                    <Typography variant="h3" color="primary">
-                      Views
-                    </Typography>
-                  </Grid>
-                  <Grid container>
-                    <Grid item xs={12} sm={6} md={3}>
-                      <Link
-                        href="/moped/views/signal-projects"
-                        noWrap
-                        underline={"hover"}
-                      >
-                        <Card>
-                          <CardContent className={classes.viewsCard}>
-                            <Grid item xs={4}>
-                              <TrafficIcon />
-                            </Grid>
-                            <Grid item xs={8}>
-                              <Typography>Signal Projects</Typography>
-                            </Grid>
-                          </CardContent>
-                        </Card>
-                      </Link>
-                    </Grid>
-                  </Grid>
-                </CardContent>
-              </Card>
             </Box>
           </Grid>
         </Card>

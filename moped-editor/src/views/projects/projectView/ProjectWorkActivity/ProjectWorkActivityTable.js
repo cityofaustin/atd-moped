@@ -58,7 +58,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       },
       {
         headerName: "Workgroup/Contractor",
-        field: "contractor",
+        field: "workgroup_contractor",
         minWidth: 175,
       },
       {

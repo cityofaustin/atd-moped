@@ -29,6 +29,7 @@
           - component_tags
           - component_url
           - contract_numbers
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -88,6 +89,7 @@
           - component_tags
           - component_url
           - contract_numbers
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -147,6 +149,7 @@
           - component_tags
           - component_url
           - contract_numbers
+          - workgroup_contractors
           - council_districts
           - current_phase_name
           - current_phase_name_simple
@@ -3605,6 +3608,7 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
+          - workgroup_contractor
           - contract_number
           - description
           - project_id
@@ -3624,6 +3628,7 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
+          - workgroup_contractor
           - contract_number
           - description
           - project_id
@@ -3642,6 +3647,7 @@
         columns:
           - contract_amount
           - contract_number
+          - workgroup_contractor
           - created_at
           - created_by_user_id
           - description
@@ -3671,6 +3677,7 @@
           - updated_by_user_id
           - task_orders
           - contract_number
+          - workgroup_contractor
           - description
           - implementation_workgroup
           - interim_work_activity_id
@@ -3693,6 +3700,7 @@
           - updated_by_user_id
           - task_orders
           - contract_number
+          - workgroup_contractor
           - description
           - implementation_workgroup
           - interim_work_activity_id
@@ -3707,6 +3715,7 @@
     - role: moped-admin
       permission:
         columns:
+          - workgroup_contractor
           - contract_number
           - description
           - project_id
@@ -3726,6 +3735,7 @@
     - role: moped-editor
       permission:
         columns:
+          - workgroup_contractor
           - contract_number
           - description
           - project_id
@@ -5067,6 +5077,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5108,6 +5119,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5149,6 +5161,7 @@
           - completion_end_date
           - construction_start_date
           - contract_numbers
+          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
