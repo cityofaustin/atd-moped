@@ -118,6 +118,15 @@ const generateEmptyField = (uuid) => {
   return { ...defaultNewFieldState, id: uuid };
 };
 
+// const getDefaultOperator = (fieldFilterConfig) => {
+//   fieldFilterConfig.defaultOperator
+//             ? fieldFilterConfig.defaultOperator
+//             : filtersNewState[filterId].availableOperators[0].id
+// TODO: Create const getAvailableOperators = (fieldFilterConfig) => {
+// can we make this into a list of operators set in ProjectListViewFiltersConf.js?
+// The FiltersCommonOperators.js has the config that can be accessed by the
+// an operator
+
 // TODO: uuid should be used as keys for the filters consumed from the URL
 // TODO: Use uuid within app code but don't store in URL params
 // TODO: Chip away at state stored in URL params
@@ -163,7 +172,7 @@ const Filters = ({
    * @default {filters}
    */
   const [filterParameters, setFilterParameters] = useState(filters);
-
+  console.log(filterParameters);
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
 
@@ -284,14 +293,12 @@ const Filters = ({
       }
 
       // Select the default operator, if not defined select first.
-      if (fieldDetails)
-        handleFilterOperatorClick(
-          filterId,
-          fieldDetails.defaultOperator
-            ? fieldDetails.defaultOperator
-            : filtersNewState[filterId].availableOperators[0].id
-        );
-
+      if (fieldDetails) {
+        const defaultOperator = fieldDetails.defaultOperator
+          ? fieldDetails.defaultOperator
+          : filtersNewState[filterId].availableOperators[0].id;
+        handleFilterOperatorClick(filterId, defaultOperator);
+      }
       // Update the state
       setFilterParameters(filtersNewState);
     } else {
