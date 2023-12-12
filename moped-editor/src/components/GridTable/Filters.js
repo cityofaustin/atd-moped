@@ -173,11 +173,6 @@ const Filters = ({
    */
   const [filterComplete, setFilterComplete] = useState(false);
 
-  /**
-   * Tracks whether the field input value is invalid
-   */
-  const [isInvalidInput, setIsInvalidInput] = useState(false);
-
   /* First filter is an empty placeholder so we check for more than one filter */
   const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
   const isFirstFilterIncomplete =
@@ -378,11 +373,7 @@ const Filters = ({
    * @param {string} filterId - The FilterID uuid
    * @param {string} value - The value to assign to that filter
    */
-  const handleSearchValueChange = (filterId, value, type) => {
-    // Validate input for number type fields and set state accordingly
-    type === "number" && isNaN(value)
-      ? setIsInvalidInput(true)
-      : setIsInvalidInput(false);
+  const handleSearchValueChange = (filterId, value) => {
     // Clone the state
     const filtersNewState = { ...filterParameters };
     // Patch the new state
@@ -430,6 +421,9 @@ const Filters = ({
             if (gqlOperator && !gqlOperator.includes("is_null")) {
               feedback.push("• One or more missing values.");
             }
+          }
+          if (checkIsInvalidInput(filterParameters[filterKey])) {
+            feedback.push("• One or more invalid inputs.");
           }
         });
       }
@@ -500,6 +494,16 @@ const Filters = ({
     setIsOrToggleValue(isOr);
   };
 
+  /**
+   * Returns whether the user input value for the filterParameter is valid
+   * @param {object} filterParameter
+   * @returns {boolean}
+   */
+  const checkIsInvalidInput = (filterParameter) => {
+    // Validate input for number type fields
+    return filterParameter.type === "number" && isNaN(filterParameter.value);
+  };
+
   return (
     <Grid>
       <Grid container className={classes.gridItemPadding}>
@@ -555,6 +559,7 @@ const Filters = ({
       </Grid>
 
       {Object.keys(filterParameters).map((filterId) => {
+        const isInvalidInput = checkIsInvalidInput(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -705,11 +710,7 @@ const Filters = ({
                             : null
                         }
                         onChange={(e) =>
-                          handleSearchValueChange(
-                            filterId,
-                            e.target.value,
-                            filterParameters[filterId].type
-                          )
+                          handleSearchValueChange(filterId, e.target.value)
                         }
                         variant="outlined"
                         value={filterParameters[filterId].value ?? ""}
@@ -785,7 +786,7 @@ const Filters = ({
             color="primary"
             startIcon={<Icon>search</Icon>}
             onClick={handleApplyButtonClick}
-            disabled={isInvalidInput || handleApplyValidation() != null}
+            disabled={handleApplyValidation() != null}
           >
             Search
           </Button>
