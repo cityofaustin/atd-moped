@@ -118,15 +118,6 @@ const generateEmptyField = (uuid) => {
   return { ...defaultNewFieldState, id: uuid };
 };
 
-// const getDefaultOperator = (fieldFilterConfig) => {
-//   fieldFilterConfig.defaultOperator
-//             ? fieldFilterConfig.defaultOperator
-//             : filtersNewState[filterId].availableOperators[0].id
-// TODO: Create const getAvailableOperators = (fieldFilterConfig) => {
-// can we make this into a list of operators set in ProjectListViewFiltersConf.js?
-// The FiltersCommonOperators.js has the config that can be accessed by the
-// an operator
-
 // TODO: uuid should be used as keys for the filters consumed from the URL
 // TODO: Use uuid within app code but don't store in URL params
 // TODO: Chip away at state stored in URL params
