@@ -694,7 +694,7 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
-                        error={isInvalidInput(filter)}
+                        error={isInvalidInput}
                         helperText={isInvalidInput ? "Invalid input" : ""}
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
