@@ -80,6 +80,7 @@ const Search = ({
   handleExportButtonClick,
   isOr,
   setIsOr,
+  loading
 }) => {
   const classes = useStyles();
   let [, setSearchParams] = useSearchParams();
@@ -150,6 +151,7 @@ const Search = ({
                 queryConfig={queryConfig}
                 isOr={isOr}
                 handleSwitchToSearch={handleSwitchToSearch}
+                loading={loading}
               />
             </Grid>
             <Grid

@@ -124,6 +124,7 @@ const ProjectsListViewTable = () => {
 
   const {
     data: projectListViewData,
+    loading,
     error,
     refetch,
   } = useQuery(projectListViewQuery, {
@@ -183,6 +184,7 @@ const ProjectsListViewTable = () => {
 
   const tableComponents = useTableComponents({
     data,
+    loading,
     queryLimit,
     queryOffset,
     setQueryLimit,
@@ -219,6 +221,7 @@ const ProjectsListViewTable = () => {
           handleExportButtonClick={handleExportButtonClick}
           isOr={isOr}
           setIsOr={setIsOr}
+          loading={loading}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
