@@ -12,7 +12,7 @@ const useMakeFilterState = (searchParams) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
       try {
-        return JSON.parse(atob(searchParams.get("filter")));
+        return JSON.parse(searchParams.get("filter"));
       } catch {
         return {};
       }
@@ -25,7 +25,7 @@ const useMakeFilterState = (searchParams) =>
  * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
  * @return String
  */
-const getDefaultOperator = (filterConfigForField) => {
+export const getDefaultOperator = (filterConfigForField) => {
   const { defaultOperator, operators } = filterConfigForField;
   const fallbackOperator = operators[0];
 
@@ -50,16 +50,16 @@ export const makeSearchParamsFromFilterParameters = (filterParameters) => {
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { field, value } = filters[filter];
+      let { field, value, operator } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
         (fieldConfig) => fieldConfig.name === field
       );
-
       const { type } = filterConfigForField;
-      const defaultOperator = getDefaultOperator(filterConfigForField);
-      const operatorConfig = FiltersCommonOperators[defaultOperator];
+
+      // Use operator name to get the GraphQL operator config for that operator
+      const operatorConfig = FiltersCommonOperators[operator];
       let {
         envelope,
         specialNullValue,

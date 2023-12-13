@@ -30,7 +30,10 @@ import {
   AUTOCOMPLETE_OPERATORS,
   OPERATORS_WITHOUT_SEARCH_VALUES,
 } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
-import { makeSearchParamsFromFilterParameters } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import {
+  getDefaultOperator,
+  makeSearchParamsFromFilterParameters,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 /**
  * The styling for the filter components
@@ -286,9 +289,10 @@ const Filters = ({
 
       // Select the default operator, if not defined select first.
       if (fieldDetails) {
-        const defaultOperator = fieldDetails.defaultOperator
-          ? fieldDetails.defaultOperator
-          : filtersNewState[filterId].availableOperators[0].id;
+        //  fieldDetails.defaultOperator
+        //   ? fieldDetails.defaultOperator
+        //   : filtersNewState[filterId].availableOperators[0].id;
+        const defaultOperator = getDefaultOperator(fieldDetails);
         handleFilterOperatorClick(filterId, defaultOperator);
       }
       // Update the state
