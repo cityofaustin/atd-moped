@@ -88,6 +88,8 @@ const makeAdvancedSearchWhereFilters = (filters) =>
     })
     .filter((value) => value !== null);
 
+// TODO: Just need field, operator, value to make filters
+
 export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
   let [searchParams] = useSearchParams();

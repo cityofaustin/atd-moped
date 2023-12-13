@@ -119,8 +119,8 @@ const generateEmptyField = (uuid) => {
 };
 
 // TODO: uuid should be used as keys for the filters consumed from the URL
-// TODO: Use uuid within app code but don't store in URL params
-// TODO: Chip away at state stored in URL params
+// TODO: Use uuid within app code but don't store in URL params?
+// TODO: Still not convinced that we can just have an array of objects here w/o uuids
 
 /**
  * Filter Search Component aka Advanced Search
