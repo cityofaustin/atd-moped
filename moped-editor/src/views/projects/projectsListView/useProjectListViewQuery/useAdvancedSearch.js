@@ -34,6 +34,14 @@ const getDefaultOperator = (filterConfigForField) => {
   return isDefaultOperator ? defaultOperator : fallbackOperator;
 };
 
+export const makeSearchParamsFromFilterParameters = (filterParameters) => {
+  return Object.values(filterParameters).map((filterParameter) => ({
+    field: filterParameter.field,
+    operator: filterParameter.operator,
+    value: filterParameter.value,
+  }));
+};
+
 /**
  * Build an array of filter strings to be used in generating the advanced search where string
  * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
@@ -104,7 +112,6 @@ export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
   let [searchParams] = useSearchParams();
   const initialFilterState = useMakeFilterState(searchParams);
-  console.log(initialFilterState);
 
   /* Determine or/any from search params if it exists */
   const isOrFromSearchParams = searchParams.get("isOr");

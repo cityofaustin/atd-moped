@@ -30,6 +30,7 @@ import {
   AUTOCOMPLETE_OPERATORS,
   OPERATORS_WITHOUT_SEARCH_VALUES,
 } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
+import { makeSearchParamsFromFilterParameters } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 /**
  * The styling for the filter components
@@ -163,7 +164,7 @@ const Filters = ({
    * @default {filters}
    */
   const [filterParameters, setFilterParameters] = useState(filters);
-  console.log(filterParameters);
+
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
 
@@ -355,6 +356,7 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
+      console.log(makeSearchParamsFromFilterParameters(filtersNewState));
       setSearchParams((prevSearchParams) => {
         prevSearchParams.set("filter", btoa(JSON.stringify(filtersNewState)));
         return prevSearchParams;
@@ -434,7 +436,11 @@ const Filters = ({
    */
   const handleApplyButtonClick = () => {
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set("filter", btoa(JSON.stringify(filterParameters)));
+      const searchParamsFromFilters =
+        makeSearchParamsFromFilterParameters(filterParameters);
+      const jsonParamString = JSON.stringify(searchParamsFromFilters);
+
+      prevSearchParams.set("filter", jsonParamString);
       prevSearchParams.set("isOr", isOrToggleValue);
       return prevSearchParams;
     });
