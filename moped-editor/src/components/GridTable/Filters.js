@@ -30,6 +30,7 @@ import {
   AUTOCOMPLETE_OPERATORS,
   OPERATORS_WITHOUT_SEARCH_VALUES,
 } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
+import { FiltersCommonOperators } from "./FiltersCommonOperators";
 import {
   getDefaultOperator,
   makeSearchParamsFromFilterParameters,
@@ -141,8 +142,10 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
     const filterParameters = {
       id: filterUUID,
       field: field,
-      operator: operator,
-      availableOperators: filterConfigForField.operators,
+      operator: FiltersCommonOperators[operator].label,
+      availableOperators: filterConfigForField.operators.map(
+        (operator) => FiltersCommonOperators[operator]
+      ),
       placeholder: filterConfigForField.placeholder,
       label: filterConfigForField.label,
       value: value,
@@ -211,7 +214,6 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
-  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -680,7 +682,7 @@ const Filters = ({
                       (operator, operatorIndex) => {
                         return (
                           <MenuItem
-                            value={operator.id}
+                            value={operator.label}
                             key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                             id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                             data-testid={operator.label}
