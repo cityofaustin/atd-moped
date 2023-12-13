@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { featureTableFieldMap } from "./makeFeatures";
 import { cloneDeep } from "lodash";
+import { addDrawnFeatureProperties } from "./features";
+
 /**
  * Take a project_geography record and return a valid GeoJSON feature
  * TODO: We should look into returning GeoJSON features directly from the DB
@@ -36,6 +38,8 @@ export const getAllComponentFeatures = (component) => {
     feature.properties ??= {};
     // we need this property to tie individual map features back to their parent component
     feature.properties.project_component_id = component.project_component_id;
+    // we need to be able to tell what features are drawn or not.
+    addDrawnFeatureProperties(feature);
     feature.type = "Feature";
     return feature;
   });

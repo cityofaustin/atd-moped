@@ -20,7 +20,7 @@ const DEFAULT_ACTIVITY_VALUES = {
 };
 
 export const activityValidationSchema = yup.object().shape({
-  contractor: yup.string().max(500, "Must be less than 500 characters").nullable(),
+  workgroup_contractor: yup.string().max(500, "Must be less than 500 characters").nullable(),
   contract_number: yup.string().max(500, "Must be less than 500 characters").nullable(),
   description: yup.string().max(5000, "Must be less than 5,000 characters").nullable(),
   work_assignment_id: yup.string().max(500, "Must be less than 500 characters").nullable(),
@@ -74,7 +74,7 @@ export const useTaskOrderOptions = (taskOrderData) =>
  * Only these fields will be included in the form submit payload
  */
 const FORM_PAYLOAD_FIELDS = [
-  "contractor",
+  "workgroup_contractor",
   "contract_number",
   "description",
   "work_assignment_id",
