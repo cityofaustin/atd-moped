@@ -360,9 +360,11 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
-      console.log(makeSearchParamsFromFilterParameters(filtersNewState));
+      const searchParamsFromFilters =
+        makeSearchParamsFromFilterParameters(filtersNewState);
+      const jsonParamString = JSON.stringify(searchParamsFromFilters);
       setSearchParams((prevSearchParams) => {
-        prevSearchParams.set("filter", btoa(JSON.stringify(filtersNewState)));
+        prevSearchParams.set("filter", jsonParamString);
         return prevSearchParams;
       });
       setFilterParameters(filtersNewState);
