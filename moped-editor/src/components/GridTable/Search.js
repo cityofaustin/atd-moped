@@ -80,7 +80,7 @@ const Search = ({
   handleExportButtonClick,
   isOr,
   setIsOr,
-  loading
+  loading,
 }) => {
   const classes = useStyles();
   let [, setSearchParams] = useSearchParams();
@@ -143,15 +143,14 @@ const Search = ({
                 searchFieldValue={searchFieldValue}
                 setSearchFieldValue={setSearchFieldValue}
                 filters={filters}
-                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
-                searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
                 isOr={isOr}
                 handleSwitchToSearch={handleSwitchToSearch}
                 loading={loading}
+                filtersConfig={filtersConfig}
               />
             </Grid>
             <Grid
