@@ -179,13 +179,15 @@ const SearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filters).length;
-  const filtersApplied = filters.map((filter) => {
-    const fieldFilterConfig = filtersConfig.fields.find(
-      (fieldConfig) => fieldConfig.name === filter.field
-    );
-    return fieldFilterConfig.label;
-  });
+  const filterStateActive = filters.length > 0;
+  const filtersApplied =
+    filterStateActive &&
+    filters.map((filter) => {
+      const fieldFilterConfig = filtersConfig.fields.find(
+        (fieldConfig) => fieldConfig.name === filter.field
+      );
+      return fieldFilterConfig.label;
+    });
 
   return (
     <>

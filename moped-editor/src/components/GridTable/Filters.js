@@ -122,6 +122,36 @@ const generateEmptyField = (uuid) => {
   return { ...defaultNewFieldState, id: uuid };
 };
 
+/**
+ * Get configuration about the filters using the query parameters present in the URL
+ * @param {Array} filters - filters from the URL {field, operator, value}
+ * @param filtersConfig - The configuration object for the filters
+ * @return {Object}
+ */
+const makeInitialFilterParameters = (filters, filtersConfig) => {
+  if (filters.length === 0) return [];
+
+  return filters.reduce((acc, filter) => {
+    const filterUUID = uuidv4();
+    const { field, operator, value } = filter;
+    const filterConfigForField = filtersConfig.fields.find(
+      (fieldConfig) => fieldConfig.name === field
+    );
+
+    const filterParameters = {
+      id: filterUUID,
+      field: field,
+      operator: operator,
+      availableOperators: filterConfigForField.operators,
+      placeholder: filterConfigForField.placeholder,
+      label: filterConfigForField.label,
+      value: value,
+    };
+
+    return { ...acc, [filterUUID]: filterParameters };
+  }, {});
+};
+
 // TODO: uuid should be used as keys for the filters consumed from the URL
 // TODO: Use uuid within app code but don't store in URL params?
 // TODO: Still not convinced that we can just have an array of objects here w/o uuids
@@ -166,7 +196,22 @@ const Filters = ({
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
    */
-  const [filterParameters, setFilterParameters] = useState(filters);
+  let initialFilterParameters;
+  if (filters.length > 0) {
+    initialFilterParameters = makeInitialFilterParameters(
+      filters,
+      filtersConfig
+    );
+  } else {
+    initialFilterParameters = {
+      [uuidv4()]: generateEmptyField(uuidv4()),
+    };
+  }
+
+  const [filterParameters, setFilterParameters] = useState(
+    initialFilterParameters
+  );
+  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -474,7 +519,7 @@ const Filters = ({
    */
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
-      setFilters(filterParameters);
+      setFilters([]);
       handleClearFilters();
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       generateEmptyFilter();

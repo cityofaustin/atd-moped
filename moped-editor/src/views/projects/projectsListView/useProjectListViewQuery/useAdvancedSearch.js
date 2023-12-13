@@ -14,10 +14,10 @@ const useMakeFilterState = (searchParams) =>
       try {
         return JSON.parse(searchParams.get("filter"));
       } catch {
-        return {};
+        return [];
       }
     }
-    return {};
+    return [];
   }, [searchParams]);
 
 /**
