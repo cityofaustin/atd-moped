@@ -26,6 +26,7 @@ const useMakeFilterState = (searchParams) =>
         return [];
       }
     }
+    return [];
   }, [searchParams]);
 
 /**
