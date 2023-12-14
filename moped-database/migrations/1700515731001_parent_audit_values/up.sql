@@ -12,13 +12,13 @@ BEGIN
   
   -- Update the project component with the current timestamp and user ID
   UPDATE moped_proj_components
-  SET updated_at = NOW(), updated_by_user_id = NEW.updated_by_user_id
+  SET updated_at = NEW.updated_at, updated_by_user_id = NEW.updated_by_user_id
   WHERE project_component_id = NEW.component_id
   RETURNING project_id INTO project_id_variable;
 
   -- Update the parent project record with the current timestamp and user ID
   UPDATE moped_project
-  SET updated_at = NOW(), updated_by_user_id = NEW.updated_by_user_id
+  SET updated_at = NEW.updated_at, updated_by_user_id = NEW.updated_by_user_id
   WHERE project_id = project_id_variable;
 
   -- Return the updated record
