@@ -250,7 +250,6 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_id
-          - created_by_user_id
           - geography
           - is_deleted
           - project_extent_id
