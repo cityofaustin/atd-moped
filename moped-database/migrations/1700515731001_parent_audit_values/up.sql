@@ -7,26 +7,18 @@ CREATE OR REPLACE FUNCTION update_parent_records_audit_logs()
 RETURNS TRIGGER AS $$
 DECLARE
   project_id_variable INTEGER;
-  user_id_variable INTEGER;
   query TEXT;
 BEGIN
   
-  -- Constructing a dynamic query to select the user ID from the triggered table
-  query := 'SELECT updated_by_user_id FROM ' || quote_ident(TG_TABLE_NAME) || 
-           ' WHERE id' || ' = ' || NEW.id || ';';
-  
-  -- Executing the dynamic query
-  EXECUTE query INTO user_id_variable;
-
   -- Update the project component with the current timestamp and user ID
   UPDATE moped_proj_components
-  SET updated_at = NOW(), updated_by_user_id = user_id_variable
+  SET updated_at = NOW(), updated_by_user_id = NEW.updated_by_user_id
   WHERE project_component_id = NEW.component_id
   RETURNING project_id INTO project_id_variable;
 
   -- Update the parent project record with the current timestamp and user ID
   UPDATE moped_project
-  SET updated_at = NOW(), updated_by_user_id = user_id_variable
+  SET updated_at = NOW(), updated_by_user_id = NEW.updated_by_user_id
   WHERE project_id = project_id_variable;
 
   -- Return the updated record
