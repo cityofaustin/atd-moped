@@ -142,7 +142,7 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
     const filterParameters = {
       id: filterUUID,
       field: field,
-      operator: FiltersCommonOperators[operator].label,
+      operator,
       availableOperators: filterConfigForField.operators.map((operator) => ({
         ...FiltersCommonOperators[operator],
         id: operator,
@@ -155,10 +155,6 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
     return { ...acc, [filterUUID]: filterParameters };
   }, {});
 };
-
-// TODO: uuid should be used as keys for the filters consumed from the URL
-// TODO: Use uuid within app code but don't store in URL params?
-// TODO: Still not convinced that we can just have an array of objects here w/o uuids
 
 /**
  * Filter Search Component aka Advanced Search
@@ -275,25 +271,10 @@ const Filters = ({
         filtersNewState[filterId].placeholder = fieldDetails.placeholder;
         filtersNewState[filterId].label = fieldDetails.label;
 
-        // Update Available Operators
-        // TODO: If there is the * symbol - this is set in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields[fieldName].operators
-        // config. It is a wildcard that means all operators should be available for that field.
-        // Should we keep this? I found it confusing.
-        // TODO: Else there is a list of operators in PROJECT_LIST_VIEW_FILTERS_CONFIG.fields config
-        // so we need to filter the list of operators by the type of the field.
-        // Do we actually need to filter by type? Or just rely on the config to support the type?
         if (
           fieldDetails.operators.length === 1 &&
           fieldDetails.operators[0] === "*"
         ) {
-          //   {
-          //     "operator": "_ilike",
-          //     "label": "is",
-          //     "description": "Field content equals string (case-sensitive)",
-          //     "envelope": null,
-          //     "type": "string",
-          //     "id": "string_equals_case_sensitive"
-          // }
           // Add all operators and filter by specific type (defined in fieldDetails.type)
           filtersNewState[filterId].availableOperators = Object.keys(
             filtersConfig.operators
@@ -353,8 +334,6 @@ const Filters = ({
    * @param {Object} operator - The operator object being clicked
    */
   const handleFilterOperatorClick = (filterId, operator) => {
-    // TODO: This broke because I updated to use to use label instead of id (operator: "_is_null")
-    // TODO: We are getting "contains" instead of "string_contains_case_insensitive"
     // If the filter exists
     if (filterId in filterParameters) {
       // Clone state
@@ -382,7 +361,6 @@ const Filters = ({
       );
     }
   };
-  console.log(filterParameters);
 
   /**
    * Adds an empty filter to the state
