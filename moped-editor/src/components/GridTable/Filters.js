@@ -142,7 +142,7 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
     const filterParameters = {
       id: filterUUID,
       field: field,
-      operator,
+      operator: operator,
       availableOperators: filterConfigForField.operators.map((operator) => ({
         ...FiltersCommonOperators[operator],
         id: operator,
@@ -150,6 +150,8 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       placeholder: filterConfigForField.placeholder,
       label: filterConfigForField.label,
       value: value,
+      lookup_field: filterConfigForField.lookup?.field_name,
+      lookup_table: filterConfigForField.lookup?.table_name,
     };
 
     return { ...acc, [filterUUID]: filterParameters };
