@@ -8,20 +8,24 @@ export const advancedSearchFilterParamName = "filters";
 export const advancedSearchIsOrParamName = "isOr";
 
 /**
- * if filter exists in url, decodes base64 string and returns as object
+ * if filter exists in url, get the values and try to parse them
  * Used to initialize filter state
  * @return Object
  */
 const useMakeFilterState = (searchParams) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
+      const filterSearchParams = searchParams.get(
+        advancedSearchFilterParamName
+      );
+      if (filterSearchParams === null) return [];
+
       try {
-        return JSON.parse(searchParams.get(advancedSearchFilterParamName));
+        return JSON.parse(filterSearchParams);
       } catch {
         return [];
       }
     }
-    return [];
   }, [searchParams]);
 
 /**
