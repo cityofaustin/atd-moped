@@ -145,7 +145,7 @@ const DropdownMenu = ({
             color="inherit"
             underline="none"
           >
-            ArcGIS Online Map
+            ArcGIS Online map
           </Link>
         </MenuItem>
         <Divider />
