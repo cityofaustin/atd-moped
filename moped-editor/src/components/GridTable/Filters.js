@@ -465,9 +465,9 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
+    const searchParamsFromFilters =
+      makeSearchParamsFromFilterParameters(filterParameters);
     setSearchParams((prevSearchParams) => {
-      const searchParamsFromFilters =
-        makeSearchParamsFromFilterParameters(filterParameters);
       const jsonParamString = JSON.stringify(searchParamsFromFilters);
 
       prevSearchParams.set("filter", jsonParamString);
@@ -476,7 +476,7 @@ const Filters = ({
     });
 
     setIsOr(isOrToggleValue);
-    setFilters(filterParameters);
+    setFilters(searchParamsFromFilters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
     setSearchFieldValue("");
