@@ -65,7 +65,7 @@ const MobileDropdownMenu = () => {
             key={item.href}
             onClick={() => {
               handleMobileClose();
-              navigate(item.link);
+              navigate(item.href);
             }}
           >
             {item.title}
