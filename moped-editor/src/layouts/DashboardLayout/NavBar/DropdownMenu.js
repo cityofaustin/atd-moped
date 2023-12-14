@@ -13,8 +13,8 @@ import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import MailOutlineIcon from '@mui/icons-material/MailOutline';
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -35,7 +35,7 @@ export const helpItems = [
     linkType: "external",
     link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_399%22%3A%22Moped%22%7D",
     title: "Contact support",
-    Icon: <LocalPhoneIcon fontSize="small" />,
+    Icon: <MailOutlineIcon fontSize="small" />,
   },
   {
     linkType: "external",
