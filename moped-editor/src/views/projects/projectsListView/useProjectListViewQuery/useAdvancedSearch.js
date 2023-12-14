@@ -3,6 +3,10 @@ import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 
+/* Names of advanced search URL parameters */
+export const advancedSearchFilterParamName = "filters";
+export const advancedSearchIsOrParamName = "isOr";
+
 /**
  * if filter exists in url, decodes base64 string and returns as object
  * Used to initialize filter state
@@ -12,7 +16,7 @@ const useMakeFilterState = (searchParams) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
       try {
-        return JSON.parse(searchParams.get("filter"));
+        return JSON.parse(searchParams.get(advancedSearchFilterParamName));
       } catch {
         return [];
       }
@@ -102,7 +106,7 @@ export const useAdvancedSearch = () => {
   const initialFilterState = useMakeFilterState(searchParams);
 
   /* Determine or/any from search params if it exists */
-  const isOrFromSearchParams = searchParams.get("isOr");
+  const isOrFromSearchParams = searchParams.get(advancedSearchIsOrParamName);
   const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
   const [isOr, setIsOr] = useState(initialIsOrState);
 

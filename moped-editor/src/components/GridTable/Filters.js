@@ -35,6 +35,10 @@ import {
   getDefaultOperator,
   makeSearchParamsFromFilterParameters,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 /**
  * The styling for the filter components
@@ -390,7 +394,7 @@ const Filters = ({
         makeSearchParamsFromFilterParameters(filtersNewState);
       const jsonParamString = JSON.stringify(searchParamsFromFilters);
       setSearchParams((prevSearchParams) => {
-        prevSearchParams.set("filter", jsonParamString);
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
       });
       setFilterParameters(filtersNewState);
@@ -426,8 +430,8 @@ const Filters = ({
     setIsOr(false);
 
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete("filter");
-      prevSearchParams.delete("isOr");
+      prevSearchParams.delete(advancedSearchFilterParamName);
+      prevSearchParams.delete(advancedSearchIsOrParamName);
     });
   }, [setSearchParams, setFilters, setIsOr]);
 
@@ -472,8 +476,8 @@ const Filters = ({
     setSearchParams((prevSearchParams) => {
       const jsonParamString = JSON.stringify(searchParamsFromFilters);
 
-      prevSearchParams.set("filter", jsonParamString);
-      prevSearchParams.set("isOr", isOrToggleValue);
+      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+      prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
       return prevSearchParams;
     });
 
