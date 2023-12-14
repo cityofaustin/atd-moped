@@ -252,7 +252,6 @@
           - component_id
           - created_by_user_id
           - geography
-          - id
           - is_deleted
           - project_extent_id
           - source_layer
@@ -265,7 +264,6 @@
         columns:
           - component_id
           - geography
-          - id
           - is_deleted
           - project_extent_id
           - source_layer
@@ -324,7 +322,6 @@
         columns:
           - component_id
           - geography
-          - id
           - is_deleted
           - project_extent_id
           - source_layer
@@ -337,7 +334,6 @@
         columns:
           - component_id
           - geography
-          - id
           - is_deleted
           - project_extent_id
           - source_layer
@@ -408,12 +404,11 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - project_extent_id
-          - source_layer
           - component_id
-          - id
           - geography
           - is_deleted
+          - project_extent_id
+          - source_layer
     - role: moped-editor
       permission:
         check: {}
@@ -421,12 +416,11 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - project_extent_id
-          - source_layer
           - component_id
-          - id
           - geography
           - is_deleted
+          - project_extent_id
+          - source_layer
   select_permissions:
     - role: moped-admin
       permission:
@@ -477,12 +471,11 @@
     - role: moped-admin
       permission:
         columns:
-          - project_extent_id
-          - source_layer
           - component_id
-          - id
           - geography
           - is_deleted
+          - project_extent_id
+          - source_layer
         filter: {}
         check: {}
         set:
@@ -490,12 +483,11 @@
     - role: moped-editor
       permission:
         columns:
-          - project_extent_id
-          - source_layer
           - component_id
-          - id
           - geography
           - is_deleted
+          - project_extent_id
+          - source_layer
         filter: {}
         check: {}
         set:
@@ -563,12 +555,11 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - source_layer
           - component_id
-          - id
-          - intersection_id
           - geography
+          - intersection_id
           - is_deleted
+          - source_layer
     - role: moped-editor
       permission:
         check: {}
@@ -576,12 +567,11 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - source_layer
           - component_id
-          - id
-          - intersection_id
           - geography
+          - intersection_id
           - is_deleted
+          - source_layer
   select_permissions:
     - role: moped-admin
       permission:
@@ -632,12 +622,11 @@
     - role: moped-admin
       permission:
         columns:
-          - source_layer
           - component_id
-          - id
-          - intersection_id
           - geography
+          - intersection_id
           - is_deleted
+          - source_layer
         filter: {}
         check: {}
         set:
@@ -645,12 +634,11 @@
     - role: moped-editor
       permission:
         columns:
-          - source_layer
           - component_id
-          - id
-          - intersection_id
           - geography
+          - intersection_id
           - is_deleted
+          - source_layer
         filter: {}
         check: {}
         set:
@@ -746,14 +734,13 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - knack_id
-          - location_name
-          - signal_type
           - component_id
-          - id
-          - signal_id
           - geography
           - is_deleted
+          - knack_id
+          - location_name
+          - signal_id
+          - signal_type
     - role: moped-editor
       permission:
         check: {}
@@ -761,14 +748,13 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - knack_id
-          - location_name
-          - signal_type
           - component_id
-          - id
-          - signal_id
           - geography
           - is_deleted
+          - knack_id
+          - location_name
+          - signal_id
+          - signal_type
   select_permissions:
     - role: moped-admin
       permission:
@@ -825,14 +811,13 @@
     - role: moped-admin
       permission:
         columns:
-          - knack_id
-          - location_name
-          - signal_type
           - component_id
-          - id
-          - signal_id
           - geography
           - is_deleted
+          - knack_id
+          - location_name
+          - signal_id
+          - signal_type
         filter: {}
         check: {}
         set:
@@ -840,14 +825,13 @@
     - role: moped-editor
       permission:
         columns:
-          - knack_id
-          - location_name
-          - signal_type
           - component_id
-          - id
-          - signal_id
           - geography
           - is_deleted
+          - knack_id
+          - location_name
+          - signal_id
+          - signal_type
         filter: {}
         check: {}
         set:
@@ -915,17 +899,16 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - full_street_name
-          - line_type
-          - source_layer
           - component_id
           - ctn_segment_id
           - from_address_min
-          - id
-          - symbol
-          - to_address_max
+          - full_street_name
           - geography
           - is_deleted
+          - line_type
+          - source_layer
+          - symbol
+          - to_address_max
     - role: moped-editor
       permission:
         check: {}
@@ -933,17 +916,16 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - full_street_name
-          - line_type
-          - source_layer
           - component_id
           - ctn_segment_id
           - from_address_min
-          - id
-          - symbol
-          - to_address_max
+          - full_street_name
           - geography
           - is_deleted
+          - line_type
+          - source_layer
+          - symbol
+          - to_address_max
   select_permissions:
     - role: moped-admin
       permission:
@@ -1012,17 +994,16 @@
     - role: moped-admin
       permission:
         columns:
-          - full_street_name
-          - line_type
-          - source_layer
           - component_id
           - ctn_segment_id
           - from_address_min
-          - id
-          - symbol
-          - to_address_max
+          - full_street_name
           - geography
           - is_deleted
+          - line_type
+          - source_layer
+          - symbol
+          - to_address_max
         filter: {}
         check: {}
         set:
@@ -1030,17 +1011,16 @@
     - role: moped-editor
       permission:
         columns:
-          - full_street_name
-          - line_type
-          - source_layer
           - component_id
           - ctn_segment_id
           - from_address_min
-          - id
-          - symbol
-          - to_address_max
+          - full_street_name
           - geography
           - is_deleted
+          - line_type
+          - source_layer
+          - symbol
+          - to_address_max
         filter: {}
         check: {}
         set:
