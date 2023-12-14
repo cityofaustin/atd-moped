@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
@@ -143,9 +143,10 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       id: filterUUID,
       field: field,
       operator: FiltersCommonOperators[operator].label,
-      availableOperators: filterConfigForField.operators.map(
-        (operator) => FiltersCommonOperators[operator]
-      ),
+      availableOperators: filterConfigForField.operators.map((operator) => ({
+        ...FiltersCommonOperators[operator],
+        id: operator,
+      })),
       placeholder: filterConfigForField.placeholder,
       label: filterConfigForField.label,
       value: value,
@@ -199,17 +200,15 @@ const Filters = ({
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
    */
-  let initialFilterParameters;
-  if (filters.length > 0) {
-    initialFilterParameters = makeInitialFilterParameters(
-      filters,
-      filtersConfig
-    );
-  } else {
-    initialFilterParameters = {
-      [uuidv4()]: generateEmptyField(uuidv4()),
-    };
-  }
+  const initialFilterParameters = useMemo(() => {
+    if (filters.length > 0) {
+      return makeInitialFilterParameters(filters, filtersConfig);
+    } else {
+      return {
+        [uuidv4()]: generateEmptyField(uuidv4()),
+      };
+    }
+  }, [filters, filtersConfig]);
 
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
@@ -336,9 +335,6 @@ const Filters = ({
 
       // Select the default operator, if not defined select first.
       if (fieldDetails) {
-        //  fieldDetails.defaultOperator
-        //   ? fieldDetails.defaultOperator
-        //   : filtersNewState[filterId].availableOperators[0].id;
         const defaultOperator = getDefaultOperator(fieldDetails);
         handleFilterOperatorClick(filterId, defaultOperator);
       }
@@ -357,6 +353,8 @@ const Filters = ({
    * @param {Object} operator - The operator object being clicked
    */
   const handleFilterOperatorClick = (filterId, operator) => {
+    // TODO: This broke because I updated to use to use label instead of id (operator: "_is_null")
+    // TODO: We are getting "contains" instead of "string_contains_case_insensitive"
     // If the filter exists
     if (filterId in filterParameters) {
       // Clone state
@@ -384,6 +382,7 @@ const Filters = ({
       );
     }
   };
+  console.log(filterParameters);
 
   /**
    * Adds an empty filter to the state
@@ -682,7 +681,7 @@ const Filters = ({
                       (operator, operatorIndex) => {
                         return (
                           <MenuItem
-                            value={operator.label}
+                            value={operator.id}
                             key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                             id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
                             data-testid={operator.label}
