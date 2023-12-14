@@ -46,13 +46,13 @@ export const helpItems = [
   {
     linkType: "external",
     link: "https://teams.microsoft.com/l/channel/19%3ab1179ddfc92d44ea9abb23db713eb60c%40thread.tacv2/General?groupId=54a90854-d3fa-4053-9173-5352715bab37&tenantId=5c5e19f6-a6ab-4b45-b1d0-be4608a9a67f",
-    title: "Micrsoft Teams",
+    title: "Microsoft Teams",
     Icon: <ChatOutlinedIcon fontSize="small" />,
   },
   {
     linkType: "internal",
     link: "/moped/dev/lookups",
-    title: "Data Dictionary",
+    title: "Data dictionary",
     Icon: <MenuBookOutlined fontSize="small" />,
   },
 ];
