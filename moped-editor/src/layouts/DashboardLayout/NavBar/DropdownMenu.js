@@ -14,7 +14,7 @@ import ExitToAppIcon from "@mui/icons-material/ExitToApp";
 import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
 import MenuIcon from "@mui/icons-material/Menu";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
@@ -56,6 +56,13 @@ export const helpItems = [
     Icon: <MenuBookOutlined fontSize="small" />,
   },
 ];
+
+export const arcGISLink = {
+  linkType: "external",
+  link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
+  title: "Moped map",
+  Icon: <MapOutlinedIcon fontSize="small" />,
+};
 
 const useStyles = makeStyles((theme) => ({
   dropdownButton: {
@@ -135,17 +142,15 @@ const DropdownMenu = ({
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleDropdownClose}>
-          <ListItemIcon>
-            <MapOutlinedIcon fontSize="small" />
-          </ListItemIcon>
+          <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
           <Link
-            href="https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee"
+            href={arcGISLink.link}
             target="_blank"
             rel="noopener noreferrer"
             color="inherit"
             underline="none"
           >
-            ArcGIS Online map
+            {arcGISLink.title}
           </Link>
         </MenuItem>
         <Divider />
