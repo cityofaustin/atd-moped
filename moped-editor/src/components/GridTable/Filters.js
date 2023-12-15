@@ -110,19 +110,24 @@ const generateEmptyField = (uuid) => {
    * @property {operator} operator - The name of the operator
    * @property {string[]} availableOperators - A string array containing the names of available operators
    * @property {string} gqlOperator - A string containing the GraphQL operator
+   * @property {string} envelope - The a pattern to use as an envelope
    * @property {string} value - The text value to be searched
+   * @property {string} type - The type of field it is (string, number, etc.)
    * @constant
    * @default
    */
   const defaultNewFieldState = {
-    id: null, // uuid inside the app
-    field: null, // project_name
-    // We only need field to get all of the rest of this info!
-    operator: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).defaultOperator
-    availableOperators: [], // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).operators
-    placeholder: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).placeholder
-    label: null, // PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(field => field.name === field).label
-    value: null, // Get from form
+    id: null,
+    field: null,
+    operator: null,
+    availableOperators: [],
+    gqlOperator: null,
+    envelope: null,
+    placeholder: null,
+    value: null,
+    type: null,
+    specialNullValue: null,
+    label: null,
   };
   return { ...defaultNewFieldState, id: uuid };
 };
