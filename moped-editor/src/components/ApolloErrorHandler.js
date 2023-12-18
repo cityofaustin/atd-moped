@@ -25,7 +25,7 @@ const ApolloErrorHandler = props => {
 
   // Error Variables
   const error = props?.error ?? null;
-  const errorString = JSON.stringify(error);
+  const errorString = JSON.stringify(error, Object.getOwnPropertyNames(error));
   const jwtError = errorString.includes("JWT") || errorString.includes("token");
 
   if (jwtError) {
