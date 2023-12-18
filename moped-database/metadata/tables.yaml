@@ -3935,6 +3935,8 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
           - interim_project_id
@@ -3954,6 +3956,8 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
           - interim_project_id
@@ -4052,6 +4056,8 @@
           - public_process_status_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -4072,6 +4078,8 @@
           - public_process_status_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project
       definition:
