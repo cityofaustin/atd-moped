@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import ExternalLink from "./ExternalLink";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,9 +22,13 @@ const useStyles = makeStyles((theme) => ({
   errorText: {
     backgroundColor: theme.palette.background.summaryHover,
     fontSize: ".75rem",
-    padding: "8px"
+    padding: "8px",
+    fontFamily: "monospace",
   },
 }));
+
+const createBugReportLink = (error) =>
+  `https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%2C%22field_400%22%3A%22${error.message}%22%7D`;
 
 const FallbackComponent = ({ error, resetErrorBoundary }) => {
   const classes = useStyles();
@@ -51,9 +56,21 @@ const FallbackComponent = ({ error, resetErrorBoundary }) => {
         >
           Something went wrong.
         </Typography>
-        <Typography color="textPrimary" variant="body2" gutterBottom className={classes.subheading}>
-          You can try refreshing the page or click here to submit a bug report
-          with the full error response of the problem you encountered.
+        <Typography
+          color="textPrimary"
+          variant="body2"
+          gutterBottom
+          className={classes.subheading}
+        >
+          You can try refreshing the page or{" "}
+          {
+            <ExternalLink
+              url={createBugReportLink(error)}
+              text={"click here"}
+            />
+          }{" "}
+          to submit a bug report with the error message of the problem you
+          encountered.
         </Typography>
         <Box>
           <Typography variant="overline">error</Typography>
