@@ -145,20 +145,33 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
     const filterConfigForField = filtersConfig.fields.find(
       (fieldConfig) => fieldConfig.name === field
     );
+    const operatorsSetInConfig = filterConfigForField.operators;
+    const shouldUseAllOperators =
+      operatorsSetInConfig.length === 1 &&
+      filterConfigForField.operators[0] === "*";
+    const availableOperators = shouldUseAllOperators
+      ? Object.entries(FiltersCommonOperators).map(
+          ([filtersCommonOperator, filterCommonOperatorConfig]) => ({
+            ...filterCommonOperatorConfig,
+            id: filtersCommonOperator,
+          })
+        )
+      : filterConfigForField.operators.map((operator) => ({
+          ...FiltersCommonOperators[operator],
+          id: operator,
+        }));
 
     const filterParameters = {
       id: filterUUID,
       field: field,
       operator: operator,
-      availableOperators: filterConfigForField.operators.map((operator) => ({
-        ...FiltersCommonOperators[operator],
-        id: operator,
-      })),
+      availableOperators: availableOperators,
       placeholder: filterConfigForField.placeholder,
       value: value,
       label: filterConfigForField.label,
       lookup_field: filterConfigForField.lookup?.field_name,
       lookup_table: filterConfigForField.lookup?.table_name,
+      type: filterConfigForField.type,
     };
 
     return { ...acc, [filterUUID]: filterParameters };
@@ -218,6 +231,9 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
+
+  // TODO: Fix ID is 1 - go through all operators. I think that "is not" is broken
+  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
