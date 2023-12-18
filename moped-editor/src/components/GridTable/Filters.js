@@ -168,7 +168,7 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       field: field,
       operator: operator,
       availableOperators: availableOperators,
-      gqlOperator: null,
+      gqlOperator: FiltersCommonOperators[operator].operator,
       placeholder: filterConfigForField.placeholder,
       value: value,
       type: filterConfigForField.type,
@@ -234,9 +234,6 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
-
-  // TODO: Fix ID is 1 - go through all operators. I think that "is not" is broken
-  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
