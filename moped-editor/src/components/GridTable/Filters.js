@@ -124,6 +124,20 @@ const generateEmptyField = (uuid) => {
 };
 
 /**
+ * Returns whether the user input value for the filterParameter is valid
+ * @param {object} filterParameter
+ * @returns {boolean}
+ */
+const checkIsValidInput = (filterParameter) => {
+  // If we are testing a number type field with a non null value
+  if (filterParameter.type === "number" && !!filterParameter.value) {
+    // Return whether string only contains digits
+    return !/[^0-9]/.test(filterParameter.value);
+  }
+  return true; // Otherwise the input is valid
+};
+
+/**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
@@ -417,12 +431,12 @@ const Filters = ({
             feedback.push("• One or more operators have not been selected.");
           }
 
-          if (value === null || value === "") {
+          if (value === null || value.trim() === "") {
             if (gqlOperator && !gqlOperator.includes("is_null")) {
               feedback.push("• One or more missing values.");
             }
           }
-          if (checkIsInvalidInput(filterParameters[filterKey])) {
+          if (!checkIsValidInput(filterParameters[filterKey])) {
             feedback.push("• One or more invalid inputs.");
           }
         });
@@ -494,16 +508,6 @@ const Filters = ({
     setIsOrToggleValue(isOr);
   };
 
-  /**
-   * Returns whether the user input value for the filterParameter is valid
-   * @param {object} filterParameter
-   * @returns {boolean}
-   */
-  const checkIsInvalidInput = (filterParameter) => {
-    // Validate input for number type fields
-    return filterParameter.type === "number" && isNaN(filterParameter.value);
-  };
-
   return (
     <Grid>
       <Grid container className={classes.gridItemPadding}>
@@ -559,7 +563,7 @@ const Filters = ({
       </Grid>
 
       {Object.keys(filterParameters).map((filterId) => {
-        const isInvalidInput = checkIsInvalidInput(filterParameters[filterId]);
+        const isValidInput = checkIsValidInput(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -699,8 +703,8 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
-                        error={isInvalidInput}
-                        helperText={isInvalidInput ? "Invalid input" : ""}
+                        error={!isValidInput}
+                        helperText={!isValidInput ? "Must be a number" : ""}
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
                         disabled={!filterParameters[filterId].operator}
