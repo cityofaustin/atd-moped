@@ -1,61 +1,67 @@
 import React from "react";
 import { Box, Container, Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
+    backgroundColor: theme.palette.background.paper,
+    maxWidth: "525px",
   },
   image: {
-    marginTop: 50,
     display: "inline-block",
     maxWidth: "100%",
     width: 200,
   },
   subheading: {
-    marginTop: 50,
-    marginBottom: 50,
+    marginTop: "1rem",
   },
   errorText: {
-    color: "#ff6549",
-
-  }
+    backgroundColor: theme.palette.background.summaryHover,
+    fontSize: ".75rem",
+    padding: "8px"
+  },
 }));
 
-const FallbackComponent= ({ error, resetErrorBoundary, apolloError=false}) => {
-    const classes = useStyles();
-    // Call resetErrorBoundary() to reset the error boundary and retry the render.
+const FallbackComponent = ({ error, resetErrorBoundary }) => {
+  const classes = useStyles();
 
-    console.log(apolloError)
-  
-    return (
-      <Box
-        display="flex"
-        flexDirection="column"
-        height="100%"
-        justifyContent="center"
-      >
-        <Container maxWidth="md">
-          <Typography align="center" color="textPrimary" variant="h3">
-            Whoops. This is embarassing.
-          </Typography>
-          <Box textAlign="center">
-            <img
-              alt="Under development"
-              className={classes.image}
-              src={`${process.env.PUBLIC_URL}/static/images/moped-flat.svg`}
-            />
-          </Box>
-          {apolloError?
-          <Typography>try refreshing your browser.</Typography>
-          :<Typography align="center" className={classes.errorText}>
-            {error.message}
-          </Typography>}
-        </Container>
-      </Box>
-    );
-  }
+  return (
+    <Box
+      display="flex"
+      flexDirection="column"
+      height="100%"
+      justifyContent="center"
+    >
+      <Container className={classes.root}>
+        <Box textAlign="center">
+          <img
+            alt="the moped logo with a flat rear tire"
+            className={classes.image}
+            src={`${process.env.PUBLIC_URL}/static/images/moped-flat.svg`}
+          />
+        </Box>
+        <Typography
+          align="center"
+          color="textPrimary"
+          variant="h4"
+          gutterBottom
+        >
+          Something went wrong.
+        </Typography>
+        <Typography color="textPrimary" variant="body2" gutterBottom className={classes.subheading}>
+          You can try refreshing the page or click here to submit a bug report
+          with the full error response of the problem you encountered.
+        </Typography>
+        <Box>
+          <Typography variant="overline">error</Typography>
+          <Typography className={classes.errorText}>{error.message}</Typography>
+        </Box>
+      </Container>
+    </Box>
+  );
+};
 
-  export default FallbackComponent;
+export default FallbackComponent;
