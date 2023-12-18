@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { isEqual } from "lodash";
+import { ErrorBoundary } from "react-error-boundary";
+import FallbackComponent from "../../../components/FallbackComponent";
 
 import {
   Box,
@@ -215,89 +217,91 @@ const ProjectActivityLog = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <CardContent>
-        {getTotalItems(data) === 0 ? (
-          <Alert severity="info">
-            There is no activity recorded for this project.
-          </Alert>
-        ) : (
-          <TableContainer component={Paper}>
-            <Table className={classes.table} aria-label="simple table">
-              <TableBody>
-                {activityLogData.map((change) => {
-                  const { changeIcon, changeText } = formatActivityLogEntry(
-                    change,
-                    lookupData,
-                    projectId
-                  );
-                  // allows log formatters to return a `null` changeText, causing the
-                  // event to not be rendered at all
-                  if (!changeText) {
-                    return null;
-                  }
-                  return (
-                    <TableRow key={change.activity_id}>
-                      <TableCell
-                        align="left"
-                        width="15%"
-                        className={classes.tableCell}
-                      >
-                        <Box display="flex" p={0}>
-                          <Box p={0}>
-                            <CDNAvatar
-                              className={classes.avatarSmall}
-                              src={change?.updated_by_user?.picture}
-                              initials={getInitials(change?.updated_by_user)}
-                              // todo: do we want this to not be always gray if its just the initials?
-                              userColor={null}
-                            />
+      <ErrorBoundary FallbackComponent={FallbackComponent}>
+        <CardContent>
+          {getTotalItems(data) === 0 ? (
+            <Alert severity="info">
+              There is no activity recorded for this project.
+            </Alert>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table className={classes.table} aria-label="simple table">
+                <TableBody>
+                  {activityLogData.map((change) => {
+                    const { changeIcon, changeText } = formatActivityLogEntry(
+                      change,
+                      lookupData,
+                      projectId
+                    );
+                    // allows log formatters to return a `null` changeText, causing the
+                    // event to not be rendered at all
+                    if (!changeText) {
+                      return null;
+                    }
+                    return (
+                      <TableRow key={change.activity_id}>
+                        <TableCell
+                          align="left"
+                          width="15%"
+                          className={classes.tableCell}
+                        >
+                          <Box display="flex" p={0}>
+                            <Box p={0}>
+                              <CDNAvatar
+                                className={classes.avatarSmall}
+                                src={change?.updated_by_user?.picture}
+                                initials={getInitials(change?.updated_by_user)}
+                                // todo: do we want this to not be always gray if its just the initials?
+                                userColor={null}
+                              />
+                            </Box>
+                            <Box
+                              p={0}
+                              flexGrow={1}
+                              className={classes.avatarName}
+                            >
+                              {getUserFullName(change?.updated_by_user)}
+                            </Box>
                           </Box>
-                          <Box
-                            p={0}
-                            flexGrow={1}
-                            className={classes.avatarName}
-                          >
-                            {getUserFullName(change?.updated_by_user)}
-                          </Box>
-                        </Box>
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        width="80%"
-                        className={classes.tableCell}
-                      >
-                        <ProjectActivityEntry
-                          changeIcon={changeIcon}
-                          changeText={changeText}
-                        />
-                      </TableCell>
-                      <TableCell
-                        align="left"
-                        component="th"
-                        scope="row"
-                        width="5%"
-                        className={classes.tableCell}
-                        style={{ whiteSpace: "nowrap" }}
-                      >
-                        <span>
-                          {change.created_at
-                            ? formatRelativeDate(change.created_at)
-                            : ""}
-                        </span>
-                        <span className={classes.mutedDate}>
-                          {change.created_at
-                            ? new Date(change.created_at).toLocaleString()
-                            : ""}
-                        </span>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        )}
-      </CardContent>
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          width="80%"
+                          className={classes.tableCell}
+                        >
+                          <ProjectActivityEntry
+                            changeIcon={changeIcon}
+                            changeText={changeText}
+                          />
+                        </TableCell>
+                        <TableCell
+                          align="left"
+                          component="th"
+                          scope="row"
+                          width="5%"
+                          className={classes.tableCell}
+                          style={{ whiteSpace: "nowrap" }}
+                        >
+                          <span>
+                            {change.created_at
+                              ? formatRelativeDate(change.created_at)
+                              : ""}
+                          </span>
+                          <span className={classes.mutedDate}>
+                            {change.created_at
+                              ? new Date(change.created_at).toLocaleString()
+                              : ""}
+                          </span>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </CardContent>
+      </ErrorBoundary>
     </ApolloErrorHandler>
   );
 };
