@@ -1,10 +1,11 @@
 import { useMemo, useEffect } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+// import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
@@ -178,7 +179,7 @@ const ProjectPhaseForm = ({
 
   useEffect(() => {
     if (phase_end !== defaultValues.phase_end) {
-      // phase start has been edited
+      // phase end has been edited
       if (phase_end && new Date(phase_end).getTime() < new Date().getTime()) {
         setValue("is_phase_end_confirmed", true);
       }
@@ -326,6 +327,12 @@ const ProjectPhaseForm = ({
         </Grid>
         <Grid item container justifyContent="flex-end">
           <FormControl>
+            {/* <ControlledCheckbox
+              name="is_current_phase"
+              control={control}
+              label="Current phase"
+            /> */}
+
             <ControlledSwitch
               name="is_current_phase"
               control={control}
@@ -333,27 +340,29 @@ const ProjectPhaseForm = ({
             />
           </FormControl>
         </Grid>
-        {isCurrentPhase && isNewPhase && (
-          <Grid item xs={12}>
-            <FormControl fullWidth error={!!formErrors?.status_update}>
-              <ControlledTextInput
-                fullWidth
-                label="Status update"
-                multiline
-                rows={3}
-                name="status_update"
-                control={control}
-                size="small"
-                helperText="Optionally include a project status update"
-              />
-              {formErrors?.status_update && (
-                <FormHelperText>
-                  {formErrors.status_update.message}
-                </FormHelperText>
-              )}
-            </FormControl>
-          </Grid>
-        )}
+        {/* 
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={!!formErrors?.status_update}>
+            <ControlledTextInput
+              fullWidth
+              label="Status update"
+              multiline
+              rows={3}
+              name="status_update"
+              control={control}
+              size="small"
+              helperText="Optionally include a project status update"
+            />
+            {formErrors?.status_update && (
+              <FormHelperText>
+                {formErrors.status_update.message}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid> */}
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
