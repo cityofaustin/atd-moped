@@ -109,6 +109,7 @@ const generateEmptyField = (uuid) => {
    * @property {string} field - The name of the column
    * @property {operator} operator - The name of the operator
    * @property {string[]} availableOperators - A string array containing the names of available operators
+   * @property {string} gqlOperator - A string containing the GraphQL operator
    * @property {string} envelope - The a pattern to use as an envelope
    * @property {string} value - The text value to be searched
    * @property {string} type - The type of field it is (string, number, etc.)
@@ -120,6 +121,7 @@ const generateEmptyField = (uuid) => {
     field: null,
     operator: null,
     availableOperators: [],
+    gqlOperator: null,
     envelope: null,
     placeholder: null,
     value: null,
@@ -166,12 +168,13 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       field: field,
       operator: operator,
       availableOperators: availableOperators,
+      gqlOperator: null,
       placeholder: filterConfigForField.placeholder,
       value: value,
+      type: filterConfigForField.type,
       label: filterConfigForField.label,
       lookup_field: filterConfigForField.lookup?.field_name,
       lookup_table: filterConfigForField.lookup?.table_name,
-      type: filterConfigForField.type,
     };
 
     return { ...acc, [filterUUID]: filterParameters };
@@ -293,9 +296,11 @@ const Filters = ({
       } else {
         // Update field & type
         filtersNewState[filterId].field = fieldDetails.name;
+        filtersNewState[filterId].type = fieldDetails.type;
         filtersNewState[filterId].placeholder = fieldDetails.placeholder;
         filtersNewState[filterId].label = fieldDetails.label;
 
+        // Update Available Operators
         if (
           fieldDetails.operators.length === 1 &&
           fieldDetails.operators[0] === "*"
@@ -367,6 +372,15 @@ const Filters = ({
       if (operator in filtersConfig.operators) {
         // Update Operator Value
         filtersNewState[filterId].operator = operator;
+        // Get the GraphQL operator details
+        filtersNewState[filterId].gqlOperator =
+          filtersConfig.operators[operator].operator;
+        // Copy the envelope if available
+        filtersNewState[filterId].envelope =
+          filtersConfig.operators[operator].envelope;
+        // Copy special null value if available
+        filtersNewState[filterId].specialNullValue =
+          filtersConfig.operators[operator].specialNullValue;
 
         // if we are switching to an autocomplete input, clear the search value
         if (renderAutocompleteInput(filtersNewState[filterId])) {
@@ -466,9 +480,7 @@ const Filters = ({
         feedback.push("• No filters have been added.");
       } else {
         Object.keys(filterParameters).forEach((filterKey) => {
-          const { field, value, operator } = filterParameters[filterKey];
-          const gqlOperator = FiltersCommonOperators[operator]?.operator;
-
+          const { field, value, gqlOperator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
           }
@@ -516,8 +528,7 @@ const Filters = ({
    * @returns {boolean}
    */
   const isFilterNullType = (field) => {
-    const gqlOperator = FiltersCommonOperators[field.operator]?.operator;
-    return gqlOperator && gqlOperator.includes("is_null");
+    return field.gqlOperator && field.gqlOperator.includes("is_null");
   };
 
   /**
