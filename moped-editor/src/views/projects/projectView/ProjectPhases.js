@@ -1,6 +1,12 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
-import { CircularProgress, Box, IconButton } from "@mui/material";
+import {
+  CircularProgress,
+  Box,
+  IconButton,
+  Popover,
+  Typography,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { grey, green } from "@mui/material/colors";
 import {
@@ -8,6 +14,7 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
   HelpOutline,
+  ChildFriendly,
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
@@ -58,6 +65,50 @@ const useSubphaseNameLookup = (subphases) =>
     [subphases]
   );
 
+const John = ({ children, isEnabled }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  return (
+    <div
+      onMouseEnter={handlePopoverOpen}
+      onMouseLeave={handlePopoverClose}
+      aria-owns={open ? "mouse-over-popover" : undefined}
+      aria-haspopup="true"
+    >
+      {children}
+      <Popover
+        id="mouse-over-popover"
+        sx={{
+          pointerEvents: "none",
+        }}
+        open={isEnabled && open}
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        onClose={handlePopoverClose}
+        disableRestoreFocus
+      >
+        <Typography sx={{ p: 1 }}>Estimated date</Typography>
+      </Popover>
+    </div>
+  );
+};
+
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
   useMemo(() => {
@@ -86,13 +137,24 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           const strToRender = row.phase_start
             ? new Date(row.phase_start).toLocaleDateString()
             : "";
+          const showTentativeIcon =
+            !row.is_phase_start_confirmed && strToRender;
           return (
-            <Box display="flex">
-              <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
-              {!row.is_phase_start_confirmed && (
-                <HelpOutline style={{ color: grey[500] }} />
-              )}
-            </Box>
+            <John isEnabled={showTentativeIcon}>
+              <Box display="flex" alignItems="center">
+                <span
+                  style={{
+                    paddingInlineEnd: ".25rem",
+                    fontStyle: showTentativeIcon ? "italic" : null,
+                  }}
+                >
+                  {`${strToRender}${showTentativeIcon ? "*" : ""}`}
+                </span>
+                {/* {showTentativeIcon && (
+                  <HelpOutline style={{ color: grey[500] }} />
+                )} */}
+              </Box>
+            </John>
           );
         },
         minWidth: 150,
@@ -109,10 +171,11 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           const strToRender = row.phase_end
             ? new Date(row.phase_end).toLocaleDateString()
             : "";
+          const showTentativeIcon = !row.is_phase_end_confirmed && strToRender;
           return (
-            <Box display="flex">
+            <Box display="flex" alignItems="center">
               <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
-              {!row.is_phase_end_confirmed && (
+              {!row.is_phase_end_confirmed && showTentativeIcon && (
                 <HelpOutline style={{ color: grey[500] }} />
               )}
             </Box>
