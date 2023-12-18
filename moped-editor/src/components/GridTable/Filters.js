@@ -157,8 +157,8 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
         id: operator,
       })),
       placeholder: filterConfigForField.placeholder,
-      label: filterConfigForField.label,
       value: value,
+      label: filterConfigForField.label,
       lookup_field: filterConfigForField.lookup?.field_name,
       lookup_table: filterConfigForField.lookup?.table_name,
     };
@@ -452,7 +452,9 @@ const Filters = ({
         feedback.push("• No filters have been added.");
       } else {
         Object.keys(filterParameters).forEach((filterKey) => {
-          const { field, value, gqlOperator } = filterParameters[filterKey];
+          const { field, value, operator } = filterParameters[filterKey];
+          const gqlOperator = FiltersCommonOperators[operator]?.operator;
+
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
           }
@@ -500,7 +502,8 @@ const Filters = ({
    * @returns {boolean}
    */
   const isFilterNullType = (field) => {
-    return field.gqlOperator && field.gqlOperator.includes("is_null");
+    const gqlOperator = FiltersCommonOperators[field.operator]?.operator;
+    return gqlOperator && gqlOperator.includes("is_null");
   };
 
   /**
