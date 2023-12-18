@@ -2,11 +2,12 @@ import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CircularProgress, Box, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { green } from "@mui/material/colors";
+import { grey, green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
+  HelpOutline,
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
@@ -76,15 +77,47 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
       {
         headerName: "Start",
         field: "phase_start",
+        type: "date",
+        /** valueGetter is used by the date sort function inherently used by the `date` type column */
         valueGetter: ({ row }) =>
-          row.phase_start ? new Date(row.phase_start).toLocaleDateString() : "",
+          row.phase_start ? new Date(row.phase_start) : null,
+        /**  the renderCell function controls the react node rendered for this cell */
+        renderCell: ({ row }) => {
+          const strToRender = row.phase_start
+            ? new Date(row.phase_start).toLocaleDateString()
+            : "";
+          return (
+            <Box display="flex">
+              <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
+              {!row.is_phase_start_confirmed && (
+                <HelpOutline style={{ color: grey[500] }} />
+              )}
+            </Box>
+          );
+        },
         minWidth: 150,
       },
       {
         headerName: "End",
         field: "phase_end",
+        type: "date",
+        /** valueGetter is used by the date sort function inherently used by the `date` type column */
         valueGetter: ({ row }) =>
-          row.phase_end ? new Date(row.phase_end).toLocaleDateString() : "",
+          row.phase_end ? new Date(row.phase_end) : null,
+        /**  the renderCell function controls the react node rendered for this cell */
+        renderCell: ({ row }) => {
+          const strToRender = row.phase_end
+            ? new Date(row.phase_end).toLocaleDateString()
+            : "";
+          return (
+            <Box display="flex">
+              <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
+              {!row.is_phase_end_confirmed && (
+                <HelpOutline style={{ color: grey[500] }} />
+              )}
+            </Box>
+          );
+        },
         minWidth: 150,
       },
       {
@@ -100,7 +133,6 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           row.is_current_phase ? (
             <Box display="flex">
               <CheckCircleOutline style={{ color: green[500] }} />
-              <span style={{ paddingInlineStart: ".25rem" }}>Yes</span>
             </Box>
           ) : (
             ""
