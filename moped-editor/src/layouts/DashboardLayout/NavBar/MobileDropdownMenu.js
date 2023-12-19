@@ -76,10 +76,17 @@ const MobileDropdownMenu = () => {
           key={arcGISLink.link}
           onClick={() => {
             handleMobileClose();
-            navigate(arcGISLink.link);
           }}
         >
-          {arcGISLink.title}
+          <Link
+            href={arcGISLink.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
+          >
+            {arcGISLink.title}
+          </Link>
         </MenuItem>
         <MenuItem key="help" onClick={setShowSubMenu}>
           Help
