@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { useRoutes } from "react-router-dom";
 import { ThemeProvider, StyledEngineProvider } from "@mui/material";
+import { ErrorBoundary } from "react-error-boundary";
 import GlobalStyles from "src/components/GlobalStyles";
 import theme from "src/theme";
 import { restrictedRoutes } from "src/routes";
@@ -10,6 +11,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ProjectListViewQueryContext from "./components/QueryContextProvider";
 import ActivityMetrics from "./components/ActivityMetrics";
+import FallbackComponent from "./components/FallbackComponent";
 
 // Apollo GraphQL Client
 import {
@@ -80,14 +82,16 @@ const App = () => {
       <StyledEngineProvider injectFirst>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
-            <GlobalStyles />
-            <ActivityMetrics>
-              <ProjectListViewQueryContext.Provider
-                value={{ listViewQuery, setListViewQuery }}
-              >
-                {routing}
-              </ProjectListViewQueryContext.Provider>
-            </ActivityMetrics>
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <GlobalStyles />
+              <ActivityMetrics>
+                <ProjectListViewQueryContext.Provider
+                  value={{ listViewQuery, setListViewQuery }}
+                >
+                  {routing}
+                </ProjectListViewQueryContext.Provider>
+              </ActivityMetrics>
+            </ErrorBoundary>
           </ThemeProvider>
         </LocalizationProvider>
       </StyledEngineProvider>
