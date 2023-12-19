@@ -148,16 +148,18 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       (fieldConfig) => fieldConfig.name === field
     );
     const operatorsSetInConfig = filterConfigForField.operators;
+    const type = filterConfigForField.type;
+
     const shouldUseAllOperators =
       operatorsSetInConfig.length === 1 &&
       filterConfigForField.operators[0] === "*";
     const availableOperators = shouldUseAllOperators
-      ? Object.entries(FiltersCommonOperators).map(
-          ([filtersCommonOperator, filterCommonOperatorConfig]) => ({
+      ? Object.entries(FiltersCommonOperators)
+          .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
             ...filterCommonOperatorConfig,
             id: filtersCommonOperator,
-          })
-        )
+          }))
+          .filter((operator) => operator.type === type)
       : filterConfigForField.operators.map((operator) => ({
           ...FiltersCommonOperators[operator],
           id: operator,
@@ -165,13 +167,13 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
 
     const filterParameters = {
       id: filterUUID,
-      field: field,
-      operator: operator,
+      field,
+      operator,
       availableOperators: availableOperators,
       gqlOperator: FiltersCommonOperators[operator].operator,
       placeholder: filterConfigForField.placeholder,
-      value: value,
-      type: filterConfigForField.type,
+      value,
+      type,
       label: filterConfigForField.label,
       lookup_field: filterConfigForField.lookup?.field_name,
       lookup_table: filterConfigForField.lookup?.table_name,
