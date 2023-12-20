@@ -6,7 +6,6 @@ import { useUser } from "src/auth/user";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "100%",
     paddingBottom: theme.spacing(3),
     paddingTop: theme.spacing(3),
     backgroundColor: theme.palette.background.paper,
