@@ -11,14 +11,14 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import Page from "src/components/Page";
 import { useUser } from "../../auth/user";
 import useAuthentication from "../../auth/useAuthentication";
 import SimpleDialog from "../../components/SimpleDialog";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     height: "100%",
     paddingBottom: theme.spacing(3),
@@ -70,9 +70,7 @@ const LoginView = () => {
             .email("Must be a valid email")
             .max(255)
             .required("Email is required"),
-          password: Yup.string()
-            .max(255)
-            .required("Password is required"),
+          password: Yup.string().max(255).required("Password is required"),
         })}
         onSubmit={handleSubmit}
       >
@@ -173,6 +171,11 @@ const LoginView = () => {
               onClick={() => signIn()}
               size="large"
               variant="contained"
+              disabled={
+                !["staging", "production"].includes(
+                  process.env.REACT_APP_HASURA_ENV
+                )
+              }
             >
               City of Austin Sign-In
             </Button>
