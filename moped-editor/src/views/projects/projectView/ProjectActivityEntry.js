@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
 
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -36,9 +36,18 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
           {
             // maps through the array of objects and applies specified style to the text
             changeText.map((changeObject, index) => (
+              changeObject.link ?
+              (
               <span className={classes[changeObject.style]} key={index}>
-                {changeObject.text}
-              </span>
+                 <Link
+                href={changeObject.link}
+                target="blank"
+              >{changeObject.text}</Link>
+              </span>) : 
+              (
+                <span className={classes[changeObject.style]} key={index}>
+                  {changeObject.text}
+                </span>)
             ))
           }
         </Typography>

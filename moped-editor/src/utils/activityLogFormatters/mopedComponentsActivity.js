@@ -39,9 +39,16 @@ export const formatComponentsActivity = (
 
   // add a new component
   if (change.description.length === 0) {
+    const newComponentID = change.record_data.event.data.new.project_component_id;
     return {
       changeIcon,
-      changeText: [{ text: "Added a component: ", style: null }, componentText],
+      changeText: [
+        { text: "Added a component: ", style: null },
+        {
+          ...componentText,
+          link: `/moped/projects/${projectId}?tab=map&project_component_id=${newComponentID}`,
+        },
+      ],
     };
   }
 
