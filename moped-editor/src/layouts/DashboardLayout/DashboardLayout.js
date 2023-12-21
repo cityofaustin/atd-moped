@@ -1,11 +1,13 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
+import { ErrorBoundary } from "react-error-boundary";
+import FallbackComponent from "src/components/FallbackComponent";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     height: "100%",
@@ -44,7 +46,9 @@ const DashboardLayout = () => {
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            <Outlet />
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <Outlet />
+            </ErrorBoundary>
             <Footer />
           </div>
         </div>
