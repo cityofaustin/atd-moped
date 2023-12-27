@@ -1,7 +1,9 @@
 import React, { useRef } from "react";
-import ComponentsDrawControl from "src/components/Maps/ComponentsDrawControl";
+import ComponentsDrawControl, {
+  isInDrawingMode,
+} from "src/components/Maps/ComponentsDrawControl";
 import { makeDrawnFeature } from "./utils/features";
-import {useTrashButtonClickable} from "./utils/map"
+import { useTrashButtonClickable } from "./utils/map";
 import "./utils/map.css";
 import mapboxDrawStylesOverrides from "src/styles/mapboxDrawStylesOverrides";
 
@@ -21,7 +23,7 @@ const CreateComponentDrawTools = ({
   setIsDrawing,
 }) => {
   const drawControlsRef = useRef();
-  const setTrashButtonClickable = useTrashButtonClickable()
+  const setTrashButtonClickable = useTrashButtonClickable();
 
   const onCreate = ({ features: createdFeaturesArray }) => {
     // Add properties needed to distinguish drawn features from other features
@@ -68,7 +70,7 @@ const CreateComponentDrawTools = ({
   };
 
   const onModeChange = ({ mode }) => {
-    if (mode === "draw_point" || mode === "draw_line_string") {
+    if (isInDrawingMode(mode)) {
       setCursor("crosshair");
       setIsDrawing(true);
     } else {
