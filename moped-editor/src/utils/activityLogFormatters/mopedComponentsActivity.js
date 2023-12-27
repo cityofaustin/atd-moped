@@ -21,9 +21,12 @@ export const formatComponentsActivity = (
   const changeIcon = <RoomOutlinedIcon />;
   const component =
     componentList[change.record_data.event.data.new.component_id];
+  const componentID = change.record_data.event.data.new.project_component_id;
+  const componentLink = `/moped/projects/${projectId}?tab=map&project_component_id=${componentID}`;
   const componentText = {
     text: component,
     style: "boldText",
+    link: componentLink
   };
   const phase = phaseList[change.record_data.event.data.new.phase_id];
   const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
@@ -39,15 +42,11 @@ export const formatComponentsActivity = (
 
   // add a new component
   if (change.description.length === 0) {
-    const newComponentID = change.record_data.event.data.new.project_component_id;
     return {
       changeIcon,
       changeText: [
         { text: "Added a component: ", style: null },
-        {
-          ...componentText,
-          link: `/moped/projects/${projectId}?tab=map&project_component_id=${newComponentID}`,
-        },
+        componentText,
       ],
     };
   }
