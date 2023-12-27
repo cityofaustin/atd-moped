@@ -3238,8 +3238,8 @@
           - phase_start
           - project_id
           - subphase_id
-          - is_phase_end_confirmed
           - is_phase_start_confirmed
+          - is_phase_end_confirmed
         filter: {}
         check: {}
   event_triggers:
