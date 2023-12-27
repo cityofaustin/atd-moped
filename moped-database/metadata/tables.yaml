@@ -2316,7 +2316,6 @@
           - partners
           - workgroups
           - project_personnel
-          - entity_list_id
           - project_id
           - date_added
   select_permissions:
