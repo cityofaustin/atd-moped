@@ -3232,13 +3232,14 @@
           - date_added
           - is_current_phase
           - is_deleted
-          - is_phase_end_confirmed
-          - is_phase_start_confirmed
           - phase_description
           - phase_end
           - phase_id
           - phase_start
+          - project_id
           - subphase_id
+          - is_phase_end_confirmed
+          - is_phase_start_confirmed
         filter: {}
         check: {}
   event_triggers:
