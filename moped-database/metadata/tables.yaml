@@ -1985,7 +1985,6 @@
           - created_by_user_id
           - interim_project_component_id
           - phase_id
-          - project_component_id
           - project_id
           - subphase_id
           - updated_by_user_id
@@ -2007,7 +2006,6 @@
           - created_by_user_id
           - interim_project_component_id
           - phase_id
-          - project_component_id
           - project_id
           - subphase_id
           - updated_by_user_id
@@ -2084,7 +2082,6 @@
           - created_by_user_id
           - interim_project_component_id
           - phase_id
-          - project_component_id
           - project_id
           - subphase_id
           - updated_by_user_id
@@ -2106,7 +2103,6 @@
           - created_by_user_id
           - interim_project_component_id
           - phase_id
-          - project_component_id
           - project_id
           - subphase_id
           - updated_by_user_id
