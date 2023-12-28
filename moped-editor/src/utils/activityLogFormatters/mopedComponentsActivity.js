@@ -24,7 +24,7 @@ export const formatComponentsActivity = (
   const componentID = change.record_data.event.data.new.project_component_id;
   const componentLink = `/moped/projects/${projectId}?tab=map&project_component_id=${componentID}`;
   const componentText = {
-    text: component,
+    text: `${component} (#${componentID})`,
     style: "boldText",
     link: componentLink
   };

@@ -38,7 +38,7 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
             changeText.map((changeObject, index) =>
               changeObject.link ? (
                 <span className={classes[changeObject.style]} key={index}>
-                  <Link href={changeObject.link} target="blank">
+                  <Link href={changeObject.link} >
                     {changeObject.text}
                   </Link>
                 </span>
