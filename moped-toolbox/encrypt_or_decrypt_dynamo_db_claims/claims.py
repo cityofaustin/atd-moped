@@ -6,7 +6,6 @@ find the environment specific Fernet keys in the 1Password entries named
 'Moped - Staging - Encryption Key - Secrets Manager - Cognito'
 """
 import argparse
-import json
 from cryptography.fernet import Fernet
 
 
