@@ -141,8 +141,7 @@ const generateEmptyField = (uuid) => {
 const makeInitialFilterParameters = (filters, filtersConfig) => {
   if (filters.length === 0) return [];
 
-  return filters.reduce((acc, filter) => {
-    const filterUUID = uuidv4();
+  return filters.map((filter) => {
     const { field, operator, value } = filter;
     const filterConfigForField = filtersConfig.fields.find(
       (fieldConfig) => fieldConfig.name === field
@@ -165,8 +164,7 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
           id: operator,
         }));
 
-    const filterParameters = {
-      id: filterUUID,
+    return {
       field,
       operator,
       availableOperators: availableOperators,
@@ -178,9 +176,7 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
       lookup_field: filterConfigForField.lookup?.field_name,
       lookup_table: filterConfigForField.lookup?.table_name,
     };
-
-    return { ...acc, [filterUUID]: filterParameters };
-  }, {});
+  });
 };
 
 /**
@@ -232,6 +228,7 @@ const Filters = ({
       };
     }
   }, [filters, filtersConfig]);
+  console.log(initialFilterParameters);
 
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
