@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
 
@@ -101,11 +100,10 @@ const useStyles = makeStyles((theme) => ({
  * @param uuid
  * @return {Object}
  */
-const generateEmptyField = (uuid) => {
+const generateEmptyField = () => {
   /**
    * The default structure of an empty field
    * @type {Object}
-   * @property {string} id - The uuid of the field
    * @property {string} field - The name of the column
    * @property {operator} operator - The name of the operator
    * @property {string[]} availableOperators - A string array containing the names of available operators
@@ -117,7 +115,6 @@ const generateEmptyField = (uuid) => {
    * @default
    */
   const defaultNewFieldState = {
-    id: null,
     field: null,
     operator: null,
     availableOperators: [],
@@ -129,7 +126,7 @@ const generateEmptyField = (uuid) => {
     specialNullValue: null,
     label: null,
   };
-  return { ...defaultNewFieldState, id: uuid };
+  return { ...defaultNewFieldState };
 };
 
 /**
@@ -223,9 +220,7 @@ const Filters = ({
     if (filters.length > 0) {
       return makeInitialFilterParameters(filters, filtersConfig);
     } else {
-      return {
-        [uuidv4()]: generateEmptyField(uuidv4()),
-      };
+      return [generateEmptyField()];
     }
   }, [filters, filtersConfig]);
   console.log(initialFilterParameters);
@@ -248,14 +243,12 @@ const Filters = ({
     Object.keys(filterParameters).length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
-    // Generate a random UUID string
-    const uuid = uuidv4();
     // Clone state
     const filtersNewState = {
       ...filterParameters,
     };
     // Patch new state
-    filtersNewState[uuid] = generateEmptyField(uuid);
+    filtersNewState = [generateEmptyField()];
     // Update new state
     setFilterParameters(filtersNewState);
   }, [filterParameters, setFilterParameters]);
