@@ -238,9 +238,9 @@ const Filters = ({
   const [filterComplete, setFilterComplete] = useState(false);
 
   /* First filter is an empty placeholder so we check for more than one filter */
-  const areMoreThanOneFilters = Object.keys(filterParameters).length > 1;
+  const areMoreThanOneFilters = filterParameters.length > 1;
   const isFirstFilterIncomplete =
-    Object.keys(filterParameters).length === 1 && !filterComplete;
+    filterParameters.length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
     // Clone state and add empty filter
@@ -266,10 +266,11 @@ const Filters = ({
    * @param {Object} field - The field object being clicked
    */
   const handleFilterFieldMenuClick = (filterId, field) => {
+    console.log(filterId);
     // If the filter exists
     if (filterId in filterParameters) {
       // Clone state
-      const filtersNewState = { ...filterParameters };
+      const filtersNewState = [...filterParameters];
 
       // Find the field we need to gather options from
       const fieldDetails = filtersConfig.fields.find(
