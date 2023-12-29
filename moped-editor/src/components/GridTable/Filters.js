@@ -243,12 +243,8 @@ const Filters = ({
     Object.keys(filterParameters).length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
-    // Clone state
-    const filtersNewState = {
-      ...filterParameters,
-    };
-    // Patch new state
-    filtersNewState = [generateEmptyField()];
+    // Clone state and add empty filter
+    const filtersNewState = [...filterParameters, generateEmptyField()];
     // Update new state
     setFilterParameters(filtersNewState);
   }, [filterParameters, setFilterParameters]);
