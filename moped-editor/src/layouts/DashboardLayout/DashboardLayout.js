@@ -4,8 +4,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
 import Footer from "./Footer";
-import { ErrorBoundary } from "react-error-boundary";
-import FallbackComponent from "src/components/FallbackComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,9 +44,7 @@ const DashboardLayout = () => {
       <div className={classes.wrapper}>
         <div className={classes.contentContainer}>
           <div className={classes.content}>
-            <ErrorBoundary FallbackComponent={FallbackComponent}>
-              <Outlet />
-            </ErrorBoundary>
+            <Outlet />
             <Footer />
           </div>
         </div>

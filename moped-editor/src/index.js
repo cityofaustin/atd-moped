@@ -4,6 +4,8 @@ import { BrowserRouter } from "react-router-dom";
 import { UserProvider } from "./auth/user";
 import * as serviceWorker from "./serviceWorker";
 import App from "./App";
+import { ErrorBoundary } from "react-error-boundary";
+import FallbackComponent from "src/components/FallbackComponent";
 
 import Amplify, { Hub } from "aws-amplify";
 
@@ -50,7 +52,9 @@ Amplify.configure({
 ReactDOM.render(
   <BrowserRouter>
     <UserProvider>
-      <App />
+      <ErrorBoundary FallbackComponent={FallbackComponent}>
+        <App />
+      </ErrorBoundary>
     </UserProvider>
   </BrowserRouter>,
   document.getElementById("root")

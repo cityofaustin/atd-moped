@@ -10,6 +10,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(3),
     backgroundColor: theme.palette.background.paper,
     maxWidth: "525px",
+    marginTop: theme.spacing(2)
   },
   image: {
     display: "inline-block",
