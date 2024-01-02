@@ -266,6 +266,7 @@ const Filters = ({
    * @param {Object} field - The field object being clicked
    */
   const handleFilterFieldMenuClick = (filterId, field) => {
+    // TODO: Update to push update or empty filter into filterParameters array
     console.log(filterId);
     // If the filter exists
     if (filterId in filterParameters) {
