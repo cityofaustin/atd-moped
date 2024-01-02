@@ -88,6 +88,7 @@ const makeFilteredByText = (filters, isOr) => {
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
  * @param {Function} setSearchTerm - set the current search term set in the query
  * @param {Object} queryConfig - the query configuration object with placeholder text
+ * @param {Object} filtersConfig - The filters configuration for the current table
  * @return {JSX.Element}
  * @constructor
  */
@@ -102,6 +103,7 @@ const SearchBar = ({
   isOr,
   handleSwitchToSearch,
   loading,
+  filtersConfig,
 }) => {
   const classes = useStyles();
 
@@ -177,13 +179,15 @@ const SearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filters).length;
-  const filtersApplied = [];
-  if (filterStateActive) {
-    Object.keys(filters).map((parameter) =>
-      filtersApplied.push(filters[parameter]["label"])
-    );
-  }
+  const filterStateActive = filters.length > 0;
+  const filtersApplied =
+    filterStateActive &&
+    filters.map((filter) => {
+      const fieldFilterConfig = filtersConfig.fields.find(
+        (fieldConfig) => fieldConfig.name === filter.field
+      );
+      return fieldFilterConfig.label;
+    });
 
   return (
     <>
