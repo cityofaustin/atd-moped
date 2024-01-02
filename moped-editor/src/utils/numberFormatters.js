@@ -15,7 +15,7 @@ export const currencyFormatter = new Intl.NumberFormat("en-US", {
  * @param {String} number - Number string
  * @return {String} Number string with decimal removed and trailing numbers trimmed
  */
-export const removeDecimalsAndTrailingNumbers = number =>
+export const removeDecimalsAndTrailingNumbers = (number) =>
   number.replace(/[.](.*)/g, "");
 
 /**
@@ -23,4 +23,4 @@ export const removeDecimalsAndTrailingNumbers = number =>
  * @param {String} number - Number string
  * @return {String} Number string with only 0-9 integer characters
  */
-export const removeNonIntegers = number => number.replace(/[^0-9]/g, "");
+export const removeNonIntegers = (number) => number.replace(/[^0-9]/g, "");

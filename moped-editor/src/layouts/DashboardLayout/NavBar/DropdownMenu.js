@@ -11,9 +11,13 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import { useNavigate } from "react-router-dom";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
-import MenuIcon from "@mui/icons-material/Menu";
+import ChatOutlinedIcon from "@mui/icons-material/ChatOutlined";
+import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
+import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import MenuBookOutlined from "@mui/icons-material/MenuBookOutlined";
+import MenuIcon from "@mui/icons-material/Menu";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { getSessionDatabaseData, useUser } from "../../../auth/user";
 import { getInitials } from "src/utils/userNames";
@@ -29,31 +33,36 @@ import emailToInitials from "../../../utils/emailToInitials";
 export const helpItems = [
   {
     linkType: "external",
-    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Bug%20Report%20%E2%80%94%20Something%20is%20not%20working%22%2C%22field_399%22%3A%22Moped%22%7D",
-    title: "Report a bug ",
-  },
-  {
-    linkType: "external",
-    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_398%22%3A%22Feature%20or%20Enhancement%20%E2%80%94%20An%20application%20I%20use%20could%20be%20improved%22%2C%22field_399%22%3A%22Moped%22%7D",
-    title: "Request an enhancement ",
-  },
-  {
-    linkType: "external",
-    link: "https://teams.microsoft.com/l/channel/19%3ab1179ddfc92d44ea9abb23db713eb60c%40thread.tacv2/General?groupId=54a90854-d3fa-4053-9173-5352715bab37&tenantId=5c5e19f6-a6ab-4b45-b1d0-be4608a9a67f",
-    title: "Ask a question ",
+    link: "https://atd.knack.com/dts#new-service-request/?view_249_vars=%7B%22field_399%22%3A%22Moped%22%7D",
+    title: "Contact support",
+    Icon: <MailOutlineIcon fontSize="small" />,
   },
   {
     linkType: "external",
     link: "https://atd-dts.gitbook.io/moped/",
-    title: "Moped user guide ",
+    title: "User guide ",
+    Icon: <HelpOutlineOutlinedIcon fontSize="small" />,
+  },
+  {
+    linkType: "external",
+    link: "https://teams.microsoft.com/l/channel/19%3ab1179ddfc92d44ea9abb23db713eb60c%40thread.tacv2/General?groupId=54a90854-d3fa-4053-9173-5352715bab37&tenantId=5c5e19f6-a6ab-4b45-b1d0-be4608a9a67f",
+    title: "Microsoft Teams",
+    Icon: <ChatOutlinedIcon fontSize="small" />,
   },
   {
     linkType: "internal",
     link: "/moped/dev/lookups",
-    title: "Data Dictionary",
+    title: "Data dictionary",
     Icon: <MenuBookOutlined fontSize="small" />,
   },
 ];
+
+export const arcGISLink = {
+  linkType: "external",
+  link: "https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee",
+  title: "Moped map",
+  Icon: <MapOutlinedIcon fontSize="small" />,
+};
 
 const useStyles = makeStyles((theme) => ({
   dropdownButton: {
@@ -130,6 +139,19 @@ const DropdownMenu = ({
             />
           </ListItemIcon>
           Account
+        </MenuItem>
+        <Divider />
+        <MenuItem onClick={handleDropdownClose}>
+          <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
+          <Link
+            href={arcGISLink.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+            underline="none"
+          >
+            {arcGISLink.title}
+          </Link>
         </MenuItem>
         <Divider />
         <span className={classes.helpHeader}>
