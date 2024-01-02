@@ -184,6 +184,20 @@ const makeInitialFilterParameters = (filters, filtersConfig) => {
 };
 
 /**
+ * Returns whether the user input value for the filterParameter is valid
+ * @param {object} filterParameter
+ * @returns {boolean}
+ */
+const checkIsValidInput = (filterParameter) => {
+  // If we are testing a number type field with a non null value
+  if (filterParameter.type === "number" && !!filterParameter.value) {
+    // Return whether string only contains digits
+    return !/[^0-9]/.test(filterParameter.value);
+  }
+  return true; // Otherwise the input is valid
+};
+
+/**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
@@ -488,10 +502,13 @@ const Filters = ({
             feedback.push("• One or more operators have not been selected.");
           }
 
-          if (value === null || value === "") {
+          if (value === null || value.trim() === "") {
             if (gqlOperator && !gqlOperator.includes("is_null")) {
               feedback.push("• One or more missing values.");
             }
+          }
+          if (!checkIsValidInput(filterParameters[filterKey])) {
+            feedback.push("• One or more invalid inputs.");
           }
         });
       }
@@ -621,6 +638,7 @@ const Filters = ({
       </Grid>
 
       {Object.keys(filterParameters).map((filterId) => {
+        const isValidInput = checkIsValidInput(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -760,13 +778,15 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
+                        error={!isValidInput}
+                        helperText={!isValidInput ? "Must be a number" : ""}
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
                         disabled={!filterParameters[filterId].operator}
                         type={
-                          filterParameters[filterId].type
+                          filterParameters[filterId].type === "date"
                             ? filterParameters[filterId].type
-                            : "text"
+                            : null
                         }
                         onChange={(e) =>
                           handleSearchValueChange(filterId, e.target.value)
@@ -838,18 +858,17 @@ const Filters = ({
           </Grid>
         </Hidden>
         <Grid item xs={12} md={2}>
-          <Grow in={handleApplyValidation() === null}>
-            <Button
-              fullWidth
-              className={classes.applyButton}
-              variant="contained"
-              color="primary"
-              startIcon={<Icon>search</Icon>}
-              onClick={handleApplyButtonClick}
-            >
-              Search
-            </Button>
-          </Grow>
+          <Button
+            fullWidth
+            className={classes.applyButton}
+            variant="contained"
+            color="primary"
+            startIcon={<Icon>search</Icon>}
+            onClick={handleApplyButtonClick}
+            disabled={handleApplyValidation() != null}
+          >
+            Search
+          </Button>
         </Grid>
       </Grid>
     </Grid>
