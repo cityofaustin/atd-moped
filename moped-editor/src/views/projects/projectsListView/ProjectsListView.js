@@ -1,4 +1,3 @@
-//'use client'
 import React from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import Page from "src/components/Page";
