@@ -7,6 +7,10 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +84,7 @@ const Search = ({
   handleExportButtonClick,
   isOr,
   setIsOr,
-  loading
+  loading,
 }) => {
   const classes = useStyles();
   let [, setSearchParams] = useSearchParams();
@@ -100,8 +104,8 @@ const Search = ({
     setFilters({});
     setIsOr(false);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete("filter");
-      prevSearchParams.delete("isOr");
+      prevSearchParams.delete(advancedSearchFilterParamName);
+      prevSearchParams.delete(advancedSearchIsOrParamName);
       return prevSearchParams;
     });
   };
@@ -143,15 +147,14 @@ const Search = ({
                 searchFieldValue={searchFieldValue}
                 setSearchFieldValue={setSearchFieldValue}
                 filters={filters}
-                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
-                searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
                 isOr={isOr}
                 handleSwitchToSearch={handleSwitchToSearch}
                 loading={loading}
+                filtersConfig={filtersConfig}
               />
             </Grid>
             <Grid

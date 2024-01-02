@@ -1,33 +1,79 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
+import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
+
+/* Names of advanced search URL parameters */
+export const advancedSearchFilterParamName = "filters";
+export const advancedSearchIsOrParamName = "isOr";
 
 /**
- * if filter exists in url, decodes base64 string and returns as object
+ * if filter exists in url, get the values and try to parse them
  * Used to initialize filter state
  * @return Object
  */
 const useMakeFilterState = (searchParams) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
+      const filterSearchParams = searchParams.get(
+        advancedSearchFilterParamName
+      );
+      if (filterSearchParams === null) return [];
+
       try {
-        return JSON.parse(atob(searchParams.get("filter")));
+        return JSON.parse(filterSearchParams);
       } catch {
-        return {};
+        return [];
       }
     }
-    return {};
+    return [];
   }, [searchParams]);
 
 /**
+ * Return the default operator for a given field or a fallback operator if one is not defined in config
+ * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
+ * @return String
+ */
+export const getDefaultOperator = (filterConfigForField) => {
+  const { defaultOperator, operators } = filterConfigForField;
+  const fallbackOperator = operators[0];
+
+  const isDefaultOperator = Boolean(defaultOperator);
+
+  return isDefaultOperator ? defaultOperator : fallbackOperator;
+};
+
+export const makeSearchParamsFromFilterParameters = (filterParameters) => {
+  return Object.values(filterParameters).map((filterParameter) => ({
+    field: filterParameter.field,
+    operator: filterParameter.operator,
+    value: filterParameter.value,
+  }));
+};
+
+/**
  * Build an array of filter strings to be used in generating the advanced search where string
- @ param {Object} filters - Stores filters assigned random id and nests column, operator, and value
+ * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
 const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { envelope, field, gqlOperator, value, type, specialNullValue } =
-        filters[filter];
+      let { field, value, operator } = filters[filter];
+
+      // Use field name to get the filter config and GraphQL operator config for that field
+      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
+        (fieldConfig) => fieldConfig.name === field
+      );
+      const { type } = filterConfigForField;
+
+      // Use operator name to get the GraphQL operator config for that operator
+      const operatorConfig = FiltersCommonOperators[operator];
+      let {
+        envelope,
+        specialNullValue,
+        operator: gqlOperator,
+      } = operatorConfig;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {
@@ -65,7 +111,7 @@ export const useAdvancedSearch = () => {
   const initialFilterState = useMakeFilterState(searchParams);
 
   /* Determine or/any from search params if it exists */
-  const isOrFromSearchParams = searchParams.get("isOr");
+  const isOrFromSearchParams = searchParams.get(advancedSearchIsOrParamName);
   const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
   const [isOr, setIsOr] = useState(initialIsOrState);
 
