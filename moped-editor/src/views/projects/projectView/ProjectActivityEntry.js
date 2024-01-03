@@ -1,5 +1,6 @@
 import React from "react";
 import { Box, Typography, Link } from "@mui/material";
+import { NavLink as RouterLink } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
 
@@ -38,7 +39,7 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
             changeText.map((changeObject, index) =>
               changeObject.link ? (
                 <span className={classes[changeObject.style]} key={index}>
-                  <Link href={changeObject.link} >
+                  <Link component={RouterLink} to={changeObject.link}>
                     {changeObject.text}
                   </Link>
                 </span>
