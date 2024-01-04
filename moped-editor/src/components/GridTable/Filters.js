@@ -368,7 +368,7 @@ const Filters = ({
     // If the filter exists
     if (filterIndex in filterParameters) {
       // Clone state
-      const filtersNewState = { ...filterParameters };
+      const filtersNewState = [...filterParameters];
 
       if (operator in filtersConfig.operators) {
         // Update Operator Value
@@ -696,11 +696,7 @@ const Filters = ({
                     }
                     labelId={`filter-operator-select-${filterIndex}-label`}
                     id={`filter-operator-select-${filterIndex}`}
-                    value={
-                      filterParameters[filterIndex].operator
-                        ? filterParameters[filterIndex].operator
-                        : ""
-                    }
+                    value={operator || ""}
                     onChange={(e) =>
                       handleFilterOperatorClick(filterIndex, e.target.value)
                     }
