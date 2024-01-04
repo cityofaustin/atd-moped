@@ -361,41 +361,23 @@ const Filters = ({
    * @param {Object} operator - The operator object being clicked
    */
   const handleFilterOperatorClick = (filterIndex, operator, lookupTable) => {
-    // If the filter exists
-    if (filterIndex in filterParameters) {
-      // Clone state
-      const filtersNewState = [...filterParameters];
+    // Clone state
+    const filtersNewState = [...filterParameters];
 
-      if (operator in filtersConfig.operators) {
-        // Update Operator Value
-        filtersNewState[filterIndex].operator = operator;
-        // Get the GraphQL operator details
-        filtersNewState[filterIndex].gqlOperator =
-          filtersConfig.operators[operator].operator;
-        // Copy the envelope if available
-        filtersNewState[filterIndex].envelope =
-          filtersConfig.operators[operator].envelope;
-        // Copy special null value if available
-        filtersNewState[filterIndex].specialNullValue =
-          filtersConfig.operators[operator].specialNullValue;
+    if (operator in filtersConfig.operators) {
+      // Update operator Value
+      filtersNewState[filterIndex].operator = operator;
 
-        // if we are switching to an autocomplete input, clear the search value
-        if (renderAutocompleteInput(lookupTable, operator)) {
-          filtersNewState[filterIndex].value = null;
-        }
-      } else {
-        // Reset operator values
-        filtersNewState[filterIndex].operator = null;
-        filtersNewState[filterIndex].gqlOperator = null;
-        filtersNewState[filterIndex].envelope = null;
+      // if we are switching to an autocomplete input, clear the search value
+      if (renderAutocompleteInput(lookupTable, operator)) {
+        filtersNewState[filterIndex].value = null;
       }
-
-      setFilterParameters(filtersNewState);
     } else {
-      console.debug(
-        `The filter id ${filterIndex} does not exist, ignoring click event.`
-      );
+      // Reset operator value
+      filtersNewState[filterIndex].operator = null;
     }
+
+    setFilterParameters(filtersNewState);
   };
 
   /**
@@ -537,12 +519,10 @@ const Filters = ({
   /**
    * This side effect monitors whether the user has added a complete filter
    */
+  console.log(filterParameters);
   useEffect(() => {
-    Object.keys(filterParameters).forEach((filterKey) => {
-      if (
-        !!filterParameters[filterKey].value ||
-        isFilterNullType(filterParameters[filterKey].operator)
-      ) {
+    filterParameters.forEach((filter) => {
+      if (!!filter.value || isFilterNullType(filter.operator)) {
         setFilterComplete(true);
       } else {
         setFilterComplete(false);
@@ -611,7 +591,7 @@ const Filters = ({
 
       {filterParameters.map((filter, filterIndex) => {
         const isValidInput = checkIsValidInput(filterParameters[filterIndex]);
-        // TODO: Get info needed for form components from these three variables
+        // TODO: Clean all this up
         const { field: fieldName, operator, value } = filter;
         const fieldConfig = filtersConfig.fields.find(
           (field) => field.name === fieldName
