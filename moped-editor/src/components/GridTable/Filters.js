@@ -624,9 +624,28 @@ const Filters = ({
         );
 
         const { label, type } = fieldConfig ?? {};
-        // const availableOperators =
         const { table_name: lookupTable, field_name: lookupField } =
           fieldConfig?.lookup ?? {};
+        const operatorsSetInConfig = fieldConfig?.operators;
+        const shouldUseAllOperators =
+          operatorsSetInConfig &&
+          operatorsSetInConfig.length === 1 &&
+          fieldConfig.operators[0] === "*";
+        let availableOperators = [];
+
+        if (shouldUseAllOperators) {
+          availableOperators = Object.entries(FiltersCommonOperators)
+            .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
+              ...filterCommonOperatorConfig,
+              id: filtersCommonOperator,
+            }))
+            .filter((operator) => operator.type === type);
+        } else if (operatorsSetInConfig) {
+          availableOperators = fieldConfig?.operators.map((operator) => ({
+            ...FiltersCommonOperators[operator],
+            id: operator,
+          }));
+        }
 
         // support check with isFilterNullType()
         // support check with renderAutocompleteInput()
@@ -688,10 +707,7 @@ const Filters = ({
                   <Select
                     variant="standard"
                     fullWidth
-                    disabled={
-                      filterParameters[filterIndex].availableOperators
-                        .length === 0
-                    }
+                    disabled={availableOperators.length === 0}
                     labelId={`filter-operator-select-${filterIndex}-label`}
                     id={`filter-operator-select-${filterIndex}`}
                     value={operator || ""}
@@ -701,20 +717,18 @@ const Filters = ({
                     label="field"
                     data-testid="operator-select"
                   >
-                    {filterParameters[filterIndex].availableOperators.map(
-                      (operator, operatorIndex) => {
-                        return (
-                          <MenuItem
-                            value={operator.id}
-                            key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                            id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                            data-testid={operator.label}
-                          >
-                            {operator.label}
-                          </MenuItem>
-                        );
-                      }
-                    )}
+                    {availableOperators.map((operator, operatorIndex) => {
+                      return (
+                        <MenuItem
+                          value={operator.id}
+                          key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
+                          id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
+                          data-testid={operator.label}
+                        >
+                          {operator.label}
+                        </MenuItem>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </Grid>
