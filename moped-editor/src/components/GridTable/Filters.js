@@ -617,6 +617,16 @@ const Filters = ({
 
       {filterParameters.map((filter, filterIndex) => {
         const isValidInput = checkIsValidInput(filterParameters[filterIndex]);
+        // TODO: Get info needed for form components from these three variables
+        // const { field, operator, value } = filter[filterIndex];
+        // const label =
+        // const availableOperators =
+        // const operator =
+        // const lookupTable =
+        // const lookupField =
+        // const type =
+
+        // TODO:
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
