@@ -243,6 +243,7 @@ const Filters = ({
     filterParameters.length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
+    debugger;
     // Clone state and add empty filter
     const filtersNewState = [...filterParameters, generateEmptyField()];
     // Update new state
@@ -445,8 +446,8 @@ const Filters = ({
    * Clears the filters
    */
   const handleClearFilters = useCallback(() => {
-    setFilterParameters({});
-    setFilters({});
+    setFilterParameters([generateEmptyField()]);
+    setFilters([]);
     setIsOr(false);
 
     setSearchParams((prevSearchParams) => {
@@ -517,19 +518,6 @@ const Filters = ({
   const isFilterNullType = (field) => {
     return field.gqlOperator && field.gqlOperator.includes("is_null");
   };
-
-  /**
-   * This side effect monitors the count of filters
-   * if the count of filters is zero, then resets the state
-   */
-  useEffect(() => {
-    if (Object.keys(filterParameters).length === 0) {
-      setFilters([]);
-      handleClearFilters();
-      // Add an empty filter so the user doesn't have to click the 'add filter' button
-      generateEmptyFilter();
-    }
-  }, [filterParameters, setFilters, generateEmptyFilter, handleClearFilters]);
 
   /**
    * This side effect monitors whether the user has added a complete filter
