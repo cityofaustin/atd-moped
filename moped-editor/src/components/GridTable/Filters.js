@@ -623,11 +623,10 @@ const Filters = ({
           (field) => field.name === fieldName
         );
 
-        const { label } = fieldConfig ?? {};
+        const { label, type } = fieldConfig ?? {};
         // const availableOperators =
         const { table_name: lookupTable, field_name: lookupField } =
-          fieldConfig.lookup ?? {};
-        // const type =
+          fieldConfig?.lookup ?? {};
 
         // support check with isFilterNullType()
         // support check with renderAutocompleteInput()
@@ -768,11 +767,7 @@ const Filters = ({
                         key={`filter-search-value-${filterIndex}`}
                         id={`filter-search-value-${filterIndex}`}
                         disabled={!filterParameters[filterIndex].operator}
-                        type={
-                          filterParameters[filterIndex].type === "date"
-                            ? filterParameters[filterIndex].type
-                            : null
-                        }
+                        type={type === "date" ? type : null}
                         onChange={(e) =>
                           handleSearchValueChange(filterIndex, e.target.value)
                         }
