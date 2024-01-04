@@ -527,12 +527,12 @@ const Filters = ({
   };
 
   /**
-   * It returns true if the operator is null
-   * @param {object} field - The field being checked
+   * It returns true if the GraphQL operator is null type and has no
+   * @param {String} operator - operator to check
    * @returns {boolean}
    */
-  const isFilterNullType = (field) => {
-    return field.gqlOperator && field.gqlOperator.includes("is_null");
+  const isFilterNullType = (operator) => {
+    return operator && OPERATORS_WITHOUT_SEARCH_VALUES.includes(operator);
   };
 
   // TODO: We can replace this side effect by checking if each filter in filterParameters
@@ -545,9 +545,7 @@ const Filters = ({
     Object.keys(filterParameters).forEach((filterKey) => {
       if (
         !!filterParameters[filterKey].value ||
-        OPERATORS_WITHOUT_SEARCH_VALUES.includes(
-          filterParameters[filterKey].operator
-        )
+        isFilterNullType(filterParameters[filterKey].operator)
       ) {
         setFilterComplete(true);
       } else {
@@ -647,7 +645,6 @@ const Filters = ({
           }));
         }
 
-        // support check with isFilterNullType()
         // support check with renderAutocompleteInput()
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
@@ -738,7 +735,7 @@ const Filters = ({
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  {isFilterNullType(filterParameters[filterIndex]) !== true &&
+                  {isFilterNullType(operator) !== true &&
                     (renderAutocompleteInput(filterParameters[filterIndex]) ? (
                       <Autocomplete
                         value={value || null}
