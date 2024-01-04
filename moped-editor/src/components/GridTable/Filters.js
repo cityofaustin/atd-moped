@@ -266,12 +266,8 @@ const Filters = ({
   /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
    */
-  const renderAutocompleteInput = (field) => {
-    return (
-      field.lookup_table &&
-      !loading &&
-      AUTOCOMPLETE_OPERATORS.includes(field.operator)
-    );
+  const renderAutocompleteInput = (lookupTable, operator) => {
+    return lookupTable && !loading && AUTOCOMPLETE_OPERATORS.includes(operator);
   };
 
   /**
@@ -364,7 +360,7 @@ const Filters = ({
    * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
    */
-  const handleFilterOperatorClick = (filterIndex, operator) => {
+  const handleFilterOperatorClick = (filterIndex, operator, lookupTable) => {
     // If the filter exists
     if (filterIndex in filterParameters) {
       // Clone state
@@ -384,7 +380,7 @@ const Filters = ({
           filtersConfig.operators[operator].specialNullValue;
 
         // if we are switching to an autocomplete input, clear the search value
-        if (renderAutocompleteInput(filtersNewState[filterIndex])) {
+        if (renderAutocompleteInput(lookupTable, operator)) {
           filtersNewState[filterIndex].value = null;
         }
       } else {
@@ -645,7 +641,6 @@ const Filters = ({
           }));
         }
 
-        // support check with renderAutocompleteInput()
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -709,7 +704,11 @@ const Filters = ({
                     id={`filter-operator-select-${filterIndex}`}
                     value={operator || ""}
                     onChange={(e) =>
-                      handleFilterOperatorClick(filterIndex, e.target.value)
+                      handleFilterOperatorClick(
+                        filterIndex,
+                        e.target.value,
+                        lookupTable
+                      )
                     }
                     label="field"
                     data-testid="operator-select"
@@ -736,7 +735,7 @@ const Filters = ({
                   className={classes.formControl}
                 >
                   {isFilterNullType(operator) !== true &&
-                    (renderAutocompleteInput(filterParameters[filterIndex]) ? (
+                    (renderAutocompleteInput(lookupTable, operator) ? (
                       <Autocomplete
                         value={value || null}
                         options={data[lookupTable]}
