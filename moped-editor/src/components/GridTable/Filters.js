@@ -535,6 +535,9 @@ const Filters = ({
     return field.gqlOperator && field.gqlOperator.includes("is_null");
   };
 
+  // TODO: We can replace this side effect by checking if each filter in filterParameters
+  // has a value and operator
+  // TODO: Remember to handle filters without values (OPERATORS_WITHOUT_SEARCH_VALUES)
   /**
    * This side effect monitors whether the user has added a complete filter
    */
