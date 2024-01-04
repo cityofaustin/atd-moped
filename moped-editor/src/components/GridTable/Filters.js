@@ -237,11 +237,11 @@ const Filters = ({
       return [generateEmptyField()];
     }
   }, [filters, filtersConfig]);
-  console.log(initialFilterParameters);
 
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
+  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -448,7 +448,7 @@ const Filters = ({
    */
   const handleSearchValueChange = (filterIndex, value) => {
     // Clone the state
-    const filtersNewState = { ...filterParameters };
+    const filtersNewState = [...filterParameters];
     // Patch the new state
     filtersNewState[filterIndex].value = value;
     // Update the state
