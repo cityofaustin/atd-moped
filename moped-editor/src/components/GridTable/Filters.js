@@ -455,21 +455,21 @@ const Filters = ({
   const handleApplyValidation = () => {
     let feedback = [];
     if (filterParameters) {
-      if (Object.keys(filterParameters).length === 0) {
+      if (filterParameters.length === 0) {
         feedback.push("• No filters have been added.");
       } else {
         Object.keys(filterParameters).forEach((filterKey) => {
-          const { field, value, gqlOperator } = filterParameters[filterKey];
+          const { field, value, operator } = filterParameters[filterKey];
           if (field === null) {
             feedback.push("• One or more fields have not been selected.");
           }
 
-          if (gqlOperator === null) {
+          if (operator === null) {
             feedback.push("• One or more operators have not been selected.");
           }
 
           if (value === null || value.trim() === "") {
-            if (gqlOperator && !gqlOperator.includes("is_null")) {
+            if (operator && !isFilterNullType(operator)) {
               feedback.push("• One or more missing values.");
             }
           }
@@ -519,7 +519,6 @@ const Filters = ({
   /**
    * This side effect monitors whether the user has added a complete filter
    */
-  console.log(filterParameters);
   useEffect(() => {
     filterParameters.forEach((filter) => {
       if (!!filter.value || isFilterNullType(filter.operator)) {
