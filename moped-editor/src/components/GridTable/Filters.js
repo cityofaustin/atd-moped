@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import PropTypes from "prop-types";
@@ -30,6 +30,15 @@ import {
   AUTOCOMPLETE_OPERATORS,
   OPERATORS_WITHOUT_SEARCH_VALUES,
 } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
+import { FiltersCommonOperators } from "./FiltersCommonOperators";
+import {
+  getDefaultOperator,
+  makeSearchParamsFromFilterParameters,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 /**
  * The styling for the filter components
@@ -124,6 +133,71 @@ const generateEmptyField = (uuid) => {
 };
 
 /**
+ * Get configuration about the filters using the query parameters present in the URL
+ * @param {Array} filters - filters from the URL {field, operator, value}
+ * @param filtersConfig - The configuration object for the filters
+ * @return {Object}
+ */
+const makeInitialFilterParameters = (filters, filtersConfig) => {
+  if (filters.length === 0) return [];
+
+  return filters.reduce((acc, filter) => {
+    const filterUUID = uuidv4();
+    const { field, operator, value } = filter;
+    const filterConfigForField = filtersConfig.fields.find(
+      (fieldConfig) => fieldConfig.name === field
+    );
+    const operatorsSetInConfig = filterConfigForField.operators;
+    const type = filterConfigForField.type;
+
+    const shouldUseAllOperators =
+      operatorsSetInConfig.length === 1 &&
+      filterConfigForField.operators[0] === "*";
+    const availableOperators = shouldUseAllOperators
+      ? Object.entries(FiltersCommonOperators)
+          .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
+            ...filterCommonOperatorConfig,
+            id: filtersCommonOperator,
+          }))
+          .filter((operator) => operator.type === type)
+      : filterConfigForField.operators.map((operator) => ({
+          ...FiltersCommonOperators[operator],
+          id: operator,
+        }));
+
+    const filterParameters = {
+      id: filterUUID,
+      field,
+      operator,
+      availableOperators: availableOperators,
+      gqlOperator: FiltersCommonOperators[operator].operator,
+      placeholder: filterConfigForField.placeholder,
+      value,
+      type,
+      label: filterConfigForField.label,
+      lookup_field: filterConfigForField.lookup?.field_name,
+      lookup_table: filterConfigForField.lookup?.table_name,
+    };
+
+    return { ...acc, [filterUUID]: filterParameters };
+  }, {});
+};
+
+/**
+ * Returns whether the user input value for the filterParameter is valid
+ * @param {object} filterParameter
+ * @returns {boolean}
+ */
+const checkIsValidInput = (filterParameter) => {
+  // If we are testing a number type field with a non null value
+  if (filterParameter.type === "number" && !!filterParameter.value) {
+    // Return whether string only contains digits
+    return !/[^0-9]/.test(filterParameter.value);
+  }
+  return true; // Otherwise the input is valid
+};
+
+/**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
@@ -163,7 +237,19 @@ const Filters = ({
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
    */
-  const [filterParameters, setFilterParameters] = useState(filters);
+  const initialFilterParameters = useMemo(() => {
+    if (filters.length > 0) {
+      return makeInitialFilterParameters(filters, filtersConfig);
+    } else {
+      return {
+        [uuidv4()]: generateEmptyField(uuidv4()),
+      };
+    }
+  }, [filters, filtersConfig]);
+
+  const [filterParameters, setFilterParameters] = useState(
+    initialFilterParameters
+  );
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -272,14 +358,10 @@ const Filters = ({
       }
 
       // Select the default operator, if not defined select first.
-      if (fieldDetails)
-        handleFilterOperatorClick(
-          filterId,
-          fieldDetails.defaultOperator
-            ? fieldDetails.defaultOperator
-            : filtersNewState[filterId].availableOperators[0].id
-        );
-
+      if (fieldDetails) {
+        const defaultOperator = getDefaultOperator(fieldDetails);
+        handleFilterOperatorClick(filterId, defaultOperator);
+      }
       // Update the state
       setFilterParameters(filtersNewState);
     } else {
@@ -354,8 +436,11 @@ const Filters = ({
       delete filtersNewState[filterId];
     } finally {
       // Finally, reset the state
+      const searchParamsFromFilters =
+        makeSearchParamsFromFilterParameters(filtersNewState);
+      const jsonParamString = JSON.stringify(searchParamsFromFilters);
       setSearchParams((prevSearchParams) => {
-        prevSearchParams.set("filter", btoa(JSON.stringify(filtersNewState)));
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
       });
       setFilterParameters(filtersNewState);
@@ -391,8 +476,8 @@ const Filters = ({
     setIsOr(false);
 
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete("filter");
-      prevSearchParams.delete("isOr");
+      prevSearchParams.delete(advancedSearchFilterParamName);
+      prevSearchParams.delete(advancedSearchIsOrParamName);
     });
   }, [setSearchParams, setFilters, setIsOr]);
 
@@ -417,10 +502,13 @@ const Filters = ({
             feedback.push("• One or more operators have not been selected.");
           }
 
-          if (value === null || value === "") {
+          if (value === null || value.trim() === "") {
             if (gqlOperator && !gqlOperator.includes("is_null")) {
               feedback.push("• One or more missing values.");
             }
+          }
+          if (!checkIsValidInput(filterParameters[filterKey])) {
+            feedback.push("• One or more invalid inputs.");
           }
         });
       }
@@ -432,14 +520,18 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
+    const searchParamsFromFilters =
+      makeSearchParamsFromFilterParameters(filterParameters);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set("filter", btoa(JSON.stringify(filterParameters)));
-      prevSearchParams.set("isOr", isOrToggleValue);
+      const jsonParamString = JSON.stringify(searchParamsFromFilters);
+
+      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+      prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
       return prevSearchParams;
     });
 
     setIsOr(isOrToggleValue);
-    setFilters(filterParameters);
+    setFilters(searchParamsFromFilters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
     setSearchFieldValue("");
@@ -461,7 +553,7 @@ const Filters = ({
    */
   useEffect(() => {
     if (Object.keys(filterParameters).length === 0) {
-      setFilters(filterParameters);
+      setFilters([]);
       handleClearFilters();
       // Add an empty filter so the user doesn't have to click the 'add filter' button
       generateEmptyFilter();
@@ -546,6 +638,7 @@ const Filters = ({
       </Grid>
 
       {Object.keys(filterParameters).map((filterId) => {
+        const isValidInput = checkIsValidInput(filterParameters[filterId]);
         return (
           <Grow in={true} key={`filter-grow-${filterId}`}>
             <Grid
@@ -685,13 +778,15 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
+                        error={!isValidInput}
+                        helperText={!isValidInput ? "Must be a number" : ""}
                         key={`filter-search-value-${filterId}`}
                         id={`filter-search-value-${filterId}`}
                         disabled={!filterParameters[filterId].operator}
                         type={
-                          filterParameters[filterId].type
+                          filterParameters[filterId].type === "date"
                             ? filterParameters[filterId].type
-                            : "text"
+                            : null
                         }
                         onChange={(e) =>
                           handleSearchValueChange(filterId, e.target.value)
@@ -763,18 +858,17 @@ const Filters = ({
           </Grid>
         </Hidden>
         <Grid item xs={12} md={2}>
-          <Grow in={handleApplyValidation() === null}>
-            <Button
-              fullWidth
-              className={classes.applyButton}
-              variant="contained"
-              color="primary"
-              startIcon={<Icon>search</Icon>}
-              onClick={handleApplyButtonClick}
-            >
-              Search
-            </Button>
-          </Grow>
+          <Button
+            fullWidth
+            className={classes.applyButton}
+            variant="contained"
+            color="primary"
+            startIcon={<Icon>search</Icon>}
+            onClick={handleApplyButtonClick}
+            disabled={handleApplyValidation() != null}
+          >
+            Search
+          </Button>
         </Grid>
       </Grid>
     </Grid>
