@@ -243,7 +243,6 @@ const Filters = ({
     filterParameters.length === 1 && !filterComplete;
 
   const generateEmptyFilter = useCallback(() => {
-    debugger;
     // Clone state and add empty filter
     const filtersNewState = [...filterParameters, generateEmptyField()];
     // Update new state
@@ -263,14 +262,14 @@ const Filters = ({
 
   /**
    * Handles the click event on the field drop-down menu
-   * @param {string} filterId - State FieldID to modify
+   * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} field - The field object being clicked
    */
-  const handleFilterFieldMenuClick = (filterId, field) => {
+  const handleFilterFieldMenuClick = (filterIndex, field) => {
     // TODO: Update to push update or empty filter into filterParameters array
-    console.log(filterId);
+    console.log(filterIndex);
     // If the filter exists
-    if (filterId in filterParameters) {
+    if (filterIndex in filterParameters) {
       // Clone state
       const filtersNewState = [...filterParameters];
 
@@ -280,13 +279,13 @@ const Filters = ({
       );
 
       if (!fieldDetails) {
-        filtersNewState[filterId] = generateEmptyField(filterId);
+        filtersNewState[filterIndex] = generateEmptyField(filterIndex);
       } else {
         // Update field & type
-        filtersNewState[filterId].field = fieldDetails.name;
-        filtersNewState[filterId].type = fieldDetails.type;
-        filtersNewState[filterId].placeholder = fieldDetails.placeholder;
-        filtersNewState[filterId].label = fieldDetails.label;
+        filtersNewState[filterIndex].field = fieldDetails.name;
+        filtersNewState[filterIndex].type = fieldDetails.type;
+        filtersNewState[filterIndex].placeholder = fieldDetails.placeholder;
+        filtersNewState[filterIndex].label = fieldDetails.label;
 
         // Update Available Operators
         if (
@@ -294,7 +293,7 @@ const Filters = ({
           fieldDetails.operators[0] === "*"
         ) {
           // Add all operators and filter by specific type (defined in fieldDetails.type)
-          filtersNewState[filterId].availableOperators = Object.keys(
+          filtersNewState[filterIndex].availableOperators = Object.keys(
             filtersConfig.operators
           )
             .filter(
@@ -309,7 +308,7 @@ const Filters = ({
             });
         } else {
           // Append listed operators for that field
-          filtersNewState[filterId].availableOperators =
+          filtersNewState[filterIndex].availableOperators =
             fieldDetails.operators.map((operator) => {
               return {
                 ...filtersConfig.operators[operator],
@@ -320,71 +319,71 @@ const Filters = ({
 
         // if the field has a corresponding lookup table, add to filterState
         if (fieldDetails.lookup) {
-          filtersNewState[filterId].lookup_table =
+          filtersNewState[filterIndex].lookup_table =
             fieldDetails.lookup.table_name;
-          filtersNewState[filterId].lookup_field =
+          filtersNewState[filterIndex].lookup_field =
             fieldDetails.lookup.field_name;
         }
         // if it does not, reset the variables to null in case the user is editing an existing filter
         else {
-          filtersNewState[filterId].lookup_table = null;
-          filtersNewState[filterId].lookup_field = null;
+          filtersNewState[filterIndex].lookup_table = null;
+          filtersNewState[filterIndex].lookup_field = null;
         }
       }
 
       // Select the default operator, if not defined select first.
       if (fieldDetails) {
         const defaultOperator = getDefaultOperator(fieldDetails);
-        handleFilterOperatorClick(filterId, defaultOperator);
+        handleFilterOperatorClick(filterIndex, defaultOperator);
       }
       // Update the state
       setFilterParameters(filtersNewState);
     } else {
       console.debug(
-        `The filter id ${filterId} does not exist, ignoring click event.`
+        `The filter id ${filterIndex} does not exist, ignoring click event.`
       );
     }
   };
 
   /**
    * Handles the click event on the operator drop-down
-   * @param {string} filterId - State FieldID to modify
+   * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
    */
-  const handleFilterOperatorClick = (filterId, operator) => {
+  const handleFilterOperatorClick = (filterIndex, operator) => {
     // If the filter exists
-    if (filterId in filterParameters) {
+    if (filterIndex in filterParameters) {
       // Clone state
       const filtersNewState = { ...filterParameters };
 
       if (operator in filtersConfig.operators) {
         // Update Operator Value
-        filtersNewState[filterId].operator = operator;
+        filtersNewState[filterIndex].operator = operator;
         // Get the GraphQL operator details
-        filtersNewState[filterId].gqlOperator =
+        filtersNewState[filterIndex].gqlOperator =
           filtersConfig.operators[operator].operator;
         // Copy the envelope if available
-        filtersNewState[filterId].envelope =
+        filtersNewState[filterIndex].envelope =
           filtersConfig.operators[operator].envelope;
         // Copy special null value if available
-        filtersNewState[filterId].specialNullValue =
+        filtersNewState[filterIndex].specialNullValue =
           filtersConfig.operators[operator].specialNullValue;
 
         // if we are switching to an autocomplete input, clear the search value
-        if (renderAutocompleteInput(filtersNewState[filterId])) {
-          filtersNewState[filterId].value = null;
+        if (renderAutocompleteInput(filtersNewState[filterIndex])) {
+          filtersNewState[filterIndex].value = null;
         }
       } else {
         // Reset operator values
-        filtersNewState[filterId].operator = null;
-        filtersNewState[filterId].gqlOperator = null;
-        filtersNewState[filterId].envelope = null;
+        filtersNewState[filterIndex].operator = null;
+        filtersNewState[filterIndex].gqlOperator = null;
+        filtersNewState[filterIndex].envelope = null;
       }
 
       setFilterParameters(filtersNewState);
     } else {
       console.debug(
-        `The filter id ${filterId} does not exist, ignoring click event.`
+        `The filter id ${filterIndex} does not exist, ignoring click event.`
       );
     }
   };
@@ -398,17 +397,17 @@ const Filters = ({
 
   /**
    * Deletes a filter from the state
-   * @param {string} filterId - The UUID of the filter to be deleted
+   * @param {string} filterIndex - The index of the filter to be deleted
    */
-  const handleDeleteFilterButtonClick = (filterId) => {
+  const handleDeleteFilterButtonClick = (filterIndex) => {
     // Copy the state into a new object
     const filtersNewState = {
       ...filterParameters,
     };
-    // Try to delete the filter by filterId
+    // Try to delete the filter by filter index
     try {
       // Delete the key (if it's there)
-      delete filtersNewState[filterId];
+      delete filtersNewState[filterIndex];
     } finally {
       // Finally, reset the state
       const searchParamsFromFilters =
@@ -430,14 +429,14 @@ const Filters = ({
 
   /**
    * The user will type a new search value
-   * @param {string} filterId - The FilterID uuid
+   * @param {string} filterIndex - filterParameters index to modify
    * @param {string} value - The value to assign to that filter
    */
-  const handleSearchValueChange = (filterId, value) => {
+  const handleSearchValueChange = (filterIndex, value) => {
     // Clone the state
     const filtersNewState = { ...filterParameters };
     // Patch the new state
-    filtersNewState[filterId].value = value;
+    filtersNewState[filterIndex].value = value;
     // Update the state
     setFilterParameters(filtersNewState);
   };
@@ -596,13 +595,13 @@ const Filters = ({
         </Grid>
       </Grid>
 
-      {Object.keys(filterParameters).map((filterId) => {
+      {filterParameters.map((filter, filterIndex) => {
         return (
-          <Grow in={true} key={`filter-grow-${filterId}`}>
+          <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
               container
-              id={`filter-${filterId}`}
-              key={`filter-${filterId}`}
+              id={`filter-${filterIndex}`}
+              key={`filter-${filterIndex}`}
               className={classes.filtersContainer}
             >
               {/*Select Field to search from drop-down menu*/}
@@ -613,14 +612,14 @@ const Filters = ({
                   className={classes.formControl}
                 >
                   <Autocomplete
-                    value={filterParameters[filterId].label || null}
-                    id={`filter-field-select-${filterId}`}
+                    value={filterParameters[filterIndex].label || null}
+                    id={`filter-field-select-${filterIndex}`}
                     options={filtersConfig.fields}
                     getOptionLabel={(f) =>
                       Object.hasOwn(f, "label") ? f.label : f
                     }
                     onChange={(e, value) => {
-                      handleFilterFieldMenuClick(filterId, value?.name);
+                      handleFilterFieldMenuClick(filterIndex, value?.name);
                     }}
                     isOptionEqualToValue={(option, value) => {
                       if (Object.hasOwn(value, "name")) {
@@ -647,35 +646,38 @@ const Filters = ({
                   fullWidth
                   className={classes.formControl}
                 >
-                  <InputLabel id={`filter-operator-select-${filterId}-label`}>
+                  <InputLabel
+                    id={`filter-operator-select-${filterIndex}-label`}
+                  >
                     Operator
                   </InputLabel>
                   <Select
                     variant="standard"
                     fullWidth
                     disabled={
-                      filterParameters[filterId].availableOperators.length === 0
+                      filterParameters[filterIndex].availableOperators
+                        .length === 0
                     }
-                    labelId={`filter-operator-select-${filterId}-label`}
-                    id={`filter-operator-select-${filterId}`}
+                    labelId={`filter-operator-select-${filterIndex}-label`}
+                    id={`filter-operator-select-${filterIndex}`}
                     value={
-                      filterParameters[filterId].operator
-                        ? filterParameters[filterId].operator
+                      filterParameters[filterIndex].operator
+                        ? filterParameters[filterIndex].operator
                         : ""
                     }
                     onChange={(e) =>
-                      handleFilterOperatorClick(filterId, e.target.value)
+                      handleFilterOperatorClick(filterIndex, e.target.value)
                     }
                     label="field"
                     data-testid="operator-select"
                   >
-                    {filterParameters[filterId].availableOperators.map(
+                    {filterParameters[filterIndex].availableOperators.map(
                       (operator, operatorIndex) => {
                         return (
                           <MenuItem
                             value={operator.id}
-                            key={`filter-operator-select-item-${filterId}-${operatorIndex}`}
-                            id={`filter-operator-select-item-${filterId}-${operatorIndex}`}
+                            key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
+                            id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
                             data-testid={operator.label}
                           >
                             {operator.label}
@@ -692,29 +694,31 @@ const Filters = ({
                   variant="outlined"
                   className={classes.formControl}
                 >
-                  {isFilterNullType(filterParameters[filterId]) !== true &&
-                    (renderAutocompleteInput(filterParameters[filterId]) ? (
+                  {isFilterNullType(filterParameters[filterIndex]) !== true &&
+                    (renderAutocompleteInput(filterParameters[filterIndex]) ? (
                       <Autocomplete
-                        value={filterParameters[filterId].value || null}
-                        options={data[filterParameters[filterId].lookup_table]}
-                        disabled={!filterParameters[filterId].operator}
+                        value={filterParameters[filterIndex].value || null}
+                        options={
+                          data[filterParameters[filterIndex].lookup_table]
+                        }
+                        disabled={!filterParameters[filterIndex].operator}
                         getOptionLabel={(option) =>
                           Object.hasOwn(
                             option,
-                            filterParameters[filterId].lookup_field
+                            filterParameters[filterIndex].lookup_field
                           )
-                            ? option[filterParameters[filterId].lookup_field]
+                            ? option[filterParameters[filterIndex].lookup_field]
                             : option
                         }
                         onChange={(e, value) => {
                           if (value) {
                             handleSearchValueChange(
-                              filterId,
-                              value[filterParameters[filterId]?.lookup_field]
+                              filterIndex,
+                              value[filterParameters[filterIndex]?.lookup_field]
                             );
                           } else {
                             // value is null when the Autocomplete selection is cleared
-                            handleSearchValueChange(filterId, value);
+                            handleSearchValueChange(filterIndex, value);
                           }
                         }}
                         isOptionEqualToValue={(option, value) => {
@@ -722,8 +726,9 @@ const Filters = ({
                             return option.name === value.name;
                           }
                           return (
-                            option[filterParameters[filterId].lookup_field] ===
-                            value
+                            option[
+                              filterParameters[filterIndex].lookup_field
+                            ] === value
                           );
                         }}
                         renderInput={(params) => (
@@ -736,19 +741,19 @@ const Filters = ({
                       />
                     ) : (
                       <TextField
-                        key={`filter-search-value-${filterId}`}
-                        id={`filter-search-value-${filterId}`}
-                        disabled={!filterParameters[filterId].operator}
+                        key={`filter-search-value-${filterIndex}`}
+                        id={`filter-search-value-${filterIndex}`}
+                        disabled={!filterParameters[filterIndex].operator}
                         type={
-                          filterParameters[filterId].type
-                            ? filterParameters[filterId].type
+                          filterParameters[filterIndex].type
+                            ? filterParameters[filterIndex].type
                             : "text"
                         }
                         onChange={(e) =>
-                          handleSearchValueChange(filterId, e.target.value)
+                          handleSearchValueChange(filterIndex, e.target.value)
                         }
                         variant="outlined"
-                        value={filterParameters[filterId].value ?? ""}
+                        value={filterParameters[filterIndex].value ?? ""}
                       />
                     ))}
                 </FormControl>
@@ -758,7 +763,7 @@ const Filters = ({
                   <IconButton
                     disabled={isFirstFilterIncomplete}
                     className={classes.deleteButton}
-                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                     size="large"
                   >
                     <Icon className={classes.deleteIcon}>delete_outline</Icon>
@@ -772,7 +777,7 @@ const Filters = ({
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
-                    onClick={() => handleDeleteFilterButtonClick(filterId)}
+                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                   >
                     <Icon>delete_outline</Icon>
                   </Button>
