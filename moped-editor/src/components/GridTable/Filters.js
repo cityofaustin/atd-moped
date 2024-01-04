@@ -276,83 +276,20 @@ const Filters = ({
    * @param {Object} field - The field object being clicked
    */
   const handleFilterFieldMenuClick = (filterIndex, field) => {
-    // TODO: Update to push update or empty filter into filterParameters array
-    console.log(filterIndex);
-    // If the filter exists
-    if (filterIndex in filterParameters) {
-      // Clone state
-      const filtersNewState = [...filterParameters];
+    // Clone state
+    const filtersNewState = [...filterParameters];
 
-      // Find the field we need to gather options from
-      const fieldDetails = filtersConfig.fields.find(
-        (filter) => filter.name === field
-      );
+    // Find the field we need to gather options from
+    const fieldDetails = filtersConfig.fields.find(
+      (filter) => filter.name === field
+    );
 
-      if (!fieldDetails) {
-        filtersNewState[filterIndex] = generateEmptyField(filterIndex);
-      } else {
-        // Update field & type
-        filtersNewState[filterIndex].field = fieldDetails.name;
-        filtersNewState[filterIndex].type = fieldDetails.type;
-        filtersNewState[filterIndex].placeholder = fieldDetails.placeholder;
-        filtersNewState[filterIndex].label = fieldDetails.label;
+    // Update field and operator
+    filtersNewState[filterIndex].field = fieldDetails.name;
+    filtersNewState[filterIndex].operator = getDefaultOperator(fieldDetails);
 
-        // Update Available Operators
-        if (
-          fieldDetails.operators.length === 1 &&
-          fieldDetails.operators[0] === "*"
-        ) {
-          // Add all operators and filter by specific type (defined in fieldDetails.type)
-          filtersNewState[filterIndex].availableOperators = Object.keys(
-            filtersConfig.operators
-          )
-            .filter(
-              (operator) =>
-                filtersConfig.operators[operator].type === fieldDetails.type
-            )
-            .map((operator) => {
-              return {
-                ...filtersConfig.operators[operator],
-                ...{ id: operator },
-              };
-            });
-        } else {
-          // Append listed operators for that field
-          filtersNewState[filterIndex].availableOperators =
-            fieldDetails.operators.map((operator) => {
-              return {
-                ...filtersConfig.operators[operator],
-                ...{ id: operator },
-              };
-            });
-        }
-
-        // if the field has a corresponding lookup table, add to filterState
-        if (fieldDetails.lookup) {
-          filtersNewState[filterIndex].lookup_table =
-            fieldDetails.lookup.table_name;
-          filtersNewState[filterIndex].lookup_field =
-            fieldDetails.lookup.field_name;
-        }
-        // if it does not, reset the variables to null in case the user is editing an existing filter
-        else {
-          filtersNewState[filterIndex].lookup_table = null;
-          filtersNewState[filterIndex].lookup_field = null;
-        }
-      }
-
-      // Select the default operator, if not defined select first.
-      if (fieldDetails) {
-        const defaultOperator = getDefaultOperator(fieldDetails);
-        handleFilterOperatorClick(filterIndex, defaultOperator);
-      }
-      // Update the state
-      setFilterParameters(filtersNewState);
-    } else {
-      console.debug(
-        `The filter id ${filterIndex} does not exist, ignoring click event.`
-      );
-    }
+    // Update the state
+    setFilterParameters(filtersNewState);
   };
 
   /**
