@@ -35,7 +35,6 @@ import {
 import { useMutation, useQuery } from "@apollo/client";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import { DeleteForever } from "@mui/icons-material";
-import config from "../../../config";
 
 const useStyles = makeStyles(() => ({
   root: {},
@@ -62,7 +61,7 @@ const Profile = ({ className, ...rest }) => {
 
   const { loading, error, data, refetch } = useQuery(ACCOUNT_USER_PROFILE_GET, {
     variables: {
-      userId: config.env.APP_ENVIRONMENT === "local" ? 1 : getDatabaseId(user),
+      userId: getDatabaseId(user),
     },
   });
 
