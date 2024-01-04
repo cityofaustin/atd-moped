@@ -625,9 +625,8 @@ const Filters = ({
 
         const { label } = fieldConfig ?? {};
         // const availableOperators =
-        // const operator =
-        // const lookupTable =
-        // const lookupField =
+        const { table_name: lookupTable, field_name: lookupField } =
+          fieldConfig.lookup ?? {};
         // const type =
 
         // support check with isFilterNullType()
@@ -730,23 +729,18 @@ const Filters = ({
                     (renderAutocompleteInput(filterParameters[filterIndex]) ? (
                       <Autocomplete
                         value={value || null}
-                        options={
-                          data[filterParameters[filterIndex].lookup_table]
-                        }
+                        options={data[lookupTable]}
                         disabled={!filterParameters[filterIndex].operator}
                         getOptionLabel={(option) =>
-                          Object.hasOwn(
-                            option,
-                            filterParameters[filterIndex].lookup_field
-                          )
-                            ? option[filterParameters[filterIndex].lookup_field]
+                          Object.hasOwn(option, lookupField)
+                            ? option[lookupField]
                             : option
                         }
                         onChange={(e, value) => {
                           if (value) {
                             handleSearchValueChange(
                               filterIndex,
-                              value[filterParameters[filterIndex]?.lookup_field]
+                              value[lookupField]
                             );
                           } else {
                             // value is null when the Autocomplete selection is cleared
@@ -757,11 +751,7 @@ const Filters = ({
                           if (Object.hasOwn(value, "name")) {
                             return option.name === value.name;
                           }
-                          return (
-                            option[
-                              filterParameters[filterIndex].lookup_field
-                            ] === value
-                          );
+                          return option[lookupField] === value;
                         }}
                         renderInput={(params) => (
                           <TextField
