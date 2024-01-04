@@ -618,15 +618,15 @@ const Filters = ({
       {filterParameters.map((filter, filterIndex) => {
         const isValidInput = checkIsValidInput(filterParameters[filterIndex]);
         // TODO: Get info needed for form components from these three variables
-        // const { field, operator, value } = filter[filterIndex];
+        const { field, operator, value } = filter;
         // const label =
         // const availableOperators =
         // const operator =
         // const lookupTable =
         // const lookupField =
         // const type =
-
-        // TODO:
+        // support check with isFilterNullType()
+        // support check with renderAutocompleteInput()
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -728,7 +728,7 @@ const Filters = ({
                   {isFilterNullType(filterParameters[filterIndex]) !== true &&
                     (renderAutocompleteInput(filterParameters[filterIndex]) ? (
                       <Autocomplete
-                        value={filterParameters[filterIndex].value || null}
+                        value={value || null}
                         options={
                           data[filterParameters[filterIndex].lookup_table]
                         }
@@ -786,7 +786,7 @@ const Filters = ({
                           handleSearchValueChange(filterIndex, e.target.value)
                         }
                         variant="outlined"
-                        value={filterParameters[filterIndex].value ?? ""}
+                        value={value ?? ""}
                       />
                     ))}
                 </FormControl>
