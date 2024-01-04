@@ -618,13 +618,18 @@ const Filters = ({
       {filterParameters.map((filter, filterIndex) => {
         const isValidInput = checkIsValidInput(filterParameters[filterIndex]);
         // TODO: Get info needed for form components from these three variables
-        const { field, operator, value } = filter;
-        // const label =
+        const { field: fieldName, operator, value } = filter;
+        const fieldConfig = filtersConfig.fields.find(
+          (field) => field.name === fieldName
+        );
+
+        const { label } = fieldConfig ?? {};
         // const availableOperators =
         // const operator =
         // const lookupTable =
         // const lookupField =
         // const type =
+
         // support check with isFilterNullType()
         // support check with renderAutocompleteInput()
         return (
@@ -643,7 +648,7 @@ const Filters = ({
                   className={classes.formControl}
                 >
                   <Autocomplete
-                    value={filterParameters[filterIndex].label || null}
+                    value={label || null}
                     id={`filter-field-select-${filterIndex}`}
                     options={filtersConfig.fields}
                     getOptionLabel={(f) =>
