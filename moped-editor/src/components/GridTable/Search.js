@@ -120,7 +120,6 @@ const Search = ({
   const toggleAdvancedSearch = () => {
     if (advancedSearchAnchor) {
       setAdvancedSearchAnchor(null);
-      handleSwitchToSearch();
     } else {
       setAdvancedSearchAnchor(divRef.current);
       handleSwitchToAdvancedSearch();
