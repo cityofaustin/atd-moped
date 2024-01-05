@@ -132,6 +132,30 @@ const checkIsValidInput = (filterParameter) => {
 };
 
 /**
+ * It returns true if the GraphQL operator is null type and has no
+ * @param {String} operator - operator to check
+ * @returns {boolean}
+ */
+const isFilterNullType = (operator) => {
+  return operator && OPERATORS_WITHOUT_SEARCH_VALUES.includes(operator);
+};
+
+/**
+ * Check if all filters added have complete values
+ * @param {Array} filterParameters - filter values, fieldd, and operatord
+ * @returns {boolean}
+ */
+const areAllFiltersComplete = (filterParameters) => {
+  return filterParameters.every((filter) => {
+    return (
+      !!filter.field &&
+      !!filter.operator &&
+      (!!filter.value || isFilterNullType(filter.operator))
+    );
+  });
+};
+
+/**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
@@ -188,22 +212,10 @@ const Filters = ({
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
 
-  /**
-   * Tracks whether the user has added a complete filter
-   */
-  const [filterComplete, setFilterComplete] = useState(false);
-
   /* First filter is an empty placeholder so we check for more than one filter */
   const areMoreThanOneFilters = filterParameters.length > 1;
   const isFirstFilterIncomplete =
-    filterParameters.length === 1 && !filterComplete;
-
-  const generateEmptyFilter = useCallback(() => {
-    // Clone state and add empty filter
-    const filtersNewState = [...filterParameters, generateEmptyField()];
-    // Update new state
-    setFilterParameters(filtersNewState);
-  }, [filterParameters, setFilterParameters]);
+    filterParameters.length === 1 && !areAllFiltersComplete(filterParameters);
 
   /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
@@ -263,7 +275,10 @@ const Filters = ({
    * Adds an empty filter to the state
    */
   const handleAddFilterButtonClick = () => {
-    generateEmptyFilter();
+    // Clone state and add empty filter
+    const filtersNewState = [...filterParameters, generateEmptyField()];
+    // Update new state
+    setFilterParameters(filtersNewState);
   };
 
   /**
@@ -380,31 +395,6 @@ const Filters = ({
     setSearchFieldValue("");
     setSearchTerm("");
   };
-
-  /**
-   * It returns true if the GraphQL operator is null type and has no
-   * @param {String} operator - operator to check
-   * @returns {boolean}
-   */
-  const isFilterNullType = (operator) => {
-    return operator && OPERATORS_WITHOUT_SEARCH_VALUES.includes(operator);
-  };
-
-  // TODO: We can replace this side effect by checking if each filter in filterParameters
-  // has a value and operator
-  // TODO: Remember to handle filters without values (OPERATORS_WITHOUT_SEARCH_VALUES)
-  /**
-   * This side effect monitors whether the user has added a complete filter
-   */
-  useEffect(() => {
-    filterParameters.forEach((filter) => {
-      if (!!filter.value || isFilterNullType(filter.operator)) {
-        setFilterComplete(true);
-      } else {
-        setFilterComplete(false);
-      }
-    });
-  }, [filterParameters]);
 
   const handleAndOrToggle = (e) => {
     const isOr = e.target.value === "any";
@@ -676,7 +666,7 @@ const Filters = ({
         <Grid item xs={12} md={2}>
           <Button
             // Disable button until the user has added a complete filter
-            disabled={!filterComplete}
+            disabled={!areAllFiltersComplete(filterParameters)}
             className={classes.bottomButton}
             fullWidth
             variant="outlined"
