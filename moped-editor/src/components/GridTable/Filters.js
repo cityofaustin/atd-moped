@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
@@ -30,10 +30,7 @@ import {
   OPERATORS_WITHOUT_SEARCH_VALUES,
 } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 import { FiltersCommonOperators } from "./FiltersCommonOperators";
-import {
-  getDefaultOperator,
-  makeSearchParamsFromFilterParameters,
-} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import { getDefaultOperator } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -195,7 +192,7 @@ const Filters = ({
     } else {
       return [generateEmptyField()];
     }
-  }, [filters, filtersConfig]);
+  }, [filters]);
 
   /**
    * The current local filter parameters so that we can store updated filters and
@@ -294,9 +291,7 @@ const Filters = ({
       filtersNewState.splice(filterIndex, 1);
     } finally {
       // Finally, reset the state
-      const searchParamsFromFilters =
-        makeSearchParamsFromFilterParameters(filtersNewState);
-      const jsonParamString = JSON.stringify(searchParamsFromFilters);
+      const jsonParamString = JSON.stringify(filtersNewState);
       setSearchParams((prevSearchParams) => {
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
@@ -378,10 +373,8 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    const searchParamsFromFilters =
-      makeSearchParamsFromFilterParameters(filterParameters);
     setSearchParams((prevSearchParams) => {
-      const jsonParamString = JSON.stringify(searchParamsFromFilters);
+      const jsonParamString = JSON.stringify(filterParameters);
 
       prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
       prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
