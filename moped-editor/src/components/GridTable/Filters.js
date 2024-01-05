@@ -239,6 +239,10 @@ const Filters = ({
         setIsOr(false);
         setIsOrToggleValue(false);
       }
+
+      if (filtersNewState.length === 0) {
+        handleClearFilters();
+      }
     }
   };
 
