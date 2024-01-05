@@ -118,53 +118,6 @@ const generateEmptyField = () => {
 };
 
 /**
- * Get configuration about the filters using the query parameters present in the URL
- * @param {Array} filters - filters from the URL {field, operator, value}
- * @param filtersConfig - The configuration object for the filters
- * @return {Object}
- */
-const makeInitialFilterParameters = (filters, filtersConfig) => {
-  if (filters.length === 0) return [];
-
-  return filters.map((filter) => {
-    const { field, operator, value } = filter;
-    const filterConfigForField = filtersConfig.fields.find(
-      (fieldConfig) => fieldConfig.name === field
-    );
-    const operatorsSetInConfig = filterConfigForField.operators;
-    const type = filterConfigForField.type;
-
-    const shouldUseAllOperators =
-      operatorsSetInConfig.length === 1 &&
-      filterConfigForField.operators[0] === "*";
-    const availableOperators = shouldUseAllOperators
-      ? Object.entries(FiltersCommonOperators)
-          .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
-            ...filterCommonOperatorConfig,
-            id: filtersCommonOperator,
-          }))
-          .filter((operator) => operator.type === type)
-      : filterConfigForField.operators.map((operator) => ({
-          ...FiltersCommonOperators[operator],
-          id: operator,
-        }));
-
-    return {
-      field,
-      operator,
-      availableOperators: availableOperators,
-      gqlOperator: FiltersCommonOperators[operator].operator,
-      placeholder: filterConfigForField.placeholder,
-      value,
-      type,
-      label: filterConfigForField.label,
-      lookup_field: filterConfigForField.lookup?.field_name,
-      lookup_table: filterConfigForField.lookup?.table_name,
-    };
-  });
-};
-
-/**
  * Returns whether the user input value for the filterParameter is valid
  * @param {object} filterParameter
  * @returns {boolean}
@@ -211,6 +164,15 @@ const Filters = ({
 
   if (error) console.error(error);
 
+  /* Consume existing filters or start with an empty filter if none exist */
+  const initialFilterParameters = useMemo(() => {
+    if (filters.length > 0) {
+      return filters;
+    } else {
+      return [generateEmptyField()];
+    }
+  }, [filters, filtersConfig]);
+
   /**
    * The current local filter parameters so that we can store updated filters and
    * then apply them to the query when the search button is clicked.
@@ -218,14 +180,6 @@ const Filters = ({
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
    */
-  const initialFilterParameters = useMemo(() => {
-    if (filters.length > 0) {
-      return makeInitialFilterParameters(filters, filtersConfig);
-    } else {
-      return [generateEmptyField()];
-    }
-  }, [filters, filtersConfig]);
-
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
