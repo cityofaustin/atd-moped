@@ -25,16 +25,21 @@ import makeStyles from "@mui/styles/makeStyles";
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
-import {
-  AUTOCOMPLETE_OPERATORS,
-  OPERATORS_WITHOUT_SEARCH_VALUES,
-} from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
-import { FiltersCommonOperators } from "./FiltersCommonOperators";
 import { getDefaultOperator } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import {
+  areAllFiltersComplete,
+  checkIsValidInput,
+  generateEmptyFilter,
+  getAvailableOperators,
+  handleApplyValidation,
+  isFilterNullType,
+  isFilterComplete,
+  shouldRenderAutocompleteInput,
+} from "./helpers";
 
 /**
  * The styling for the filter components
@@ -93,73 +98,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Generates a copy of an empty field
- * @return {Object}
- */
-const generateEmptyField = () => {
-  /**
-   * The default structure of an empty field
-   * @type {Object}
-   * @property {string} field - The name of the column
-   * @property {operator} operator - The name of the operator
-   * @property {string} value - The text value to be searched
-   * @constant
-   * @default
-   */
-  const defaultNewFieldState = {
-    field: null,
-    operator: null,
-    value: null,
-  };
-  return { ...defaultNewFieldState };
-};
-
-/**
- * Returns whether the user input value for the filterParameter is valid
- * @param {object} filterParameter
- * @returns {boolean}
- */
-const checkIsValidInput = (filterParameter) => {
-  // If we are testing a number type field with a non null value
-  if (filterParameter.type === "number" && !!filterParameter.value) {
-    // Return whether string only contains digits
-    return !/[^0-9]/.test(filterParameter.value);
-  }
-  return true; // Otherwise the input is valid
-};
-
-/**
- * Returns true if the GraphQL operator is null type and has no value to search (is blank, is not blank)
- * @param {String} operator - operator to check
- * @returns {boolean}
- */
-const isFilterNullType = (operator) => {
-  return operator && OPERATORS_WITHOUT_SEARCH_VALUES.includes(operator);
-};
-
-/**
- * Check if a filter has complete values
- * @param {Object} filter - contains value, field, and operator
- * @returns {boolean}
- */
-const isFilterComplete = (filter) => {
-  return (
-    !!filter.field &&
-    !!filter.operator &&
-    (!!filter.value || isFilterNullType(filter.operator))
-  );
-};
-
-/**
- * Check if all filters added have complete values
- * @param {Array} filterParameters - filter values, fields, and operators
- * @returns {boolean}
- */
-const areAllFiltersComplete = (filterParameters) => {
-  return filterParameters.every((filter) => isFilterComplete(filter));
-};
-
-/**
  * Filter Search Component aka Advanced Search
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
@@ -197,7 +135,7 @@ const Filters = ({
     if (filters.length > 0) {
       return filters;
     } else {
-      return [generateEmptyField()];
+      return [generateEmptyFilter()];
     }
   }, [filters]);
 
@@ -218,13 +156,6 @@ const Filters = ({
 
   /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
-
-  /**
-   * Returns true if Field has a lookup table associated with it and operator is case sensitive
-   */
-  const renderAutocompleteInput = (lookupTable, operator) => {
-    return lookupTable && !loading && AUTOCOMPLETE_OPERATORS.includes(operator);
-  };
 
   /**
    * Handles the click event on the field drop-down menu
@@ -262,7 +193,7 @@ const Filters = ({
       filtersNewState[filterIndex].operator = operator;
 
       // if we are switching to an autocomplete input, clear the search value
-      if (renderAutocompleteInput(lookupTable, operator)) {
+      if (shouldRenderAutocompleteInput(lookupTable, operator, loading)) {
         filtersNewState[filterIndex].value = null;
       }
     } else {
@@ -278,7 +209,7 @@ const Filters = ({
    */
   const handleAddFilterButtonClick = () => {
     // Clone state and add empty filter
-    const filtersNewState = [...filterParameters, generateEmptyField()];
+    const filtersNewState = [...filterParameters, generateEmptyFilter()];
     // Update new state
     setFilterParameters(filtersNewState);
   };
@@ -329,7 +260,7 @@ const Filters = ({
    * Clears the filters
    */
   const handleClearFilters = useCallback(() => {
-    setFilterParameters([generateEmptyField()]);
+    setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
 
@@ -338,41 +269,6 @@ const Filters = ({
       prevSearchParams.delete(advancedSearchIsOrParamName);
     });
   }, [setSearchParams, setFilters, setIsOr]);
-
-  /**
-   * Returns an array of strings containing messages about the filters.
-   * Returns null if no problems were found.
-   * @return {[]|null}
-   */
-  const handleApplyValidation = () => {
-    let feedback = [];
-    if (filterParameters) {
-      if (filterParameters.length === 0) {
-        feedback.push("• No filters have been added.");
-      } else {
-        Object.keys(filterParameters).forEach((filterKey) => {
-          const { field, value, operator } = filterParameters[filterKey];
-          if (field === null) {
-            feedback.push("• One or more fields have not been selected.");
-          }
-
-          if (operator === null) {
-            feedback.push("• One or more operators have not been selected.");
-          }
-
-          if (value === null || value.trim() === "") {
-            if (operator && !isFilterNullType(operator)) {
-              feedback.push("• One or more missing values.");
-            }
-          }
-          if (!checkIsValidInput(filterParameters[filterKey])) {
-            feedback.push("• One or more invalid inputs.");
-          }
-        });
-      }
-    }
-    return feedback.length > 0 ? feedback : null;
-  };
 
   /**
    * Applies the current local state and updates the parent's state
@@ -454,36 +350,26 @@ const Filters = ({
       </Grid>
 
       {filterParameters.map((filter, filterIndex) => {
-        const isValidInput = checkIsValidInput(filterParameters[filterIndex]);
-        // TODO: Clean all this up
         const { field: fieldName, operator, value } = filter;
+
+        /* Get field configuration and values need for inputs */
         const fieldConfig = filtersConfig.fields.find(
           (field) => field.name === fieldName
         );
-
         const { label, type } = fieldConfig ?? {};
+        const operators = fieldConfig?.operators;
+        const availableOperators = getAvailableOperators(
+          operators,
+          fieldConfig,
+          type
+        );
+
+        /* If the field uses a lookup table, get the table and field names  */
         const { table_name: lookupTable, field_name: lookupField } =
           fieldConfig?.lookup ?? {};
-        const operatorsSetInConfig = fieldConfig?.operators;
-        const shouldUseAllOperators =
-          operatorsSetInConfig &&
-          operatorsSetInConfig.length === 1 &&
-          fieldConfig.operators[0] === "*";
-        let availableOperators = [];
 
-        if (shouldUseAllOperators) {
-          availableOperators = Object.entries(FiltersCommonOperators)
-            .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
-              ...filterCommonOperatorConfig,
-              id: filtersCommonOperator,
-            }))
-            .filter((operator) => operator.type === type);
-        } else if (operatorsSetInConfig) {
-          availableOperators = fieldConfig?.operators.map((operator) => ({
-            ...FiltersCommonOperators[operator],
-            id: operator,
-          }));
-        }
+        /* Check filter row validity */
+        const isValidInput = checkIsValidInput(filter, type);
 
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
@@ -579,7 +465,11 @@ const Filters = ({
                   className={classes.formControl}
                 >
                   {isFilterNullType(operator) !== true &&
-                    (renderAutocompleteInput(lookupTable, operator) ? (
+                    (shouldRenderAutocompleteInput(
+                      lookupTable,
+                      operator,
+                      loading
+                    ) ? (
                       <Autocomplete
                         value={value || null}
                         options={data[lookupTable]}
@@ -699,7 +589,9 @@ const Filters = ({
             color="primary"
             startIcon={<Icon>search</Icon>}
             onClick={handleApplyButtonClick}
-            disabled={handleApplyValidation() != null}
+            disabled={
+              handleApplyValidation(filterParameters, filtersConfig) != null
+            }
           >
             Search
           </Button>
