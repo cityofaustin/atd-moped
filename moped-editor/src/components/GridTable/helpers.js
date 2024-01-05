@@ -151,3 +151,17 @@ export const getAvailableOperators = (operators, fieldConfig) => {
     return [];
   }
 };
+
+/**
+ * Return the default operator for a given field or a fallback operator if one is not defined in config
+ * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
+ * @return String
+ */
+export const getDefaultOperator = (filterConfigForField) => {
+  const { defaultOperator, operators } = filterConfigForField;
+  const fallbackOperator = operators[0];
+
+  const isDefaultOperator = Boolean(defaultOperator);
+
+  return isDefaultOperator ? defaultOperator : fallbackOperator;
+};

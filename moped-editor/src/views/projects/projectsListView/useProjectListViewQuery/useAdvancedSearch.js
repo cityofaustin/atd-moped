@@ -30,20 +30,6 @@ const useMakeFilterState = (searchParams) =>
   }, [searchParams]);
 
 /**
- * Return the default operator for a given field or a fallback operator if one is not defined in config
- * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
- * @return String
- */
-export const getDefaultOperator = (filterConfigForField) => {
-  const { defaultOperator, operators } = filterConfigForField;
-  const fallbackOperator = operators[0];
-
-  const isDefaultOperator = Boolean(defaultOperator);
-
-  return isDefaultOperator ? defaultOperator : fallbackOperator;
-};
-
-/**
  * Build an array of filter strings to be used in generating the advanced search where string
  * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object

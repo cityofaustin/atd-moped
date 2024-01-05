@@ -25,7 +25,6 @@ import makeStyles from "@mui/styles/makeStyles";
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
 import { LOOKUP_TABLES_QUERY } from "../../queries/project";
-import { getDefaultOperator } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -35,6 +34,7 @@ import {
   checkIsValidInput,
   generateEmptyFilter,
   getAvailableOperators,
+  getDefaultOperator,
   handleApplyValidation,
   isFilterNullType,
   isFilterComplete,
@@ -149,7 +149,6 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
-  console.log(filterParameters);
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
