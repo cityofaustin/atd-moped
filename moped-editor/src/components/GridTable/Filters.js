@@ -271,14 +271,12 @@ const Filters = ({
    * @param {string} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteFilterButtonClick = (filterIndex) => {
-    // Copy the state into a new object
-    const filtersNewState = {
-      ...filterParameters,
-    };
+    // Clone the state
+    const filtersNewState = [...filterParameters];
     // Try to delete the filter by filter index
     try {
       // Delete the key (if it's there)
-      delete filtersNewState[filterIndex];
+      filtersNewState.splice(filterIndex, 1);
     } finally {
       // Finally, reset the state
       const searchParamsFromFilters =
