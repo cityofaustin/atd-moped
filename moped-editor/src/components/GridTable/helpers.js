@@ -26,7 +26,8 @@ export const generateEmptyFilter = () => {
 
 /**
  * Returns whether the user input value for the filterParameter is valid
- * @param {object} filterParameter
+ * @param {object} filterParameter - filter value, field, and operator
+ * @param {string} type - type of field
  * @returns {boolean}
  */
 export const checkIsValidInput = (filterParameter, type) => {
@@ -83,6 +84,8 @@ export const areAllFiltersComplete = (filterParameters) => {
 /**
  * Returns an array of strings containing messages about the filters.
  * Returns null if no problems were found.
+ * @param {Array} filterParameters - filter values, fields, and operators
+ * @param {Object} filtersConfig - configuration for all filters to get field type
  * @return {[]|null}
  */
 export const handleApplyValidation = (filterParameters, filtersConfig) => {
@@ -121,7 +124,14 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
   return feedback.length > 0 ? feedback : null;
 };
 
-export const getAvailableOperators = (operators, fieldConfig, type) => {
+/**
+ * Returns operators to display in the operator dropdown for the field chosen
+ * @param {Array} operators - filter values, fields, and operators
+ * @param {Object} fieldConfig - configuration for the field
+ * @return {[]|null}
+ */
+export const getAvailableOperators = (operators, fieldConfig) => {
+  const type = fieldConfig?.type;
   const shouldUseAllOperators =
     operators && operators.length === 1 && fieldConfig.operators[0] === "*";
 

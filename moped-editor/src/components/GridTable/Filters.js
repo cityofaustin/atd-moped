@@ -360,8 +360,7 @@ const Filters = ({
         const operators = fieldConfig?.operators;
         const availableOperators = getAvailableOperators(
           operators,
-          fieldConfig,
-          type
+          fieldConfig
         );
 
         /* If the field uses a lookup table, get the table and field names  */
