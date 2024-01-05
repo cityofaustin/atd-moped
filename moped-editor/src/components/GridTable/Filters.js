@@ -129,7 +129,7 @@ const checkIsValidInput = (filterParameter) => {
 };
 
 /**
- * It returns true if the GraphQL operator is null type and has no
+ * Returns true if the GraphQL operator is null type and has no value to search (is blank, is not blank)
  * @param {String} operator - operator to check
  * @returns {boolean}
  */
@@ -138,18 +138,25 @@ const isFilterNullType = (operator) => {
 };
 
 /**
+ * Check if a filter has complete values
+ * @param {Object} filter - contains value, field, and operator
+ * @returns {boolean}
+ */
+const isFilterComplete = (filter) => {
+  return (
+    !!filter.field &&
+    !!filter.operator &&
+    (!!filter.value || isFilterNullType(filter.operator))
+  );
+};
+
+/**
  * Check if all filters added have complete values
- * @param {Array} filterParameters - filter values, fieldd, and operatord
+ * @param {Array} filterParameters - filter values, fields, and operators
  * @returns {boolean}
  */
 const areAllFiltersComplete = (filterParameters) => {
-  return filterParameters.every((filter) => {
-    return (
-      !!filter.field &&
-      !!filter.operator &&
-      (!!filter.value || isFilterNullType(filter.operator))
-    );
-  });
+  return filterParameters.every((filter) => isFilterComplete(filter));
 };
 
 /**
@@ -209,10 +216,8 @@ const Filters = ({
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
 
-  /* First filter is an empty placeholder so we check for more than one filter */
+  /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
-  const isFirstFilterIncomplete =
-    filterParameters.length === 1 && !areAllFiltersComplete(filterParameters);
 
   /**
    * Returns true if Field has a lookup table associated with it and operator is case sensitive
@@ -382,7 +387,7 @@ const Filters = ({
     });
 
     setIsOr(isOrToggleValue);
-    setFilters(searchParamsFromFilters);
+    setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
     setSearchFieldValue("");
@@ -629,7 +634,7 @@ const Filters = ({
               <Hidden mdDown>
                 <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
                   <IconButton
-                    disabled={isFirstFilterIncomplete}
+                    disabled={!isFilterComplete(filter)}
                     className={classes.deleteButton}
                     onClick={() => handleDeleteFilterButtonClick(filterIndex)}
                     size="large"
@@ -641,7 +646,7 @@ const Filters = ({
               <Hidden mdUp>
                 <Grid item xs={12}>
                   <Button
-                    disabled={isFirstFilterIncomplete}
+                    disabled={!isFilterComplete(filter)}
                     fullWidth
                     className={classes.deleteButton}
                     variant="outlined"
