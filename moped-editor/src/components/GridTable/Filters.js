@@ -97,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Generates a copy of an empty field
- * @param uuid
  * @return {Object}
  */
 const generateEmptyField = () => {
@@ -106,25 +105,14 @@ const generateEmptyField = () => {
    * @type {Object}
    * @property {string} field - The name of the column
    * @property {operator} operator - The name of the operator
-   * @property {string[]} availableOperators - A string array containing the names of available operators
-   * @property {string} gqlOperator - A string containing the GraphQL operator
-   * @property {string} envelope - The a pattern to use as an envelope
    * @property {string} value - The text value to be searched
-   * @property {string} type - The type of field it is (string, number, etc.)
    * @constant
    * @default
    */
   const defaultNewFieldState = {
     field: null,
     operator: null,
-    availableOperators: [],
-    gqlOperator: null,
-    envelope: null,
-    placeholder: null,
     value: null,
-    type: null,
-    specialNullValue: null,
-    label: null,
   };
   return { ...defaultNewFieldState };
 };
