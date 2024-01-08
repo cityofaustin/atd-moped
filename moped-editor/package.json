@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "homepage": "/moped",
   "private": false,
   "repository": {
@@ -83,6 +83,7 @@
     "prop-types": "^15.8.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-error-boundary": "^4.0.11",
     "react-feather": "^2.0.10",
     "react-filepond": "^7.1.2",
     "react-helmet": "^6.1.0",
