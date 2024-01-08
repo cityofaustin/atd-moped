@@ -119,37 +119,39 @@ AS WITH project_person_list_lookup AS (
         AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
       ) AS completion_end_date,
-    (
-        SELECT
-            min(min_confirmed_date)
-        FROM (
-            -- earliest phase start matching criteria
-            SELECT
-                min(phases.phase_start) AS min_confirmed_date
-            FROM
-                moped_proj_phases phases
-            LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-        WHERE
-            TRUE
-            AND phases.phase_start IS NOT NULL
-            AND phases.is_phase_start_confirmed = TRUE
-            AND phases.project_id = mp.project_id
-            AND moped_phases.phase_name_simple = 'Complete'
-            AND phases.is_deleted = FALSE
-        UNION ALL
-        -- earliest phase end matching criteria
-        SELECT
-            min(phases.phase_end) AS min_confirmed_date
-        FROM
-            moped_proj_phases phases
-        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-    WHERE
-        TRUE
-        AND phases.phase_end IS NOT NULL
-        AND phases.is_phase_end_confirmed = TRUE
-        AND phases.project_id = mp.project_id
-        AND moped_phases.phase_name_simple = 'Complete'
-        AND phases.is_deleted = FALSE) min_confirmed_dates) AS substantial_completion_date,
+    ( -- get the earliest confirmed phase_start or phase_end with a simple phase of 'Complete' 
+      SELECT
+          min(min_confirmed_date)
+      FROM (
+          -- earliest confirmed phase start
+          SELECT
+              min(phases.phase_start) AS min_confirmed_date
+          FROM
+              moped_proj_phases phases
+          LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+          WHERE
+              TRUE
+              AND phases.phase_start IS NOT NULL
+              AND phases.is_phase_start_confirmed = TRUE
+              AND phases.project_id = mp.project_id
+              AND moped_phases.phase_name_simple = 'Complete'
+              AND phases.is_deleted = FALSE
+          UNION ALL
+          -- earliest confirmed phase end
+          SELECT
+              min(phases.phase_end) AS min_confirmed_date
+          FROM
+              moped_proj_phases phases
+          LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+          WHERE
+              TRUE
+              AND phases.phase_end IS NOT NULL
+              AND phases.is_phase_end_confirmed = TRUE
+              AND phases.project_id = mp.project_id
+              AND moped_phases.phase_name_simple = 'Complete'
+              AND phases.is_deleted = FALSE
+        ) min_confirmed_dates
+      ) AS substantial_completion_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel mpp
