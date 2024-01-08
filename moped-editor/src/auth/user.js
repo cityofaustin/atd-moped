@@ -100,10 +100,7 @@ export const initializeUserDBObject = (userObject) => {
       body: JSON.stringify({
         query: ACCOUNT_USER_PROFILE_GET_PLAIN,
         variables: {
-          userId:
-            config.env.APP_ENVIRONMENT === "local"
-              ? 1
-              : getDatabaseId(userObject),
+          userId: getDatabaseId(userObject),
         },
       }),
     }).then((res) => {

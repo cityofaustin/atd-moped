@@ -143,9 +143,9 @@ export const FiltersCommonOperators = {
     type: "date",
   },
   date_less_than_equal_to: {
-    operator: "_lt",
+    operator: "_lte",
     label: "less than or equal to",
-    description: "The date is less than.",
+    description: "The date is less than or equal to.",
     envelope: null,
     type: "date",
   },

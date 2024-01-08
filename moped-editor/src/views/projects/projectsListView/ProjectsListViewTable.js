@@ -5,7 +5,12 @@ import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import MaterialTable from "@material-table/core";
-import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
+import {
+  useTableComponents,
+  useColumns,
+  useTableOptions,
+  useHiddenColumnsSettings,
+} from "./helpers.js";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
@@ -19,6 +24,7 @@ import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
+import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
  * GridTable Style
@@ -46,56 +52,7 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: "25px",
     paddingBottom: "16px",
   },
-  colorPrimary: {
-    color: theme.palette.primary.main,
-  },
 }));
-
-/**
- * Default column display (if no config in local storage)
- */
-const DEFAULT_HIDDEN_COLS = {
-  project_id: false,
-  project_name: false,
-  current_phase: false,
-  project_team_members: true,
-  project_lead: false,
-  project_sponsor: false,
-  project_partner: true,
-  ecapris_subproject_id: false,
-  updated_at: false,
-  project_feature: true, // signal_ids
-  task_orders: true,
-  type_name: true,
-  funding_source_name: true,
-  project_note: true,
-  construction_start_date: true,
-  completion_end_date: true,
-  project_inspector: true,
-  project_designer: true,
-  contractors: true,
-  contract_numbers: true,
-  project_tags: true,
-  added_by: true,
-  public_process_status: true,
-  interim_project_id: true,
-  children_project_ids: true,
-  parent_project_id: true,
-  components: true,
-};
-
-/**
- * Keeps localStorage column config in sync with UI interactions
- * @param {Object} column - the MT column config with the `field` prop - aka the column name
- * @param {Bool} hidden - the hidden state of the column
- */
-const handleColumnChange = ({ field }, hidden) => {
-  let storedConfig =
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ??
-    DEFAULT_HIDDEN_COLS;
-  storedConfig = { ...storedConfig, [field]: hidden };
-  localStorage.setItem("mopedColumnConfig", JSON.stringify(storedConfig));
-};
 
 /**
  * GridTable Search Capability plus Material Table
@@ -109,10 +66,6 @@ const ProjectsListViewTable = () => {
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
-
-  const [hiddenColumns, setHiddenColumns] = useState(
-    JSON.parse(localStorage.getItem("mopedColumnConfig")) ?? DEFAULT_HIDDEN_COLS
-  );
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -138,15 +91,27 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const columns = useColumns({
-    hiddenColumns,
-    classes,
-  });
+  const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings();
 
-  const columnsToReturn = Object.keys(PROJECT_LIST_VIEW_QUERY_CONFIG.columns);
+  const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
+
+  /**
+   * Keeps localStorage column config in sync with UI interactions
+   * @param {Object} column - the MT column config with the `field` prop - aka the column name
+   * @param {Bool} hidden - the hidden state of the column
+   */
+  const handleColumnChange = useCallback(
+    ({ field }, hidden) => {
+      setHiddenColumns((prevHiddenColumns) => ({
+        ...prevHiddenColumns,
+        [field]: hidden,
+      }));
+    },
+    [setHiddenColumns]
+  );
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
-    columnsToReturn,
+    columnsToReturn: columnsToReturnInQuery,
     exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryLimit,
@@ -157,9 +122,16 @@ const ProjectsListViewTable = () => {
     advancedSearchWhereString,
   });
 
-  const { data, error, refetch } = useQuery(projectListViewQuery, {
+  const {
+    data: projectListViewData,
+    loading,
+    error,
+    refetch,
+  } = useQuery(projectListViewQuery, {
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
+
+  const data = useCurrentData(projectListViewData);
 
   const { handleExportButtonClick, dialogOpen } = useCsvExport({
     query: exportQuery,
@@ -212,6 +184,7 @@ const ProjectsListViewTable = () => {
 
   const tableComponents = useTableComponents({
     data,
+    loading,
     queryLimit,
     queryOffset,
     setQueryLimit,
@@ -222,15 +195,6 @@ const ProjectsListViewTable = () => {
     rowsPerPageOptions:
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
-  /*
-   * Store column configution before data change
-   */
-  useEffect(() => {
-    const storedConfig = JSON.parse(localStorage.getItem("mopedColumnConfig"));
-    if (storedConfig) {
-      setHiddenColumns({...DEFAULT_HIDDEN_COLS, ...storedConfig });
-    }
-  }, [data]);
 
   /**
    * Store the most recent version of the query in app context so that it
@@ -257,6 +221,7 @@ const ProjectsListViewTable = () => {
           handleExportButtonClick={handleExportButtonClick}
           isOr={isOr}
           setIsOr={setIsOr}
+          loading={loading}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

@@ -20,9 +20,10 @@ SET row_security = off;
 -- Data for Name: moped_users; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_users (first_name, last_name, title, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, email, roles, picture, is_deleted, is_user_group_member, note) VALUES ('JD', 'Maccombs', 'Software Developer', 1, 18, NULL, '2021-03-09 17:08:14+00', true, 'jd@emailhost.xyz', '["moped-admin"]', NULL, false, false, 'JD was contracted to assist with the initial Moped research and build out.');
+INSERT INTO public.moped_users (first_name, last_name, title, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, email, roles, picture, is_deleted, is_user_group_member, note) VALUES ('Data and Tech', 'Admin', 'Moped Admin', 1, 3, NULL, '2021-03-09 17:08:14+00', true, 'admin@emailhost.xyz', '["moped-admin"]', NULL, false, false, 'This account is used by the DTS for automated tasks and integrations.');
 INSERT INTO public.moped_users (first_name, last_name, title, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, email, roles, picture, is_deleted, is_user_group_member, note) VALUES ('Michael', 'Chernus', 'Engineer', 3, 1, NULL, '2020-10-09 13:44:02.15918+00', false, 'mc@emailhost.xyz', '["moped-editor"]', NULL, false, false, NULL);
 INSERT INTO public.moped_users (first_name, last_name, title, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, email, roles, picture, is_deleted, is_user_group_member, note) VALUES ('Patricia', 'Arquette', 'Engineer', 2, 1, NULL, '2020-10-09 13:44:02.159184+00', false, 'pa@emailhost.xyz', '["non-login-user"]', NULL, false, true, NULL);
+INSERT INTO public.moped_users (first_name, last_name, title, user_id, workgroup_id, cognito_user_id, date_added, is_coa_staff, email, roles, picture, is_deleted, is_user_group_member, note) VALUES ('Data and Tech', 'Editor', 'Moped Editor', 34, 3, NULL, '2021-03-09 17:08:14+00', true, 'editor@emailhost.xyz', '["moped-editor"]', NULL, false, false, NULL);
 
 
 
@@ -56,9 +57,9 @@ INSERT INTO public.moped_proj_components_subcomponents (component_subcomponent_i
 -- Data for Name: moped_proj_work_activity; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_work_activity (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount, task_orders) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false, NULL, 889, '[{"dept": "6000", "name": "johnny Morris/Hwy 290 Water Line Extension", "status": "Active", "balance": "-1997.78", "tk_type": "Memo", "task_order": "60M7242QMD", "display_name": "60M7242QMD | johnny Morris/Hwy 290 Water Line Extension", "chargedamount": "1997.78", "current_estimate": "0"}, {"dept": "2400", "name": "FY17 Parking Mgmt. ROW", "status": "Inactive", "balance": "0", "tk_type": "Internal Billed", "buyer_fdus": "5610 2400 4200", "task_order": "24ROW51000", "display_name": "24ROW51000 | FY17 Parking Mgmt. ROW", "chargedamount": "119095.09", "current_estimate": "119095.09"}]');
-INSERT INTO public.moped_proj_work_activity (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false, 'GCS 12', NULL);
-INSERT INTO public.moped_proj_work_activity (id, contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, NULL, NULL, NULL, 229, false, 'WA - 10 Unity', 1224);
+INSERT INTO public.moped_proj_work_activity (id, workgroup_contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount, task_orders) VALUES (1, 'Acme Inc', 'ABC123', 'On call', 227, false, NULL, 889, '[{"dept": "6000", "name": "johnny Morris/Hwy 290 Water Line Extension", "status": "Active", "balance": "-1997.78", "tk_type": "Memo", "task_order": "60M7242QMD", "display_name": "60M7242QMD | johnny Morris/Hwy 290 Water Line Extension", "chargedamount": "1997.78", "current_estimate": "0"}, {"dept": "2400", "name": "FY17 Parking Mgmt. ROW", "status": "Inactive", "balance": "0", "tk_type": "Internal Billed", "buyer_fdus": "5610 2400 4200", "task_order": "24ROW51000", "display_name": "24ROW51000 | FY17 Parking Mgmt. ROW", "chargedamount": "119095.09", "current_estimate": "119095.09"}]');
+INSERT INTO public.moped_proj_work_activity (id, workgroup_contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (2, 'Taco Deli', '123YUM', 'Doña sauce', 229, false, 'GCS 12', NULL);
+INSERT INTO public.moped_proj_work_activity (id, workgroup_contractor, contract_number, description, project_id, is_deleted, work_assignment_id, contract_amount) VALUES (3, NULL, NULL, NULL, 229, false, 'WA - 10 Unity', 1224);
 
 
 

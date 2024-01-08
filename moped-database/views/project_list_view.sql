@@ -1,4 +1,6 @@
--- latest version 1700159831602_substantial_completion_date
+-- latest version 1704744986000_substantial_completion_date
+DROP VIEW project_list_view CASCADE;
+
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -40,9 +42,9 @@ AS WITH project_person_list_lookup AS (
               ', '::text) AS task_order_names,
           string_agg(task_order_objects.task_order_object ->> 'task_order'::text,
               ', '::text) AS task_order_names_short,
-          jsonb_agg(task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
-          string_agg(DISTINCT mpwa.contractor,
-          ', '::text) AS contractors,
+          jsonb_agg(DISTINCT task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
+          string_agg(DISTINCT mpwa.workgroup_contractor,
+          ', '::text) AS workgroup_contractors,
           string_agg(mpwa.contract_number,
           ', '::text) AS contract_numbers FROM moped_proj_work_activity mpwa
       LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object) ON TRUE WHERE 1 = 1
@@ -53,8 +55,9 @@ AS WITH project_person_list_lookup AS (
     SELECT
       mpc.project_id,
       string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
-    FROM moped_proj_components mpc 
-    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id 
+    FROM moped_proj_components mpc
+    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+    WHERE mpc.is_deleted = FALSE
     GROUP BY mpc.project_id
   )
  SELECT
@@ -77,7 +80,7 @@ AS WITH project_person_list_lookup AS (
     mp.knack_project_id,
     proj_notes.project_note,
     proj_notes.date_created as project_note_date_created,
-    work_activities.contractors,
+    work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
@@ -116,17 +119,37 @@ AS WITH project_person_list_lookup AS (
         AND phases.phase_id = 11 -- phase_id 11 is complete
         AND phases.is_deleted = false
       ) AS completion_end_date,
-    ( -- get the earliest date of the complete or post construction phase
-      SELECT
-          min(least(phases.phase_end, phases.phase_start))
-      FROM
-          moped_proj_phases phases
-      WHERE
-          TRUE
-          AND phases.project_id = mp.project_id
-          AND phase_name_simple = 'Complete'
-          AND phases.is_deleted = FALSE
-      ) AS substantial_completion_date,
+    (
+        SELECT
+            min(min_confirmed_date)
+        FROM (
+            -- earliest phase start matching criteria
+            SELECT
+                min(phases.phase_start) AS min_confirmed_date
+            FROM
+                moped_proj_phases phases
+            LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+        WHERE
+            TRUE
+            AND phases.phase_start IS NOT NULL
+            AND phases.is_phase_start_confirmed = TRUE
+            AND phases.project_id = mp.project_id
+            AND moped_phases.phase_name_simple = 'Complete'
+            AND phases.is_deleted = FALSE
+        UNION ALL
+        -- earliest phase end matching criteria
+        SELECT
+            min(phases.phase_end) AS min_confirmed_date
+        FROM
+            moped_proj_phases phases
+        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+    WHERE
+        TRUE
+        AND phases.phase_end IS NOT NULL
+        AND phases.is_phase_end_confirmed = TRUE
+        AND phases.project_id = mp.project_id
+        AND moped_phases.phase_name_simple = 'Complete'
+        AND phases.is_deleted = FALSE) min_confirmed_dates) AS substantial_completion_date,
     ( -- get me a list of the inspectors for this project
       SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
       FROM moped_proj_personnel mpp
@@ -211,7 +234,7 @@ AS WITH project_person_list_lookup AS (
     cpl.children_project_ids,
     proj_notes.project_note,
     proj_notes.date_created,
-    work_activities.contractors,
+    work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,

@@ -1,5 +1,6 @@
--- current version: 1700160199724_substantial_completion_date_component_view
+-- current version: 1704744986001_substantial_completion_date_component_view
 DROP VIEW component_arcgis_online_view;
+
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
         mpc.project_id, 
@@ -53,7 +54,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_inspector, 
         plv.project_designer, 
         plv.project_tags, 
-        plv.contractors, 
+        plv.workgroup_contractors, 
         plv.contract_numbers, 
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text as project_url, 
