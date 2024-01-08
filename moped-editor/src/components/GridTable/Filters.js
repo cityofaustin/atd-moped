@@ -170,9 +170,14 @@ const Filters = ({
       (filter) => filter.name === field
     );
 
-    // Update field and operator
-    filtersNewState[filterIndex].field = fieldDetails.name;
-    filtersNewState[filterIndex].operator = getDefaultOperator(fieldDetails);
+    // Update the field and operator values or handle when the clear X icon is clicked
+    if (fieldDetails) {
+      filtersNewState[filterIndex].field = fieldDetails.name;
+      filtersNewState[filterIndex].operator = getDefaultOperator(fieldDetails);
+    } else {
+      filtersNewState[filterIndex].field = null;
+      filtersNewState[filterIndex].operator = null;
+    }
 
     // Update the state
     setFilterParameters(filtersNewState);
