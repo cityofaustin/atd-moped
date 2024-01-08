@@ -235,7 +235,6 @@ const Filters = ({
 
       /* Reset isOr to false (all/and) if there is only one filter left */
       if (Object.keys(filtersNewState).length === 1) {
-        setIsOr(false);
         setIsOrToggleValue(false);
       }
 
