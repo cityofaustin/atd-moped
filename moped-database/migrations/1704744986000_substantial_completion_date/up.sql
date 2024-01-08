@@ -239,7 +239,7 @@ AS WITH project_person_list_lookup AS (
     work_activities.task_order_names_short,
     work_activities.task_orders;
 
--- rebuild component view at version 1699553498334_increase_agol_point_radius
+-- add substantial_completion_date to agol view
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
         mpc.project_id, 
@@ -261,7 +261,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         mpc.is_deleted is_project_component_deleted, 
         plv.is_deleted is_project_deleted, 
         mpc.interim_project_component_id, 
-        mpc.completion_date, 
+        mpc.completion_date,
+        COALESCE(mpc.completion_date, substantial_completion_date) as substantial_completion_date,
         mpc.srts_id, 
         mpc.location_description, 
         plv.project_name, 
