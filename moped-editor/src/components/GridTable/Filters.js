@@ -37,7 +37,6 @@ import {
   getDefaultOperator,
   handleApplyValidation,
   isFilterNullType,
-  isFilterComplete,
   shouldRenderAutocompleteInput,
 } from "./helpers";
 
@@ -241,10 +240,6 @@ const Filters = ({
       /* Reset isOr to false (all/and) if there is only one filter left */
       if (Object.keys(filtersNewState).length === 1) {
         setIsOrToggleValue(false);
-      }
-
-      if (filtersNewState.length === 0) {
-        handleClearFilters();
       }
     }
   };
@@ -527,31 +522,39 @@ const Filters = ({
                     ))}
                 </FormControl>
               </Grid>
-              <Hidden mdDown>
-                <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
-                  <IconButton
-                    disabled={!isFilterComplete(filter)}
-                    className={classes.deleteButton}
-                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
-                    size="large"
-                  >
-                    <Icon className={classes.deleteIcon}>delete_outline</Icon>
-                  </IconButton>
-                </Grid>
-              </Hidden>
-              <Hidden mdUp>
-                <Grid item xs={12}>
-                  <Button
-                    disabled={!isFilterComplete(filter)}
-                    fullWidth
-                    className={classes.deleteButton}
-                    variant="outlined"
-                    onClick={() => handleDeleteFilterButtonClick(filterIndex)}
-                  >
-                    <Icon>delete_outline</Icon>
-                  </Button>
-                </Grid>
-              </Hidden>
+              {areMoreThanOneFilters ? (
+                <>
+                  <Hidden mdDown>
+                    <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
+                      <IconButton
+                        className={classes.deleteButton}
+                        onClick={() =>
+                          handleDeleteFilterButtonClick(filterIndex)
+                        }
+                        size="large"
+                      >
+                        <Icon className={classes.deleteIcon}>
+                          delete_outline
+                        </Icon>
+                      </IconButton>
+                    </Grid>
+                  </Hidden>
+                  <Hidden mdUp>
+                    <Grid item xs={12}>
+                      <Button
+                        fullWidth
+                        className={classes.deleteButton}
+                        variant="outlined"
+                        onClick={() =>
+                          handleDeleteFilterButtonClick(filterIndex)
+                        }
+                      >
+                        <Icon>delete_outline</Icon>
+                      </Button>
+                    </Grid>
+                  </Hidden>
+                </>
+              ) : null}
             </Grid>
           </Grow>
         );
