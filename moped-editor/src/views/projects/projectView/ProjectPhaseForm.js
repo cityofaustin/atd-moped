@@ -1,4 +1,4 @@
-import { useMemo, useEffect } from "react";
+import { useEffect } from "react";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
 import Alert from "@mui/material/Alert";
@@ -15,108 +15,15 @@ import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
 import ControlledSwitch from "src/components/forms/ControlledSwitch";
-import { phaseValidationSchema } from "./ProjectPhase/form";
+import {
+  phaseValidationSchema,
+  onSubmitPhase,
+  useDefaultValues,
+  useSubphases,
+  useCurrentPhaseIdsToClear,
+} from "./ProjectPhase/helpers";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
 import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
-
-const DEFAULT_VALUES = {
-  project_phase_id: null,
-  phase_id: null,
-  subphase_id: null,
-  phase_start: null,
-  is_phase_start_confirmed: true,
-  is_phase_end_confirmed: false,
-  phase_end: null,
-  phase_description: null,
-  is_current_phase: false,
-  project_id: null,
-  status_update: null,
-};
-
-const useDefaultValues = (phase) =>
-  useMemo(() => {
-    // initialize form with default values plus the project id
-    let defaultValues = { ...DEFAULT_VALUES, project_id: phase.project_id };
-
-    if (phase.project_phase_id) {
-      // we are editing a phase: update all defaults from phase
-      Object.keys(DEFAULT_VALUES).forEach((key) => {
-        defaultValues[key] = phase[key];
-      });
-    } else {
-      // default the phase_start to midnight (local) on the current date
-      defaultValues.phase_start = new Date(
-        new Date().setHours(0, 0, 0, 0)
-      ).toISOString();
-    }
-    return defaultValues;
-  }, [phase]);
-
-const useSubphases = (phase_id, phases) =>
-  useMemo(
-    () =>
-      phase_id
-        ? phases.find((p) => p.phase_id === phase_id)?.moped_subphases || []
-        : [],
-    [phase_id, phases]
-  );
-
-const useCurrentPhaseIdsToClear = (
-  thisProjectPhaseId,
-  isCurrent,
-  currentProjectPhaseIds
-) => {
-  if (!isCurrent) {
-    // nothing to do
-    return [];
-  }
-  // return all project phase IDs except the one we're editing
-  return currentProjectPhaseIds.filter(
-    (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
-  );
-};
-
-export const onSubmitPhase = ({
-  data,
-  mutate,
-  currentPhaseIdsToClear,
-  onSubmitCallback,
-}) => {
-  const { project_phase_id, status_update } = data;
-  delete data.project_phase_id;
-  delete data.status_update;
-
-  let project_note = null;
-
-  if (status_update) {
-    project_note = {
-      project_id: data.project_id,
-      project_note: status_update,
-      added_by_user_id: 1,
-      project_note_type: 2,
-      phase_id: data.phase_id,
-    };
-  }
-
-  const variables = {
-    current_phase_ids_to_clear: currentPhaseIdsToClear,
-    project_note,
-  };
-
-  if (!project_phase_id) {
-    // inserting a new mutation - which has a slightly different
-    // variable shape bc the mutation supports multiple inserts
-    variables.objects = [data];
-  } else {
-    variables.project_phase_id = project_phase_id;
-    variables.object = data;
-  }
-
-  mutate({
-    variables,
-    refetchQueries: ["ProjectSummary"],
-  }).then(() => onSubmitCallback());
-};
 
 const ProjectPhaseForm = ({
   phase,
@@ -125,7 +32,7 @@ const ProjectPhaseForm = ({
   onSubmitCallback,
 }) => {
   console.log("TODO: CHECK SEED DATA!");
-  // throw `you need to use metadata preset to handle note added_by_user_id`?
+  console.log("TODO: METADATA PRESET?");
   const isNewPhase = !phase.project_phase_id;
 
   const defaultValues = useDefaultValues(phase);
@@ -165,6 +72,9 @@ const ProjectPhaseForm = ({
 
   const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
 
+  /**
+   * Defaults is_phase_start_confirmed to true if date is today or before
+   */
   useEffect(() => {
     if (phase_start !== defaultValues.phase_start) {
       // phase start has been edited
@@ -177,6 +87,9 @@ const ProjectPhaseForm = ({
     }
   }, [phase_start, defaultValues, setValue]);
 
+  /**
+   * Defaults is_phase_end_confirmed to true if date is today or before
+   */
   useEffect(() => {
     if (phase_end !== defaultValues.phase_end) {
       // phase end has been edited
@@ -340,29 +253,6 @@ const ProjectPhaseForm = ({
             />
           </FormControl>
         </Grid>
-        {/* 
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth error={!!formErrors?.status_update}>
-            <ControlledTextInput
-              fullWidth
-              label="Status update"
-              multiline
-              rows={3}
-              name="status_update"
-              control={control}
-              size="small"
-              helperText="Optionally include a project status update"
-            />
-            {formErrors?.status_update && (
-              <FormHelperText>
-                {formErrors.status_update.message}
-              </FormHelperText>
-            )}
-          </FormControl>
-        </Grid> */}
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>

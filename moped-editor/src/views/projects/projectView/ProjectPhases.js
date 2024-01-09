@@ -138,20 +138,21 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             : "";
           const showTentativeIcon =
             !row.is_phase_start_confirmed && strToRender;
+
+          const showConfirmedIcon = row.is_phase_start_confirmed && strToRender;
+
           return (
             <John isEnabled={showTentativeIcon}>
               <Box display="flex" alignItems="center">
-                <span
-                  style={{
-                    paddingInlineEnd: ".25rem",
-                    fontStyle: showTentativeIcon ? "italic" : null,
-                  }}
-                >
-                  {`${strToRender}${showTentativeIcon ? "*" : ""}`}
+                <span style={{ paddingInlineEnd: ".25rem" }}>
+                  {strToRender}
                 </span>
-                {/* {showTentativeIcon && (
+                {showTentativeIcon && (
                   <HelpOutline style={{ color: grey[500] }} />
-                )} */}
+                )}
+                {showConfirmedIcon && (
+                  <CheckCircleOutline style={{ color: grey[500] }} />
+                )}
               </Box>
             </John>
           );
@@ -171,11 +172,15 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             ? new Date(row.phase_end).toLocaleDateString()
             : "";
           const showTentativeIcon = !row.is_phase_end_confirmed && strToRender;
+          const showConfirmedIcon = row.is_phase_end_confirmed && strToRender;
           return (
             <Box display="flex" alignItems="center">
               <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
-              {!row.is_phase_end_confirmed && showTentativeIcon && (
+              {showTentativeIcon && (
                 <HelpOutline style={{ color: grey[500] }} />
+              )}
+              {showConfirmedIcon && (
+                <CheckCircleOutline style={{ color: grey[500] }} />
               )}
             </Box>
           );
@@ -185,12 +190,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
       {
         headerName: "Description",
         field: "phase_description",
-        minWidth: 300,
+        minWidth: 350,
       },
       {
         headerName: "Current",
         field: "is_current_phase",
-        minWidth: 150,
+        minWidth: 50,
         renderCell: ({ row }) =>
           row.is_current_phase ? (
             <Box display="flex">

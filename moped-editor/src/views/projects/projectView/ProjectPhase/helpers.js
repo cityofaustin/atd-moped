@@ -1,0 +1,121 @@
+import { useMemo } from "react";
+import * as yup from "yup";
+
+export const phaseValidationSchema = yup.object().shape({
+  phase_id: yup
+    .number("Phase is required")
+    .nullable()
+    .required("Phase is required"),
+  subphase_id: yup.number().nullable().optional(),
+  phase_start: yup.string().nullable().optional(),
+  phase_end: yup.string().nullable().optional(),
+  is_current_phase: yup.boolean(),
+  is_phase_start_confirmed: yup.boolean(),
+  is_phase_end_confirmed: yup.boolean(),
+  description: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
+  project_phase_id: yup.number().nullable().optional(),
+  project_id: yup.number().required(),
+});
+
+const DEFAULT_FORM_VALUES = {
+  project_phase_id: null,
+  phase_id: null,
+  subphase_id: null,
+  phase_start: null,
+  is_phase_start_confirmed: true,
+  is_phase_end_confirmed: false,
+  phase_end: null,
+  phase_description: null,
+  is_current_phase: false,
+  project_id: null,
+};
+
+/**
+ * Hook which provides initialize form values
+ * @param {object} phase - an optoinal `moped_proj_phase` object whose values will
+ * override the DEFAULT_FORM_VALUES
+ */
+export const useDefaultValues = (phase) =>
+  useMemo(() => {
+    // initialize form with default values plus the project id
+    let defaultValues = {
+      ...DEFAULT_FORM_VALUES,
+      project_id: phase.project_id,
+    };
+
+    if (phase.project_phase_id) {
+      // we are editing a phase: update all defaults from phase
+      Object.keys(DEFAULT_FORM_VALUES).forEach((key) => {
+        defaultValues[key] = phase[key];
+      });
+    } else {
+      // default the phase_start to midnight (local) on the current date
+      defaultValues.phase_start = new Date(
+        new Date().setHours(0, 0, 0, 0)
+      ).toISOString();
+    }
+    return defaultValues;
+  }, [phase]);
+
+/**
+ * Hook which returns an array of subphase options given an input `phase_id`
+ * and an array of `moped_phases` objects
+ */
+export const useSubphases = (phase_id, phases) =>
+  useMemo(
+    () =>
+      phase_id
+        ? phases.find((p) => p.phase_id === phase_id)?.moped_subphases || []
+        : [],
+    [phase_id, phases]
+  );
+
+/**
+ * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
+ * need to have their `is_current` flag cleared
+ */
+export const useCurrentPhaseIdsToClear = (
+  thisProjectPhaseId,
+  isCurrent,
+  currentProjectPhaseIds
+) => {
+  if (!isCurrent) {
+    // nothing to do
+    return [];
+  }
+  // return all project phase IDs except the one we're editing
+  return currentProjectPhaseIds.filter(
+    (projectPhaseId) => projectPhaseId !== thisProjectPhaseId
+  );
+};
+
+export const onSubmitPhase = ({
+  data,
+  mutate,
+  currentPhaseIdsToClear,
+  onSubmitCallback,
+}) => {
+  const { project_phase_id } = data;
+  delete data.project_phase_id;
+
+  const variables = {
+    current_phase_ids_to_clear: currentPhaseIdsToClear,
+  };
+
+  if (!project_phase_id) {
+    // inserting a new mutation - which has a slightly different
+    // variable shape bc the mutation supports multiple inserts
+    variables.objects = [data];
+  } else {
+    variables.project_phase_id = project_phase_id;
+    variables.object = data;
+  }
+
+  mutate({
+    variables,
+    refetchQueries: ["ProjectSummary"],
+  }).then(() => onSubmitCallback());
+};
