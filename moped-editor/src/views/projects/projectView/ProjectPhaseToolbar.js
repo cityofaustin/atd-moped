@@ -1,10 +1,8 @@
-import AddCircleIcon from "@mui/icons-material/AddCircle";
-import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 
-/** Custom toolbar title that resembles the material table titles we use  */
+/** Custom toolbar title that resembles material table titles  */
 const ProjectPhaseToolbar = ({ addAction, setIsDialogOpen }) => (
   <Box display="flex" justifyContent="space-between">
     <Typography variant="h2" color="primary" style={{ padding: "1em" }}>
