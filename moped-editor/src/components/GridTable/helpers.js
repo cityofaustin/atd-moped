@@ -50,6 +50,10 @@ export const isFilterNullType = (operator) => {
 
 /**
  * Returns true if Field has a lookup table associated with it and operator is case sensitive
+ * @param {string} lookupTable -  the lookup table name
+ * @param {string} operator - The operator name
+ * @param {boolean} loading - Whether the lookup table is still loading
+ * @returns {boolean}
  */
 export const shouldRenderAutocompleteInput = (
   lookupTable,

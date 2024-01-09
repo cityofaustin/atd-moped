@@ -186,6 +186,7 @@ const Filters = ({
    * Handles the click event on the operator drop-down
    * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
+   * @param {string} lookupTable - The lookup table name
    */
   const handleFilterOperatorClick = (filterIndex, operator, lookupTable) => {
     // Clone state
