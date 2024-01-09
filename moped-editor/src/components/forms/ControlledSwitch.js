@@ -2,6 +2,13 @@ import Switch from "@mui/material/Switch";
 import { Controller } from "react-hook-form";
 import FormControlLabel from "@mui/material/FormControlLabel";
 
+/**
+ * A react-hook-form wrapper of the MUI Switch component
+ * @param {object} control - react-hook-form `control` object from useController - required
+ * @param {string} name - unique field name which be used in react-hook-form data object
+ * @param {string} label - the label to render next to the checkbox
+ * @return {JSX.Element}
+ */
 const ControlledSwitch = ({ name, control, label }) => {
   return (
     <Controller
