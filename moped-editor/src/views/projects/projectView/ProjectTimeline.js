@@ -18,7 +18,7 @@ import ProjectMilestones from "./ProjectMilestones";
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = (props) => {
+const ProjectTimeline = () => {
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -35,8 +35,6 @@ const ProjectTimeline = (props) => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
-
-  const projectViewRefetch = props.refetch;
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
