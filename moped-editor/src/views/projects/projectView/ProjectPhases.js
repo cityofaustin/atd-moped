@@ -14,7 +14,6 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
   HelpOutline,
-  ChildFriendly,
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
@@ -264,7 +263,7 @@ const ProjectPhases = ({ projectId, loading, data, refetch }) => {
 
   const columns = useColumns({
     setEditPhase,
-    deleteInProgress: false,
+    deleteInProgress,
     onDeletePhase,
   });
 
