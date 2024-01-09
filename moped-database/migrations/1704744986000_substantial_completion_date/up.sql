@@ -293,7 +293,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_inspector, 
         plv.project_designer, 
         plv.project_tags, 
-        plv.contractors, 
+        plv.workgroup_contractors, 
         plv.contract_numbers, 
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text as project_url, 
