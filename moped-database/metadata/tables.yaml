@@ -2392,8 +2392,6 @@
         check: {}
         columns:
           - project_id
-          - created_at
-          - created_by_user_id
           - funding_source_id
           - funding_program_id
           - funding_amount
@@ -2402,13 +2400,10 @@
           - fund
           - dept_unit
           - is_deleted
-          - updated_at
-          - updated_by_user_id
     - role: moped-editor
       permission:
         check: {}
         columns:
-          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2417,10 +2412,7 @@
           - dept_unit
           - fund
           - funding_description
-          - created_at
           - is_deleted
-          - updated_at
-          - updated_by_user_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -2483,7 +2475,6 @@
     - role: moped-admin
       permission:
         columns:
-          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2492,16 +2483,12 @@
           - dept_unit
           - fund
           - funding_description
-          - created_at
           - is_deleted
-          - updated_at
-          - updated_by_user_id
         filter: {}
         check: null
     - role: moped-editor
       permission:
         columns:
-          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2510,10 +2497,7 @@
           - dept_unit
           - fund
           - funding_description
-          - created_at
           - is_deleted
-          - updated_at
-          - updated_by_user_id
         filter: {}
         check: null
   event_triggers:
