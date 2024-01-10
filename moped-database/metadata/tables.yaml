@@ -2400,6 +2400,7 @@
           - fund
           - dept_unit
           - is_deleted
+      comment: No insert permissions on audit fields
     - role: moped-editor
       permission:
         check: {}
