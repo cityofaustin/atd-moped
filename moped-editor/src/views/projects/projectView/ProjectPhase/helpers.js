@@ -13,7 +13,8 @@ export const phaseValidationSchema = yup.object().shape({
     .optional()
     .when("is_current_phase", {
       is: true,
-      then: (schema) => schema.required("Start date is required when phase is current"),
+      then: (schema) =>
+        schema.required("Start date is required when phase is current"),
     })
     .typeError("Invalid Date"),
   phase_end: yup.date().nullable().optional().typeError("Invalid Date"),
@@ -33,9 +34,9 @@ const DEFAULT_FORM_VALUES = {
   phase_id: null,
   subphase_id: null,
   phase_start: null,
-  is_phase_start_confirmed: true,
-  is_phase_end_confirmed: false,
+  is_phase_start_confirmed: false,
   phase_end: null,
+  is_phase_end_confirmed: false,
   phase_description: null,
   is_current_phase: false,
   project_id: null,
@@ -59,11 +60,6 @@ export const useDefaultValues = (phase) =>
       Object.keys(DEFAULT_FORM_VALUES).forEach((key) => {
         defaultValues[key] = phase[key];
       });
-    } else {
-      // default the phase_start to midnight (local) on the current date
-      defaultValues.phase_start = new Date(
-        new Date().setHours(0, 0, 0, 0)
-      ).toISOString();
     }
     return defaultValues;
   }, [phase]);
