@@ -5,7 +5,6 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
-// import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
@@ -31,8 +30,6 @@ const ProjectPhaseForm = ({
   currentProjectPhaseIds,
   onSubmitCallback,
 }) => {
-  console.log("TODO: CHECK SEED DATA!");
-  console.log("TODO: METADATA PRESET?");
   const isNewPhase = !phase.project_phase_id;
 
   const defaultValues = useDefaultValues(phase);
@@ -240,12 +237,6 @@ const ProjectPhaseForm = ({
         </Grid>
         <Grid item container justifyContent="flex-end">
           <FormControl>
-            {/* <ControlledCheckbox
-              name="is_current_phase"
-              control={control}
-              label="Current phase"
-            /> */}
-
             <ControlledSwitch
               name="is_current_phase"
               control={control}
