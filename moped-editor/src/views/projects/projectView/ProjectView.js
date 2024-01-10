@@ -7,6 +7,7 @@ import {
   useLocation,
 } from "react-router-dom";
 import makeStyles from "@mui/styles/makeStyles";
+import { ErrorBoundary } from "react-error-boundary";
 
 import {
   Breadcrumbs,
@@ -66,6 +67,7 @@ import CreateOutlinedIcon from "@mui/icons-material/CreateOutlined";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
+import FallbackComponent from "src/components/FallbackComponent";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -175,11 +177,16 @@ const ProjectView = () => {
   let [searchParams, setSearchParams] = useSearchParams();
   const location = useLocation();
   const activeTab = useActiveTabIndex(searchParams.get("tab"));
-  const previousFilters = location.state?.filters;
-  const allProjectsLink = !!previousFilters
-    ? `/moped/projects?filter=${previousFilters}`
-    : "/moped/projects";
   const classes = useStyles();
+
+  /* Create link back to previous filters using queryString state passed with React Router */
+  const locationState = location?.state;
+  const previousProjectListViewQueryString = locationState
+    ? locationState.queryString
+    : null;
+  const allProjectsLink = !previousProjectListViewQueryString
+    ? "/moped/projects"
+    : `/moped/projects${previousProjectListViewQueryString}`;
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
@@ -209,6 +216,7 @@ const ProjectView = () => {
    */
   const { loading, error, data, refetch } = useQuery(SUMMARY_QUERY, {
     variables: { projectId, userId },
+    fetchPolicy: "network-only",
   });
 
   const isFollowing = data?.moped_user_followed_projects.length > 0;
@@ -404,165 +412,171 @@ const ProjectView = () => {
           }
         >
           <Container maxWidth="xl">
-            <Card className={classes.cardWrapper}>
-              {loading ? (
-                <CircularProgress />
-              ) : (
-                <div className={classes.root}>
-                  <Box p={4} pb={2}>
-                    <Grid container>
-                      <Grid item xs={11}>
-                        <Box pb={1}>
-                          <Breadcrumbs aria-label="all-projects-breadcrumb">
-                            <Link component={RouterLink} to={allProjectsLink}>
-                              <strong>{"< ALL PROJECTS"}</strong>
-                            </Link>
-                          </Breadcrumbs>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={1} md={1}>
-                        <Box
-                          className={classes.followDiv}
-                          onClick={() => handleFollowProject()}
-                        >
-                          <Tooltip title={isFollowing ? "Unfollow" : "Follow"}>
-                            {isFollowing ? (
-                              <BookmarkIcon className={classes.unfollowIcon} />
-                            ) : (
-                              <BookmarkBorderIcon
-                                className={classes.followIcon}
-                              />
-                            )}
-                          </Tooltip>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={11} md={11} className={classes.title}>
-                        <Box
-                          alignItems="center"
-                          display="flex"
-                          flexDirection="row"
-                        >
-                          <ProjectNameEditable
-                            projectName={data.moped_project[0].project_name}
-                            projectId={projectId}
-                            editable={true}
-                            isEditing={isEditing}
-                            setIsEditing={setIsEditing}
-                            updatedCallback={handleNameUpdate} // FLH not sure if this is needed
-                          />
-                          <Box>
-                            <ProjectStatusBadge
-                              phaseKey={currentPhase?.phase_key}
-                              phaseName={currentPhase?.phase_name}
-                            />
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <Card className={classes.cardWrapper}>
+                {loading ? (
+                  <CircularProgress />
+                ) : (
+                  <div className={classes.root}>
+                    <Box p={4} pb={2}>
+                      <Grid container>
+                        <Grid item xs={11}>
+                          <Box pb={1}>
+                            <Breadcrumbs aria-label="all-projects-breadcrumb">
+                              <Link component={RouterLink} to={allProjectsLink}>
+                                <strong>{"< ALL PROJECTS"}</strong>
+                              </Link>
+                            </Breadcrumbs>
                           </Box>
-                        </Box>
-                      </Grid>
-                      <Grid item xs={1} md={1}>
-                        <MoreHorizIcon
-                          aria-controls="fade-menu"
-                          aria-haspopup="true"
-                          className={classes.moreHorizontal}
-                          onClick={handleMenuOpen}
-                        />
-                        <Menu
-                          id="fade-menu"
-                          anchorEl={anchorElement}
-                          keepMounted
-                          open={menuOpen}
-                          onClose={handleMenuClose}
-                          autoFocus={false}
-                          TransitionComponent={Fade}
-                          anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "center",
-                          }}
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }}
-                        >
-                          <MenuItem
-                            onClick={handleRenameClick}
-                            className={classes.projectOptionsMenuItem}
-                            selected={false}
+                        </Grid>
+                        <Grid item xs={1} md={1}>
+                          <Box
+                            className={classes.followDiv}
+                            onClick={() => handleFollowProject()}
                           >
-                            <ListItemIcon
-                              className={classes.projectOptionsMenuItemIcon}
+                            <Tooltip
+                              title={isFollowing ? "Unfollow" : "Follow"}
                             >
-                              <CreateOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Rename" />
-                          </MenuItem>
-                          <MenuItem
-                            onClick={handleDeleteClick}
-                            className={classes.projectOptionsMenuItem}
-                            selected={false}
+                              {isFollowing ? (
+                                <BookmarkIcon
+                                  className={classes.unfollowIcon}
+                                />
+                              ) : (
+                                <BookmarkBorderIcon
+                                  className={classes.followIcon}
+                                />
+                              )}
+                            </Tooltip>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={11} md={11} className={classes.title}>
+                          <Box
+                            alignItems="center"
+                            display="flex"
+                            flexDirection="row"
                           >
-                            <ListItemIcon
-                              className={classes.projectOptionsMenuItemIcon}
-                            >
-                              <DeleteOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Delete" />
-                          </MenuItem>
-                        </Menu>
-                      </Grid>
-                    </Grid>
-                  </Box>
-                  <Divider />
-                  <AppBar className={classes.appBar} position="static">
-                    <Tabs
-                      classes={{ indicator: classes.indicatorColor }}
-                      value={activeTab}
-                      onChange={handleChange}
-                      variant="scrollable"
-                      aria-label="Project Details Tabs"
-                    >
-                      {TABS.map((tab, i) => {
-                        return (
-                          <Tab
-                            className={classes.selectedTab}
-                            key={tab.label}
-                            label={tab.label}
-                            {...a11yProps(i)}
+                            <ProjectNameEditable
+                              projectName={data.moped_project[0].project_name}
+                              projectId={projectId}
+                              editable={true}
+                              isEditing={isEditing}
+                              setIsEditing={setIsEditing}
+                              updatedCallback={handleNameUpdate} // FLH not sure if this is needed
+                            />
+                            <Box>
+                              <ProjectStatusBadge
+                                phaseKey={currentPhase?.phase_key}
+                                phaseName={currentPhase?.phase_name}
+                              />
+                            </Box>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={1} md={1}>
+                          <MoreHorizIcon
+                            aria-controls="fade-menu"
+                            aria-haspopup="true"
+                            className={classes.moreHorizontal}
+                            onClick={handleMenuOpen}
                           />
-                        );
-                      })}
-                    </Tabs>
-                  </AppBar>
-                  {TABS.map((tab, i) => {
-                    const TabComponent = tab.Component;
-                    return (
-                      <TabPanel
-                        data-name={"moped-project-view-tabpanel"}
-                        key={tab.label}
+                          <Menu
+                            id="fade-menu"
+                            anchorEl={anchorElement}
+                            keepMounted
+                            open={menuOpen}
+                            onClose={handleMenuClose}
+                            autoFocus={false}
+                            TransitionComponent={Fade}
+                            anchorOrigin={{
+                              vertical: "bottom",
+                              horizontal: "center",
+                            }}
+                            transformOrigin={{
+                              vertical: "top",
+                              horizontal: "center",
+                            }}
+                          >
+                            <MenuItem
+                              onClick={handleRenameClick}
+                              className={classes.projectOptionsMenuItem}
+                              selected={false}
+                            >
+                              <ListItemIcon
+                                className={classes.projectOptionsMenuItemIcon}
+                              >
+                                <CreateOutlinedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="Rename" />
+                            </MenuItem>
+                            <MenuItem
+                              onClick={handleDeleteClick}
+                              className={classes.projectOptionsMenuItem}
+                              selected={false}
+                            >
+                              <ListItemIcon
+                                className={classes.projectOptionsMenuItemIcon}
+                              >
+                                <DeleteOutlinedIcon />
+                              </ListItemIcon>
+                              <ListItemText primary="Delete" />
+                            </MenuItem>
+                          </Menu>
+                        </Grid>
+                      </Grid>
+                    </Box>
+                    <Divider />
+                    <AppBar className={classes.appBar} position="static">
+                      <Tabs
+                        classes={{ indicator: classes.indicatorColor }}
                         value={activeTab}
-                        index={i}
-                        className={
-                          tab.label === "Map" ? classes.noPadding : null
-                        }
+                        onChange={handleChange}
+                        variant="scrollable"
+                        aria-label="Project Details Tabs"
                       >
-                        <TabComponent
-                          loading={loading}
-                          data={data}
-                          error={error}
-                          refetch={refetch}
-                          projectName={data.moped_project[0].project_name}
-                          phaseKey={currentPhase?.phase_key}
-                          phaseName={currentPhase?.phase_name}
-                          parentProjectId={
-                            data.moped_project[0].parent_project_id
+                        {TABS.map((tab, i) => {
+                          return (
+                            <Tab
+                              className={classes.selectedTab}
+                              key={tab.label}
+                              label={tab.label}
+                              {...a11yProps(i)}
+                            />
+                          );
+                        })}
+                      </Tabs>
+                    </AppBar>
+                    {TABS.map((tab, i) => {
+                      const TabComponent = tab.Component;
+                      return (
+                        <TabPanel
+                          data-name={"moped-project-view-tabpanel"}
+                          key={tab.label}
+                          value={activeTab}
+                          index={i}
+                          className={
+                            tab.label === "Map" ? classes.noPadding : null
                           }
-                          onCloseTab={onCloseTab}
-                          listViewQuery={queryContext.listViewQuery}
-                        />
-                      </TabPanel>
-                    );
-                  })}
-                </div>
-              )}
-            </Card>
+                        >
+                          <TabComponent
+                            loading={loading}
+                            data={data}
+                            error={error}
+                            refetch={refetch}
+                            projectName={data.moped_project[0].project_name}
+                            phaseKey={currentPhase?.phase_key}
+                            phaseName={currentPhase?.phase_name}
+                            parentProjectId={
+                              data.moped_project[0].parent_project_id
+                            }
+                            onCloseTab={onCloseTab}
+                            listViewQuery={queryContext.listViewQuery}
+                          />
+                        </TabPanel>
+                      );
+                    })}
+                  </div>
+                )}
+              </Card>
+            </ErrorBoundary>
           </Container>
           {dialogOpen && dialogState && (
             <Dialog

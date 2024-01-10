@@ -128,6 +128,12 @@ const useLookupTables = (data) =>
     return lookupData;
   }, [data]);
 
+/** Fields which do not need to be rendered in the activity log */
+const CHANGE_FIELDS_TO_IGNORE = [
+  "updated_by_user_id",
+  "updated_at"
+];
+
 /**
  * Updates the description field with newData and oldData
  * Makes sure the project creation event is the last in the returned Array
@@ -158,7 +164,7 @@ const usePrepareActivityData = (activityData) =>
               if (!isEqual(newData[key], oldData[key])) {
                 changedField = key;
               }
-            } else if (newData[key] !== oldData[key] && key !== "updated_at") {
+            } else if (newData[key] !== oldData[key] && !CHANGE_FIELDS_TO_IGNORE.includes(key)) {
               changedField = key;
             }
           });
@@ -230,6 +236,11 @@ const ProjectActivityLog = () => {
                     lookupData,
                     projectId
                   );
+                  // allows log formatters to return a `null` changeText, causing the
+                  // event to not be rendered at all
+                  if (!changeText) {
+                    return null;
+                  }
                   return (
                     <TableRow key={change.activity_id}>
                       <TableCell

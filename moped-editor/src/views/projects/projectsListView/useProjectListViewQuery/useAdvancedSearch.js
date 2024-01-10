@@ -1,38 +1,79 @@
 import { useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
+import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 
-const useFilterQuery = (locationSearch) =>
-  useMemo(() => {
-    return new URLSearchParams(locationSearch);
-  }, [locationSearch]);
+/* Names of advanced search URL parameters */
+export const advancedSearchFilterParamName = "filters";
+export const advancedSearchIsOrParamName = "isOr";
 
 /**
- * if filter exists in url, decodes base64 string and returns as object
+ * if filter exists in url, get the values and try to parse them
  * Used to initialize filter state
  * @return Object
  */
-const useMakeFilterState = (filterQuery) =>
+const useMakeFilterState = (searchParams) =>
   useMemo(() => {
-    if (Array.from(filterQuery).length > 0) {
+    if (Array.from(searchParams).length > 0) {
+      const filterSearchParams = searchParams.get(
+        advancedSearchFilterParamName
+      );
+      if (filterSearchParams === null) return [];
+
       try {
-        return JSON.parse(atob(filterQuery.get("filter")));
+        return JSON.parse(filterSearchParams);
       } catch {
-        return {};
+        return [];
       }
     }
-    return {};
-  }, [filterQuery]);
+    return [];
+  }, [searchParams]);
 
 /**
- * Build the advanced search part of the graphql query using the filter state.
- @ param {Object} filters - Stores filters assigned random id and nests column, operator, and value
+ * Return the default operator for a given field or a fallback operator if one is not defined in config
+ * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
+ * @return String
+ */
+export const getDefaultOperator = (filterConfigForField) => {
+  const { defaultOperator, operators } = filterConfigForField;
+  const fallbackOperator = operators[0];
+
+  const isDefaultOperator = Boolean(defaultOperator);
+
+  return isDefaultOperator ? defaultOperator : fallbackOperator;
+};
+
+export const makeSearchParamsFromFilterParameters = (filterParameters) => {
+  return Object.values(filterParameters).map((filterParameter) => ({
+    field: filterParameter.field,
+    operator: filterParameter.operator,
+    value: filterParameter.value,
+  }));
+};
+
+/**
+ * Build an array of filter strings to be used in generating the advanced search where string
+ * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
-const makeAdvancedSearchWhereString = (filters) =>
+const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
-      let { envelope, field, gqlOperator, value, type, specialNullValue } =
-        filters[filter];
+      let { field, value, operator } = filters[filter];
+
+      // Use field name to get the filter config and GraphQL operator config for that field
+      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
+        (fieldConfig) => fieldConfig.name === field
+      );
+      const { type } = filterConfigForField;
+
+      // Use operator name to get the GraphQL operator config for that operator
+      const operatorConfig = FiltersCommonOperators[operator];
+      let {
+        envelope,
+        specialNullValue,
+        operator: gqlOperator,
+      } = operatorConfig;
 
       // If we have no operator, then there is nothing we can do.
       if (field === null || gqlOperator === null) {
@@ -62,12 +103,17 @@ const makeAdvancedSearchWhereString = (filters) =>
       }
       return `${field}: { ${gqlOperator}: ${value} }`;
     })
-    .filter((value) => value !== null)
-    .join(", ");
+    .filter((value) => value !== null);
 
 export const useAdvancedSearch = () => {
-  const filterQuery = useFilterQuery(useLocation().search);
-  const initialFilterState = useMakeFilterState(filterQuery);
+  /* Get advanced filters settings from search params if they exist */
+  let [searchParams] = useSearchParams();
+  const initialFilterState = useMakeFilterState(searchParams);
+
+  /* Determine or/any from search params if it exists */
+  const isOrFromSearchParams = searchParams.get(advancedSearchIsOrParamName);
+  const initialIsOrState = isOrFromSearchParams === "true" ? true : false;
+  const [isOr, setIsOr] = useState(initialIsOrState);
 
   /**
    * Stores filters assigned random id and nests column, operator, and value.
@@ -77,15 +123,26 @@ export const useAdvancedSearch = () => {
    */
   const [filters, setFilters] = useState(initialFilterState);
 
-  const advancedSearchWhereString = useMemo(
-    () => makeAdvancedSearchWhereString(filters),
-    [filters]
-  );
+  const advancedSearchWhereString = useMemo(() => {
+    const advancedFilters = makeAdvancedSearchWhereFilters(filters);
+    if (advancedFilters.length === 0) return null;
+
+    const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
+
+    if (isOr) {
+      // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
+      return `_or: [${bracketedFilters.join(",")}]`;
+    } else {
+      // Ex. project_lead: {_eq: "COA ATD Project Delivery"}, project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}
+      return `_and: [${bracketedFilters.join(",")}]`;
+    }
+  }, [filters, isOr]);
 
   return {
-    filterQuery,
     filters,
     setFilters,
     advancedSearchWhereString,
+    isOr,
+    setIsOr,
   };
 };

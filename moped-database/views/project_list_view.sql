@@ -1,4 +1,6 @@
--- latest version 1698786868086_add_component__subtype_to_view
+-- latest version 1700515730257_fix_delete_component_bug
+DROP VIEW project_list_view CASCADE;
+
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -40,9 +42,9 @@ AS WITH project_person_list_lookup AS (
               ', '::text) AS task_order_names,
           string_agg(task_order_objects.task_order_object ->> 'task_order'::text,
               ', '::text) AS task_order_names_short,
-          jsonb_agg(task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
-          string_agg(DISTINCT mpwa.contractor,
-          ', '::text) AS contractors,
+          jsonb_agg(DISTINCT task_order_objects.task_order_object) FILTER (WHERE task_order_objects.task_order_object IS NOT NULL) AS task_orders,
+          string_agg(DISTINCT mpwa.workgroup_contractor,
+          ', '::text) AS workgroup_contractors,
           string_agg(mpwa.contract_number,
           ', '::text) AS contract_numbers FROM moped_proj_work_activity mpwa
       LEFT JOIN LATERAL jsonb_array_elements(mpwa.task_orders) task_order_objects (task_order_object) ON TRUE WHERE 1 = 1
@@ -53,8 +55,9 @@ AS WITH project_person_list_lookup AS (
     SELECT
       mpc.project_id,
       string_agg(DISTINCT mc.component_name_full, ', '::text) AS components
-    FROM moped_proj_components mpc 
-    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id 
+    FROM moped_proj_components mpc
+    LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+    WHERE mpc.is_deleted = FALSE
     GROUP BY mpc.project_id
   )
  SELECT
@@ -77,7 +80,7 @@ AS WITH project_person_list_lookup AS (
     mp.knack_project_id,
     proj_notes.project_note,
     proj_notes.date_created as project_note_date_created,
-    work_activities.contractors,
+    work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
@@ -200,7 +203,7 @@ AS WITH project_person_list_lookup AS (
     cpl.children_project_ids,
     proj_notes.project_note,
     proj_notes.date_created,
-    work_activities.contractors,
+    work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,

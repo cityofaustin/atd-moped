@@ -9,6 +9,9 @@ import { setContext } from "@apollo/client/link/context";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import ProjectListViewQueryContext from "./components/QueryContextProvider";
+import ActivityMetrics from "./components/ActivityMetrics";
+import { ErrorBoundary } from "react-error-boundary";
+import FallbackComponent from "src/components/FallbackComponent";
 
 // Apollo GraphQL Client
 import {
@@ -53,7 +56,7 @@ const useClient = (user) =>
           project_list_view: {
             keyFields: ["project_id"],
           },
-          // todo: these type policies only come into play when the 
+          // todo: these type policies only come into play when the
           // query that fetches them uses an appropriate caching policy
           moped_entity: {
             keyFields: ["entity_id"],
@@ -79,12 +82,16 @@ const App = () => {
       <StyledEngineProvider injectFirst>
         <LocalizationProvider dateAdapter={AdapterDateFns}>
           <ThemeProvider theme={theme}>
-            <GlobalStyles />
-            <ProjectListViewQueryContext.Provider
-              value={{ listViewQuery, setListViewQuery }}
-            >
-              {routing}
-            </ProjectListViewQueryContext.Provider>
+            <ErrorBoundary FallbackComponent={FallbackComponent}>
+              <GlobalStyles />
+              <ActivityMetrics>
+                <ProjectListViewQueryContext.Provider
+                  value={{ listViewQuery, setListViewQuery }}
+                >
+                  {routing}
+                </ProjectListViewQueryContext.Provider>
+              </ActivityMetrics>
+            </ErrorBoundary>
           </ThemeProvider>
         </LocalizationProvider>
       </StyledEngineProvider>

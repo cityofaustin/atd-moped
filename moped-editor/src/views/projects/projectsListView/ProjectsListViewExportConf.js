@@ -75,8 +75,8 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_designer: {
     label: "Designer",
   },
-  contractors: {
-    label: "Contractors",
+  workgroup_contractors: {
+    label: "Workgroup/Contractors",
   },
   contract_numbers: {
     label: "Contract numbers",

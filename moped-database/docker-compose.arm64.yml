@@ -15,4 +15,7 @@ services:
             - POSTGRES_USER=moped
             - POSTGRES_PASSWORD=moped
             - POSTGRES_DB=moped
-        command: ["postgres", "-c", "jit=off"]
+        command: ["postgres",
+            "-c", "jit=off",
+            "-c","log_statement=ddl",
+            "-c", "log_min_messages=info"]

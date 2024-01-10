@@ -1,6 +1,6 @@
 UPLOAD_CHUNK_SIZE = 100
 
-LAYER_IDS = {"points": 0, "lines": 1}
+LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
 
 COMPONENTS_QUERY = """
 query {
@@ -20,7 +20,6 @@ query {
     component_url
     construction_start_date
     contract_numbers
-    contractors
     council_districts
     current_phase_name
     current_phase_name_simple
@@ -28,6 +27,7 @@ query {
     feature_ids
     funding_source_name
     geometry
+    line_geometry
     interim_project_component_id
     interim_project_id
     is_project_component_deleted
@@ -60,6 +60,7 @@ query {
     type_name
     updated_at
     work_types
+    workgroup_contractors
   }
 }
 """

@@ -2,6 +2,7 @@ import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import makeStyles from '@mui/styles/makeStyles';
+import FallbackComponent from "./FallbackComponent";
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
@@ -24,7 +25,7 @@ const ApolloErrorHandler = props => {
 
   // Error Variables
   const error = props?.error ?? null;
-  const errorString = JSON.stringify(error);
+  const errorString = error ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : "";
   const jwtError = errorString.includes("JWT") || errorString.includes("token");
 
   if (jwtError) {
@@ -40,7 +41,7 @@ const ApolloErrorHandler = props => {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : error ? (
-        <p>Error: {error.message}</p>
+        <FallbackComponent error={error}/>
       ) : (
         props.children
       )}

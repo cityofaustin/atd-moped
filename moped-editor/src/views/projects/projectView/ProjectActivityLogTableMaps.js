@@ -363,6 +363,19 @@ export const ProjectActivityLogTableMaps = {
       srts_id: {
         label: "Safe Routes to School infrastructure plan record identifier",
       },
+      // we don't render these audit fields in the activity log UI
+      created_at: {
+        label: "creation date"
+      },
+      created_by_user_id: {
+        label: "created by user"
+      },
+      updated_at: {
+        label: "update date"
+      },
+      updated_by_user_id: {
+        label: "updated by user"
+      }
     },
   },
   moped_project_files: {
@@ -540,7 +553,7 @@ export const ProjectActivityLogTableMaps = {
       id: {
         label: "ID",
       },
-      contractor: {
+      workgroup_contractor: {
         label: "workgroup/contractor",
       },
       contract_number: {

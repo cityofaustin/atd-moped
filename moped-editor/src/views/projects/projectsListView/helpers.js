@@ -1,13 +1,19 @@
-import { useMemo } from "react";
-import { NavLink as RouterLink } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
+import Link from "@mui/material/Link";
 import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
 import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
-import RenderSignalLink from "../signalProjectTable/RenderSignalLink";
+import RenderSignalLink from "../../../components/RenderSignalLink";
+import {
+  PROJECT_LIST_VIEW_QUERY_CONFIG,
+  DEFAULT_HIDDEN_COLS,
+} from "./ProjectsListViewQueryConf";
+import theme from "src/theme";
 
 export const filterNullValues = (value) => {
   if (!value || value === "-") {
@@ -87,6 +93,56 @@ const filterComponentFullNames = (value) => {
 };
 
 /**
+ * Get the user hidden column settings from local storage, clear them of
+ * outdated columns, and supplement with remaining default columns
+ * @returns {Object} hidden column settings from local storage
+ */
+const getPreviousHiddenColumns = () => {
+  let previousHiddenColumnSettings;
+
+  try {
+    previousHiddenColumnSettings = JSON.parse(
+      localStorage.getItem("mopedColumnConfig")
+    );
+  } catch (e) {
+    previousHiddenColumnSettings = null;
+    console.error("Error parsing project list view hidden column settings", e);
+  }
+
+  let currentHiddenColumnSettings;
+
+  // If there are no previous hidden column settings, set the default hidden columns
+  if (!previousHiddenColumnSettings) {
+    localStorage.setItem(
+      "mopedColumnConfig",
+      JSON.stringify(DEFAULT_HIDDEN_COLS)
+    );
+
+    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
+  } else {
+    // Use previous settings to override default hidden columns.
+    // By iterating the defaults, we also remove outdated columns no longer in config.
+    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
+      (acc, columnName) => {
+        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
+          return {
+            ...acc,
+            [columnName]: previousHiddenColumnSettings[columnName],
+          };
+        } else {
+          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
+        }
+      },
+      {}
+    );
+  }
+
+  return currentHiddenColumnSettings;
+};
+
+const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
+
+/**
  * Various custom components for Material Table
  */
 export const useTableComponents = ({
@@ -134,11 +190,50 @@ export const useTableComponents = ({
     ]
   );
 
+export const useHiddenColumnsSettings = () => {
+  const [hiddenColumns, setHiddenColumns] = useState({});
+
+  /*
+   * Initialize hidden columns from previous local storage
+   */
+  useEffect(() => {
+    const initialHiddenColumnSettings = getPreviousHiddenColumns();
+    setHiddenColumns(initialHiddenColumnSettings);
+  }, []);
+
+  /*
+   * Sync hidden columns state with local storage
+   */
+  useEffect(() => {
+    localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
+  }, [hiddenColumns]);
+
+  return { hiddenColumns, setHiddenColumns };
+};
+
 /**
  * The Material Table column settings
  */
-export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
-  useMemo(
+export const useColumns = ({ hiddenColumns }) => {
+  const location = useLocation();
+  const queryString = location.search;
+
+  const columnsToReturnInQuery = useMemo(() => {
+    const columnsShownInUI = Object.keys(hiddenColumns)
+      .filter((key) => hiddenColumns[key] === false)
+      .map((key) => key);
+
+    // We must include project_id in every query since it is set as a keyField in the Apollo cache.
+    // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
+    // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
+    // Also, some columns are dependencies of other columns to render, so we need to include them.
+    // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
+    const columnsNeededToRender = ["project_id", "current_phase_key"];
+
+    return [...columnsShownInUI, ...columnsNeededToRender];
+  }, [hiddenColumns]);
+
+  const columns = useMemo(
     () => [
       {
         title: "ID",
@@ -150,13 +245,14 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         field: "project_name",
         hidden: hiddenColumns["project_name"],
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.project_id}`}
-            state={{ filters: linkStateFilters }}
-            className={classes.colorPrimary}
+            state={{ queryString }}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.project_name}
-          </RouterLink>
+          </Link>
         ),
         cellStyle: {
           position: "sticky",
@@ -242,7 +338,7 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         title: "Signal IDs",
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
-        sorting: false,
+        sorting: COLUMN_CONFIG["project_feature"].sortable,
         render: (entry) => {
           if (!entry?.project_feature) {
             return "-";
@@ -338,13 +434,13 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         emptyValue: "-",
       },
       {
-        title: "Contractors",
-        field: "contractors",
-        hidden: hiddenColumns["contractors"],
+        title: "Workgroup/Contractors",
+        field: "workgroup_contractors",
+        hidden: hiddenColumns["workgroup_contractors"],
         emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
         render: (entry) => {
-          return entry.contractors.split(",").map((contractor, i) => (
+          return entry.workgroup_contractors.split(",").map((contractor, i) => (
             <span key={i} style={{ display: "block" }}>
               {contractor}
             </span>
@@ -410,13 +506,14 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         hidden: hiddenColumns["parent_project_id"],
         emptyValue: "-",
         render: (entry) => (
-          <RouterLink
+          <Link
+            component={RouterLink}
             to={`/moped/projects/${entry.parent_project_id}`}
-            state={{ filters: linkStateFilters }}
-            className={classes.colorPrimary}
+            state={{ queryString }}
+            sx={{ color: theme.palette.primary.main }}
           >
             {entry.parent_project_name}
-          </RouterLink>
+          </Link>
         ),
       },
       {
@@ -430,14 +527,17 @@ export const useColumns = ({ hiddenColumns, linkStateFilters, classes }) =>
         emptyValue: "-",
       },
     ],
-    [hiddenColumns, linkStateFilters, classes]
+    [hiddenColumns, queryString]
   );
+
+  return { columns, columnsToReturnInQuery };
+};
 
 /**
  * Defines various Material Table options
  * @param {integer} queryLimit - the current rows per page option
  * @param {object[]} data - the project list view data
- * @returns {boject} the material table setings options
+ * @returns {object} the material table setings options
  */
 export const useTableOptions = ({ queryLimit, data }) =>
   useMemo(

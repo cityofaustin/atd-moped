@@ -108,14 +108,13 @@ export const WORK_ACTIVITY_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
       order_by: { id: asc }
     ) {
-      contractor
+      workgroup_contractor
       id
       project_id
       contract_number
       description
       work_assignment_id
       contract_amount
-      contractor
       status_id
       reference_id
       work_order_url
@@ -155,7 +154,7 @@ export const WORK_ACTIVITY_STATUSES_QUERY = gql`
 `;
 
 export const ADD_WORK_ACTIVITIY = gql`
-  mutation AddWorKActivity($object: moped_proj_work_activity_insert_input!) {
+  mutation AddWorkActivity($object: moped_proj_work_activity_insert_input!) {
     insert_moped_proj_work_activity_one(object: $object) {
       id
     }

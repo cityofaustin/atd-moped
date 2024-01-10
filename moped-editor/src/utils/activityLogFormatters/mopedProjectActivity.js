@@ -46,7 +46,7 @@ export const formatProjectActivity = (change, lookupList) => {
             style: null,
           },
           {
-            text: entryMap.fields[changedField].label,
+            text: entryMap.fields[changedField]?.label,
             style: "boldText",
           },
         ],
@@ -59,7 +59,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: `Removed ${entryMap.fields[changedField].label} `,
+            text: `Removed ${entryMap.fields[changedField]?.label} `,
             style: null,
           },
         ],
@@ -71,7 +71,7 @@ export const formatProjectActivity = (change, lookupList) => {
       changeIcon,
       changeText: [
         {
-          text: `Changed ${entryMap.fields[changedField].label} to `,
+          text: `Changed ${entryMap.fields[changedField]?.label} to `,
           style: null,
         },
         {
@@ -89,7 +89,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: `Changed ${entryMap.fields[changedField].label} `,
+            text: `Changed ${entryMap.fields[changedField]?.label} `,
             style: null,
           },
         ],
@@ -124,7 +124,7 @@ export const formatProjectActivity = (change, lookupList) => {
       changeText: [
         {
           text: `
-          Changed ${entryMap.fields[changedField].label}
+          Changed ${entryMap.fields[changedField]?.label}
           to `,
           style: null,
         },

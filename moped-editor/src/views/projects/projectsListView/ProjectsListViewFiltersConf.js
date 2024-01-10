@@ -1,6 +1,30 @@
 import { FiltersCommonOperators } from "../../../components/GridTable/FiltersCommonOperators";
 
 /**
+ * Array of operators that should be autocompleted
+ * @constant
+ * @type {array}
+ * @default
+ */
+export const AUTOCOMPLETE_OPERATORS = [
+  "string_equals_case_sensitive",
+  "string_does_not_equal_case_sensitive",
+];
+
+/**
+ * Array of operators that do not require a search value Ex. "is blank"
+ * @constant
+ * @type {array}
+ * @default
+ */
+export const OPERATORS_WITHOUT_SEARCH_VALUES = [
+  "string_is_null",
+  "string_is_not_null",
+  "string_is_not_null_special_case",
+  "string_is_null_special_case",
+];
+
+/**
  * Filter Configuration
  * @constant
  * @type {object}
@@ -272,9 +296,9 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "contractors",
-      label: "Contractors",
-      placeholder: "Contractor",
+      name: "workgroup_contractors",
+      label: "Workgroup/Contractors",
+      placeholder: "Workgroup or Contractor",
       type: "string",
       operators: [
         "string_contains_case_insensitive",

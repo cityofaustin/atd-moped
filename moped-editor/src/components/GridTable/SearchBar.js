@@ -11,6 +11,7 @@ import {
   Icon,
   IconButton,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
@@ -57,6 +58,28 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
+ * Create text to show advanced filters and logic applied in the UI
+ * @param {Object} filters - The current filters applied
+ * @param {Boolean} isOr - The current logic applied
+ * @returns {string} - The text to display
+ */
+const makeFilteredByText = (filters, isOr) => {
+  const filtersCount = Object.keys(filters).length;
+  let filteredByText = "Filtered by ";
+
+  /* Only show logic string if more than one filter applied */
+  if (filtersCount === 1) return filteredByText;
+
+  if (isOr) {
+    filteredByText += "any ";
+  } else {
+    filteredByText += "all ";
+  }
+
+  return filteredByText;
+};
+
+/**
  * Renders a search bar with optional filters
  * @param {string} searchFieldValue - The current value of the search field
  * @param {function} setSearchFieldValue - function to set the current value of the search field
@@ -65,6 +88,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
  * @param {Function} setSearchTerm - set the current search term set in the query
  * @param {Object} queryConfig - the query configuration object with placeholder text
+ * @param {Object} filtersConfig - The filters configuration for the current table
  * @return {JSX.Element}
  * @constructor
  */
@@ -76,6 +100,10 @@ const SearchBar = ({
   advancedSearchAnchor,
   setSearchTerm,
   queryConfig,
+  isOr,
+  handleSwitchToSearch,
+  loading,
+  filtersConfig,
 }) => {
   const classes = useStyles();
 
@@ -111,6 +139,9 @@ const SearchBar = ({
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
+
+    // Clear the advanced search filters
+    handleSwitchToSearch();
 
     // Update state if we are ready, triggers search.
     setSearchTerm(searchFieldValue);
@@ -148,13 +179,15 @@ const SearchBar = ({
     }
   };
 
-  const filterStateActive = !!Object.keys(filters).length;
-  const filtersApplied = [];
-  if (filterStateActive) {
-    Object.keys(filters).map((parameter) =>
-      filtersApplied.push(filters[parameter]["label"])
-    );
-  }
+  const filterStateActive = filters.length > 0;
+  const filtersApplied =
+    filterStateActive &&
+    filters.map((filter) => {
+      const fieldFilterConfig = filtersConfig.fields.find(
+        (fieldConfig) => fieldConfig.name === filter.field
+      );
+      return fieldFilterConfig.label;
+    });
 
   return (
     <>
@@ -179,6 +212,11 @@ const SearchBar = ({
           ),
           endAdornment: (
             <InputAdornment position="end">
+              {!!loading && (
+                <IconButton>
+                  <CircularProgress size="2rem" />
+                </IconButton>
+              )}
               <IconButton
                 onClick={toggleAdvancedSearch}
                 className={clsx({
@@ -201,7 +239,7 @@ const SearchBar = ({
       {filterStateActive && (
         <Box className={classes.filtersList}>
           <Typography align="right" className={classes.filtersText}>
-            Filtered by{" "}
+            {makeFilteredByText(filters, isOr)}{" "}
             <span className={classes.filtersSpan}>{`${filtersApplied.join(
               ", "
             )}`}</span>

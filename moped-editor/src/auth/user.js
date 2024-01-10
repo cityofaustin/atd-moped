@@ -100,21 +100,17 @@ export const initializeUserDBObject = (userObject) => {
       body: JSON.stringify({
         query: ACCOUNT_USER_PROFILE_GET_PLAIN,
         variables: {
-          userId:
-            config.env.APP_ENVIRONMENT === "local"
-              ? 1
-              : getDatabaseId(userObject),
+          userId: getDatabaseId(userObject),
         },
       }),
     }).then((res) => {
       // Then we parse the response
       res.json().then((resData) => {
         if (resData?.errors) {
-          console.error(resData.errors)
+          console.error(resData.errors);
         }
         if (resData?.data?.moped_users) {
           setSessionDatabaseData(resData.data.moped_users[0]);
-          window.location.reload();
         }
       });
     });
@@ -245,7 +241,7 @@ export const getRandomColor = () => {
 export const useUser = () => {
   const context = useContext(UserContext);
 
-  if (context && context.user) {
+  if (context && context.user && !context.user.userColor) {
     context.user.userColor = getRandomColor();
   }
 
@@ -272,7 +268,7 @@ export const getDatabaseId = (user) => {
     const claims = getHasuraClaims(user);
     return claims["x-hasura-user-db-id"];
   } catch (e) {
-    console.error("getDatabaseId error ", e)
+    console.error("getDatabaseId error ", e);
     return null;
   }
 };
