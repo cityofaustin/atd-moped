@@ -140,7 +140,7 @@ const ProjectPhaseForm = ({
                 option?.phase_id === selectedOption?.phase_id
               }
               getOptionLabel={(option) => option?.phase_name || ""}
-              error={formErrors?.phase_id}
+              error={!!formErrors?.phase_id}
             />
             {formErrors?.phase_id && (
               <FormHelperText>{formErrors.phase_id.message}</FormHelperText>
@@ -167,7 +167,7 @@ const ProjectPhaseForm = ({
                 option?.subphase_id === selectedOption?.subphase_id
               }
               getOptionLabel={(option) => option?.subphase_name || ""}
-              error={formErrors?.subphase_id}
+              error={!!formErrors?.subphase_id}
             />
             {formErrors?.subphase_id && (
               <FormHelperText>{formErrors.subphase_id.message}</FormHelperText>
@@ -180,6 +180,7 @@ const ProjectPhaseForm = ({
               name="phase_start"
               label="Start"
               control={control}
+              error={!!formErrors?.phase_start}
             />
             {formErrors?.phase_start && (
               <FormHelperText>{formErrors?.phase_start.message}</FormHelperText>
@@ -201,7 +202,7 @@ const ProjectPhaseForm = ({
               name="phase_end"
               label="End"
               control={control}
-              errorMessage={formErrors?.phase_end?.message || ""}
+              error={!!formErrors?.phase_end}
             />
             {formErrors?.phase_end && (
               <FormHelperText>{formErrors.phase_end.message}</FormHelperText>

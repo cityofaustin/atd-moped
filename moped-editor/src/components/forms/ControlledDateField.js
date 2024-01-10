@@ -17,9 +17,10 @@ const isValidDateStringOrObject = (value) => {
  * @param {object} control - react-hook-form `control` object from useController - required
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
+ * @param {bool} error - if the error state is active (triggers red outline around textfield)
  * @return {JSX.Element}
  */
-const ControlledDateField = ({ name, control, label }) => {
+const ControlledDateField = ({ name, control, label, error }) => {
   return (
     <Controller
       name={name}
@@ -41,7 +42,7 @@ const ControlledDateField = ({ name, control, label }) => {
             size="small"
             label={label}
             slotProps={{
-              textField: { size: "small" },
+              textField: { size: "small", error },
               field: { clearable: true },
             }}
             value={value}
