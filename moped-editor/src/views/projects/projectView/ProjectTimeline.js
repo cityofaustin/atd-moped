@@ -48,7 +48,6 @@ const ProjectTimeline = () => {
             <Box mb={2} style={{ maxWidth: "100%" }}>
               <ProjectPhases
                 projectId={projectId}
-                loading={loading}
                 data={data}
                 refetch={refetch}
               />
