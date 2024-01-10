@@ -1,5 +1,4 @@
 import { OPERATORS_WITHOUT_SEARCH_VALUES } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
-import { FiltersCommonOperators } from "./FiltersCommonOperators";
 import { AUTOCOMPLETE_OPERATORS } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 
 /**

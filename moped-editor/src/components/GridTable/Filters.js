@@ -33,7 +33,6 @@ import {
   areAllFiltersComplete,
   checkIsValidInput,
   generateEmptyFilter,
-  getAvailableOperators,
   getDefaultOperator,
   handleApplyValidation,
   isFilterNullType,
