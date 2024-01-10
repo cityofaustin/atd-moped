@@ -7,8 +7,16 @@ export const phaseValidationSchema = yup.object().shape({
     .nullable()
     .required("Phase is required"),
   subphase_id: yup.number().nullable().optional(),
-  phase_start: yup.date().nullable().optional(),
-  phase_end: yup.date().nullable().optional(),
+  phase_start: yup
+    .date()
+    .nullable()
+    .optional()
+    .when("is_current_phase", {
+      is: true,
+      then: (schema) => schema.required("Start date is required when phase is current"),
+    })
+    .typeError("Invalid Date"),
+  phase_end: yup.date().nullable().optional().typeError("Invalid Date"),
   is_current_phase: yup.boolean(),
   is_phase_start_confirmed: yup.boolean(),
   is_phase_end_confirmed: yup.boolean(),
