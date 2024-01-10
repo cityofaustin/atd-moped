@@ -7,8 +7,8 @@ export const phaseValidationSchema = yup.object().shape({
     .nullable()
     .required("Phase is required"),
   subphase_id: yup.number().nullable().optional(),
-  phase_start: yup.string().nullable().optional(),
-  phase_end: yup.string().nullable().optional(),
+  phase_start: yup.date().nullable().optional(),
+  phase_end: yup.date().nullable().optional(),
   is_current_phase: yup.boolean(),
   is_phase_start_confirmed: yup.boolean(),
   is_phase_end_confirmed: yup.boolean(),
@@ -73,6 +73,10 @@ export const useSubphases = (phase_id, phases) =>
     [phase_id, phases]
   );
 
+/**
+ * Hook which returns an object of phase IDs with their name. Taking
+ * the shape of  { [phase_id]: phase_name }
+ */
 export const usePhaseNameLookup = (phases) =>
   useMemo(
     () =>
@@ -84,6 +88,23 @@ export const usePhaseNameLookup = (phases) =>
         {}
       ),
     [phases]
+  );
+
+/**
+ * Hook which returns an object of subphase IDs with their name. Taking
+ * the shape of  { [subphase_id]: subphase_name }
+ */
+export const useSubphaseNameLookup = (subphases) =>
+  useMemo(
+    () =>
+      subphases.reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.subphase_id]: item.subphase_name,
+          }),
+        {}
+      ),
+    [subphases]
   );
 
 /**
