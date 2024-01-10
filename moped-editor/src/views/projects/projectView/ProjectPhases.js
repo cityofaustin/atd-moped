@@ -22,6 +22,7 @@ import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseIDs,
   usePhaseNameLookup,
+  useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
 
 const John = ({ children, isEnabled }) => {
