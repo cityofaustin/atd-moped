@@ -171,8 +171,15 @@ const Filters = ({
 
     // Update the field and operator values or handle when the clear X icon is clicked
     if (fieldDetails) {
+      const defaultOperator = getDefaultOperator(fieldDetails);
+
       filtersNewState[filterIndex].field = fieldDetails.name;
-      filtersNewState[filterIndex].operator = getDefaultOperator(fieldDetails);
+      filtersNewState[filterIndex].operator = defaultOperator;
+
+      // if we switch to an operator that does not need a search value, clear the value
+      if (isFilterNullType(defaultOperator)) {
+        filtersNewState[filterIndex].value = null;
+      }
     } else {
       filtersNewState[filterIndex].field = null;
       filtersNewState[filterIndex].operator = null;
