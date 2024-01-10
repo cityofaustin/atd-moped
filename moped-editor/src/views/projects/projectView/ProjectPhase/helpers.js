@@ -34,7 +34,7 @@ const DEFAULT_FORM_VALUES = {
 };
 
 /**
- * Hook which provides initialize form values
+ * Hook which provides initial form values
  * @param {object} phase - an optoinal `moped_proj_phase` object whose values will
  * override the DEFAULT_FORM_VALUES
  */
@@ -73,9 +73,45 @@ export const useSubphases = (phase_id, phases) =>
     [phase_id, phases]
   );
 
+export const usePhaseNameLookup = (phases) =>
+  useMemo(
+    () =>
+      phases.reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.phase_id]: item.phase_name,
+          }),
+        {}
+      ),
+    [phases]
+  );
+
+/**
+ * Hoolk which returns an array of project_phase_ids of the project's current phase(s).
+ * Although only one phase should ever be current, we handle the possibilty that there
+ * are multiple
+ * @param {Array} projectPhases - array of this project's moped_proj_phases
+ * @return {Array} of project_phase_id's of current project phases
+ */
+export const useCurrentProjectPhaseIDs = (projectPhases) =>
+  useMemo(
+    () =>
+      projectPhases
+        ? projectPhases
+            .filter(({ is_current_phase }) => is_current_phase)
+            .map(({ project_phase_id }) => project_phase_id)
+        : [],
+    [projectPhases]
+  );
+
 /**
  * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
- * need to have their `is_current` flag cleared
+ * need to have their `is_current` flag cleared.
+ * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
+ * @param {bool} isCurrent - if the phase that is being edited is set as the current phase
+ * @param {array} currentProjectPhaseIds - an array of all project_phase_ids that are marked as current.
+ * (this is the output of the useCurrentProjectPhaseIDs hook)
+ * @return {Array} of project_phase_id's which need to set to `is_current` = false
  */
 export const useCurrentPhaseIdsToClear = (
   thisProjectPhaseId,
@@ -108,6 +144,7 @@ export const onSubmitPhase = ({
   if (!project_phase_id) {
     // inserting a new mutation - which has a slightly different
     // variable shape bc the mutation supports multiple inserts
+    // via the phase template feature
     variables.objects = [data];
   } else {
     variables.project_phase_id = project_phase_id;

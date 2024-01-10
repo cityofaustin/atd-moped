@@ -19,50 +19,10 @@ import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhaseDialog";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
-
-/**
- * Get the project_phase_ids of the project's current phase. Although only
- * one phase should ever be current, we handle the possibilty that there
- * are multiple current phases
- * @param {Array} projphases - array of this project's moped_proj_phases
- * @return {Array} of IDs of current project phases
- */
-const useCurrentProjectPhaseIDs = (projectPhases) =>
-  useMemo(
-    () =>
-      projectPhases
-        ? projectPhases
-            .filter(({ is_current_phase }) => is_current_phase)
-            .map(({ project_phase_id }) => project_phase_id)
-        : [],
-    [projectPhases]
-  );
-
-const usePhaseNameLookup = (phases) =>
-  useMemo(
-    () =>
-      phases.reduce(
-        (obj, item) =>
-          Object.assign(obj, {
-            [item.phase_id]: item.phase_name,
-          }),
-        {}
-      ),
-    [phases]
-  );
-
-const useSubphaseNameLookup = (subphases) =>
-  useMemo(
-    () =>
-      subphases.reduce(
-        (obj, item) =>
-          Object.assign(obj, {
-            [item.subphase_id]: item.subphase_name,
-          }),
-        {}
-      ),
-    [subphases]
-  );
+import {
+  useCurrentProjectPhaseIDs,
+  usePhaseNameLookup,
+} from "./ProjectPhase/helpers";
 
 const John = ({ children, isEnabled }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -244,7 +204,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectPhases = ({ projectId, loading, data, refetch }) => {
+const ProjectPhases = ({ projectId, data, refetch }) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
 
