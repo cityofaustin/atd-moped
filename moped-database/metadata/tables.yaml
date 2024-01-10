@@ -2402,6 +2402,8 @@
           - fund
           - dept_unit
           - is_deleted
+          - updated_at
+          - updated_by_user_id
     - role: moped-editor
       permission:
         check: {}
@@ -2417,6 +2419,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
   select_permissions:
     - role: moped-admin
       permission:
@@ -2433,6 +2437,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-editor
@@ -2450,6 +2456,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
@@ -2467,6 +2475,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -2484,6 +2494,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
         check: null
     - role: moped-editor
@@ -2500,6 +2512,8 @@
           - funding_description
           - created_at
           - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
         check: null
   event_triggers:
