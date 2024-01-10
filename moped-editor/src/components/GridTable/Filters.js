@@ -160,7 +160,7 @@ const Filters = ({
    * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} field - The field object being clicked
    */
-  const handleFilterFieldMenuClick = (filterIndex, field) => {
+  const handleFilterFieldMenuChange = (filterIndex, field) => {
     // Clone state
     const filtersNewState = [...filterParameters];
 
@@ -188,7 +188,7 @@ const Filters = ({
    * @param {Object} operator - The operator object being clicked
    * @param {string} lookupTable - The lookup table name
    */
-  const handleFilterOperatorClick = (filterIndex, operator, lookupTable) => {
+  const handleFilterOperatorChange = (filterIndex, operator, lookupTable) => {
     // Clone state
     const filtersNewState = [...filterParameters];
 
@@ -396,7 +396,7 @@ const Filters = ({
                       Object.hasOwn(f, "label") ? f.label : f
                     }
                     onChange={(e, value) => {
-                      handleFilterFieldMenuClick(filterIndex, value?.name);
+                      handleFilterFieldMenuChange(filterIndex, value?.name);
                     }}
                     isOptionEqualToValue={(option, value) => {
                       if (Object.hasOwn(value, "name")) {
@@ -436,7 +436,7 @@ const Filters = ({
                     id={`filter-operator-select-${filterIndex}`}
                     value={operator || ""}
                     onChange={(e) =>
-                      handleFilterOperatorClick(
+                      handleFilterOperatorChange(
                         filterIndex,
                         e.target.value,
                         lookupTable
