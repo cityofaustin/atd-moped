@@ -24,6 +24,8 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
   "string_is_null_special_case",
   "subprojects_array_is_null",
   "subprojects_array_is_not_null",
+  "string_is_blank",
+  "string_is_not_blank",
 ];
 
 /**

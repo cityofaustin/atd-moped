@@ -192,17 +192,16 @@ const Filters = ({
     // Clone state
     const filtersNewState = [...filterParameters];
 
-    if (operator in filtersConfig.operators) {
-      // Update operator Value
-      filtersNewState[filterIndex].operator = operator;
+    // Update operator Value
+    filtersNewState[filterIndex].operator = operator;
 
-      // if we are switching to an autocomplete input, clear the search value
-      if (shouldRenderAutocompleteInput(lookupTable, operator, loading)) {
-        filtersNewState[filterIndex].value = null;
-      }
-    } else {
-      // Reset operator value
-      filtersNewState[filterIndex].operator = null;
+    // if we are switching to an autocomplete input or using an operator
+    // without a search value, clear the search value
+    if (
+      shouldRenderAutocompleteInput(lookupTable, operator, loading) ||
+      isFilterNullType(operator)
+    ) {
+      filtersNewState[filterIndex].value = null;
     }
 
     setFilterParameters(filtersNewState);
@@ -293,7 +292,7 @@ const Filters = ({
     setSearchTerm("");
   };
 
-  const handleAndOrToggle = (e) => {
+  const handleAndOrToggleChange = (e) => {
     const isOr = e.target.value === "any";
     setIsOrToggleValue(isOr);
   };
@@ -312,7 +311,7 @@ const Filters = ({
             <RadioGroup
               row
               value={isOrToggleValue ? "any" : "all"}
-              onChange={handleAndOrToggle}
+              onChange={handleAndOrToggleChange}
             >
               <FormControlLabel
                 value="all"
