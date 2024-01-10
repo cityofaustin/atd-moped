@@ -39,6 +39,7 @@ import {
   isFilterNullType,
   shouldRenderAutocompleteInput,
 } from "./helpers";
+import { FiltersCommonOperators } from "./FiltersCommonOperators";
 
 /**
  * The styling for the filter components
@@ -363,11 +364,7 @@ const Filters = ({
           (field) => field.name === fieldName
         );
         const { label, type } = fieldConfig ?? {};
-        const operators = fieldConfig?.operators;
-        const availableOperators = getAvailableOperators(
-          operators,
-          fieldConfig
-        );
+        const operators = fieldConfig?.operators ?? [];
 
         /* If the field uses a lookup table, get the table and field names  */
         const { table_name: lookupTable, field_name: lookupField } =
@@ -434,7 +431,7 @@ const Filters = ({
                   <Select
                     variant="standard"
                     fullWidth
-                    disabled={availableOperators.length === 0}
+                    disabled={operators.length === 0}
                     labelId={`filter-operator-select-${filterIndex}-label`}
                     id={`filter-operator-select-${filterIndex}`}
                     value={operator || ""}
@@ -448,15 +445,16 @@ const Filters = ({
                     label="field"
                     data-testid="operator-select"
                   >
-                    {availableOperators.map((operator, operatorIndex) => {
+                    {operators.map((operator, operatorIndex) => {
+                      const label = FiltersCommonOperators[operator].label;
                       return (
                         <MenuItem
-                          value={operator.id}
+                          value={operator}
                           key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
                           id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                          data-testid={operator.label}
+                          data-testid={label}
                         >
-                          {operator.label}
+                          {label}
                         </MenuItem>
                       );
                     })}

@@ -129,34 +129,6 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
 };
 
 /**
- * Returns operators to display in the operator dropdown for the field chosen
- * @param {Array} operators - filter values, fields, and operators
- * @param {Object} fieldConfig - configuration for the field
- * @return {[]|null}
- */
-export const getAvailableOperators = (operators, fieldConfig) => {
-  const type = fieldConfig?.type;
-  const shouldUseAllOperators =
-    operators && operators.length === 1 && fieldConfig.operators[0] === "*";
-
-  if (shouldUseAllOperators) {
-    return Object.entries(FiltersCommonOperators)
-      .map(([filtersCommonOperator, filterCommonOperatorConfig]) => ({
-        ...filterCommonOperatorConfig,
-        id: filtersCommonOperator,
-      }))
-      .filter((operator) => operator.type === type);
-  } else if (operators) {
-    return fieldConfig?.operators.map((operator) => ({
-      ...FiltersCommonOperators[operator],
-      id: operator,
-    }));
-  } else {
-    return [];
-  }
-};
-
-/**
  * Return the default operator for a given field or a fallback operator if one is not defined in config
  * @param {Object} filterConfigForField - Config for column in PROJECT_LIST_VIEW_FILTERS_CONFIG
  * @return String
