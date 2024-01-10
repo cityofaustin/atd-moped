@@ -231,23 +231,20 @@ const Filters = ({
   const handleDeleteFilterButtonClick = (filterIndex) => {
     // Clone the state
     const filtersNewState = [...filterParameters];
-    // Try to delete the filter by filter index
-    try {
-      // Delete the key (if it's there)
-      filtersNewState.splice(filterIndex, 1);
-    } finally {
-      // Finally, reset the state
-      const jsonParamString = JSON.stringify(filtersNewState);
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-        return prevSearchParams;
-      });
-      setFilterParameters(filtersNewState);
 
-      /* Reset isOr to false (all/and) if there is only one filter left */
-      if (Object.keys(filtersNewState).length === 1) {
-        setIsOrToggleValue(false);
-      }
+    // Delete the key (if it's there)
+    filtersNewState.splice(filterIndex, 1);
+    // Finally, reset the state
+    const jsonParamString = JSON.stringify(filtersNewState);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+      return prevSearchParams;
+    });
+    setFilterParameters(filtersNewState);
+
+    /* Reset isOr to false (all/and) if there is only one filter left */
+    if (Object.keys(filtersNewState).length === 1) {
+      setIsOrToggleValue(false);
     }
   };
 
