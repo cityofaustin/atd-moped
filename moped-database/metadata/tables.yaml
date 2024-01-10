@@ -2392,8 +2392,8 @@
         check: {}
         columns:
           - project_id
-          - date_added
-          - added_by
+          - created_at
+          - created_by_user_id
           - funding_source_id
           - funding_program_id
           - funding_amount
@@ -2406,7 +2406,7 @@
       permission:
         check: {}
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2415,13 +2415,13 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
   select_permissions:
     - role: moped-admin
       permission:
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2431,14 +2431,14 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2448,14 +2448,14 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2465,7 +2465,7 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
         filter: {}
         allow_aggregations: true
@@ -2473,7 +2473,7 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2482,14 +2482,14 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
         filter: {}
         check: null
     - role: moped-editor
       permission:
         columns:
-          - added_by
+          - created_by_user_id
           - funding_amount
           - funding_program_id
           - funding_source_id
@@ -2498,7 +2498,7 @@
           - dept_unit
           - fund
           - funding_description
-          - date_added
+          - created_at
           - is_deleted
         filter: {}
         check: null
