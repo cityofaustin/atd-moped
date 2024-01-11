@@ -97,11 +97,7 @@ const Search = ({
   const handleSwitchToSearch = () => {
     setFilters([]);
     setIsOr(false);
-    // setSearchParams((prevSearchParams) => {
-    //   prevSearchParams.delete(advancedSearchFilterParamName);
-    //   prevSearchParams.delete(advancedSearchIsOrParamName);
-    //   return prevSearchParams;
-    // });
+    toggleAdvancedSearch();
   };
 
   /**
