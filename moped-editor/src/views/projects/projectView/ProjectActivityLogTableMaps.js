@@ -467,10 +467,10 @@ export const ProjectActivityLogTableMaps = {
       project_id: {
         label: "project ID",
       },
-      date_added: {
+      created_at: {
         label: "date added",
       },
-      added_by: {
+      created_by_user_id: {
         label: "added by",
       },
       funding_source_id: {
