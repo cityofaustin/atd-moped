@@ -1,6 +1,9 @@
 import { useState, useMemo } from "react";
 import { useLocation } from "react-router-dom";
 
+/* Name of simple search URL parameter */
+export const simpleSearchParamName = "search";
+
 /**
  * Attempts to retrieve a valid graphql search value, for example when searching on an
  * integer/float field but providing it a string, this function returns the value configured
