@@ -14,6 +14,10 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
   HelpOutline,
+  EditCalendar,
+  EventAvailable,
+  PendingActions
+
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
@@ -50,7 +54,7 @@ const John = ({ children, isEnabled }) => {
         sx={{
           pointerEvents: "none",
         }}
-        open={isEnabled && open}
+        open={!!isEnabled && !!open}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: "bottom",
@@ -105,14 +109,21 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           return (
             <John isEnabled={showTentativeIcon}>
               <Box display="flex" alignItems="center">
-                <span style={{ paddingInlineEnd: ".25rem" }}>
+                {/* {showTentativeIcon && <span>~&nbsp;</span>}
+                {!showTentativeIcon && <span>&nbsp;&nbsp;</span>} */}
+                <span
+                  style={{
+                    paddingInlineEnd: ".25rem",
+                  }}
+                >
                   {strToRender}
                 </span>
+                {/* {showTentativeIcon && <span>(ETA)</span>} */}
                 {showTentativeIcon && (
-                  <HelpOutline style={{ color: grey[500] }} />
+                  <PendingActions style={{ color: grey[800] }} />
                 )}
                 {showConfirmedIcon && (
-                  <CheckCircleOutline style={{ color: grey[500] }} />
+                  <EventAvailable style={{ color: grey[800] }} />
                 )}
               </Box>
             </John>
@@ -137,12 +148,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           return (
             <Box display="flex" alignItems="center">
               <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
-              {showTentativeIcon && (
+              {/* {showTentativeIcon && (
                 <HelpOutline style={{ color: grey[500] }} />
               )}
               {showConfirmedIcon && (
                 <CheckCircleOutline style={{ color: grey[500] }} />
-              )}
+              )} */}
             </Box>
           );
         },
