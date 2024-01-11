@@ -115,6 +115,8 @@ const Search = ({
    */
   const handleSwitchToAdvancedSearch = () => {
     setSearchTerm("");
+
+    // TODO: Remove simple search params here
   };
 
   const toggleAdvancedSearch = () => {

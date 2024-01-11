@@ -145,6 +145,7 @@ const SearchBar = ({
 
     // Update state if we are ready, triggers search.
     setSearchTerm(searchFieldValue);
+    // TODO: Set search params here
   };
 
   /**
