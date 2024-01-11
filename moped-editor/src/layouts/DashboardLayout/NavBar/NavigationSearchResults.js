@@ -1,6 +1,6 @@
 import React from "react";
 import { Divider, List, ListItem, ListItemText } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { Link as RouterLink } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
@@ -55,13 +55,13 @@ const NavigationSearchResults = ({
         </ListItemLink>
       ))}
       {results.length > 5 && (
+        // Link to project list view with simple search populated
         <>
           <Divider />
           <ListItemLink
-            to={`/moped/projects/`}
-            // send searchTerm in location state
-            state={{ searchTerm: searchTerm }}
+            to={`/moped/projects?search=${searchTerm}`}
             onClick={handleDropdownClose}
+            relative="path"
           >
             <ListItemText primary="More results" />
             <ArrowForwardIosIcon className={classes.listItemSecondaryAction} />

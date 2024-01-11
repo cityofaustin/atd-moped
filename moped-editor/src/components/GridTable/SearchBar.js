@@ -166,6 +166,10 @@ const SearchBar = ({
   const handleClearSearchResults = () => {
     setSearchTerm("");
     setSearchFieldValue("");
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(simpleSearchParamName, searchFieldValue);
+      return prevSearchParams;
+    });
   };
 
   /**

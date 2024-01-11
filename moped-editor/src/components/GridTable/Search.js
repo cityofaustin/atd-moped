@@ -97,11 +97,11 @@ const Search = ({
   const handleSwitchToSearch = () => {
     setFilters([]);
     setIsOr(false);
-    toggleAdvancedSearch();
+    setAdvancedSearchAnchor(null);
   };
 
   /**
-   * Clears the simple search and its search param when switching to filters
+   * Clears the simple search when switching to advanced filters
    */
   const handleSwitchToAdvancedSearch = () => {
     setSearchTerm("");
