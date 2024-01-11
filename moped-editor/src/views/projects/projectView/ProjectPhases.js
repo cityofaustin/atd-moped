@@ -8,16 +8,11 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { grey, green } from "@mui/material/colors";
+import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
-  HelpOutline,
-  EditCalendar,
-  EventAvailable,
-  PendingActions
-
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
@@ -29,7 +24,7 @@ import {
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
 
-const John = ({ children, isEnabled }) => {
+const DateConfirmationPopover = ({ children, isEnabled, dateType }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handlePopoverOpen = (event) => {
@@ -57,17 +52,13 @@ const John = ({ children, isEnabled }) => {
         open={!!isEnabled && !!open}
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
+          vertical: "center",
+          horizontal: "right",
         }}
         onClose={handlePopoverClose}
         disableRestoreFocus
       >
-        <Typography sx={{ p: 1 }}>Estimated date</Typography>
+        <Typography sx={{ p: 1 }}>{`Estimated ${dateType} date`}</Typography>
       </Popover>
     </div>
   );
@@ -98,35 +89,23 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           row.phase_start ? new Date(row.phase_start) : null,
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
-          const strToRender = row.phase_start
+          let strToRender = row.phase_start
             ? new Date(row.phase_start).toLocaleDateString()
             : "";
-          const showTentativeIcon =
+
+          const showNotConfirmedIndicator =
             !row.is_phase_start_confirmed && strToRender;
 
-          const showConfirmedIcon = row.is_phase_start_confirmed && strToRender;
-
+          strToRender = showNotConfirmedIndicator
+            ? `${strToRender}*`
+            : strToRender;
           return (
-            <John isEnabled={showTentativeIcon}>
-              <Box display="flex" alignItems="center">
-                {/* {showTentativeIcon && <span>~&nbsp;</span>}
-                {!showTentativeIcon && <span>&nbsp;&nbsp;</span>} */}
-                <span
-                  style={{
-                    paddingInlineEnd: ".25rem",
-                  }}
-                >
-                  {strToRender}
-                </span>
-                {/* {showTentativeIcon && <span>(ETA)</span>} */}
-                {showTentativeIcon && (
-                  <PendingActions style={{ color: grey[800] }} />
-                )}
-                {showConfirmedIcon && (
-                  <EventAvailable style={{ color: grey[800] }} />
-                )}
-              </Box>
-            </John>
+            <DateConfirmationPopover
+              isEnabled={showNotConfirmedIndicator}
+              dateType="start"
+            >
+              <span>{strToRender}</span>
+            </DateConfirmationPopover>
           );
         },
         minWidth: 150,
@@ -140,21 +119,23 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
           row.phase_end ? new Date(row.phase_end) : null,
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
-          const strToRender = row.phase_end
+          let strToRender = row.phase_end
             ? new Date(row.phase_end).toLocaleDateString()
             : "";
-          const showTentativeIcon = !row.is_phase_end_confirmed && strToRender;
-          const showConfirmedIcon = row.is_phase_end_confirmed && strToRender;
+
+          const showNotConfirmedIndicator =
+            !row.is_phase_end_confirmed && strToRender;
+
+          strToRender = showNotConfirmedIndicator
+            ? `${strToRender}*`
+            : strToRender;
           return (
-            <Box display="flex" alignItems="center">
-              <span style={{ paddingInlineEnd: ".25rem" }}>{strToRender}</span>
-              {/* {showTentativeIcon && (
-                <HelpOutline style={{ color: grey[500] }} />
-              )}
-              {showConfirmedIcon && (
-                <CheckCircleOutline style={{ color: grey[500] }} />
-              )} */}
-            </Box>
+            <DateConfirmationPopover
+              isEnabled={showNotConfirmedIndicator}
+              dateType="end"
+            >
+              <span>{strToRender}</span>
+            </DateConfirmationPopover>
           );
         },
         minWidth: 150,
