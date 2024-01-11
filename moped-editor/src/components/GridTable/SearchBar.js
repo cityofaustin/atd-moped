@@ -127,6 +127,7 @@ const SearchBar = ({
   };
 
   const handleSearchValueChange = (value) => {
+    console.log(value, value === "" && searchFieldValue !== "");
     if (value === "" && searchFieldValue !== "") {
       handleClearSearchResults();
     } else {
@@ -167,7 +168,7 @@ const SearchBar = ({
     setSearchTerm("");
     setSearchFieldValue("");
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(simpleSearchParamName, searchFieldValue);
+      prevSearchParams.delete(simpleSearchParamName);
       return prevSearchParams;
     });
   };
