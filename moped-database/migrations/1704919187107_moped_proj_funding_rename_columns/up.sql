@@ -7,9 +7,37 @@ ALTER TABLE moped_proj_funding ADD COLUMN updated_by_user_id INTEGER;
 COMMENT ON COLUMN moped_proj_funding.updated_at IS 'Timestamp when the record was last updated';
 COMMENT ON COLUMN moped_proj_funding.updated_by_user_id IS 'ID of the user who last updated the record';
 
-CREATE TRIGGER set_updated_at_before_update
+-- CREATE TRIGGER set_updated_at_before_update
+-- BEFORE UPDATE ON moped_proj_funding
+-- FOR EACH ROW
+-- EXECUTE FUNCTION public.set_updated_at();
+
+-- COMMENT ON TRIGGER set_updated_at_before_update ON moped_proj_funding IS 'Trigger to update the updated_at field with the current timestamp before each update operation.';
+
+
+CREATE OR REPLACE FUNCTION public.update_self_and_project_updated_audit_fields() RETURNS TRIGGER
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+    -- Update the updated_at field in the current row of moped_proj_funding
+    NEW.updated_at := NOW();
+
+    -- Update the updated_at and updated_by_user_id fields in the related row of moped_project
+    UPDATE moped_project
+    SET updated_at = NOW(),
+        updated_by_user_id = NEW.updated_by_user_id
+    WHERE id = NEW.project_id;
+
+    RETURN NEW;
+END;
+$$;
+
+COMMENT ON FUNCTION public.update_self_and_project_updated_audit_fields() IS 'Function to update the updated_at field in the current row of moped_proj_funding and the updated_at and updated_by_user_id fields in the related row of moped_project.';
+
+
+CREATE TRIGGER update_self_and_project_audit_fields_audit_fields
 BEFORE UPDATE ON moped_proj_funding
 FOR EACH ROW
-EXECUTE FUNCTION public.set_updated_at();
+EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
-COMMENT ON TRIGGER set_updated_at_before_update ON moped_proj_funding IS 'Trigger to update the updated_at field with the current timestamp before each update operation.';
+COMMENT ON TRIGGER update_self_and_project_audit_fields_audit_fields ON moped_proj_funding IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_funding table.';
