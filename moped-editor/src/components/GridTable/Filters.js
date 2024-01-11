@@ -445,7 +445,7 @@ const Filters = ({
                     data-testid="operator-select"
                   >
                     {operators.map((operator, operatorIndex) => {
-                      const label = FiltersCommonOperators[operator].label;
+                      const label = FiltersCommonOperators[operator]?.label;
                       return (
                         <MenuItem
                           value={operator}

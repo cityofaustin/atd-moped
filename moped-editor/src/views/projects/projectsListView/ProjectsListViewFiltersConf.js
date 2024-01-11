@@ -71,7 +71,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "number",
       defaultOperator: "number_equals",
       operators: [
-        "*", // All of them (shortcut)
+        "number_equals",
+        "number_greater_than",
+        "number_greater_than_equal_to",
+        "number_less_than",
+        "number_less_than_equal_to",
       ],
     },
     {
@@ -385,7 +389,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "number",
       defaultOperator: "number_equals",
       operators: [
-        "*", // All of them (shortcut)
+        "number_equals",
+        "number_greater_than",
+        "number_greater_than_equal_to",
+        "number_less_than",
+        "number_less_than_equal_to",
       ],
     },
     {
