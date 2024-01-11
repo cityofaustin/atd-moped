@@ -61,7 +61,7 @@ const NavigationSearchResults = ({
           <ListItemLink
             to={`/moped/projects?search=${searchTerm}`}
             onClick={handleDropdownClose}
-            relative="path"
+            reloadDocument
           >
             <ListItemText primary="More results" />
             <ArrowForwardIosIcon className={classes.listItemSecondaryAction} />

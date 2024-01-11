@@ -127,7 +127,6 @@ const SearchBar = ({
   };
 
   const handleSearchValueChange = (value) => {
-    console.log(value, value === "" && searchFieldValue !== "");
     if (value === "" && searchFieldValue !== "") {
       handleClearSearchResults();
     } else {
