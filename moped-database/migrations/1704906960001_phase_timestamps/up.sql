@@ -28,3 +28,4 @@ WHERE
     moped_proj_phases.project_id = subquery.project_id;
 
 -- rebuild dropped views
+-- ...
