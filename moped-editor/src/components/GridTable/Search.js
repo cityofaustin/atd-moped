@@ -7,10 +7,6 @@ import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
-import {
-  advancedSearchFilterParamName,
-  advancedSearchIsOrParamName,
-} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,22 +97,20 @@ const Search = ({
    * Clears the filters when switching to simple search
    */
   const handleSwitchToSearch = () => {
-    setFilters({});
+    setFilters([]);
     setIsOr(false);
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(advancedSearchFilterParamName);
-      prevSearchParams.delete(advancedSearchIsOrParamName);
-      return prevSearchParams;
-    });
+    // setSearchParams((prevSearchParams) => {
+    //   prevSearchParams.delete(advancedSearchFilterParamName);
+    //   prevSearchParams.delete(advancedSearchIsOrParamName);
+    //   return prevSearchParams;
+    // });
   };
 
   /**
-   * Clears the simple search when switching to filters
+   * Clears the simple search and its search param when switching to filters
    */
   const handleSwitchToAdvancedSearch = () => {
     setSearchTerm("");
-
-    // TODO: Remove simple search params here
   };
 
   const toggleAdvancedSearch = () => {

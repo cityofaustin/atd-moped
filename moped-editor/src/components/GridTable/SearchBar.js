@@ -17,6 +17,10 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 /**
@@ -149,6 +153,8 @@ const SearchBar = ({
     // Update state to trigger search and set simple search param
     setSearchTerm(searchFieldValue);
     setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(advancedSearchFilterParamName);
+      prevSearchParams.delete(advancedSearchIsOrParamName);
       prevSearchParams.set(simpleSearchParamName, searchFieldValue);
       return prevSearchParams;
     });
