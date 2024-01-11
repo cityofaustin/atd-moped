@@ -546,7 +546,7 @@ const ProjectFundingTable = () => {
                 objects: {
                   ...newData,
                   project_id: projectId,
-                  added_by: userId,
+                  //created_by_user_id: userId,
                   // preventing empty strings from being saved
                   funding_description: newData.funding_description || null,
                   funding_amount: newData.funding_amount || null,
