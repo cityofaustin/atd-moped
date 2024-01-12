@@ -79,8 +79,19 @@ const ProjectPhaseForm = ({
         phase_start &&
         new Date(phase_start).getTime() < new Date().getTime()
       ) {
+        // date is in the past, so default to confirmed
         setValue("is_phase_start_confirmed", true);
+      } else if (
+        phase_start &&
+        new Date(phase_start).getTime() > new Date().getTime()
+      ) {
+        // date is in the future, so default to not confirmed
+        setValue("is_phase_start_confirmed", false);
       }
+    }
+    // clear confirmed status as needed
+    if (phase_start === null) {
+      setValue("is_phase_start_confirmed", false);
     }
   }, [phase_start, defaultValues, setValue]);
 
@@ -90,9 +101,20 @@ const ProjectPhaseForm = ({
   useEffect(() => {
     if (phase_end !== defaultValues.phase_end) {
       // phase end has been edited
-      if (phase_end && new Date(phase_end).getTime() < new Date().getTime()) {
+      if (phase_end && new Date(phase_end).getTime() <= new Date().getTime()) {
+        // date is in the past, so default to confirmed
         setValue("is_phase_end_confirmed", true);
+      } else if (
+        phase_end &&
+        new Date(phase_end).getTime() > new Date().getTime()
+      ) {
+        // date is in the future, so default to not confirmed
+        setValue("is_phase_end_confirmed", false);
       }
+    }
+    // clear confirmed status as needed
+    if (phase_end === null) {
+      setValue("is_phase_end_confirmed", false);
     }
   }, [phase_end, defaultValues, setValue]);
 
