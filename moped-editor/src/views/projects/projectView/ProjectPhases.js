@@ -1,12 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
-import {
-  CircularProgress,
-  Box,
-  IconButton,
-  Popover,
-  Typography,
-} from "@mui/material";
+import { CircularProgress, Box, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { green } from "@mui/material/colors";
 import {
@@ -17,52 +11,13 @@ import {
 import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhaseDialog";
+import ProjectPhaseDateConfirmationPopover from "./ProjectPhaseDateConfirmationPopover";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseIDs,
   usePhaseNameLookup,
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
-
-const DateConfirmationPopover = ({ children, isEnabled, dateType }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-
-  const handlePopoverOpen = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handlePopoverClose = () => {
-    setAnchorEl(null);
-  };
-
-  const open = Boolean(anchorEl);
-  return (
-    <div
-      onMouseEnter={handlePopoverOpen}
-      onMouseLeave={handlePopoverClose}
-      aria-owns={open ? "mouse-over-popover" : undefined}
-      aria-haspopup="true"
-    >
-      {children}
-      <Popover
-        id="mouse-over-popover"
-        sx={{
-          pointerEvents: "none",
-        }}
-        open={!!isEnabled && !!open}
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "center",
-          horizontal: "right",
-        }}
-        onClose={handlePopoverClose}
-        disableRestoreFocus
-      >
-        <Typography sx={{ p: 1 }}>{`Estimated ${dateType} date`}</Typography>
-      </Popover>
-    </div>
-  );
-};
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
@@ -100,12 +55,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             ? `${strToRender}*`
             : strToRender;
           return (
-            <DateConfirmationPopover
+            <ProjectPhaseDateConfirmationPopover
               isEnabled={showNotConfirmedIndicator}
               dateType="start"
             >
               <span>{strToRender}</span>
-            </DateConfirmationPopover>
+            </ProjectPhaseDateConfirmationPopover>
           );
         },
         minWidth: 150,
@@ -130,12 +85,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             ? `${strToRender}*`
             : strToRender;
           return (
-            <DateConfirmationPopover
+            <ProjectPhaseDateConfirmationPopover
               isEnabled={showNotConfirmedIndicator}
               dateType="end"
             >
               <span>{strToRender}</span>
-            </DateConfirmationPopover>
+            </ProjectPhaseDateConfirmationPopover>
           );
         },
         minWidth: 150,
