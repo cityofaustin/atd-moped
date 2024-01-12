@@ -1,4 +1,4 @@
---revert to version 1700515730257_fix_delete_component_bug
+-- revert to version 1700515730257_fix_delete_component_bug
 DROP VIEW public.project_list_view cascade;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -209,6 +209,7 @@ AS WITH project_person_list_lookup AS (
     work_activities.task_order_names_short,
     work_activities.task_orders;
 
+-- revert to version 1700515730257_fix_delete_component_bug
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
         mpc.project_id, 

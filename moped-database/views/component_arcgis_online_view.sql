@@ -174,7 +174,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
             string_agg(ms.subcomponent_name, ', ') subcomponents 
         FROM 
             moped_proj_components_subcomponents mpcs 
-            LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id 
+            LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+            WHERE mpcs.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) subcomponents ON subcomponents.project_component_id = mpc.project_component_id 
@@ -186,6 +187,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         FROM 
             moped_proj_component_work_types mpcwt 
             LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id 
+            WHERE mpcwt.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) work_types ON work_types.project_component_id = mpc.project_component_id 
@@ -196,7 +198,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
             string_agg(mct.type || ' - ' || mct.name, ', ') component_tags 
         FROM 
             moped_proj_component_tags mpct 
-            LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id 
+            LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+            WHERE mpct.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) component_tags ON component_tags.project_component_id = mpc.project_component_id 
