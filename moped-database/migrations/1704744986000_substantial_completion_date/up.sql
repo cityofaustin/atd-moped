@@ -427,6 +427,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         FROM 
             moped_proj_component_work_types mpcwt 
             LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id 
+            WHERE mpcwt.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) work_types ON work_types.project_component_id = mpc.project_component_id 
