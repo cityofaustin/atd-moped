@@ -7,7 +7,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
@@ -145,7 +145,8 @@ const NewProjectView = () => {
               {
                 phase_id: 1,
                 is_current_phase: true,
-                phase_start: format(Date.now(), "yyyy-MM-dd"),
+                phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
+                is_phase_start_confirmed: true,
               },
             ],
           },
