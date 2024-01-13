@@ -86,6 +86,13 @@ export const FiltersCommonOperators = {
     envelope: null,
     type: "number",
   },
+  number_does_not_equal: {
+    operator: "_neq",
+    label: "is not",
+    description: "The field value is not equal to number.",
+    envelope: null,
+    type: "number",
+  },
   number_greater_than: {
     operator: "_gt",
     label: "greater than",
