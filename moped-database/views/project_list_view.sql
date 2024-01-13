@@ -65,6 +65,7 @@ AS WITH project_person_list_lookup AS (
     mp.project_name,
     mp.project_description,
     mp.ecapris_subproject_id,
+    mp.project_website,
     mp.date_added,
     mp.is_deleted,
     mp.updated_at,
