@@ -137,9 +137,39 @@ for moped_project in moped_data["data"]["moped_project"]:
         )
 
 # TODO: Exclude projects where moped project ID is blank https://github.com/cityofaustin/atd-moped/pull/509#discussion_r779888920
+
+# TODO: Add documentation on how to test this:
+# From React code:
+# Warning: It's not possible to test this feature outside of a produciton environment,
+# because our signals' unique knack record identifiers only exist in production.
+# To test, you can patch in a valid knack ID by uncommenting the line below that sets
+# body.signals_connection.
+
+# TODO: From React code:
+# /**
+#  * This feature enables the user to create a "project" record in Arterial Management
+#  * Data Tracker app - a knack application used for asset management.
+#  *
+#  * Any Moped user can push any project to the Data Tracker. If the project has signal
+#  * components, the project created in Knack will have ties to the signal records in
+#  * Knack. These linkages are formed by including the signal's knack record ID, which
+#  * acts a foreign key to the signals table in the Data Tracker. If the project does not
+#  * have signal components, that's fine.
+#  *
+#  * Although this component has logic to *update* (instead of create) a project record
+#  * in Knack (with a PUT request) — we currently do not provide the users with this
+#  * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
+#  */
+
 # TODO: Update this script to sync:
 # project_id: "field_4133",
 # project_name: "field_3857",
 # current_phase_name: "field_4136",
 # signals_connection: "field_3861",
 # moped_url_object: "field_4162",
+
+# UI Sync flow:
+# 1. User clicks "Sync to Data Tracker" button
+# 2. Helper determines if this is a POST or PUT request (does project.knack_project_id exist?)
+# 3. If POST, then create the record in Data Tracker
+# 4. If PUT, then update the record in Data Tracker
