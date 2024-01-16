@@ -43,21 +43,23 @@ query get_all_projects {
 }
 """
 
+
 def build_signal_set_from_knack_record(record):
     """
     Build a set of signal IDs connected to a knack projet record
 
     Parameters:
         Knack record (Record): A KnackPy record
-        
+
     Returns:
         Set: A set of all internal IDs used by Knack to for the signals
     """
     signals = set()
-    if record['Signals']: # KnackPy will have None in place if there are no signals
-        for signal in record['Signals']:
-            signals.add(signal['id'])
+    if record["Signals"]:  # KnackPy will have None in place if there are no signals
+        for signal in record["Signals"]:
+            signals.add(signal["id"])
     return signals
+
 
 def build_signal_set_from_moped_record(record):
     """
@@ -65,19 +67,19 @@ def build_signal_set_from_moped_record(record):
 
     Parameters:
         Moped Project (dictionary): A moped project as returned by graphql-engine
-        
+
     Returns:
         Set: A set of all internal IDs used by Knack to for the signals
     """
     signals = set()
-    for feature in record['moped_proj_features']:
-        signals.add(feature['location']['properties']['id'])
+    for feature in record["moped_proj_features"]:
+        signals.add(feature["location"]["properties"]["id"])
     return signals
 
 
 # Get Moped's current state of synchronized projects
 moped_data = run_query(get_all_synchronized_projects)
-#logger.debug(moped_data)
+# logger.debug(moped_data)
 
 # Use KnackPy to pull the current state of records in Data Tracker
 app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
@@ -111,13 +113,15 @@ for moped_project in moped_data["data"]["moped_project"]:
             update_needed = True
             knack_data[knack_object_keys[key]] = moped_project[key]
 
-    knack_signals = build_signal_set_from_knack_record(knack_records[moped_project["project_id"]])
+    knack_signals = build_signal_set_from_knack_record(
+        knack_records[moped_project["project_id"]]
+    )
     moped_signals = build_signal_set_from_moped_record(moped_project)
 
     if not moped_signals == knack_signals:
         update_needed = True
         knack_data[KNACK_OBJECT_SIGNALS] = list(moped_signals)
-        
+
     if update_needed:
         logger.debug(
             f"""Need to update knack for Moped project {moped_project["project_id"]}"""
@@ -131,3 +135,11 @@ for moped_project in moped_data["data"]["moped_project"]:
         logger.debug(
             f"""No update needed for Moped project {moped_project["project_id"]}"""
         )
+
+# TODO: Exclude projects where moped project ID is blank https://github.com/cityofaustin/atd-moped/pull/509#discussion_r779888920
+# TODO: Update this script to sync:
+# project_id: "field_4133",
+# project_name: "field_3857",
+# current_phase_name: "field_4136",
+# signals_connection: "field_3861",
+# moped_url_object: "field_4162",
