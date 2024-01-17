@@ -27,9 +27,9 @@ knack_object_keys = {
     "current_status": KNACK_OBJECT_CURRENT_STATUS,
 }
 
-get_all_synchronized_projects = """
-query get_all_projects {
-  moped_project(where: {knack_project_id: {_is_null: false}}) {
+get_unsynced_projects = """
+query UnsyncedProjects {
+  moped_project(where: { knack_project_id: { _is_null: true }}) {
     project_id
     project_name
     current_status
@@ -42,6 +42,41 @@ query get_all_projects {
   }
 }
 """
+
+get_synced_projects = """
+query SyncedProjects {
+  moped_project(where: { knack_project_id: { _is_null: false }}) {
+    project_id
+    project_name
+    current_status
+    knack_project_id
+    moped_proj_features 
+      {
+        feature_id
+        location
+      }
+  }
+}
+"""
+
+
+def find_unsynced_moped_projects():
+    print("Finding unsynced projects")
+    # TODO: Use get_unsynced_projects request to find all projects that are not synced
+    return []
+
+
+def create_knack_project_from_moped_project(moped_project_record):
+    print("Creating Knack projects from unsynced Moped projects")
+    # Build a Knack project record from unsynced Moped project records and POST to Knack
+    # Return id from created Knack record: res.record.id
+    return ""
+
+
+def find_synced_moped_projects():
+    print("Finding synced projects")
+    # TODO: Use get_unsynchronized_projects request to find all projects that are not synced
+    return []
 
 
 def build_signal_set_from_knack_record(record):
@@ -135,6 +170,22 @@ for moped_project in moped_data["data"]["moped_project"]:
         logger.debug(
             f"""No update needed for Moped project {moped_project["project_id"]}"""
         )
+
+
+def main():
+    # Find all projects that are not synced to Data Tracker
+    unsynced_moped_projects = find_unsynced_moped_projects()
+
+    # Create a Knack project for each unsynced Moped project
+    for unsynced_moped_project in unsynced_moped_projects:
+        create_knack_project_from_moped_project(unsynced_moped_project)
+
+    # Find all projects that are synced to Data Tracker to update them
+    synced_moped_projects = find_synced_moped_projects()
+
+
+if __name__ == "__main__":
+    main()
 
 # TODO: Exclude projects where moped project ID is blank https://github.com/cityofaustin/atd-moped/pull/509#discussion_r779888920
 
