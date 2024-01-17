@@ -141,18 +141,18 @@ const DropdownMenu = ({
           Account
         </MenuItem>
         <Divider />
-        <MenuItem onClick={handleDropdownClose}>
-          <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
-          <Link
-            href={arcGISLink.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            underline="none"
-          >
+        <Link
+          href={arcGISLink.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          color="inherit"
+          underline="none"
+        >
+          <MenuItem onClick={handleDropdownClose}>
+            <ListItemIcon>{arcGISLink.Icon}</ListItemIcon>
             {arcGISLink.title}
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <Divider />
         <span className={classes.helpHeader}>
           <Typography variant="button" color="textSecondary">
@@ -162,20 +162,20 @@ const DropdownMenu = ({
         {helpItems.map((item) => {
           if (item.linkType === "external") {
             return (
-              <MenuItem key={item.link} onClick={handleDropdownClose}>
-                <ListItemIcon>
-                  {item.Icon || <OpenInNewIcon fontSize="small" />}
-                </ListItemIcon>
-                <Link
-                  href={item.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  color="inherit"
-                  underline="none"
-                >
+              <Link
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                color="inherit"
+                underline="none"
+              >
+                <MenuItem key={item.link} onClick={handleDropdownClose}>
+                  <ListItemIcon>
+                    {item.Icon || <OpenInNewIcon fontSize="small" />}
+                  </ListItemIcon>
                   {item.title}
-                </Link>
-              </MenuItem>
+                </MenuItem>
+              </Link>
             );
           }
           if (item.linkType === "internal") {
