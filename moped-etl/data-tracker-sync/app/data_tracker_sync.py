@@ -20,14 +20,15 @@ KNACK_OBJECT_PROJECT_NAME = os.getenv("KNACK_OBJECT_PROJECT_NAME")
 KNACK_OBJECT_CURRENT_STATUS = os.getenv("KNACK_OBJECT_CURRENT_STATUS")
 KNACK_OBJECT_SIGNALS = os.getenv("KNACK_OBJECT_SIGNALS")
 
-# Define mapping between column names and knack column fields; excluding connection fields
-knack_object_keys = {
-    "project_id": KNACK_OBJECT_PROJECT_ID,
-    "project_name": KNACK_OBJECT_PROJECT_NAME,
-    "current_status": KNACK_OBJECT_CURRENT_STATUS,
+MOPED_TO_KNACK_FIELD_MAP = {
+    project_id: "field_4133",
+    project_name: "field_3857",
+    current_phase_name: "field_4136",
+    signals_connection: "field_3861",
+    moped_url_object: "field_4162",
 }
 
-get_unsynced_projects = """
+UNSYNCED_PROJECTS_QUERY = """
 query UnsyncedProjects {
   moped_project(where: { knack_project_id: { _is_null: true }}) {
     project_id
@@ -43,7 +44,7 @@ query UnsyncedProjects {
 }
 """
 
-get_synced_projects = """
+SYNCED_PROJECTS_QUERY = """
 query SyncedProjects {
   moped_project(where: { knack_project_id: { _is_null: false }}) {
     project_id
@@ -87,7 +88,7 @@ def update_knack_project_from_moped_project(moped_project_record):
 
 def build_signal_set_from_knack_record(record):
     """
-    Build a set of signal IDs connected to a knack projet record
+    Build a set of signal IDs connected to a knack project record
 
     Parameters:
         Knack record (Record): A KnackPy record
@@ -179,6 +180,11 @@ for moped_project in moped_data["data"]["moped_project"]:
 
 
 def main():
+    # Initialize KnackPy app
+    app = knackpy.App(
+        app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
+    )
+
     # Find all projects that are not synced to Data Tracker
     unsynced_moped_projects = find_unsynced_moped_projects()
 
