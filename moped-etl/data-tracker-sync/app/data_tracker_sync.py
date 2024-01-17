@@ -36,13 +36,15 @@ query UnsyncedProjects {
   moped_project(where: { knack_project_id: { _is_null: true }}) {
     project_id
     project_name
-    current_status
-    knack_project_id
-    moped_proj_features 
-      {
-        feature_id
-        location
+    current_phase_view {
+      phase_name
+    }
+    moped_proj_components {
+      feature_signals {
+        signal_id
       }
+    }
+    knack_project_id
   }
 }
 """
@@ -77,7 +79,7 @@ def create_knack_project_from_moped_project(moped_project_record):
     return ""
 
 
-def find_synced_moped_projects():
+def find_synced_moped_projects(last_run_date):
     print("Finding synced projects")
     # TODO: Use get_unsynchronized_projects request to find all projects that are not synced
     return []
@@ -182,7 +184,7 @@ for moped_project in moped_data["data"]["moped_project"]:
         )
 
 
-def main():
+def main(last_run_date):
     # Initialize KnackPy app
     app = knackpy.App(
         app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
@@ -196,7 +198,7 @@ def main():
         create_knack_project_from_moped_project(unsynced_moped_project)
 
     # Find all projects that are synced to Data Tracker to update them
-    synced_moped_projects = find_synced_moped_projects()
+    synced_moped_projects = find_synced_moped_projects(last_run_date)
 
     for synced_moped_project in synced_moped_projects:
         update_knack_project_from_moped_project(synced_moped_project)
@@ -215,7 +217,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    main()
+    main(args.start)
 
 # TODO: Add documentation on how to test this:
 # From React code:
@@ -239,3 +241,14 @@ if __name__ == "__main__":
 #  * in Knack (with a PUT request) — we currently do not provide the users with this
 #  * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
 #  */
+
+# TODO: Create url for moped_url_object (field_4162)
+# Helper from React code:
+# const getUrlObject = (project) => {
+#   const url =
+#     process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
+#   return {
+#     url: url,
+#     label: project.project_name,
+#   };
+# };
