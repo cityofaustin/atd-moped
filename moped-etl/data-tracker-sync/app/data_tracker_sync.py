@@ -2,9 +2,12 @@
 
 import re
 import os
+import argparse
+
 import knackpy
+
 from process.request import run_query
-from process.logging import getLogger
+from process.logging import get_logger
 
 logger = get_logger("moped-knack-sync")
 
@@ -200,9 +203,19 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser()
 
-# TODO: Exclude projects where moped project ID is blank https://github.com/cityofaustin/atd-moped/pull/509#discussion_r779888920
+    # TODO: Check in on date format needed for filter on SYNCED_PROJECTS_QUERY
+    parser.add_argument(
+        "--start",
+        type=str,
+        default=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        help=f"Date (in UTC) of earliest records to be fetched (YYYY-MM-DD). Defaults to today",
+    )
+
+    args = parser.parse_args()
+
+    main()
 
 # TODO: Add documentation on how to test this:
 # From React code:
@@ -226,16 +239,3 @@ if __name__ == "__main__":
 #  * in Knack (with a PUT request) — we currently do not provide the users with this
 #  * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
 #  */
-
-# TODO: Update this script to sync:
-# project_id: "field_4133",
-# project_name: "field_3857",
-# current_phase_name: "field_4136",
-# signals_connection: "field_3861",
-# moped_url_object: "field_4162",
-
-# UI Sync flow:
-# 1. User clicks "Sync to Data Tracker" button
-# 2. Helper determines if this is a POST or PUT request (does project.knack_project_id exist?)
-# 3. If POST, then create the record in Data Tracker
-# 4. If PUT, then update the record in Data Tracker
