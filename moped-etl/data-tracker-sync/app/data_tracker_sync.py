@@ -6,7 +6,7 @@ import knackpy
 from process.request import run_query
 from process.logging import getLogger
 
-logger = getLogger("moped-knack-sync")
+logger = get_logger("moped-knack-sync")
 
 logger.debug("Syncing Moped Project Data to Data Tracker")
 
