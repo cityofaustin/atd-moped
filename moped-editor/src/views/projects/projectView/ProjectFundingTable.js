@@ -546,7 +546,6 @@ const ProjectFundingTable = () => {
                 objects: {
                   ...newData,
                   project_id: projectId,
-                  added_by: userId,
                   // preventing empty strings from being saved
                   funding_description: newData.funding_description || null,
                   funding_amount: newData.funding_amount || null,
@@ -573,8 +572,6 @@ const ProjectFundingTable = () => {
 
             // Remove unexpected variables
             delete updateProjectFundingData.__typename;
-            delete updateProjectFundingData.added_by;
-            delete updateProjectFundingData.date_added;
 
             updateProjectFundingData.funding_amount =
               updateProjectFundingData.funding_amount || null;
