@@ -86,6 +86,13 @@ export const FiltersCommonOperators = {
     envelope: null,
     type: "number",
   },
+  number_does_not_equal: {
+    operator: "_neq",
+    label: "is not",
+    description: "The field value is not equal to number.",
+    envelope: null,
+    type: "number",
+  },
   number_greater_than: {
     operator: "_gt",
     label: "greater than",
@@ -149,15 +156,15 @@ export const FiltersCommonOperators = {
     envelope: null,
     type: "date",
   },
-  string_equals_case_sensitive: {
+  string_equals_case_insensitive: {
     operator: "_ilike",
     label: "is",
     description: "Field content equals string (case-sensitive)",
     envelope: null,
     type: "string",
   },
-  string_does_not_equal_case_sensitive: {
-    operator: "_neq",
+  string_does_not_equal_case_insensitive: {
+    operator: "_nilike",
     label: "is not",
     description: "Field content does not equal string (case-sensitive)",
     envelope: null,
