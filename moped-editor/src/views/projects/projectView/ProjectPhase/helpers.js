@@ -2,10 +2,7 @@ import { useMemo } from "react";
 import * as yup from "yup";
 
 export const phaseValidationSchema = yup.object().shape({
-  phase_id: yup
-    .number("Phase is required")
-    .nullable()
-    .required("Phase is required"),
+  phase_id: yup.number().nullable().required("Phase is required"),
   subphase_id: yup.number().nullable().optional(),
   phase_start: yup
     .date()
@@ -21,7 +18,7 @@ export const phaseValidationSchema = yup.object().shape({
   is_current_phase: yup.boolean(),
   is_phase_start_confirmed: yup.boolean(),
   is_phase_end_confirmed: yup.boolean(),
-  description: yup
+  phase_description: yup
     .string()
     .max(500, "Must be less than 500 characters")
     .nullable(),
