@@ -116,8 +116,6 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
       {
         headerName: "",
         field: "_edit",
-        hideable: false,
-        filterable: false,
         sortable: false,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
@@ -200,6 +198,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         density="comfortable"
         getRowId={(row) => row.project_phase_id}
         disableRowSelectionOnClick
+        disableColumnMenu
         getRowHeight={() => "auto"}
         hideFooterPagination={true}
         localeText={{ noRowsLabel: "No phases" }}
