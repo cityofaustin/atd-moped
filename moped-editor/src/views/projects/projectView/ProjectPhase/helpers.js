@@ -109,7 +109,7 @@ export const useSubphaseNameLookup = (subphases) =>
   );
 
 /**
- * Hoolk which returns an array of project_phase_ids of the project's current phase(s).
+ * Hook which returns an array of project_phase_ids of the project's current phase(s).
  * Although only one phase should ever be current, we handle the possibilty that there
  * are multiple
  * @param {Array} projectPhases - array of this project's moped_proj_phases
