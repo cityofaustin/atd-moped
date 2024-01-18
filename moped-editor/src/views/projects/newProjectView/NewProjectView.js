@@ -8,7 +8,6 @@ import {
   CardContent,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { format } from "date-fns";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
 import { useQuery, useMutation } from "@apollo/client";
