@@ -572,8 +572,6 @@ const ProjectFundingTable = () => {
 
             // Remove unexpected variables
             delete updateProjectFundingData.__typename;
-            delete updateProjectFundingData.added_by;
-            delete updateProjectFundingData.date_added;
 
             updateProjectFundingData.funding_amount =
               updateProjectFundingData.funding_amount || null;
