@@ -328,7 +328,7 @@ export const TIMELINE_QUERY = gql`
 export const ADD_PROJECT_PHASE = gql`
   mutation AddProjectPhase(
     $objects: [moped_proj_phases_insert_input!]!
-    $current_phase_ids_to_clear: [Int!]!
+    $current_phase_ids_to_clear: [Int!] = []
   ) {
     insert_moped_proj_phases(objects: $objects) {
       returning {
@@ -355,7 +355,7 @@ export const UPDATE_PROJECT_PHASE = gql`
   mutation ProjectPhasesMutation(
     $project_phase_id: Int!
     $object: moped_proj_phases_set_input!
-    $current_phase_ids_to_clear: [Int!]!
+    $current_phase_ids_to_clear: [Int!] = []
   ) {
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
