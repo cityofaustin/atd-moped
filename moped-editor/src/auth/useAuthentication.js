@@ -64,8 +64,7 @@ const useAuthentication = () => {
   // Subscribe to auth events
   useEffect(() => {
     const handler = ({ payload }) => {
-      console.log("AUTH PAYLOAD", payload)
-      debugger;
+      console.log("Auth event payload: ", payload)
       switch (payload.event) {
         case "configured":
         case "signIn":
