@@ -21,9 +21,12 @@ export const formatComponentsActivity = (
   const changeIcon = <RoomOutlinedIcon />;
   const component =
     componentList[change.record_data.event.data.new.component_id];
+  const componentID = change.record_data.event.data.new.project_component_id;
+  const componentLink = `/moped/projects/${projectId}?tab=map&project_component_id=${componentID}`;
   const componentText = {
-    text: component,
+    text: `${component} (#${componentID})`,
     style: "boldText",
+    link: componentLink
   };
   const phase = phaseList[change.record_data.event.data.new.phase_id];
   const subphase = subphaseList[change.record_data.event.data.new.subphase_id];
@@ -41,17 +44,21 @@ export const formatComponentsActivity = (
   if (change.description.length === 0) {
     return {
       changeIcon,
-      changeText: [{ text: "Added a component: ", style: null }, componentText],
+      changeText: [
+        { text: "Added a component: ", style: null },
+        componentText,
+      ],
     };
   }
 
   // delete an existing component
   if (change.description[0].field === "is_deleted") {
+    const {link, ...simpleComponentText} = componentText;
     return {
       changeIcon,
       changeText: [
         { text: "Removed a component: ", style: null },
-        componentText,
+        simpleComponentText,
       ],
     };
   }

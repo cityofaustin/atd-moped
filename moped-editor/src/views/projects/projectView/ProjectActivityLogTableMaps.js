@@ -340,7 +340,7 @@ export const ProjectActivityLogTableMaps = {
         label: "component ID",
       },
       component_id: {
-        label: "component ID",
+        label: "component type",
       },
       description: {
         label: "description",
