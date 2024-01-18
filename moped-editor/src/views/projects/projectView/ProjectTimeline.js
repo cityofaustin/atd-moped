@@ -18,7 +18,7 @@ import ProjectMilestones from "./ProjectMilestones";
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = (props) => {
+const ProjectTimeline = () => {
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -36,8 +36,6 @@ const ProjectTimeline = (props) => {
     fetchPolicy: "no-cache",
   });
 
-  const projectViewRefetch = props.refetch;
-
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
@@ -50,10 +48,8 @@ const ProjectTimeline = (props) => {
             <Box mb={2} style={{ maxWidth: "100%" }}>
               <ProjectPhases
                 projectId={projectId}
-                loading={loading}
                 data={data}
                 refetch={refetch}
-                projectViewRefetch={projectViewRefetch}
               />
             </Box>
           </Grid>
