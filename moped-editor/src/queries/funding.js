@@ -6,8 +6,8 @@ export const FUNDING_QUERY = gql`
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_funding_id
-      added_by
-      date_added
+      created_by_user_id
+      created_at
       fund
       dept_unit
       funding_amount
