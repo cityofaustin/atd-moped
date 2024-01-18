@@ -72,6 +72,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       defaultOperator: "number_equals",
       operators: [
         "number_equals",
+        "number_does_not_equal",
         "number_greater_than",
         "number_greater_than_equal_to",
         "number_less_than",
@@ -390,6 +391,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       defaultOperator: "number_equals",
       operators: [
         "number_equals",
+        "number_does_not_equal",
         "number_greater_than",
         "number_greater_than_equal_to",
         "number_less_than",
