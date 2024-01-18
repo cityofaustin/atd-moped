@@ -72,22 +72,22 @@ const MobileDropdownMenu = () => {
           </MenuItem>
         ))}
         {/* ArcGIS Map link */}
-        <MenuItem
-          key={arcGISLink.link}
-          onClick={() => {
-            handleMobileClose();
-          }}
+        <Link
+          href={arcGISLink.link}
+          target="_blank"
+          rel="noopener noreferrer"
+          color="inherit"
+          underline="none"
         >
-          <Link
-            href={arcGISLink.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            color="inherit"
-            underline="none"
+          <MenuItem
+            key={arcGISLink.link}
+            onClick={() => {
+              handleMobileClose();
+            }}
           >
             {arcGISLink.title}
-          </Link>
-        </MenuItem>
+          </MenuItem>
+        </Link>
         <MenuItem key="help" onClick={setShowSubMenu}>
           Help
           {subMenu ? <ExpandLessIcon /> : <ExpandMoreIcon />}
@@ -97,17 +97,18 @@ const MobileDropdownMenu = () => {
             {helpItems.map((item) => {
               if (item.linkType === "external") {
                 return (
-                  <MenuItem key={item.link} onClick={handleMobileClose}>
-                    <Link
-                      href={item.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      color="inherit"
-                      underline="none"
-                    >
+                  <Link
+                    key={item.link}
+                    href={item.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    color="inherit"
+                    underline="none"
+                  >
+                    <MenuItem onClick={handleMobileClose}>
                       {item.title}
-                    </Link>
-                  </MenuItem>
+                    </MenuItem>
+                  </Link>
                 );
               }
               if (item.linkType === "internal") {

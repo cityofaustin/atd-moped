@@ -1,16 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { useSearchParams } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
-import {
-  advancedSearchFilterParamName,
-  advancedSearchIsOrParamName,
-} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +82,6 @@ const Search = ({
   loading,
 }) => {
   const classes = useStyles();
-  let [, setSearchParams] = useSearchParams();
   const divRef = React.useRef();
 
   /**
@@ -101,17 +95,13 @@ const Search = ({
    * Clears the filters when switching to simple search
    */
   const handleSwitchToSearch = () => {
-    setFilters({});
+    setFilters([]);
     setIsOr(false);
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(advancedSearchFilterParamName);
-      prevSearchParams.delete(advancedSearchIsOrParamName);
-      return prevSearchParams;
-    });
+    setAdvancedSearchAnchor(null);
   };
 
   /**
-   * Clears the simple search when switching to filters
+   * Clears the simple search when switching to advanced filters
    */
   const handleSwitchToAdvancedSearch = () => {
     setSearchTerm("");
@@ -120,7 +110,6 @@ const Search = ({
   const toggleAdvancedSearch = () => {
     if (advancedSearchAnchor) {
       setAdvancedSearchAnchor(null);
-      handleSwitchToSearch();
     } else {
       setAdvancedSearchAnchor(divRef.current);
       handleSwitchToAdvancedSearch();

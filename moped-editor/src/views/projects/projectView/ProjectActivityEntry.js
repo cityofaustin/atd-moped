@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Link } from "@mui/material";
+import { NavLink as RouterLink } from "react-router-dom";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
   entryText: {
@@ -35,11 +36,19 @@ const ProjectActivityEntry = ({ changeIcon, changeText }) => {
         >
           {
             // maps through the array of objects and applies specified style to the text
-            changeText.map((changeObject, index) => (
-              <span className={classes[changeObject.style]} key={index}>
-                {changeObject.text}
-              </span>
-            ))
+            changeText.map((changeObject, index) =>
+              changeObject.link ? (
+                <span className={classes[changeObject.style]} key={index}>
+                  <Link component={RouterLink} to={changeObject.link}>
+                    {changeObject.text}
+                  </Link>
+                </span>
+              ) : (
+                <span className={classes[changeObject.style]} key={index}>
+                  {changeObject.text}
+                </span>
+              )
+            )
           }
         </Typography>
       </Box>

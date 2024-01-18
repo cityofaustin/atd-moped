@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { useSearchParams } from "react-router-dom";
 
 import {
   Button,
@@ -16,6 +17,11 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 /**
  * The styling for the search bar components
@@ -106,6 +112,7 @@ const SearchBar = ({
   filtersConfig,
 }) => {
   const classes = useStyles();
+  let [, setSearchParams] = useSearchParams();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
@@ -143,8 +150,14 @@ const SearchBar = ({
     // Clear the advanced search filters
     handleSwitchToSearch();
 
-    // Update state if we are ready, triggers search.
+    // Update state to trigger search and set simple search param
     setSearchTerm(searchFieldValue);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(advancedSearchFilterParamName);
+      prevSearchParams.delete(advancedSearchIsOrParamName);
+      prevSearchParams.set(simpleSearchParamName, searchFieldValue);
+      return prevSearchParams;
+    });
   };
 
   /**
@@ -153,6 +166,10 @@ const SearchBar = ({
   const handleClearSearchResults = () => {
     setSearchTerm("");
     setSearchFieldValue("");
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(simpleSearchParamName);
+      return prevSearchParams;
+    });
   };
 
   /**
