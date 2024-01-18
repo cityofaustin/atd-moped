@@ -8,9 +8,10 @@ import { Controller } from "react-hook-form";
  * @param {object} control - react-hook-form `control` object from useController - required
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
+ * @param {object} checkboxProps additional optional MUI checkbox props such as `sx` or `icon`
  * @return {JSX.Element}
  */
-const ControlledCheckbox = ({ name, control, label }) => {
+const ControlledCheckbox = ({ name, control, label, ...checkBoxProps }) => {
   return (
     <Controller
       name={name}
@@ -23,6 +24,7 @@ const ControlledCheckbox = ({ name, control, label }) => {
               <Checkbox
                 checked={!!field.value}
                 onChange={(e) => field.onChange(e.target.checked)}
+                {...checkBoxProps}
               />
             }
           />

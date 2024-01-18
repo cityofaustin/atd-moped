@@ -18,9 +18,16 @@ const isValidDateStringOrObject = (value) => {
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
  * @param {bool} error - if the error state is active (triggers red outline around textfield)
+ * @param {object} datePickerProps additional optional MUI date picker props
  * @return {JSX.Element}
  */
-const ControlledDateField = ({ name, control, label, error }) => {
+const ControlledDateField = ({
+  name,
+  control,
+  label,
+  error,
+  ...datePickerProps
+}) => {
   return (
     <Controller
       name={name}
@@ -61,6 +68,7 @@ const ControlledDateField = ({ name, control, label, error }) => {
                 : newValue;
               field.onChange(valueToStore);
             }}
+            {...datePickerProps}
           />
         );
       }}

@@ -7,9 +7,10 @@ import FormControlLabel from "@mui/material/FormControlLabel";
  * @param {object} control - react-hook-form `control` object from useController - required
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
+ * @param {object} switchProps additional optional MUI switch props
  * @return {JSX.Element}
  */
-const ControlledSwitch = ({ name, control, label }) => {
+const ControlledSwitch = ({ name, control, label, ...switchProps }) => {
   return (
     <Controller
       name={name}
@@ -24,6 +25,7 @@ const ControlledSwitch = ({ name, control, label }) => {
                 onChange={(e) => field.onChange(e.target.checked)}
                 color="primary"
                 inputProps={{ "aria-label": "primary checkbox" }}
+                {...switchProps}
               />
             }
           />
