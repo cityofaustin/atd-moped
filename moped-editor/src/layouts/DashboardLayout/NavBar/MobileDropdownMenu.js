@@ -98,13 +98,14 @@ const MobileDropdownMenu = () => {
               if (item.linkType === "external") {
                 return (
                   <Link
+                    key={item.link}
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
                     color="inherit"
                     underline="none"
                   >
-                    <MenuItem key={item.link} onClick={handleMobileClose}>
+                    <MenuItem onClick={handleMobileClose}>
                       {item.title}
                     </MenuItem>
                   </Link>

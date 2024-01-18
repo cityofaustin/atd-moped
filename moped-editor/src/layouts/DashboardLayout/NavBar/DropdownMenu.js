@@ -163,13 +163,14 @@ const DropdownMenu = ({
           if (item.linkType === "external") {
             return (
               <Link
+                key={item.link}
                 href={item.link}
                 target="_blank"
                 rel="noopener noreferrer"
                 color="inherit"
                 underline="none"
               >
-                <MenuItem key={item.link} onClick={handleDropdownClose}>
+                <MenuItem onClick={handleDropdownClose}>
                   <ListItemIcon>
                     {item.Icon || <OpenInNewIcon fontSize="small" />}
                   </ListItemIcon>
