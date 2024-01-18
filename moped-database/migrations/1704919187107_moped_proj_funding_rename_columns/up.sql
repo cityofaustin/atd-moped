@@ -27,7 +27,7 @@ $$;
 COMMENT ON FUNCTION public.update_self_and_project_updated_audit_fields() IS 'Function to update the updated_at field in the current row of moped_proj_funding and the updated_at and updated_by_user_id fields in the related row of moped_project.';
 
 CREATE TRIGGER update_moped_proj_funding_and_project_audit_fields
-BEFORE UPDATE ON moped_proj_funding
+BEFORE INSERT OR UPDATE ON moped_proj_funding
 FOR EACH ROW
 EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
