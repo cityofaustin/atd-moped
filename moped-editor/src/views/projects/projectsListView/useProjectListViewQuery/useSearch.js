@@ -1,5 +1,8 @@
 import { useState, useMemo } from "react";
-import { useLocation } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+
+/* Name of simple search URL parameter */
+export const simpleSearchParamName = "search";
 
 /**
  * Attempts to retrieve a valid graphql search value, for example when searching on an
@@ -28,10 +31,11 @@ export const getSearchValue = (column, value, queryConfig) => {
 };
 
 export const useSearch = ({ queryConfig }) => {
-  // create URLSearchParams from url
-  const navigationSearchTerm = useLocation()?.state?.searchTerm;
+  /* Get simple search from search params if it exists */
+  let [searchParams] = useSearchParams();
+  const simpleSearchValue = searchParams.get(simpleSearchParamName);
 
-  const [searchTerm, setSearchTerm] = useState(navigationSearchTerm ?? "");
+  const [searchTerm, setSearchTerm] = useState(simpleSearchValue ?? "");
 
   const searchWhereString = useMemo(() => {
     if (searchTerm && searchTerm !== "") {
