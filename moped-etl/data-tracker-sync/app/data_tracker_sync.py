@@ -3,6 +3,7 @@
 import re
 import os
 import argparse
+from datetime import datetime, timezone
 
 import knackpy
 
@@ -44,23 +45,23 @@ query UnsyncedProjects {
         signal_id
       }
     }
-    knack_project_id
   }
 }
 """
 
 SYNCED_PROJECTS_QUERY = """
-query SyncedProjects {
-  moped_project(where: { knack_project_id: { _is_null: false }}) {
+query SyncedProjects($last_update_date: timestamptz) {
+  moped_project(where: { knack_project_id: { _is_null: false }, updated_at: {_gte: $last_update_date} }) {
     project_id
     project_name
-    current_status
-    knack_project_id
-    moped_proj_features 
-      {
-        feature_id
-        location
+    current_phase_view {
+      phase_name
+    }
+    moped_proj_components {
+      feature_signals {
+        signal_id
       }
+    }
   }
 }
 """
@@ -124,66 +125,6 @@ def build_signal_set_from_moped_record(record):
     return signals
 
 
-# Get Moped's current state of synchronized projects
-moped_data = run_query(get_all_synchronized_projects)
-# logger.debug(moped_data)
-
-# Use KnackPy to pull the current state of records in Data Tracker
-app = knackpy.App(app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY)
-
-knack_query_filter = {
-    "match": "and",
-    "rules": [
-        {"field": KNACK_OBJECT_PROJECT_ID, "operator": "is not blank"},
-    ],
-}
-
-records = app.get(
-    "view_" + KNACK_DATA_TRACKER_VIEW, filters=knack_query_filter, generate=1
-)
-knack_records = {}
-for record in records:
-    if not record[KNACK_OBJECT_PROJECT_ID]:
-        continue
-    knack_records[record[KNACK_OBJECT_PROJECT_ID]] = record
-
-# Iterate over projects, checking for data mismatches, indicating a needed update
-for moped_project in moped_data["data"]["moped_project"]:
-    update_needed = False
-    knack_data = dict(knack_records[moped_project["project_id"]])
-
-    for key in knack_object_keys:
-        if (
-            not moped_project[key]
-            == knack_records[moped_project["project_id"]][knack_object_keys[key]]
-        ):
-            update_needed = True
-            knack_data[knack_object_keys[key]] = moped_project[key]
-
-    knack_signals = build_signal_set_from_knack_record(
-        knack_records[moped_project["project_id"]]
-    )
-    moped_signals = build_signal_set_from_moped_record(moped_project)
-
-    if not moped_signals == knack_signals:
-        update_needed = True
-        knack_data[KNACK_OBJECT_SIGNALS] = list(moped_signals)
-
-    if update_needed:
-        logger.debug(
-            f"""Need to update knack for Moped project {moped_project["project_id"]}"""
-        )
-        app.record(
-            method="update",
-            data=knack_data,
-            obj="object_" + KNACK_DATA_TRACKER_PROJECT_OBJECT,
-        )
-    else:
-        logger.debug(
-            f"""No update needed for Moped project {moped_project["project_id"]}"""
-        )
-
-
 def main(last_run_date):
     # Initialize KnackPy app
     app = knackpy.App(
@@ -207,12 +148,11 @@ def main(last_run_date):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # TODO: Check in on date format needed for filter on SYNCED_PROJECTS_QUERY
     parser.add_argument(
         "--start",
         type=str,
-        default=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
-        help=f"Date (in UTC) of earliest records to be fetched (YYYY-MM-DD). Defaults to today",
+        default=datetime.now(timezone.utc).isoformat(),
+        help=f"ISO date string (in UTC) of latest updated_at value to find project records to update.",
     )
 
     args = parser.parse_args()
