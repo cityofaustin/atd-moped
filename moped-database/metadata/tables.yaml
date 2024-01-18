@@ -2546,9 +2546,7 @@
                       "description": [{"newSchema": "true"}],
                       "operation_type": {{ $body.event.op }},
                       "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                  },
-                  "updated_at": {{$body.created_at}},
-                  "project_id": {{$body.event.data.new.project_id}}
+                  }
                 }
               }
         method: POST
