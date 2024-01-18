@@ -16,7 +16,7 @@ BEGIN
 
     -- Update the updated_at and updated_by_user_id fields in the related row of moped_project
     UPDATE moped_project
-    SET updated_at = NOW(),
+    SET updated_at = NEW.updated_at,
         updated_by_user_id = NEW.updated_by_user_id
     WHERE project_id = NEW.project_id;
 
