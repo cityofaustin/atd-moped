@@ -156,8 +156,7 @@ export const onSubmitPhase = ({
   currentPhaseIdsToClear,
   onSubmitCallback,
 }) => {
-  const { project_phase_id } = data;
-  delete data.project_phase_id;
+  const { project_phase_id, ...formData } = data;
 
   const variables = {
     current_phase_ids_to_clear: currentPhaseIdsToClear,
@@ -167,10 +166,10 @@ export const onSubmitPhase = ({
     // inserting a new mutation - which has a slightly different
     // variable shape bc the mutation supports multiple inserts
     // via the phase template feature
-    variables.objects = [data];
+    variables.objects = [formData];
   } else {
     variables.project_phase_id = project_phase_id;
-    variables.object = data;
+    variables.object = formData;
   }
 
   mutate({
