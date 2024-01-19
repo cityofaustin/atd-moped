@@ -98,23 +98,6 @@ def update_knack_project_from_moped_project(moped_project_record):
     print("Updating synced projects")
 
 
-def build_signal_set_from_knack_record(record):
-    """
-    Build a set of signal IDs connected to a knack project record
-
-    Parameters:
-        Knack record (Record): A KnackPy record
-
-    Returns:
-        Set: A set of all internal IDs used by Knack to for the signals
-    """
-    signals = set()
-    if record["Signals"]:  # KnackPy will have None in place if there are no signals
-        for signal in record["Signals"]:
-            signals.add(signal["id"])
-    return signals
-
-
 def build_signal_set_from_moped_record(record):
     """
     Build a set of signal IDs connected to a moped projet record
