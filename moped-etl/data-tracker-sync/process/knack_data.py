@@ -22,10 +22,10 @@ def build_signal_set_from_moped_record(moped_project_record):
         Set: A set of all internal IDs used by Knack to for the signals
     """
     knack_signals_ids = set()
-    moped_project_components = moped_project_record.get("moped_proj_components", [])
+    moped_project_components = moped_project_record["moped_proj_components"]
 
     for component in moped_project_components:
-        for feature in component.get("feature_signals", []):
+        for feature in component["feature_signals"]:
             knack_signals.add(feature["knack_id"])
 
     return knack_signals_ids
@@ -41,7 +41,6 @@ def make_moped_project_url(project_id):
     Returns:
         String: A moped project URL
     """
-    # TODO: Finish url
     return f"https://mobility.austin.gov/moped/projects/{project_id}"
 
 

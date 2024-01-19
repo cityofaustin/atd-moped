@@ -17,13 +17,12 @@ logger.debug("Syncing Moped Project Data to Data Tracker")
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
-KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
 KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
 
 UNSYNCED_PROJECTS_QUERY = """
 query UnsyncedProjects {
-  moped_project(where: { knack_project_id: { _is_null: true }}) {
+  moped_project(where: { project_id: { _eq: 3409 }, knack_project_id: { _is_null: true }}) {
     project_id
     project_name
     current_phase_view {
@@ -65,17 +64,17 @@ def find_unsynced_moped_projects():
 
 
 def create_knack_project_from_moped_project(app, moped_project_record):
-    logger.info("Creating Knack projects from unsynced Moped projects")
-    logger.debug(moped_project_record)
-    # Build a Knack project record from unsynced Moped project records and POST to Knack
-    # knack_project_record = build_knack_project_from_moped_project(moped_project_record)
-    # created = app.record(
-    #         method="create",
-    #         data=knack_project_record,
-    #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
-    #     )
-    # knack_record_id = created.record.id
-    # return knack_record_id
+    logger.debug(f"Creating Knack record for {moped_project_record}")
+
+    knack_project_record = build_knack_project_from_moped_project(moped_project_record)
+    created = app.record(
+        method="create",
+        data=knack_project_record,
+        obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+    )
+
+    knack_record_id = created["record"]["id"]
+    return knack_record_id
 
 
 def find_synced_moped_projects(last_run_date):
@@ -89,17 +88,17 @@ def find_synced_moped_projects(last_run_date):
 
 
 def update_knack_project_from_moped_project(app, moped_project_record):
-    # Build a Knack project record from unsynced Moped project records and PUT to Knack
-    # knack_project_record = build_knack_project_from_moped_project(moped_project_record)
-    # updated = app.record(
-    #         method="update",
-    #         data=knack_project_record,
-    #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
-    #     )
-    # knack_record_id = updated.record.id
-    # return knack_record_id
-    # Return id from updated Knack record: res.record.id
-    logger.info("Updating synced projects")
+    logger.debug(f"Updating Knack record for {moped_project_record}")
+
+    knack_project_record = build_knack_project_from_moped_project(moped_project_record)
+    updated = app.record(
+        method="update",
+        data=knack_project_record,
+        obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+    )
+
+    knack_record_id = updated["record"]["id"]
+    return knack_record_id
 
 
 def main(last_run_date):
@@ -112,12 +111,19 @@ def main(last_run_date):
     unsynced_moped_projects = find_unsynced_moped_projects()
 
     # Create a Knack project for each unsynced Moped project
-    # created_knack_records = []
-    # for project in unsynced_moped_projects:
-    #     knack_record_id = create_knack_project_from_moped_project(
-    #         app=app, moped_project_record=project
-    #     )
-    #     created_knack_records.append(knack_record_id)
+    created_knack_records = []
+    for project in [unsynced_moped_projects[0]]:
+        logger.info(project)  # remove this
+        knack_record_id = create_knack_project_from_moped_project(
+            app=app, moped_project_record=project
+        )
+        created_knack_records.append(
+            {
+                "moped_project_id": project["project_id"],
+                "knack_record_id": knack_record_id,
+            }
+        )
+        # TODO: Update Moped record with knack_record_id
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(last_run_date)
@@ -128,8 +134,10 @@ def main(last_run_date):
     #     knack_record_id = update_knack_project_from_moped_project(synced_moped_project)
 
     logger.info(f"Done syncing.")
-    # logger.info(f"Created {len(created_knack_records)} new Knack records")
+    logger.info(f"Created {len(created_knack_records)} new Knack records")
+    logger.debug(f"Records created: {created_knack_records}")
     # logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
+    # logger.debug(f"Updated Knack records: {created_knack_records}")
 
 
 if __name__ == "__main__":
