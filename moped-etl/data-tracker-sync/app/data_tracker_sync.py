@@ -17,12 +17,7 @@ logger.debug("Syncing Moped Project Data to Data Tracker")
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
-KNACK_DATA_TRACKER_PROJECT_OBJECT = os.getenv("KNACK_DATA_TRACKER_PROJECT_OBJECT")
-
-KNACK_OBJECT_PROJECT_ID = os.getenv("KNACK_OBJECT_PROJECT_ID")
-KNACK_OBJECT_PROJECT_NAME = os.getenv("KNACK_OBJECT_PROJECT_NAME")
-KNACK_OBJECT_CURRENT_STATUS = os.getenv("KNACK_OBJECT_CURRENT_STATUS")
-KNACK_OBJECT_SIGNALS = os.getenv("KNACK_OBJECT_SIGNALS")
+KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
 MOPED_TO_KNACK_FIELD_MAP = {
     project_id: "field_4133",
@@ -79,6 +74,11 @@ def create_knack_project_from_moped_project(app, moped_project_record):
     print("Creating Knack projects from unsynced Moped projects")
     logger.debug(moped_project_record)
     # Build a Knack project record from unsynced Moped project records and POST to Knack
+    # created = app.record(
+    #         method="create",
+    #         data=moped_project_record,
+    #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+    #     )
     # Return id from created Knack record: res.record.id
 
 
@@ -92,8 +92,13 @@ def find_synced_moped_projects(last_run_date):
     return synced_projects
 
 
-def update_knack_project_from_moped_project(moped_project_record):
-    # Build a Knack project record from unsynced Moped project records and POST to Knack
+def update_knack_project_from_moped_project(app, moped_project_record):
+    # Build a Knack project record from unsynced Moped project records and PUT to Knack
+    # updated = app.record(
+    #         method="update",
+    #         data=moped_project_record,
+    #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+    #     )
     # Return id from created Knack record: res.record.id
     print("Updating synced projects")
 
