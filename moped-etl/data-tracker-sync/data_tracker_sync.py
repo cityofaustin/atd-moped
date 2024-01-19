@@ -10,6 +10,11 @@ import knackpy
 from process.request import make_hasura_request
 from process.logging import get_logger
 from process.knack_data import build_knack_project_from_moped_project
+from process.queries import (
+    GET_SYNCED_PROJECTS,
+    GET_UNSYNCED_PROJECTS,
+    UPDATE_MOPED_PROJECT_KNACK_ID,
+)
 
 logger = get_logger("moped-knack-sync")
 
@@ -20,43 +25,8 @@ KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
 
-UNSYNCED_PROJECTS_QUERY = """
-query UnsyncedProjects {
-  moped_project(where: { project_id: { _eq: 3409 }, knack_project_id: { _is_null: true }}) {
-    project_id
-    project_name
-    current_phase_view {
-      phase_name
-    }
-    moped_proj_components {
-      feature_signals {
-        knack_id
-      }
-    }
-  }
-}
-"""
-
-SYNCED_PROJECTS_QUERY = """
-query SyncedProjects($last_update_date: timestamptz) {
-  moped_project(where: { knack_project_id: { _is_null: false }, updated_at: {_gte: $last_update_date} }) {
-    project_id
-    project_name
-    current_phase_view {
-      phase_name
-    }
-    moped_proj_components {
-      feature_signals {
-        knack_id
-      }
-    }
-  }
-}
-"""
-
-
 def find_unsynced_moped_projects():
-    data = make_hasura_request(query=UNSYNCED_PROJECTS_QUERY)
+    data = make_hasura_request(query=GET_UNSYNCED_PROJECTS)
     unsynced_projects = data["moped_project"]
     logger.info(f"Found {len(unsynced_projects)} unsynced projects")
 
@@ -78,9 +48,25 @@ def create_knack_project_from_moped_project(app, moped_project_record):
     return knack_record_id
 
 
+def update_moped_project_knack_id(moped_project_id, knack_project_id):
+    logger.debug(
+        f"Updating Moped project {moped_project_id} with Knack ID {knack_project_id}"
+    )
+
+    update = make_hasura_request(
+        query=UPDATE_MOPED_PROJECT_KNACK_ID,
+        variables={
+            "moped_project_id": moped_project_id,
+            "knack_project_id": knack_project_id,
+        },
+    )
+
+    return update
+
+
 def find_synced_moped_projects(last_run_date):
     data = make_hasura_request(
-        query=SYNCED_PROJECTS_QUERY, variables={"last_update_date": last_run_date}
+        query=GET_SYNCED_PROJECTS, variables={"last_update_date": last_run_date}
     )
     synced_projects = data["moped_project"]
     logger.info(f"Found {len(synced_projects)} synced projects")
@@ -115,16 +101,19 @@ def main(last_run_date):
     created_knack_records = []
     for project in [unsynced_moped_projects[0]]:
         logger.info(project)  # remove this
+
+        moped_project_id = project["project_id"]
         knack_record_id = create_knack_project_from_moped_project(
             app=app, moped_project_record=project
         )
         created_knack_records.append(
             {
-                "moped_project_id": project["project_id"],
+                "moped_project_id": moped_project_id,
                 "knack_record_id": knack_record_id,
             }
         )
-        # TODO: Update Moped record with knack_record_id
+
+        update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(last_run_date)
