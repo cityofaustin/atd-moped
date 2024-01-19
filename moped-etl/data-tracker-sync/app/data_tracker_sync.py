@@ -19,13 +19,6 @@ KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 KNACK_DATA_TRACKER_VIEW = os.getenv("KNACK_DATA_TRACKER_VIEW")
 KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
-MOPED_TO_KNACK_FIELD_MAP = {
-    project_id: "field_4133",
-    project_name: "field_3857",
-    current_phase_name: "field_4136",
-    signals_connection: "field_3861",
-    moped_url_object: "field_4162",
-}
 
 UNSYNCED_PROJECTS_QUERY = """
 query UnsyncedProjects {
@@ -37,7 +30,7 @@ query UnsyncedProjects {
     }
     moped_proj_components {
       feature_signals {
-        signal_id
+        knack_id
       }
     }
   }
@@ -54,7 +47,7 @@ query SyncedProjects($last_update_date: timestamptz) {
     }
     moped_proj_components {
       feature_signals {
-        signal_id
+        knack_id
       }
     }
   }
@@ -101,22 +94,6 @@ def update_knack_project_from_moped_project(app, moped_project_record):
     #     )
     # Return id from created Knack record: res.record.id
     print("Updating synced projects")
-
-
-def build_signal_set_from_moped_record(record):
-    """
-    Build a set of signal IDs connected to a moped projet record
-
-    Parameters:
-        Moped Project (dictionary): A moped project as returned by graphql-engine
-
-    Returns:
-        Set: A set of all internal IDs used by Knack to for the signals
-    """
-    signals = set()
-    for feature in record["moped_proj_features"]:
-        signals.add(feature["location"]["properties"]["id"])
-    return signals
 
 
 def main(last_run_date):
