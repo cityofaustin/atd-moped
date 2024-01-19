@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 
 import knackpy
 
-from process.request import run_query
+from process.request import make_hasura_request
 from process.logging import get_logger
 
 logger = get_logger("moped-knack-sync")
@@ -68,22 +68,28 @@ query SyncedProjects($last_update_date: timestamptz) {
 
 
 def find_unsynced_moped_projects():
-    print("Finding unsynced projects")
-    # TODO: Use get_unsynced_projects request to find all projects that are not synced
-    return []
+    data = make_hasura_request(query=UNSYNCED_PROJECTS_QUERY)
+    unsynced_projects = data["moped_project"]
+    logger.debug(f"Found {len(synced_projects)} unsynced projects")
+
+    return unsynced_projects
 
 
-def create_knack_project_from_moped_project(moped_project_record):
+def create_knack_project_from_moped_project(app, moped_project_record):
     print("Creating Knack projects from unsynced Moped projects")
+    logger.debug(moped_project_record)
     # Build a Knack project record from unsynced Moped project records and POST to Knack
     # Return id from created Knack record: res.record.id
-    return ""
 
 
 def find_synced_moped_projects(last_run_date):
-    print("Finding synced projects")
-    # TODO: Use get_unsynchronized_projects request to find all projects that are not synced
-    return []
+    data = make_hasura_request(
+        query=UNSYNCED_PROJECTS_QUERY, variables={"last_update_date": last_run_date}
+    )
+    synced_projects = data["moped_project"]
+    logger.debug(f"Found {len(synced_projects)} synced projects")
+
+    return synced_projects
 
 
 def update_knack_project_from_moped_project(moped_project_record):
@@ -135,8 +141,8 @@ def main(last_run_date):
     unsynced_moped_projects = find_unsynced_moped_projects()
 
     # Create a Knack project for each unsynced Moped project
-    for unsynced_moped_project in unsynced_moped_projects:
-        create_knack_project_from_moped_project(unsynced_moped_project)
+    for project in unsynced_moped_projects:
+        create_knack_project_from_moped_project(app=app, moped_project_record=project)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(last_run_date)
