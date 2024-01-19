@@ -2,7 +2,7 @@ import sys
 import logging
 
 
-def get_logger(name, level=logging.INFO):
+def get_logger(name, level=logging.DEBUG):
     """Return a module logger that streams to stdout"""
     logger = logging.getLogger(name)
     handler = logging.StreamHandler(stream=sys.stdout)

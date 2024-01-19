@@ -73,7 +73,8 @@ def create_knack_project_from_moped_project(app, moped_project_record):
         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
     )
 
-    knack_record_id = created["record"]["id"]
+    logger.debug(f"Created Knack record: {created}")
+    knack_record_id = created["id"]
     return knack_record_id
 
 
@@ -97,15 +98,15 @@ def update_knack_project_from_moped_project(app, moped_project_record):
         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
     )
 
-    knack_record_id = updated["record"]["id"]
+    knack_record_id = updated["id"]
     return knack_record_id
 
 
 def main(last_run_date):
     # Initialize KnackPy app
-    # app = knackpy.App(
-    #     app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
-    # )
+    app = knackpy.App(
+        app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
+    )
 
     # Find all projects that are not synced to Data Tracker
     unsynced_moped_projects = find_unsynced_moped_projects()

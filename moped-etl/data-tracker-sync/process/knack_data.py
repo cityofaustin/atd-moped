@@ -11,15 +11,15 @@ MOPED_TO_KNACK_FIELD_MAP = {
 }
 
 
-def build_signal_set_from_moped_record(moped_project_record):
+def build_signal_list_from_moped_record(moped_project_record):
     """
-    Build a set of signal IDs connected to a moped projet record
+    Build a list of signal IDs connected to a moped projet record
 
     Parameters:
         Moped Project (dictionary): A moped project as returned by graphql-engine
 
     Returns:
-        Set: A set of all internal IDs used by Knack to for the signals
+        List: A list of all unique internal IDs used by Knack to for the signals
     """
     knack_signals_ids = set()
     moped_project_components = moped_project_record["moped_proj_components"]
@@ -28,7 +28,7 @@ def build_signal_set_from_moped_record(moped_project_record):
         for feature in component["feature_signals"]:
             knack_signals.add(feature["knack_id"])
 
-    return knack_signals_ids
+    return list(knack_signals_ids)
 
 
 def make_moped_project_url(project_id):
@@ -54,7 +54,7 @@ def build_knack_project_from_moped_project(moped_project_record):
     Returns:
         Dictionary: A Knack project record
     """
-    signals = build_signal_set_from_moped_record(moped_project_record)
+    signals = build_signal_list_from_moped_record(moped_project_record)
 
     return {
         "field_4133": moped_project_record["project_id"],
