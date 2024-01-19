@@ -9,6 +9,7 @@ import knackpy
 
 from process.request import make_hasura_request
 from process.logging import get_logger
+from process.knack_data import build_knack_project_from_moped_project
 
 logger = get_logger("moped-knack-sync")
 
@@ -58,62 +59,77 @@ query SyncedProjects($last_update_date: timestamptz) {
 def find_unsynced_moped_projects():
     data = make_hasura_request(query=UNSYNCED_PROJECTS_QUERY)
     unsynced_projects = data["moped_project"]
-    logger.debug(f"Found {len(synced_projects)} unsynced projects")
+    logger.info(f"Found {len(unsynced_projects)} unsynced projects")
 
     return unsynced_projects
 
 
 def create_knack_project_from_moped_project(app, moped_project_record):
-    print("Creating Knack projects from unsynced Moped projects")
+    logger.info("Creating Knack projects from unsynced Moped projects")
     logger.debug(moped_project_record)
     # Build a Knack project record from unsynced Moped project records and POST to Knack
+    # knack_project_record = build_knack_project_from_moped_project(moped_project_record)
     # created = app.record(
     #         method="create",
-    #         data=moped_project_record,
+    #         data=knack_project_record,
     #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
     #     )
-    # Return id from created Knack record: res.record.id
+    # knack_record_id = created.record.id
+    # return knack_record_id
 
 
 def find_synced_moped_projects(last_run_date):
     data = make_hasura_request(
-        query=UNSYNCED_PROJECTS_QUERY, variables={"last_update_date": last_run_date}
+        query=SYNCED_PROJECTS_QUERY, variables={"last_update_date": last_run_date}
     )
     synced_projects = data["moped_project"]
-    logger.debug(f"Found {len(synced_projects)} synced projects")
+    logger.info(f"Found {len(synced_projects)} synced projects")
 
     return synced_projects
 
 
 def update_knack_project_from_moped_project(app, moped_project_record):
     # Build a Knack project record from unsynced Moped project records and PUT to Knack
+    # knack_project_record = build_knack_project_from_moped_project(moped_project_record)
     # updated = app.record(
     #         method="update",
-    #         data=moped_project_record,
+    #         data=knack_project_record,
     #         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
     #     )
-    # Return id from created Knack record: res.record.id
-    print("Updating synced projects")
+    # knack_record_id = updated.record.id
+    # return knack_record_id
+    # Return id from updated Knack record: res.record.id
+    logger.info("Updating synced projects")
 
 
 def main(last_run_date):
     # Initialize KnackPy app
-    app = knackpy.App(
-        app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
-    )
+    # app = knackpy.App(
+    #     app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
+    # )
 
     # Find all projects that are not synced to Data Tracker
     unsynced_moped_projects = find_unsynced_moped_projects()
 
     # Create a Knack project for each unsynced Moped project
-    for project in unsynced_moped_projects:
-        create_knack_project_from_moped_project(app=app, moped_project_record=project)
+    # created_knack_records = []
+    # for project in unsynced_moped_projects:
+    #     knack_record_id = create_knack_project_from_moped_project(
+    #         app=app, moped_project_record=project
+    #     )
+    #     created_knack_records.append(knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(last_run_date)
 
-    for synced_moped_project in synced_moped_projects:
-        update_knack_project_from_moped_project(synced_moped_project)
+    # Update synced Moped projects in Data Tracker
+    # updated_knack_records = []
+    # for synced_moped_project in synced_moped_projects:
+    #     knack_record_id = update_knack_project_from_moped_project(synced_moped_project)
+
+    logger.info(f"Done syncing.")
+    # logger.info(f"Created {len(created_knack_records)} new Knack records")
+    # logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
 
 
 if __name__ == "__main__":
@@ -136,6 +152,10 @@ if __name__ == "__main__":
 # because our signals' unique knack record identifiers only exist in production.
 # To test, you can patch in a valid knack ID by uncommenting the line below that sets
 # body.signals_connection.
+
+# TODO: Test with Knack test app
+# uncomment this line to test this request against the Knack test env - this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
+# body.signals_connection = ["62195eedf538d8072b16a0f6"];
 
 # TODO: From React code:
 # /**

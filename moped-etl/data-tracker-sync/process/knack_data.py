@@ -1,12 +1,13 @@
 #
 # Knack Data Helper - Build Knack records from Moped records
 #
+
 MOPED_TO_KNACK_FIELD_MAP = {
-    project_id: "field_4133",
-    project_name: "field_3857",
-    current_phase_name: "field_4136",
-    signals_connection: "field_3861",
-    moped_url_object: "field_4162",
+    "project_id": "field_4133",
+    "project_name": "field_3857",
+    "current_phase_name": "field_4136",
+    "signals_connection": "field_3861",
+    "moped_url_object": "field_4162",
 }
 
 
@@ -41,7 +42,7 @@ def make_moped_project_url(project_id):
         String: A moped project URL
     """
     # TODO: Finish url
-    return f"{project_id}"
+    return f"https://mobility.austin.gov/moped/projects/{project_id}"
 
 
 def build_knack_project_from_moped_project(moped_project_record):

@@ -9,7 +9,7 @@ HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET")
 
 
-def make_hasura_request(*, query):
+def make_hasura_request(*, query, variables=None):
     """Fetch data from hasura
 
     Args:
@@ -25,7 +25,7 @@ def make_hasura_request(*, query):
         "X-Hasura-Admin-Secret": HASURA_ADMIN_SECRET,
         "content-type": "application/json",
     }
-    payload = {"query": query}
+    payload = {"query": query, "variables": variables}
     res = requests.post(HASURA_ENDPOINT, json=payload, headers=headers)
     res.raise_for_status()
     data = res.json()
