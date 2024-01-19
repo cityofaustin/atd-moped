@@ -56,6 +56,7 @@ query {
     signal_ids
     srts_id
     subcomponents
+    substantial_completion_date
     task_order_names
     type_name
     updated_at

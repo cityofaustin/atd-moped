@@ -374,13 +374,17 @@ export const useResetDependentFieldOnParentFieldChange = ({
   // when the parent value changes, compare to previous value
   // if it is different, reset the dependent field to its default
   useEffect(() => {
-    // keep update from firing if the parent value hasn't changed
-    if (
-      get(parentValue, comparisonVariable) ===
-      get(previousParentFormValue, comparisonVariable)
-    )
-      return;
     if (disable) return;
+    // keep update from firing if the parent value hasn't changed
+    if (comparisonVariable) {
+      if (
+        get(parentValue, comparisonVariable) ===
+        get(previousParentFormValue, comparisonVariable)
+      )
+        return;
+    } else if (parentValue === previousParentFormValue) {
+      return;
+    }
 
     setValue(dependentFieldName, valueToSet);
     setPreviousParentValue(parentValue);

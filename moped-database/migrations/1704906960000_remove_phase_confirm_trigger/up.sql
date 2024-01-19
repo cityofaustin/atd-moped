@@ -1,0 +1,3 @@
+DROP TRIGGER set_moped_proj_phases_confirmed_dates_trigger ON public.moped_proj_phases;
+
+DROP FUNCTION moped_proj_phases_confirmed_dates;
