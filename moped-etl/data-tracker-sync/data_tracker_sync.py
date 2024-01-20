@@ -77,7 +77,10 @@ def find_synced_moped_projects(last_run_date):
 def update_knack_project_from_moped_project(app, moped_project_record):
     logger.debug(f"Updating Knack record for {moped_project_record}")
 
+    # Build Knack record and add existing Knack record ID for update
     knack_project_record = build_knack_project_from_moped_project(moped_project_record)
+    knack_project_record["id"] = moped_project_record["knack_project_id"]
+
     updated = app.record(
         method="update",
         data=knack_project_record,
@@ -89,7 +92,6 @@ def update_knack_project_from_moped_project(app, moped_project_record):
 
 
 def main(last_run_date):
-    # Initialize KnackPy app
     app = knackpy.App(
         app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
     )
@@ -99,9 +101,7 @@ def main(last_run_date):
 
     # Create a Knack project for each unsynced Moped project
     created_knack_records = []
-    for project in [unsynced_moped_projects[0]]:
-        logger.info(project)  # remove this
-
+    for project in unsynced_moped_projects:
         moped_project_id = project["project_id"]
         knack_record_id = create_knack_project_from_moped_project(
             app=app, moped_project_record=project
@@ -113,21 +113,28 @@ def main(last_run_date):
             }
         )
 
+        # Update Moped project with Knack record ID of created record
         update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(last_run_date)
 
     # Update synced Moped projects in Data Tracker
-    # updated_knack_records = []
-    # for synced_moped_project in synced_moped_projects:
-    #     knack_record_id = update_knack_project_from_moped_project(synced_moped_project)
+    updated_knack_records = []
+    for project in synced_moped_projects:
+        moped_project_id = project["project_id"]
+        knack_record_id = update_knack_project_from_moped_project(
+            app=app, moped_project_record=project
+        )
+        updated_knack_records.append(
+            {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
+        )
 
     logger.info(f"Done syncing.")
     logger.info(f"Created {len(created_knack_records)} new Knack records")
     logger.debug(f"Records created: {created_knack_records}")
-    # logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
-    # logger.debug(f"Updated Knack records: {created_knack_records}")
+    logger.info(f"Updated {len(updated_knack_records)} existing Knack records")
+    logger.debug(f"Updated Knack records: {updated_knack_records}")
 
 
 if __name__ == "__main__":
@@ -170,14 +177,3 @@ if __name__ == "__main__":
 #  * in Knack (with a PUT request) — we currently do not provide the users with this
 #  * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
 #  */
-
-# TODO: Create url for moped_url_object (field_4162)
-# Helper from React code:
-# const getUrlObject = (project) => {
-#   const url =
-#     process.env.REACT_APP_KNACK_DATA_TRACKER_URL_BASE + project.project_id;
-#   return {
-#     url: url,
-#     label: project.project_name,
-#   };
-# };
