@@ -101,7 +101,7 @@ AS WITH project_person_list_lookup AS (
       WHERE project_id = mp.parent_project_id
     ) as parent_project_name,
     cpl.children_project_ids,
-    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
+    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners,
     (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id))
         FROM moped_proj_components components   
         LEFT JOIN feature_signals

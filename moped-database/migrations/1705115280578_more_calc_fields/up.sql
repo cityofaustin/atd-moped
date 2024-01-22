@@ -100,7 +100,7 @@ AS WITH project_person_list_lookup AS (
       WHERE project_id = mp.parent_project_id
     ) as parent_project_name,
     cpl.children_project_ids,
-    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
+    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners,
     (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id))
         FROM moped_proj_components components   
         LEFT JOIN feature_signals
@@ -302,7 +302,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_lead, 
         plv.public_process_status, 
         plv.interim_project_id, 
-        plv.project_partner as project_partners, 
+        plv.project_partners, 
         plv.task_order_names, 
         plv.funding_source_name, 
         plv.type_name, 

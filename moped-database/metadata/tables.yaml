@@ -5093,7 +5093,7 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_partner
+          - project_partners
           - project_sponsor
           - project_status_update
           - project_tags
@@ -5147,7 +5147,7 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_partner
+          - project_partners
           - project_sponsor
           - project_status_update
           - project_tags
@@ -5201,7 +5201,7 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_partner
+          - project_partners
           - project_sponsor
           - project_status_update
           - project_tags

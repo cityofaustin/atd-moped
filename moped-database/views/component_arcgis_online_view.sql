@@ -51,7 +51,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.project_lead, 
         plv.public_process_status, 
         plv.interim_project_id, 
-        plv.project_partner as project_partners, 
+        plv.project_partners, 
         plv.task_order_names, 
         plv.funding_source_name, 
         plv.type_name, 

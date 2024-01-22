@@ -172,7 +172,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "project_partner",
+      name: "project_partners",
       label: "Partners",
       placeholder: "Project partners",
       type: "string",
