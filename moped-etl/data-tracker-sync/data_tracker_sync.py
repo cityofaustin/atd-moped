@@ -153,9 +153,14 @@ def main(args):
         last_run_date=args.start, is_test=args.test
     )
 
-    # Update synced Moped projects in Data Tracker
+    # Update synced Moped projects in Data Tracker and skip those just created
     updated_knack_records = []
+    updates_to_skip = [record["moped_project_id"] for record in created_knack_records]
+
     for project in synced_moped_projects:
+        if project["project_id"] in updates_to_skip:
+            continue
+
         moped_project_id = project["project_id"]
         knack_record_id = update_knack_project_from_moped_project(
             app=app, moped_project_record=project, is_test=args.test
