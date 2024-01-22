@@ -73,14 +73,14 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text as project_url, 
         'https://mobility.austin.gov/moped/projects/' || plv.project_id :: text || '?tab=map&project_component_id=' || mpc.project_component_id :: text as component_url, 
-        'placeholder text' as work_plan_category,
-        '2024-01-01T00:00:00−06:00' as work_plan_category_date,
-         9999 as work_plan_category_date_calendar_year,
-        'placeholder text' as work_plan_category_date_calendar_year_month,
-        'placeholder text' as work_plan_category_date_calendar_year_month_numeric,
-        'placeholder text' as work_plan_category_date_calendar_year_quarter,
-        999 as work_plan_category_date_fiscal_year,
-        'placeholder text' as work_plan_category_date_fiscal_year_quarter,
+        plv.work_plan_category,
+        plv.work_plan_category_date,
+        plv.work_plan_category_date_calendar_year,
+        plv.work_plan_category_date_calendar_year_month,
+        plv.work_plan_category_date_calendar_year_month_numeric,
+        plv.work_plan_category_date_calendar_year_quarter,
+        plv.work_plan_category_date_fiscal_year,
+        plv.work_plan_category_date_fiscal_year_quarter,
         added_by as project_added_by
     FROM 
         moped_proj_components mpc 
