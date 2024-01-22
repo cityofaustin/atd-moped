@@ -5087,6 +5087,7 @@
           - funding_source_name
           - knack_project_id
           - parent_project_name
+          - parent_project_url
           - project_description
           - project_designer
           - project_inspector
@@ -5097,6 +5098,7 @@
           - project_status_update
           - project_tags
           - project_team_members
+          - project_url
           - project_website
           - public_process_status
           - task_order_names
@@ -5139,6 +5141,7 @@
           - funding_source_name
           - knack_project_id
           - parent_project_name
+          - parent_project_url
           - project_description
           - project_designer
           - project_inspector
@@ -5149,6 +5152,7 @@
           - project_status_update
           - project_tags
           - project_team_members
+          - project_url
           - project_website
           - public_process_status
           - task_order_names
@@ -5191,6 +5195,7 @@
           - funding_source_name
           - knack_project_id
           - parent_project_name
+          - parent_project_url
           - project_description
           - project_designer
           - project_inspector
@@ -5201,6 +5206,7 @@
           - project_status_update
           - project_tags
           - project_team_members
+          - project_url
           - project_website
           - public_process_status
           - task_order_names

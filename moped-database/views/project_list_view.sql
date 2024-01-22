@@ -79,6 +79,8 @@ AS WITH project_person_list_lookup AS (
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
+    'https://mobility.austin.gov/moped/projects/' || mp.project_id :: text as project_url, 
+    'https://mobility.austin.gov/moped/projects/' || mp.parent_project_id :: text as parent_project_url, 
     proj_status_update.project_note as project_status_update,
     proj_status_update.date_created as project_status_update_date_created,
     work_activities.workgroup_contractors,
