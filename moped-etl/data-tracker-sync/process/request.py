@@ -14,6 +14,7 @@ def make_hasura_request(*, query, variables=None):
 
     Args:
         query (str): the hasura query
+        variables (dict, optional): the query variables
 
     Raises:
         ValueError: If no data is returned
