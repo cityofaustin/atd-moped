@@ -28,3 +28,4 @@
 - work_plan_category_date_calendar_year_quarter (placeholder)
 - work_plan_category_date_fiscal_year (placeholder)
 - work_plan_category_date_fiscal_year_quarter (placeholder)
+- substantial_completion_date_estimated (placeholder)
