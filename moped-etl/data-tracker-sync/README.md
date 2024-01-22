@@ -1,33 +1,57 @@
-# MOPED - ETL
+# Sync Moped projects with Knack Data Tracker ETL
 
-These are programs intended to be used for scheduled tasks related to transferring data into and out of Moped. These programs come in the form of Python scripts intended to be run inside a Docker container. The Dockerfile needed to build the image used for the container is included.
+This ETL creates and updates `projects` table records in the Arterial Management
+Data Tracker app - a Knack application used for asset management.
 
-This ETL environment is modeled after the [ATD Vision Zero ETL environment](https://github.com/cityofaustin/atd-vz-data/atd-etl).
+If the project has been associated with signal components, the project created
+in Knack will have ties to the `signals` table records in the Knack app. These
+linkages are formed by including the signal's Knack record ID, which acts a
+foreign key to the signals table in the Data Tracker. A Moped project does not
+require a connection to Knack signal records.
 
 ## Getting Started
-#### 1) Download the environment file
-The ETL container needs information about specific details about your graphql-engine endpoint and some field codes assigned by Knack for the Data Tracker instance you're targeting. These details are passed into the container as environment variables and are defined in an environment file. The environment file for local development is available in 1Password's Developer section under the title "Local Development Moped ETL ENV file." Download this file and place it in the `moped-etl` folder. You can name it something that's memorable to you, but the following instructions will use the name `local_moped_dev_knack.env.` Do not commit this file into git. Files ending in `.env` are automatically ignored via `.gitignore`, so it is strongly recommended that you use a filename ending in that suffix.
 
-If you are working in a shared environment, protect the file to being read-only by your user account. This can be accomplished using the `chmod 600 <filename>` command in your terminal. 
+### Set up the environment file for local testing
 
-#### 2) Build the image
-Execute the following to build the ETL image: `docker build -t atd-moped-etl --no-cache .` 
+In production, secrets will come from 1Password and be fed to the script from
+within an Airflow DAG. To test locally, we can use a local file.
 
-If you are developing the image itself, the `--no-cache` argument can be removed. It is useful when you may have old intermediate layers to your image, that may contain manifests of software available apk, dpkg, yum or some other package management systems.
+Make a copy of `env_template` and call it `env_file`. Fill in the values as follows:
+- HASURA_ secrets: these point to the local Moped Hasura instance
+- KNACK_ secrets: these point to the test Data Tracker app and be found in the `development`
+section of the 1Password entry called **Knack AMD Data Tracker**. They can also be
+found by navigating to the **API & Code** section within the test copy of Data Tracker app 
+in the Knack Builder.
+- TEST_KNACK_SIGNAL_RECORD_ID: this is the Knack record ID of a signal in the test
+Data Tracker app. You can find one by going to the `signals` table in the Knack app
+and copying a unique signal ID from the URL that shows when you edit a row.
+- TEST_MOPED_PROJECT_ID: This will be where you set the Moped project ID of the project
+that you create in the next steps.
 
-#### 2.1) Python Requirements
-A folder exists named `requirements` in the `moped-etl` directory. Any file placed in this folder will be interpreted as a requirements.txt file and run through `pip install -r [filename]` during the building of the Docker image. This is a replacement of the system where we were `pip install`ing libraries explicitly during the image build process. The intent is to provide a mechanism for a user to easily pull a single ETL app out of this docker context and have a requirements file that goes along with it should he or she wish to run the script in another, perhaps local, environment. 
+### Testing
 
-#### 3) Development of ETL scripts
-You can start the container using the following command for local development.
+Testing the sync process outside of the production environment requires a few steps since the
+we don't want to test on production and the unique signal IDs differ between the production app
+and test copies. The steps are as follows:
 
-`docker run -it --rm -p 5555:5555 -v $(pwd)/app:/app -v $(pwd)/data:/data --env-file local_moped_dev_knack.env atd-moped-etl bash`
-
-Please note, the graphql-engine console will indicate that the endpoint where you want to send your graphql queries is likely: `http://localhost:8080/v1/graphql`. The hostname "localhost," in this case, referrers to your computer, running the graphql-engine which is exposed on the port `8080`.  However, when you run the Moped ETL container, that container will have its own localhost, being the local address of the container, not the host machine. Because of this, the address used to access the graphql-engine endpoint, **from inside the ETL docker container**, needs to be configured in the environment variable file in a way similar to this entry: `HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql`. The hostname `host.docker.internal` is a special hostname provided by the docker engine's DNS subsystem that points to localhost of the host computer, not the ETL container, which allows you to connect to services local to your machine, but outside of the guest container.
-
-#### 4) Debugging
-The python environment should support Web-PDB based debugging, but this is untested. Please see the debugging section in this [README.md](https://github.com/cityofaustin/atd-vz-data/blob/master/atd-etl/README.md) file for more information. 
-
-## ETL Scripts
-
-* app/moped_data-tracker_sync_projects.py: Query Moped's graphql-engine endpoint and find all projects which have a recorded knack ID, indicating that they have been synchronized to Knack by a user. Similarly, query all projects in Knack's Data Tracker application. Iterate over the Moped dataset and comparing it to the connected record in Knack. For each record with differing data, update Knack to match the current data found in Moped. 
+1. Start the local instance of Hasura from a production snapshot or using the seed data
+3. Create a new project in Moped and set the env variable called TEST_MOPED_PROJECT_ID to the
+Moped project ID
+4. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
+UTC time and set the `--start` argument to that timestamp. 
+5. To execute the sync script, run the following command with your timestamp filled in:
+```bash
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atd-moped-etl-data-tracker-sync python data_tracker_sync.py --start <your timestamp> --test
+```
+6. The output of the script should be a list of created and updated Knack records.
+7. It should show that one record was created, and no records were updated.
+8. Go to the test Data Tracker app and find the most recent record that was created in the
+projects table. It should show the title and other details of your created Moped project.
+9.  Run the sync script again but update the timestamp to the current time again to simulate
+the next run of the script in the future.
+10.  You should see that the script does not create or update any records.
+11.  Edit the title of the Moped project you created earlier through the local Hasura console
+or through the Moped Editor.
+12.  Run the sync script again with the last timestamp that you used. You should see the script
+log an update of the Knack record that you created earlier. Check the row in the test
+Data Tracker app and you should see that the title has been updated with your edit.

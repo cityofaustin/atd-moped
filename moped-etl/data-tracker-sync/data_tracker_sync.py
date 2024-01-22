@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-import re
 import os
 import argparse
+import logging
 from datetime import datetime, timezone
 
 import knackpy
@@ -23,8 +23,6 @@ KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
 TEST_MOPED_PROJECT_ID = os.getenv("TEST_MOPED_PROJECT_ID")
 
 KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
-
-logger = get_logger("moped-knack-sync")
 
 
 def find_unsynced_moped_projects(is_test=False):
@@ -190,23 +188,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    log_level = logging.DEBUG if args.test else logging.INFO
+    logger = get_logger(name="moped-knack-sync", level=log_level)
+
     main(args)
-
-# TODO: Add documentation on how to test this:
-# From React code:
-# Warning: It's not possible to test this feature outside of a produciton environment,
-# because our signals' unique knack record identifiers only exist in production.
-# To test, you can patch in a valid knack ID by uncommenting the line below that sets
-# body.signals_connection.
-
-# TODO: From React code:
-# /**
-#  * This feature enables the user to create a "project" record in Arterial Management
-#  * Data Tracker app - a knack application used for asset management.
-#  *
-#  * Any Moped user can push any project to the Data Tracker. If the project has signal
-#  * components, the project created in Knack will have ties to the signal records in
-#  * Knack. These linkages are formed by including the signal's knack record ID, which
-#  * acts a foreign key to the signals table in the Data Tracker. If the project does not
-#  * have signal components, that's fine.
-#  */
