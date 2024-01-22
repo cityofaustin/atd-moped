@@ -73,14 +73,14 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.knack_project_id as knack_data_tracker_project_record_id, 
         plv.project_url,
         plv.project_url || '?tab=map&project_component_id=' || mpc.project_component_id :: text as component_url, 
-        plv.work_plan_category,
-        plv.work_plan_category_date,
-        plv.work_plan_category_date_calendar_year,
-        plv.work_plan_category_date_calendar_year_month,
-        plv.work_plan_category_date_calendar_year_month_numeric,
-        plv.work_plan_category_date_calendar_year_quarter,
-        plv.work_plan_category_date_fiscal_year,
-        plv.work_plan_category_date_fiscal_year_quarter,
+        plv.project_development_status,
+        plv.project_development_status_date,
+        plv.project_development_status_date_calendar_year,
+        plv.project_development_status_date_calendar_year_month,
+        plv.project_development_status_date_calendar_year_month_numeric,
+        plv.project_development_status_date_calendar_year_quarter,
+        plv.project_development_status_date_fiscal_year,
+        plv.project_development_status_date_fiscal_year_quarter,
         added_by as project_added_by
     FROM 
         moped_proj_components mpc 

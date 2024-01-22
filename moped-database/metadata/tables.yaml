@@ -17,8 +17,8 @@
           - project_component_id
           - project_id
           - project_phase_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
           - length_miles_total
@@ -72,12 +72,12 @@
           - task_order_names
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
           - project_status_update_date_created
           - project_updated_at
@@ -99,8 +99,8 @@
           - project_component_id
           - project_id
           - project_phase_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
           - length_miles_total
@@ -154,12 +154,12 @@
           - task_order_names
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
           - project_status_update_date_created
           - project_updated_at
@@ -181,8 +181,8 @@
           - project_component_id
           - project_id
           - project_phase_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
           - length_miles_total
@@ -236,12 +236,12 @@
           - task_order_names
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
           - project_status_update_date_created
           - project_updated_at
@@ -5072,8 +5072,8 @@
           - interim_project_id
           - parent_project_id
           - project_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - project_feature
           - children_project_ids
           - task_orders
@@ -5105,12 +5105,12 @@
           - task_order_names_short
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - date_added
           - project_status_update_date_created
           - updated_at
@@ -5126,8 +5126,8 @@
           - interim_project_id
           - parent_project_id
           - project_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - project_feature
           - children_project_ids
           - task_orders
@@ -5159,12 +5159,12 @@
           - task_order_names_short
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - date_added
           - project_status_update_date_created
           - updated_at
@@ -5180,8 +5180,8 @@
           - interim_project_id
           - parent_project_id
           - project_id
-          - work_plan_category_date_calendar_year
-          - work_plan_category_date_fiscal_year
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - project_feature
           - children_project_ids
           - task_orders
@@ -5213,12 +5213,12 @@
           - task_order_names_short
           - type_name
           - workgroup_contractors
-          - work_plan_category
-          - work_plan_category_date
-          - work_plan_category_date_calendar_year_month
-          - work_plan_category_date_calendar_year_month_numeric
-          - work_plan_category_date_calendar_year_quarter
-          - work_plan_category_date_fiscal_year_quarter
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - date_added
           - project_status_update_date_created
           - updated_at

@@ -88,14 +88,14 @@ AS WITH project_person_list_lookup AS (
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    'placeholder text' as work_plan_category,
-    '2024-01-01T00:00:00−06:00' as work_plan_category_date,
-    9999 as work_plan_category_date_calendar_year,
-    'placeholder text' as work_plan_category_date_calendar_year_month,
-    'placeholder text' as work_plan_category_date_calendar_year_month_numeric,
-    'placeholder text' as work_plan_category_date_calendar_year_quarter,
-    999 as work_plan_category_date_fiscal_year,
-    'placeholder text' as work_plan_category_date_fiscal_year_quarter,
+    'placeholder text' as project_development_status,
+    '2024-01-01T00:00:00−06:00' as project_development_status_date,
+    9999 as project_development_status_date_calendar_year,
+    'placeholder text' as project_development_status_date_calendar_year_month,
+    'placeholder text' as project_development_status_date_calendar_year_month_numeric,
+    'placeholder text' as project_development_status_date_calendar_year_quarter,
+    999 as project_development_status_date_fiscal_year,
+    'placeholder text' as project_development_status_date_fiscal_year_quarter,
     (SELECT project_name
       FROM moped_project
       WHERE project_id = mp.parent_project_id
