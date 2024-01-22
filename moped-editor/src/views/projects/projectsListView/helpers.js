@@ -401,11 +401,11 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Status update",
-        field: "project_note",
-        hidden: hiddenColumns["project_note"],
+        field: "project_status_update",
+        hidden: hiddenColumns["project_status_update"],
         emptyValue: "-",
         cellStyle: { maxWidth: "30rem" },
-        render: (entry) => parse(String(entry.project_note)),
+        render: (entry) => parse(String(entry.project_status_update)),
       },
       {
         title: "Construction start",
