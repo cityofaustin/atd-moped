@@ -1,4 +1,4 @@
--- latest version 1704744986000_substantial_completion_date
+-- latest version 1705115280578_more_calc_fields
 DROP VIEW project_list_view CASCADE;
 
 CREATE OR REPLACE VIEW public.project_list_view
@@ -79,8 +79,8 @@ AS WITH project_person_list_lookup AS (
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
-    proj_notes.project_note,
-    proj_notes.date_created as project_note_date_created,
+    proj_status_update.project_note as project_status_update,
+    proj_status_update.date_created as project_status_update_date_created,
     work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
@@ -216,7 +216,7 @@ AS WITH project_person_list_lookup AS (
         WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
         ORDER BY mpn.date_created DESC
         LIMIT 1
-      ) as proj_notes on true
+      ) as proj_status_update on true
   WHERE
     mp.is_deleted = false
   GROUP BY
@@ -243,8 +243,8 @@ AS WITH project_person_list_lookup AS (
     added_by_user.last_name,
     mpps.name,
     cpl.children_project_ids,
-    proj_notes.project_note,
-    proj_notes.date_created,
+    proj_status_update.project_note,
+    proj_status_update.date_created,
     work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,

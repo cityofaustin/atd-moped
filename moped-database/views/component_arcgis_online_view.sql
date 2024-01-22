@@ -1,4 +1,4 @@
--- current_version: 1704744986000_substantial_completion_date
+-- current_version: 1705115280578_more_calc_fields
 DROP VIEW component_arcgis_online_view;
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
@@ -55,8 +55,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         plv.task_order_names, 
         plv.funding_source_name, 
         plv.type_name, 
-        plv.project_note as project_status_update,  
-        plv.project_note_date_created as project_status_update_date_created, 
+        plv.project_status_update,  
+        plv.project_status_update_date_created, 
         plv.construction_start_date, 
         plv.completion_end_date, 
         plv.project_inspector, 
