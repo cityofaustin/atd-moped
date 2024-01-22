@@ -8,22 +8,22 @@ import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
+  // root: {
+  //   "& > *": {
+  //     margin: theme.spacing(1),
+  //   },
+  // },
   downloadButtonGrid: {
     padding: "12px",
   },
   downloadCsvButton: {
-    height: "43px",
+    // height: "43px",
   },
   tabStyle: {
-    margin: ".5rem",
+    // margin: ".5rem",
   },
   searchBarContainer: {
-    padding: "2px",
+    // padding: "2px",
     [theme.breakpoints.down("sm")]: {
       paddingBottom: "12px",
     },
@@ -122,56 +122,52 @@ const Search = ({
 
   return (
     <div>
-      <Box mt={3}>
-        <Paper ref={divRef}>
-          <Grid container className={classes.searchBarContainer}>
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              lg={10}
-              className={classes.gridSearchPadding}
-            >
-              <SearchBar
-                searchFieldValue={searchFieldValue}
-                setSearchFieldValue={setSearchFieldValue}
-                filters={filters}
-                toggleAdvancedSearch={toggleAdvancedSearch}
-                advancedSearchAnchor={advancedSearchAnchor}
-                setSearchTerm={setSearchTerm}
-                queryConfig={queryConfig}
-                isOr={isOr}
-                handleSwitchToSearch={handleSwitchToSearch}
-                loading={loading}
-                filtersConfig={filtersConfig}
-              />
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={4}
-              md={4}
-              lg={2}
-              className={classes.downloadButtonGrid}
-            >
-              {queryConfig.showExport && (
-                <Button
-                  disabled={
-                    (parentData?.[queryConfig.table] ?? []).length === 0
-                  }
-                  className={classes.downloadCsvButton}
-                  onClick={handleExportButtonClick}
-                  startIcon={<SaveAltIcon />}
-                  variant="outlined"
-                  color="primary"
-                  fullWidth
-                >
-                  Download
-                </Button>
-              )}
-            </Grid>
+      <Box ref={divRef}>
+        <Grid container className={classes.searchBarContainer}>
+          <Grid
+            item
+            xs={12}
+            sm={8}
+            lg={10}
+            className={classes.gridSearchPadding}
+          >
+            <SearchBar
+              searchFieldValue={searchFieldValue}
+              setSearchFieldValue={setSearchFieldValue}
+              filters={filters}
+              toggleAdvancedSearch={toggleAdvancedSearch}
+              advancedSearchAnchor={advancedSearchAnchor}
+              setSearchTerm={setSearchTerm}
+              queryConfig={queryConfig}
+              isOr={isOr}
+              handleSwitchToSearch={handleSwitchToSearch}
+              loading={loading}
+              filtersConfig={filtersConfig}
+            />
           </Grid>
-        </Paper>
+          <Grid
+            item
+            xs={12}
+            sm={4}
+            md={4}
+            lg={2}
+            className={classes.downloadButtonGrid}
+          >
+            {queryConfig.showExport && (
+              <Button
+                disabled={(parentData?.[queryConfig.table] ?? []).length === 0}
+                className={classes.downloadCsvButton}
+                onClick={handleExportButtonClick}
+                startIcon={<SaveAltIcon />}
+                variant="outlined"
+                color="primary"
+                fullWidth
+              >
+                Download
+              </Button>
+            )}
+          </Grid>
+        </Grid>
       </Box>
       <Popper
         id="advancedSearch"

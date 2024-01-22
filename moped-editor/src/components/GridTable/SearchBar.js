@@ -46,9 +46,9 @@ const useStyles = makeStyles((theme) => ({
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
-  searchButton: {
-    marginTop: "12px",
-  },
+  // searchButton: {
+  //   marginTop: "12px",
+  // },
   filtersList: {
     padding: "8px",
     marginRight: "12px",
@@ -211,12 +211,13 @@ const SearchBar = ({
       <TextField
         fullWidth
         autoFocus
-        inputProps={{
-          style: {
-            paddingTop: 12,
-            paddingBottom: 12,
-          },
-        }}
+        size="small"
+        // inputProps={{
+        //   style: {
+        //     paddingTop: 12,
+        //     paddingBottom: 12,
+        //   },
+        // }}
         onChange={(e) => handleSearchValueChange(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e.key)}
         InputProps={{

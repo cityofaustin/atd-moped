@@ -25,28 +25,23 @@ import {
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
+import { DataGrid } from "@mui/x-data-grid";
+
+const COLUMN_WIDTHS = {
+  small: 75,
+  medium: 200,
+  large: 250,
+  xlarge: 350,
+};
 
 /**
  * GridTable Style
  */
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    "& .MuiTableCell-head:nth-of-type(2)": {
-      left: "0px",
-      position: "sticky",
-    },
-  },
-  paper: {
-    width: "100%",
-    marginBottom: theme.spacing(1),
-  },
+  root: {},
+
   table: {
     minWidth: 750,
-  },
-  tableCell: {
-    "text-transform": "capitalize",
-    "white-space": "pre-wrap",
   },
   noResults: {
     paddingTop: "25px",
@@ -206,45 +201,92 @@ const ProjectsListViewTable = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Container maxWidth={false} className={classes.root}>
+      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
         <CsvDownloadDialog dialogOpen={dialogOpen} />
-        <Search
-          parentData={data}
-          filters={filters}
-          setFilters={setFilters}
-          advancedSearchAnchor={advancedSearchAnchor}
-          setAdvancedSearchAnchor={setAdvancedSearchAnchor}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
-          filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
-          handleExportButtonClick={handleExportButtonClick}
-          isOr={isOr}
-          setIsOr={setIsOr}
-          loading={loading}
-        />
+        <Box>
+          <Search
+            parentData={data}
+            filters={filters}
+            setFilters={setFilters}
+            advancedSearchAnchor={advancedSearchAnchor}
+            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
+            filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+            handleExportButtonClick={handleExportButtonClick}
+            isOr={isOr}
+            setIsOr={setIsOr}
+            loading={loading}
+          />
+        </Box>
         {/*Main Table Body*/}
-        <Paper className={classes.paper}>
-          <Box mt={3}>
-            {!data && !error ? (
-              <CircularProgress />
-            ) : data && data.project_list_view ? (
-              <Card className={classes.root}>
-                <MaterialTable
-                  onChangeColumnHidden={handleColumnChange}
-                  data={data.project_list_view}
-                  columns={columns}
-                  title=""
-                  options={tableOptions}
-                  components={tableComponents}
-                />
-              </Card>
-            ) : (
-              <span>{error ? error : "Could not fetch data"}</span>
-            )}
-          </Box>
-        </Paper>
-      </Container>
+
+        <Box sx={{ flexGrow: 1, height: "1px" }}>
+          {data && data.project_list_view && (
+            <DataGrid
+              columns={[
+                {
+                  headerName: "ID",
+                  field: "project_id",
+                  width: COLUMN_WIDTHS.small,
+                },
+                {
+                  headerName: "Name",
+                  field: "project_name",
+                  flex: 2,
+                  minWidth: COLUMN_WIDTHS.xlarge,
+                },
+                {
+                  headerName: "project_team_members",
+                  field: "project_team_members",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "project_lead",
+                  field: "project_lead",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "project_sponsor",
+                  field: "project_sponsor",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "current_phase_key",
+                  field: "current_phase_key",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "ecapris_subproject_id",
+                  field: "ecapris_subproject_id",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "updated_at",
+                  field: "updated_at",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+                {
+                  headerName: "components",
+                  field: "components",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                },
+              ]}
+              getRowId={(thing) => thing.project_id}
+              disableRowSelectionOnClick
+              rows={data.project_list_view}
+            />
+          )}
+        </Box>
+      </Box>
     </ApolloErrorHandler>
   );
 };

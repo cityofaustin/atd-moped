@@ -39,6 +39,7 @@ const EnvAlertBanner = () => {
 const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
+    position: "absolute"
   },
   tabs: {
     marginLeft: "12px",
@@ -99,8 +100,8 @@ const TopBar = ({ className, ...rest }) => {
 
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
-      <EnvAlertBanner />
-      <Toolbar className={classes.root}>
+      {/* <EnvAlertBanner /> */}
+      <Toolbar >
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>

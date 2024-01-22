@@ -183,7 +183,7 @@ const ProjectWorkActivitiesTable = () => {
 
   return (
     <ApolloErrorHandler errors={error}>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", overflow: "scroll" }}>
         <DataGrid
           autoHeight
           columns={columns}
