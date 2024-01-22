@@ -33,8 +33,10 @@ def find_unsynced_moped_projects():
     return unsynced_projects
 
 
-def create_knack_project_from_moped_project(app, moped_project_record):
+def create_knack_project_from_moped_project(app, moped_project_record, is_test=False):
     logger.debug(f"Creating Knack record for {moped_project_record}")
+
+    # TODO: If testing, patch Knack signal record and Moped project record with test IDs
 
     knack_project_record = build_knack_project_from_moped_project(moped_project_record)
     created = app.record(
@@ -48,10 +50,12 @@ def create_knack_project_from_moped_project(app, moped_project_record):
     return knack_record_id
 
 
-def update_moped_project_knack_id(moped_project_id, knack_project_id):
+def update_moped_project_knack_id(moped_project_id, knack_project_id, is_test=False):
     logger.debug(
         f"Updating Moped project {moped_project_id} with Knack ID {knack_project_id}"
     )
+
+    # TODO: If testing, patch Knack signal record and Moped project record with test IDs
 
     update = make_hasura_request(
         query=UPDATE_MOPED_PROJECT_KNACK_ID,
@@ -91,7 +95,7 @@ def update_knack_project_from_moped_project(app, moped_project_record):
     return knack_record_id
 
 
-def main(last_run_date):
+def main(args):
     app = knackpy.App(
         app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
     )
@@ -117,7 +121,7 @@ def main(last_run_date):
         update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
-    synced_moped_projects = find_synced_moped_projects(last_run_date)
+    synced_moped_projects = find_synced_moped_projects(args.start)
 
     # Update synced Moped projects in Data Tracker
     updated_knack_records = []
@@ -147,9 +151,11 @@ if __name__ == "__main__":
         help=f"ISO date string (in UTC) of latest updated_at value to find project records to update.",
     )
 
+    parser.add_argument("-t", "--test", action="store_true")
+
     args = parser.parse_args()
 
-    main(args.start)
+    main(args)
 
 # TODO: Add documentation on how to test this:
 # From React code:
