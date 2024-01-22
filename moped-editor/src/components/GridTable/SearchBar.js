@@ -212,12 +212,6 @@ const SearchBar = ({
         fullWidth
         autoFocus
         size="small"
-        // inputProps={{
-        //   style: {
-        //     paddingTop: 12,
-        //     paddingBottom: 12,
-        //   },
-        // }}
         onChange={(e) => handleSearchValueChange(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e.key)}
         InputProps={{
@@ -235,7 +229,7 @@ const SearchBar = ({
                   <CircularProgress size="2rem" />
                 </IconButton>
               )}
-              <IconButton
+              {/* <IconButton
                 onClick={toggleAdvancedSearch}
                 className={clsx({
                   [classes.tuneIcon]: !filterStateActive,
@@ -246,7 +240,7 @@ const SearchBar = ({
                 size="large"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
-              </IconButton>
+              </IconButton> */}
             </InputAdornment>
           ),
         }}

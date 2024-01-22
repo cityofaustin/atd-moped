@@ -1,33 +1,14 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 
-import { Box, Button, Grid, Paper, Popper } from "@mui/material";
+import { Box, Button, Grid, Paper, Popper, Chip } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import { TuneOutlined } from "@mui/icons-material";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-  // root: {
-  //   "& > *": {
-  //     margin: theme.spacing(1),
-  //   },
-  // },
-  downloadButtonGrid: {
-    padding: "12px",
-  },
-  downloadCsvButton: {
-    // height: "43px",
-  },
-  tabStyle: {
-    // margin: ".5rem",
-  },
-  searchBarContainer: {
-    // padding: "2px",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "12px",
-    },
-  },
   advancedSearchRoot: {
     width: "calc(100% - 32px)",
     zIndex: "3",
@@ -45,9 +26,6 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     boxShadow:
       "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
-  },
-  gridSearchPadding: {
-    padding: "12px",
   },
 }));
 
@@ -121,16 +99,10 @@ const Search = ({
   };
 
   return (
-    <div>
-      <Box ref={divRef}>
-        <Grid container className={classes.searchBarContainer}>
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            lg={10}
-            className={classes.gridSearchPadding}
-          >
+    <>
+      <Box ref={divRef} sx={{ padding: "10px" }}>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={8} lg={8}>
             <SearchBar
               searchFieldValue={searchFieldValue}
               setSearchFieldValue={setSearchFieldValue}
@@ -145,21 +117,26 @@ const Search = ({
               filtersConfig={filtersConfig}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            md={4}
-            lg={2}
-            className={classes.downloadButtonGrid}
-          >
+          <Grid item xs={12} sm={4} md={4} lg={1}>
+            <Button
+              disabled={(parentData?.[queryConfig.table] ?? []).length === 0}
+              onClick={handleExportButtonClick}
+              startIcon={<TuneOutlined />}
+              variant="outlined"
+              color="primary"
+              fullWidth
+            >
+              <span style={{marginRight: ".5rem"}}>Filter</span>
+              <Chip label="4" color="primary" size="small"/>
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={4} md={4} lg={1}>
             {queryConfig.showExport && (
               <Button
                 disabled={(parentData?.[queryConfig.table] ?? []).length === 0}
-                className={classes.downloadCsvButton}
                 onClick={handleExportButtonClick}
                 startIcon={<SaveAltIcon />}
-                variant="outlined"
+                variant="text"
                 color="primary"
                 fullWidth
               >
@@ -190,7 +167,7 @@ const Search = ({
           />
         </Paper>
       </Popper>
-    </div>
+    </>
   );
 };
 

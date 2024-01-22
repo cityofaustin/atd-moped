@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import MaterialTable from "@material-table/core";
+import { DataGrid } from "@mui/x-data-grid";
 import {
   useTableComponents,
   useColumns,
@@ -20,12 +20,12 @@ import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
+import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
-import { DataGrid } from "@mui/x-data-grid";
 
 const COLUMN_WIDTHS = {
   small: 75,
@@ -201,7 +201,10 @@ const ProjectsListViewTable = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Box sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+      <Box
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+        id="thisbox"
+      >
         <CsvDownloadDialog dialogOpen={dialogOpen} />
         <Box>
           <Search
@@ -238,43 +241,56 @@ const ProjectsListViewTable = () => {
                   minWidth: COLUMN_WIDTHS.xlarge,
                 },
                 {
-                  headerName: "project_team_members",
+                  headerName: "Status",
+                  field: "current_phase_key",
+                  flex: 1,
+                  minWidth: COLUMN_WIDTHS.medium,
+                  renderCell: ({ row }) => {
+                    return (
+                      <ProjectStatusBadge
+                        phaseName={row.current_phase}
+                        phaseKey={row.current_phase_key}
+                        condensed
+                      />
+                    );
+                  },
+                },
+                {
+                  headerName: "Team",
                   field: "project_team_members",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
                 },
                 {
-                  headerName: "project_lead",
+                  headerName: "Lead",
                   field: "project_lead",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
                 },
                 {
-                  headerName: "project_sponsor",
+                  headerName: "Sponsor",
                   field: "project_sponsor",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
                 },
                 {
-                  headerName: "current_phase_key",
-                  field: "current_phase_key",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-                {
-                  headerName: "ecapris_subproject_id",
+                  headerName: "eCapris ID",
                   field: "ecapris_subproject_id",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
                 },
                 {
-                  headerName: "updated_at",
+                  headerName: "Updated",
                   field: "updated_at",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
+                  valueGetter: ({ row }) =>
+                    row.updated_at
+                      ? new Date(row.updated_at).toLocaleDateString()
+                      : "",
                 },
                 {
-                  headerName: "components",
+                  headerName: "Components",
                   field: "components",
                   flex: 1,
                   minWidth: COLUMN_WIDTHS.medium,
@@ -283,6 +299,7 @@ const ProjectsListViewTable = () => {
               getRowId={(thing) => thing.project_id}
               disableRowSelectionOnClick
               rows={data.project_list_view}
+              density="compact"
             />
           )}
         </Box>

@@ -87,25 +87,10 @@ const DashboardLayout = () => {
         backgroundColor: "white",
         overflow: "hidden",
         height: "100vh",
-        // paddingTop: "64px",
+        paddingTop: "64px",
       }}
     >
-      {/* <TopBar /> */}
-      <Drawer variant="permanent" open={open}>
-        <Toolbar
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "flex-end",
-            px: [1],
-          }}
-        >
-          <IconButton onClick={() => setOpen(!open)}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </Toolbar>
-        <div>hello</div>
-      </Drawer>
+      <TopBar />
       <Box
         component="main"
         sx={{
