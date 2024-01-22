@@ -741,7 +741,7 @@ export const PROJECT_UPDATE_PARTNERS = gql`
 `;
 
 export const PROJECT_UPDATE_WEBSITE = gql`
-  mutation UpdateProjectWebsite($projectId: Int!, $website: String!) {
+  mutation UpdateProjectWebsite($projectId: Int!, $website: String) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { project_website: $website }
