@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-
 import {
   Button,
   Box,
@@ -16,7 +15,6 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
-import clsx from "clsx";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
