@@ -12,6 +12,7 @@ from process.logging import get_logger
 from process.knack_data import build_knack_project_from_moped_project
 from process.queries import (
     GET_SYNCED_PROJECTS,
+    GET_TEST_UNSYNCED_PROJECTS,
     GET_UNSYNCED_PROJECTS,
     UPDATE_MOPED_PROJECT_KNACK_ID,
 )
@@ -22,13 +23,24 @@ logger.debug("Syncing Moped Project Data to Data Tracker")
 
 KNACK_DATA_TRACKER_APP_ID = os.getenv("KNACK_DATA_TRACKER_APP_ID")
 KNACK_DATA_TRACKER_API_KEY = os.getenv("KNACK_DATA_TRACKER_API_KEY")
+TEST_MOPED_PROJECT_ID = os.getenv("TEST_MOPED_PROJECT_ID")
+
 KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
 
-def find_unsynced_moped_projects():
-    data = make_hasura_request(query=GET_UNSYNCED_PROJECTS)
-    unsynced_projects = data["moped_project"]
-    logger.info(f"Found {len(unsynced_projects)} unsynced projects")
+def find_unsynced_moped_projects(is_test=False):
+    # If we are testing, request a Moped project record with a known ID.
+    if is_test:
+        data = make_hasura_request(
+            query=GET_TEST_UNSYNCED_PROJECTS,
+            variables={"project_id": TEST_MOPED_PROJECT_ID},
+        )
+        unsynced_projects = data["moped_project"]
+        logger.debug(f"Found unsynced projects: {unsynced_projects}")
+    else:
+        data = make_hasura_request(query=GET_UNSYNCED_PROJECTS)
+        unsynced_projects = data["moped_project"]
+        logger.info(f"Found {len(unsynced_projects)} unsynced projects")
 
     return unsynced_projects
 
@@ -36,7 +48,7 @@ def find_unsynced_moped_projects():
 def create_knack_project_from_moped_project(app, moped_project_record, is_test=False):
     logger.debug(f"Creating Knack record for {moped_project_record}")
 
-    # TODO: If testing, patch Knack signal record and Moped project record with test IDs
+    # TODO: If testing, patch Knack signals columns with test app compatible signal ID
 
     knack_project_record = build_knack_project_from_moped_project(moped_project_record)
     created = app.record(
@@ -50,12 +62,10 @@ def create_knack_project_from_moped_project(app, moped_project_record, is_test=F
     return knack_record_id
 
 
-def update_moped_project_knack_id(moped_project_id, knack_project_id, is_test=False):
+def update_moped_project_knack_id(moped_project_id, knack_project_id):
     logger.debug(
         f"Updating Moped project {moped_project_id} with Knack ID {knack_project_id}"
     )
-
-    # TODO: If testing, patch Knack signal record and Moped project record with test IDs
 
     update = make_hasura_request(
         query=UPDATE_MOPED_PROJECT_KNACK_ID,
@@ -68,18 +78,21 @@ def update_moped_project_knack_id(moped_project_id, knack_project_id, is_test=Fa
     return update
 
 
-def find_synced_moped_projects(last_run_date):
+def find_synced_moped_projects(last_run_date, is_test=False):
     data = make_hasura_request(
         query=GET_SYNCED_PROJECTS, variables={"last_update_date": last_run_date}
     )
     synced_projects = data["moped_project"]
     logger.info(f"Found {len(synced_projects)} synced projects")
+    logger.debug(f"Found synced projects: {synced_projects}")
 
     return synced_projects
 
 
-def update_knack_project_from_moped_project(app, moped_project_record):
+def update_knack_project_from_moped_project(app, moped_project_record, is_test=False):
     logger.debug(f"Updating Knack record for {moped_project_record}")
+
+    # TODO: If testing, patch Knack signals columns with test app compatible signal ID
 
     # Build Knack record and add existing Knack record ID for update
     knack_project_record = build_knack_project_from_moped_project(moped_project_record)
@@ -101,38 +114,40 @@ def main(args):
     )
 
     # Find all projects that are not synced to Data Tracker
-    unsynced_moped_projects = find_unsynced_moped_projects()
+    unsynced_moped_projects = find_unsynced_moped_projects(is_test=args.test)
 
     # Create a Knack project for each unsynced Moped project
     created_knack_records = []
     for project in unsynced_moped_projects:
         moped_project_id = project["project_id"]
-        knack_record_id = create_knack_project_from_moped_project(
-            app=app, moped_project_record=project
-        )
-        created_knack_records.append(
-            {
-                "moped_project_id": moped_project_id,
-                "knack_record_id": knack_record_id,
-            }
-        )
+        # knack_record_id = create_knack_project_from_moped_project(
+        #     app=app, moped_project_record=project, is_test=args.test
+        # )
+        # created_knack_records.append(
+        #     {
+        #         "moped_project_id": moped_project_id,
+        #         "knack_record_id": knack_record_id,
+        #     }
+        # )
 
         # Update Moped project with Knack record ID of created record
-        update_moped_project_knack_id(moped_project_id, knack_record_id)
+        # update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
-    synced_moped_projects = find_synced_moped_projects(args.start)
+    synced_moped_projects = find_synced_moped_projects(
+        last_run_date=args.start, is_test=args.test
+    )
 
     # Update synced Moped projects in Data Tracker
     updated_knack_records = []
     for project in synced_moped_projects:
         moped_project_id = project["project_id"]
-        knack_record_id = update_knack_project_from_moped_project(
-            app=app, moped_project_record=project
-        )
-        updated_knack_records.append(
-            {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
-        )
+        # knack_record_id = update_knack_project_from_moped_project(
+        #     app=app, moped_project_record=project, is_test=args.test
+        # )
+        # updated_knack_records.append(
+        #     {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
+        # )
 
     logger.info(f"Done syncing.")
     logger.info(f"Created {len(created_knack_records)} new Knack records")
