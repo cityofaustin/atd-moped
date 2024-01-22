@@ -178,8 +178,4 @@ if __name__ == "__main__":
 #  * Knack. These linkages are formed by including the signal's knack record ID, which
 #  * acts a foreign key to the signals table in the Data Tracker. If the project does not
 #  * have signal components, that's fine.
-#  *
-#  * Although this component has logic to *update* (instead of create) a project record
-#  * in Knack (with a PUT request) — we currently do not provide the users with this
-#  * option. The "Sync w/ Data Tracker" button is hidden once a project is created.
 #  */
