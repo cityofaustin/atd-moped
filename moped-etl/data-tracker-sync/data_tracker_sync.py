@@ -48,9 +48,10 @@ def find_unsynced_moped_projects(is_test=False):
 def create_knack_project_from_moped_project(app, moped_project_record, is_test=False):
     logger.debug(f"Creating Knack record for {moped_project_record}")
 
-    # TODO: If testing, patch Knack signals columns with test app compatible signal ID
+    knack_project_record = build_knack_project_from_moped_project(
+        moped_project_record=moped_project_record, is_test=is_test
+    )
 
-    knack_project_record = build_knack_project_from_moped_project(moped_project_record)
     created = app.record(
         method="create",
         data=knack_project_record,
@@ -92,10 +93,10 @@ def find_synced_moped_projects(last_run_date, is_test=False):
 def update_knack_project_from_moped_project(app, moped_project_record, is_test=False):
     logger.debug(f"Updating Knack record for {moped_project_record}")
 
-    # TODO: If testing, patch Knack signals columns with test app compatible signal ID
-
     # Build Knack record and add existing Knack record ID for update
-    knack_project_record = build_knack_project_from_moped_project(moped_project_record)
+    knack_project_record = build_knack_project_from_moped_project(
+        moped_project_record=moped_project_record, is_test=is_test
+    )
     knack_project_record["id"] = moped_project_record["knack_project_id"]
 
     updated = app.record(
@@ -120,18 +121,18 @@ def main(args):
     created_knack_records = []
     for project in unsynced_moped_projects:
         moped_project_id = project["project_id"]
-        # knack_record_id = create_knack_project_from_moped_project(
-        #     app=app, moped_project_record=project, is_test=args.test
-        # )
-        # created_knack_records.append(
-        #     {
-        #         "moped_project_id": moped_project_id,
-        #         "knack_record_id": knack_record_id,
-        #     }
-        # )
+        knack_record_id = create_knack_project_from_moped_project(
+            app=app, moped_project_record=project, is_test=args.test
+        )
+        created_knack_records.append(
+            {
+                "moped_project_id": moped_project_id,
+                "knack_record_id": knack_record_id,
+            }
+        )
 
         # Update Moped project with Knack record ID of created record
-        # update_moped_project_knack_id(moped_project_id, knack_record_id)
+        update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(
@@ -142,12 +143,12 @@ def main(args):
     updated_knack_records = []
     for project in synced_moped_projects:
         moped_project_id = project["project_id"]
-        # knack_record_id = update_knack_project_from_moped_project(
-        #     app=app, moped_project_record=project, is_test=args.test
-        # )
-        # updated_knack_records.append(
-        #     {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
-        # )
+        knack_record_id = update_knack_project_from_moped_project(
+            app=app, moped_project_record=project, is_test=args.test
+        )
+        updated_knack_records.append(
+            {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
+        )
 
     logger.info(f"Done syncing.")
     logger.info(f"Created {len(created_knack_records)} new Knack records")
@@ -178,10 +179,6 @@ if __name__ == "__main__":
 # because our signals' unique knack record identifiers only exist in production.
 # To test, you can patch in a valid knack ID by uncommenting the line below that sets
 # body.signals_connection.
-
-# TODO: Test with Knack test app
-# uncomment this line to test this request against the Knack test env - this is signal ID #2 - GUADALUPE ST / LAMAR BLVD
-# body.signals_connection = ["62195eedf538d8072b16a0f6"];
 
 # TODO: From React code:
 # /**

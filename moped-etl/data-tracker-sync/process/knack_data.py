@@ -1,6 +1,9 @@
 #
 # Knack Data Helper - Build Knack records from Moped records
 #
+import os
+
+TEST_KNACK_SIGNAL_RECORD_ID = os.getenv("TEST_KNACK_SIGNAL_RECORD_ID")
 
 MOPED_TO_KNACK_FIELD_MAP = {
     "project_id": "field_4133",
@@ -16,7 +19,7 @@ def build_signal_list_from_moped_record(moped_project_record):
     Build a list of signal IDs connected to a moped projet record
 
     Parameters:
-        Moped Project (dictionary): A moped project as returned by graphql-engine
+        moped_project_record (dict): A moped project as returned by Hasura
 
     Returns:
         List: A list of all unique internal IDs used by Knack to for the signals
@@ -44,17 +47,22 @@ def make_moped_project_url(project_id):
     return f"https://mobility.austin.gov/moped/projects/{project_id}"
 
 
-def build_knack_project_from_moped_project(moped_project_record):
+def build_knack_project_from_moped_project(moped_project_record, is_test=False):
     """
     Build a Knack project record from Moped project records
 
     Parameters:
-        Moped Project (dictionary): A moped project as returned by graphql-engine
+        moped_project_record (dict): A moped project as returned by Hasura
+        is_test (bool): Whether or not this is a test run and should patch a
+                        complatible Knack signal record id
 
     Returns:
         Dictionary: A Knack project record
     """
-    signals = build_signal_list_from_moped_record(moped_project_record)
+    if is_test:
+        signals = [TEST_KNACK_SIGNAL_RECORD_ID]
+    else:
+        signals = build_signal_list_from_moped_record(moped_project_record)
 
     return {
         "field_4133": moped_project_record["project_id"],
