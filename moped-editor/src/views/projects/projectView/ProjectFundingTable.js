@@ -147,8 +147,6 @@ const ProjectFundingTable = () => {
 
   const classes = useStyles();
 
-  console.log("testing");
-
   /**
    * User Hook
    * @type {object} CognitoUserSession
