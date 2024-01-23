@@ -29,7 +29,7 @@ def build_signal_list_from_moped_record(moped_project_record):
 
     for component in moped_project_components:
         for feature in component["feature_signals"]:
-            knack_signals.add(feature["knack_id"])
+            knack_signals_ids.add(feature["knack_id"])
 
     return list(knack_signals_ids)
 
@@ -64,10 +64,13 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
     else:
         signals = build_signal_list_from_moped_record(moped_project_record)
 
+    current_phase_view = moped_project_record["current_phase_view"]
+    phase_name = current_phase_view["phase_name"] if current_phase_view else None
+
     return {
         "field_4133": moped_project_record["project_id"],
         "field_3857": moped_project_record["project_name"],
-        "field_4136": moped_project_record["current_phase_view"]["phase_name"],
+        "field_4136": phase_name,
         "field_3861": signals,
         "field_4162": make_moped_project_url(moped_project_record["project_id"]),
     }

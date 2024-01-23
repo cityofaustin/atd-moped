@@ -42,24 +42,30 @@ and test copies. The steps are as follows:
 Moped project ID
 3. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
 UTC time and set the `--start` argument to that timestamp
-4. To execute the sync script, run the following command with your timestamp filled in:
+4. To execute the sync script, run the following command to build the image and then run the script  
+with your timestamp filled in:
 ```bash
-docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atd-moped-etl-data-tracker-sync python data_tracker_sync.py --start <your timestamp> --test
+docker build -t atddocker/atd-moped-etl-data-tracker-sync .
+```
+
+```bash
+docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atddocker/atd-moped-etl-data-tracker-sync python data_tracker_sync.py --date <your timestamp> --test
 ```
 5. The output of the script should be a list of created and updated Knack records.
 6. It should show that one record was created, and no records were updated
 7. Go to the test Data Tracker app and find the most recent record that was created in the
 projects table. It should show the title and other details of your created Moped project
-8.  Run the sync script again but update the timestamp to the current time again to simulate
+8. Run the sync script again but update the timestamp to the current time again to simulate
 the next run of the script in the future
-9.  You should see that the script does not create or update any records.
-10.  Edit the title of the Moped project you created earlier through the local Hasura console
+9. You should see that the script does not create or update any records.
+10. Edit the title of the Moped project you created earlier through the local Hasura console
 or through the Moped Editor
-11.  Run the sync script again with the last timestamp that you used. You should see the script
+11. Run the sync script again with the last timestamp that you used. You should see the script
 log an update of the Knack record that you created earlier. Check the row in the test
 Data Tracker app and you should see that the title has been updated with your edit
 
 #### Testing with Airflow
 
 This script can also be run from the local Airflow stack. The secrets from the `development` sections
-of the **Knack AMD Data Tracker** and **Moped Hasura Admin** entries will be used automatically.
+of the **Knack AMD Data Tracker** and **Moped Hasura Admin** entries will be used automatically in the
+DAG.

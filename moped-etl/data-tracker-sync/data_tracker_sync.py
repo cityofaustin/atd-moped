@@ -148,7 +148,7 @@ def main(args):
 
     # Find all projects that are synced to Data Tracker to update them
     synced_moped_projects = find_synced_moped_projects(
-        last_run_date=args.start, is_test=args.test
+        last_run_date=args.date, is_test=args.test
     )
 
     # Update synced Moped projects in Data Tracker and skip those just created
@@ -178,7 +178,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--start",
+        "-d",
+        "--date",
         type=str,
         default=datetime.now(timezone.utc).isoformat(),
         help=f"ISO date string (in UTC) of latest updated_at value to find project records to update.",
@@ -190,5 +191,8 @@ if __name__ == "__main__":
 
     log_level = logging.DEBUG if args.test else logging.INFO
     logger = get_logger(name="moped-knack-sync", level=log_level)
+    logger.info(
+        f"Starting sync. Will update records updated in Moped since {args.date}"
+    )
 
     main(args)
