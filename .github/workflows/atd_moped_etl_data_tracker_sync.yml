@@ -1,4 +1,4 @@
-name: "Build AGOL ETL Docker image and push to DockerHub"
+name: "Build Data Tracker Sync ETL Docker image and push to DockerHub"
 on:
   push:
     branches:
@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    name: Build AGOL ETL docker image
+    name: Build Data Tracker Sync ETL Docker image
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
