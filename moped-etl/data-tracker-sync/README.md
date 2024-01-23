@@ -61,6 +61,5 @@ Data Tracker app and you should see that the title has been updated with your ed
 
 #### Testing with Airflow
 
-This script can also be run from the local Airflow stack. The `--test` flag is added when using
-the `development` environment and development secrets are consumed from the 1Password
-entries called **Knack AMD Data Tracker** and **Moped Hasura Admin** for the script to read.
+This script can also be run from the local Airflow stack. The secrets from the `development` sections
+of the **Knack AMD Data Tracker** and **Moped Hasura Admin** entries will be used automatically.
