@@ -18,7 +18,6 @@ const useProjectSignals = (project) =>
   );
 
 const ProjectSummaryDataTrackerSignals = ({ classes, project }) => {
-  // TODO: Remove UPDATE_PROJECT_KNACK_ID
   const signals = useProjectSignals(project);
 
   const isProjectSyncedWithKnack = project?.knack_project_id;
