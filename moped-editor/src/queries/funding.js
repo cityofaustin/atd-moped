@@ -46,9 +46,9 @@ export const UPDATE_PROJECT_FUNDING = gql`
   mutation UpdateProjectFunding(
     $proj_funding_id: Int!
     $funding_amount: Int!
-    $funding_description: String
-    $funding_program_id: Int
-    $funding_source_id: Int
+    $funding_description: String!
+    $funding_program_id: Int!
+    $funding_source_id: Int!
     $funding_status_id: Int!
     $dept_unit: jsonb
     $fund: jsonb
