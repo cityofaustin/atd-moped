@@ -547,7 +547,11 @@ const ProjectFundingTable = () => {
                   ...newData,
                   project_id: projectId,
                   // preventing empty strings from being saved
-                  funding_description: newData.funding_description || null,
+                  funding_description:
+                    !newData.funding_description ||
+                    newData.funding_description.trim() === ""
+                      ? null
+                      : newData.funding_description,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
@@ -575,7 +579,10 @@ const ProjectFundingTable = () => {
             updateProjectFundingData.funding_amount =
               updateProjectFundingData.funding_amount || null;
             updateProjectFundingData.funding_description =
-              updateProjectFundingData.funding_description || null;
+              !updateProjectFundingData.funding_description ||
+              updateProjectFundingData.funding_description.trim() === ""
+                ? null
+                : updateProjectFundingData.funding_description;
 
             return updateProjectFunding({
               variables: updateProjectFundingData,
