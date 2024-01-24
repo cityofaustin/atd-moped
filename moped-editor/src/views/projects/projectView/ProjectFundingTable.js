@@ -546,9 +546,8 @@ const ProjectFundingTable = () => {
                 objects: {
                   ...newData,
                   project_id: projectId,
-                  // // preventing empty strings from being saved
-                  // funding_description: newData.funding_description || null,
-                  // funding_amount: newData.funding_amount || null,
+                  // preventing empty strings from being saved
+                  funding_description: newData.funding_description || null,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
