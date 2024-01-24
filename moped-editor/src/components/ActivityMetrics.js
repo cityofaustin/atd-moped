@@ -23,6 +23,6 @@ export default function ActivityMetrics({ eventName, children }) {
         error
       );
     });
-  }, [setLastSeen, isLoggedIn]);
+  }, [setLastSeen, isLoggedIn, eventName]);
   return children;
 }
