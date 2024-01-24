@@ -18,8 +18,6 @@ const useProjectSignals = (project) =>
   );
 
 const ProjectSummaryDataTrackerSignals = ({ classes, project }) => {
-  // TODO: Remove process.env.REACT_APP_KNACK_DATA_TRACKER_SCENE
-  // TODO: Remove process.env.REACT_APP_KNACK_DATA_TRACKER_PROJECT_VIEW
   // TODO: Remove UPDATE_PROJECT_KNACK_ID
   const signals = useProjectSignals(project);
 
