@@ -340,7 +340,7 @@ export const ProjectActivityLogTableMaps = {
         label: "component ID",
       },
       component_id: {
-        label: "component ID",
+        label: "component type",
       },
       description: {
         label: "description",
@@ -467,12 +467,31 @@ export const ProjectActivityLogTableMaps = {
       project_id: {
         label: "project ID",
       },
+      
+
+      // The following two pairs fields represent the same conceptual idea, however, 
+      // the first pair were the original names of the fields and the second pair
+      // are names we later migrated to for these columns. Both need to be defined
+      // as part of this object to support activity log records which contain the 
+      // older field names.
+
+      // original field names
       date_added: {
         label: "date added",
       },
       added_by: {
         label: "added by",
       },
+
+      // new field names
+      created_at: {
+        label: "date added",
+      },
+      created_by_user_id: {
+        label: "added by",
+      },
+      
+
       funding_source_id: {
         label: "source",
         lookup: "fundingSources",

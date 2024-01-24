@@ -29,6 +29,7 @@ import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import {
   areAllFiltersComplete,
   checkIsValidInput,
@@ -285,6 +286,7 @@ const Filters = ({
 
       prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
       prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
+      prevSearchParams.delete(simpleSearchParamName);
       return prevSearchParams;
     });
 

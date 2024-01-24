@@ -7,8 +7,7 @@ import {
   Card,
   CardContent,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
-import { format } from "date-fns";
+import makeStyles from "@mui/styles/makeStyles";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
 import { useQuery, useMutation } from "@apollo/client";
@@ -145,7 +144,8 @@ const NewProjectView = () => {
               {
                 phase_id: 1,
                 is_current_phase: true,
-                phase_start: format(Date.now(), "yyyy-MM-dd"),
+                phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
+                is_phase_start_confirmed: true,
               },
             ],
           },

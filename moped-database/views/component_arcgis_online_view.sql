@@ -1,6 +1,6 @@
--- current version 1699891030861_change_contractor_column_name
+-- current_version: 1704744986000_substantial_completion_date
+DROP VIEW component_arcgis_online_view;
 
-DROP VIEW IF EXISTS component_arcgis_online_view;
 CREATE OR REPLACE VIEW component_arcgis_online_view AS (
     SELECT 
         mpc.project_id, 
@@ -22,7 +22,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         mpc.is_deleted is_project_component_deleted, 
         plv.is_deleted is_project_deleted, 
         mpc.interim_project_component_id, 
-        mpc.completion_date, 
+        mpc.completion_date,
+        COALESCE(mpc.completion_date, substantial_completion_date) as substantial_completion_date,
         mpc.srts_id, 
         mpc.location_description, 
         plv.project_name, 
@@ -173,7 +174,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
             string_agg(ms.subcomponent_name, ', ') subcomponents 
         FROM 
             moped_proj_components_subcomponents mpcs 
-            LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id 
+            LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+            WHERE mpcs.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) subcomponents ON subcomponents.project_component_id = mpc.project_component_id 
@@ -185,6 +187,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         FROM 
             moped_proj_component_work_types mpcwt 
             LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id 
+            WHERE mpcwt.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) work_types ON work_types.project_component_id = mpc.project_component_id 
@@ -195,7 +198,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
             string_agg(mct.type || ' - ' || mct.name, ', ') component_tags 
         FROM 
             moped_proj_component_tags mpct 
-            LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id 
+            LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+            WHERE mpct.is_deleted = FALSE
         GROUP BY 
             project_component_id
         ) component_tags ON component_tags.project_component_id = mpc.project_component_id 
