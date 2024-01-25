@@ -67,7 +67,11 @@ const ProjectPhaseForm = ({
     currentProjectPhaseIds
   );
 
-  const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
+  const [phase_start, phase_end, is_current_phase] = watch([
+    "phase_start",
+    "phase_end",
+    "is_current_phase",
+  ]);
 
   /**
    * Defaults is_phase_start_confirmed to true if date is today or before
@@ -117,6 +121,15 @@ const ProjectPhaseForm = ({
       setValue("is_phase_end_confirmed", false);
     }
   }, [phase_end, defaultValues, setValue]);
+
+  /**
+   * Defaults phase_start to today if current phase is true and there is no phase_start
+   */
+  useEffect(() => {
+    if (is_current_phase === true && phase_start === null) {
+      setValue("phase_start", new Date());
+    }
+  }, [is_current_phase, phase_start, setValue]);
 
   if (mutationState.error) {
     console.error(mutationState.error);
