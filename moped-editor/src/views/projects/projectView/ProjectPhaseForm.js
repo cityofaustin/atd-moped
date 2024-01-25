@@ -23,6 +23,7 @@ import {
 } from "./ProjectPhase/helpers";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
 import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
+import { ADD_PROJECT_NOTE } from "src/queries/notes";
 
 const ProjectPhaseForm = ({
   phase,
@@ -60,6 +61,7 @@ const ProjectPhaseForm = ({
   const [mutate, mutationState] = useMutation(
     isNewPhase ? ADD_PROJECT_PHASE : UPDATE_PROJECT_PHASE
   );
+  const [addStatusUpdate, addStatusUpdateState] = useMutation(ADD_PROJECT_NOTE);
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
     phase.project_phase_id,
@@ -134,8 +136,9 @@ const ProjectPhaseForm = ({
     }
   }, [is_current_phase, phase_start, setValue]);
 
-  if (mutationState.error) {
-    console.error(mutationState.error);
+  if (mutationState.error || addStatusUpdateState.error) {
+    console.error("Phase mutation error", mutationState.error);
+    console.error("Status update mutation error", addStatusUpdateState.error);
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -309,9 +312,13 @@ const ProjectPhaseForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={(!isDirty && !isNewPhase) || mutationState.loading}
+            disabled={
+              (!isDirty && !isNewPhase) ||
+              mutationState.loading ||
+              addStatusUpdateState.loading
+            }
           >
-            {mutationState.loading ? (
+            {mutationState.loading || addStatusUpdateState.loading ? (
               <CircularProgress color="primary" size={20} />
             ) : (
               "Save"
