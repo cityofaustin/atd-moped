@@ -20,8 +20,6 @@ const useProjectSignals = (project) =>
 const ProjectSummaryDataTrackerSignals = ({ classes, project }) => {
   const signals = useProjectSignals(project);
 
-  const isProjectSyncedWithKnack = project?.knack_project_id;
-
   return (
     <>
       <Grid item xs={12} className={classes.fieldGridItem}>
@@ -30,11 +28,7 @@ const ProjectSummaryDataTrackerSignals = ({ classes, project }) => {
           <ProjectSummaryLabel
             className={classes.fieldLabelDataTrackerLink}
             text={
-              isProjectSyncedWithKnack && signals.length > 0 ? (
-                <RenderSignalLink signals={signals} />
-              ) : (
-                "None"
-              )
+              signals.length > 0 ? <RenderSignalLink signals={signals} /> : "-"
             }
             classes={classes}
             spanClassName={classes.fieldLabelTextSpanNoBorder}
