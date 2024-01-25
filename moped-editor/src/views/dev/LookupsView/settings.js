@@ -169,6 +169,10 @@ export const SETTINGS = [
         label: "Phase name",
       },
       {
+        key: "phase_name_simple",
+        label: "Phase name - simple",
+      },
+      {
         key: "phase_description",
         label: "Description",
       },
