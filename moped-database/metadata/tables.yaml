@@ -2482,8 +2482,6 @@
   update_permissions:
     - role: moped-admin
       permission:
-        set:
-          updated_by_user_id: x-hasura-user-db-id
         columns:
           - funding_amount
           - funding_program_id
@@ -2496,11 +2494,11 @@
           - is_deleted
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
       comment: No update permissions on audit fields
     - role: moped-editor
       permission:
-        set:
-          updated_by_user_id: x-hasura-user-db-id
         columns:
           - funding_amount
           - funding_program_id
@@ -2513,6 +2511,8 @@
           - is_deleted
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
       comment: No update permissions on audit fields
   event_triggers:
     - name: activity_log_moped_proj_funding
@@ -3257,8 +3257,10 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - date_added
           - is_current_phase
           - is_deleted
           - phase_description
@@ -3272,8 +3274,10 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - date_added
           - is_current_phase
           - is_deleted
           - phase_description
@@ -3288,56 +3292,66 @@
     - role: moped-admin
       permission:
         columns:
-          - date_added
           - is_current_phase
-          - is_deleted
-          - phase_description
-          - phase_end
+          - is_phase_end_confirmed
+          - is_phase_start_confirmed
+          - created_by_user_id
           - phase_id
-          - phase_start
           - project_id
           - project_phase_id
           - subphase_id
-          - is_phase_start_confirmed
-          - is_phase_end_confirmed
+          - phase_description
+          - created_at
+          - phase_end
+          - phase_start
+          - updated_by_user_id
+          - is_deleted
+          - updated_at
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - date_added
           - is_current_phase
-          - is_deleted
-          - phase_description
-          - phase_end
+          - is_phase_end_confirmed
+          - is_phase_start_confirmed
+          - created_by_user_id
           - phase_id
-          - phase_start
           - project_id
           - project_phase_id
           - subphase_id
-          - is_phase_start_confirmed
-          - is_phase_end_confirmed
+          - phase_description
+          - created_at
+          - phase_end
+          - phase_start
+          - updated_by_user_id
+          - is_deleted
+          - updated_at
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - date_added
           - is_current_phase
-          - is_deleted
-          - phase_description
-          - phase_end
+          - is_phase_end_confirmed
+          - is_phase_start_confirmed
+          - created_by_user_id
           - phase_id
-          - phase_start
           - project_id
           - project_phase_id
           - subphase_id
-          - is_phase_start_confirmed
-          - is_phase_end_confirmed
+          - phase_description
+          - created_at
+          - phase_end
+          - phase_start
+          - updated_by_user_id
+          - is_deleted
+          - updated_at
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - date_added
           - is_current_phase
           - is_deleted
           - phase_description
@@ -3352,8 +3366,9 @@
         check: {}
     - role: moped-editor
       permission:
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
-          - date_added
           - is_current_phase
           - is_deleted
           - phase_description
@@ -3387,22 +3402,20 @@
           action: transform
           template: |-
             {
-              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "query": "mutation InsertActivity( $object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
               "variables": {
-                "object": {
-                  "record_id": {{ $body.event.data.new.project_phase_id }},
-                  "record_type":  {{ $body.table.name }},
-                  "activity_id": {{ $body.id }},
-                  "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {"event": {{ $body.event }}},
-                  "description": [{"newSchema": "true"}],
-                  "operation_type": {{ $body.event.op }},
-                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                },
-                "updated_at": {{$body.created_at}},
-                "project_id": {{$body.event.data.new.project_id}}
+                  "object": {
+                      "record_id": {{ $body.event.data.new.project_phase_id }},
+                      "record_type":  {{ $body.table.name }},
+                      "activity_id": {{ $body.id }},
+                      "record_project_id": {{ $body.event.data.new.project_id }},
+                      "record_data": {"event": {{ $body.event }}},
+                      "description": [{"newSchema": "true"}],
+                      "operation_type": {{ $body.event.op }},
+                      "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                  }
+                }
               }
-            }
         method: POST
         query_params: {}
         template_engine: Kriti
