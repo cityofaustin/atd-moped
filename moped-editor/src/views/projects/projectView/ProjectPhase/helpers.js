@@ -24,6 +24,10 @@ export const phaseValidationSchema = yup.object().shape({
     .nullable(),
   project_phase_id: yup.number().nullable().optional(),
   project_id: yup.number().required(),
+  status_update: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
 });
 
 const DEFAULT_FORM_VALUES = {
@@ -37,6 +41,7 @@ const DEFAULT_FORM_VALUES = {
   phase_description: null,
   is_current_phase: false,
   project_id: null,
+  status_update: null,
 };
 
 /**

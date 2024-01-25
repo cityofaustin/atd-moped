@@ -283,6 +283,24 @@ const ProjectPhaseForm = ({
             )}
           </FormControl>
         </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={!!formErrors?.status_update}>
+            <ControlledTextInput
+              fullWidth
+              label="Status Update"
+              multiline
+              rows={3}
+              name="status_update"
+              control={control}
+              size="small"
+            />
+            {formErrors?.status_update && (
+              <FormHelperText>
+                {formErrors.status_update.message}
+              </FormHelperText>
+            )}
+          </FormControl>
+        </Grid>
       </Grid>
       <Grid container display="flex" justifyContent="flex-end">
         <Grid item sx={{ marginTop: 2, marginBottom: 2 }}>
