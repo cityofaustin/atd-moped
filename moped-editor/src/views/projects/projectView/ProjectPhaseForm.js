@@ -127,7 +127,10 @@ const ProjectPhaseForm = ({
    */
   useEffect(() => {
     if (is_current_phase === true && phase_start === null) {
-      setValue("phase_start", new Date());
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      setValue("phase_start", today);
     }
   }, [is_current_phase, phase_start, setValue]);
 
