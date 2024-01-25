@@ -17,10 +17,12 @@ import ControlledSwitch from "src/components/forms/ControlledSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
+  onSubmitStatusUpdate,
   useDefaultValues,
   useSubphases,
   useCurrentPhaseIdsToClear,
 } from "./ProjectPhase/helpers";
+import { getSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
 import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
 import { ADD_PROJECT_NOTE } from "src/queries/notes";
@@ -32,10 +34,11 @@ const ProjectPhaseForm = ({
   onSubmitCallback,
 }) => {
   const isNewPhase = !phase.project_phase_id;
+  const userSessionData = getSessionDatabaseData();
 
   const defaultValues = useDefaultValues(phase);
 
-  /** initiatlize react hook form with validation */
+  /** initialize react hook form with validation */
   const {
     handleSubmit,
     control,
@@ -74,6 +77,25 @@ const ProjectPhaseForm = ({
     "phase_end",
     "is_current_phase",
   ]);
+
+  const onSubmit = (data) => {
+    const { status_update, ...phaseData } = data;
+
+    onSubmitPhase({
+      data: phaseData,
+      currentPhaseIdsToClear,
+      mutate,
+      onSubmitCallback,
+    });
+
+    if (status_update) {
+      const { project_id, phase_id } = phaseData;
+      const { user_id } = userSessionData;
+      const statusUpdateData = { status_update, project_id, phase_id, user_id };
+
+      onSubmitStatusUpdate({ data: statusUpdateData, mutate: addStatusUpdate });
+    }
+  };
 
   /**
    * Defaults is_phase_start_confirmed to true if date is today or before
@@ -151,17 +173,7 @@ const ProjectPhaseForm = ({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((data) =>
-        onSubmitPhase({
-          data,
-          currentPhaseIdsToClear,
-          mutate,
-          onSubmitCallback,
-        })
-      )}
-      autoComplete="off"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth error={!!formErrors?.phase_id}>

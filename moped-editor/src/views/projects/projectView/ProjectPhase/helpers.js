@@ -1,5 +1,7 @@
 import { useMemo } from "react";
+import DOMPurify from "dompurify";
 import * as yup from "yup";
+import { STATUS_UPDATE_TYPE_ID } from "../ProjectNotes";
 
 export const phaseValidationSchema = yup.object().shape({
   phase_id: yup.number().nullable().required("Phase is required"),
@@ -181,4 +183,22 @@ export const onSubmitPhase = ({
     variables,
     refetchQueries: ["ProjectSummary"],
   }).then(() => onSubmitCallback());
+};
+
+export const onSubmitStatusUpdate = ({ data, mutate }) => {
+  const { status_update, project_id, phase_id, user_id } = data;
+
+  mutate({
+    variables: {
+      objects: [
+        {
+          project_note: DOMPurify.sanitize(status_update),
+          project_id,
+          added_by_user_id: user_id,
+          project_note_type: STATUS_UPDATE_TYPE_ID,
+          phase_id,
+        },
+      ],
+    },
+  });
 };
