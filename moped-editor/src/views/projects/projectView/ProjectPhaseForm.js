@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
@@ -26,6 +27,7 @@ import { getSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
 import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
 import { ADD_PROJECT_NOTE } from "src/queries/notes";
+import theme from "src/theme";
 
 const ProjectPhaseForm = ({
   phase,
@@ -297,6 +299,9 @@ const ProjectPhaseForm = ({
               </FormHelperText>
             )}
           </FormControl>
+        </Grid>
+        <Grid item xs={12} sx={{ marginY: theme.spacing(2) }}>
+          <Divider />
         </Grid>
         <Grid item xs={12}>
           <FormControl fullWidth error={!!formErrors?.status_update}>
