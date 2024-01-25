@@ -196,6 +196,15 @@ const ProjectPhaseForm = ({
             )}
           </FormControl>
         </Grid>
+        <Grid item container justifyContent="flex-start">
+          <FormControl>
+            <ControlledSwitch
+              name="is_current_phase"
+              control={control}
+              label="Current phase"
+            />
+          </FormControl>
+        </Grid>
         <Grid item xs={8}>
           <FormControl fullWidth error={!!formErrors?.phase_start}>
             <ControlledDateField
@@ -256,15 +265,6 @@ const ProjectPhaseForm = ({
                 {formErrors.phase_description.message}
               </FormHelperText>
             )}
-          </FormControl>
-        </Grid>
-        <Grid item container justifyContent="flex-end">
-          <FormControl>
-            <ControlledSwitch
-              name="is_current_phase"
-              control={control}
-              label="Current phase"
-            />
           </FormControl>
         </Grid>
       </Grid>
