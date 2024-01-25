@@ -1,13 +1,15 @@
 ALTER TABLE moped_proj_phases RENAME COLUMN date_added TO created_at;
 
 ALTER TABLE moped_proj_phases
-    ADD COLUMN created_by_user_id INTEGER;
+    ADD COLUMN created_by_user_id INTEGER
+        CONSTRAINT created_by_user_fkey REFERENCES moped_users (user_id);
 
 ALTER TABLE moped_proj_phases
     ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE;
 
 ALTER TABLE moped_proj_phases
-    ADD COLUMN updated_by_user_id INTEGER;
+    ADD COLUMN updated_by_user_id INTEGER
+    CONSTRAINT updated_by_user_fkey REFERENCES moped_users (user_id);
 
 COMMENT ON COLUMN moped_proj_phases.updated_at IS 'Timestamp when the record was last updated';
 
