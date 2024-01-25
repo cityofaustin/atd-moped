@@ -144,13 +144,13 @@ INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project
 -- Data for Name: moped_proj_phases; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES ('Some description', '2022-11-14', '2022-11-25', false, 65, 227, '2022-11-12 18:07:30.267685+00', 1, 5, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES ('Some other description', '2022-11-30', '2022-11-25', true, 66, 227, '2022-11-12 18:10:31.179722+00', 3, 22, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-12-05', NULL, false, 67, 227, '2022-11-12 18:15:58.500377+00', 9, NULL, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-11-12', NULL, true, 68, 228, '2022-11-12 18:16:37.457285+00', 1, NULL, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-10-30', NULL, false, 70, 229, '2022-11-15 16:50:49.717814+00', 6, 18, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES ('This phase went really well', '2022-11-01', '2022-11-02', false, 69, 229, '2022-11-15 16:47:15.442451+00', 1, 5, false);
-INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, date_added, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-11-16', '2022-11-17', true, 71, 229, '2022-11-15 16:51:03.146297+00', 9, 7, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES ('Some description', '2022-11-14', '2022-11-25', false, 65, 227, 1, 5, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES ('Some other description', '2022-11-30', '2022-11-25', true, 66, 227, 3, 22, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-12-05', NULL, false, 67, 227, 9, NULL, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-11-12', NULL, true, 68, 228, 1, NULL, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-10-30', NULL, false, 70, 229, 6, 18, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES ('This phase went really well', '2022-11-01', '2022-11-02', false, 69, 229, 1, 5, false);
+INSERT INTO public.moped_proj_phases (phase_description, phase_start, phase_end, is_current_phase, project_phase_id, project_id, phase_id, subphase_id, is_deleted) VALUES (NULL, '2022-11-16', '2022-11-17', true, 71, 229, 9, 7, false);
 
 
 --
