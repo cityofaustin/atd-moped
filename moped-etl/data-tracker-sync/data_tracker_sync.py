@@ -53,12 +53,11 @@ def find_unsynced_moped_projects(is_test=False):
     return unsynced_projects
 
 
-def create_knack_project_from_moped_project(app, moped_project_record, is_test=False):
+def create_knack_project_from_moped_project(moped_project_record, is_test=False):
     """
     Create a Knack project record to sync a Moped project to Data Tracker
 
     Parameters:
-        app (knackpy.App): Knackpy app instance
         moped_project_record (dict): A Moped project record
         is_test (boolean): test flag added to add a complatible Knack signal record id to payload
 
@@ -69,7 +68,9 @@ def create_knack_project_from_moped_project(app, moped_project_record, is_test=F
         moped_project_record=moped_project_record, is_test=is_test
     )
 
-    created = app.record(
+    created = knackpy.api.record(
+        app_id=KNACK_DATA_TRACKER_APP_ID,
+        api_key=KNACK_DATA_TRACKER_API_KEY,
         method="create",
         data=knack_project_record,
         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
@@ -142,12 +143,11 @@ def find_synced_moped_projects(last_run_date, is_test=False):
     return synced_projects
 
 
-def update_knack_project_from_moped_project(app, moped_project_record, is_test=False):
+def update_knack_project_from_moped_project(moped_project_record, is_test=False):
     """
     Update a Knack project record already synced to Data Tracker from a Moped project record
 
     Parameters:
-        app (knackpy.App): Knackpy app instance
         moped_project_record (dict): A Moped project record
         is_test (boolean): test flag added to add a complatible Knack signal record id to payload
 
@@ -162,7 +162,9 @@ def update_knack_project_from_moped_project(app, moped_project_record, is_test=F
     )
     knack_project_record["id"] = moped_project_record["knack_project_id"]
 
-    updated = app.record(
+    updated = knackpy.api.record(
+        app_id=KNACK_DATA_TRACKER_APP_ID,
+        api_key=KNACK_DATA_TRACKER_API_KEY,
         method="update",
         data=knack_project_record,
         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
@@ -173,10 +175,6 @@ def update_knack_project_from_moped_project(app, moped_project_record, is_test=F
 
 
 def main(args):
-    app = knackpy.App(
-        app_id=KNACK_DATA_TRACKER_APP_ID, api_key=KNACK_DATA_TRACKER_API_KEY
-    )
-
     # Find all projects that are not synced to Data Tracker
     unsynced_moped_projects = find_unsynced_moped_projects(is_test=args.test)
 
@@ -185,7 +183,7 @@ def main(args):
     for project in unsynced_moped_projects:
         moped_project_id = project["project_id"]
         knack_record_id = create_knack_project_from_moped_project(
-            app=app, moped_project_record=project, is_test=args.test
+            moped_project_record=project, is_test=args.test
         )
         created_knack_records.append(
             {
@@ -215,7 +213,7 @@ def main(args):
 
         moped_project_id = project["project_id"]
         knack_record_id = update_knack_project_from_moped_project(
-            app=app, moped_project_record=project, is_test=args.test
+            moped_project_record=project, is_test=args.test
         )
         updated_knack_records.append(
             {"moped_project_id": moped_project_id, "knack_record_id": knack_record_id}
