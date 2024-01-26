@@ -26,9 +26,18 @@ KNACK_DATA_TRACKER_PROJECT_OBJECT = "object_201"
 
 
 def find_unsynced_moped_projects(is_test=False):
-    # If we are testing, request a Moped project record with a known ID.
+    """
+    Find a list of Moped projects that have not been synced to Data Tracker
+
+    Parameters:
+        is_test (boolean): test flag added to query a defined project ID
+
+    Returns:
+        List: Moped project records to be synced to Data Tracker
+    """
     unsynced_projects = []
 
+    # If we are testing, request a Moped project record with a known ID.
     if is_test:
         data = make_hasura_request(
             query=GET_TEST_UNSYNCED_PROJECTS,
@@ -45,6 +54,17 @@ def find_unsynced_moped_projects(is_test=False):
 
 
 def create_knack_project_from_moped_project(app, moped_project_record, is_test=False):
+    """
+    Create a Knack project record to sync a Moped project to Data Tracker
+
+    Parameters:
+        app (knackpy.App): Knackpy app instance
+        moped_project_record (dict): A Moped project record
+        is_test (boolean): test flag added to add a complatible Knack signal record id to payload
+
+    Returns:
+        String: Knack record ID of created record
+    """
     knack_project_record = build_knack_project_from_moped_project(
         moped_project_record=moped_project_record, is_test=is_test
     )
@@ -61,6 +81,16 @@ def create_knack_project_from_moped_project(app, moped_project_record, is_test=F
 
 
 def update_moped_project_knack_id(moped_project_id, knack_project_id):
+    """
+    Update a Moped project record with the Knack record ID of the synced record
+
+    Parameters:
+        moped_project_id (string): A Moped project record ID
+        knack_project_id (string): A Data Tracker project record ID
+
+    Returns:
+        String: Knack record ID of created record
+    """
     update = make_hasura_request(
         query=UPDATE_MOPED_PROJECT_KNACK_ID,
         variables={
@@ -76,9 +106,19 @@ def update_moped_project_knack_id(moped_project_id, knack_project_id):
 
 
 def find_synced_moped_projects(last_run_date, is_test=False):
-    # If we are testing, request a Moped project record with a known ID.
+    """
+    Find a list of Moped projects that are already synced to Data Tracker
+
+    Parameters:
+        last_run_date (string): ISO date string of latest updated_at value to find project records to update
+        is_test (boolean): test flag added to query a defined project ID
+
+    Returns:
+        List: Moped project records to be updated in Data Tracker
+    """
     synced_projects = []
 
+    # If we are testing, request a Moped project record with a known ID.
     if is_test:
         data = make_hasura_request(
             query=GET_TEST_SYNCED_PROJECTS,
@@ -103,6 +143,17 @@ def find_synced_moped_projects(last_run_date, is_test=False):
 
 
 def update_knack_project_from_moped_project(app, moped_project_record, is_test=False):
+    """
+    Update a Knack project record already synced to Data Tracker from a Moped project record
+
+    Parameters:
+        app (knackpy.App): Knackpy app instance
+        moped_project_record (dict): A Moped project record
+        is_test (boolean): test flag added to add a complatible Knack signal record id to payload
+
+    Returns:
+        String: Knack record ID of updated record
+    """
     logger.debug(f"Updating Knack record for {moped_project_record}")
 
     # Build Knack record and add existing Knack record ID for update
@@ -144,6 +195,9 @@ def main(args):
         )
 
         # Update Moped project with Knack record ID of created record
+        logger.info(
+            f"Updating Knack ID {knack_record_id} from Moped project {moped_project_id}"
+        )
         update_moped_project_knack_id(moped_project_id, knack_record_id)
 
     # Find all projects that are synced to Data Tracker to update them
@@ -182,7 +236,7 @@ if __name__ == "__main__":
         "--date",
         type=str,
         default=datetime.now(timezone.utc).isoformat(),
-        help=f"ISO date string (in UTC) of latest updated_at value to find project records to update.",
+        help=f"ISO date string of latest updated_at value to find project records to update.",
     )
 
     parser.add_argument("-t", "--test", action="store_true")
@@ -192,7 +246,7 @@ if __name__ == "__main__":
     log_level = logging.DEBUG if args.test else logging.INFO
     logger = get_logger(name="moped-knack-sync", level=log_level)
     logger.info(
-        f"Starting sync. Will update records updated in Moped since {args.date}"
+        f"Starting sync. Creating Knack records for Moped projects not synced and updating synced Knack records with latest project data from Moped since {args.date}."
     )
 
     main(args)
