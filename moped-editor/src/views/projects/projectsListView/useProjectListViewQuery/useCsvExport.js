@@ -9,10 +9,15 @@ import {
   DialogContentText,
   DialogTitle,
   Grid,
+  Radio,
+  RadioGroup,
+  FormControl,
+  FormControlLabel,
+  Button,
 } from "@mui/material";
 
-export const CsvDownloadDialog = ({ dialogOpen }) => (
-  <Dialog open={dialogOpen} aria-labelledby="form-dialog-title">
+export const CsvDownloadDialog = ({ downloadingDialogOpen }) => (
+  <Dialog open={downloadingDialogOpen} aria-labelledby="form-dialog-title">
     <DialogTitle variant="h4" />
     <DialogContent>
       <Grid container spacing={3}>
@@ -28,6 +33,45 @@ export const CsvDownloadDialog = ({ dialogOpen }) => (
     </DialogContent>
   </Dialog>
 );
+
+export const CsvSelectColumnsDialog = ({
+  columnSelectDialogOpen,
+  handleOnClose,
+  handleContinueButtonClick,
+  handleRadioSelect,
+}) => {
+  return (
+    <Dialog
+      open={columnSelectDialogOpen}
+      onClose={handleOnClose}
+      aria-labelledby="form-dialog-title"
+    >
+      <DialogContent>
+        <Grid>
+          <Grid>
+            <FormControl>
+              <RadioGroup defaultValue={0} onChange={handleRadioSelect}>
+                <FormControlLabel
+                  control={<Radio />}
+                  label={"Download visible columns"}
+                  value={0}
+                />
+                <FormControlLabel
+                  control={<Radio />}
+                  label={"Download all columns"}
+                  value={1}
+                />
+              </RadioGroup>
+            </FormControl>
+          </Grid>
+          <Grid>
+            <Button onClick={handleContinueButtonClick}>Continue</Button>
+          </Grid>
+        </Grid>
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 /**
  * Downloads the contents of fileContents into a file
@@ -88,14 +132,15 @@ export const useCsvExport = ({
   exportConfig,
   queryTableName,
   fetchPolicy,
+  setDownloadingDialogOpen,
+  setColumnSelectDialogOpen,
 }) => {
   /**
    * When True, the download csv dialog is open.
    * @type {boolean} dialogOpen
-   * @function setDialogOpen - Sets the state of dialogOpen
+   * @function setDownloadingDialogOpen - Sets the state of dialogOpen
    * @default false
    */
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
    * Instantiates getExport and data variables
@@ -109,9 +154,9 @@ export const useCsvExport = ({
   /**
    * Handles export button (to open the csv download dialog)
    */
-  const handleExportButtonClick = () => {
-    setDialogOpen(true);
-
+  const handleContinueButtonClick = () => {
+    setColumnSelectDialogOpen(false);
+    setDownloadingDialogOpen(true);
     // Fetch data and format, parse, and download CSV when returned
     getExport().then(({ data }) => {
       const formattedData = formatExportData(
@@ -120,16 +165,9 @@ export const useCsvExport = ({
       );
       const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
       downloadFile(csvString);
-      handleDialogClose();
+      setDownloadingDialogOpen(false);
     });
   };
 
-  /**
-   * Handles the closing of the dialog
-   */
-  const handleDialogClose = () => {
-    setDialogOpen(false);
-  };
-
-  return { handleExportButtonClick, dialogOpen };
+  return { handleContinueButtonClick };
 };
