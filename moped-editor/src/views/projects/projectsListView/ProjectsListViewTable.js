@@ -23,6 +23,7 @@ import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
   CsvDownloadDialog,
+  CsvSelectColumnsDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
@@ -66,6 +67,10 @@ const ProjectsListViewTable = () => {
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
+
+  const [columnSelectDialogOpen, setColumnSelectDialogOpen] = useState(false);
+  const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
+  const [csvColumnsToExport, setCsvColumnsToExport] = useState(0);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -133,14 +138,28 @@ const ProjectsListViewTable = () => {
 
   const data = useCurrentData(projectListViewData);
 
-  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+  const { handleContinueButtonClick } = useCsvExport({
     query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
     limit: queryLimit,
     setQueryLimit,
+    setDownloadingDialogOpen: setDownloadingDialogOpen,
+    setColumnSelectDialogOpen: setColumnSelectDialogOpen,
   });
+
+  const handleOnClose = () => {
+    setColumnSelectDialogOpen(false);
+  };
+
+  const handleRadioSelect = (e) => {
+    setCsvColumnsToExport(e.target.value);
+  };
+
+  const handleExportButtonClick = () => {
+    setColumnSelectDialogOpen(true);
+  };
 
   const tableOptions = useTableOptions({ queryLimit, data });
 
@@ -207,7 +226,13 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <CsvDownloadDialog dialogOpen={dialogOpen} />
+        <CsvSelectColumnsDialog
+          columnSelectDialogOpen={columnSelectDialogOpen}
+          handleOnClose={handleOnClose}
+          handleContinueButtonClick={handleContinueButtonClick}
+          handleRadioSelect={handleRadioSelect}
+        />
+        <CsvDownloadDialog downloadingDialogOpen={downloadingDialogOpen} />
         <Search
           parentData={data}
           filters={filters}
