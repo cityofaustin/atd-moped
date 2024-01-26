@@ -161,8 +161,8 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         minWidth: 150,
         flex: 1,
         defaultVisible: true,
-        valueGetter: ({ row }) =>
-          row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
+        type: "date",
+        valueGetter: ({ value }) => (value ? new Date(value) : null),
       },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
