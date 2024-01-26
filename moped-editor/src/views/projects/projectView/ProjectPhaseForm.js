@@ -165,11 +165,22 @@ const ProjectPhaseForm = ({
     console.error("Status update mutation error", addStatusUpdateState.error);
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Alert severity="error">
-            Something went wrong. Refresh the page to try again.
-          </Alert>
-        </Grid>
+        {mutationState.error ? (
+          <Grid item xs={12}>
+            <Alert severity="error">
+              Something went wrong with the phase submission. Refresh the page
+              to try again.
+            </Alert>
+          </Grid>
+        ) : null}
+        {addStatusUpdateState.error ? (
+          <Grid item xs={12}>
+            <Alert severity="error">
+              Something went wrong with the status update. Refresh the page to
+              try again.
+            </Alert>
+          </Grid>
+        ) : null}
       </Grid>
     );
   }
