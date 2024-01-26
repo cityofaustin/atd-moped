@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
  * Get the user hidden column settings from local storage, clear them of
  * outdated columns, and supplement with remaining default columns
  * @param {Object} defaultColumnSettings - the baseline column visibility settings, where each entry
- * is a column name with a boolean value indicating if the column should be hidden
+ * is a column name with a boolean value indicating if the column should be hidden. Make
+ * sure this value has a stable object reference, ie, it should be memoized!
  * * @param {String} storageKey - the key used to get and set data from local storage
  * @returns {Object} hidden column settings from local storage
  */
