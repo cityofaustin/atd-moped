@@ -60,8 +60,6 @@ export const useHiddenColumnsSettings = ({
       defaultHiddenColumnSettings,
       storageKey
     );
-
-    console.log("initialHiddenColumnSettings", initialHiddenColumnSettings)
     setHiddenColumns(initialHiddenColumnSettings);
   }, [defaultHiddenColumnSettings, storageKey]);
 
@@ -69,9 +67,8 @@ export const useHiddenColumnsSettings = ({
    * Sync hidden columns state with local storage
    */
   useEffect(() => {
-    console.log("EFFECTTTEEEED", hiddenColumns)
     localStorage.setItem(storageKey, JSON.stringify(hiddenColumns));
-  }, [hiddenColumns]);
+  }, [hiddenColumns, storageKey]);
 
   return { hiddenColumns, setHiddenColumns };
 };
