@@ -134,6 +134,24 @@ export const useCurrentProjectPhaseIDs = (projectPhases) =>
   );
 
 /**
+ * Hook which returns an array of project_phase_ids of the project's current phase(s).
+ * Although only one phase should ever be current, we handle the possibilty that there
+ * are multiple
+ * @param {Array} projectPhases - array of this project's moped_proj_phases
+ * @return {Array} of project_phase_id's of current project phases
+ */
+export const useCurrentPhaseIds = (projectPhases) =>
+  useMemo(
+    () =>
+      projectPhases
+        ? projectPhases
+            .filter(({ is_current_phase }) => is_current_phase)
+            .map(({ phase_id }) => phase_id)
+        : [],
+    [projectPhases]
+  );
+
+/**
  * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
  * need to have their `is_current` flag cleared.
  * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
@@ -162,10 +180,13 @@ export const onSubmitPhase = ({
   noteData,
   mutate,
   currentPhaseIdsToClear,
+  currentPhaseIds,
   onSubmitCallback,
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
+  const { is_current_phase } = formData;
+
   const noteObjects = noteData
     ? [
         {
@@ -173,7 +194,7 @@ export const onSubmitPhase = ({
           project_id,
           added_by_user_id: noteData.user_id,
           project_note_type: STATUS_UPDATE_TYPE_ID,
-          phase_id,
+          phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
         },
       ]
     : [];

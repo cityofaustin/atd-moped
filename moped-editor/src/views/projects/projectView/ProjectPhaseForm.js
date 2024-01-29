@@ -34,6 +34,7 @@ const ProjectPhaseForm = ({
   phase,
   phases,
   currentProjectPhaseIds,
+  currentPhaseIds,
   onSubmitCallback,
 }) => {
   const isNewPhase = !phase.project_phase_id;
@@ -91,8 +92,9 @@ const ProjectPhaseForm = ({
     onSubmitPhase({
       phaseData,
       noteData,
-      currentPhaseIdsToClear,
       mutate,
+      currentPhaseIdsToClear,
+      currentPhaseIds,
       onSubmitCallback,
     });
   };
