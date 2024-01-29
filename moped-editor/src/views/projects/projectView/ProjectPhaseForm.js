@@ -247,6 +247,9 @@ const ProjectPhaseForm = ({
               control={control}
               label="Current phase"
             />
+            <FormHelperText>
+              Set this phase as the project's current phase
+            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={8}>
@@ -318,13 +321,16 @@ const ProjectPhaseForm = ({
           <FormControl fullWidth error={!!formErrors?.status_update}>
             <ControlledTextInput
               fullWidth
-              label="Status Update"
+              label="Status update"
               multiline
               rows={3}
               name="status_update"
               control={control}
               size="small"
             />
+            <FormHelperText>
+              Optionally add a status update to the project
+            </FormHelperText>
             {formErrors?.status_update && (
               <FormHelperText>
                 {formErrors.status_update.message}
