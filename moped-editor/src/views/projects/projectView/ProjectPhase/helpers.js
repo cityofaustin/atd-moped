@@ -165,7 +165,18 @@ export const onSubmitPhase = ({
   onSubmitCallback,
 }) => {
   const { project_phase_id, ...formData } = phaseData;
-  const noteObjects = [];
+  const { project_id, phase_id } = phaseData;
+  const noteObjects = noteData
+    ? [
+        {
+          project_note: DOMPurify.sanitize(noteData.status_update),
+          project_id,
+          added_by_user_id: noteData.user_id,
+          project_note_type: STATUS_UPDATE_TYPE_ID,
+          phase_id,
+        },
+      ]
+    : [];
 
   const variables = {
     current_phase_ids_to_clear: currentPhaseIdsToClear,
@@ -186,22 +197,4 @@ export const onSubmitPhase = ({
     variables,
     refetchQueries: ["ProjectSummary"],
   }).then(() => onSubmitCallback());
-};
-
-export const onSubmitStatusUpdate = ({ data, mutate }) => {
-  const { status_update, project_id, phase_id, user_id } = data;
-
-  mutate({
-    variables: {
-      objects: [
-        {
-          project_note: DOMPurify.sanitize(status_update),
-          project_id,
-          added_by_user_id: user_id,
-          project_note_type: STATUS_UPDATE_TYPE_ID,
-          phase_id,
-        },
-      ],
-    },
-  });
 };

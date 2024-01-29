@@ -18,7 +18,6 @@ import RegisteredSwitch from "src/components/forms/RegisteredSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
-  onSubmitStatusUpdate,
   useDefaultValues,
   useSubphases,
   useCurrentPhaseIdsToClear,
@@ -29,7 +28,6 @@ import {
   UPDATE_PROJECT_PHASE,
   ADD_PROJECT_PHASE_WITH_STATUS_UPDATE,
 } from "src/queries/project";
-import { ADD_PROJECT_NOTE } from "src/queries/notes";
 import theme from "src/theme";
 
 const ProjectPhaseForm = ({
@@ -70,7 +68,6 @@ const ProjectPhaseForm = ({
   const [mutate, mutationState] = useMutation(
     isNewPhase ? ADD_PROJECT_PHASE_WITH_STATUS_UPDATE : UPDATE_PROJECT_PHASE
   );
-  const [addStatusUpdate, addStatusUpdateState] = useMutation(ADD_PROJECT_NOTE);
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
     phase.project_phase_id,
@@ -84,11 +81,10 @@ const ProjectPhaseForm = ({
     const { status_update, ...phaseData } = data;
     let noteData = null;
 
-    // if (status_update) {
-    //   const { project_id, phase_id } = phaseData;
-    //   const { user_id } = userSessionData;
-    //   noteData = { status_update, project_id, phase_id, user_id };
-    // }
+    if (status_update) {
+      const { user_id } = userSessionData;
+      noteData = { status_update, user_id };
+    }
 
     onSubmitPhase({
       phaseData,
@@ -162,27 +158,15 @@ const ProjectPhaseForm = ({
     }
   };
 
-  if (mutationState.error || addStatusUpdateState.error) {
-    console.error("Phase mutation error", mutationState.error);
-    console.error("Status update mutation error", addStatusUpdateState.error);
+  if (mutationState.error) {
+    console.error(mutationState.error);
     return (
       <Grid container spacing={2}>
-        {mutationState.error ? (
-          <Grid item xs={12}>
-            <Alert severity="error">
-              Something went wrong with the phase submission. Refresh the page
-              to try again.
-            </Alert>
-          </Grid>
-        ) : null}
-        {addStatusUpdateState.error ? (
-          <Grid item xs={12}>
-            <Alert severity="error">
-              Something went wrong with the status update. Refresh the page to
-              try again.
-            </Alert>
-          </Grid>
-        ) : null}
+        <Grid item xs={12}>
+          <Alert severity="error">
+            Something went wrong. Refresh the page to try again.
+          </Alert>
+        </Grid>
       </Grid>
     );
   }
@@ -349,13 +333,9 @@ const ProjectPhaseForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={
-              (!isDirty && !isNewPhase) ||
-              mutationState.loading ||
-              addStatusUpdateState.loading
-            }
+            disabled={(!isDirty && !isNewPhase) || mutationState.loading}
           >
-            {mutationState.loading || addStatusUpdateState.loading ? (
+            {mutationState.loading ? (
               <CircularProgress color="primary" size={20} />
             ) : (
               "Save"
