@@ -25,7 +25,10 @@ import {
 } from "./ProjectPhase/helpers";
 import { getSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
-import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
+import {
+  UPDATE_PROJECT_PHASE,
+  ADD_PROJECT_PHASE_WITH_STATUS_UPDATE,
+} from "src/queries/project";
 import { ADD_PROJECT_NOTE } from "src/queries/notes";
 import theme from "src/theme";
 
@@ -65,7 +68,7 @@ const ProjectPhaseForm = ({
   });
 
   const [mutate, mutationState] = useMutation(
-    isNewPhase ? ADD_PROJECT_PHASE : UPDATE_PROJECT_PHASE
+    isNewPhase ? ADD_PROJECT_PHASE_WITH_STATUS_UPDATE : UPDATE_PROJECT_PHASE
   );
   const [addStatusUpdate, addStatusUpdateState] = useMutation(ADD_PROJECT_NOTE);
 
@@ -75,29 +78,25 @@ const ProjectPhaseForm = ({
     currentProjectPhaseIds
   );
 
-  const [phase_start, phase_end, is_current_phase] = watch([
-    "phase_start",
-    "phase_end",
-    "is_current_phase",
-  ]);
+  const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
 
   const onSubmit = (data) => {
     const { status_update, ...phaseData } = data;
+    let noteData = null;
+
+    // if (status_update) {
+    //   const { project_id, phase_id } = phaseData;
+    //   const { user_id } = userSessionData;
+    //   noteData = { status_update, project_id, phase_id, user_id };
+    // }
 
     onSubmitPhase({
-      data: phaseData,
+      phaseData,
+      noteData,
       currentPhaseIdsToClear,
       mutate,
       onSubmitCallback,
     });
-
-    if (status_update) {
-      const { project_id, phase_id } = phaseData;
-      const { user_id } = userSessionData;
-      const statusUpdateData = { status_update, project_id, phase_id, user_id };
-
-      onSubmitStatusUpdate({ data: statusUpdateData, mutate: addStatusUpdate });
-    }
   };
 
   /**

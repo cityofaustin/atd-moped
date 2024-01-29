@@ -158,15 +158,18 @@ export const useCurrentPhaseIdsToClear = (
 };
 
 export const onSubmitPhase = ({
-  data,
+  phaseData,
+  noteData,
   mutate,
   currentPhaseIdsToClear,
   onSubmitCallback,
 }) => {
-  const { project_phase_id, ...formData } = data;
+  const { project_phase_id, ...formData } = phaseData;
+  const noteObjects = [];
 
   const variables = {
     current_phase_ids_to_clear: currentPhaseIdsToClear,
+    noteObjects,
   };
 
   if (!project_phase_id) {

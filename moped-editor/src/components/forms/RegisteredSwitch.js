@@ -6,6 +6,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
  * @param {Function} register - react-hook-form `register` function from useForm - required
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
+ * @param {Function} onChange - an optional custom onChange handler
  * @param {object} switchProps additional optional MUI switch props
  * @return {JSX.Element}
  */
