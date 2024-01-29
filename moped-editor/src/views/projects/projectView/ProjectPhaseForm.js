@@ -25,8 +25,8 @@ import {
 import { getSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
 import {
-  UPDATE_PROJECT_PHASE,
-  ADD_PROJECT_PHASE_WITH_STATUS_UPDATE,
+  UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
+  ADD_PROJECT_PHASE_AND_STATUS_UPDATE,
 } from "src/queries/project";
 import theme from "src/theme";
 
@@ -66,7 +66,9 @@ const ProjectPhaseForm = ({
   });
 
   const [mutate, mutationState] = useMutation(
-    isNewPhase ? ADD_PROJECT_PHASE_WITH_STATUS_UPDATE : UPDATE_PROJECT_PHASE
+    isNewPhase
+      ? ADD_PROJECT_PHASE_AND_STATUS_UPDATE
+      : UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE
   );
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
