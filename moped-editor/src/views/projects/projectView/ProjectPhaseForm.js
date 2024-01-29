@@ -7,8 +7,6 @@ import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
 import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,7 +14,7 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
-import ControlledSwitch from "src/components/forms/ControlledSwitch";
+import RegisteredSwitch from "src/components/forms/RegisteredSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
@@ -151,17 +149,19 @@ const ProjectPhaseForm = ({
     }
   }, [phase_end, defaultValues, setValue]);
 
-  /**
-   * Defaults phase_start to today if current phase is true and there is no phase_start
-   */
-  // useEffect(() => {
-  //   if (is_current_phase === true && phase_start === null) {
-  //     const today = new Date();
-  //     today.setHours(0, 0, 0, 0);
+  /* Defaults phase_start to today if current phase is true and there is no phase_start */
+  const onChangeCurrentPhase = (e) => {
+    const isCurrentPhase = e.target.checked;
+    if (isCurrentPhase && !phase_start) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
 
-  //     setValue("phase_start", today);
-  //   }
-  // }, [is_current_phase, phase_start, setValue]);
+      setValue("phase_start", today);
+      return isCurrentPhase;
+    } else {
+      return isCurrentPhase;
+    }
+  };
 
   if (mutationState.error || addStatusUpdateState.error) {
     console.error("Phase mutation error", mutationState.error);
@@ -245,44 +245,12 @@ const ProjectPhaseForm = ({
         </Grid>
         <Grid item container justifyContent="flex-start">
           <FormControl>
-            <FormControlLabel
-              label="Current phase"
-              control={
-                <Switch
-                  {...register("is_current_phase", {
-                    onChange: (e) => {
-                      const isCurrentPhase = e.target.checked;
-                      if (isCurrentPhase && !phase_start) {
-                        const today = new Date();
-                        today.setHours(0, 0, 0, 0);
-
-                        setValue("phase_start", today);
-                        return isCurrentPhase;
-                      } else {
-                        return isCurrentPhase;
-                      }
-                    },
-                  })}
-                  color="primary"
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-              }
-            />
-            {/* <ControlledSwitch
+            <RegisteredSwitch
               name="is_current_phase"
-              control={control}
+              register={register}
               label="Current phase"
-              customOnChange={(e, field) => {
-                const isCurrentPhase = e.target.checked;
-                if (isCurrentPhase && !phase_start) {
-                  const today = new Date();
-                  today.setHours(0, 0, 0, 0);
-
-                  setValue("phase_start", today);
-                  field.onChange(e.target.checked);
-                }
-              }}
-            /> */}
+              onChange={onChangeCurrentPhase}
+            />
             <FormHelperText>
               Set this phase as the project's current phase
             </FormHelperText>
