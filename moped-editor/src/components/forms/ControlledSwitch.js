@@ -22,7 +22,11 @@ const ControlledSwitch = ({ name, control, label, ...switchProps }) => {
             control={
               <Switch
                 checked={!!field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
+                onChange={
+                  switchProps.onChange
+                    ? (e, _, field) => switchProps.onChange(e, field)
+                    : (e) => field.onChange(e.target.checked)
+                }
                 color="primary"
                 inputProps={{ "aria-label": "primary checkbox" }}
                 {...switchProps}
