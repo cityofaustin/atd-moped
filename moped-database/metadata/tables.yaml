@@ -6,180 +6,246 @@
       permission:
         columns:
           - length_feet_total
-          - is_project_component_deleted
-          - is_project_deleted
+          - is_within_city_limits
           - completion_end_date
           - construction_start_date
           - component_id
           - component_phase_id
           - interim_project_component_id
           - interim_project_id
+          - parent_project_id
           - project_component_id
           - project_id
           - project_phase_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
-          - added_by
+          - length_miles_total
+          - component_categories
           - component_description
+          - component_location_description
           - component_name
           - component_name_full
           - component_phase_name
           - component_phase_name_simple
+          - component_subcomponents
           - component_subtype
           - component_tags
           - component_url
+          - component_work_types
           - contract_numbers
-          - workgroup_contractors
           - council_districts
+          - council_districts_searchable
           - current_phase_name
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
-          - location_description
+          - knack_data_tracker_project_record_id
+          - parent_project_name
+          - parent_project_name_with_descriptor
+          - parent_project_url
+          - project_added_by
           - project_description
           - project_designer
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_note_date_created
-          - project_partner
+          - project_name_descriptor
+          - project_name_with_descriptor
+          - project_partners
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
           - project_url
+          - project_website
           - public_process_status
+          - related_project_ids
+          - related_project_ids_searchable
           - signal_ids
           - srts_id
-          - subcomponents
+          - substantial_completion_date_estimated
           - task_order_names
           - type_name
-          - work_types
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
-          - updated_at
+          - project_status_update_date_created
+          - project_updated_at
+          - substantial_completion_date
         filter: {}
       comment: ""
     - role: moped-editor
       permission:
         columns:
           - length_feet_total
-          - is_project_component_deleted
-          - is_project_deleted
+          - is_within_city_limits
           - completion_end_date
           - construction_start_date
           - component_id
           - component_phase_id
           - interim_project_component_id
           - interim_project_id
+          - parent_project_id
           - project_component_id
           - project_id
           - project_phase_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
-          - added_by
+          - length_miles_total
+          - component_categories
           - component_description
+          - component_location_description
           - component_name
           - component_name_full
           - component_phase_name
           - component_phase_name_simple
+          - component_subcomponents
           - component_subtype
           - component_tags
           - component_url
+          - component_work_types
           - contract_numbers
-          - workgroup_contractors
           - council_districts
+          - council_districts_searchable
           - current_phase_name
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
-          - location_description
+          - knack_data_tracker_project_record_id
+          - parent_project_name
+          - parent_project_name_with_descriptor
+          - parent_project_url
+          - project_added_by
           - project_description
           - project_designer
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_note_date_created
-          - project_partner
+          - project_name_descriptor
+          - project_name_with_descriptor
+          - project_partners
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
           - project_url
+          - project_website
           - public_process_status
+          - related_project_ids
+          - related_project_ids_searchable
           - signal_ids
           - srts_id
-          - subcomponents
+          - substantial_completion_date_estimated
           - task_order_names
           - type_name
-          - work_types
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
-          - updated_at
+          - project_status_update_date_created
+          - project_updated_at
+          - substantial_completion_date
         filter: {}
       comment: ""
     - role: moped-viewer
       permission:
         columns:
           - length_feet_total
-          - is_project_component_deleted
-          - is_project_deleted
+          - is_within_city_limits
           - completion_end_date
           - construction_start_date
           - component_id
           - component_phase_id
           - interim_project_component_id
           - interim_project_id
+          - parent_project_id
           - project_component_id
           - project_id
           - project_phase_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
           - geometry
           - line_geometry
-          - added_by
+          - length_miles_total
+          - component_categories
           - component_description
+          - component_location_description
           - component_name
           - component_name_full
           - component_phase_name
           - component_phase_name_simple
+          - component_subcomponents
           - component_subtype
           - component_tags
           - component_url
+          - component_work_types
           - contract_numbers
-          - workgroup_contractors
           - council_districts
+          - council_districts_searchable
           - current_phase_name
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
           - funding_source_name
-          - location_description
+          - knack_data_tracker_project_record_id
+          - parent_project_name
+          - parent_project_name_with_descriptor
+          - parent_project_url
+          - project_added_by
           - project_description
           - project_designer
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_note_date_created
-          - project_partner
+          - project_name_descriptor
+          - project_name_with_descriptor
+          - project_partners
           - project_phase_name
           - project_phase_name_simple
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
           - project_url
+          - project_website
           - public_process_status
+          - related_project_ids
+          - related_project_ids_searchable
           - signal_ids
           - srts_id
-          - subcomponents
+          - substantial_completion_date_estimated
           - task_order_names
           - type_name
-          - work_types
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
           - completion_date
-          - updated_at
+          - project_status_update_date_created
+          - project_updated_at
+          - substantial_completion_date
         filter: {}
       comment: ""
 - table:
@@ -5009,127 +5075,163 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by
-          - children_project_ids
+          - is_deleted
           - completion_end_date
           - construction_start_date
+          - substantial_completion_date
+          - interim_project_id
+          - parent_project_id
+          - project_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
+          - project_feature
+          - children_project_ids
+          - task_orders
+          - added_by
+          - components
           - contract_numbers
-          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
-          - date_added
           - ecapris_subproject_id
           - funding_source_name
-          - interim_project_id
-          - is_deleted
+          - knack_project_id
           - parent_project_name
-          - parent_project_id
+          - parent_project_url
           - project_description
           - project_designer
-          - project_feature
-          - project_id
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_partner
+          - project_partners
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
+          - project_url
+          - project_website
           - public_process_status
-          - task_orders
           - task_order_names
           - task_order_names_short
           - type_name
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
+          - date_added
+          - project_status_update_date_created
           - updated_at
-          - knack_project_id
-          - project_note_date_created
-          - components
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
-          - added_by
-          - children_project_ids
+          - is_deleted
           - completion_end_date
           - construction_start_date
+          - substantial_completion_date
+          - interim_project_id
+          - parent_project_id
+          - project_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
+          - project_feature
+          - children_project_ids
+          - task_orders
+          - added_by
+          - components
           - contract_numbers
-          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
-          - date_added
           - ecapris_subproject_id
           - funding_source_name
-          - interim_project_id
-          - is_deleted
+          - knack_project_id
           - parent_project_name
-          - parent_project_id
+          - parent_project_url
           - project_description
           - project_designer
-          - project_feature
-          - project_id
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_partner
+          - project_partners
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
+          - project_url
+          - project_website
           - public_process_status
-          - task_orders
           - task_order_names
           - task_order_names_short
           - type_name
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
+          - date_added
+          - project_status_update_date_created
           - updated_at
-          - knack_project_id
-          - project_note_date_created
-          - components
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - added_by
-          - children_project_ids
+          - is_deleted
           - completion_end_date
           - construction_start_date
+          - substantial_completion_date
+          - interim_project_id
+          - parent_project_id
+          - project_id
+          - project_development_status_date_calendar_year
+          - project_development_status_date_fiscal_year
+          - project_feature
+          - children_project_ids
+          - task_orders
+          - added_by
+          - components
           - contract_numbers
-          - workgroup_contractors
           - current_phase
           - current_phase_key
           - current_phase_simple
-          - date_added
           - ecapris_subproject_id
           - funding_source_name
-          - interim_project_id
-          - is_deleted
+          - knack_project_id
           - parent_project_name
-          - parent_project_id
+          - parent_project_url
           - project_description
           - project_designer
-          - project_feature
-          - project_id
           - project_inspector
           - project_lead
           - project_name
-          - project_note
-          - project_partner
+          - project_partners
           - project_sponsor
+          - project_status_update
           - project_tags
           - project_team_members
+          - project_url
+          - project_website
           - public_process_status
-          - task_orders
           - task_order_names
           - task_order_names_short
           - type_name
+          - workgroup_contractors
+          - project_development_status
+          - project_development_status_date
+          - project_development_status_date_calendar_year_month
+          - project_development_status_date_calendar_year_month_numeric
+          - project_development_status_date_calendar_year_quarter
+          - project_development_status_date_fiscal_year_quarter
+          - date_added
+          - project_status_update_date_created
           - updated_at
-          - knack_project_id
-          - project_note_date_created
-          - components
         filter: {}
         allow_aggregations: true
 - table:

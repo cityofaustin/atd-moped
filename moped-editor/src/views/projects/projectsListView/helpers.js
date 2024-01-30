@@ -305,12 +305,12 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Partners",
-        field: "project_partner",
-        hidden: hiddenColumns["project_partner"],
+        field: "project_partners",
+        hidden: hiddenColumns["project_partners"],
         emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
         render: (entry) => {
-          return entry.project_partner.split(",").map((partner) => (
+          return entry.project_partners.split(",").map((partner) => (
             <span key={partner} style={{ display: "block" }}>
               {partner}
             </span>
@@ -401,11 +401,11 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Status update",
-        field: "project_note",
-        hidden: hiddenColumns["project_note"],
+        field: "project_status_update",
+        hidden: hiddenColumns["project_status_update"],
         emptyValue: "-",
         cellStyle: { maxWidth: "30rem" },
-        render: (entry) => parse(String(entry.project_note)),
+        render: (entry) => parse(String(entry.project_status_update)),
       },
       {
         title: "Construction start",
