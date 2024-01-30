@@ -17,6 +17,7 @@ import {
   DELETE_WORK_ACTIVITY,
 } from "../../../../queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
+import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -24,10 +25,11 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
     return [
       {
         headerName: "",
-        field: "_edit",
+        field: "Edit",
         hideable: false,
         filterable: false,
         sortable: false,
+        defaultVisible: true,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
@@ -55,33 +57,45 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "ID",
         field: "reference_id",
         minWidth: 125,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Workgroup/Contractor",
         field: "workgroup_contractor",
         minWidth: 175,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Contract #",
         field: "contract_number",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Description",
         field: "description",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Work Assignment",
         field: "work_assignment_id",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Task Order(s)",
         field: "task_orders",
+        defaultVisible: true,
+        minWidth: 150,
+        flex: 1,
         valueGetter: ({ row }) =>
           row.task_orders?.map((tk) => tk.task_order).join(", "),
-        minWidth: 150,
         renderCell: ({ row }) => (
           <div>
             {row.task_orders?.map((tk) => (
@@ -94,6 +108,8 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "Work Order Link",
         field: "work_order_url",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
         renderCell: ({ row }) =>
           row.work_order_url ? (
             <Link
@@ -108,13 +124,17 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Status",
         field: "status",
+        defaultVisible: true,
         valueGetter: ({ row }) => row.moped_work_activity_status?.name,
         minWidth: 150,
+        flex: 1,
       },
       {
         headerName: "Amount",
         field: "contract_amount",
-        minWidth: 50,
+        minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
         valueGetter: ({ row }) =>
           isNaN(parseInt(row.contract_amount))
             ? null
@@ -124,19 +144,25 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "Status update",
         field: "status_note",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
       },
       {
         headerName: "Updated by",
         field: "updated_by_user",
         minWidth: 150,
+        flex: 1,
+        defaultVisible: true,
         valueGetter: ({ row }) => getUserFullName(row.updated_by_user),
       },
       {
         headerName: "Updated at",
         field: "updated_at",
         minWidth: 150,
-        valueGetter: ({ row }) =>
-          row.updated_at ? new Date(row.updated_at).toLocaleDateString() : "",
+        flex: 1,
+        defaultVisible: true,
+        type: "date",
+        valueGetter: ({ value }) => (value ? new Date(value) : null),
       },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
@@ -179,14 +205,37 @@ const ProjectWorkActivitiesTable = () => {
     setEditActivity,
   });
 
+  /**
+   * Initialize which columns should be visibile - must be memoized to safely
+   * be used with useHiddenColumnsSettings hook
+   */
+  const defaultHiddenColumnSettings = useMemo(
+    () =>
+      columns.reduce((settings, column) => {
+        settings[column.field] = column.defaultVisible;
+        return settings;
+      }, {}),
+    [columns]
+  );
+
+  const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings({
+    defaultHiddenColumnSettings,
+    storageKey: "workActivityTableColumnConfig",
+  });
+
   if (loading || !data) return <CircularProgress />;
 
   return (
     <ApolloErrorHandler errors={error}>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
         <DataGrid
           autoHeight
           columns={columns}
+          columnVisibilityModel={hiddenColumns}
+          onColumnVisibilityModelChange={(newModel) =>
+            setHiddenColumns(newModel)
+          }
+          toolbar
           density="comfortable"
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
