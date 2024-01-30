@@ -217,19 +217,17 @@ export const useColumns = ({ hiddenColumns }) => {
         title: "Lead",
         field: "project_lead",
         hidden: hiddenColumns["project_lead"],
+        emptyValue: "-",
         editable: "never",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
-          entry.project_lead === null ? "-" : entry.project_lead,
       },
       {
         title: "Sponsor",
         field: "project_sponsor",
         hidden: hiddenColumns["project_sponsor"],
+        emptyValue: "-",
         editable: "never",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
-          entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
       },
       {
         title: "Partners",
