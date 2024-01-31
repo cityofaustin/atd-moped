@@ -40,38 +40,36 @@ export const CsvDownloadOptionsDialog = ({
   handleDialogClose,
   handleContinueButtonClick,
   handleRadioSelect,
-}) => {
-  return (
-    <Dialog open={dialogOpen} onClose={handleDialogClose}>
-      <DialogContent>
-        <FormControl>
-          <RadioGroup defaultValue={"visible"} onChange={handleRadioSelect}>
-            <FormControlLabel
-              control={<Radio />}
-              label={"Download visible columns"}
-              value={"visible"}
-            />
-            <FormControlLabel
-              control={<Radio />}
-              label={"Download all columns"}
-              value={"all"}
-            />
-          </RadioGroup>
-        </FormControl>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleDialogClose}>Cancel</Button>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleContinueButtonClick}
-        >
-          Continue
-        </Button>
-      </DialogActions>
-    </Dialog>
-  );
-};
+}) => (
+  <Dialog open={dialogOpen} onClose={handleDialogClose}>
+    <DialogContent>
+      <FormControl>
+        <RadioGroup defaultValue={"visible"} onChange={handleRadioSelect}>
+          <FormControlLabel
+            control={<Radio />}
+            label={"Download visible columns"}
+            value={"visible"}
+          />
+          <FormControlLabel
+            control={<Radio />}
+            label={"Download all columns"}
+            value={"all"}
+          />
+        </RadioGroup>
+      </FormControl>
+    </DialogContent>
+    <DialogActions>
+      <Button onClick={handleDialogClose}>Cancel</Button>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleContinueButtonClick}
+      >
+        Continue
+      </Button>
+    </DialogActions>
+  </Dialog>
+);
 
 /**
  * Downloads the contents of fileContents into a file
@@ -95,6 +93,8 @@ const downloadFile = (fileContents) => {
  * Builds a record entry given a specific configuration and filters
  * @param {object} record - The record to build
  * @param {object} exportConfig - The export configuration
+ * @param {string} columnDownloadOption - The column download option selected by user, either "all" or "visible"
+ * @param {array} visibleColumns - The columns that are currently visible in the table
  * @return {object}
  */
 const buildRecordEntry = (
@@ -125,6 +125,8 @@ const buildRecordEntry = (
  * Returns an array of objects (each object is a row and each key of that object is a column in the export file)
  * @param {array} data - Data returned from DB with nested data structures
  * @param {object} exportConfig - The export configuration
+ * @param {string} columnDownloadOption - The column download option selected by user, either "all" or "visible"
+ * @param {array} visibleColumns - The columns that are currently visible in the table
  * @returns {array}
  */
 const formatExportData = (
@@ -158,13 +160,6 @@ export const useCsvExport = ({
   visibleColumns,
 }) => {
   /**
-   * When True, the download csv dialog is open.
-   * @type {boolean} dialogOpen
-   * @function setDownloadingDialogOpen - Sets the state of dialogOpen
-   * @default false
-   */
-
-  /**
    * Instantiates getExport and data variables
    * @function getExport - It is called to load the data
    * @property {object} data - The data as retrieved from query (if available)
@@ -174,7 +169,28 @@ export const useCsvExport = ({
   });
 
   /**
-   * Handles export button (to open the csv download dialog)
+   * Closes the download options dialog when user clicks away or on cancel button
+   */
+  const handleOptionsDialogClose = () => {
+    setDownloadOptionsDialogOpen(false);
+  };
+
+  /**
+   * Updates the column download option based on user radio button selection
+   */
+  const handleRadioSelect = (e) => {
+    setColumnDownloadOption(e.target.value);
+  };
+
+  /**
+   * Open the column download options dialog when export button is clicked
+   */
+  const handleExportButtonClick = () => {
+    setDownloadOptionsDialogOpen(true);
+  };
+
+  /**
+   * Downloads the csv and opens the downloading dialog when continue button is clicked
    */
   const handleContinueButtonClick = () => {
     setDownloadOptionsDialogOpen(false);
@@ -194,5 +210,10 @@ export const useCsvExport = ({
     });
   };
 
-  return { handleContinueButtonClick };
+  return {
+    handleContinueButtonClick,
+    handleRadioSelect,
+    handleOptionsDialogClose,
+    handleExportButtonClick,
+  };
 };
