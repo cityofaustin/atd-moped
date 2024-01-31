@@ -7,10 +7,10 @@ import { useUser } from "src/auth/user";
  * last_seen_date timestamp based on their session ID. this action happens
  * once each time this component mounts
  */
-export default function ActivityMetrics({ children }) {
+export default function ActivityMetrics({ eventName, children }) {
   const { user } = useUser();
   const [setLastSeen] = useMutation(INSERT_USER_EVENT, {
-    variables: { event_name: "app_load" },
+    variables: { event_name: eventName },
   });
   const isLoggedIn = !!user;
   useEffect(() => {
@@ -19,10 +19,10 @@ export default function ActivityMetrics({ children }) {
     }
     setLastSeen().catch((error) => {
       console.error(
-        "Failed to set the last seen date for the current user.",
+        `Failed to log the '${eventName}' event for the current user.`,
         error
       );
     });
-  }, [setLastSeen, isLoggedIn]);
+  }, [setLastSeen, isLoggedIn, eventName]);
   return children;
 }

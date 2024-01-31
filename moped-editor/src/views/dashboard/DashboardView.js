@@ -18,7 +18,7 @@ import MaterialTable from "@material-table/core";
 import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
-
+import ActivityMetrics from "src/components/ActivityMetrics";
 import RenderFieldLink from "../../components/RenderFieldLink";
 import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
@@ -260,77 +260,81 @@ const DashboardView = () => {
   };
 
   return (
-    <Page title={"Dashboard"}>
-      <Container maxWidth="xl">
-        <Card className={classes.cardWrapper}>
-          <Grid className={classes.root}>
-            <Box pl={3} pt={3}>
-              <Grid className={classes.greeting}>
-                <Typography className={classes.greetingText}>
-                  <strong>{`Good ${getTimeOfDay(curHr)}, ${userName}!`}</strong>
-                </Typography>
-                <Typography variant="h1" className={classes.date}>
-                  {dateFormatted}
-                </Typography>
-              </Grid>
-            </Box>
-            <Box px={3} py={3}>
-              <Grid>
-                <AppBar className={classes.appBar} position="static">
-                  <Tabs
-                    classes={{ indicator: classes.indicatorColor }}
-                    value={activeTab}
-                    onChange={handleChange}
-                  >
-                    {TABS.map((tab, i) => {
-                      return (
-                        <Tab
-                          className={classes.selectedTab}
-                          key={tab.label}
-                          label={tab.label}
-                          {...a11yProps(i)}
-                        />
-                      );
-                    })}
-                  </Tabs>
-                </AppBar>
-                {loading ? (
-                  <CircularProgress />
-                ) : (
-                  <MaterialTable
-                    columns={columns}
-                    data={selectedData}
-                    localization={{
-                      body: {
-                        emptyDataSourceMessage: (
-                          <Typography>
-                            {TABS[activeTab].label === "Following" &&
-                              "No projects to display. You have not followed any current projects."}
-                            {TABS[activeTab].label === "My projects" &&
-                              "No projects to display. You are not listed as a Team Member on any current projects."}
-                          </Typography>
-                        ),
-                      },
-                    }}
-                    options={{
-                      search: false,
-                      toolbar: false,
-                      tableLayout: "fixed",
-                      ...(selectedData.length < 51 && {
-                        paging: false,
-                      }),
-                      pageSize: 50,
-                      pageSizeOptions: [10, 50, 100],
-                      idSynonym: "project_id",
-                    }}
-                  />
-                )}
-              </Grid>
-            </Box>
-          </Grid>
-        </Card>
-      </Container>
-    </Page>
+    <ActivityMetrics eventName="dashboard_load">
+      <Page title={"Dashboard"}>
+        <Container maxWidth="xl">
+          <Card className={classes.cardWrapper}>
+            <Grid className={classes.root}>
+              <Box pl={3} pt={3}>
+                <Grid className={classes.greeting}>
+                  <Typography className={classes.greetingText}>
+                    <strong>{`Good ${getTimeOfDay(
+                      curHr
+                    )}, ${userName}!`}</strong>
+                  </Typography>
+                  <Typography variant="h1" className={classes.date}>
+                    {dateFormatted}
+                  </Typography>
+                </Grid>
+              </Box>
+              <Box px={3} py={3}>
+                <Grid>
+                  <AppBar className={classes.appBar} position="static">
+                    <Tabs
+                      classes={{ indicator: classes.indicatorColor }}
+                      value={activeTab}
+                      onChange={handleChange}
+                    >
+                      {TABS.map((tab, i) => {
+                        return (
+                          <Tab
+                            className={classes.selectedTab}
+                            key={tab.label}
+                            label={tab.label}
+                            {...a11yProps(i)}
+                          />
+                        );
+                      })}
+                    </Tabs>
+                  </AppBar>
+                  {loading ? (
+                    <CircularProgress />
+                  ) : (
+                    <MaterialTable
+                      columns={columns}
+                      data={selectedData}
+                      localization={{
+                        body: {
+                          emptyDataSourceMessage: (
+                            <Typography>
+                              {TABS[activeTab].label === "Following" &&
+                                "No projects to display. You have not followed any current projects."}
+                              {TABS[activeTab].label === "My projects" &&
+                                "No projects to display. You are not listed as a Team Member on any current projects."}
+                            </Typography>
+                          ),
+                        },
+                      }}
+                      options={{
+                        search: false,
+                        toolbar: false,
+                        tableLayout: "fixed",
+                        ...(selectedData.length < 51 && {
+                          paging: false,
+                        }),
+                        pageSize: 50,
+                        pageSizeOptions: [10, 50, 100],
+                        idSynonym: "project_id",
+                      }}
+                    />
+                  )}
+                </Grid>
+              </Box>
+            </Grid>
+          </Card>
+        </Container>
+      </Page>
+    </ActivityMetrics>
   );
 };
 

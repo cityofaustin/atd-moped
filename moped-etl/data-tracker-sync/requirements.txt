@@ -1,0 +1,2 @@
+knackpy==1.*
+requests==2.*

@@ -90,8 +90,8 @@ const staffColumns = [
   {
     headerName: "Last seen",
     field: "last_seen_date",
-    valueGetter: (props) =>
-      props.value ? new Date(props.value).toLocaleString() : "",
+    type: "date",
+    valueGetter: (props) => (props.value ? new Date(props.value) : null),
     width: 200,
   },
 ];

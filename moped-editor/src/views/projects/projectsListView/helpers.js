@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import { MTableHeader } from "@material-table/core";
 import Link from "@mui/material/Link";
@@ -9,10 +9,7 @@ import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../../../components/RenderSignalLink";
-import {
-  PROJECT_LIST_VIEW_QUERY_CONFIG,
-  DEFAULT_HIDDEN_COLS,
-} from "./ProjectsListViewQueryConf";
+import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
 import theme from "src/theme";
 
 export const filterNullValues = (value) => {
@@ -92,54 +89,6 @@ const filterComponentFullNames = (value) => {
   ));
 };
 
-/**
- * Get the user hidden column settings from local storage, clear them of
- * outdated columns, and supplement with remaining default columns
- * @returns {Object} hidden column settings from local storage
- */
-const getPreviousHiddenColumns = () => {
-  let previousHiddenColumnSettings;
-
-  try {
-    previousHiddenColumnSettings = JSON.parse(
-      localStorage.getItem("mopedColumnConfig")
-    );
-  } catch (e) {
-    previousHiddenColumnSettings = null;
-    console.error("Error parsing project list view hidden column settings", e);
-  }
-
-  let currentHiddenColumnSettings;
-
-  // If there are no previous hidden column settings, set the default hidden columns
-  if (!previousHiddenColumnSettings) {
-    localStorage.setItem(
-      "mopedColumnConfig",
-      JSON.stringify(DEFAULT_HIDDEN_COLS)
-    );
-
-    currentHiddenColumnSettings = DEFAULT_HIDDEN_COLS;
-  } else {
-    // Use previous settings to override default hidden columns.
-    // By iterating the defaults, we also remove outdated columns no longer in config.
-    currentHiddenColumnSettings = Object.keys(DEFAULT_HIDDEN_COLS).reduce(
-      (acc, columnName) => {
-        if (previousHiddenColumnSettings.hasOwnProperty(columnName)) {
-          return {
-            ...acc,
-            [columnName]: previousHiddenColumnSettings[columnName],
-          };
-        } else {
-          return { ...acc, [columnName]: DEFAULT_HIDDEN_COLS[columnName] };
-        }
-      },
-      {}
-    );
-  }
-
-  return currentHiddenColumnSettings;
-};
-
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
 /**
@@ -189,27 +138,6 @@ export const useTableComponents = ({
       rowsPerPageOptions,
     ]
   );
-
-export const useHiddenColumnsSettings = () => {
-  const [hiddenColumns, setHiddenColumns] = useState({});
-
-  /*
-   * Initialize hidden columns from previous local storage
-   */
-  useEffect(() => {
-    const initialHiddenColumnSettings = getPreviousHiddenColumns();
-    setHiddenColumns(initialHiddenColumnSettings);
-  }, []);
-
-  /*
-   * Sync hidden columns state with local storage
-   */
-  useEffect(() => {
-    localStorage.setItem("mopedColumnConfig", JSON.stringify(hiddenColumns));
-  }, [hiddenColumns]);
-
-  return { hiddenColumns, setHiddenColumns };
-};
 
 /**
  * The Material Table column settings
@@ -305,12 +233,12 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Partners",
-        field: "project_partner",
-        hidden: hiddenColumns["project_partner"],
+        field: "project_partners",
+        hidden: hiddenColumns["project_partners"],
         emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
         render: (entry) => {
-          return entry.project_partner.split(",").map((partner) => (
+          return entry.project_partners.split(",").map((partner) => (
             <span key={partner} style={{ display: "block" }}>
               {partner}
             </span>
@@ -401,11 +329,11 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Status update",
-        field: "project_note",
-        hidden: hiddenColumns["project_note"],
+        field: "project_status_update",
+        hidden: hiddenColumns["project_status_update"],
         emptyValue: "-",
         cellStyle: { maxWidth: "30rem" },
-        render: (entry) => parse(String(entry.project_note)),
+        render: (entry) => parse(String(entry.project_status_update)),
       },
       {
         title: "Construction start",
