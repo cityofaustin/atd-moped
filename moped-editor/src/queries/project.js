@@ -350,6 +350,38 @@ export const ADD_PROJECT_PHASE = gql`
   }
 `;
 
+export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
+  mutation AddProjectPhaseWithStatusUpdate(
+    $objects: [moped_proj_phases_insert_input!]!
+    $current_phase_ids_to_clear: [Int!] = []
+    $noteObjects: [moped_proj_notes_insert_input!]!
+  ) {
+    insert_moped_proj_phases(objects: $objects) {
+      returning {
+        phase_id
+        phase_description
+        phase_start
+        phase_end
+        project_phase_id
+        is_current_phase
+        project_id
+      }
+    }
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_notes(objects: $noteObjects) {
+      returning {
+        project_id
+        project_note
+      }
+    }
+  }
+`;
+
 // use this to update a single moped_proj_phase
 export const UPDATE_PROJECT_PHASE = gql`
   mutation ProjectPhasesMutation(
@@ -375,6 +407,41 @@ export const UPDATE_PROJECT_PHASE = gql`
       where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
     ) {
       affected_rows
+    }
+  }
+`;
+
+export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
+  mutation ProjectPhasesMutation(
+    $project_phase_id: Int!
+    $object: moped_proj_phases_set_input!
+    $current_phase_ids_to_clear: [Int!] = []
+    $noteObjects: [moped_proj_notes_insert_input!]!
+  ) {
+    update_moped_proj_phases_by_pk(
+      pk_columns: { project_phase_id: $project_phase_id }
+      _set: $object
+    ) {
+      project_id
+      project_phase_id
+      phase_id
+      phase_start
+      phase_end
+      subphase_id
+      is_current_phase
+      phase_description
+    }
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
+    insert_moped_proj_notes(objects: $noteObjects) {
+      returning {
+        project_id
+        project_note
+      }
     }
   }
 `;
