@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useLazyQuery } from "@apollo/client";
 import { format } from "date-fns";
 import Papa from "papaparse";
@@ -14,6 +14,7 @@ import {
   FormControl,
   FormControlLabel,
   Button,
+  DialogActions,
 } from "@mui/material";
 
 export const CsvDownloadDialog = ({ downloadingDialogOpen }) => (
@@ -34,41 +35,40 @@ export const CsvDownloadDialog = ({ downloadingDialogOpen }) => (
   </Dialog>
 );
 
-export const CsvSelectColumnsDialog = ({
-  columnSelectDialogOpen,
-  handleOnClose,
+export const CsvDownloadOptionsDialog = ({
+  dialogOpen,
+  handleDialogClose,
   handleContinueButtonClick,
   handleRadioSelect,
 }) => {
   return (
-    <Dialog
-      open={columnSelectDialogOpen}
-      onClose={handleOnClose}
-      aria-labelledby="form-dialog-title"
-    >
+    <Dialog open={dialogOpen} onClose={handleDialogClose}>
       <DialogContent>
-        <Grid>
-          <Grid>
-            <FormControl>
-              <RadioGroup defaultValue={0} onChange={handleRadioSelect}>
-                <FormControlLabel
-                  control={<Radio />}
-                  label={"Download visible columns"}
-                  value={0}
-                />
-                <FormControlLabel
-                  control={<Radio />}
-                  label={"Download all columns"}
-                  value={1}
-                />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
-          <Grid>
-            <Button onClick={handleContinueButtonClick}>Continue</Button>
-          </Grid>
-        </Grid>
+        <FormControl>
+          <RadioGroup defaultValue={"visible"} onChange={handleRadioSelect}>
+            <FormControlLabel
+              control={<Radio />}
+              label={"Download visible columns"}
+              value={"visible"}
+            />
+            <FormControlLabel
+              control={<Radio />}
+              label={"Download all columns"}
+              value={"all"}
+            />
+          </RadioGroup>
+        </FormControl>
       </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDialogClose}>Cancel</Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleContinueButtonClick}
+        >
+          Continue
+        </Button>
+      </DialogActions>
     </Dialog>
   );
 };
@@ -97,11 +97,20 @@ const downloadFile = (fileContents) => {
  * @param {object} exportConfig - The export configuration
  * @return {object}
  */
-const buildRecordEntry = (record, exportConfig) => {
+const buildRecordEntry = (
+  record,
+  exportConfig,
+  columnDownloadOption,
+  visibleColumns
+) => {
   // Allocate an empty object
   const entry = {};
+  const columnsToExport =
+    columnDownloadOption === "visible"
+      ? visibleColumns
+      : Object.keys(exportConfig);
   // For each column in the export configuration
-  Object.keys(exportConfig).forEach((column) => {
+  columnsToExport.forEach((column) => {
     // column label and data formatting function
     const { label, filter } = exportConfig[column];
     // Determine the new column name, if available.
@@ -118,10 +127,20 @@ const buildRecordEntry = (record, exportConfig) => {
  * @param {object} exportConfig - The export configuration
  * @returns {array}
  */
-const formatExportData = (data, exportConfig) => {
+const formatExportData = (
+  data,
+  exportConfig,
+  columnDownloadOption,
+  visibleColumns
+) => {
   if (data) {
     return data.map((record) => {
-      return buildRecordEntry(record, exportConfig);
+      return buildRecordEntry(
+        record,
+        exportConfig,
+        columnDownloadOption,
+        visibleColumns
+      );
     });
   }
   return [];
@@ -133,7 +152,10 @@ export const useCsvExport = ({
   queryTableName,
   fetchPolicy,
   setDownloadingDialogOpen,
-  setColumnSelectDialogOpen,
+  setDownloadOptionsDialogOpen,
+  columnDownloadOption,
+  setColumnDownloadOption,
+  visibleColumns,
 }) => {
   /**
    * When True, the download csv dialog is open.
@@ -155,17 +177,20 @@ export const useCsvExport = ({
    * Handles export button (to open the csv download dialog)
    */
   const handleContinueButtonClick = () => {
-    setColumnSelectDialogOpen(false);
+    setDownloadOptionsDialogOpen(false);
     setDownloadingDialogOpen(true);
     // Fetch data and format, parse, and download CSV when returned
     getExport().then(({ data }) => {
       const formattedData = formatExportData(
         data[queryTableName],
-        exportConfig
+        exportConfig,
+        columnDownloadOption,
+        visibleColumns
       );
       const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
       downloadFile(csvString);
       setDownloadingDialogOpen(false);
+      setColumnDownloadOption("visible");
     });
   };
 
