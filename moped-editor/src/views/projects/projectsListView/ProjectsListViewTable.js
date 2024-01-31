@@ -23,7 +23,7 @@ import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
   CsvDownloadDialog,
-  CsvSelectColumnsDialog,
+  CsvDownloadOptionsDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
@@ -68,9 +68,11 @@ const ProjectsListViewTable = () => {
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
-  const [columnSelectDialogOpen, setColumnSelectDialogOpen] = useState(false);
+  // States that handle the project list export button
   const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
-  const [csvColumnsToExport, setCsvColumnsToExport] = useState(0);
+  const [downloadOptionsDialogOpen, setDownloadOptionsDialogOpen] =
+    useState(false);
+  const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -117,8 +119,10 @@ const ProjectsListViewTable = () => {
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn: columnsToReturnInQuery,
-    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
-    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
+    exportColumnsToReturn:
+      columnDownloadOption === "visible"
+        ? columnsToReturnInQuery
+        : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     queryLimit,
     queryOffset,
     orderByColumn,
@@ -143,22 +147,23 @@ const ProjectsListViewTable = () => {
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-    limit: queryLimit,
-    setQueryLimit,
     setDownloadingDialogOpen: setDownloadingDialogOpen,
-    setColumnSelectDialogOpen: setColumnSelectDialogOpen,
+    setDownloadOptionsDialogOpen: setDownloadOptionsDialogOpen,
+    columnDownloadOption: columnDownloadOption,
+    setColumnDownloadOption: setColumnDownloadOption,
+    visibleColumns: columnsToReturnInQuery,
   });
 
-  const handleOnClose = () => {
-    setColumnSelectDialogOpen(false);
+  const handleOptionsDialogClose = () => {
+    setDownloadOptionsDialogOpen(false);
   };
 
   const handleRadioSelect = (e) => {
-    setCsvColumnsToExport(e.target.value);
+    setColumnDownloadOption(e.target.value);
   };
 
   const handleExportButtonClick = () => {
-    setColumnSelectDialogOpen(true);
+    setDownloadOptionsDialogOpen(true);
   };
 
   const tableOptions = useTableOptions({ queryLimit, data });
@@ -226,9 +231,9 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <CsvSelectColumnsDialog
-          columnSelectDialogOpen={columnSelectDialogOpen}
-          handleOnClose={handleOnClose}
+        <CsvDownloadOptionsDialog
+          dialogOpen={downloadOptionsDialogOpen}
+          handleDialogClose={handleOptionsDialogClose}
           handleContinueButtonClick={handleContinueButtonClick}
           handleRadioSelect={handleRadioSelect}
         />
