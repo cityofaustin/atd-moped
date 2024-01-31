@@ -144,7 +144,12 @@ const ProjectsListViewTable = () => {
 
   const data = useCurrentData(projectListViewData);
 
-  const { handleContinueButtonClick } = useCsvExport({
+  const {
+    handleContinueButtonClick,
+    handleRadioSelect,
+    handleOptionsDialogClose,
+    handleExportButtonClick,
+  } = useCsvExport({
     query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
@@ -155,18 +160,6 @@ const ProjectsListViewTable = () => {
     setDownloadingDialogOpen: setDownloadingDialogOpen,
     visibleColumns: columnsToReturnInQuery,
   });
-
-  const handleOptionsDialogClose = () => {
-    setDownloadOptionsDialogOpen(false);
-  };
-
-  const handleRadioSelect = (e) => {
-    setColumnDownloadOption(e.target.value);
-  };
-
-  const handleExportButtonClick = () => {
-    setDownloadOptionsDialogOpen(true);
-  };
 
   const tableOptions = useTableOptions({ queryLimit, data });
 
