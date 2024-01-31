@@ -69,10 +69,10 @@ const ProjectsListViewTable = () => {
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
 
   // States that handle the project list export button
-  const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
   const [downloadOptionsDialogOpen, setDownloadOptionsDialogOpen] =
     useState(false);
   const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
+  const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -147,10 +147,10 @@ const ProjectsListViewTable = () => {
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
     fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-    setDownloadingDialogOpen: setDownloadingDialogOpen,
     setDownloadOptionsDialogOpen: setDownloadOptionsDialogOpen,
     columnDownloadOption: columnDownloadOption,
     setColumnDownloadOption: setColumnDownloadOption,
+    setDownloadingDialogOpen: setDownloadingDialogOpen,
     visibleColumns: columnsToReturnInQuery,
   });
 
