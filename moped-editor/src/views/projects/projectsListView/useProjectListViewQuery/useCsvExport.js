@@ -106,6 +106,7 @@ const buildRecordEntry = (
   // Allocate an empty object
   const entry = {};
   const columnsToExport =
+    // Based on user selection set columns to download as all or just currently visible
     columnDownloadOption === "visible"
       ? visibleColumns
       : Object.keys(exportConfig);
