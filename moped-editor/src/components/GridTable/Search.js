@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useSearchParams } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
+import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,6 +86,8 @@ const Search = ({
   const classes = useStyles();
   const divRef = React.useRef();
 
+  let [, setSearchParams] = useSearchParams();
+
   /**
    * The contents of the search box in SearchBar
    * @type {string} searchFieldValue
@@ -98,24 +102,25 @@ const Search = ({
     setAdvancedSearchAnchor(null);
   };
 
-  /**
-   * Clears the simple search when switching to advanced filters
-   */
-  const handleSwitchToAdvancedSearch = () => {
-    setSearchTerm("");
-  };
-
   const toggleAdvancedSearch = () => {
     if (advancedSearchAnchor) {
       setAdvancedSearchAnchor(null);
     } else {
       setAdvancedSearchAnchor(divRef.current);
-      handleSwitchToAdvancedSearch();
     }
   };
 
   const handleAdvancedSearchClose = () => {
     setAdvancedSearchAnchor(null);
+  };
+
+  const resetSimpleSearch = () => {
+    setSearchFieldValue(null);
+    setSearchTerm(null);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(simpleSearchParamName);
+      return prevSearchParams;
+    });
   };
 
   return (
@@ -142,6 +147,7 @@ const Search = ({
                 handleSwitchToSearch={handleSwitchToSearch}
                 loading={loading}
                 filtersConfig={filtersConfig}
+                resetSimpleSearch={resetSimpleSearch}
               />
             </Grid>
             <Grid
@@ -185,8 +191,7 @@ const Search = ({
             setFilters={setFilters}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}
-            setSearchFieldValue={setSearchFieldValue}
-            setSearchTerm={setSearchTerm}
+            resetSimpleSearch={resetSimpleSearch}
             isOr={isOr}
             setIsOr={setIsOr}
           />

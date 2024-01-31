@@ -103,8 +103,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
- * @param {Function} setSearchFieldValue - Used to set the search field value
- * @param {Function} setSearchTerm - Used to set the search term for simple search
+ * @param {Function} resetSimpleSearch - Function to reset the simple search
  * @return {JSX.Element}
  * @constructor
  */
@@ -113,8 +112,7 @@ const Filters = ({
   setFilters,
   handleAdvancedSearchClose,
   filtersConfig,
-  setSearchFieldValue,
-  setSearchTerm,
+  resetSimpleSearch,
   isOr,
   setIsOr,
 }) => {
@@ -264,12 +262,14 @@ const Filters = ({
   };
 
   /**
-   * Clears the filters
+   * Reset search box and advanced filters
    */
-  const handleClearFilters = useCallback(() => {
+  const handleResetFilters = useCallback(() => {
     setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
+
+    resetSimpleSearch();
 
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(advancedSearchFilterParamName);
@@ -286,7 +286,6 @@ const Filters = ({
 
       prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
       prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
-      prevSearchParams.delete(simpleSearchParamName);
       return prevSearchParams;
     });
 
@@ -294,8 +293,8 @@ const Filters = ({
     setFilters(filterParameters);
     handleAdvancedSearchClose();
     // Clear simple search field in UI and state since we are using advanced search
-    setSearchFieldValue("");
-    setSearchTerm("");
+    // setSearchFieldValue("");
+    // setSearchTerm("");
   };
 
   const handleAndOrToggleChange = (e) => {
@@ -583,7 +582,7 @@ const Filters = ({
             fullWidth
             variant="outlined"
             startIcon={<BackspaceOutlinedIcon />}
-            onClick={handleClearFilters}
+            onClick={handleResetFilters}
           >
             Reset
           </Button>

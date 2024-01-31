@@ -106,6 +106,7 @@ const SearchBar = ({
   handleSwitchToSearch,
   loading,
   filtersConfig,
+  resetSimpleSearch,
 }) => {
   const classes = useStyles();
   let [, setSearchParams] = useSearchParams();
@@ -124,7 +125,7 @@ const SearchBar = ({
 
   const handleSearchValueChange = (value) => {
     if (value === "" && searchFieldValue !== "") {
-      handleClearSearchResults();
+      resetSimpleSearch();
     } else {
       setSearchFieldValue(value);
     }
@@ -134,7 +135,7 @@ const SearchBar = ({
    * Handles the submission of our search form
    * @param {Object} e - The event object
    */
-  const handleSearchSubmission = (event) => {
+  const handleSearchSubmission = (event = null) => {
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       return;
@@ -155,18 +156,6 @@ const SearchBar = ({
   };
 
   /**
-   * Clears the search results
-   */
-  const handleClearSearchResults = () => {
-    setSearchTerm("");
-    setSearchFieldValue("");
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(simpleSearchParamName);
-      return prevSearchParams;
-    });
-  };
-
-  /**
    * Handles special keys typed in the search bar
    * @param {string} key - The key name being typed
    */
@@ -176,13 +165,13 @@ const SearchBar = ({
        * On Escape key, clear the search
        */
       case "Escape":
-        handleClearSearchResults();
+        resetSimpleSearch();
         break;
       /**
        * On Enter key, initialize the search
        */
       case "Enter":
-        handleSearchSubmission(null);
+        handleSearchSubmission();
         break;
 
       default:
