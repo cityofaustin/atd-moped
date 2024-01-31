@@ -170,6 +170,13 @@ export const useCsvExport = ({
   });
 
   /**
+   * Open the column download options dialog when export button is clicked
+   */
+  const handleExportButtonClick = () => {
+    setDownloadOptionsDialogOpen(true);
+  };
+
+  /**
    * Closes the download options dialog when user clicks away or on cancel button
    */
   const handleOptionsDialogClose = () => {
@@ -181,13 +188,6 @@ export const useCsvExport = ({
    */
   const handleRadioSelect = (e) => {
     setColumnDownloadOption(e.target.value);
-  };
-
-  /**
-   * Open the column download options dialog when export button is clicked
-   */
-  const handleExportButtonClick = () => {
-    setDownloadOptionsDialogOpen(true);
   };
 
   /**
