@@ -29,7 +29,6 @@ import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
-import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import {
   areAllFiltersComplete,
   checkIsValidInput,
@@ -268,14 +267,13 @@ const Filters = ({
     setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
-
-    resetSimpleSearch();
-
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(advancedSearchFilterParamName);
       prevSearchParams.delete(advancedSearchIsOrParamName);
     });
-  }, [setSearchParams, setFilters, setIsOr]);
+
+    resetSimpleSearch();
+  }, [setSearchParams, setFilters, setIsOr, resetSimpleSearch]);
 
   /**
    * Applies the current local state and updates the parent's state
@@ -292,9 +290,6 @@ const Filters = ({
     setIsOr(isOrToggleValue);
     setFilters(filterParameters);
     handleAdvancedSearchClose();
-    // Clear simple search field in UI and state since we are using advanced search
-    // setSearchFieldValue("");
-    // setSearchTerm("");
   };
 
   const handleAndOrToggleChange = (e) => {
