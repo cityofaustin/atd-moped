@@ -52,12 +52,10 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
-    if (newRecord[field] !== oldRecord[field]) {
+    if (newRecord[field] !== oldRecord[field] && !!entryMap.fields[field]) {
       changes.push(entryMap.fields[field]?.label);
     }
   });
-
-  console.log(changes);
 
   return {
     changeIcon,
