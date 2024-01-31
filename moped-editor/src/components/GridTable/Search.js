@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import { useSearchParams } from "react-router-dom";
 
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
+import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -84,6 +86,8 @@ const Search = ({
   const classes = useStyles();
   const divRef = React.useRef();
 
+  let [, setSearchParams] = useSearchParams();
+
   /**
    * The contents of the search box in SearchBar
    * @type {string} searchFieldValue
@@ -106,6 +110,12 @@ const Search = ({
   const resetSimpleSearch = () => {
     setSearchFieldValue("");
     setSearchTerm("");
+
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.delete(simpleSearchParamName);
+
+      return prevSearchParams;
+    });
   };
 
   return (

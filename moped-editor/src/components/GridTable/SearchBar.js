@@ -147,6 +147,7 @@ const SearchBar = ({
     setSearchTerm(searchFieldValue);
     setSearchParams((prevSearchParams) => {
       prevSearchParams.set(simpleSearchParamName, searchFieldValue);
+
       return prevSearchParams;
     });
   };

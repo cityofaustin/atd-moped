@@ -236,6 +236,7 @@ const Filters = ({
     const jsonParamString = JSON.stringify(filtersNewState);
     setSearchParams((prevSearchParams) => {
       prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+
       return prevSearchParams;
     });
     setFilterParameters(filtersNewState);
@@ -270,6 +271,8 @@ const Filters = ({
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(advancedSearchFilterParamName);
       prevSearchParams.delete(advancedSearchIsOrParamName);
+
+      return prevSearchParams;
     });
 
     resetSimpleSearch();
