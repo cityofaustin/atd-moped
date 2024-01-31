@@ -145,10 +145,10 @@ const ProjectsListViewTable = () => {
   const data = useCurrentData(projectListViewData);
 
   const {
-    handleContinueButtonClick,
-    handleRadioSelect,
-    handleOptionsDialogClose,
     handleExportButtonClick,
+    handleRadioSelect,
+    handleContinueButtonClick,
+    handleOptionsDialogClose,
   } = useCsvExport({
     query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
