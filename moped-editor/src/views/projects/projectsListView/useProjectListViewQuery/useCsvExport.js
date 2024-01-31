@@ -211,9 +211,9 @@ export const useCsvExport = ({
   };
 
   return {
-    handleContinueButtonClick,
-    handleRadioSelect,
-    handleOptionsDialogClose,
     handleExportButtonClick,
+    handleRadioSelect,
+    handleContinueButtonClick,
+    handleOptionsDialogClose,
   };
 };
