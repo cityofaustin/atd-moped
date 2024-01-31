@@ -95,8 +95,6 @@ const Search = ({
    * Clears the filters when switching to simple search
    */
   const handleSwitchToSearch = () => {
-    setFilters([]);
-    setIsOr(false);
     setAdvancedSearchAnchor(null);
   };
 
