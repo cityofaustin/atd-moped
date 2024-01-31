@@ -103,7 +103,6 @@ const SearchBar = ({
   setSearchTerm,
   queryConfig,
   isOr,
-  handleSwitchToSearch,
   loading,
   filtersConfig,
   resetSimpleSearch,
@@ -135,7 +134,7 @@ const SearchBar = ({
    * Handles the submission of our search form
    * @param {Object} e - The event object
    */
-  const handleSearchSubmission = (event = null) => {
+  const handleSearchSubmission = (event) => {
     // Stop if we don't have any value entered in the search field
     if (searchFieldValue.length === 0) {
       return;
@@ -143,9 +142,6 @@ const SearchBar = ({
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
-
-    // Clear the advanced search filters
-    handleSwitchToSearch();
 
     // Update state to trigger search and set simple search param
     setSearchTerm(searchFieldValue);
