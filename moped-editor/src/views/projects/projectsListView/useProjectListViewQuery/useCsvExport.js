@@ -17,7 +17,7 @@ import {
   DialogActions,
 } from "@mui/material";
 
-export const CsvDownloadDialog = ({ downloadingDialogOpen }) => (
+export const CsvDownloadingDialog = ({ downloadingDialogOpen }) => (
   <Dialog open={downloadingDialogOpen} aria-labelledby="form-dialog-title">
     <DialogTitle variant="h4" />
     <DialogContent>

@@ -22,7 +22,7 @@ import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
-  CsvDownloadDialog,
+  CsvDownloadingDialog,
   CsvDownloadOptionsDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
@@ -237,7 +237,7 @@ const ProjectsListViewTable = () => {
           handleContinueButtonClick={handleContinueButtonClick}
           handleRadioSelect={handleRadioSelect}
         />
-        <CsvDownloadDialog downloadingDialogOpen={downloadingDialogOpen} />
+        <CsvDownloadingDialog downloadingDialogOpen={downloadingDialogOpen} />
         <Search
           parentData={data}
           filters={filters}
