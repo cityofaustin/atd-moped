@@ -235,7 +235,7 @@ const ProjectPhaseForm = ({
               name="is_current_phase"
               control={control}
               label="Current phase"
-              onChange={onChangeCurrentPhase}
+              customOnChange={onChangeCurrentPhase}
             />
             <FormHelperText>
               Set this phase as the project's current phase
