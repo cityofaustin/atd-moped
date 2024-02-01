@@ -57,8 +57,6 @@ const ProjectPhaseForm = ({
   const subphases = useSubphases(watch("phase_id"), phases);
 
   const isCurrentPhase = watch("is_current_phase");
-  console.log("isCurrentPhase", isCurrentPhase);
-  console.log("isDirty", isDirty);
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
