@@ -71,7 +71,6 @@ const SubprojectFundingModal = ({
         fund_name: fdu.fundname.toUpperCase(),
       };
       fduRecord.project_id = projectId;
-      fduRecord.added_by = userId;
       // funding status 2 is "Confirmed"
       fduRecord.funding_status_id = 2;
       newFunds.push(fduRecord);
