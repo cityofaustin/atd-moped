@@ -2638,9 +2638,12 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2648,12 +2651,16 @@
           - milestone_order
           - project_id
           - is_deleted
+        comment: No insert permissions on audit fields
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2661,12 +2668,13 @@
           - milestone_order
           - project_id
           - is_deleted
+        comment: No insert permissions on audit fields
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2680,7 +2688,7 @@
       permission:
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2694,7 +2702,7 @@
       permission:
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2709,7 +2717,7 @@
       permission:
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2723,7 +2731,7 @@
       permission:
         columns:
           - completed
-          - date_added
+          - created_at
           - milestone_id
           - description
           - date_actual
@@ -3413,8 +3421,6 @@
   update_permissions:
     - role: moped-admin
       permission:
-        set:
-          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_current_phase
           - is_deleted
@@ -3428,10 +3434,10 @@
           - is_phase_end_confirmed
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
-        set:
-          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_current_phase
           - is_deleted
@@ -3445,6 +3451,8 @@
           - is_phase_end_confirmed
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
