@@ -1,5 +1,6 @@
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { Controller } from "react-hook-form";
 
 /**
  * A react-hook-form wrapper of the MUI Switch component
@@ -12,24 +13,43 @@ import FormControlLabel from "@mui/material/FormControlLabel";
  */
 const RegisteredSwitch = ({
   name,
-  register,
+  // register,
+  control,
   label,
-  onChange,
+  customOnChange,
   ...switchProps
 }) => {
+  // const { value, ...registerProps } = register(name, {
+  //   ...(onChange && { onChange }),
+  // });
+
   return (
-    <FormControlLabel
-      label={label}
-      control={
-        <Switch
-          {...register(name, {
-            ...(onChange && { onChange }),
-          })}
-          color="primary"
-          inputProps={{ "aria-label": "primary checkbox" }}
-          {...switchProps}
+    // <FormControlLabel
+    //   label={label}
+    //   control={
+    // <Switch
+    //   {...registerProps}
+    //   checked={value}
+    //   color="primary"
+    //   inputProps={{ "aria-label": "primary checkbox" }}
+    //   {...switchProps}
+    // />
+    // />
+    <Controller
+      name={name}
+      control={control}
+      render={({ field: { onChange, value } }) => (
+        <FormControlLabel
+          control={
+            <Switch
+              checked={value}
+              onChange={customOnChange ? customOnChange : onChange}
+              {...switchProps}
+            />
+          }
+          label={label}
         />
-      }
+      )}
     />
   );
 };

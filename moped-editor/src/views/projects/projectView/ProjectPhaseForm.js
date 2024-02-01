@@ -41,6 +41,7 @@ const ProjectPhaseForm = ({
   const userSessionData = getSessionDatabaseData();
 
   const defaultValues = useDefaultValues(phase);
+  console.log(defaultValues);
 
   /** initialize react hook form with validation */
   const {
@@ -58,6 +59,7 @@ const ProjectPhaseForm = ({
   const subphases = useSubphases(watch("phase_id"), phases);
 
   const isCurrentPhase = watch("is_current_phase");
+  console.log(isCurrentPhase);
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
@@ -156,9 +158,9 @@ const ProjectPhaseForm = ({
       today.setHours(0, 0, 0, 0);
 
       setValue("phase_start", today);
-      return isCurrentPhase;
+      setValue("is_current_phase", isCurrentPhase);
     } else {
-      return isCurrentPhase;
+      setValue("is_current_phase", isCurrentPhase);
     }
   };
 
@@ -234,7 +236,8 @@ const ProjectPhaseForm = ({
           <FormControl>
             <RegisteredSwitch
               name="is_current_phase"
-              register={register}
+              // register={register}
+              control={control}
               label="Current phase"
               onChange={onChangeCurrentPhase}
             />
