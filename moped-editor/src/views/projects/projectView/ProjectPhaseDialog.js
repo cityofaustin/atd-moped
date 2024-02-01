@@ -10,6 +10,7 @@ const ProjectPhaseDialog = ({
   phase,
   phases,
   currentProjectPhaseIds,
+  currentPhaseIds,
   onSubmitCallback,
 }) => {
   const titleText = phase.project_phase_id ? "Edit phase" : "Add phase";
@@ -34,6 +35,7 @@ const ProjectPhaseDialog = ({
           onSubmitCallback={onSubmitCallback}
           phases={phases}
           currentProjectPhaseIds={currentProjectPhaseIds}
+          currentPhaseIds={currentPhaseIds}
         />
       </DialogContent>
     </Dialog>

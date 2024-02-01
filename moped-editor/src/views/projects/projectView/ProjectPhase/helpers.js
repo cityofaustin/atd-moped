@@ -1,5 +1,7 @@
 import { useMemo } from "react";
+import DOMPurify from "dompurify";
 import * as yup from "yup";
+import { STATUS_UPDATE_TYPE_ID } from "../ProjectNotes";
 
 export const phaseValidationSchema = yup.object().shape({
   phase_id: yup.number().nullable().required("Phase is required"),
@@ -24,6 +26,10 @@ export const phaseValidationSchema = yup.object().shape({
     .nullable(),
   project_phase_id: yup.number().nullable().optional(),
   project_id: yup.number().required(),
+  status_update: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
 });
 
 const DEFAULT_FORM_VALUES = {
@@ -37,6 +43,7 @@ const DEFAULT_FORM_VALUES = {
   phase_description: null,
   is_current_phase: false,
   project_id: null,
+  status_update: null,
 };
 
 /**
@@ -127,6 +134,24 @@ export const useCurrentProjectPhaseIDs = (projectPhases) =>
   );
 
 /**
+ * Hook which returns an array of project_phase_ids of the project's current phase(s).
+ * Although only one phase should ever be current, we handle the possibilty that there
+ * are multiple
+ * @param {Array} projectPhases - array of this project's moped_proj_phases
+ * @return {Array} of project_phase_id's of current project phases
+ */
+export const useCurrentPhaseIds = (projectPhases) =>
+  useMemo(
+    () =>
+      projectPhases
+        ? projectPhases
+            .filter(({ is_current_phase }) => is_current_phase)
+            .map(({ phase_id }) => phase_id)
+        : [],
+    [projectPhases]
+  );
+
+/**
  * Hook which returns an array of `moped_proj_phases.project_phase_id`s which
  * need to have their `is_current` flag cleared.
  * @param {int} thisProjectPhaseId - the `project_phase_id` that is being edited
@@ -151,15 +176,32 @@ export const useCurrentPhaseIdsToClear = (
 };
 
 export const onSubmitPhase = ({
-  data,
+  phaseData,
+  noteData,
   mutate,
   currentPhaseIdsToClear,
+  currentPhaseIds,
   onSubmitCallback,
 }) => {
-  const { project_phase_id, ...formData } = data;
+  const { project_phase_id, ...formData } = phaseData;
+  const { project_id, phase_id } = phaseData;
+  const { is_current_phase } = formData;
+
+  const noteObjects = noteData
+    ? [
+        {
+          project_note: DOMPurify.sanitize(noteData.status_update),
+          project_id,
+          added_by_user_id: noteData.user_id,
+          project_note_type: STATUS_UPDATE_TYPE_ID,
+          phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
+        },
+      ]
+    : [];
 
   const variables = {
     current_phase_ids_to_clear: currentPhaseIdsToClear,
+    noteObjects,
   };
 
   if (!project_phase_id) {

@@ -40,7 +40,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_sponsor: {
     label: "Sponsor",
   },
-  project_partner: {
+  project_partners: {
     label: "Partners",
   },
   updated_at: {
@@ -60,7 +60,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   funding_source_name: {
     label: "Funding",
   },
-  project_note: {
+  project_status_update: {
     label: "Status Update",
   },
   construction_start_date: {

@@ -198,8 +198,16 @@ export default function TheMap({
     )
       return;
 
-    const sourceFeatureId = SOURCES[clickedFeatureSource]._featureIdProp;
-    const databaseTableId = SOURCES[clickedFeatureSource].databaseTableId;
+    const source = SOURCES[clickedFeatureSource];
+    if (!source) {
+      // this can happen if the mapped is zoomed out such that AGOL/CTN feature layers are not visibile
+      // but the underyling draft edit component has captured a click
+      // we can't handle this click right now, so just return
+      // todo: manage layer interactivity based on zoom level + if the feature is drawn?
+      return;
+    }
+    const sourceFeatureId = source._featureIdProp;
+    const databaseTableId = source.databaseTableId;
     const featureUniqueId = clickedFeature.properties[sourceFeatureId];
 
     const featureFromAgolGeojson = findFeatureInAgolGeojsonFeatures(

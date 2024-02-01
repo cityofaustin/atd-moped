@@ -5,6 +5,7 @@ import Alert from "@mui/material/Alert";
 import Button from "@mui/material/Button";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 import CircularProgress from "@mui/material/CircularProgress";
+import Divider from "@mui/material/Divider";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import Grid from "@mui/material/Grid";
@@ -21,20 +22,27 @@ import {
   useSubphases,
   useCurrentPhaseIdsToClear,
 } from "./ProjectPhase/helpers";
+import { getSessionDatabaseData } from "src/auth/user";
 import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
-import { UPDATE_PROJECT_PHASE, ADD_PROJECT_PHASE } from "src/queries/project";
+import {
+  UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
+  ADD_PROJECT_PHASE_AND_STATUS_UPDATE,
+} from "src/queries/project";
+import theme from "src/theme";
 
 const ProjectPhaseForm = ({
   phase,
   phases,
   currentProjectPhaseIds,
+  currentPhaseIds,
   onSubmitCallback,
 }) => {
   const isNewPhase = !phase.project_phase_id;
+  const userSessionData = getSessionDatabaseData();
 
   const defaultValues = useDefaultValues(phase);
 
-  /** initiatlize react hook form with validation */
+  /** initialize react hook form with validation */
   const {
     handleSubmit,
     control,
@@ -58,7 +66,9 @@ const ProjectPhaseForm = ({
   });
 
   const [mutate, mutationState] = useMutation(
-    isNewPhase ? ADD_PROJECT_PHASE : UPDATE_PROJECT_PHASE
+    isNewPhase
+      ? ADD_PROJECT_PHASE_AND_STATUS_UPDATE
+      : UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE
   );
 
   const currentPhaseIdsToClear = useCurrentPhaseIdsToClear(
@@ -68,6 +78,25 @@ const ProjectPhaseForm = ({
   );
 
   const [phase_start, phase_end] = watch(["phase_start", "phase_end"]);
+
+  const onSubmit = (data) => {
+    const { status_update, ...phaseData } = data;
+    let noteData = null;
+
+    if (status_update) {
+      const { user_id } = userSessionData;
+      noteData = { status_update, user_id };
+    }
+
+    onSubmitPhase({
+      phaseData,
+      noteData,
+      mutate,
+      currentPhaseIdsToClear,
+      currentPhaseIds,
+      onSubmitCallback,
+    });
+  };
 
   /**
    * Defaults is_phase_start_confirmed to true if date is today or before
@@ -118,6 +147,20 @@ const ProjectPhaseForm = ({
     }
   }, [phase_end, defaultValues, setValue]);
 
+  /* Defaults phase_start to today if current phase is true and there is no phase_start */
+  const onChangeCurrentPhase = (e) => {
+    const isCurrentPhase = e.target.checked;
+    if (isCurrentPhase && !phase_start) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      setValue("phase_start", today);
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
+    } else {
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
+    }
+  };
+
   if (mutationState.error) {
     console.error(mutationState.error);
     return (
@@ -132,17 +175,7 @@ const ProjectPhaseForm = ({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit((data) =>
-        onSubmitPhase({
-          data,
-          currentPhaseIdsToClear,
-          mutate,
-          onSubmitCallback,
-        })
-      )}
-      autoComplete="off"
-    >
+    <form onSubmit={handleSubmit(onSubmit)} autoComplete="off">
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth error={!!formErrors?.phase_id}>
@@ -194,6 +227,19 @@ const ProjectPhaseForm = ({
             {formErrors?.subphase_id && (
               <FormHelperText>{formErrors.subphase_id.message}</FormHelperText>
             )}
+          </FormControl>
+        </Grid>
+        <Grid item container justifyContent="flex-start">
+          <FormControl>
+            <ControlledSwitch
+              name="is_current_phase"
+              control={control}
+              label="Current phase"
+              customOnChange={onChangeCurrentPhase}
+            />
+            <FormHelperText>
+              Set this phase as the project's current phase
+            </FormHelperText>
           </FormControl>
         </Grid>
         <Grid item xs={8}>
@@ -258,13 +304,28 @@ const ProjectPhaseForm = ({
             )}
           </FormControl>
         </Grid>
-        <Grid item container justifyContent="flex-end">
-          <FormControl>
-            <ControlledSwitch
-              name="is_current_phase"
+        <Grid item xs={12} sx={{ marginY: theme.spacing(2) }}>
+          <Divider />
+        </Grid>
+        <Grid item xs={12}>
+          <FormControl fullWidth error={!!formErrors?.status_update}>
+            <ControlledTextInput
+              fullWidth
+              label="Status update"
+              multiline
+              rows={3}
+              name="status_update"
               control={control}
-              label="Current phase"
+              size="small"
             />
+            <FormHelperText>
+              Optionally add a status update to the project
+            </FormHelperText>
+            {formErrors?.status_update && (
+              <FormHelperText>
+                {formErrors.status_update.message}
+              </FormHelperText>
+            )}
           </FormControl>
         </Grid>
       </Grid>

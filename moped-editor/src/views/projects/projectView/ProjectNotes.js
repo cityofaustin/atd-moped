@@ -90,6 +90,9 @@ const useStyles = makeStyles((theme) => ({
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
 
+export const STATUS_UPDATE_TYPE_ID = 2;
+export const INTERNAL_NOTE_TYPE_ID = 1;
+
 const ProjectNotes = (props) => {
   const isStatusEditModal = props.modal;
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
@@ -101,7 +104,9 @@ const ProjectNotes = (props) => {
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
-  const [newNoteType, setNewNoteType] = useState(isStatusEditModal ? 2 : 1);
+  const [newNoteType, setNewNoteType] = useState(
+    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : INTERNAL_NOTE_TYPE_ID
+  );
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
@@ -109,7 +114,7 @@ const ProjectNotes = (props) => {
   const [noteId, setNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? 2 : 0
+    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : 0
   );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -320,8 +325,12 @@ const ProjectNotes = (props) => {
               control={<span />}
             />
             <NoteTypeButton noteTypeId={0}>All</NoteTypeButton>
-            <NoteTypeButton noteTypeId={1}>Internal Notes</NoteTypeButton>
-            <NoteTypeButton noteTypeId={2}>Status Updates</NoteTypeButton>
+            <NoteTypeButton noteTypeId={INTERNAL_NOTE_TYPE_ID}>
+              Internal Notes
+            </NoteTypeButton>
+            <NoteTypeButton noteTypeId={STATUS_UPDATE_TYPE_ID}>
+              Status Updates
+            </NoteTypeButton>
           </Grid>
         )}
         {/*Now the notes*/}

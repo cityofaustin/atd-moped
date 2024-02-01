@@ -14,7 +14,7 @@ import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
 import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
-import ProjectSummaryKnackDataTrackerSync from "./ProjectSummaryKnackDataTrackerSync";
+import ProjectSummaryDataTrackerSignals from "./ProjectSummaryDataTrackerSignals";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
@@ -279,11 +279,9 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <ProjectSummaryKnackDataTrackerSync
+                <ProjectSummaryDataTrackerSignals
                   classes={classes}
                   project={data?.moped_project?.[0]}
-                  refetch={refetch}
-                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
               <Grid item xs={12}>

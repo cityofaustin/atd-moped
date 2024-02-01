@@ -134,7 +134,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
       type: "string",
     },
-    project_partner: {
+    project_partners: {
       label: "Project partners",
       searchable: true,
       sortable: true,
@@ -208,7 +208,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-    project_note: {
+    project_status_update: {
       type: "string",
       sortable: true,
       defaultHidden: true,
