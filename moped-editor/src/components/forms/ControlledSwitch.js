@@ -4,37 +4,21 @@ import { Controller } from "react-hook-form";
 
 /**
  * A react-hook-form wrapper of the MUI Switch component
- * @param {Function} register - react-hook-form `register` function from useForm - required
+ * @param {object} control - react-hook-form `control` object from useController - required
  * @param {string} name - unique field name which be used in react-hook-form data object
  * @param {string} label - the label to render next to the checkbox
- * @param {Function} onChange - an optional custom onChange handler
+ * @param {Function} customOnChange - an optional custom onChange handler
  * @param {object} switchProps additional optional MUI switch props
  * @return {JSX.Element}
  */
-const RegisteredSwitch = ({
-  name,
-  // register,
+const ControlledSwitch = ({
   control,
+  name,
   label,
   customOnChange,
   ...switchProps
 }) => {
-  // const { value, ...registerProps } = register(name, {
-  //   ...(onChange && { onChange }),
-  // });
-
   return (
-    // <FormControlLabel
-    //   label={label}
-    //   control={
-    // <Switch
-    //   {...registerProps}
-    //   checked={value}
-    //   color="primary"
-    //   inputProps={{ "aria-label": "primary checkbox" }}
-    //   {...switchProps}
-    // />
-    // />
     <Controller
       name={name}
       control={control}
@@ -54,4 +38,4 @@ const RegisteredSwitch = ({
   );
 };
 
-export default RegisteredSwitch;
+export default ControlledSwitch;

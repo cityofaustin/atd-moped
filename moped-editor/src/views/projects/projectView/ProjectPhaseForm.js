@@ -14,7 +14,7 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
-import RegisteredSwitch from "src/components/forms/RegisteredSwitch";
+import ControlledSwitch from "src/components/forms/ControlledSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
@@ -41,7 +41,6 @@ const ProjectPhaseForm = ({
   const userSessionData = getSessionDatabaseData();
 
   const defaultValues = useDefaultValues(phase);
-  console.log(defaultValues);
 
   /** initialize react hook form with validation */
   const {
@@ -50,7 +49,6 @@ const ProjectPhaseForm = ({
     watch,
     setValue,
     formState: { isDirty, errors: formErrors },
-    register,
   } = useForm({
     defaultValues,
     resolver: yupResolver(phaseValidationSchema),
@@ -59,7 +57,8 @@ const ProjectPhaseForm = ({
   const subphases = useSubphases(watch("phase_id"), phases);
 
   const isCurrentPhase = watch("is_current_phase");
-  console.log(isCurrentPhase);
+  console.log("isCurrentPhase", isCurrentPhase);
+  console.log("isDirty", isDirty);
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase_id"),
@@ -158,9 +157,9 @@ const ProjectPhaseForm = ({
       today.setHours(0, 0, 0, 0);
 
       setValue("phase_start", today);
-      setValue("is_current_phase", isCurrentPhase);
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
     } else {
-      setValue("is_current_phase", isCurrentPhase);
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
     }
   };
 
@@ -234,9 +233,8 @@ const ProjectPhaseForm = ({
         </Grid>
         <Grid item container justifyContent="flex-start">
           <FormControl>
-            <RegisteredSwitch
+            <ControlledSwitch
               name="is_current_phase"
-              // register={register}
               control={control}
               label="Current phase"
               onChange={onChangeCurrentPhase}
