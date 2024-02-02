@@ -1,5 +1,5 @@
--- revert to DROP VIEW project_list_view CASCADE;
-
+-- revert to 1705115280578_more_calc_fields
+DROP VIEW project_list_view CASCADE;
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
