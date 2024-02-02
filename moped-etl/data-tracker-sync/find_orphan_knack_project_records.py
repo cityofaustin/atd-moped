@@ -54,22 +54,30 @@ query GetMopedProjects {
 
 
 def get_synced_moped_project_knack_ids():
-    print("get_synced_moped_project_knack_ids")
     data = make_hasura_request(query=GET_MOPED_PROJECTS)
     projects = data["moped_project"]
-
     knack_ids = [project["knack_project_id"] for project in projects]
-    print(f"Knack IDs: {knack_ids}")
-    print(f"Found {len(knack_ids)} Knack IDs")
+
+    logger.debug(f"Found Knack IDs: {knack_ids}")
+    logger.info(f"Found {len(knack_ids)} Knack IDs")
+    return knack_ids
 
 
-def get_knack_record_ids_not_synced_to_moped():
-    # TODO: gather knack record ids no in list collected by get_synced_moped_project_knack_ids
-    print("get_knack_record_ids_not_synced_to_moped")
+def get_knack_project_record_ids():
+    knack_projects = knackpy.api.get(
+        app_id=KNACK_DATA_TRACKER_APP_ID,
+        api_key=KNACK_DATA_TRACKER_API_KEY,
+        obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+    )
+    knack_ids = [project["id"] for project in knack_projects]
+
+    logger.debug(f"Found Knack projects: {knack_ids}")
+    logger.info(f"Found {len(knack_ids)} Knack projects")
 
 
 def main(args):
-    get_synced_moped_project_knack_ids()
+    knack_project_ids_in_moped = get_synced_moped_project_knack_ids()
+    knack_project_ids_knack = get_knack_project_record_ids()
 
     # logger.info(f"Done syncing.")
     # logger.info(f"Created {len(created_knack_records)} new Knack records")
