@@ -1,4 +1,3 @@
--- current_version: 1706897389736_fix_sub_comp_date_dash
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT

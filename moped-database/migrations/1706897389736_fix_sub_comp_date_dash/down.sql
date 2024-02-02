@@ -1,4 +1,5 @@
--- current_version: 1706897389736_fix_sub_comp_date_dash
+-- revert to DROP VIEW project_list_view CASCADE;
+
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -278,7 +279,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         mpc.interim_project_component_id, 
         mpc.completion_date,
         COALESCE(mpc.completion_date, substantial_completion_date) as substantial_completion_date,
-        '2024-01-01T00:00:00-06:00' as substantial_completion_date_estimated,
+        '2024-01-01T00:00:00−06:00' as substantial_completion_date_estimated,
         mpc.srts_id, 
         mpc.location_description as component_location_description, 
         plv.project_name,
