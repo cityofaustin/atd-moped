@@ -70,14 +70,31 @@ def get_knack_project_record_ids():
         obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
     )
     knack_ids = [project["id"] for project in knack_projects]
+    logger.info(knack_projects[0])
 
     logger.debug(f"Found Knack projects: {knack_ids}")
     logger.info(f"Found {len(knack_ids)} Knack projects")
+    return knack_ids
 
 
 def main(args):
     knack_project_ids_in_moped = get_synced_moped_project_knack_ids()
-    knack_project_ids_knack = get_knack_project_record_ids()
+    knack_project_ids_in_knack = get_knack_project_record_ids()
+
+    ids_in_both_tables = list(
+        set(knack_project_ids_in_knack) & set(knack_project_ids_in_moped)
+    )
+    ids_not_in_both_tables = list(
+        set(knack_project_ids_in_knack) - set(knack_project_ids_in_moped)
+    )
+
+    logger.info(f"Found {len(ids_in_both_tables)} records in both tables")
+    # logger.debug(f"IDs in both tables: {ids_in_both_tables}")
+
+    logger.info(
+        f"Found {len(ids_not_in_both_tables)} records in Knack but not in Moped"
+    )
+    # logger.debug(f"IDs in Knack but not in Moped: {ids_not_in_both_tables}")
 
     # logger.info(f"Done syncing.")
     # logger.info(f"Created {len(created_knack_records)} new Knack records")
@@ -93,7 +110,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    log_level = logging.DEBUG
+    log_level = logging.INFO
     logger = get_logger(name="knack-orphan-records", level=log_level)
     logger.info(f"Starting.")
 
