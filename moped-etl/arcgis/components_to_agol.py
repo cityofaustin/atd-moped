@@ -66,6 +66,7 @@ def main():
     # lines and points must be stored in different layers in AGOL
     all_features = {"lines": [], "points": [], "combined": []}
 
+    logger.info("Building Esri feature objects...")
     for component in data:
         # extract geometry and line geometry from component data
         # for line features, the line geometry is redundant/identical to geometry
