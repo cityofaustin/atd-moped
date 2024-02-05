@@ -30,3 +30,14 @@ or, to mount your local copy to a Docker container
 ```shell
 docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  atddocker/atd-moped-etl-arcgis:production python components_to_agol.py
 ```
+
+### Sync evaluation script
+
+On first deployment of this ETL, duplicate records were created in the Knack `projects` table. The `sync_evaluation.py` script:
+
+- Gathers all Knack project record IDs stored in the `moped_project` table rows in the `knack_project_id` column
+- Gather all Knack record IDs of all rows in the Data Tracker `projects` table
+- Evaluates the overlap (synced correctly) and difference (mark for deletion) of these two lists
+- Evaluates the list of differences to make sure there are no connections between Knack records marked for deletion and `work_order_signals` records
+- Deletes the records with no connections and logs records with connections that were not deleted
+  
