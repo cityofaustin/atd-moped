@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import argparse
 import logging
-from datetime import datetime, timezone
 
 import knackpy
 
@@ -128,7 +126,7 @@ def main():
 
 if __name__ == "__main__":
     log_level = logging.INFO
-    logger = get_logger(name="knack-orphan-records", level=log_level)
+    logger = get_logger(name="sync_evaluation", level=log_level)
     logger.info(f"Starting.")
 
     main()
