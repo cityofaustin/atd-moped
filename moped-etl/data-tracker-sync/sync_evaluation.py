@@ -70,10 +70,17 @@ def check_for_work_order_signals_connection(knack_id):
 
 
 def delete_knack_project_record(knack_id):
-    logger.info(f"Deleted Knack project record with ID: {knack_id}")
+    logger.info(f"Deleting Knack project record with ID: {knack_id}")
+    knackpy.api.record(
+        app_id=KNACK_DATA_TRACKER_APP_ID,
+        api_key=KNACK_DATA_TRACKER_API_KEY,
+        obj=KNACK_DATA_TRACKER_PROJECT_OBJECT,
+        method="delete",
+        data={"id": knack_id},
+    )
 
 
-def main(args):
+def main():
     logger.info(f"Getting all Knack project IDs from Moped projects...")
     knack_project_ids_in_moped = get_synced_moped_project_knack_ids()
     logger.info(f"Getting all Knack project IDs from Knack...")
@@ -99,34 +106,29 @@ def main(args):
     deletes_to_skip = []
     count = 1
     for id in ids_not_in_both_tables:
-        logger.info(f"{count}/{len(ids_not_in_both_tables)}")
+        logger.info(f"{count}/{len(ids_not_in_both_tables)}: Knack ID {id}")
 
         work_order_signals = check_for_work_order_signals_connection(id)
-        logger.debug(
-            f"Found work order signals connected to project ID {id}: {work_order_signals}"
-        )
         count += 1
 
         if len(work_order_signals) > 0:
+            logger.info(
+                f"Found work order signals connected to project ID {id}: {work_order_signals}"
+            )
             deletes_to_skip.append(id)
+        else:
+            logger.info(f"No work order signals connection found deleting...")
+            delete_knack_project_record(id)
 
-    logger.info(f"Found {len(deletes_to_skip)} records to skip deleting")
-    logger.info(f"Records to skip deleting: {deletes_to_skip}")
-
-    # TODO: Do the delete part
-
+    logger.info(
+        f"Record IDs of {len(deletes_to_skip)} deletes skipped: {deletes_to_skip}"
+    )
     logger.info(f"Done.")
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument("-t", "--test", action="store_true")
-
-    args = parser.parse_args()
-
     log_level = logging.INFO
     logger = get_logger(name="knack-orphan-records", level=log_level)
     logger.info(f"Starting.")
 
-    main(args)
+    main()
