@@ -1,6 +1,6 @@
 -- temporarily disable event triggers
-
 SET session_replication_role = replica;
+
 UPDATE
     moped_proj_components
 SET
