@@ -134,14 +134,16 @@ const EditAttributesModal = ({
         subphase: makeSubphaseFormFieldValue(clickedComponent.moped_subphase),
         completionDate: clickedComponent.completion_date,
         srtsId:
-          clickedComponent.srts_id?.length > 0 ? clickedComponent.srts_id : "",
+          clickedComponent.srts_id?.length > 0
+            ? clickedComponent.srts_id
+            : null,
         tags: makeTagFormFieldValues(
           clickedComponent.moped_proj_component_tags
         ),
         locationDescription:
           clickedComponent.location_description?.length > 0
             ? clickedComponent.location_description
-            : "",
+            : null,
         councilDistrict: !!clickedComponent.council_districts[0]
           ? clickedComponent.council_districts.join(", ")
           : "-",
