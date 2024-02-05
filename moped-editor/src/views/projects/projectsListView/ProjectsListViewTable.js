@@ -5,14 +5,20 @@ import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { DataGrid } from "@mui/x-data-grid";
-import {
-  useTableComponents,
-  useColumns,
-  useTableOptions,
-  useHiddenColumnsSettings,
-} from "./helpers.js";
+// import {
+//   useTableComponents,
+//   useColumns,
+//   useTableOptions,
+//   useHiddenColumnsSettings,
+// } from "./helpers.js";
+// import MaterialTable from "@material-table/core";
+import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
+import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
-import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import {
+  PROJECT_LIST_VIEW_QUERY_CONFIG,
+  DEFAULT_HIDDEN_COLS,
+} from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
 import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
 import { usePagination } from "./useProjectListViewQuery/usePagination";
@@ -86,7 +92,10 @@ const ProjectsListViewTable = () => {
   const { filters, setFilters, advancedSearchWhereString, isOr, setIsOr } =
     useAdvancedSearch();
 
-  const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings();
+  const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings({
+    defaultHiddenColumnSettings: DEFAULT_HIDDEN_COLS,
+    storageKey: "mopedColumnConfig",
+  });
 
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 

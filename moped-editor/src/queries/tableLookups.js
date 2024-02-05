@@ -5,6 +5,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
     moped_phases(order_by: { phase_order: asc }) {
       phase_id
       phase_name
+      phase_name_simple
       phase_description
       phase_order
       moped_subphases {

@@ -15,6 +15,7 @@ import ProjectPhaseDateConfirmationPopover from "./ProjectPhaseDateConfirmationP
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseIDs,
+  useCurrentPhaseIds,
   usePhaseNameLookup,
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
@@ -181,6 +182,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   const currentProjectPhaseIds = useCurrentProjectPhaseIDs(
     data?.moped_proj_phases
   );
+  const currentPhaseIds = useCurrentPhaseIds(data?.moped_proj_phases);
 
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
@@ -220,6 +222,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
           onSubmitCallback={onSubmitCallback}
           phases={data?.moped_phases}
           currentProjectPhaseIds={currentProjectPhaseIds}
+          currentPhaseIds={currentPhaseIds}
           projectId={projectId}
         />
       )}

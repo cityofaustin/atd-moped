@@ -1,6 +1,4 @@
--- latest version 1704744986000_substantial_completion_date
-DROP VIEW project_list_view CASCADE;
-
+-- latest version 1706897389736_fix_sub_comp_date_dash
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -65,6 +63,7 @@ AS WITH project_person_list_lookup AS (
     mp.project_name,
     mp.project_description,
     mp.ecapris_subproject_id,
+    mp.project_website,
     mp.date_added,
     mp.is_deleted,
     mp.updated_at,
@@ -78,19 +77,29 @@ AS WITH project_person_list_lookup AS (
     mp.interim_project_id,
     mp.parent_project_id,
     mp.knack_project_id,
-    proj_notes.project_note,
-    proj_notes.date_created as project_note_date_created,
+    'https://mobility.austin.gov/moped/projects/' || mp.project_id :: text as project_url, 
+    'https://mobility.austin.gov/moped/projects/' || mp.parent_project_id :: text as parent_project_url, 
+    proj_status_update.project_note as project_status_update,
+    proj_status_update.date_created as project_status_update_date_created,
     work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
+    'placeholder text' as project_development_status,
+    '2024-01-01T00:00:00-06:00' as project_development_status_date,
+    9999 as project_development_status_date_calendar_year,
+    'placeholder text' as project_development_status_date_calendar_year_month,
+    'placeholder text' as project_development_status_date_calendar_year_month_numeric,
+    'placeholder text' as project_development_status_date_calendar_year_quarter,
+    999 as project_development_status_date_fiscal_year,
+    'placeholder text' as project_development_status_date_fiscal_year_quarter,
     (SELECT project_name
       FROM moped_project
       WHERE project_id = mp.parent_project_id
     ) as parent_project_name,
     cpl.children_project_ids,
-    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partner,
+    string_agg(DISTINCT me2.entity_name, ', '::text) AS project_partners,
     (SELECT JSON_AGG(json_build_object('signal_id', feature_signals.signal_id, 'knack_id', feature_signals.knack_id, 'location_name', feature_signals.location_name, 'signal_type', feature_signals.signal_type, 'id', feature_signals.id))
         FROM moped_proj_components components   
         LEFT JOIN feature_signals
@@ -207,7 +216,7 @@ AS WITH project_person_list_lookup AS (
         WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
         ORDER BY mpn.date_created DESC
         LIMIT 1
-      ) as proj_notes on true
+      ) as proj_status_update on true
   WHERE
     mp.is_deleted = false
   GROUP BY
@@ -234,8 +243,8 @@ AS WITH project_person_list_lookup AS (
     added_by_user.last_name,
     mpps.name,
     cpl.children_project_ids,
-    proj_notes.project_note,
-    proj_notes.date_created,
+    proj_status_update.project_note,
+    proj_status_update.date_created,
     work_activities.workgroup_contractors,
     work_activities.contract_numbers,
     work_activities.task_order_names,

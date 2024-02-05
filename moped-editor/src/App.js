@@ -84,7 +84,7 @@ const App = () => {
           <ThemeProvider theme={theme}>
             <ErrorBoundary FallbackComponent={FallbackComponent}>
               <GlobalStyles />
-              <ActivityMetrics>
+              <ActivityMetrics eventName="app_load">
                 <ProjectListViewQueryContext.Provider
                   value={{ listViewQuery, setListViewQuery }}
                 >
