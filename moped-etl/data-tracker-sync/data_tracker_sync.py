@@ -194,7 +194,7 @@ def main(args):
 
         # Update Moped project with Knack record ID of created record
         logger.info(
-            f"Updating Knack ID {knack_record_id} from Moped project {moped_project_id}"
+            f"Updating Moped project {moped_project_id} with Knack ID {knack_record_id}"
         )
         update_moped_project_knack_id(moped_project_id, knack_record_id)
 
