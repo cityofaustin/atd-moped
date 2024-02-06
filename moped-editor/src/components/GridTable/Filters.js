@@ -15,6 +15,7 @@ import {
   Icon,
   IconButton,
   Grow,
+  Typography,
 } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
@@ -227,23 +228,33 @@ const Filters = ({
    * @param {string} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteFilterButtonClick = (filterIndex) => {
-    // Clone the state
+    // Clone the state, delete the filter index of the button clicked
     const filtersNewState = [...filterParameters];
-
-    // Delete the key (if it's there)
     filtersNewState.splice(filterIndex, 1);
-    // Finally, reset the state
-    const jsonParamString = JSON.stringify(filtersNewState);
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
 
-      return prevSearchParams;
-    });
-    setFilterParameters(filtersNewState);
+    const remainingFiltersCount = filtersNewState.length;
 
-    /* Reset isOr to false (all/and) if there is only one filter left */
-    if (Object.keys(filtersNewState).length === 1) {
+    if (remainingFiltersCount === 0) {
+      setFilterParameters([]);
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
+    } else if (remainingFiltersCount === 1) {
+      /* Reset isOr to false (all/and) if there is only one filter left */
+      setFilterParameters(filtersNewState);
       setIsOrToggleValue(false);
+    } else {
+      // Finally, reset the state
+      setFilterParameters(filtersNewState);
+      const jsonParamString = JSON.stringify(filtersNewState);
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+
+        return prevSearchParams;
+      });
     }
   };
 
@@ -353,7 +364,15 @@ const Filters = ({
           </IconButton>
         </Grid>
       </Grid>
-
+      {filterParameters.length === 0 ? (
+        <Grow in={true}>
+          <Grid container className={classes.filtersContainer}>
+            <Grid item xs={12} md={4} className={classes.gridItemPadding}>
+              <Typography>No filters applied</Typography>
+            </Grid>
+          </Grid>
+        </Grow>
+      ) : null}
       {filterParameters.map((filter, filterIndex) => {
         const { field: fieldName, operator, value } = filter;
 
@@ -522,39 +541,31 @@ const Filters = ({
                     ))}
                 </FormControl>
               </Grid>
-              {areMoreThanOneFilters ? (
-                <>
-                  <Hidden mdDown>
-                    <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
-                      <IconButton
-                        className={classes.deleteButton}
-                        onClick={() =>
-                          handleDeleteFilterButtonClick(filterIndex)
-                        }
-                        size="large"
-                      >
-                        <Icon className={classes.deleteIcon}>
-                          delete_outline
-                        </Icon>
-                      </IconButton>
-                    </Grid>
-                  </Hidden>
-                  <Hidden mdUp>
-                    <Grid item xs={12}>
-                      <Button
-                        fullWidth
-                        className={classes.deleteButton}
-                        variant="outlined"
-                        onClick={() =>
-                          handleDeleteFilterButtonClick(filterIndex)
-                        }
-                      >
-                        <Icon>delete_outline</Icon>
-                      </Button>
-                    </Grid>
-                  </Hidden>
-                </>
-              ) : null}
+              <>
+                <Hidden mdDown>
+                  <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
+                    <IconButton
+                      className={classes.deleteButton}
+                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                      size="large"
+                    >
+                      <Icon className={classes.deleteIcon}>delete_outline</Icon>
+                    </IconButton>
+                  </Grid>
+                </Hidden>
+                <Hidden mdUp>
+                  <Grid item xs={12}>
+                    <Button
+                      fullWidth
+                      className={classes.deleteButton}
+                      variant="outlined"
+                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                    >
+                      <Icon>delete_outline</Icon>
+                    </Button>
+                  </Grid>
+                </Hidden>
+              </>
             </Grid>
           </Grow>
         );
@@ -599,7 +610,7 @@ const Filters = ({
             startIcon={<Icon>search</Icon>}
             onClick={handleApplyButtonClick}
             disabled={
-              handleApplyValidation(filterParameters, filtersConfig) != null
+              handleApplyValidation(filterParameters, filtersConfig) !== null
             }
           >
             Search

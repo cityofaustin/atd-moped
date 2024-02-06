@@ -96,7 +96,7 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
 
   if (filterParameters) {
     if (filterParameters.length === 0) {
-      feedback.push("• No filters have been added.");
+      // feedback.push("• No filters have been added.");
     } else {
       filterParameters.forEach((filter) => {
         const { field: fieldName, value, operator } = filter;
