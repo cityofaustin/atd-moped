@@ -292,8 +292,8 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    /* If we have advanced filters, set query state values and update search params */
     if (filterParameters.length > 0) {
+      /* If we have advanced filters, set query state values and update search params */
       setSearchParams((prevSearchParams) => {
         const jsonParamString = JSON.stringify(filterParameters);
 
@@ -304,6 +304,10 @@ const Filters = ({
 
       setIsOr(isOrToggleValue);
       setFilters(filterParameters);
+    } else {
+      /* If we have no advanced filters, reset query state */
+      setFilters([]);
+      setIsOr(false);
     }
 
     handleAdvancedSearchClose();
