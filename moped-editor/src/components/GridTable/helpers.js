@@ -95,34 +95,30 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
   let feedback = [];
 
   if (filterParameters) {
-    if (filterParameters.length === 0) {
-      // feedback.push("• No filters have been added.");
-    } else {
-      filterParameters.forEach((filter) => {
-        const { field: fieldName, value, operator } = filter;
-        const fieldConfig = filtersConfig.fields.find(
-          (field) => field.name === fieldName
-        );
-        const type = fieldConfig?.type;
+    filterParameters.forEach((filter) => {
+      const { field: fieldName, value, operator } = filter;
+      const fieldConfig = filtersConfig.fields.find(
+        (field) => field.name === fieldName
+      );
+      const type = fieldConfig?.type;
 
-        if (fieldName === null) {
-          feedback.push("• One or more fields have not been selected.");
-        }
+      if (fieldName === null) {
+        feedback.push("• One or more fields have not been selected.");
+      }
 
-        if (operator === null) {
-          feedback.push("• One or more operators have not been selected.");
-        }
+      if (operator === null) {
+        feedback.push("• One or more operators have not been selected.");
+      }
 
-        if (value === null || value.trim() === "") {
-          if (operator && !isFilterNullType(operator)) {
-            feedback.push("• One or more missing values.");
-          }
+      if (value === null || value.trim() === "") {
+        if (operator && !isFilterNullType(operator)) {
+          feedback.push("• One or more missing values.");
         }
-        if (!checkIsValidInput(filter, type)) {
-          feedback.push("• One or more invalid inputs.");
-        }
-      });
-    }
+      }
+      if (!checkIsValidInput(filter, type)) {
+        feedback.push("• One or more invalid inputs.");
+      }
+    });
   }
   return feedback.length > 0 ? feedback : null;
 };

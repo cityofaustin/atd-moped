@@ -228,14 +228,15 @@ const Filters = ({
    * @param {string} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteFilterButtonClick = (filterIndex) => {
-    // Clone the state, delete the filter index of the button clicked
+    /* Clone the state, delete the filter index of the button clicked, and update filter state */
     const filtersNewState = [...filterParameters];
     filtersNewState.splice(filterIndex, 1);
+    setFilterParameters(filtersNewState);
 
     const remainingFiltersCount = filtersNewState.length;
 
     if (remainingFiltersCount === 0) {
-      setFilterParameters([]);
+      /* Clear search params since we have no advanced filters */
       setSearchParams((prevSearchParams) => {
         prevSearchParams.delete(advancedSearchFilterParamName);
         prevSearchParams.delete(advancedSearchIsOrParamName);
@@ -244,11 +245,9 @@ const Filters = ({
       });
     } else if (remainingFiltersCount === 1) {
       /* Reset isOr to false (all/and) if there is only one filter left */
-      setFilterParameters(filtersNewState);
       setIsOrToggleValue(false);
     } else {
-      // Finally, reset the state
-      setFilterParameters(filtersNewState);
+      /* Remove the details of the removed filter from search params */
       const jsonParamString = JSON.stringify(filtersNewState);
       setSearchParams((prevSearchParams) => {
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
@@ -293,16 +292,20 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    setSearchParams((prevSearchParams) => {
-      const jsonParamString = JSON.stringify(filterParameters);
+    /* If we have advanced filters, set query state values and update search params */
+    if (filterParameters.length > 0) {
+      setSearchParams((prevSearchParams) => {
+        const jsonParamString = JSON.stringify(filterParameters);
 
-      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-      prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
-      return prevSearchParams;
-    });
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+        prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
+        return prevSearchParams;
+      });
 
-    setIsOr(isOrToggleValue);
-    setFilters(filterParameters);
+      setIsOr(isOrToggleValue);
+      setFilters(filterParameters);
+    }
+
     handleAdvancedSearchClose();
   };
 
@@ -365,13 +368,11 @@ const Filters = ({
         </Grid>
       </Grid>
       {filterParameters.length === 0 ? (
-        <Grow in={true}>
-          <Grid container className={classes.filtersContainer}>
-            <Grid item xs={12} md={4} className={classes.gridItemPadding}>
-              <Typography>No filters applied</Typography>
-            </Grid>
+        <Grid container className={classes.filtersContainer}>
+          <Grid item xs={12} md={4} className={classes.gridItemPadding}>
+            <Typography>No filters applied</Typography>
           </Grid>
-        </Grow>
+        </Grid>
       ) : null}
       {filterParameters.map((filter, filterIndex) => {
         const { field: fieldName, operator, value } = filter;
