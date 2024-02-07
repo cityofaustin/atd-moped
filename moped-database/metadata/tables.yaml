@@ -2773,22 +2773,20 @@
           action: transform
           template: |-
             {
-                            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
-                            "variables": {
-                                "object": {
-                                    "record_id": {{ $body.event.data.new.project_milestone_id }},
-                                    "record_type":  {{ $body.table.name }},
-                                    "activity_id": {{ $body.id }},
-                                    "record_project_id": {{ $body.event.data.new.project_id }},
-                                    "record_data": {"event": {{ $body.event }}},
-                                    "description": [{"newSchema": "true"}],
-                                    "operation_type": {{ $body.event.op }},
-                                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                                },
-                                "updated_at": {{$body.created_at}},
-                                "project_id": {{$body.event.data.new.project_id}}
-                            }
-                        }
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.project_milestone_id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_project_id": {{ $body.event.data.new.project_id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                },
+              }
+            }
         method: POST
         query_params: {}
         template_engine: Kriti

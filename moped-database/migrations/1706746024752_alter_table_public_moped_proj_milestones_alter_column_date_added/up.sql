@@ -1,7 +1,17 @@
-alter table "public"."moped_proj_milestones" rename column "date_added" to "created_at";
-alter table "public"."moped_proj_milestones" add column "created_by_user_id" integer
- null;
-alter table "public"."moped_proj_milestones" add column "updated_at" timestamptz
- null;
-alter table "public"."moped_proj_milestones" add column "updated_by_user_id" integer
- null;
+ALTER TABLE "public"."moped_proj_milestones" RENAME COLUMN "date_added" TO "created_at";
+ALTER TABLE "public"."moped_proj_milestones" ADD column "created_by_user_id" INTEGER
+ NULL;
+ALTER TABLE "public"."moped_proj_milestones" ADD column "updated_at" TIMESTAMPTZ
+ NULL;
+ALTER TABLE "public"."moped_proj_milestones" ADD column "updated_by_user_id" INTEGER
+ NULL;
+
+COMMENT ON COLUMN moped_proj_milestones.updated_at IS 'Timestamp when the record was last updated';
+COMMENT ON COLUMN moped_proj_milestones.updated_by_user_id IS 'ID of the user who last updated the record';
+
+CREATE TRIGGER update_moped_proj_milestones_and_project_audit_fields
+BEFORE INSERT OR UPDATE ON moped_proj_milestones
+FOR EACH ROW
+EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+
+COMMENT ON TRIGGER update_moped_proj_milestones_and_project_audit_fields ON moped_proj_funding IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_milestones table.';
