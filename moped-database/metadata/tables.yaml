@@ -2722,6 +2722,8 @@
   update_permissions:
     - role: moped-admin
       permission:
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
           - milestone_id
@@ -2736,6 +2738,8 @@
         comment: No update permissions on audit fields
     - role: moped-editor
       permission:
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
           - milestone_id
