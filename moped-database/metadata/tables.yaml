@@ -3432,6 +3432,8 @@
   update_permissions:
     - role: moped-admin
       permission:
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_current_phase
           - is_deleted
@@ -3445,8 +3447,6 @@
           - is_phase_end_confirmed
         filter: {}
         check: {}
-        set:
-          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -3462,8 +3462,6 @@
           - is_phase_end_confirmed
         filter: {}
         check: {}
-        set:
-          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_phases
       definition:
