@@ -12,7 +12,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         GROUP BY
             project_component_id
     ),
-council_districts AS (
+
+    council_districts AS (
         -- group council districts by project component id
         SELECT
             component_id AS project_component_id,
@@ -28,7 +29,8 @@ council_districts AS (
         GROUP BY
             component_id
     ),
-comp_geography AS (
+
+    comp_geography AS (
         -- group feature properties by project component ID
         SELECT
             component_id AS project_component_id,
@@ -117,7 +119,8 @@ comp_geography AS (
         GROUP BY
             component_id
     ),
-subcomponents AS (
+
+    subcomponents AS (
         -- group subcomponents by project component id
         SELECT
             project_component_id,
@@ -129,7 +132,8 @@ subcomponents AS (
         GROUP BY
             project_component_id
     ),
-component_tags AS (
+
+    component_tags AS (
         -- group project component tags by project component id
         SELECT
             project_component_id,
@@ -141,6 +145,7 @@ component_tags AS (
         GROUP BY
             project_component_id
     )
+
     SELECT
         mpc.project_id,
         comp_geography.project_component_id,
@@ -151,7 +156,7 @@ component_tags AS (
         comp_geography.signal_ids,
         council_districts.council_districts,
         'placeholder text' AS council_districts_searchable,
-        NOT coalesce (council_districts IS NULL OR council_districts = '', FALSE) AS is_within_city_limits,
+        NOT coalesce(council_districts IS NULL OR council_districts = '', FALSE) AS is_within_city_limits,
         comp_geography.length_feet_total,
         round((comp_geography.length_feet_total / 5280::numeric), 2) AS length_miles_total,
         mc.component_name,
@@ -546,7 +551,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS (
         GROUP BY
             project_component_id
     ),
-council_districts AS (
+
+    council_districts AS (
         -- group council districts by project component id
         SELECT
             component_id AS project_component_id,
@@ -562,7 +568,8 @@ council_districts AS (
         GROUP BY
             component_id
     ),
-comp_geography AS (
+
+    comp_geography AS (
         -- group feature properties by project component ID
         SELECT
             component_id AS project_component_id,
@@ -651,7 +658,8 @@ comp_geography AS (
         GROUP BY
             component_id
     ),
-subcomponents AS (
+
+    subcomponents AS (
         -- group subcomponents by project component id
         SELECT
             project_component_id,
@@ -663,7 +671,8 @@ subcomponents AS (
         GROUP BY
             project_component_id
     ),
-component_tags AS (
+
+    component_tags AS (
         -- group project component tags by project component id
         SELECT
             project_component_id,
@@ -675,6 +684,7 @@ component_tags AS (
         GROUP BY
             project_component_id
     )
+
     SELECT
         mpc.project_id,
         comp_geography.project_component_id,
@@ -685,7 +695,7 @@ component_tags AS (
         comp_geography.signal_ids,
         council_districts.council_districts,
         'placeholder text' AS council_districts_searchable,
-        NOT coalesce (council_districts IS NULL OR council_districts = '', FALSE) AS is_within_city_limits,
+        NOT coalesce(council_districts IS NULL OR council_districts = '', FALSE) AS is_within_city_limits,
         comp_geography.length_feet_total,
         round((comp_geography.length_feet_total / 5280::numeric), 2) AS length_miles_total,
         mc.component_name,
