@@ -48,7 +48,9 @@ def find_unsynced_moped_projects(is_test=False):
         data = make_hasura_request(query=GET_UNSYNCED_PROJECTS)
         unsynced_projects = data["moped_project"]
 
-    logger.info(f"Found {len(unsynced_projects)} unsynced projects")
+    logger.info(
+        f"Found {len(unsynced_projects)} unsynced projects to create in Data Tracker"
+    )
     logger.debug(f"Found unsynced projects: {unsynced_projects}")
     return unsynced_projects
 
@@ -138,7 +140,9 @@ def find_synced_moped_projects(last_run_date, is_test=False):
         )
         synced_projects = data["moped_project"]
 
-    logger.info(f"Found {len(synced_projects)} synced projects")
+    logger.info(
+        f"Found {len(synced_projects)} synced projects to update in Data Tracker"
+    )
     logger.debug(f"Found synced projects: {synced_projects}")
     return synced_projects
 
@@ -179,6 +183,7 @@ def main(args):
     unsynced_moped_projects = find_unsynced_moped_projects(is_test=args.test)
 
     # Create a Knack project for each unsynced Moped project
+    logger.info(f"Creating Knack records...")
     created_knack_records = []
     for project in unsynced_moped_projects:
         moped_project_id = project["project_id"]
@@ -204,6 +209,7 @@ def main(args):
     )
 
     # Update synced Moped projects in Data Tracker and skip those just created
+    logger.info(f"Updating...")
     updated_knack_records = []
     updates_to_skip = [record["moped_project_id"] for record in created_knack_records]
 
