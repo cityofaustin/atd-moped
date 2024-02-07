@@ -2643,7 +2643,6 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
-          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2660,7 +2659,6 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - completed
-          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2675,49 +2673,57 @@
         columns:
           - completed
           - created_at
-          - milestone_id
-          - description
+          - created_by_user_id
           - date_actual
           - date_estimate
+          - description
+          - is_deleted
+          - milestone_id
           - milestone_order
           - project_id
           - project_milestone_id
-          - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - completed
           - created_at
-          - milestone_id
-          - description
+          - created_by_user_id
           - date_actual
           - date_estimate
+          - description
+          - is_deleted
+          - milestone_id
           - milestone_order
           - project_id
           - project_milestone_id
-          - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - completed
           - created_at
-          - milestone_id
-          - description
+          - created_by_user_id
           - date_actual
           - date_estimate
+          - description
+          - is_deleted
+          - milestone_id
           - milestone_order
           - project_id
           - project_milestone_id
-          - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
       permission:
         columns:
           - completed
-          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2727,11 +2733,11 @@
           - is_deleted
         filter: {}
         check: {}
+        comment: No update permissions on audit fields
     - role: moped-editor
       permission:
         columns:
           - completed
-          - created_at
           - milestone_id
           - description
           - date_actual
@@ -2741,6 +2747,7 @@
           - is_deleted
         filter: {}
         check: {}
+        comment: No update permissions on audit fields
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
