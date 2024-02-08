@@ -146,6 +146,13 @@ export const useColumns = ({ hiddenColumns }) => {
   const location = useLocation();
   const queryString = location.search;
 
+  const COLUMN_WIDTHS = {
+    small: 75,
+    medium: 200,
+    large: 250,
+    xlarge: 350,
+  };
+
   const columnsToReturnInQuery = useMemo(() => {
     const columnsShownInUI = Object.keys(hiddenColumns)
       .filter((key) => hiddenColumns[key] === false)
@@ -161,17 +168,22 @@ export const useColumns = ({ hiddenColumns }) => {
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
 
+
   const columns = useMemo(
     () => [
       {
-        title: "ID",
+        headerName: "ID",
         field: "project_id",
         hidden: hiddenColumns["project_id"],
+        width: COLUMN_WIDTHS.small,
       },
       {
-        title: "Name",
+        headerName: "Name",
         field: "project_name",
+        flex: 2,
+        minWidth: COLUMN_WIDTHS.xlarge,
         hidden: hiddenColumns["project_name"],
+        // todo: look up how the render prop should be handled
         render: (entry) => (
           <Link
             component={RouterLink}
@@ -182,59 +194,68 @@ export const useColumns = ({ hiddenColumns }) => {
             {entry.project_name}
           </Link>
         ),
-        cellStyle: {
-          position: "sticky",
-          left: 0,
-          backgroundColor: "white",
-          minWidth: "20rem",
-          zIndex: 1,
+        // cellStyle: {
+        //   position: "sticky",
+        //   left: 0,
+        //   backgroundColor: "white",
+        //   minWidth: "20rem",
+        //   zIndex: 1,
+        // },
+      },
+      {
+        headerName: "Status",
+        field: "current_phase_key",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
+        hidden: hiddenColumns["current_phase"],
+        renderCell: ({ row }) => {
+          return (
+            <ProjectStatusBadge
+              phaseName={row.current_phase}
+              phaseKey={row.current_phase_key}
+              condensed
+            />
+          );
         },
       },
       {
-        title: "Status",
-        field: "current_phase",
-        hidden: hiddenColumns["current_phase"],
-        render: (entry) => (
-          <ProjectStatusBadge
-            phaseName={entry.current_phase}
-            phaseKey={entry.current_phase_key}
-            condensed
-          />
-        ),
-      },
-      {
-        title: "Team",
+        headerName: "Team",
         field: "project_team_members",
-        hidden: hiddenColumns["project_team_members"],
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
+        // hidden: hiddenColumns["project_team_members"],
+        // cellStyle: { whiteSpace: "noWrap" },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
+        renderCell: (entry) =>
           filterProjectTeamMembers(
             entry.project_team_members,
             "projectsListView"
           ),
       },
       {
-        title: "Lead",
+        headerName: "Lead",
         field: "project_lead",
-        hidden: hiddenColumns["project_lead"],
+        // hidden: hiddenColumns["project_lead"],
         emptyValue: "-",
-        editable: "never",
-        cellStyle: { whiteSpace: "noWrap" },
+        // cellStyle: { whiteSpace: "noWrap" },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Sponsor",
+        headerName: "Sponsor",
         field: "project_sponsor",
-        hidden: hiddenColumns["project_sponsor"],
-        emptyValue: "-",
-        editable: "never",
-        cellStyle: { whiteSpace: "noWrap" },
+        // hidden: hiddenColumns["project_sponsor"],
+        // emptyValue: "-",
+        // editable: "never",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
+        // cellStyle: { whiteSpace: "noWrap" },
       },
       {
-        title: "Partners",
+        headerName: "Partners",
         field: "project_partners",
         hidden: hiddenColumns["project_partners"],
-        emptyValue: "-",
-        cellStyle: { whiteSpace: "noWrap" },
+        // emptyValue: "-",
+        // cellStyle: { whiteSpace: "noWrap" },
         render: (entry) => {
           return entry.project_partners.split(",").map((partner) => (
             <span key={partner} style={{ display: "block" }}>
@@ -244,9 +265,11 @@ export const useColumns = ({ hiddenColumns }) => {
         },
       },
       {
-        title: "eCAPRIS ID",
+        headerName: "eCapris ID",
         field: "ecapris_subproject_id",
-        hidden: hiddenColumns["ecapris_subproject_id"],
+        // hidden: hiddenColumns["ecapris_subproject_id"],
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
         render: (entry) => (
           <ExternalLink
             text={entry.ecapris_subproject_id}
@@ -255,13 +278,19 @@ export const useColumns = ({ hiddenColumns }) => {
         ),
       },
       {
-        title: "Modified",
+        headerName: "Updated", // originally called modifired but in johns branch it said updated
         field: "updated_at",
         hidden: hiddenColumns["updated_at"],
-        render: (entry) => formatTimeStampTZType(entry.updated_at),
+        // render: (entry) => formatTimeStampTZType(entry.updated_at),
+        // valueGetter: ({ row }) =>
+        // row.updated_at
+        //   ? new Date(row.updated_at).toLocaleDateString()
+        //   : "",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Signal IDs",
+        headerName: "Signal IDs",
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
         sorting: COLUMN_CONFIG["project_feature"].sortable,
@@ -275,9 +304,11 @@ export const useColumns = ({ hiddenColumns }) => {
             return <RenderSignalLink signals={signals} />;
           }
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Task order(s)",
+        headerName: "Task order(s)",
         field: "task_orders",
         hidden: hiddenColumns["task_orders"],
         cellStyle: { whiteSpace: "noWrap" },
@@ -294,9 +325,11 @@ export const useColumns = ({ hiddenColumns }) => {
             </span>
           ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Type",
+        headerName: "Type",
         field: "type_name",
         hidden: hiddenColumns["type_name"],
         emptyValue: "-",
@@ -308,9 +341,11 @@ export const useColumns = ({ hiddenColumns }) => {
             </span>
           ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Funding",
+        headerName: "Funding",
         field: "funding_source_name",
         hidden: hiddenColumns["funding_source_name"],
         emptyValue: "-",
@@ -324,43 +359,55 @@ export const useColumns = ({ hiddenColumns }) => {
               </span>
             ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Status update",
+        headerName: "Status update",
         field: "project_status_update",
         hidden: hiddenColumns["project_status_update"],
         emptyValue: "-",
         cellStyle: { maxWidth: "30rem" },
         render: (entry) => parse(String(entry.project_status_update)),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Construction start",
+        headerName: "Construction start",
         field: "construction_start_date",
         hidden: hiddenColumns["construction_start_date"],
         emptyValue: "-",
         render: (entry) => formatDateType(entry.construction_start_date),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Completion date",
+        headerName: "Completion date",
         field: "completion_end_date",
         hidden: hiddenColumns["completion_end_date"],
         emptyValue: "-",
         render: (entry) => formatDateType(entry.completion_end_date),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Designer",
+        headerName: "Designer",
         field: "project_designer",
         hidden: hiddenColumns["project_designer"],
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Inspector",
+        headerName: "Inspector",
         field: "project_inspector",
         hidden: hiddenColumns["project_inspector"],
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Workgroup/Contractors",
+        headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
         hidden: hiddenColumns["workgroup_contractors"],
         emptyValue: "-",
@@ -372,9 +419,11 @@ export const useColumns = ({ hiddenColumns }) => {
             </span>
           ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Contract numbers",
+        headerName: "Contract numbers",
         field: "contract_numbers",
         hidden: hiddenColumns["contract_numbers"],
         emptyValue: "-",
@@ -386,9 +435,11 @@ export const useColumns = ({ hiddenColumns }) => {
             </span>
           ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Tags",
+        headerName: "Tags",
         field: "project_tags",
         hidden: hiddenColumns["project_tags"],
         cellStyle: { whiteSpace: "noWrap" },
@@ -400,34 +451,44 @@ export const useColumns = ({ hiddenColumns }) => {
             </span>
           ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Created by",
+        headerName: "Created by",
         field: "added_by",
         hidden: hiddenColumns["added_by"],
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Public process status",
+        headerName: "Public process status",
         field: "public_process_status",
         hidden: hiddenColumns["public_process_status"],
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Interim MPD (Access) ID",
+        headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
         hidden: hiddenColumns["interim_project_id"],
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Components",
+        headerName: "Components",
         field: "components",
         hidden: hiddenColumns["components"],
         emptyValue: "-",
         render: (entry) => filterComponentFullNames(entry),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Parent project",
+        headerName: "Parent project",
         field: "parent_project_id",
         hidden: hiddenColumns["parent_project_id"],
         emptyValue: "-",
@@ -441,9 +502,11 @@ export const useColumns = ({ hiddenColumns }) => {
             {entry.parent_project_name}
           </Link>
         ),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Has subprojects",
+        headerName: "Has subprojects",
         field: "children_project_ids",
         hidden: hiddenColumns["children_project_ids"],
         render: (entry) => {
@@ -451,10 +514,13 @@ export const useColumns = ({ hiddenColumns }) => {
           return <span> {hasChildren ? "Yes" : "-"} </span>;
         },
         emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
     ],
     [hiddenColumns, queryString]
   );
+  console.log(hiddenColumns)
 
   return { columns, columnsToReturnInQuery };
 };

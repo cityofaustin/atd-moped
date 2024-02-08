@@ -33,13 +33,6 @@ import {
 } from "./useProjectListViewQuery/useCsvExport";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
-const COLUMN_WIDTHS = {
-  small: 75,
-  medium: 200,
-  large: 250,
-  xlarge: 350,
-};
-
 /**
  * GridTable Style
  */
@@ -237,74 +230,12 @@ const ProjectsListViewTable = () => {
         <Box sx={{ flexGrow: 1, height: "1px" }}>
           {data && data.project_list_view && (
             <DataGrid
-              columns={[
-                {
-                  headerName: "ID",
-                  field: "project_id",
-                  width: COLUMN_WIDTHS.small,
-                },
-                {
-                  headerName: "Name",
-                  field: "project_name",
-                  flex: 2,
-                  minWidth: COLUMN_WIDTHS.xlarge,
-                },
-                {
-                  headerName: "Status",
-                  field: "current_phase_key",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                  renderCell: ({ row }) => {
-                    return (
-                      <ProjectStatusBadge
-                        phaseName={row.current_phase}
-                        phaseKey={row.current_phase_key}
-                        condensed
-                      />
-                    );
-                  },
-                },
-                {
-                  headerName: "Team",
-                  field: "project_team_members",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-                {
-                  headerName: "Lead",
-                  field: "project_lead",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-                {
-                  headerName: "Sponsor",
-                  field: "project_sponsor",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-                {
-                  headerName: "eCapris ID",
-                  field: "ecapris_subproject_id",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-                {
-                  headerName: "Updated",
-                  field: "updated_at",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                  valueGetter: ({ row }) =>
-                    row.updated_at
-                      ? new Date(row.updated_at).toLocaleDateString()
-                      : "",
-                },
-                {
-                  headerName: "Components",
-                  field: "components",
-                  flex: 1,
-                  minWidth: COLUMN_WIDTHS.medium,
-                },
-              ]}
+            // initialState={{
+            //   // columns: {
+            //   //   columnVisibilityModel: Object.keys(hiddenColumns).map(key=>  ),
+            //   // },
+            // }}
+              columns={columns}
               getRowId={(thing) => thing.project_id}
               disableRowSelectionOnClick
               rows={data.project_list_view}
