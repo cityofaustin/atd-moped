@@ -22,7 +22,7 @@ export const useGetProjectListView = ({
             where: { 
               ${
                 searchWhereString && advancedSearchWhereString
-                  ? `_or: [${searchWhereString}, {${advancedSearchWhereString}}]`
+                  ? `_and: [{_or: [${searchWhereString}]}, {${advancedSearchWhereString}}]`
                   : ""
               }
               ${
@@ -43,7 +43,7 @@ export const useGetProjectListView = ({
           where: { 
             ${
               searchWhereString && advancedSearchWhereString
-                ? `_or: [${searchWhereString}, {${advancedSearchWhereString}}]`
+                ? `_and: [{_or: [${searchWhereString}]}, {${advancedSearchWhereString}}]`
                 : ""
             }
             ${
