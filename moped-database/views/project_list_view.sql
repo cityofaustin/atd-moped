@@ -1,6 +1,5 @@
--- latest version 1706897389736_fix_sub_comp_date_dash
-CREATE OR REPLACE VIEW public.project_list_view
-AS WITH project_person_list_lookup AS (
+CREATE OR REPLACE VIEW public.project_list_view AS
+WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
         string_agg(
@@ -82,6 +81,21 @@ moped_proj_components_subtypes AS (
     LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
     WHERE mpc.is_deleted = false
     GROUP BY mpc.project_id
+),
+
+project_district_association AS (
+    SELECT
+        flattened_project_council_map.project_id,
+        array_agg(DISTINCT flattened_project_council_map.single_districts) AS council_districts
+    FROM (
+        SELECT
+            components.project_id,
+            unnest(features.council_districts) AS single_districts
+        FROM moped_proj_components AS components
+        INNER JOIN uniform_features AS features ON (components.component_id = features.component_id)
+        WHERE components.is_deleted IS false
+    ) AS flattened_project_council_map
+    GROUP BY flattened_project_council_map.project_id
 )
 
 SELECT
@@ -236,7 +250,8 @@ SELECT
         GROUP BY ptags.project_id
     ) AS project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
-    mpcs.components
+    mpcs.components,
+    districts.council_districts
 FROM moped_project AS mp
 LEFT JOIN project_person_list_lookup AS ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup AS fsl ON mp.project_id = fsl.project_id
@@ -251,6 +266,7 @@ LEFT JOIN current_phase_view AS current_phase ON mp.project_id = current_phase.p
 LEFT JOIN moped_public_process_statuses AS mpps ON mp.public_process_status_id = mpps.id
 LEFT JOIN child_project_lookup AS cpl ON mp.project_id = cpl.parent_id
 LEFT JOIN moped_proj_components_subtypes AS mpcs ON mp.project_id = mpcs.project_id
+LEFT JOIN project_district_association AS districts ON (mp.project_id = districts.project_id)
 LEFT JOIN LATERAL
     (
         SELECT
@@ -293,4 +309,5 @@ GROUP BY
     work_activities.contract_numbers,
     work_activities.task_order_names,
     work_activities.task_order_names_short,
-    work_activities.task_orders;
+    work_activities.task_orders,
+    districts.council_districts;
