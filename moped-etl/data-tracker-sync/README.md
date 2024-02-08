@@ -69,3 +69,13 @@ Data Tracker app and you should see that the title has been updated with your ed
 This script can also be run from the local Airflow stack. The secrets from the `development` sections
 of the **Knack AMD Data Tracker** and **Moped Hasura Admin** entries will be used automatically in the
 DAG.
+
+### Sync evaluation script
+
+On first deployment of this ETL, duplicate records were created in the Knack `projects` table. The `sync_evaluation.py` script:
+
+- Gathers all Knack project record IDs stored in the `moped_project` table rows in the `knack_project_id` column
+- Gather all Knack record IDs of all rows in the Data Tracker `projects` table
+- Evaluates the overlap (synced correctly) and difference (mark for deletion) of these two lists
+- Evaluates the list of differences to make sure there are no connections between Knack records marked for deletion and `work_order_signals` records
+- Deletes the records with no connections and logs records with connections that were not deleted
