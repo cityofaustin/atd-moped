@@ -12,8 +12,6 @@ export const useGetProjectListView = ({
   advancedSearchWhereString,
 }) => {
   const { query, exportQuery } = useMemo(() => {
-    console.log({ searchWhereString, advancedSearchWhereString });
-
     const queryString = `query ProjectListView {
         project_list_view (
             limit: ${queryLimit}
@@ -63,7 +61,6 @@ export const useGetProjectListView = ({
           }
         }
       }`;
-    console.log(queryString);
     const query = gql`
       ${queryString}
     `;
