@@ -16,6 +16,7 @@ import ProjectsListView from "./views/projects/projectsListView/ProjectsListView
 import DeviasStyleView from "./views/dev/DeviasStyleView/DeviasStyleView";
 import LookupsView from "./views/dev/LookupsView";
 import DashboardView from "./views/dashboard/DashboardView";
+import ProjectsMapView from "./views/projects/projectsMapView";
 
 export const routes = [
   { path: "/", element: <Navigate to="/moped" /> },
@@ -85,6 +86,11 @@ export const routes = [
         path: "views/signal-projects",
         action: "projects:visit",
         element: <Navigate to="/moped/projects" />,
+      },
+      {
+        path: "dev/projects-map",
+        action: "projects-map:visit",
+        element: <ProjectsMapView />,
       },
       { path: "*", action: "all:visit", element: <Navigate to="/moped/404" /> },
     ],
