@@ -12,22 +12,50 @@ export const useGetProjectListView = ({
   advancedSearchWhereString,
 }) => {
   const { query, exportQuery } = useMemo(() => {
+    console.log({ searchWhereString, advancedSearchWhereString });
+
     const queryString = `query ProjectListView {
         project_list_view (
             limit: ${queryLimit}
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
             where: { 
-              ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-              ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+              ${
+                searchWhereString && advancedSearchWhereString
+                  ? `_or: [${searchWhereString}, {${advancedSearchWhereString}}]`
+                  : ""
+              }
+              ${
+                searchWhereString && !advancedSearchWhereString
+                  ? `_or: [${searchWhereString}]`
+                  : ""
+              }
+              ${
+                advancedSearchWhereString && !searchWhereString
+                  ? advancedSearchWhereString
+                  : ""
+              }
             }
         ) {
             ${columnsToReturn.join("\n")}
         },
         project_list_view_aggregate (
           where: { 
-            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+            ${
+              searchWhereString && advancedSearchWhereString
+                ? `_or: [${searchWhereString}, {${advancedSearchWhereString}}]`
+                : ""
+            }
+            ${
+              searchWhereString && !advancedSearchWhereString
+                ? `_or: [${searchWhereString}]`
+                : ""
+            }
+            ${
+              advancedSearchWhereString && !searchWhereString
+                ? advancedSearchWhereString
+                : ""
+            }
           }
         ) {
           aggregate {
@@ -35,6 +63,7 @@ export const useGetProjectListView = ({
           }
         }
       }`;
+    console.log(queryString);
     const query = gql`
       ${queryString}
     `;
