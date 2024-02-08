@@ -1,7 +1,7 @@
 -- no "IF EXISTS" because if it doesn't exist, we have bigger problems and we want this to bail
 DROP VIEW public.project_list_view CASCADE;
 
-CREATE OR REPLACE VIEW public.project_list_view AS
+CREATE VIEW public.project_list_view AS
 WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
