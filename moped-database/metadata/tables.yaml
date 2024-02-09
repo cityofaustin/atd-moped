@@ -5090,7 +5090,8 @@
           - components
           - construction_start_date
           - contract_numbers
-          - council_districts
+          - self_alone_council_districts
+          - self_and_children_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5145,7 +5146,8 @@
           - components
           - construction_start_date
           - contract_numbers
-          - council_districts
+          - self_alone_council_districts
+          - self_and_children_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5200,7 +5202,8 @@
           - components
           - construction_start_date
           - contract_numbers
-          - council_districts
+          - self_alone_council_districts
+          - self_and_children_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
