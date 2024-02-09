@@ -20,6 +20,7 @@ export default function ProjectsMap() {
       {...mapParameters}
       style={{ borderRadius: "4px" }} // Match the Paper wrapper's border-radius
       reuseMaps
+      trackResize
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />

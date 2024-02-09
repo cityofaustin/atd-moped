@@ -25,7 +25,7 @@ const ProjectsMapView = () => {
     <Page className={classes.root} title="Projects Map">
       <ErrorBoundary FallbackComponent={FallbackComponent}>
         <Box component="main" className={classes.content}>
-          <Paper sx={{ height: "80vh", display: "flex" }}>
+          <Paper id="map-wrapper" sx={{ height: "80vh", display: "flex" }}>
             <MapDrawer>
               <Typography sx={{ padding: theme.spacing(1) }}>
                 Filter UI placeholder
