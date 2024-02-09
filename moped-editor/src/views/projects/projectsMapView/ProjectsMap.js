@@ -18,8 +18,7 @@ export default function ProjectsMap() {
       initialViewState={initialViewState}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
-      style={{ borderRadius: "4px" }}
-      trackResize
+      style={{ borderRadius: "4px" }} // Match the Paper wrapper's border-radius
       reuseMaps
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
