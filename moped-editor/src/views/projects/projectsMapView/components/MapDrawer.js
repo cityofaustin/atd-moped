@@ -1,59 +1,16 @@
-// import React from "react";
-// import Drawer from "@mui/material/Drawer";
-// import { drawerWidth } from "../../projectView/ProjectComponents";
-
-// const MapDrawer = ({ children }) => {
-//   return (
-//     <Drawer
-//       sx={{
-//         width: drawerWidth,
-//         height: "100%",
-//         flexGrow: 1,
-//         "& .MuiDrawer-paper": {
-//           width: drawerWidth,
-//           boxSizing: "border-box",
-//         },
-//         /* Position drawer absolutely within the Paper wrapper */
-//         "& .MuiDrawer-root": {
-//           position: "absolute",
-//         },
-//         "& .MuiPaper-root": {
-//           position: "absolute",
-//           borderRadius: "4px",
-//         },
-//       }}
-//       variant="temporary"
-//       anchor="left"
-//     >
-//       {children}
-//     </Drawer>
-//   );
-// };
-
-// export default MapDrawer;
-
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
+import React from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
-import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
+import Fab from "@mui/material/Fab";
 import MenuIcon from "@mui/icons-material/Menu";
-import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
+import Portal from "@mui/material/Portal";
 import theme from "src/theme";
+import { drawerWidth } from "../../projectView/ProjectComponents";
 
-const drawerWidth = 240;
+const DRAWER_WIDTH_MOBILE = 240;
 
-export default function MapDrawer({ children }) {
+export default function MapDrawer({ children, mapWrapperRef }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -75,27 +32,29 @@ export default function MapDrawer({ children }) {
   return (
     <>
       <CssBaseline />
-      <IconButton
-        sx={{
-          display: { xs: "block", sm: "none" },
-          position: "relative",
-          top: theme.spacing(1),
-          left: theme.spacing(1),
-        }}
-        onClick={handleDrawerToggle}
-        aria-label="open filters"
-      >
-        <MenuIcon />
-      </IconButton>
+      <Portal container={() => mapWrapperRef.current}>
+        <Fab
+          color="primary"
+          aria-label="toggle filters"
+          size="small"
+          sx={{
+            display: { xs: "flex", sm: "none" },
+            position: "absolute",
+            top: theme.spacing(1),
+            left: theme.spacing(1),
+          }}
+          onClick={handleDrawerToggle}
+        >
+          <MenuIcon />
+        </Fab>
+      </Portal>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="projects map filters"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-
+        {/* Mobile collapsible drawer */}
         <Drawer
-          // container={container}
           variant="temporary"
           open={mobileOpen}
           onTransitionEnd={handleDrawerTransitionEnd}
@@ -107,7 +66,7 @@ export default function MapDrawer({ children }) {
             display: { xs: "block", sm: "none" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
-              width: drawerWidth,
+              width: DRAWER_WIDTH_MOBILE,
             },
             /* Position drawer absolutely within the Paper wrapper */
             "& .MuiDrawer-root": {
@@ -121,6 +80,7 @@ export default function MapDrawer({ children }) {
         >
           {children}
         </Drawer>
+        {/* Desktop permanent drawer */}
         <Drawer
           variant="permanent"
           sx={{
