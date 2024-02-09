@@ -24,7 +24,9 @@ export default function ProjectsMap() {
       initialViewState={initialViewState}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
-      trackResize={true}
+      style={{ borderRadius: "4px" }}
+      trackResize
+      reuseMaps
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />

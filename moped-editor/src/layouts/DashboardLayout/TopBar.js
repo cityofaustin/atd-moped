@@ -83,7 +83,7 @@ export const navigationItems = [
     title: "Staff",
   },
   {
-    href: "/moped/projects-map",
+    href: "/moped/map",
     title: "Map",
   },
 ];

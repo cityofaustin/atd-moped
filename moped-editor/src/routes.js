@@ -88,7 +88,7 @@ export const routes = [
         element: <Navigate to="/moped/projects" />,
       },
       {
-        path: "projects-map",
+        path: "map",
         action: "projects-map:visit",
         element: <ProjectsMapView />,
       },
