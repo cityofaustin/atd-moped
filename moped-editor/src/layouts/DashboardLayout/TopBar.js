@@ -82,6 +82,10 @@ export const navigationItems = [
     href: "/moped/staff",
     title: "Staff",
   },
+  {
+    href: "/moped/projects-map",
+    title: "Map",
+  },
 ];
 
 const TopBar = ({ className, ...rest }) => {
