@@ -1,7 +1,7 @@
 -- no "IF EXISTS" because if it doesn't exist, we have bigger problems and we want this to bail
 DROP VIEW public.project_list_view CASCADE;
 
-CREATE VIEW public.project_list_view AS
+CREATE OR REPLACE VIEW public.project_list_view AS
 WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -87,18 +87,42 @@ moped_proj_components_subtypes AS (
 ),
 
 project_district_association AS (
-    SELECT
-        flattened_project_council_map.project_id,
-        array_agg(DISTINCT flattened_project_council_map.single_districts) AS council_districts
-    FROM (
+
+    WITH
+    project_council_district_map AS (
+        SELECT DISTINCT
+            project_id,
+            unnest(council_districts) AS council_district
+        FROM project_geography
+    ),
+
+    parent_child_project_map AS (
         SELECT
-            components.project_id,
-            unnest(features.council_districts) AS single_districts
-        FROM moped_proj_components AS components
-        INNER JOIN uniform_features AS features ON (components.component_id = features.component_id)
-        WHERE components.is_deleted IS false
-    ) AS flattened_project_council_map
-    GROUP BY flattened_project_council_map.project_id
+            parent_projects.project_id,
+            unnest(
+                ARRAY[parent_projects.project_id]
+                || array_agg(child_projects.project_id)
+            ) AS self_and_children_project_ids
+        FROM moped_project AS parent_projects
+        LEFT JOIN moped_project AS child_projects ON parent_projects.project_id = child_projects.parent_project_id
+        GROUP BY parent_projects.project_id
+        ORDER BY parent_projects.project_id ASC
+    )
+
+    SELECT
+        projects.project_id,
+        array_agg(DISTINCT project_districts.council_district) FILTER (
+            WHERE project_districts.council_district IS NOT null
+        ) AS self_alone_council_districts,
+        array_agg(DISTINCT districts.council_district) FILTER (
+            WHERE districts.council_district IS NOT null
+        ) AS self_and_children_council_districts
+    FROM parent_child_project_map AS projects
+    LEFT JOIN
+        project_council_district_map AS districts
+        ON (projects.self_and_children_project_ids = districts.project_id)
+    LEFT JOIN project_council_district_map AS project_districts ON (projects.project_id = project_districts.project_id)
+    GROUP BY projects.project_id
 )
 
 SELECT
@@ -254,7 +278,8 @@ SELECT
     ) AS project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
-    districts.council_districts
+    districts.self_alone_council_districts,
+    districts.self_and_children_council_districts
 FROM moped_project AS mp
 LEFT JOIN project_person_list_lookup AS ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup AS fsl ON mp.project_id = fsl.project_id
@@ -269,7 +294,7 @@ LEFT JOIN current_phase_view AS current_phase ON mp.project_id = current_phase.p
 LEFT JOIN moped_public_process_statuses AS mpps ON mp.public_process_status_id = mpps.id
 LEFT JOIN child_project_lookup AS cpl ON mp.project_id = cpl.parent_id
 LEFT JOIN moped_proj_components_subtypes AS mpcs ON mp.project_id = mpcs.project_id
-LEFT JOIN project_district_association AS districts ON (mp.project_id = districts.project_id)
+LEFT JOIN project_district_association AS districts ON mp.project_id = districts.project_id
 LEFT JOIN LATERAL
     (
         SELECT
@@ -313,9 +338,8 @@ GROUP BY
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    districts.council_districts;
-
-
+    districts.self_alone_council_districts,
+    districts.self_and_children_council_districts;
 
 
 
