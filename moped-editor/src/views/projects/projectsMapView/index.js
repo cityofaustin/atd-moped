@@ -19,15 +19,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectsMapView = () => {
-  const mapWrapperRef = React.useRef();
   const classes = useStyles();
 
   return (
     <Page className={classes.root} title="Projects Map">
       <ErrorBoundary FallbackComponent={FallbackComponent}>
         <Box component="main" className={classes.content}>
-          <Paper ref={mapWrapperRef} sx={{ height: "80vh", display: "flex" }}>
-            <MapDrawer mapWrapperRef={mapWrapperRef}>
+          <Paper sx={{ height: "80vh", display: "flex" }}>
+            <MapDrawer>
               <Typography sx={{ padding: theme.spacing(1) }}>
                 Filter UI placeholder
               </Typography>

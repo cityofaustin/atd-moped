@@ -4,13 +4,12 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Drawer from "@mui/material/Drawer";
 import Fab from "@mui/material/Fab";
 import MenuIcon from "@mui/icons-material/Menu";
-import Portal from "@mui/material/Portal";
 import theme from "src/theme";
 import { drawerWidth } from "../../projectView/ProjectComponents";
 
 const DRAWER_WIDTH_MOBILE = 240;
 
-export default function MapDrawer({ children, mapWrapperRef }) {
+export default function MapDrawer({ children }) {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
 
@@ -32,22 +31,20 @@ export default function MapDrawer({ children, mapWrapperRef }) {
   return (
     <>
       <CssBaseline />
-      <Portal container={() => mapWrapperRef.current}>
-        <Fab
-          color="primary"
-          aria-label="toggle filters"
-          size="small"
-          sx={{
-            display: { xs: "flex", sm: "none" },
-            position: "absolute",
-            top: theme.spacing(1),
-            left: theme.spacing(1),
-          }}
-          onClick={handleDrawerToggle}
-        >
-          <MenuIcon />
-        </Fab>
-      </Portal>
+      <Fab
+        color="primary"
+        aria-label="toggle filters"
+        size="small"
+        sx={{
+          display: { xs: "flex", sm: "none" },
+          position: "absolute",
+          top: theme.spacing(2),
+          left: theme.spacing(2),
+        }}
+        onClick={handleDrawerToggle}
+      >
+        <MenuIcon />
+      </Fab>
       <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
