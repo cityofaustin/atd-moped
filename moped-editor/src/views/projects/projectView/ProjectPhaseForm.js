@@ -14,7 +14,7 @@ import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete"
 import ControlledDateField from "src/components/forms/ControlledDateField";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import ControlledCheckbox from "src/components/forms/ControlledCheckbox";
-import RegisteredSwitch from "src/components/forms/RegisteredSwitch";
+import ControlledSwitch from "src/components/forms/ControlledSwitch";
 import {
   phaseValidationSchema,
   onSubmitPhase,
@@ -49,7 +49,6 @@ const ProjectPhaseForm = ({
     watch,
     setValue,
     formState: { isDirty, errors: formErrors },
-    register,
   } = useForm({
     defaultValues,
     resolver: yupResolver(phaseValidationSchema),
@@ -156,9 +155,9 @@ const ProjectPhaseForm = ({
       today.setHours(0, 0, 0, 0);
 
       setValue("phase_start", today);
-      return isCurrentPhase;
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
     } else {
-      return isCurrentPhase;
+      setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
     }
   };
 
@@ -232,11 +231,11 @@ const ProjectPhaseForm = ({
         </Grid>
         <Grid item container justifyContent="flex-start">
           <FormControl>
-            <RegisteredSwitch
+            <ControlledSwitch
               name="is_current_phase"
-              register={register}
+              control={control}
               label="Current phase"
-              onChange={onChangeCurrentPhase}
+              customOnChange={onChangeCurrentPhase}
             />
             <FormHelperText>
               Set this phase as the project's current phase

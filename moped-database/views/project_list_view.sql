@@ -1,6 +1,4 @@
--- latest version 1705115280578_more_calc_fields
-DROP VIEW project_list_view CASCADE;
-
+-- latest version 1706897389736_fix_sub_comp_date_dash
 CREATE OR REPLACE VIEW public.project_list_view
 AS WITH project_person_list_lookup AS (
     SELECT
@@ -89,7 +87,7 @@ AS WITH project_person_list_lookup AS (
     work_activities.task_order_names_short,
     work_activities.task_orders,
     'placeholder text' as project_development_status,
-    '2024-01-01T00:00:00−06:00' as project_development_status_date,
+    '2024-01-01T00:00:00-06:00' as project_development_status_date,
     9999 as project_development_status_date_calendar_year,
     'placeholder text' as project_development_status_date_calendar_year_month,
     'placeholder text' as project_development_status_date_calendar_year_month_numeric,

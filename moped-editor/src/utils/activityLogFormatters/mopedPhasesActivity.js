@@ -53,12 +53,9 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
     if (newRecord[field] !== oldRecord[field]) {
-      // phase end and start confirmed are in the moped_proj_phases table but not in the UI
-      // ignore changes to that field until its visually represented to users
-      if (
-        field !== "is_phase_end_confirmed" &&
-        field !== "is_phase_start_confirmed"
-      ) {
+      // filter out fields that are not listed in the activity log table maps to prevent
+      // automated field updates (created at, updated at, etc.) from entering the array
+      if (!!entryMap.fields[field]) {
         changes.push(entryMap.fields[field]?.label);
       }
     }
