@@ -121,53 +121,56 @@ const Search = ({
   };
 
   return (
-    <>
-    <Box mt={3}>
-      <Paper ref={divRef}>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={8} lg={8}>
-            <SearchBar
-              searchFieldValue={searchFieldValue}
-              setSearchFieldValue={setSearchFieldValue}
-              filters={filters}
-              toggleAdvancedSearch={toggleAdvancedSearch}
-              advancedSearchAnchor={advancedSearchAnchor}
-              setSearchTerm={setSearchTerm}
-              queryConfig={queryConfig}
-              isOr={isOr}
-              handleSwitchToSearch={handleSwitchToSearch}
-              loading={loading}
-              filtersConfig={filtersConfig}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4} md={4} lg={1}>
-            <Button
-              disabled={(parentData?.[queryConfig.table] ?? []).length === 0}
-              onClick={handleExportButtonClick}
-              startIcon={<TuneOutlined />}
-              variant="outlined"
-              color="primary"
-              fullWidth
+    <div>
+      <Box mt={3}>
+        <Paper ref={divRef}>
+          <Grid container className={classes.searchBarContainer}>
+            <Grid
+              item
+              xs={12}
+              sm={8}
+              lg={10}
+              className={classes.gridSearchPadding}
             >
-              <span style={{marginRight: ".5rem"}}>Filter</span>
-              <Chip label="4" color="primary" size="small"/>
-            </Button>
+              <SearchBar
+                searchFieldValue={searchFieldValue}
+                setSearchFieldValue={setSearchFieldValue}
+                filters={filters}
+                toggleAdvancedSearch={toggleAdvancedSearch}
+                advancedSearchAnchor={advancedSearchAnchor}
+                setSearchTerm={setSearchTerm}
+                queryConfig={queryConfig}
+                isOr={isOr}
+                handleSwitchToSearch={handleSwitchToSearch}
+                loading={loading}
+                filtersConfig={filtersConfig}
+              />
+            </Grid>
+            <Grid
+              item
+              xs={12}
+              sm={4}
+              md={4}
+              lg={2}
+              className={classes.downloadButtonGrid}
+            >
+              {queryConfig.showExport && (
+                <Button
+                  disabled={
+                    (parentData?.[queryConfig.table] ?? []).length === 0
+                  }
+                  className={classes.downloadCsvButton}
+                  onClick={handleExportButtonClick}
+                  startIcon={<SaveAltIcon />}
+                  variant="outlined"
+                  color="primary"
+                  fullWidth
+                >
+                  Download
+                </Button>
+              )}
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={4} md={4} lg={1}>
-            {queryConfig.showExport && (
-              <Button
-                disabled={(parentData?.[queryConfig.table] ?? []).length === 0}
-                onClick={handleExportButtonClick}
-                startIcon={<SaveAltIcon />}
-                variant="text"
-                color="primary"
-                fullWidth
-              >
-                Download
-              </Button>
-            )}
-          </Grid>
-        </Grid>
         </Paper>
       </Box>
       <Popper
@@ -191,7 +194,7 @@ const Search = ({
           />
         </Paper>
       </Popper>
-    </>
+    </div>
   );
 };
 

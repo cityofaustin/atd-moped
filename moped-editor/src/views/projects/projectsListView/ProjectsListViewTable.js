@@ -224,7 +224,7 @@ const ProjectsListViewTable = () => {
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
           <Box sx={{ height: "500px", padding:"24px" }}>
-          {/* {data && data.project_list_view && (
+          {data && data.project_list_view && (
             <DataGrid
               columnVisibilityModel={hiddenColumns}
               onColumnVisibilityModelChange={(newModel) =>
@@ -236,7 +236,7 @@ const ProjectsListViewTable = () => {
               rows={data.project_list_view}
               density="compact"
             />
-          )} */}
+          )}
         </Box>
         </Paper>
       {/* </Box> */}

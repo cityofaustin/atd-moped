@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
+import clsx from "clsx";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -44,9 +45,9 @@ const useStyles = makeStyles((theme) => ({
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
-  // searchButton: {
-  //   marginTop: "12px",
-  // },
+  searchButton: {
+    marginTop: "12px",
+  },
   filtersList: {
     padding: "8px",
     marginRight: "12px",
@@ -209,7 +210,12 @@ const SearchBar = ({
       <TextField
         fullWidth
         autoFocus
-        size="small"
+        inputProps={{
+          style: {
+            paddingTop: 12,
+            paddingBottom: 12,
+          },
+        }}
         onChange={(e) => handleSearchValueChange(e.target.value)}
         onKeyDown={(e) => handleKeyDown(e.key)}
         InputProps={{
@@ -227,7 +233,7 @@ const SearchBar = ({
                   <CircularProgress size="2rem" />
                 </IconButton>
               )}
-              {/* <IconButton
+              <IconButton
                 onClick={toggleAdvancedSearch}
                 className={clsx({
                   [classes.tuneIcon]: !filterStateActive,
@@ -238,7 +244,7 @@ const SearchBar = ({
                 size="large"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>
-              </IconButton> */}
+              </IconButton>
             </InputAdornment>
           ),
         }}
