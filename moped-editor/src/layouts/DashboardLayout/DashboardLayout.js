@@ -1,36 +1,53 @@
 import React from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import { Box } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import TopBar from "./TopBar";
 import { useUser } from "../../auth/user";
+import Footer from "./Footer";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+    height: "100%",
+    overflow: "hidden",
+    width: "100%",
+  },
+  wrapper: {
+    display: "flex",
+    flex: "1 1 auto",
+    overflow: "hidden",
+    // If in staging environment, add extra padding
+    // to make room for staging environment info alert
+    paddingTop: process.env.REACT_APP_HASURA_ENV !== "production" ? 114 : 64,
+  },
+  contentContainer: {
+    display: "flex",
+    flex: "1 1 auto",
+    overflow: "hidden",
+  },
+  content: {
+    flex: "1 1 auto",
+    height: "100%",
+    overflow: "auto",
+  },
+}));
 
 const DashboardLayout = () => {
+  const classes = useStyles();
   const { user } = useUser();
 
   return user ? (
-    <Box
-      sx={{
-        display: "flex",
-        backgroundColor: "white",
-        overflow: "hidden",
-        height: "100vh",
-        paddingTop: "64px",
-      }}
-    >
+    <div className={classes.root}>
       <TopBar />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          overflow: "hidden",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        <Outlet />
-        {/* <Footer /> */}
-      </Box>
-    </Box>
+      <div className={classes.wrapper}>
+        <div className={classes.contentContainer}>
+          <div className={classes.content}>
+            <Outlet />
+            <Footer />
+          </div>
+        </div>
+      </div>
+    </div>
   ) : (
     <Navigate to="/moped/session/signin" />
   );

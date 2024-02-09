@@ -8,6 +8,26 @@ import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(1),
+    },
+  },
+  downloadButtonGrid: {
+    padding: "12px",
+  },
+  downloadCsvButton: {
+    height: "43px",
+  },
+  tabStyle: {
+    margin: ".5rem",
+  },
+  searchBarContainer: {
+    padding: "2px",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: "12px",
+    },
+  },
   advancedSearchRoot: {
     width: "calc(100% - 32px)",
     zIndex: "3",
@@ -25,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2),
     boxShadow:
       "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
+  },
+  gridSearchPadding: {
+    padding: "12px",
   },
 }));
 
@@ -99,7 +122,8 @@ const Search = ({
 
   return (
     <>
-      <Box ref={divRef} sx={{ padding: "10px" }}>
+    <Box mt={3}>
+      <Paper ref={divRef}>
         <Grid container spacing={1}>
           <Grid item xs={12} sm={8} lg={8}>
             <SearchBar
@@ -144,6 +168,7 @@ const Search = ({
             )}
           </Grid>
         </Grid>
+        </Paper>
       </Box>
       <Popper
         id="advancedSearch"

@@ -1,18 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { Box } from "@mui/material";
+import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { DataGrid } from "@mui/x-data-grid";
-// import {
-//   useTableComponents,
-//   useColumns,
-//   useTableOptions,
-//   useHiddenColumnsSettings,
-// } from "./helpers.js";
-// import MaterialTable from "@material-table/core";
-import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
+import { useTableComponents, useColumns } from "./helpers.js";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import {
@@ -26,7 +19,6 @@ import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
 import { useSearch } from "./useProjectListViewQuery/useSearch";
 import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
-import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import {
   useCsvExport,
   CsvDownloadDialog,
@@ -37,8 +29,13 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  * GridTable Style
  */
 const useStyles = makeStyles((theme) => ({
-  root: {},
-
+  root: {
+    width: "100%"
+  },
+  paper: {
+    width: "100%",
+    marginBottom: theme.spacing(1),
+  },
   table: {
     minWidth: 750,
   },
@@ -92,20 +89,20 @@ const ProjectsListViewTable = () => {
 
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 
-  /**
-   * Keeps localStorage column config in sync with UI interactions
-   * @param {Object} column - the MT column config with the `field` prop - aka the column name
-   * @param {Bool} hidden - the hidden state of the column
-   */
-  const handleColumnChange = useCallback(
-    ({ field }, hidden) => {
-      setHiddenColumns((prevHiddenColumns) => ({
-        ...prevHiddenColumns,
-        [field]: hidden,
-      }));
-    },
-    [setHiddenColumns]
-  );
+  // /**
+  //  * Keeps localStorage column config in sync with UI interactions
+  //  * @param {Object} column - the MT column config with the `field` prop - aka the column name
+  //  * @param {Bool} hidden - the hidden state of the column
+  //  */
+  // const handleColumnChange = useCallback(
+  //   ({ field }, hidden) => {
+  //     setHiddenColumns((prevHiddenColumns) => ({
+  //       ...prevHiddenColumns,
+  //       [field]: hidden,
+  //     }));
+  //   },
+  //   [setHiddenColumns]
+  // );
 
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn: columnsToReturnInQuery,
@@ -139,7 +136,7 @@ const ProjectsListViewTable = () => {
     setQueryLimit,
   });
 
-  const tableOptions = useTableOptions({ queryLimit, data });
+  // const tableOptions = useTableOptions({ queryLimit, data });
 
   const sortByColumnIndex = columns.findIndex(
     (column) => column.field === orderByColumn
@@ -203,12 +200,12 @@ const ProjectsListViewTable = () => {
 
   return (
     <ApolloErrorHandler error={error}>
-      <Box
-        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+      <Container maxWidth={false} className={classes.root}>
+      {/* <Box
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column", marginTop: "36px" }}
         id="thisbox"
-      >
+      > */}
         <CsvDownloadDialog dialogOpen={dialogOpen} />
-        <Box>
           <Search
             parentData={data}
             filters={filters}
@@ -224,28 +221,62 @@ const ProjectsListViewTable = () => {
             setIsOr={setIsOr}
             loading={loading}
           />
-        </Box>
         {/*Main Table Body*/}
-
-        <Box sx={{ flexGrow: 1, height: "1px" }}>
-          {data && data.project_list_view && (
+        <Paper className={classes.paper}>
+          <Box sx={{ height: "500px", padding:"24px" }}>
+          {/* {data && data.project_list_view && (
             <DataGrid
-            // initialState={{
-            //   // columns: {
-            //   //   columnVisibilityModel: Object.keys(hiddenColumns).map(key=>  ),
-            //   // },
-            // }}
+              columnVisibilityModel={hiddenColumns}
+              onColumnVisibilityModelChange={(newModel) =>
+                setHiddenColumns(newModel)
+              }
               columns={columns}
               getRowId={(thing) => thing.project_id}
               disableRowSelectionOnClick
               rows={data.project_list_view}
               density="compact"
             />
-          )}
+          )} */}
         </Box>
-      </Box>
+        </Paper>
+      {/* </Box> */}
+      </Container>
     </ApolloErrorHandler>
   );
 };
 
 export default ProjectsListViewTable;
+
+
+/*
+import * as React from 'react';
+import { useDemoData } from '@mui/x-data-grid-generator';
+import { DataGrid, GridColumnVisibilityModel } from '@mui/x-data-grid';
+
+export default function VisibleColumnsModelControlled() {
+
+
+  const [columnVisibilityModel, setColumnVisibilityModel] =
+    React.useState<GridColumnVisibilityModel>({
+      id: false,
+      brokerId: false,
+      status: false,
+    });
+
+  return (
+    <div style={{ height: 300, width: '100%' }}>
+      <DataGrid
+        {...data}
+        loading={loading}
+        columnVisibilityModel={columnVisibilityModel}
+        onColumnVisibilityModelChange={(newModel) =>
+          setColumnVisibilityModel(newModel)
+        }
+      />
+    </div>
+  );
+}
+
+
+
+*/

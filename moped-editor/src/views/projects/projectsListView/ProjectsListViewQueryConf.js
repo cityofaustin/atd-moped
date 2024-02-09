@@ -300,7 +300,7 @@ export const DEFAULT_HIDDEN_COLS = Object.entries(
   PROJECT_LIST_VIEW_QUERY_CONFIG.columns
 ).reduce((acc, [columnName, config]) => {
   if (config.showInTable === true) {
-    acc[columnName] = config.defaultHidden;
+    acc[columnName] = !config.defaultHidden;
   }
   return acc;
 }, {});
