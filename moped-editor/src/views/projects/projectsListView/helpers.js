@@ -178,7 +178,7 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         headerName: "Status",
-        field: "current_phase_key",
+        field: "current_phase",
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
         renderCell: ({ row }) => {

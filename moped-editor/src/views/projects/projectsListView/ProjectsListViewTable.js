@@ -143,17 +143,24 @@ const ProjectsListViewTable = () => {
 
   /**
    * Handles the header click for sorting asc/desc.
-   * @param {int} columnId
-   * @param {string} newOrderDirection
-   * Note: this is a GridTable function that we are using to override a Material Table sorting function
-   * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
+   * @param {Array.Object} sortModel, [{field, sort}]
+   * Note: this is a function that we are using to override a DataGrid sorting function
+   * Clicking the sort arrow on a column will toggle between asc, desc, then reset
+   * The Community version of DataGrid only supports sorting by one field, until we upgrade to Pro
+   * we can expect only one item in the array
    **/
   const handleSortClick = useCallback(
-    (columnName, columnSort) => {
+    (sortModel) => {
       // Resets pagination offset to 0 when user clicks a header to display most relevant results
       setQueryOffset(0);
-      setOrderByColumn(columnName);
-      setOrderByDirection(columnSort)
+
+      if (sortModel.length > 0) {
+        setOrderByColumn(sortModel[0]?.field);
+        setOrderByDirection(sortModel[0]?.sort)
+      } else {
+        setOrderByColumn(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn)
+        setOrderByDirection(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection)
+      }
     },
     [
       setQueryOffset,
@@ -230,7 +237,8 @@ const ProjectsListViewTable = () => {
                 rows={data.project_list_view}
                 density="compact"
                 onSortModelChange={(sortModel) => {
-                  handleSortClick(sortModel[0].field, sortModel[0].sort)
+                  console.log(sortModel)
+                  handleSortClick(sortModel)
                 }}
               />
             )}
