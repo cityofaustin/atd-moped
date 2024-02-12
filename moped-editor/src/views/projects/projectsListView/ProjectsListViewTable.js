@@ -137,11 +137,9 @@ const ProjectsListViewTable = () => {
     setQueryLimit,
   });
 
-  // const tableOptions = useTableOptions({ queryLimit, data });
-
-  const sortByColumnIndex = columns.findIndex(
-    (column) => column.field === orderByColumn
-  );
+  // const sortByColumnIndex = columns.findIndex(
+  //   (column) => column.field === orderByColumn
+  // );
 
   /**
    * Handles the header click for sorting asc/desc.
@@ -150,28 +148,15 @@ const ProjectsListViewTable = () => {
    * Note: this is a GridTable function that we are using to override a Material Table sorting function
    * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
    **/
-  const handleTableHeaderClick = useCallback(
-    (columnId, newOrderDirection) => {
-      const columnName = columns[columnId]?.field;
-
+  const handleSortClick = useCallback(
+    (columnName, columnSort) => {
       // Resets pagination offset to 0 when user clicks a header to display most relevant results
       setQueryOffset(0);
-
-      if (orderByColumn === columnName) {
-        // If the current sortColumn is the same as the new
-        // then invert values and repeat sort on column
-        const direction = orderByDirection === "desc" ? "asc" : "desc";
-        setOrderByDirection(direction);
-      } else {
-        // Sort different column in same order as previous column
-        setOrderByColumn(columnName);
-      }
+      setOrderByColumn(columnName);
+      setOrderByDirection(columnSort)
     },
     [
       setQueryOffset,
-      orderByColumn,
-      orderByDirection,
-      columns,
       setOrderByDirection,
       setOrderByColumn,
     ]
@@ -179,14 +164,10 @@ const ProjectsListViewTable = () => {
 
   const tableComponents = useTableComponents({
     data,
-    loading,
     queryLimit,
     queryOffset,
     setQueryLimit,
     setQueryOffset,
-    handleTableHeaderClick,
-    sortByColumnIndex,
-    orderByDirection,
     rowsPerPageOptions:
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
@@ -229,14 +210,8 @@ const ProjectsListViewTable = () => {
           <Box sx={{ height: "500px", padding: "24px" }}>
             {data && data.project_list_view && (
               <DataGrid
-                // initialState={{
-                //   columns: {
-                //     columnVisibilityModel: hiddenColumns
-                //   }
-                // }}
                 columnVisibilityModel={hiddenColumns}
-                onColumnVisibilityModelChange={(newModel, details) => {
-                  console.log(details);
+                onColumnVisibilityModelChange={(newModel) => {
                   setHiddenColumns(newModel);
                 }}
                 slots={{
@@ -254,6 +229,9 @@ const ProjectsListViewTable = () => {
                 disableRowSelectionOnClick
                 rows={data.project_list_view}
                 density="compact"
+                onSortModelChange={(sortModel) => {
+                  handleSortClick(sortModel[0].field, sortModel[0].sort)
+                }}
               />
             )}
           </Box>
