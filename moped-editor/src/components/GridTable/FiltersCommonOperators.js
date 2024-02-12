@@ -171,14 +171,14 @@ export const FiltersCommonOperators = {
   council_districts_array_is_null: {
     operator: "_is_null",
     label: "No",
-    description: "Project's has no mapped components in council districts",
+    description: "Project has no mapped components in council districts",
     type: "array",
     envelope: "true",
   },
   council_districts_array_is_not_null: {
     operator: "_is_null",
     label: "Yes",
-    description: "Project's has components in council districts",
+    description: "Project has components in council districts",
     type: "array",
     envelope: "false",
   },
