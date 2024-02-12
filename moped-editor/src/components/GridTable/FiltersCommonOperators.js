@@ -189,4 +189,11 @@ export const FiltersCommonOperators = {
     type: "array",
     envelope: false,
   },
+  council_districts_array_is: {
+    operator: "_eq",
+    label: "Is",
+    description: "Project has components in, and only in, specific council districts",
+    type: "array",
+    envelope: false,
+  },
 };
