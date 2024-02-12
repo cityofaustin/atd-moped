@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import MapGL, { NavigationControl } from "react-map-gl";
 import BasemapSpeedDial from "../projectView/ProjectComponents/BasemapSpeedDial";
 import {
@@ -8,17 +8,19 @@ import {
 } from "../projectView/ProjectComponents/mapSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-export default function ProjectsMap() {
-  const mapRef = useRef();
+export default React.forwardRef(function ProjectsMap(_, ref) {
   const [basemapKey, setBasemapKey] = useState("streets");
 
   return (
     <MapGL
-      ref={mapRef}
+      ref={ref}
       initialViewState={initialViewState}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
-      style={{ borderRadius: "4px" }} // Match the Paper wrapper's border-radius
+      style={{
+        borderTopRightRadius: "4px",
+        borderBottomRightRadius: "4px",
+      }} // Match the Paper wrapper's border-radius
       reuseMaps
       trackResize
     >
@@ -26,4 +28,4 @@ export default function ProjectsMap() {
       <NavigationControl position="bottom-left" showCompass={false} />
     </MapGL>
   );
-}
+});

@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectsMapView = () => {
+  const mapRef = React.useRef();
   const classes = useStyles();
 
   return (
@@ -26,12 +27,12 @@ const ProjectsMapView = () => {
       <ErrorBoundary FallbackComponent={FallbackComponent}>
         <Box component="main" className={classes.content}>
           <Paper id="map-wrapper" sx={{ height: "80vh", display: "flex" }}>
-            <MapDrawer>
+            <MapDrawer ref={mapRef}>
               <Typography sx={{ padding: theme.spacing(1) }}>
                 Filter UI placeholder
               </Typography>
             </MapDrawer>
-            <ProjectsMap />
+            <ProjectsMap ref={mapRef} />
           </Paper>
         </Box>
       </ErrorBoundary>
