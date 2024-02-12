@@ -24,6 +24,8 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
   "subprojects_array_is_not_null",
   "string_is_blank",
   "string_is_not_blank",
+  "council_districts_array_is_null",
+  "council_districts_array_is_not_null",
 ];
 
 /**
@@ -412,6 +414,16 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_contains_case_insensitive",
         "string_is_null",
         "string_is_not_null",
+      ],
+    },
+    {
+      name: "self_and_children_council_districts",
+      label: "Council Districts",
+      placeholder: "District",
+      type: "array",
+      operators: [
+        "council_districts_array_is_null",
+        "council_districts_array_is_not_null",
       ],
     },
   ],
