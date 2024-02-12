@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
+import { Box, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
@@ -23,6 +23,7 @@ import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
+import ProjectListToolbar from "./ProjectListToolbar"
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
@@ -190,6 +191,8 @@ const ProjectsListViewTable = () => {
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
 
+  console.log(tableComponents)
+
   /**
    * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
@@ -226,12 +229,25 @@ const ProjectsListViewTable = () => {
           <Box sx={{ height: "500px", padding:"24px" }}>
           {data && data.project_list_view && (
             <DataGrid
-              columnVisibilityModel={hiddenColumns}
-              onColumnVisibilityModelChange={(newModel) =>
-                setHiddenColumns(newModel)
-              }
+              initialState={{
+                columns: {
+                  columnVisibilityModel: hiddenColumns
+                }
+              }}
+              // columnVisibilityModel={hiddenColumns}
+              onColumnVisibilityModelChange={(newModel) =>{
+                console.log(newModel);
+                setHiddenColumns(newModel);
+              }}
+              slots={{
+                toolbar: ProjectListToolbar,
+              }}
+              slotProps={{
+                columnsManagement: {disableShowHideToggle: true}
+              }}
+              // getRowHeight={() => 'auto'}
               columns={columns}
-              getRowId={(thing) => thing.project_id}
+              getRowId={(row) => row.project_id}
               disableRowSelectionOnClick
               rows={data.project_list_view}
               density="compact"

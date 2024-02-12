@@ -140,11 +140,12 @@ export const useTableComponents = ({
   );
 
 const COLUMN_WIDTHS = {
-    small: 75,
-    medium: 200,
-    large: 250,
-    xlarge: 350,
-  };
+  xsmall: 75,
+  small: 125,
+  medium: 200,
+  large: 250,
+  xlarge: 350,
+};
 
 /**
  * The Material Table column settings
@@ -168,23 +169,19 @@ export const useColumns = ({ hiddenColumns }) => {
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
 
-
   const columns = useMemo(
     () => [
       {
         headerName: "ID",
         field: "project_id",
-        hidden: hiddenColumns["project_id"],
-        width: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.xsmall,
       },
       {
         headerName: "Name",
         field: "project_name",
         flex: 2,
         minWidth: COLUMN_WIDTHS.xlarge,
-        hidden: hiddenColumns["project_name"],
-
-        renderCell: ({row}) => (
+        renderCell: ({ row }) => (
           <Link
             component={RouterLink}
             to={`/moped/projects/${row.project_id}`}
@@ -194,20 +191,12 @@ export const useColumns = ({ hiddenColumns }) => {
             {row.project_name}
           </Link>
         ),
-        // cellStyle: {
-        //   position: "sticky",
-        //   left: 0,
-        //   backgroundColor: "white",
-        //   minWidth: "20rem",
-        //   zIndex: 1,
-        // },
       },
       {
         headerName: "Status",
         field: "current_phase_key",
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
-        hidden: hiddenColumns["current_phase"],
         renderCell: ({ row }) => {
           return (
             <ProjectStatusBadge
@@ -221,43 +210,36 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Team",
         field: "project_team_members",
-        // hidden: hiddenColumns["project_team_members"],
-        // cellStyle: { whiteSpace: "noWrap" },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
-        renderCell: (entry) =>
+        renderCell: ({ row }) =>
           filterProjectTeamMembers(
-            entry.project_team_members,
+            row.project_team_members,
             "projectsListView"
           ),
       },
       {
         headerName: "Lead",
         field: "project_lead",
-        // hidden: hiddenColumns["project_lead"],
-        emptyValue: "-",
-        // cellStyle: { whiteSpace: "noWrap" },
+        emptyValue: "-", // todo, do we still want this?
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Sponsor",
         field: "project_sponsor",
-        // hidden: hiddenColumns["project_sponsor"],
-        // emptyValue: "-",
-        // editable: "never",
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
-        // cellStyle: { whiteSpace: "noWrap" },
       },
       {
         headerName: "Partners",
         field: "project_partners",
-        hidden: hiddenColumns["project_partners"],
-        // emptyValue: "-",
-        // cellStyle: { whiteSpace: "noWrap" },
-        renderCell: (entry) => {
-          return entry.project_partners.split(",").map((partner) => (
+        minWidth: COLUMN_WIDTHS.medium,
+        renderCell: ({ row }) => {
+          if (!row.project_partners || row?.project_partners.length < 1) {
+            return "-";
+          }
+          return row.project_partners.split(",").map((partner) => (
             <span key={partner} style={{ display: "block" }}>
               {partner}
             </span>
@@ -267,59 +249,60 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "eCapris ID",
         field: "ecapris_subproject_id",
-        // hidden: hiddenColumns["ecapris_subproject_id"],
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
-        renderCell: (entry) => (
+        minWidth: COLUMN_WIDTHS.small,
+        renderCell: ({ row }) => (
           <ExternalLink
-            text={entry.ecapris_subproject_id}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
+            text={row.ecapris_subproject_id}
+            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
           />
         ),
       },
       {
-        headerName: "Updated", // originally called modified but in johns branch it said updated
+        headerName: "Updated",
+        description: "Date record was last modified", // originally called modified but in johns branch it said updated
         field: "updated_at",
-        hidden: hiddenColumns["updated_at"],
         valueGetter: ({ row }) => formatTimeStampTZType(row.updated_at),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Signal IDs",
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
         sorting: COLUMN_CONFIG["project_feature"].sortable,
-        renderCell: (entry) => {
-          if (!entry?.project_feature) {
+        renderCell: ({row}) => {
+          if (!row?.project_feature) {
             return "-";
           } else {
-            const signals = entry.project_feature.filter(
+            const signals = row.project_feature.filter(
               (signal) => signal.signal_id && signal.knack_id
             );
             return <RenderSignalLink signals={signals} />;
           }
         },
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Task order(s)",
         field: "task_orders",
-        hidden: hiddenColumns["task_orders"],
-        // cellStyle: { whiteSpace: "noWrap" },
         emptyValue: "-",
-        renderCell: ({row}) => {
+        renderCell: ({ row }) => {
           // Empty value won't work in some cases where task_order is an empty array.
-          if (row?.task_orders.length < 1) {
+          if (!row.task_orders || row?.task_orders.length < 1) {
             return "-";
           }
           // Render values as a comma seperated string
-          return row.task_orders.map((taskOrder) => (
-            <span key={taskOrder.task_order} style={{ display: "block" }}>
-              {taskOrder.task_order}
-            </span>
-          ));
+          return (
+            <div style={{ display: "block" }}>
+              {row.task_orders.map((taskOrder) => (
+                <span key={taskOrder.task_order} style={{ display: "block" }}>
+                  {taskOrder.task_order}
+                </span>
+              ))}
+            </div>
+          );
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
@@ -327,17 +310,19 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Type",
         field: "type_name",
-        hidden: hiddenColumns["type_name"],
         emptyValue: "-",
-        // cellStyle: { whiteSpace: "noWrap" },
-        renderCell: ({row}) => {
-          console.log(row.type_name)
-          return row.type_name ? 
-          row.type_name.split(",").map((type_name) => (
-            <span key={type_name} style={{ display: "block" }}>
-              {type_name}
-            </span>
-          ))             : "-";
+        renderCell: ({ row }) => {
+          return row.type_name ? (
+            <div style={{ display: "block" }}>
+              {row.type_name.split(",").map((type_name) => (
+                <span key={type_name} style={{ display: "block" }}>
+                  {type_name}
+                </span>
+              ))}
+            </div>
+          ) : (
+            "-"
+          );
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
@@ -368,7 +353,7 @@ export const useColumns = ({ hiddenColumns }) => {
         cellStyle: { maxWidth: "30rem" },
         render: (entry) => parse(String(entry.project_status_update)),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Construction start",
