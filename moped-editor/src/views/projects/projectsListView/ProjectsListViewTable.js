@@ -23,7 +23,7 @@ import {
   useCsvExport,
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
-import ProjectListToolbar from "./ProjectListToolbar"
+import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
@@ -31,7 +31,7 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%"
+    width: "100%",
   },
   paper: {
     width: "100%",
@@ -191,7 +191,7 @@ const ProjectsListViewTable = () => {
       PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
   });
 
-  console.log(tableComponents)
+  console.log(tableComponents);
 
   /**
    * Store the most recent version of the query in app context so that it
@@ -204,97 +204,64 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-      {/* <Box
+        {/* <Box
         sx={{ flexGrow: 1, display: "flex", flexDirection: "column", marginTop: "36px" }}
         id="thisbox"
       > */}
         <CsvDownloadDialog dialogOpen={dialogOpen} />
-          <Search
-            parentData={data}
-            filters={filters}
-            setFilters={setFilters}
-            advancedSearchAnchor={advancedSearchAnchor}
-            setAdvancedSearchAnchor={setAdvancedSearchAnchor}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
-            filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
-            handleExportButtonClick={handleExportButtonClick}
-            isOr={isOr}
-            setIsOr={setIsOr}
-            loading={loading}
-          />
+        <Search
+          parentData={data}
+          filters={filters}
+          setFilters={setFilters}
+          advancedSearchAnchor={advancedSearchAnchor}
+          setAdvancedSearchAnchor={setAdvancedSearchAnchor}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          queryConfig={PROJECT_LIST_VIEW_QUERY_CONFIG}
+          filtersConfig={PROJECT_LIST_VIEW_FILTERS_CONFIG}
+          handleExportButtonClick={handleExportButtonClick}
+          isOr={isOr}
+          setIsOr={setIsOr}
+          loading={loading}
+        />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
-          <Box sx={{ height: "500px", padding:"24px" }}>
-          {data && data.project_list_view && (
-            <DataGrid
-              // initialState={{
-              //   columns: {
-              //     columnVisibilityModel: hiddenColumns
-              //   }
-              // }}
-              columnVisibilityModel={hiddenColumns}
-              onColumnVisibilityModelChange={(newModel, details) =>{
-                console.log(details)
-                setHiddenColumns(newModel);
-              }}
-              slots={{
-                toolbar: ProjectListToolbar,
-              }}
-              slotProps={{
-                columnsPanel: {
-                  disableHideAllButton: true,
-                  disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
-              }}}
-              // getRowHeight={() => 'auto'}
-              columns={columns}
-              getRowId={(row) => row.project_id}
-              disableRowSelectionOnClick
-              rows={data.project_list_view}
-              density="compact"
-            />
-          )}
-        </Box>
+          <Box sx={{ height: "500px", padding: "24px" }}>
+            {data && data.project_list_view && (
+              <DataGrid
+                // initialState={{
+                //   columns: {
+                //     columnVisibilityModel: hiddenColumns
+                //   }
+                // }}
+                columnVisibilityModel={hiddenColumns}
+                onColumnVisibilityModelChange={(newModel, details) => {
+                  console.log(details);
+                  setHiddenColumns(newModel);
+                }}
+                slots={{
+                  toolbar: ProjectListToolbar,
+                }}
+                slotProps={{
+                  columnsPanel: {
+                    disableHideAllButton: true,
+                    disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
+                  },
+                }}
+                // getRowHeight={() => 'auto'}
+                columns={columns}
+                getRowId={(row) => row.project_id}
+                disableRowSelectionOnClick
+                rows={data.project_list_view}
+                density="compact"
+              />
+            )}
+          </Box>
         </Paper>
-      {/* </Box> */}
+        {/* </Box> */}
       </Container>
     </ApolloErrorHandler>
   );
 };
 
 export default ProjectsListViewTable;
-
-
-/*
-import * as React from 'react';
-import { useDemoData } from '@mui/x-data-grid-generator';
-import { DataGrid, GridColumnVisibilityModel } from '@mui/x-data-grid';
-
-export default function VisibleColumnsModelControlled() {
-
-
-  const [columnVisibilityModel, setColumnVisibilityModel] =
-    React.useState<GridColumnVisibilityModel>({
-      id: false,
-      brokerId: false,
-      status: false,
-    });
-
-  return (
-    <div style={{ height: 300, width: '100%' }}>
-      <DataGrid
-        {...data}
-        loading={loading}
-        columnVisibilityModel={columnVisibilityModel}
-        onColumnVisibilityModelChange={(newModel) =>
-          setColumnVisibilityModel(newModel)
-        }
-      />
-    </div>
-  );
-}
-
-
-
-*/
