@@ -1,12 +1,13 @@
 import * as React from "react";
-import { styled, useTheme } from "@mui/material/styles";
-import MuiDrawer from "@mui/material/Drawer";
+import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
+import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Box from "@mui/material/Box";
+import { styled, useTheme } from "@mui/material/styles";
 import { drawerWidth } from "../../projectView/ProjectComponents";
 
+/* Inspired by the MUI Drawer mini variant. See https://mui.com/material-ui/react-drawer/#mini-variant-drawer */
 const openedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
@@ -25,34 +26,32 @@ const closedMixin = (theme) => ({
   width: theme.spacing(7),
 });
 
+/* Contain drawer within Paper wrapper (instead of full screen drawer) */
+const containDrawerMixin = () => ({
+  "& .MuiDrawer-root": {
+    position: "relative",
+  },
+  "& .MuiPaper-root": {
+    position: "relative",
+    borderTopLeftRadius: "4px",
+    borderBottomLeftRadius: "4px",
+  },
+});
+
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   width: drawerWidth,
   flexShrink: 0,
+  ...containDrawerMixin(),
   ...(open && {
     ...openedMixin(theme),
     "& .MuiDrawer-paper": openedMixin(theme),
-    "& .MuiDrawer-root": {
-      position: "relative",
-    },
-    "& .MuiPaper-root": {
-      position: "relative",
-      borderTopLeftRadius: "4px",
-      borderBottomLeftRadius: "4px",
-    },
   }),
   ...(!open && {
+    ...containDrawerMixin(),
     ...closedMixin(theme),
     "& .MuiDrawer-paper": closedMixin(theme),
-    "& .MuiDrawer-root": {
-      position: "relative",
-    },
-    "& .MuiPaper-root": {
-      position: "relative",
-      borderTopLeftRadius: "4px",
-      borderBottomLeftRadius: "4px",
-    },
   }),
 }));
 
@@ -70,22 +69,7 @@ export default function MapDrawer({ children }) {
 
   return (
     <>
-      <Drawer
-        variant="permanent"
-        open={open}
-        ModalProps={{
-          container: document.getElementById("map-wrapper"),
-          /* Position drawer within the Paper wrapper */
-          "& .MuiDrawer-root": {
-            position: "relative",
-          },
-          "& .MuiPaper-root": {
-            position: "relative",
-            borderTopLeftRadius: "4px",
-            borderBottomLeftRadius: "4px",
-          },
-        }}
-      >
+      <Drawer variant="permanent" open={open}>
         <Box
           sx={{
             display: "flex",

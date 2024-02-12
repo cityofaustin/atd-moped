@@ -17,12 +17,8 @@ export default React.forwardRef(function ProjectsMap(_, ref) {
       initialViewState={initialViewState}
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
-      style={{
-        borderTopRightRadius: "4px",
-        borderBottomRightRadius: "4px",
-      }} // Match the Paper wrapper's border-radius
       reuseMaps
-      trackResize
+      trackResize={true}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />
