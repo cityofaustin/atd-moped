@@ -229,22 +229,24 @@ const ProjectsListViewTable = () => {
           <Box sx={{ height: "500px", padding:"24px" }}>
           {data && data.project_list_view && (
             <DataGrid
-              initialState={{
-                columns: {
-                  columnVisibilityModel: hiddenColumns
-                }
-              }}
-              // columnVisibilityModel={hiddenColumns}
-              onColumnVisibilityModelChange={(newModel) =>{
-                console.log(newModel);
+              // initialState={{
+              //   columns: {
+              //     columnVisibilityModel: hiddenColumns
+              //   }
+              // }}
+              columnVisibilityModel={hiddenColumns}
+              onColumnVisibilityModelChange={(newModel, details) =>{
+                console.log(details)
                 setHiddenColumns(newModel);
               }}
               slots={{
                 toolbar: ProjectListToolbar,
               }}
               slotProps={{
-                columnsManagement: {disableShowHideToggle: true}
-              }}
+                columnsPanel: {
+                  disableHideAllButton: true,
+                  disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
+              }}}
               // getRowHeight={() => 'auto'}
               columns={columns}
               getRowId={(row) => row.project_id}
