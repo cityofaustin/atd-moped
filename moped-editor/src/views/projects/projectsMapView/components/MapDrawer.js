@@ -58,18 +58,31 @@ const Drawer = styled(MuiDrawer, {
 export default function MapDrawer({ children }) {
   const theme = useTheme();
 
-  /* Control drawer */
+  /* Control drawer and content visibility */
   const [open, setOpen] = React.useState(true);
+  const [showDrawerContent, setShowDrawerContent] = React.useState(true);
 
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleTransitionEnd = () => {
+    if (open) {
+      setShowDrawerContent(true);
+    } else {
+      setShowDrawerContent(false);
+    }
   };
 
   /* Resize map canvas on drawer toggle */
 
   return (
     <>
-      <Drawer variant="permanent" open={open}>
+      <Drawer
+        variant="permanent"
+        open={open}
+        onTransitionEnd={handleTransitionEnd}
+      >
         <Box
           sx={{
             display: "flex",
@@ -79,7 +92,7 @@ export default function MapDrawer({ children }) {
           }}
         >
           <Box sx={{ flexGrow: 1, display: open ? "flex" : "none" }}>
-            {children}
+            {showDrawerContent ? children : null}
           </Box>
           <Box>
             <IconButton onClick={toggleDrawer}>
