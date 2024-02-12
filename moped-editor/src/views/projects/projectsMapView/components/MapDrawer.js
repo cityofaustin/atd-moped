@@ -4,9 +4,8 @@ import MuiDrawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
 import { drawerWidth } from "../../projectView/ProjectComponents";
-import { set } from "date-fns";
 
 const openedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
@@ -60,28 +59,19 @@ const Drawer = styled(MuiDrawer, {
 export default function MapDrawer({ children }) {
   const theme = useTheme();
 
-  /* Control drawer and content display */
+  /* Control drawer */
   const [open, setOpen] = React.useState(true);
-  const [showDrawerContent, setShowDrawerContent] = React.useState(false);
 
   const toggleDrawer = () => {
-    if (open) {
-      setShowDrawerContent(false);
-    }
     setOpen(!open);
   };
 
-  const handleTransitionEnd = () => {
-    if (open) {
-      setShowDrawerContent(true);
-    }
-  };
+  /* Resize map canvas on drawer toggle */
 
   return (
     <>
       <Drawer
         variant="permanent"
-        onTransitionEnd={handleTransitionEnd}
         open={open}
         ModalProps={{
           container: document.getElementById("map-wrapper"),
@@ -96,18 +86,23 @@ export default function MapDrawer({ children }) {
           },
         }}
       >
-        <Grid container padding={theme.spacing(1)}>
-          {showDrawerContent ? (
-            <Grid item flexGrow={1}>
-              {children}
-            </Grid>
-          ) : null}
-          <Grid item>
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "nowrap",
+            padding: theme.spacing(1),
+            height: "100%",
+          }}
+        >
+          <Box sx={{ flexGrow: 1, display: open ? "flex" : "none" }}>
+            {children}
+          </Box>
+          <Box>
             <IconButton onClick={toggleDrawer}>
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Drawer>
     </>
   );
