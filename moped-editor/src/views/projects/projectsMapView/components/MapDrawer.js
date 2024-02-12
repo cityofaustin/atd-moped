@@ -55,7 +55,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function MapDrawer({ children }) {
+export default React.forwardRef(function MapDrawer({ children }, ref) {
   const theme = useTheme();
 
   /* Control drawer and content visibility */
@@ -64,9 +64,10 @@ export default function MapDrawer({ children }) {
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [showMobileDrawerContent, setShowMobileDrawerContent] =
-    React.useState(true);
+    React.useState(false);
 
   const toggleDrawer = () => {
+    ref.current && ref.current.resize();
     setOpen(!open);
   };
 
@@ -74,6 +75,8 @@ export default function MapDrawer({ children }) {
     if (open) {
       setShowDrawerContent(true);
     } else {
+      // Repaint map canvas on drawer close to avoid blank space in map canvas
+      ref.current && ref.current.resize();
       setShowDrawerContent(false);
     }
   };
@@ -83,14 +86,12 @@ export default function MapDrawer({ children }) {
   };
 
   const handleMobileTransitionEnd = () => {
-    if (open) {
+    if (mobileOpen) {
       setShowMobileDrawerContent(true);
     } else {
       setShowMobileDrawerContent(false);
     }
   };
-
-  /* Resize map canvas on drawer toggle */
 
   return (
     <>
@@ -109,8 +110,13 @@ export default function MapDrawer({ children }) {
             height: "100%",
           }}
         >
-          <Box sx={{ flexGrow: 1, display: open ? "flex" : "none" }}>
-            {showDrawerContent ? children : null}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: showDrawerContent && open ? "flex" : "none",
+            }}
+          >
+            {children}
           </Box>
           <Box>
             <IconButton onClick={toggleDrawer}>
@@ -137,8 +143,13 @@ export default function MapDrawer({ children }) {
             height: "100%",
           }}
         >
-          <Box sx={{ flexGrow: 1, display: mobileOpen ? "flex" : "none" }}>
-            {showMobileDrawerContent ? children : null}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: mobileOpen && showMobileDrawerContent ? "flex" : "none",
+            }}
+          >
+            {children}
           </Box>
           <Box>
             <IconButton onClick={toggleMobileDrawer}>
@@ -149,4 +160,4 @@ export default function MapDrawer({ children }) {
       </Drawer>
     </>
   );
-}
+});

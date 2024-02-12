@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import { ErrorBoundary } from "react-error-boundary";
+import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -28,8 +29,10 @@ const ProjectsMapView = () => {
         <Box component="main" className={classes.content}>
           <Paper sx={{ height: "80vh", display: "flex" }}>
             <MapDrawer ref={mapRef}>
-              <Stack spacing={1}>
-                <Typography>Filter UI placeholder</Typography>
+              <Stack padding={theme.spacing(1)} spacing={1}>
+                <Typography variant="h2" color={theme.palette.text.primary}>
+                  Filters Title
+                </Typography>
                 <Typography>Filter UI placeholder</Typography>
               </Stack>
             </MapDrawer>
