@@ -182,4 +182,11 @@ export const FiltersCommonOperators = {
     type: "array",
     envelope: "false",
   },
+  council_districts_array_contains: {
+    operator: "_contains",
+    label: "Contains",
+    description: "Project has components in a given council district",
+    type: "array",
+    envelope: false,
+  },
 };

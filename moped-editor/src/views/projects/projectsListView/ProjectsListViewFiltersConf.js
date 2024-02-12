@@ -424,6 +424,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       operators: [
         "council_districts_array_is_null",
         "council_districts_array_is_not_null",
+        "council_districts_array_contains",
       ],
     },
   ],
