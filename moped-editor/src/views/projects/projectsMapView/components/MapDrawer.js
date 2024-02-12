@@ -62,6 +62,10 @@ export default function MapDrawer({ children }) {
   const [open, setOpen] = React.useState(true);
   const [showDrawerContent, setShowDrawerContent] = React.useState(true);
 
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [showMobileDrawerContent, setShowMobileDrawerContent] =
+    React.useState(true);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -74,14 +78,28 @@ export default function MapDrawer({ children }) {
     }
   };
 
+  const toggleMobileDrawer = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const handleMobileTransitionEnd = () => {
+    if (open) {
+      setShowMobileDrawerContent(true);
+    } else {
+      setShowMobileDrawerContent(false);
+    }
+  };
+
   /* Resize map canvas on drawer toggle */
 
   return (
     <>
+      {/* Desktop drawer */}
       <Drawer
         variant="permanent"
         open={open}
         onTransitionEnd={handleTransitionEnd}
+        sx={{ display: { xs: "none", sm: "flex" } }}
       >
         <Box
           sx={{
@@ -97,6 +115,34 @@ export default function MapDrawer({ children }) {
           <Box>
             <IconButton onClick={toggleDrawer}>
               {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </Box>
+        </Box>
+      </Drawer>
+      {/* Mobile drawer */}
+      <Drawer
+        variant="permanent"
+        open={mobileOpen}
+        onTransitionEnd={handleMobileTransitionEnd}
+        sx={{ display: { xs: "flex", sm: "none" } }}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexWrap: "nowrap",
+            padding: theme.spacing(1),
+            height: "100%",
+          }}
+        >
+          <Box sx={{ flexGrow: 1, display: mobileOpen ? "flex" : "none" }}>
+            {showMobileDrawerContent ? children : null}
+          </Box>
+          <Box>
+            <IconButton onClick={toggleMobileDrawer}>
+              {mobileOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
             </IconButton>
           </Box>
         </Box>
