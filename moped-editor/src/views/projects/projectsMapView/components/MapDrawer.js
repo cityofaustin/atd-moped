@@ -1,7 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
+import Typography from "@mui/material/Typography";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme } from "@mui/material/styles";
@@ -54,20 +56,58 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+function DrawerContent({
+  children,
+  toggleDrawer,
+  open,
+  title,
+  showDrawerContent,
+}) {
+  const theme = useTheme();
+
+  return (
+    <>
+      <Grid container padding={theme.spacing(1)}>
+        <Grid container alignItems="center">
+          <Grid
+            item
+            flexGrow={1}
+            display={showDrawerContent && open ? "flex" : "none"}
+          >
+            <Typography variant="h2" color={theme.palette.text.primary}>
+              {title}
+            </Typography>
+          </Grid>
+          <Grid item>
+            <IconButton onClick={toggleDrawer}>
+              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+            </IconButton>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Box
+        flexGrow={1}
+        display={showDrawerContent && open ? "flex" : "none"}
+        overflow="scroll"
+        padding={theme.spacing(1)}
+      >
+        {children}
+      </Box>
+    </>
+  );
+}
+
 /**
  * Collapsible drawer for map filters.
  * See https://mui.com/material-ui/react-drawer/#responsive-drawer
  * See https://mui.com/material-ui/react-drawer/#mini-variant-drawer
  */
-export default React.forwardRef(function MapDrawer({ children }, ref) {
-  const theme = useTheme();
-
+export default React.forwardRef(function MapDrawer({ children, title }, ref) {
   /* Control desktop drawer and content visibility */
   const [open, setOpen] = React.useState(true);
   const [showDrawerContent, setShowDrawerContent] = React.useState(true);
 
   const toggleDrawer = () => {
-    ref.current && ref.current.resize();
     setOpen(!open);
   };
 
@@ -107,28 +147,14 @@ export default React.forwardRef(function MapDrawer({ children }, ref) {
         onTransitionEnd={handleTransitionEnd}
         sx={{ display: { xs: "none", sm: "flex" } }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "nowrap",
-            padding: theme.spacing(1),
-            height: "100%",
-          }}
+        <DrawerContent
+          title={title}
+          open={open}
+          toggleDrawer={toggleDrawer}
+          showDrawerContent={showDrawerContent}
         >
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: showDrawerContent && open ? "flex" : "none",
-            }}
-          >
-            {children}
-          </Box>
-          <Box>
-            <IconButton onClick={toggleDrawer}>
-              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </Box>
-        </Box>
+          {children}
+        </DrawerContent>
       </Drawer>
       {/* Mobile drawer */}
       <Drawer
@@ -140,28 +166,14 @@ export default React.forwardRef(function MapDrawer({ children }, ref) {
           keepMounted: true, // Better open performance on mobile.
         }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "nowrap",
-            padding: theme.spacing(1),
-            height: "100%",
-          }}
+        <DrawerContent
+          title={title}
+          open={mobileOpen}
+          toggleDrawer={toggleMobileDrawer}
+          showDrawerContent={showMobileDrawerContent}
         >
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: mobileOpen && showMobileDrawerContent ? "flex" : "none",
-            }}
-          >
-            {children}
-          </Box>
-          <Box>
-            <IconButton onClick={toggleMobileDrawer}>
-              {mobileOpen ? <ChevronLeftIcon /> : <ChevronRightIcon />}
-            </IconButton>
-          </Box>
-        </Box>
+          {children}
+        </DrawerContent>
       </Drawer>
     </>
   );
