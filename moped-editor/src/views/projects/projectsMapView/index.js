@@ -16,39 +16,41 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     minHeight: "100%",
     margin: theme.spacing(3),
+    height: "80vh",
+    display: "flex",
   },
 }));
 
 const ProjectsMapView = () => {
-  const mapRef = React.useRef();
   const classes = useStyles();
 
+  /* Store map instance to call Mapbox GL methods where needed */
+  const mapRef = React.useRef();
+
   return (
-    <Page className={classes.root} title="Projects Map">
+    <Page title="Projects Map">
       <ErrorBoundary FallbackComponent={FallbackComponent}>
-        <Box component="main" className={classes.content}>
-          <Paper sx={{ height: "80vh", display: "flex" }}>
-            <MapDrawer ref={mapRef}>
-              <Stack padding={theme.spacing(1)} spacing={1}>
-                <Typography variant="h2" color={theme.palette.text.primary}>
-                  Filters Title
-                </Typography>
-                <Typography>Filter UI placeholder</Typography>
-              </Stack>
-            </MapDrawer>
-            <Box
-              sx={{
-                flexGrow: 1,
-                /* Give the map the same border-radius as MUI Paper and hide map overflow */
-                borderTopRightRadius: "4px",
-                borderBottomRightRadius: "4px",
-                overflow: "hidden",
-              }}
-            >
-              <ProjectsMap ref={mapRef} />
-            </Box>
-          </Paper>
-        </Box>
+        <Paper component="main" className={classes.content}>
+          <MapDrawer ref={mapRef}>
+            <Stack padding={theme.spacing(1)} spacing={1}>
+              <Typography variant="h2" color={theme.palette.text.primary}>
+                Filters Title
+              </Typography>
+              <Typography>Filter UI placeholder</Typography>
+            </Stack>
+          </MapDrawer>
+          <Box
+            sx={{
+              flexGrow: 1,
+              /* Give the map the same border-radius as MUI Paper and hide map overflow */
+              borderTopRightRadius: "4px",
+              borderBottomRightRadius: "4px",
+              overflow: "hidden",
+            }}
+          >
+            <ProjectsMap ref={mapRef} />
+          </Box>
+        </Paper>
       </ErrorBoundary>
     </Page>
   );

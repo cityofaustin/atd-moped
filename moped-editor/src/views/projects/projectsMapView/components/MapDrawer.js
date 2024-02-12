@@ -7,7 +7,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { styled, useTheme } from "@mui/material/styles";
 import { drawerWidth } from "../../projectView/ProjectComponents";
 
-/* Inspired by the MUI Drawer mini variant. See https://mui.com/material-ui/react-drawer/#mini-variant-drawer */
 const openedMixin = (theme) => ({
   transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
@@ -55,16 +54,17 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
+/**
+ * Collapsible drawer for map filters.
+ * See https://mui.com/material-ui/react-drawer/#responsive-drawer
+ * See https://mui.com/material-ui/react-drawer/#mini-variant-drawer
+ */
 export default React.forwardRef(function MapDrawer({ children }, ref) {
   const theme = useTheme();
 
-  /* Control drawer and content visibility */
+  /* Control desktop drawer and content visibility */
   const [open, setOpen] = React.useState(true);
   const [showDrawerContent, setShowDrawerContent] = React.useState(true);
-
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [showMobileDrawerContent, setShowMobileDrawerContent] =
-    React.useState(false);
 
   const toggleDrawer = () => {
     ref.current && ref.current.resize();
@@ -75,11 +75,16 @@ export default React.forwardRef(function MapDrawer({ children }, ref) {
     if (open) {
       setShowDrawerContent(true);
     } else {
-      // Repaint map canvas on drawer close to avoid blank space in map canvas
+      // Repaint canvas on drawer close to avoid blank space in map
       ref.current && ref.current.resize();
       setShowDrawerContent(false);
     }
   };
+
+  /* Control mobile drawer and content visibility */
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [showMobileDrawerContent, setShowMobileDrawerContent] =
+    React.useState(false);
 
   const toggleMobileDrawer = () => {
     setMobileOpen(!mobileOpen);

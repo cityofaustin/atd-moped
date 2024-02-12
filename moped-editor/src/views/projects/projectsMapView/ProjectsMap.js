@@ -18,7 +18,7 @@ export default React.forwardRef(function ProjectsMap(_, ref) {
       mapStyle={basemaps[basemapKey].mapStyle}
       {...mapParameters}
       reuseMaps
-      trackResize={true}
+      trackResize
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />
