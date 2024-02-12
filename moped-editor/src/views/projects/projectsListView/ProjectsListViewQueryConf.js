@@ -290,6 +290,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
+    self_and_children_council_districts: {
+      type: "array",
+      sortable: false,
+      defaultHidden: false,
+      showInTable: true,
+    },
   },
 };
 

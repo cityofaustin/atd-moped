@@ -452,6 +452,19 @@ export const useColumns = ({ hiddenColumns }) => {
         },
         emptyValue: "-",
       },
+      {
+        title: "Council districts",
+        field: "self_and_children_council_districts",
+        hidden: hiddenColumns["self_and_children_council_districts"],
+        render: (entry) => {
+          if (entry.self_and_children_council_districts.length > 0) {
+            return entry.self_and_children_council_districts.join(", ");
+          } else {
+            return <span> - </span>;
+          }
+        },
+        emptyValue: "-",
+      },
     ],
     [hiddenColumns, queryString]
   );
