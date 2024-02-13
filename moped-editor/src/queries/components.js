@@ -204,7 +204,7 @@ export const GET_PROJECT_COMPONENTS = gql`
 // are switched to is_deleted = false by the mutation). It also handles deleting/creating of signal
 // features and intersection/point features as needed when component type is changed
 export const UPDATE_COMPONENT_ATTRIBUTES = gql`
-  mutation UpdateSignalComponent(
+  mutation UpdateProjectComponent(
     $projectComponentId: Int!
     $componentId: Int!
     $description: String
