@@ -417,7 +417,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "self_and_children_council_districts",
+      name: "project_and_child_project_council_districts",
       label: "Council Districts",
       placeholder: "District",
       type: "array",
