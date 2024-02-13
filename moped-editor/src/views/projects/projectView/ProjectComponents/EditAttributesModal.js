@@ -108,7 +108,7 @@ const EditAttributesModal = ({
           );
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 
@@ -122,7 +122,7 @@ const EditAttributesModal = ({
         description:
           clickedComponent.description?.length > 0
             ? clickedComponent.description
-            : "",
+            : null,
         subcomponents: makeSubcomponentsFormFieldValues(
           clickedComponent.moped_proj_components_subcomponents
         ),
