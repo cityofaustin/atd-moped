@@ -73,15 +73,9 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
           // If it is a number or boolean, it does not need quotation marks
           // Otherwise, add quotation marks for the query to identify as string
-          if (["number", "boolean"].includes(type)) {
-            // eslint-disable-next-line no-self-assign
-            value = value;
-          } else if (type === "array") {
-            // a virtue of this stringification of an array, we actually support
-            // comma delimited lists of districts and `graphql-engine` will do the
-            // correct set algebra
+          if (type === "array") {
             value = `[${value}]`;
-          } else {
+          } else if (!["number", "boolean"].includes(type)) {
             value = `"${value}"`;
           }
         } else {
