@@ -1,5 +1,3 @@
--- latest version 1700149643859_add_audit_fields_to_unified_features_view
-
 CREATE OR REPLACE VIEW public.project_geography
 AS SELECT
     moped_project.project_id,
