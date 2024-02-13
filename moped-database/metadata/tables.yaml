@@ -2784,7 +2784,7 @@
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                },
+                }
               }
             }
         method: POST
