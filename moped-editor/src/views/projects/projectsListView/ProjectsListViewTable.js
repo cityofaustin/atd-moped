@@ -214,7 +214,7 @@ const ProjectsListViewTable = () => {
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
-          <Box sx={{ height: "500px", padding: "24px" }}>
+          <Box sx={{ height: "600px", padding: "14px", marginTop: "24px" }}>
             {data && data.project_list_view && (
               <DataGrid
                 columnVisibilityModel={hiddenColumns}
