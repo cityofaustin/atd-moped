@@ -5,7 +5,7 @@ import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import { DataGrid } from "@mui/x-data-grid";
-import { useTableComponents, useColumns } from "./helpers.js";
+import { useColumns } from "./helpers.js";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import {
@@ -137,10 +137,6 @@ const ProjectsListViewTable = () => {
     setQueryLimit,
   });
 
-  // const sortByColumnIndex = columns.findIndex(
-  //   (column) => column.field === orderByColumn
-  // );
-
   /**
    * Handles the header click for sorting asc/desc.
    * @param {Array.Object} sortModel, [{field, sort}]
@@ -156,30 +152,25 @@ const ProjectsListViewTable = () => {
 
       if (sortModel.length > 0) {
         setOrderByColumn(sortModel[0]?.field);
-        setOrderByDirection(sortModel[0]?.sort)
+        setOrderByDirection(sortModel[0]?.sort);
       } else {
-        setOrderByColumn(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn)
-        setOrderByDirection(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection)
+        setOrderByColumn(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn);
+        setOrderByDirection(
+          PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection
+        );
       }
     },
-    [
-      setQueryOffset,
-      setOrderByDirection,
-      setOrderByColumn,
-    ]
+    [setQueryOffset, setOrderByDirection, setOrderByColumn]
   );
 
-  const tableComponents = useTableComponents({
-    data,
-    queryLimit,
-    queryOffset,
-    setQueryLimit,
-    setQueryOffset,
-    rowsPerPageOptions:
-      PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
-  });
-
-  console.log(tableComponents);
+  const handlePagination = useCallback(
+    (paginationModel) => {
+      console.log(paginationModel);
+      setQueryLimit(paginationModel.pageSize);
+      setQueryOffset(paginationModel.pageSize * paginationModel.page);
+    },
+    [setQueryLimit, setQueryOffset]
+  );
 
   /**
    * Store the most recent version of the query in app context so that it
@@ -236,11 +227,18 @@ const ProjectsListViewTable = () => {
                 disableRowSelectionOnClick
                 rows={data.project_list_view}
                 density="compact"
-                onSortModelChange={(sortModel) => {
-                  console.log(sortModel)
-                  handleSortClick(sortModel)
-                }}
+                onSortModelChange={handleSortClick}
                 disableColumnFilter
+                paginationMode="server"
+                paginationModel={{
+                  page: queryOffset / queryLimit,
+                  pageSize: queryLimit,
+                }}
+                onPaginationModelChange={handlePagination}
+                rowCount={data.project_list_view_aggregate?.aggregate.count}
+                pageSizeOptions={
+                  PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
+                }
               />
             )}
           </Box>

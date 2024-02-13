@@ -3,7 +3,6 @@ import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import Link from "@mui/material/Link";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
-import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../../../components/RenderSignalLink";
@@ -88,40 +87,6 @@ const filterComponentFullNames = (value) => {
 };
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
-
-/**
- * Various custom components for Material Table
- */
-export const useTableComponents = ({
-  data,
-  queryLimit,
-  queryOffset,
-  setQueryLimit,
-  setQueryOffset,
-  rowsPerPageOptions,
-}) =>
-  useMemo(
-    () => ({
-      Pagination: (props) => (
-        <Pagination
-          recordCount={data.project_list_view_aggregate?.aggregate.count}
-          queryLimit={queryLimit}
-          setQueryLimit={setQueryLimit}
-          queryOffset={queryOffset}
-          setQueryOffset={setQueryOffset}
-          rowsPerPageOptions={rowsPerPageOptions}
-        />
-      ),
-    }),
-    [
-      data,
-      queryLimit,
-      queryOffset,
-      setQueryLimit,
-      setQueryOffset,
-      rowsPerPageOptions,
-    ]
-  );
 
 const COLUMN_WIDTHS = {
   xsmall: 75,
