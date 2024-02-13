@@ -207,7 +207,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
   mutation UpdateSignalComponent(
     $projectComponentId: Int!
     $componentId: Int!
-    $description: String!
+    $description: String
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $workTypes: [moped_proj_component_work_types_insert_input!]!
     $signalsToCreate: [feature_signals_insert_input!]!
