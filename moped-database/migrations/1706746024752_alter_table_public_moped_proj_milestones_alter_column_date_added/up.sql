@@ -1,9 +1,9 @@
-ALTER TABLE "public"."moped_proj_milestones" RENAME COLUMN "date_added" TO "created_at";
-ALTER TABLE "public"."moped_proj_milestones" ADD COLUMN "created_by_user_id" INTEGER
+ALTER TABLE moped_proj_milestones RENAME COLUMN date_added TO created_at;
+ALTER TABLE moped_proj_milestones ADD COLUMN created_by_user_id INTEGER
  NULL;
-ALTER TABLE "public"."moped_proj_milestones" ADD COLUMN "updated_at" TIMESTAMPTZ
+ALTER TABLE moped_proj_milestones ADD COLUMN updated_at TIMESTAMPTZ
  NULL;
-ALTER TABLE "public"."moped_proj_milestones" ADD COLUMN "updated_by_user_id" INTEGER
+ALTER TABLE moped_proj_milestones ADD COLUMN updated_by_user_id INTEGER
  NULL;
 
 COMMENT ON COLUMN moped_proj_milestones.updated_at IS 'Timestamp when the record was last updated';
