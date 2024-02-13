@@ -31,7 +31,8 @@ export const generateEmptyFilter = () => {
  */
 export const checkIsValidInput = (filterParameter, type) => {
   // If we are testing a number type field with a non null value
-  if (type === "number" && !!filterParameter.value) {
+  // if (type === "number" && !!filterParameter.value) {
+  if (["number", "array"].includes(type) && !!filterParameter.value) {
     // Return whether string only contains digits
     return !/[^0-9]/.test(filterParameter.value);
   }
