@@ -240,9 +240,7 @@ const ProjectsListViewTable = () => {
                   console.log(sortModel)
                   handleSortClick(sortModel)
                 }}
-                // filterMode="server"
-                // onFilterModelChange={onFilterChange}
-                // actually, turn off the filter for now and punt to another issue?
+                disableColumnFilter
               />
             )}
           </Box>
