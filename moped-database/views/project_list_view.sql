@@ -110,10 +110,10 @@ project_district_association AS (
         projects.project_id,
         array_agg(DISTINCT project_districts.council_district) FILTER (
             WHERE project_districts.council_district IS NOT null
-        ) AS self_alone_council_districts,
+        ) AS project_council_districts,
         array_agg(DISTINCT districts.council_district) FILTER (
             WHERE districts.council_district IS NOT null
-        ) AS self_and_children_council_districts
+        ) AS project_and_child_project_council_districts
     FROM parent_child_project_map AS projects
     LEFT JOIN
         project_council_district_map AS districts
@@ -275,8 +275,8 @@ SELECT
     ) AS project_tags,
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
-    districts.self_alone_council_districts,
-    districts.self_and_children_council_districts
+    districts.project_council_districts,
+    districts.project_and_child_project_council_districts
 FROM moped_project AS mp
 LEFT JOIN project_person_list_lookup AS ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup AS fsl ON mp.project_id = fsl.project_id
@@ -335,5 +335,5 @@ GROUP BY
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    districts.self_alone_council_districts,
-    districts.self_and_children_council_districts;
+    districts.project_council_districts,
+    districts.project_and_child_project_council_districts;

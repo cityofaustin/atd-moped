@@ -454,11 +454,11 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         title: "Council districts",
-        field: "self_and_children_council_districts",
-        hidden: hiddenColumns["self_and_children_council_districts"],
+        field: "project_and_child_project_council_districts",
+        hidden: hiddenColumns["project_and_child_project_council_districts"],
         render: (entry) => {
-          if (entry.self_and_children_council_districts.length > 0) {
-            return entry.self_and_children_council_districts.join(", ");
+          if (entry.project_and_child_project_council_districts.length > 0) {
+            return entry.project_and_child_project_council_districts.join(", ");
           } else {
             return <span> - </span>;
           }
