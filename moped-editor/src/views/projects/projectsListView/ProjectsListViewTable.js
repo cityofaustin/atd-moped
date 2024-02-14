@@ -231,6 +231,7 @@ const ProjectsListViewTable = () => {
           handleDialogClose={handleOptionsDialogClose}
           handleContinueButtonClick={handleContinueButtonClick}
           handleRadioSelect={handleRadioSelect}
+          columnDownloadOption={columnDownloadOption}
         />
         <CsvDownloadingDialog downloadingDialogOpen={downloadingDialogOpen} />
         <Search
