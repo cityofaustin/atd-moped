@@ -97,7 +97,8 @@ project_district_association AS (
         LEFT JOIN moped_proj_components ON (moped_project.project_id = moped_proj_components.project_id)
         LEFT JOIN features ON (moped_proj_components.project_component_id = features.component_id)
         LEFT JOIN features_council_districts ON features.id = features_council_districts.feature_id
-        WHERE moped_proj_components.is_deleted IS false
+        WHERE features.is_deleted IS false
+            AND moped_proj_components.is_deleted IS false
     ),
 
     parent_child_project_map AS (
@@ -115,16 +116,16 @@ project_district_association AS (
 
     SELECT
         projects.project_id,
-        array_agg(DISTINCT districts.council_district_id) FILTER (
-            WHERE districts.council_district_id IS NOT null
+        array_agg(DISTINCT project_districts.council_district_id) FILTER (
+            WHERE project_districts.council_district_id IS NOT null
         ) AS project_council_districts,
-        array_agg(DISTINCT districts.council_district_id) FILTER (
-            WHERE districts.council_district_id IS NOT null
+        array_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (
+            WHERE project_and_children_districts.council_district_id IS NOT null
         ) AS project_and_child_project_council_districts
     FROM parent_child_project_map AS projects
     LEFT JOIN
-        project_council_district_map AS districts
-        ON (projects.self_and_children_project_ids = districts.project_id)
+        project_council_district_map AS project_and_children_districts
+        ON (projects.self_and_children_project_ids = project_and_children_districts.project_id)
     LEFT JOIN project_council_district_map AS project_districts ON (projects.project_id = project_districts.project_id)
     GROUP BY projects.project_id
 )
