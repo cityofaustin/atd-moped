@@ -210,7 +210,6 @@ export const useCsvExport = ({
       const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
       downloadFile(csvString);
       setDownloadingDialogOpen(false);
-      setColumnDownloadOption("visible");
     });
   };
 
