@@ -1,3 +1,5 @@
+-- moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
+
 CREATE OR REPLACE VIEW public.project_list_view AS
 WITH project_person_list_lookup AS (
     SELECT

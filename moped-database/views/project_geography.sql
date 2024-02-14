@@ -1,4 +1,4 @@
--- latest version 1700149643859_add_audit_fields_to_unified_features_view
+-- moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
 
 CREATE OR REPLACE VIEW public.project_geography
 AS SELECT
