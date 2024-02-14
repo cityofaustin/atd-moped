@@ -400,7 +400,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "children_project_ids",
-      label: "Has Subprojects",
+      label: "Has subprojects",
       placeholder: "Subproject",
       type: "array",
       operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
@@ -418,7 +418,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "project_and_child_project_council_districts",
-      label: "Council Districts",
+      label: "Council districts",
       placeholder: "District",
       type: "array",
       operators: [
