@@ -21,9 +21,6 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_description: {
     label: "Project Description",
   },
-  current_phase_key: {
-    label: "Current Phase Key",
-  },
   current_phase: {
     label: "Status",
   },
