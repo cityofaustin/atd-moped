@@ -1,3 +1,5 @@
+-- moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
+
 CREATE OR REPLACE VIEW component_arcgis_online_view AS
 WITH work_types AS (
     SELECT
