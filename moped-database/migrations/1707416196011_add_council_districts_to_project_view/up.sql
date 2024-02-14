@@ -98,7 +98,8 @@ project_district_association AS (
         LEFT JOIN moped_proj_components ON (moped_project.project_id = moped_proj_components.project_id)
         LEFT JOIN features ON (moped_proj_components.project_component_id = features.component_id)
         LEFT JOIN features_council_districts ON features.id = features_council_districts.feature_id
-        WHERE moped_proj_components.is_deleted IS false
+        WHERE features.is_deleted IS false
+            AND moped_proj_components.is_deleted IS false
     ),
 
     parent_child_project_map AS (
