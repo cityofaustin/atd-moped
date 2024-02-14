@@ -50,7 +50,7 @@ export const useGetProjectListView = ({
     advancedSearchWhereString,
   ]);
   const { exportQuery } = useMemo(() => {
-    const exportQueryString = gql`{
+    const exportQueryString = gql`query ProjectListExport {
       project_list_view (
           order_by: {${orderByColumn}: ${orderByDirection}}
           where: { 
