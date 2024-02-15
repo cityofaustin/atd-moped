@@ -73,7 +73,11 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
           // If it is a number or boolean, it does not need quotation marks
           // Otherwise, add quotation marks for the query to identify as string
-          value = type in ["number", "boolean"] ? value : `"${value}"`;
+          if (type === "array") {
+            value = `[${value}]`;
+          } else if (!["number", "boolean"].includes(type)) {
+            value = `"${value}"`;
+          }
         } else {
           // We don't have a value
           return null;

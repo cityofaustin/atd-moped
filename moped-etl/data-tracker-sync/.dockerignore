@@ -1,3 +1,4 @@
 env_file
+env_file_production
 .git%
 __pycache__

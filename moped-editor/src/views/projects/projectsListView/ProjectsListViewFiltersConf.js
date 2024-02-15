@@ -20,12 +20,12 @@ export const AUTOCOMPLETE_OPERATORS = [
 export const OPERATORS_WITHOUT_SEARCH_VALUES = [
   "string_is_null",
   "string_is_not_null",
-  "string_is_not_null_special_case",
-  "string_is_null_special_case",
   "subprojects_array_is_null",
   "subprojects_array_is_not_null",
   "string_is_blank",
   "string_is_not_blank",
+  "council_districts_array_is_null",
+  "council_districts_array_is_not_null",
 ];
 
 /**
@@ -157,8 +157,8 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_ends_with_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
-        "string_is_null_special_case",
-        "string_is_not_null_special_case",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
@@ -176,8 +176,8 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_ends_with_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
-        "string_is_null_special_case",
-        "string_is_not_null_special_case",
+        "string_is_null",
+        "string_is_not_null",
       ],
     },
     {
@@ -400,7 +400,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "children_project_ids",
-      label: "Has Subprojects",
+      label: "Has subprojects",
       placeholder: "Subproject",
       type: "array",
       operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
@@ -414,6 +414,18 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_contains_case_insensitive",
         "string_is_null",
         "string_is_not_null",
+      ],
+    },
+    {
+      name: "project_and_child_project_council_districts",
+      label: "Council districts",
+      placeholder: "District",
+      type: "array",
+      operators: [
+        "council_districts_array_is_null",
+        "council_districts_array_is_not_null",
+        "council_districts_array_contains",
+        "council_districts_array_is",
       ],
     },
   ],

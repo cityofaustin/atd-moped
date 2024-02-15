@@ -217,19 +217,17 @@ export const useColumns = ({ hiddenColumns }) => {
         title: "Lead",
         field: "project_lead",
         hidden: hiddenColumns["project_lead"],
+        emptyValue: "-",
         editable: "never",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
-          entry.project_lead === null ? "-" : entry.project_lead,
       },
       {
         title: "Sponsor",
         field: "project_sponsor",
         hidden: hiddenColumns["project_sponsor"],
+        emptyValue: "-",
         editable: "never",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
-          entry.project_sponsor === "None" ? "-" : entry.project_sponsor,
       },
       {
         title: "Partners",
@@ -451,6 +449,19 @@ export const useColumns = ({ hiddenColumns }) => {
         render: (entry) => {
           const hasChildren = entry.children_project_ids.length > 0;
           return <span> {hasChildren ? "Yes" : "-"} </span>;
+        },
+        emptyValue: "-",
+      },
+      {
+        title: "Council districts",
+        field: "project_and_child_project_council_districts",
+        hidden: hiddenColumns["project_and_child_project_council_districts"],
+        render: (entry) => {
+          if (entry.project_and_child_project_council_districts.length > 0) {
+            return entry.project_and_child_project_council_districts.join(", ");
+          } else {
+            return <span> - </span>;
+          }
         },
         emptyValue: "-",
       },
