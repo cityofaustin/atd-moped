@@ -3,62 +3,26 @@ import { gql } from "apollo-boost";
 
 export const useGetProjectListView = ({
   columnsToReturn,
-  exportColumnsToReturn,
   queryLimit,
   queryOffset,
   orderByColumn,
   orderByDirection,
   searchWhereString,
   advancedSearchWhereString,
+  queryName,
 }) => {
   const { query } = useMemo(() => {
-    const queryString = `query ProjectListView {
-        project_list_view (
-            limit: ${queryLimit}
-            offset: ${queryOffset}
-            order_by: {${orderByColumn}: ${orderByDirection}}
-            where: { 
-              ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-              ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
-            }
-        ) {
-            ${columnsToReturn.join("\n")}
-        },
-        project_list_view_aggregate (
-          where: { 
-            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
-          }
-        ) {
-          aggregate {
-            count
-          }
-        }
-      }`;
-    const query = gql`
-      ${queryString}
-    `;
-
-    return { query };
-  }, [
-    queryLimit,
-    queryOffset,
-    columnsToReturn,
-    orderByColumn,
-    orderByDirection,
-    searchWhereString,
-    advancedSearchWhereString,
-  ]);
-  const { exportQuery } = useMemo(() => {
-    const exportQueryString = gql`query ProjectListExport {
+    const queryString = `query ${queryName} {
       project_list_view (
+          ${queryLimit ? `limit: ${queryLimit}` : ""}
+          ${queryOffset ? `offset: ${queryOffset}` : ""}
           order_by: {${orderByColumn}: ${orderByDirection}}
           where: { 
             ${advancedSearchWhereString ? advancedSearchWhereString : ""}
             ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
           }
       ) {
-          ${exportColumnsToReturn.join("\n")}
+          ${columnsToReturn.join("\n")}
       },
       project_list_view_aggregate (
         where: { 
@@ -71,21 +35,23 @@ export const useGetProjectListView = ({
         }
       }
     }`;
-    const exportQuery = gql`
-      ${exportQueryString}
+    const query = gql`
+      ${queryString}
     `;
 
-    return { exportQuery };
+    return { query };
   }, [
-    exportColumnsToReturn,
+    columnsToReturn,
+    queryLimit,
+    queryOffset,
     orderByColumn,
     orderByDirection,
     searchWhereString,
     advancedSearchWhereString,
+    queryName,
   ]);
 
   return {
     query,
-    exportQuery,
   };
 };
