@@ -38,7 +38,7 @@ export const useSearch = ({ queryConfig }) => {
   const [searchTerm, setSearchTerm] = useState(simpleSearchValue ?? "");
 
   const searchWhereString = useMemo(() => {
-    if (searchTerm && searchTerm !== "") {
+    if (searchTerm && searchTerm.length > 0) {
       /**
        * Iterate through all column keys, if they are searchable
        * add the to the Or list.

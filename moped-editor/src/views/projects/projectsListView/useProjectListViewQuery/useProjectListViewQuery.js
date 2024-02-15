@@ -18,16 +18,42 @@ export const useGetProjectListView = ({
             offset: ${queryOffset}
             order_by: {${orderByColumn}: ${orderByDirection}}
             where: { 
-              ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-              ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+              ${
+                searchWhereString && advancedSearchWhereString
+                  ? `_and: [{_or: [${searchWhereString}]}, {${advancedSearchWhereString}}]`
+                  : ""
+              }
+              ${
+                searchWhereString && !advancedSearchWhereString
+                  ? `_or: [${searchWhereString}]`
+                  : ""
+              }
+              ${
+                advancedSearchWhereString && !searchWhereString
+                  ? advancedSearchWhereString
+                  : ""
+              }
             }
         ) {
             ${columnsToReturn.join("\n")}
         },
         project_list_view_aggregate (
           where: { 
-            ${advancedSearchWhereString ? advancedSearchWhereString : ""}
-            ${searchWhereString ? `_or: [${searchWhereString}]` : ""} 
+            ${
+              searchWhereString && advancedSearchWhereString
+                ? `_and: [{_or: [${searchWhereString}]}, {${advancedSearchWhereString}}]`
+                : ""
+            }
+            ${
+              searchWhereString && !advancedSearchWhereString
+                ? `_or: [${searchWhereString}]`
+                : ""
+            }
+            ${
+              advancedSearchWhereString && !searchWhereString
+                ? advancedSearchWhereString
+                : ""
+            }
           }
         ) {
           aggregate {

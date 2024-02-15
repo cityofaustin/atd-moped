@@ -151,9 +151,6 @@ export const ProjectActivityLogTableMaps = {
       milestone_name: {
         label: "name",
       },
-      date_added: {
-        label: "date added",
-      },
       milestone_estimate: {
         label: "completion estimate",
       },
@@ -162,6 +159,12 @@ export const ProjectActivityLogTableMaps = {
       },
       is_deleted: {
         label: "is deleted",
+      },
+      created_at: {
+        label: "date added",
+      },
+      created_by_user_id: {
+        label: "added by",
       },
     },
   },
