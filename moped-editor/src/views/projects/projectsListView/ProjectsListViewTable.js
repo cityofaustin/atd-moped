@@ -119,18 +119,25 @@ const ProjectsListViewTable = () => {
     [setHiddenColumns]
   );
 
-  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
+  const { query: projectListViewQuery } = useGetProjectListView({
     columnsToReturn: columnsToReturnInQuery,
-    exportColumnsToReturn:
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListView",
+  });
+
+  const { query: exportQuery } = useGetProjectListView({
+    columnsToReturn:
       columnDownloadOption === "visible"
         ? columnsToReturnInQuery
         : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
-    queryLimit,
-    queryOffset,
-    orderByColumn,
-    orderByDirection,
-    searchWhereString,
-    advancedSearchWhereString,
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListExport",
   });
 
   const {
