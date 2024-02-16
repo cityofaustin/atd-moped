@@ -4,7 +4,7 @@ export const NOTES_QUERY = gql`
   query GetProjectNotes($projectNoteConditions: moped_proj_notes_bool_exp!) {
     moped_proj_notes(
       where: $projectNoteConditions
-      order_by: { date_created: desc }
+      order_by: { created_at: desc }
     ) {
       moped_user {
         first_name
@@ -12,7 +12,7 @@ export const NOTES_QUERY = gql`
       }
       project_note
       project_id
-      date_created
+      created_at
       project_note_id
       project_note_type
       is_deleted

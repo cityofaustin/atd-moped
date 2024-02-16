@@ -192,7 +192,7 @@ const ProjectNotes = (props) => {
           {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
-            added_by_user_id: Number(userSessionData.user_id),
+            // added_by_user_id: Number(userSessionData.user_id),
             project_note_type: newNoteType,
             phase_id: currentPhaseId,
           },
@@ -376,9 +376,9 @@ const ProjectNotes = (props) => {
                                   className={classes.noteDate}
                                 >
                                   {` - ${makeUSExpandedFormDateFromTimeStampTZ(
-                                    item.date_created
+                                    item.created_at
                                   )} ${makeHourAndMinutesFromTimeStampTZ(
-                                    item.date_created
+                                    item.created_at
                                   )}`}
                                 </Typography>
                                 <Typography
