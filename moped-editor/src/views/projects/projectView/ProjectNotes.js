@@ -192,7 +192,6 @@ const ProjectNotes = (props) => {
           {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
-            // added_by_user_id: Number(userSessionData.user_id),
             project_note_type: newNoteType,
             phase_id: currentPhaseId,
           },
