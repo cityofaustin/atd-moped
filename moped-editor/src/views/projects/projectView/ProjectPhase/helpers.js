@@ -192,6 +192,7 @@ export const onSubmitPhase = ({
         {
           project_note: DOMPurify.sanitize(noteData.status_update),
           project_id,
+          created_by_user_id: noteData.user_id,
           project_note_type: STATUS_UPDATE_TYPE_ID,
           phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
         },
