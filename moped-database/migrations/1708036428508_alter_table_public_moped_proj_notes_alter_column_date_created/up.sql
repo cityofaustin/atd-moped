@@ -1,6 +1,5 @@
 ALTER TABLE moped_proj_notes RENAME COLUMN date_created TO created_at;
-ALTER TABLE moped_proj_notes ADD COLUMN created_by_user_id INTEGER
- NULL;
+ALTER TABLE moped_proj_notes RENAME COLUMN added_by_user_id TO created_by_user_id;
 ALTER TABLE moped_proj_notes ADD COLUMN updated_at TIMESTAMPTZ
  NULL;
 ALTER TABLE moped_proj_notes ADD COLUMN updated_by_user_id INTEGER

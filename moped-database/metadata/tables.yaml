@@ -2810,7 +2810,7 @@
         foreign_key_constraint_on: project_id
     - name: moped_user
       using:
-        foreign_key_constraint_on: added_by_user_id
+        foreign_key_constraint_on: created_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
@@ -2819,7 +2819,6 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - added_by_user_id
           - is_deleted
           - phase_id
           - project_id
@@ -2833,7 +2832,6 @@
           created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
         columns:
-          - added_by_user_id
           - is_deleted
           - phase_id
           - project_id
@@ -2844,7 +2842,6 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by_user_id
           - created_at
           - created_by_user_id
           - is_deleted
@@ -2860,7 +2857,6 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by_user_id
           - created_at
           - created_by_user_id
           - is_deleted
@@ -2876,7 +2872,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - added_by_user_id
           - created_at
           - created_by_user_id
           - is_deleted
@@ -2893,7 +2888,6 @@
     - role: moped-admin
       permission:
         columns:
-          - added_by_user_id
           - is_deleted
           - phase_id
           - project_id
@@ -2907,7 +2901,6 @@
     - role: moped-editor
       permission:
         columns:
-          - added_by_user_id
           - is_deleted
           - phase_id
           - project_id

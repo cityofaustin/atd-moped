@@ -25,7 +25,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
     data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id;
 
   const dateCreated = formatRelativeDate(
-    data.moped_project[0].moped_proj_notes[0]?.date_created
+    data.moped_project[0].moped_proj_notes[0]?.created_at
   );
 
   return (

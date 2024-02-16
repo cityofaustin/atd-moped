@@ -16,7 +16,7 @@ export const NOTES_QUERY = gql`
       project_note_id
       project_note_type
       is_deleted
-      added_by_user_id
+      created_by_user_id
       moped_phase {
         phase_key
         phase_name

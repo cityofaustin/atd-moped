@@ -181,17 +181,11 @@ export const ProjectActivityLogTableMaps = {
       project_note_id: {
         label: "note ID",
       },
-      date_created: {
-        label: "date created",
-      },
       project_note: {
         label: "note",
       },
       is_deleted: {
         label: "is deleted",
-      },
-      added_by_user_id: {
-        label: "added by user ID",
       },
       project_note_type: {
         label: "note type",
