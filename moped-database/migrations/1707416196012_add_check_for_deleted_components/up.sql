@@ -1,5 +1,3 @@
--- moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
-
 CREATE OR REPLACE VIEW public.project_geography
 AS SELECT
     moped_project.project_id,

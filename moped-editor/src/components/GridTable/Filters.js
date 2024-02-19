@@ -15,6 +15,7 @@ import {
   Icon,
   IconButton,
   Grow,
+  Typography,
 } from "@mui/material";
 import RadioGroup from "@mui/material/RadioGroup";
 import Radio from "@mui/material/Radio";
@@ -29,7 +30,6 @@ import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
-import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import {
   areAllFiltersComplete,
   checkIsValidInput,
@@ -103,8 +103,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
- * @param {Function} setSearchFieldValue - Used to set the search field value
- * @param {Function} setSearchTerm - Used to set the search term for simple search
+ * @param {Function} resetSimpleSearch - Function to reset the simple search
  * @return {JSX.Element}
  * @constructor
  */
@@ -113,8 +112,7 @@ const Filters = ({
   setFilters,
   handleAdvancedSearchClose,
   filtersConfig,
-  setSearchFieldValue,
-  setSearchTerm,
+  resetSimpleSearch,
   isOr,
   setIsOr,
 }) => {
@@ -230,22 +228,32 @@ const Filters = ({
    * @param {string} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteFilterButtonClick = (filterIndex) => {
-    // Clone the state
+    /* Clone the state, delete the filter index of the button clicked, and update filter state */
     const filtersNewState = [...filterParameters];
-
-    // Delete the key (if it's there)
     filtersNewState.splice(filterIndex, 1);
-    // Finally, reset the state
-    const jsonParamString = JSON.stringify(filtersNewState);
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-      return prevSearchParams;
-    });
     setFilterParameters(filtersNewState);
 
-    /* Reset isOr to false (all/and) if there is only one filter left */
-    if (Object.keys(filtersNewState).length === 1) {
+    const remainingFiltersCount = filtersNewState.length;
+
+    if (remainingFiltersCount === 0) {
+      /* Clear search params since we have no advanced filters */
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
+    } else if (remainingFiltersCount === 1) {
+      /* Reset isOr to false (all/and) if there is only one filter left */
       setIsOrToggleValue(false);
+    } else {
+      /* Remove the details of the removed filter from search params */
+      const jsonParamString = JSON.stringify(filtersNewState);
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+
+        return prevSearchParams;
+      });
     }
   };
 
@@ -264,38 +272,45 @@ const Filters = ({
   };
 
   /**
-   * Clears the filters
+   * Reset search box and advanced filters
    */
-  const handleClearFilters = useCallback(() => {
+  const handleResetFilters = useCallback(() => {
     setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
-
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(advancedSearchFilterParamName);
       prevSearchParams.delete(advancedSearchIsOrParamName);
+
+      return prevSearchParams;
     });
-  }, [setSearchParams, setFilters, setIsOr]);
+
+    resetSimpleSearch();
+  }, [setSearchParams, setFilters, setIsOr, resetSimpleSearch]);
 
   /**
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    setSearchParams((prevSearchParams) => {
-      const jsonParamString = JSON.stringify(filterParameters);
+    if (filterParameters.length > 0) {
+      /* If we have advanced filters, set query state values and update search params */
+      setSearchParams((prevSearchParams) => {
+        const jsonParamString = JSON.stringify(filterParameters);
 
-      prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-      prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
-      prevSearchParams.delete(simpleSearchParamName);
-      return prevSearchParams;
-    });
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+        prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
+        return prevSearchParams;
+      });
 
-    setIsOr(isOrToggleValue);
-    setFilters(filterParameters);
+      setIsOr(isOrToggleValue);
+      setFilters(filterParameters);
+    } else {
+      /* If we have no advanced filters, reset query state */
+      setFilters([]);
+      setIsOr(false);
+    }
+
     handleAdvancedSearchClose();
-    // Clear simple search field in UI and state since we are using advanced search
-    setSearchFieldValue("");
-    setSearchTerm("");
   };
 
   const handleAndOrToggleChange = (e) => {
@@ -356,7 +371,13 @@ const Filters = ({
           </IconButton>
         </Grid>
       </Grid>
-
+      {filterParameters.length === 0 ? (
+        <Grid container className={classes.filtersContainer}>
+          <Grid item xs={12} md={4} className={classes.gridItemPadding}>
+            <Typography>No filters applied</Typography>
+          </Grid>
+        </Grid>
+      ) : null}
       {filterParameters.map((filter, filterIndex) => {
         const { field: fieldName, operator, value } = filter;
 
@@ -525,39 +546,31 @@ const Filters = ({
                     ))}
                 </FormControl>
               </Grid>
-              {areMoreThanOneFilters ? (
-                <>
-                  <Hidden mdDown>
-                    <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
-                      <IconButton
-                        className={classes.deleteButton}
-                        onClick={() =>
-                          handleDeleteFilterButtonClick(filterIndex)
-                        }
-                        size="large"
-                      >
-                        <Icon className={classes.deleteIcon}>
-                          delete_outline
-                        </Icon>
-                      </IconButton>
-                    </Grid>
-                  </Hidden>
-                  <Hidden mdUp>
-                    <Grid item xs={12}>
-                      <Button
-                        fullWidth
-                        className={classes.deleteButton}
-                        variant="outlined"
-                        onClick={() =>
-                          handleDeleteFilterButtonClick(filterIndex)
-                        }
-                      >
-                        <Icon>delete_outline</Icon>
-                      </Button>
-                    </Grid>
-                  </Hidden>
-                </>
-              ) : null}
+              <>
+                <Hidden mdDown>
+                  <Grid item xs={12} md={1} style={{ textAlign: "center" }}>
+                    <IconButton
+                      className={classes.deleteButton}
+                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                      size="large"
+                    >
+                      <Icon className={classes.deleteIcon}>delete_outline</Icon>
+                    </IconButton>
+                  </Grid>
+                </Hidden>
+                <Hidden mdUp>
+                  <Grid item xs={12}>
+                    <Button
+                      fullWidth
+                      className={classes.deleteButton}
+                      variant="outlined"
+                      onClick={() => handleDeleteFilterButtonClick(filterIndex)}
+                    >
+                      <Icon>delete_outline</Icon>
+                    </Button>
+                  </Grid>
+                </Hidden>
+              </>
             </Grid>
           </Grow>
         );
@@ -583,7 +596,7 @@ const Filters = ({
             fullWidth
             variant="outlined"
             startIcon={<BackspaceOutlinedIcon />}
-            onClick={handleClearFilters}
+            onClick={handleResetFilters}
           >
             Reset
           </Button>
@@ -602,7 +615,7 @@ const Filters = ({
             startIcon={<Icon>search</Icon>}
             onClick={handleApplyButtonClick}
             disabled={
-              handleApplyValidation(filterParameters, filtersConfig) != null
+              handleApplyValidation(filterParameters, filtersConfig) !== null
             }
           >
             Search

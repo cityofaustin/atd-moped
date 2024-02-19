@@ -7,14 +7,14 @@ CREATE VIEW public.current_phase_view AS (
         mp.phase_key,
         mp.phase_name_simple
     FROM
-        moped_proj_phases mpp
-    LEFT JOIN moped_phases mp ON mp.phase_id = mpp.phase_id
-WHERE
-    is_deleted = FALSE
-    AND is_current_phase = TRUE
+        moped_proj_phases AS mpp
+    LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
+    WHERE
+        is_deleted = FALSE
+        AND is_current_phase = TRUE
     -- order by ensures consistent DISTINCT ON results in edge case that a project has multiple curr phases
-ORDER BY
-    project_id,
-    is_current_phase,
-    project_phase_id
+    ORDER BY
+        project_id,
+        is_current_phase,
+        project_phase_id
 );
