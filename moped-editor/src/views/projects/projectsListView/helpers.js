@@ -493,6 +493,7 @@ export const useTableOptions = ({ queryLimit, data }) =>
         // is conflicting with the search/filter dropdown
         zIndex: 1,
         whiteSpace: "nowrap",
+        backgroundColor: "white"
       },
       columnsButton: true,
       idSynonym: "project_id",
