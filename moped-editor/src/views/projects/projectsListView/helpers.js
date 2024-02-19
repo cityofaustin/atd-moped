@@ -220,7 +220,7 @@ export const useColumns = ({ hiddenColumns }) => {
         field: "project_feature",
         hidden: hiddenColumns["project_feature"],
         sorting: COLUMN_CONFIG["project_feature"].sortable,
-        renderCell: ({row}) => {
+        renderCell: ({ row }) => {
           if (!row?.project_feature) {
             return "-";
           } else {
@@ -279,17 +279,21 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Funding",
         field: "funding_source_name",
-        hidden: hiddenColumns["funding_source_name"],
-        emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.funding_source_name
-            .split(",")
-            .map((funding_source_name, i) => (
-              <span key={i} style={{ display: "block" }}>
-                {funding_source_name}
-              </span>
-            ));
+        renderCell: ({ row }) => {
+          return row.funding_source_name ? (
+            <div style={{ display: "block" }}>
+              {row.funding_source_name
+                .split(",")
+                .map((funding_source_name, i) => (
+                  <span key={i} style={{ display: "block" }}>
+                    {funding_source_name}
+                  </span>
+                ))}
+            </div>
+          ) : (
+            "-"
+          );
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
@@ -297,10 +301,12 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Status update",
         field: "project_status_update",
-        hidden: hiddenColumns["project_status_update"],
-        emptyValue: "-",
-        cellStyle: { maxWidth: "30rem" },
-        render: (entry) => parse(String(entry.project_status_update)),
+        // cellStyle: { maxWidth: "30rem" },
+        renderCell: ({ row }) => {
+          return row.project_status_update
+            ? parse(String(row.project_status_update))
+            : "-";
+        },
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -468,4 +474,3 @@ export const useColumns = ({ hiddenColumns }) => {
 
   return { columns, columnsToReturnInQuery };
 };
-
