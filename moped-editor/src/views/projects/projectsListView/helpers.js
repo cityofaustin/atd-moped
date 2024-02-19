@@ -86,8 +86,7 @@ const filterComponentFullNames = (value) => {
   ));
 };
 
-// i need to rename this function
-const renderListAsBlock = (row, fieldName) => (
+const renderSplitListDisplayBlock = (row, fieldName) => (
     row[fieldName] ? (
       <div style={{ display: "block" }}>
         {row[fieldName]
@@ -277,20 +276,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Type",
         field: "type_name",
-        emptyValue: "-",
-        renderCell: ({ row }) => {renderListAsBlock(row, "type_name")
-          // return row.type_name ? (
-          //   <div style={{ display: "block" }}>
-          //     {row.type_name.split(",").map((type_name) => (
-          //       <span key={type_name} style={{ display: "block" }}>
-          //         {type_name}
-          //       </span>
-          //     ))}
-          //   </div>
-          // ) : (
-          //   "-"
-          // );
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "type_name"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
@@ -298,21 +284,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Funding",
         field: "funding_source_name",
         cellStyle: { whiteSpace: "noWrap" },
-        renderCell: ({ row }) => {
-          return row.funding_source_name ? (
-            <div style={{ display: "block" }}>
-              {row.funding_source_name
-                .split(",")
-                .map((funding_source_name, i) => (
-                  <span key={i} style={{ display: "block" }}>
-                    {funding_source_name}
-                  </span>
-                ))}
-            </div>
-          ) : (
-            "-"
-          );
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "funding_source_name"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
@@ -360,35 +332,15 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
         cellStyle: { whiteSpace: "noWrap" },
-        renderCell: ({ row }) => {
-          return row.workgroup_contractors ? (
-            <div style={{ display: "block" }}>
-              {row.workgroup_contractors.split(",").map((contractor, i) => (
-                <span key={i} style={{ display: "block" }}>
-                  {contractor}
-                </span>
-              ))}
-            </div>
-          ) : (
-            "-"
-          );
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "workgroup_contractors"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Contract numbers",
         field: "contract_numbers",
-        hidden: hiddenColumns["contract_numbers"],
-        emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.contract_numbers.split(",").map((contractNumber, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {contractNumber}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "contract_numbers"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -444,18 +396,18 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Parent project",
         field: "parent_project_id",
-        hidden: hiddenColumns["parent_project_id"],
-        emptyValue: "-",
-        render: (entry) => (
+        renderCell: ({row}) => { 
+          console.log(row)
+          return(
           <Link
             component={RouterLink}
-            to={`/moped/projects/${entry.parent_project_id}`}
+            to={`/moped/projects/${row.parent_project_id}`}
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
-            {entry.parent_project_name}
+            {row.parent_project_name}
           </Link>
-        ),
+        )},
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
