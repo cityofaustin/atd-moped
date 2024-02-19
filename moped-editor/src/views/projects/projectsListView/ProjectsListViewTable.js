@@ -221,12 +221,12 @@ const ProjectsListViewTable = () => {
                     disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
                   },
                 }}
-                // getRowHeight={() => 'auto'}
+                // density="compact"
+                getRowHeight={() => 'auto'} // do we want to automate the row height or give users the option to make it compact
                 columns={columns}
                 getRowId={(row) => row.project_id}
                 disableRowSelectionOnClick
                 rows={data.project_list_view}
-                density="compact"
                 onSortModelChange={handleSortClick}
                 disableColumnFilter
                 paginationMode="server"

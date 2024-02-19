@@ -130,7 +130,7 @@ export const useColumns = ({ hiddenColumns }) => {
     // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
-    const columnsNeededToRender = ["project_id", "current_phase_key"];
+    const columnsNeededToRender = ["project_id", "current_phase_key", "parent_project_name"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
@@ -201,16 +201,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Partners",
         field: "project_partners",
         minWidth: COLUMN_WIDTHS.large,
-        renderCell: ({ row }) => {
-          if (!row.project_partners || row?.project_partners.length < 1) {
-            return "-";
-          }
-          return row.project_partners.split(",").map((partner) => (
-            <span key={partner} style={{ display: "block" }}>
-              {partner}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "project_partners"),
       },
       {
         headerName: "eCapris ID",
@@ -339,49 +330,35 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Contract numbers",
         field: "contract_numbers",
-        cellStyle: { whiteSpace: "noWrap" },
         renderCell: ({ row }) => renderSplitListDisplayBlock(row, "contract_numbers"),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Tags",
         field: "project_tags",
-        hidden: hiddenColumns["project_tags"],
-        cellStyle: { whiteSpace: "noWrap" },
-        emptyValue: "-",
-        render: (entry) => {
-          return entry.project_tags.split(",").map((tag) => (
-            <span key={tag} style={{ display: "block" }}>
-              {tag}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "project_tags"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Created by",
         field: "added_by",
-        hidden: hiddenColumns["added_by"],
-        emptyValue: "-",
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Public process status",
         field: "public_process_status",
-        hidden: hiddenColumns["public_process_status"],
-        emptyValue: "-",
         flex: 1,
+        valueFormatter: ({ value }) => (value ?? "-"),
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
-        hidden: hiddenColumns["interim_project_id"],
-        emptyValue: "-",
         flex: 1,
+        valueFormatter: ({ value }) => (value ?? "-"),
         minWidth: COLUMN_WIDTHS.small,
       },
       {
@@ -396,30 +373,25 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Parent project",
         field: "parent_project_id",
-        renderCell: ({row}) => { 
-          console.log(row)
-          return(
-          <Link
+        renderCell: ({row}) =>
+          (<Link
             component={RouterLink}
             to={`/moped/projects/${row.parent_project_id}`}
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
             {row.parent_project_name}
-          </Link>
-        )},
+          </Link>),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Has subprojects",
         field: "children_project_ids",
-        hidden: hiddenColumns["children_project_ids"],
-        render: (entry) => {
-          const hasChildren = entry.children_project_ids.length > 0;
+        renderCell: ({row}) => {
+          const hasChildren = row.children_project_ids && row.children_project_ids.length > 0;
           return <span> {hasChildren ? "Yes" : "-"} </span>;
         },
-        emptyValue: "-",
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
