@@ -86,6 +86,24 @@ const filterComponentFullNames = (value) => {
   ));
 };
 
+// i need to rename this function
+const renderListAsBlock = (row, fieldName) => (
+    row[fieldName] ? (
+      <div style={{ display: "block" }}>
+        {row[fieldName]
+          .split(",")
+          .map((value, i) => (
+            <span key={i} style={{ display: "block" }}>
+              {value}
+            </span>
+          ))}
+      </div>
+    ) : (
+      "-"
+    )
+);
+
+
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
 const COLUMN_WIDTHS = {
@@ -183,7 +201,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Partners",
         field: "project_partners",
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.large,
         renderCell: ({ row }) => {
           if (!row.project_partners || row?.project_partners.length < 1) {
             return "-";
@@ -260,18 +278,18 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Type",
         field: "type_name",
         emptyValue: "-",
-        renderCell: ({ row }) => {
-          return row.type_name ? (
-            <div style={{ display: "block" }}>
-              {row.type_name.split(",").map((type_name) => (
-                <span key={type_name} style={{ display: "block" }}>
-                  {type_name}
-                </span>
-              ))}
-            </div>
-          ) : (
-            "-"
-          );
+        renderCell: ({ row }) => {renderListAsBlock(row, "type_name")
+          // return row.type_name ? (
+          //   <div style={{ display: "block" }}>
+          //     {row.type_name.split(",").map((type_name) => (
+          //       <span key={type_name} style={{ display: "block" }}>
+          //         {type_name}
+          //       </span>
+          //     ))}
+          //   </div>
+          // ) : (
+          //   "-"
+          // );
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
@@ -308,57 +326,55 @@ export const useColumns = ({ hiddenColumns }) => {
             : "-";
         },
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Construction start",
         field: "construction_start_date",
-        hidden: hiddenColumns["construction_start_date"],
-        emptyValue: "-",
-        render: (entry) => formatDateType(entry.construction_start_date),
+        valueFormatter: ({ value }) => (value ? formatDateType(value) : "-"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Completion date",
         field: "completion_end_date",
-        hidden: hiddenColumns["completion_end_date"],
-        emptyValue: "-",
-        render: (entry) => formatDateType(entry.completion_end_date),
+        valueFormatter: ({ value }) => (value ? formatDateType(value) : "-"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Designer",
         field: "project_designer",
-        hidden: hiddenColumns["project_designer"],
-        emptyValue: "-",
         flex: 1,
+        valueFormatter: ({ value }) => (value ?? "-"),
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Inspector",
         field: "project_inspector",
-        hidden: hiddenColumns["project_inspector"],
-        emptyValue: "-",
         flex: 1,
+        valueFormatter: ({ value }) => (value ?? "-"),
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
-        hidden: hiddenColumns["workgroup_contractors"],
-        emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.workgroup_contractors.split(",").map((contractor, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {contractor}
-            </span>
-          ));
+        renderCell: ({ row }) => {
+          return row.workgroup_contractors ? (
+            <div style={{ display: "block" }}>
+              {row.workgroup_contractors.split(",").map((contractor, i) => (
+                <span key={i} style={{ display: "block" }}>
+                  {contractor}
+                </span>
+              ))}
+            </div>
+          ) : (
+            "-"
+          );
         },
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Contract numbers",
@@ -390,7 +406,7 @@ export const useColumns = ({ hiddenColumns }) => {
           ));
         },
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Created by",
