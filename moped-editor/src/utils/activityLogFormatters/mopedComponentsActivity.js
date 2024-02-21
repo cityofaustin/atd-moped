@@ -54,13 +54,24 @@ export const formatComponentsActivity = (
   // delete an existing component
   if (change.description[0].field === "is_deleted") {
     const {link, ...simpleComponentText} = componentText;
+    if (change.record_data.event.data.new.is_deleted) {
+      return {
+        changeIcon,
+        changeText: [
+          { text: "Removed a component: ", style: null },
+          simpleComponentText,
+        ],
+      };
+    }
+    // if is_deleted is false, and the change is in the activity log, we restored a soft delete
     return {
       changeIcon,
       changeText: [
-        { text: "Removed a component: ", style: null },
+        { text: "Restored a deleted component: ", style: null },
         simpleComponentText,
       ],
     };
+
   }
 
   if (change.description[0].field === "project_id") {
