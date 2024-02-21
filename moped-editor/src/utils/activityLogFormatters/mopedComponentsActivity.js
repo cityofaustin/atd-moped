@@ -67,7 +67,7 @@ export const formatComponentsActivity = (
     return {
       changeIcon,
       changeText: [
-        { text: "Restored a component: ", style: null },
+        { text: "Restored a deleted component: ", style: null },
         simpleComponentText,
       ],
     };
