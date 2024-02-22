@@ -131,7 +131,8 @@ const useLookupTables = (data) =>
 /** Fields which do not need to be rendered in the activity log */
 const CHANGE_FIELDS_TO_IGNORE = [
   "updated_by_user_id",
-  "updated_at"
+  "updated_at",
+  "is_current_phase"
 ];
 
 /**
