@@ -130,6 +130,7 @@ export const useColumns = ({ hiddenColumns }) => {
     // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
+    // Parent project Id needs the parent project name
     const columnsNeededToRender = ["project_id", "current_phase_key", "parent_project_name"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
