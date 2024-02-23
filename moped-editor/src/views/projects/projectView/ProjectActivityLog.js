@@ -132,7 +132,6 @@ const useLookupTables = (data) =>
 const CHANGE_FIELDS_TO_IGNORE = [
   "updated_by_user_id",
   "updated_at",
-  "is_current_phase"
 ];
 
 /**
