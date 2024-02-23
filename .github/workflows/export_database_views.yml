@@ -9,16 +9,16 @@ jobs:
   publish-views:
     runs-on: ubuntu-latest
 
-    services:
-      db:
-        image: postgis/postgis:13-master
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: moped
-        ports:
-          - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+    # services:
+    #   db:
+    #     image: postgis/postgis:13-master
+    #     env:
+    #       POSTGRES_USER: postgres
+    #       POSTGRES_PASSWORD: postgres
+    #       POSTGRES_DB: moped
+    #     ports:
+    #       - 5432:5432
+    #     options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code
@@ -28,25 +28,36 @@ jobs:
         run: |
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
-      - name: Copy config file
-        run: cp moped-database/config/hasura.local.yaml moped-database/config.yaml
-
-      - name: Start Hasura GraphQL Engine
+      - name: "Spin-up the DB stack"
         run: |
-          docker run -d -p 8080:8080 \
-            --name hasura \
-            -e HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@localhost:5432/moped \
-            -e HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword \
-            hasura/graphql-engine:v2.37.0
+          export BRANCH_NAME=${GITHUB_REF##*/}
+          echo "SHA: ${GITHUB_SHA}"
+          echo "ACTION/BRANCH_NAME: ${BRANCH_NAME}"
+          echo "GR: ${GITHUB_REF}"
+          echo "PWD: $(pwd)"
+          cd ./moped-database;
+          ./hasura-cluster setenv local;
+          ./hasura-cluster start;
 
-      - name: Tail Hasura logs for 60 seconds
-        run: |
-          timeout 60 docker logs -f hasura
+      # - name: Copy config file
+      #   run: cp moped-database/config/hasura.local.yaml moped-database/config.yaml
 
-      - name: Wait for Hasura GraphQL Engine to be ready
-        run: sleep 10
+      # - name: Start Hasura GraphQL Engine
+      #   run: |
+      #     docker run -d -p 8080:8080 \
+      #       --name graphql-engine \
+      #       -e HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@localhost:5432/moped \
+      #       -e HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword \
+      #       hasura/graphql-engine:v2.37.0
 
-      - name: Apply migrations
-        working-directory: ./moped-database
-        run: |
-          hasura migrate apply
+      # - name: Tail Hasura logs for 60 seconds
+      #   run: |
+      #     timeout 60 docker logs -f graphql-engine
+
+      # - name: Wait for Hasura GraphQL Engine to be ready
+      #   run: sleep 10
+
+      # - name: Apply migrations
+      #   working-directory: ./moped-database
+      #   run: |
+      #     hasura migrate apply
