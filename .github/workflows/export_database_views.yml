@@ -52,7 +52,7 @@ jobs:
           xargs -I {} sh -c "
             VIEW_NAME={}
             MOST_RECENT_MIGRATION=\$(grep -rl --include=up.sql -E 'CREATE (OR REPLACE )?VIEW (public.)?$VIEW_NAME' moped-database/migrations | sort -V | tail -n 1)
-            echo -e \"-- Most recent migration: \$MOST_RECENT_MIGRATION\n\" > moped-database/views/\$VIEW_NAME.sql
+            echo \"-- Most recent migration: \$MOST_RECENT_MIGRATION\n\" > moped-database/views/\$VIEW_NAME.sql
             psql -A -t -c \"SELECT 'CREATE VIEW ' || '\$VIEW_NAME' || ' AS ' || pg_get_viewdef('\$VIEW_NAME'::regclass, true);\" >> moped-database/views/\$VIEW_NAME.sql
           "
 
