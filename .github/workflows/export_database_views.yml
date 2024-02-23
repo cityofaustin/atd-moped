@@ -10,6 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install SQLFluff
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install sqlfluff
+
       - name: Install PostgreSQL client
         run: sudo apt-get update && sudo apt-get install -y postgresql-client
 
@@ -57,10 +63,14 @@ jobs:
             psql -A -t -c \"SELECT 'CREATE VIEW ' || '\$VIEW_NAME' || ' AS ' || pg_get_viewdef('\$VIEW_NAME'::regclass, true);\" >> moped-database/views/\$VIEW_NAME.sql
           "
 
+      - name: Run SQLFluff
+        run: |
+          sqlfluff format --config .sqlfluff moped-database/views/*.sql
+
       - name: Set Git Config
         run: |
-          git config --local user.email "frank@frankhereford.com"
-          git config --local user.name "Moped View Bot"
+          git config --local user.email "moped@view.bot"
+          git config --local user.name "🤖"
 
       - name: Commit and push changes
         run: |
