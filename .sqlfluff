@@ -1,7 +1,7 @@
 [sqlfluff]
 
 # Set loop limit for fixing
-loop_limit = 100
+runaway_limit = 100
 
 # Supported dialects https://docs.sqlfluff.com/en/stable/dialects.html
 # Or run 'sqlfluff dialects'
