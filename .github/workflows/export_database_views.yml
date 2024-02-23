@@ -55,6 +55,11 @@ jobs:
             psql -c \"SELECT 'CREATE VIEW ' || '\$VIEW_NAME' || ' AS ' || pg_get_viewdef('\$VIEW_NAME'::regclass, true);\" >> moped-database/views/\$VIEW_NAME.sql
           "
 
+      - name: Set Git Config
+        run: |
+          git config --local user.email "frank@frankhereford.com"
+          git config --local user.name "Moped View Bot"
+
       - name: Commit and push changes
         run: |
           git add moped-database/views/*
