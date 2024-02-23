@@ -208,6 +208,19 @@ const ProjectsListViewTable = () => {
           <Box sx={{ height: "600px", padding: "14px", marginTop: "24px" }}>
             {data && data.project_list_view && (
               <DataGrid
+                // per the docs: When the height of a row is set to "auto", the final height will follow exactly the content size and ignore the density.
+                // they recommend this to have density along with get row height auto
+                sx={{
+                  "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+                    py: "8px",
+                  },
+                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+                    py: "15px",
+                  },
+                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+                    py: "22px",
+                  },
+                }}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
                   setHiddenColumns(newModel);
@@ -221,8 +234,8 @@ const ProjectsListViewTable = () => {
                     disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
                   },
                 }}
-                // density="compact"
-                getRowHeight={() => 'auto'} // do we want to automate the row height or give users the option to make it compact
+                density="compact"
+                getRowHeight={() => "auto"}
                 columns={columns}
                 getRowId={(row) => row.project_id}
                 disableRowSelectionOnClick
