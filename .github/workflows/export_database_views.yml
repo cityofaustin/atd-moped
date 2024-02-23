@@ -38,3 +38,7 @@ jobs:
           cd ./moped-database;
           ./hasura-cluster setenv local;
           ./hasura-cluster start;
+
+      - name: List all views in public schema
+        run: |
+          psql -c "SELECT table_name FROM information_schema.views WHERE table_schema = 'public';"
