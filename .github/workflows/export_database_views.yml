@@ -38,7 +38,11 @@ jobs:
         run: |
           docker run -d -p 8080:8080 \
             -e HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@localhost:5432/moped \
+            -e HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword \
             hasura/graphql-engine:v2.37.0
+
+      - name: Wait for Hasura GraphQL Engine to be ready
+        run: sleep 10
 
       - name: Apply migrations
         working-directory: ./moped-database
