@@ -38,10 +38,9 @@ jobs:
         run: |
           docker run -d -p 8080:8080 \
             -e HASURA_GRAPHQL_DATABASE_URL=postgres://postgres:postgres@localhost:5432/moped \
-            -e HASURA_GRAPHQL_ENABLE_CONSOLE=true \
             hasura/graphql-engine:v2.37.0
 
       - name: Apply migrations
         working-directory: ./moped-database
         run: |
-          hasura migrate apply --endpoint http://localhost:8080
+          hasura migrate apply
