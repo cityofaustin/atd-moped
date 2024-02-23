@@ -2,8 +2,9 @@ name: Hasura DB Update
 
 on:
   push:
-    # branches:
-    # - feature/**
+    branches-ignore:
+      - "main"
+      - "production"
 
 jobs:
   publish-views:
@@ -31,11 +32,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.ref }}
-
-      - name: Create and switch to feature branch for testing
-        run: |
-          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
-          git checkout -b "fb-$TIMESTAMP"
 
       - name: Install Hasura CLI
         run: |
@@ -72,7 +68,7 @@ jobs:
       - name: Set Git Config
         run: |
           git config --local user.email "moped@view.bot"
-          git config --local user.name "🤖"
+          git config --local user.name "🤖 View Bot"
 
       - name: Commit and push changes
         run: |
