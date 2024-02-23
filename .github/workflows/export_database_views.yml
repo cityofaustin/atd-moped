@@ -31,6 +31,9 @@ jobs:
         run: |
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
+      - name: Copy config file
+        run: cp moped-database/config/hasura.local.yaml moped-database/config.yaml
+
       - name: Start Hasura GraphQL Engine
         run: |
           docker run -d -p 8080:8080 \
@@ -39,5 +42,6 @@ jobs:
             hasura/graphql-engine:v2.37.0
 
       - name: Apply migrations
+        working-directory: ./moped-database
         run: |
           hasura migrate apply --endpoint http://localhost:8080
