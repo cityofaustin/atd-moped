@@ -41,6 +41,8 @@ jobs:
 
       - name: Generate CREATE VIEW statements
         run: |
+          mkdir -p moped-database/views
           psql -A -t -c "SELECT table_name FROM information_schema.views WHERE table_schema = 'public';" | \
           grep -v -E '^geo[a-zA-Z]+y_columns$' | \
-          xargs -I {} psql -c "SELECT 'CREATE VIEW ' || '{}' || ' AS ' || pg_get_viewdef('{}'::regclass, true);"
+          xargs -I {} sh -c "psql -c \"SELECT 'CREATE VIEW ' || '{}' || ' AS ' || pg_get_viewdef('{}'::regclass, true);\" \
+          > moped-database/views/{}.sql"
