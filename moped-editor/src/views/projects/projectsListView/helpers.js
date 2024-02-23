@@ -91,7 +91,7 @@ const filterComponentFullNames = (value) => {
 };
 
 const renderSplitListDisplayBlock = (row, fieldName) =>
-  row[fieldName] ? (
+  row[fieldName] && (
     <div style={{ display: "block" }}>
       {row[fieldName].split(",").map((value, i) => (
         <span key={i} style={{ display: "block" }}>
@@ -99,8 +99,6 @@ const renderSplitListDisplayBlock = (row, fieldName) =>
         </span>
       ))}
     </div>
-  ) : (
-    "-"
   );
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
@@ -192,7 +190,6 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Lead",
         field: "project_lead",
-        emptyValue: "-", // todo, do we still want this?
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
@@ -235,9 +232,7 @@ export const useColumns = ({ hiddenColumns }) => {
         hidden: hiddenColumns["project_feature"],
         sorting: COLUMN_CONFIG["project_feature"].sortable,
         renderCell: ({ row }) => {
-          if (!row?.project_feature) {
-            return "-";
-          } else {
+          if (row?.project_feature) {
             const signals = row.project_feature.filter(
               (signal) => signal.signal_id && signal.knack_id
             );
@@ -250,22 +245,20 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Task order(s)",
         field: "task_orders",
-        emptyValue: "-",
         renderCell: ({ row }) => {
           // Empty value won't work in some cases where task_order is an empty array.
-          if (!row.task_orders || row?.task_orders.length < 1) {
-            return "-";
+          if (row.task_orders && row?.task_orders.length > 0) {
+            // Render values as a comma seperated string
+            return (
+              <div style={{ display: "block" }}>
+                {row.task_orders.map((taskOrder) => (
+                  <span key={taskOrder.task_order} style={{ display: "block" }}>
+                    {taskOrder.task_order}
+                  </span>
+                ))}
+              </div>
+            );
           }
-          // Render values as a comma seperated string
-          return (
-            <div style={{ display: "block" }}>
-              {row.task_orders.map((taskOrder) => (
-                <span key={taskOrder.task_order} style={{ display: "block" }}>
-                  {taskOrder.task_order}
-                </span>
-              ))}
-            </div>
-          );
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
@@ -289,26 +282,26 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Status update",
         field: "project_status_update",
-        // cellStyle: { maxWidth: "30rem" },
         renderCell: ({ row }) => {
-          return row.project_status_update
-            ? parse(String(row.project_status_update))
-            : "-";
+          return (
+            row.project_status_update &&
+            parse(String(row.project_status_update))
+          );
         },
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.xlarge,
       },
       {
         headerName: "Construction start",
         field: "construction_start_date",
-        valueFormatter: ({ value }) => (value ? formatDateType(value) : "-"),
+        valueFormatter: ({ value }) => formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Completion date",
         field: "completion_end_date",
-        valueFormatter: ({ value }) => (value ? formatDateType(value) : "-"),
+        valueFormatter: ({ value }) => formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -316,14 +309,12 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Designer",
         field: "project_designer",
         flex: 1,
-        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Inspector",
         field: "project_inspector",
         flex: 1,
-        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
@@ -349,7 +340,7 @@ export const useColumns = ({ hiddenColumns }) => {
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "project_tags"),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.large,
       },
       {
         headerName: "Created by",
@@ -361,24 +352,20 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Public process status",
         field: "public_process_status",
         flex: 1,
-        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
         flex: 1,
-        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Components",
         field: "components",
-        hidden: hiddenColumns["components"],
-        emptyValue: "-",
         render: (entry) => filterComponentFullNames(entry),
         flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Parent project",
@@ -399,26 +386,17 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Has subprojects",
         field: "children_project_ids",
-        renderCell: ({ row }) => {
-          const hasChildren =
-            row.children_project_ids && row.children_project_ids.length > 0;
-          return <span> {hasChildren ? "Yes" : "-"} </span>;
+        valueFormatter: ({ value }) => {
+          const hasChildren = value && value.length > 0;
+          return hasChildren && "Yes";
         },
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Council districts",
+        headerName: "Council districts",
         field: "project_and_child_project_council_districts",
-        hidden: hiddenColumns["project_and_child_project_council_districts"],
-        render: (entry) => {
-          if (entry.project_and_child_project_council_districts.length > 0) {
-            return entry.project_and_child_project_council_districts.join(", ");
-          } else {
-            return <span> - </span>;
-          }
-        },
-        emptyValue: "-",
+        valueFormatter: ({ value }) => value && value.join(", "),
       },
     ],
     [hiddenColumns, queryString]
