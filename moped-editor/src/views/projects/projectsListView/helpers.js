@@ -33,11 +33,15 @@ export const filterProjectTeamMembers = (value, view) => {
   });
   // if the view is projectsListView, render each team member as a block
   if (view === "projectsListView") {
-    return Object.keys(uniqueNames).map((key) => (
-      <span key={key} style={{ display: "block" }}>
-        {`${key} - ${uniqueNames[key]}`}
-      </span>
-    ));
+    return (
+      <div style={{ display: "block" }}>
+        {Object.keys(uniqueNames).map((key) => (
+          <span key={key} style={{ display: "block" }}>
+            {`${key} - ${uniqueNames[key]}`}
+          </span>
+        ))}
+      </div>
+    );
   } else {
     const projectTeamMembers = Object.keys(uniqueNames).map(
       (key) => `${key} - ${uniqueNames[key]}`
@@ -86,22 +90,18 @@ const filterComponentFullNames = (value) => {
   ));
 };
 
-const renderSplitListDisplayBlock = (row, fieldName) => (
-    row[fieldName] ? (
-      <div style={{ display: "block" }}>
-        {row[fieldName]
-          .split(",")
-          .map((value, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {value}
-            </span>
-          ))}
-      </div>
-    ) : (
-      "-"
-    )
-);
-
+const renderSplitListDisplayBlock = (row, fieldName) =>
+  row[fieldName] ? (
+    <div style={{ display: "block" }}>
+      {row[fieldName].split(",").map((value, i) => (
+        <span key={i} style={{ display: "block" }}>
+          {value}
+        </span>
+      ))}
+    </div>
+  ) : (
+    "-"
+  );
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
@@ -131,7 +131,11 @@ export const useColumns = ({ hiddenColumns }) => {
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
     // Parent project Id needs the parent project name
-    const columnsNeededToRender = ["project_id", "current_phase_key", "parent_project_name"];
+    const columnsNeededToRender = [
+      "project_id",
+      "current_phase_key",
+      "parent_project_name",
+    ];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
@@ -178,7 +182,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Team",
         field: "project_team_members",
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.large,
         renderCell: ({ row }) =>
           filterProjectTeamMembers(
             row.project_team_members,
@@ -202,7 +206,8 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Partners",
         field: "project_partners",
         minWidth: COLUMN_WIDTHS.large,
-        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "project_partners"),
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_partners"),
       },
       {
         headerName: "eCapris ID",
@@ -276,7 +281,8 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Funding",
         field: "funding_source_name",
         cellStyle: { whiteSpace: "noWrap" },
-        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "funding_source_name"),
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "funding_source_name"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
@@ -310,35 +316,38 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Designer",
         field: "project_designer",
         flex: 1,
-        valueFormatter: ({ value }) => (value ?? "-"),
+        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Inspector",
         field: "project_inspector",
         flex: 1,
-        valueFormatter: ({ value }) => (value ?? "-"),
+        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
         cellStyle: { whiteSpace: "noWrap" },
-        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "workgroup_contractors"),
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "workgroup_contractors"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Contract numbers",
         field: "contract_numbers",
-        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "contract_numbers"),
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "contract_numbers"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Tags",
         field: "project_tags",
-        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "project_tags"),
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_tags"),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
@@ -352,14 +361,14 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Public process status",
         field: "public_process_status",
         flex: 1,
-        valueFormatter: ({ value }) => (value ?? "-"),
+        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
         flex: 1,
-        valueFormatter: ({ value }) => (value ?? "-"),
+        valueFormatter: ({ value }) => value ?? "-",
         minWidth: COLUMN_WIDTHS.small,
       },
       {
@@ -374,23 +383,25 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Parent project",
         field: "parent_project_id",
-        renderCell: ({row}) =>
-          (<Link
+        renderCell: ({ row }) => (
+          <Link
             component={RouterLink}
             to={`/moped/projects/${row.parent_project_id}`}
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
             {row.parent_project_name}
-          </Link>),
+          </Link>
+        ),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Has subprojects",
         field: "children_project_ids",
-        renderCell: ({row}) => {
-          const hasChildren = row.children_project_ids && row.children_project_ids.length > 0;
+        renderCell: ({ row }) => {
+          const hasChildren =
+            row.children_project_ids && row.children_project_ids.length > 0;
           return <span> {hasChildren ? "Yes" : "-"} </span>;
         },
         flex: 1,
