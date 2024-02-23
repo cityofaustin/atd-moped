@@ -63,9 +63,9 @@ jobs:
             psql -A -t -c \"SELECT 'CREATE VIEW ' || '\$VIEW_NAME' || ' AS ' || pg_get_viewdef('\$VIEW_NAME'::regclass, true);\" >> moped-database/views/\$VIEW_NAME.sql
           "
 
-      # - name: Run SQLFluff
-      #   run: |
-      #     sqlfluff format --config .sqlfluff moped-database/views/*.sql
+      - name: Run SQLFluff
+        run: |
+          sqlfluff format --config .sqlfluff moped-database/views/*.sql
 
       - name: Set Git Config
         run: |
