@@ -18,8 +18,8 @@ jobs:
           echo "PGHOST=localhost" >> $GITHUB_ENV
           echo "PGPORT=5432" >> $GITHUB_ENV
           echo "PGDATABASE=moped" >> $GITHUB_ENV
-          echo "PGUSER=postgres" >> $GITHUB_ENV
-          echo "PGPASSWORD=postgres" >> $GITHUB_ENV
+          echo "PGUSER=moped" >> $GITHUB_ENV
+          echo "PGPASSWORD=moped" >> $GITHUB_ENV
 
       - name: Checkout code
         uses: actions/checkout@v4
