@@ -24,6 +24,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create and switch to feature branch
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
+          git checkout -b "fb-$TIMESTAMP"
+
       - name: Install Hasura CLI
         run: |
           curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
