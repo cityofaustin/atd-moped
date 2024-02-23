@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
       - name: Check for changes in migrations
         id: check_changes
         run: |
@@ -37,11 +42,6 @@ jobs:
           echo "PGDATABASE=moped" >> $GITHUB_ENV
           echo "PGUSER=moped" >> $GITHUB_ENV
           echo "PGPASSWORD=moped" >> $GITHUB_ENV
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
 
       - name: Install Hasura CLI
         run: |
