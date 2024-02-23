@@ -1,4 +1,4 @@
-name: Hasura DB Update
+name: Export Moped Views to SQL
 
 on:
   push:
@@ -68,10 +68,10 @@ jobs:
       - name: Set Git Config
         run: |
           git config --local user.email "moped@view.bot"
-          git config --local user.name "🤖 View Bot"
+          git config --local user.name "Moped View Bot"
 
       - name: Commit and push changes
         run: |
           git add moped-database/views/*
-          git commit -m "Update views"
+          git commit -m "🤖 Export views"
           git push origin HEAD
