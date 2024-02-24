@@ -1,3 +1,0 @@
-SELECT true;
-
-SELECT true;
