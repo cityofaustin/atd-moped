@@ -16,15 +16,15 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
-      # - name: Check for changes in migrations
-      #   id: check_changes
-      #   run: |
-      #     git fetch origin
-      #     CHANGES=$(git diff --name-only origin/main... | grep moped-database/migrations)
-      #     if [ -z "$CHANGES" ]; then
-      #       echo "No changes in migrations, exiting"
-      #       echo "::set-output name=skip::true"
-      #     fi
+      - name: Check for changes in migrations
+        id: check_changes
+        run: |
+          git fetch origin
+          CHANGES=$(git diff --name-only origin/main... | grep moped-database/migrations)
+          if [ -z "$CHANGES" ]; then
+            echo "No changes in migrations, exiting"
+            echo "::set-output name=skip::true"
+          fi
 
       - name: Install SQLFluff
         run: |
