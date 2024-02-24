@@ -1,1 +1,2 @@
 SELECT true;
+SELECT true;
