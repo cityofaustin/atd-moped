@@ -20,9 +20,8 @@ jobs:
         id: check_changes
         run: |
           git fetch origin main
-          git checkout origin/main
-          git diff --name-only HEAD...${{ github.sha }} -- moped-database/migrations
-          if [ $? -eq 0 ]; then
+          CHANGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} -- moped-database/migrations)
+          if [ -n "$CHANGES" ]; then
             echo "Changes found in migrations"
             echo "::set-output name=skip::false"
           else
