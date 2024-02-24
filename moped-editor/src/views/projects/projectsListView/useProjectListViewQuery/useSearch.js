@@ -26,6 +26,10 @@ export const getSearchValue = (column, value, queryConfig) => {
   if (["int", "integer"].includes(type)) {
     value = Number.parseInt(value) || invalidValueDefault;
   }
+  // If string, remove unrecognized graphQL characters
+  if (typeof(value) === "string") {
+    value = value.replace(/"|\\/g, '')
+  }
   // Any other value types are pass-through for now
   return value;
 };
