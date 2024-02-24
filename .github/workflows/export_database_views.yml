@@ -2,6 +2,8 @@ name: Export Moped Views to SQL
 
 on:
   push:
+    paths:
+      - moped-database/migrations/**
     branches-ignore:
       - "main"
       - "production"
@@ -11,15 +13,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Check for changes in migrations
-        id: check_changes
-        run: |
-          git fetch origin
-          CHANGES=$(git diff --name-only origin/main... | grep moped-database/migrations)
-          if [ -z "$CHANGES" ]; then
-            echo "No changes in migrations, exiting"
-            echo "::set-output name=skip::true"
-          fi
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
 
       - name: Install SQLFluff
         run: |
@@ -37,11 +34,6 @@ jobs:
           echo "PGDATABASE=moped" >> $GITHUB_ENV
           echo "PGUSER=moped" >> $GITHUB_ENV
           echo "PGPASSWORD=moped" >> $GITHUB_ENV
-
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
 
       - name: Install Hasura CLI
         run: |
@@ -83,5 +75,6 @@ jobs:
       - name: Commit and push changes
         run: |
           git add moped-database/views/*
-          git commit -m "🤖 Export views"
-          git push origin HEAD
+          git commit -m "🤖 Export views" || echo "No changes to commit"
+          git push origin HEAD || echo "No changes to push"
+        continue-on-error: true

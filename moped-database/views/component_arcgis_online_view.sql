@@ -1,93 +1,84 @@
--- moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
+-- Most recent migration: moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
 
-CREATE OR REPLACE VIEW component_arcgis_online_view AS
-WITH work_types AS (
+CREATE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM (
-        moped_proj_component_work_types AS mpcwt
-        LEFT JOIN moped_work_types AS mwt ON ((mpcwt.work_type_id = mwt.id))
-    )
-    WHERE (mpcwt.is_deleted = false)
+    FROM moped_proj_component_work_types mpcwt
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
 
 council_districts AS (
     SELECT
         features.component_id AS project_component_id,
-        string_agg(DISTINCT (features_council_districts.council_district_id)::text, ', '::text) AS council_districts
-    FROM (
-        features_council_districts
-        LEFT JOIN features ON ((features_council_districts.feature_id = features.id))
-    )
-    WHERE (features.is_deleted = false)
+        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts
+    FROM features_council_districts
+    LEFT JOIN features ON features_council_districts.feature_id = features.id
+    WHERE features.is_deleted = false
     GROUP BY features.component_id
 ),
 
 comp_geography AS (
     SELECT
         feature_union.component_id AS project_component_id,
-        string_agg(DISTINCT (feature_union.id)::text, ', '::text) AS feature_ids,
-        (st_asgeojson(st_union(array_agg(feature_union.geography))))::json AS geometry,
-        (st_asgeojson(st_union(array_agg(feature_union.line_geography))))::json AS line_geometry,
-        string_agg(DISTINCT (feature_union.signal_id)::text, ', '::text) AS signal_ids,
+        string_agg(DISTINCT feature_union.id::text, ', '::text) AS feature_ids,
+        st_asgeojson(st_union(array_agg(feature_union.geography)))::json AS geometry,
+        st_asgeojson(st_union(array_agg(feature_union.line_geography)))::json AS line_geometry,
+        string_agg(DISTINCT feature_union.signal_id::text, ', '::text) AS signal_ids,
         sum(feature_union.length_feet) AS length_feet_total
     FROM (
         SELECT
             feature_signals.id,
             feature_signals.component_id,
-            (feature_signals.geography)::geometry AS geography,
-            st_exteriorring((st_buffer(feature_signals.geography, (7)::double precision))::geometry) AS line_geography,
+            feature_signals.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_signals.geography, 7::double precision)::geometry) AS line_geography,
             feature_signals.signal_id,
             null::integer AS length_feet
         FROM feature_signals
-        WHERE (feature_signals.is_deleted = false)
+        WHERE feature_signals.is_deleted = false
         UNION ALL
         SELECT
             feature_street_segments.id,
             feature_street_segments.component_id,
-            (feature_street_segments.geography)::geometry AS geography,
-            (feature_street_segments.geography)::geometry AS line_geography,
+            feature_street_segments.geography::geometry AS geography,
+            feature_street_segments.geography::geometry AS line_geography,
             null::integer AS signal_id,
             feature_street_segments.length_feet
         FROM feature_street_segments
-        WHERE (feature_street_segments.is_deleted = false)
+        WHERE feature_street_segments.is_deleted = false
         UNION ALL
         SELECT
             feature_intersections.id,
             feature_intersections.component_id,
-            (feature_intersections.geography)::geometry AS geography,
-            st_exteriorring(
-                (st_buffer(feature_intersections.geography, (7)::double precision))::geometry
-            ) AS line_geography,
+            feature_intersections.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_intersections.geography, 7::double precision)::geometry) AS line_geography,
             null::integer AS signal_id,
             null::integer AS length_feet
         FROM feature_intersections
-        WHERE (feature_intersections.is_deleted = false)
+        WHERE feature_intersections.is_deleted = false
         UNION ALL
         SELECT
             feature_drawn_points.id,
             feature_drawn_points.component_id,
-            (feature_drawn_points.geography)::geometry AS geography,
-            st_exteriorring(
-                (st_buffer(feature_drawn_points.geography, (7)::double precision))::geometry
-            ) AS line_geography,
+            feature_drawn_points.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_drawn_points.geography, 7::double precision)::geometry) AS line_geography,
             null::integer AS signal_id,
             null::integer AS length_feet
         FROM feature_drawn_points
-        WHERE (feature_drawn_points.is_deleted = false)
+        WHERE feature_drawn_points.is_deleted = false
         UNION ALL
         SELECT
             feature_drawn_lines.id,
             feature_drawn_lines.component_id,
-            (feature_drawn_lines.geography)::geometry AS geography,
-            (feature_drawn_lines.geography)::geometry AS line_geography,
+            feature_drawn_lines.geography::geometry AS geography,
+            feature_drawn_lines.geography::geometry AS line_geography,
             null::integer AS signal_id,
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
-        WHERE (feature_drawn_lines.is_deleted = false)
-    ) AS feature_union
+        WHERE feature_drawn_lines.is_deleted = false
+    ) feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -95,23 +86,19 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM (
-        moped_proj_components_subcomponents AS mpcs
-        LEFT JOIN moped_subcomponents AS ms ON ((mpcs.subcomponent_id = ms.subcomponent_id))
-    )
-    WHERE (mpcs.is_deleted = false)
+    FROM moped_proj_components_subcomponents mpcs
+    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
 
 component_tags AS (
     SELECT
         mpct.project_component_id,
-        string_agg(((mct.type || ' - '::text) || mct.name), ', '::text) AS component_tags
-    FROM (
-        moped_proj_component_tags AS mpct
-        LEFT JOIN moped_component_tags AS mct ON ((mpct.component_tag_id = mct.id))
-    )
-    WHERE (mpct.is_deleted = false)
+        string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
+    FROM moped_proj_component_tags mpct
+    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
 )
 
@@ -125,13 +112,9 @@ SELECT
     comp_geography.signal_ids,
     council_districts.council_districts,
     'placeholder text'::text AS council_districts_searchable,
-    (
-        NOT coalesce(
-            ((council_districts.council_districts IS null) OR (council_districts.council_districts = ''::text)), false
-        )
-    ) AS is_within_city_limits,
+    NOT coalesce(council_districts.council_districts IS null OR council_districts.council_districts = ''::text, false) AS is_within_city_limits,
     comp_geography.length_feet_total,
-    round(((comp_geography.length_feet_total)::numeric / (5280)::numeric), 2) AS length_miles_total,
+    round(comp_geography.length_feet_total::numeric / 5280::numeric, 2) AS length_miles_total,
     mc.component_name,
     mc.component_subtype,
     mc.component_name_full,
@@ -187,7 +170,7 @@ SELECT
     'placeholder text'::text AS related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
-    ((plv.project_url || '?tab=map&project_component_id='::text) || (mpc.project_component_id)::text) AS component_url,
+    (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     plv.project_development_status,
     plv.project_development_status_date,
     plv.project_development_status_date_calendar_year,
@@ -197,23 +180,14 @@ SELECT
     plv.project_development_status_date_fiscal_year,
     plv.project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
-FROM (((((((((moped_proj_components AS mpc
-    LEFT JOIN comp_geography ON ((mpc.project_component_id = comp_geography.project_component_id))
-)
-LEFT JOIN council_districts ON ((mpc.project_component_id = council_districts.project_component_id))
-)
-LEFT JOIN subcomponents ON ((mpc.project_component_id = subcomponents.project_component_id))
-)
-LEFT JOIN work_types ON ((mpc.project_component_id = work_types.project_component_id))
-)
-LEFT JOIN component_tags ON ((mpc.project_component_id = component_tags.project_component_id))
-)
-LEFT JOIN project_list_view AS plv ON ((mpc.project_id = plv.project_id))
-)
-LEFT JOIN current_phase_view AS current_phase ON ((mpc.project_id = current_phase.project_id))
-)
-LEFT JOIN moped_phases AS mph ON ((mpc.phase_id = mph.phase_id))
-)
-LEFT JOIN moped_components AS mc ON ((mpc.component_id = mc.component_id))
-)
-WHERE ((mpc.is_deleted = false) AND (plv.is_deleted = false));
+FROM moped_proj_components mpc
+LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
+LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
+LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
+LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
+LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
+LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+WHERE mpc.is_deleted = false AND plv.is_deleted = false;
