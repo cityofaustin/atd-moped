@@ -81,16 +81,20 @@ export const resolveHasSubprojects = (array) => {
 
 const filterComponentFullNames = (value) => {
   const componentNamesArray = value.components.split(",");
-  return componentNamesArray.map((comp) => (
-    <span key={comp} style={{ display: "block" }}>
-      {comp}
-    </span>
-  ));
+  return (
+    <div>
+      {componentNamesArray.map((comp) => (
+        <span key={comp} style={{ display: "block" }}>
+          {comp}
+        </span>
+      ))}
+    </div>
+  );
 };
 
 const renderSplitListDisplayBlock = (row, fieldName) =>
   row[fieldName] && (
-    <div style={{ display: "block" }}>
+    <div>
       {row[fieldName].split(",").map((value, i) => (
         <span key={i} style={{ display: "block" }}>
           {value}
@@ -217,8 +221,8 @@ export const useColumns = ({ hiddenColumns }) => {
         ),
       },
       {
-        headerName: "Updated",
-        description: "Date record was last modified", // originally called modified but in johns branch it said updated
+        headerName: "Modified",
+        description: "Date record was last modified",
         field: "updated_at",
         valueGetter: ({ row }) => formatTimeStampTZType(row.updated_at),
         flex: 1,
@@ -243,11 +247,9 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Task order(s)",
         field: "task_orders",
         renderCell: ({ row }) => {
-          // Empty value won't work in some cases where task_order is an empty array.
           if (row.task_orders && row?.task_orders.length > 0) {
-            // Render values as a comma seperated string
             return (
-              <div style={{ display: "block" }}>
+              <div>
                 {row.task_orders.map((taskOrder) => (
                   <span key={taskOrder.task_order} style={{ display: "block" }}>
                     {taskOrder.task_order}
@@ -392,7 +394,8 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Council districts",
         field: "project_and_child_project_council_districts",
-        sortable: COLUMN_CONFIG["project_and_child_project_council_districts"].sortable,
+        sortable:
+          COLUMN_CONFIG["project_and_child_project_council_districts"].sortable,
         valueFormatter: ({ value }) => value && value.join(", "),
       },
     ],
