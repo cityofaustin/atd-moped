@@ -68,10 +68,11 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       type: "String",
     },
     project_description: {
-      hidden: true,
       searchable: true,
       sortable: true,
       label: "Project description",
+      showInTable: true,
+      defaultHidden: false,
       search: {
         label: "Search by project description",
         operator: "_ilike",
@@ -97,7 +98,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     current_phase_key: {
       searchable: false,
       sortable: true,
-      hidden: true,
     },
     project_team_members: {
       searchable: false,
@@ -149,7 +149,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       type: "string",
     },
     ecapris_subproject_id: {
-      hidden: false,
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
@@ -164,7 +163,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
     },
     updated_at: {
-      hidden: false,
       searchable: false,
       sortable: true,
       defaultHidden: false,

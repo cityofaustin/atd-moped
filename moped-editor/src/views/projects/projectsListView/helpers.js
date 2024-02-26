@@ -73,10 +73,8 @@ export const filterTaskOrderName = (value) => {
 };
 
 export const resolveHasSubprojects = (array) => {
-  if (array) {
-    if (array.length > 0) {
-      return "Yes";
-    }
+  if (array && array.length > 0) {
+    return "Yes";
   }
   return "No";
 };
