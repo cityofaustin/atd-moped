@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
+-- Most recent migration: moped-database/migrations/1668201706590_create_current_phase_view/up.sql
 
 CREATE VIEW current_phase_view AS SELECT DISTINCT ON (mpp.project_id, mpp.is_current_phase)
     mpp.project_id,

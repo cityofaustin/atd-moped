@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
+-- Most recent migration: moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
 
 CREATE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
