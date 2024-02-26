@@ -397,7 +397,7 @@ export const useColumns = ({ hiddenColumns }) => {
         valueFormatter: ({ value }) => value && value.join(", "),
       },
     ],
-    [hiddenColumns, queryString]
+    [queryString]
   );
 
   return { columns, columnsToReturnInQuery };
