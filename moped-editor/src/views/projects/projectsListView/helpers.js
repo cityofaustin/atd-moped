@@ -80,6 +80,9 @@ export const resolveHasSubprojects = (array) => {
 };
 
 const filterComponentFullNames = (value) => {
+  if (!value.components) {
+    return "";
+  }
   const componentNamesArray = value.components.split(",");
   return (
     <div>
@@ -361,7 +364,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Components",
         field: "components",
-        render: (entry) => filterComponentFullNames(entry),
+        renderCell: ({ row }) => filterComponentFullNames(row),
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
