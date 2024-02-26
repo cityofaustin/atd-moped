@@ -291,14 +291,14 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Construction start",
         field: "construction_start_date",
-        valueFormatter: ({ value }) => formatDateType(value),
+        valueFormatter: ({ value }) => value && formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Completion date",
         field: "completion_end_date",
-        valueFormatter: ({ value }) => formatDateType(value),
+        valueFormatter: ({ value }) => value && formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -317,7 +317,6 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
-        cellStyle: { whiteSpace: "noWrap" },
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "workgroup_contractors"),
         flex: 1,

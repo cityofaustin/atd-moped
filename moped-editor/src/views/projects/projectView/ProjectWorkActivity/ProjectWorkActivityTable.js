@@ -77,7 +77,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Description",
         field: "description",
-        minWidth: 150,
+        minWidth: 200,
         flex: 1,
         defaultVisible: true,
       },
