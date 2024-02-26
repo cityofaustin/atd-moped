@@ -382,6 +382,7 @@ export const useColumns = ({ hiddenColumns }) => {
           </Link>
         ),
         flex: 1,
+        sortable: false,
         minWidth: COLUMN_WIDTHS.medium,
       },
       {
