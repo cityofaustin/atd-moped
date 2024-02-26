@@ -51,17 +51,7 @@ jobs:
           ./hasura-cluster start;
 
       - name: Generate CREATE VIEW statements
-        run: |
-          mkdir -p moped-database/views
-          psql -A -t -c "SELECT table_name FROM information_schema.views WHERE table_schema = 'public';" | \
-          grep -v -E '^geo[a-zA-Z]+y_columns$' | \
-          xargs -I {} sh -c "
-            VIEW_NAME={}
-            MOST_RECENT_MIGRATION=\$(grep -rl --include=up.sql -E 'CREATE (OR REPLACE )?VIEW (public.)?$VIEW_NAME\b' moped-database/migrations | sort -V | tail -n 1)
-            echo \"-- Most recent migration: \$MOST_RECENT_MIGRATION\" > moped-database/views/\$VIEW_NAME.sql
-            echo "" >> moped-database/views/\$VIEW_NAME.sql
-            psql -A -t -c \"SELECT 'CREATE VIEW ' || '\$VIEW_NAME' || ' AS ' || pg_get_viewdef('\$VIEW_NAME'::regclass, true);\" >> moped-database/views/\$VIEW_NAME.sql
-          "
+        run: $(pwd)/.github/workflows/export_database_views.sh
 
       - name: Run SQLFluff
         run: |
