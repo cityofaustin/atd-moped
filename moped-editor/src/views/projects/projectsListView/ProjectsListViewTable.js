@@ -90,21 +90,6 @@ const ProjectsListViewTable = () => {
 
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 
-  // /**
-  //  * Keeps localStorage column config in sync with UI interactions
-  //  * @param {Object} column - the MT column config with the `field` prop - aka the column name
-  //  * @param {Bool} hidden - the hidden state of the column
-  //  */
-  // const handleColumnChange = useCallback(
-  //   ({ field }, hidden) => {
-  //     setHiddenColumns((prevHiddenColumns) => ({
-  //       ...prevHiddenColumns,
-  //       [field]: hidden,
-  //     }));
-  //   },
-  //   [setHiddenColumns]
-  // );
-
   const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
     columnsToReturn: columnsToReturnInQuery,
     exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
@@ -140,7 +125,7 @@ const ProjectsListViewTable = () => {
   /**
    * Handles the header click for sorting asc/desc.
    * @param {Array.Object} sortModel, [{field, sort}]
-   * Note: this is a function that we are using to override a DataGrid sorting function
+   * Overrides a DataGrid sorting function
    * Clicking the sort arrow on a column will toggle between asc, desc, then reset
    * The Community version of DataGrid only supports sorting by one field, until we upgrade to Pro
    * we can expect only one item in the array
@@ -165,7 +150,6 @@ const ProjectsListViewTable = () => {
 
   const handlePagination = useCallback(
     (paginationModel) => {
-      console.log(paginationModel);
       setQueryLimit(paginationModel.pageSize);
       setQueryOffset(paginationModel.pageSize * paginationModel.page);
     },
@@ -183,10 +167,6 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        {/* <Box
-        sx={{ flexGrow: 1, display: "flex", flexDirection: "column", marginTop: "36px" }}
-        id="thisbox"
-      > */}
         <CsvDownloadDialog dialogOpen={dialogOpen} />
         <Search
           parentData={data}
@@ -208,8 +188,9 @@ const ProjectsListViewTable = () => {
           <Box sx={{ height: "600px", padding: "14px", marginTop: "24px" }}>
             {data && data.project_list_view && (
               <DataGrid
-                // per the docs: When the height of a row is set to "auto", the final height will follow exactly the content size and ignore the density.
-                // they recommend this to have density along with get row height auto
+                // per the docs: When the height of a row is set to "auto", the final height will follow exactly
+                // the content size and ignore the density. the docs recommend these styles in order to have density
+                // along with get row height auto
                 sx={{
                   "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
                     py: "8px",
@@ -221,6 +202,8 @@ const ProjectsListViewTable = () => {
                     py: "22px",
                   },
                 }}
+                density="compact"
+                getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
                   setHiddenColumns(newModel);
@@ -230,12 +213,11 @@ const ProjectsListViewTable = () => {
                 }}
                 slotProps={{
                   columnsPanel: {
-                    disableHideAllButton: true,
-                    disableShowAllButton: true, // doing this for now becuase its not working, when i toggle show all its only setting one column to visible
+                    // Hiding buttons because when I toggle "show all" its only setting one column to visible
+                    // instead of including every column in the object
+                    disableShowAllButton: true,
                   },
                 }}
-                density="compact"
-                getRowHeight={() => "auto"}
                 columns={columns}
                 getRowId={(row) => row.project_id}
                 disableRowSelectionOnClick
@@ -256,7 +238,6 @@ const ProjectsListViewTable = () => {
             )}
           </Box>
         </Paper>
-        {/* </Box> */}
       </Container>
     </ApolloErrorHandler>
   );

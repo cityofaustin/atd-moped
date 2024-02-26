@@ -15,10 +15,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
-  showSearchBar: true,
   showFilters: false,
   showExport: true,
-  showNewItemButton: false,
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
@@ -71,8 +69,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true,
       sortable: true,
       label: "Project description",
-      showInTable: true,
-      defaultHidden: false,
+      showInTable: false,
       search: {
         label: "Search by project description",
         operator: "_ilike",

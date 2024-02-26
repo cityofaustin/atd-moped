@@ -100,7 +100,7 @@ const TopBar = ({ className, ...rest }) => {
   return (
     <AppBar className={clsx(classes.root, className)} elevation={2} {...rest}>
       <EnvAlertBanner />
-      <Toolbar >
+      <Toolbar className={classes.root}>
         <RouterLink to="/moped">
           <Logo />
         </RouterLink>
