@@ -342,7 +342,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Created by",
         field: "added_by",
         flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Public process status",
