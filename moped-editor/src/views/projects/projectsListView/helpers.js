@@ -227,8 +227,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Signal IDs",
         field: "project_feature",
-        hidden: hiddenColumns["project_feature"],
-        sorting: COLUMN_CONFIG["project_feature"].sortable,
+        sortable: COLUMN_CONFIG["project_feature"].sortable,
         renderCell: ({ row }) => {
           if (row?.project_feature) {
             const signals = row.project_feature.filter(
@@ -394,6 +393,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Council districts",
         field: "project_and_child_project_council_districts",
+        sortable: COLUMN_CONFIG["project_and_child_project_council_districts"].sortable,
         valueFormatter: ({ value }) => value && value.join(", "),
       },
     ],

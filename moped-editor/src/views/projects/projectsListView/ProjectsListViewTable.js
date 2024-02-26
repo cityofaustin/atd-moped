@@ -85,7 +85,7 @@ const ProjectsListViewTable = () => {
 
   const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings({
     defaultHiddenColumnSettings: DEFAULT_HIDDEN_COLS,
-    storageKey: "mopedColumnConfig",
+    storageKey: "mopedProjectListColumnConfig",
   });
 
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
