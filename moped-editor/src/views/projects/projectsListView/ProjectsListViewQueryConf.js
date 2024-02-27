@@ -272,12 +272,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     parent_project_id: {
       type: "Int",
       sortable: true,
-      defaultHidden: true,
-      showInTable: true,
     },
     parent_project_name: {
       type: "string",
       sortable: true,
+      defaultHidden: true,
+      showInTable: true,
     },
     components: {
       type: "string",
