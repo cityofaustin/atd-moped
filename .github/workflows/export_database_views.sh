@@ -12,7 +12,7 @@ function create_view_file() {
     echo "" >> moped-database/views/$VIEW_NAME.sql
 
     # Query the view definition and append to the file
-    psql -A -t -c "SELECT 'CREATE VIEW ' || '$VIEW_NAME' || ' AS ' || pg_get_viewdef('$VIEW_NAME'::regclass, true);" >> moped-database/views/$VIEW_NAME.sql
+    psql -A -t -c "SELECT 'CREATE OR REPLACE VIEW ' || '$VIEW_NAME' || ' AS ' || pg_get_viewdef('$VIEW_NAME'::regclass, true);" >> moped-database/views/$VIEW_NAME.sql
 }
 
 # Export the function
