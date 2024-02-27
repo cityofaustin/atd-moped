@@ -185,7 +185,14 @@ const ProjectsListViewTable = () => {
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
-          <Box sx={{ height: "600px", padding: "14px", marginTop: "24px" }}>
+          <Box
+            sx={{
+              height: "75vh",
+              minHeight: "400px",
+              padding: "14px",
+              marginTop: "24px",
+            }}
+          >
             {data && data.project_list_view && (
               <DataGrid
                 // per the docs: When the height of a row is set to "auto", the final height will follow exactly
