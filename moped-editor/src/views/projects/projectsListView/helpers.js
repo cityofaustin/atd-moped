@@ -156,7 +156,8 @@ export const useColumns = ({ hiddenColumns }) => {
     // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
-    const columnsNeededToRender = ["project_id", "current_phase_key"];
+    // Parent project Id needs the parent project name
+    const columnsNeededToRender = ["project_id", "current_phase_key", "parent_project_name"];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
@@ -492,6 +493,7 @@ export const useTableOptions = ({ queryLimit, data }) =>
         // is conflicting with the search/filter dropdown
         zIndex: 1,
         whiteSpace: "nowrap",
+        backgroundColor: "white"
       },
       columnsButton: true,
       idSynonym: "project_id",
