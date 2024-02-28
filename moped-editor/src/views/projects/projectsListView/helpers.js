@@ -137,7 +137,7 @@ export const useColumns = ({ hiddenColumns }) => {
     const columnsNeededToRender = [
       "project_id",
       "current_phase_key",
-      "parent_project_id",
+      "parent_project_name",
     ];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
@@ -370,7 +370,7 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         headerName: "Parent project",
-        field: "parent_project_name",
+        field: "parent_project_id",
         renderCell: ({ row }) => (
           <Link
             component={RouterLink}
@@ -381,6 +381,7 @@ export const useColumns = ({ hiddenColumns }) => {
             {row.parent_project_name}
           </Link>
         ),
+        sortable: COLUMN_CONFIG["parent_project_id"].sortable,
         flex: 1,
         minWidth: COLUMN_WIDTHS.medium,
       },
