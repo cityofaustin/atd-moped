@@ -1,5 +1,8 @@
 [sqlfluff]
 
+# Set loop limit for fixing
+runaway_limit = 10
+
 # Supported dialects https://docs.sqlfluff.com/en/stable/dialects.html
 # Or run 'sqlfluff dialects'
 dialect = postgres
@@ -14,7 +17,7 @@ templater = jinja
 # See https://docs.sqlfluff.com/en/stable/configuration.html#enabling-and-disabling-rules
 # AM04 (ambiguous.column_count) and ST06 (structure.column_order) are
 # two of the more controversial rules included to illustrate usage.
-exclude_rules = ambiguous.column_count, structure.column_order
+exclude_rules = ambiguous.column_count, structure.column_order, layout.long_lines
 
 # The standard max_line_length is 80 in line with the convention of
 # other tools and several style guides. Many projects however prefer
