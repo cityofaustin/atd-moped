@@ -1,6 +1,6 @@
 -- Most recent migration: moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
 
-CREATE VIEW project_list_view AS WITH project_person_list_lookup AS (
+CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
         string_agg(DISTINCT concat(mu.first_name, ' ', mu.last_name, ':', mpr.project_role_name), ','::text) AS project_team_members
