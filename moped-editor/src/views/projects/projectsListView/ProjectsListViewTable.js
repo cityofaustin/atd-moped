@@ -189,8 +189,7 @@ const ProjectsListViewTable = () => {
             sx={{
               height: "70vh",
               minHeight: "400px",
-              padding: "14px",
-              marginTop: "24px",
+              marginTop: "14px",
             }}
           >
             {data && data.project_list_view && (
