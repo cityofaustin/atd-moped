@@ -1,6 +1,6 @@
 -- Most recent migration: moped-database/migrations/1700515731002_add_audit_fields_to_unified_features_view/up.sql
 
-CREATE VIEW uniform_features AS SELECT
+CREATE OR REPLACE VIEW uniform_features AS SELECT
     feature_signals.id,
     feature_signals.component_id,
     'feature_signals'::text AS "table",

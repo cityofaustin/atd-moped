@@ -1,6 +1,6 @@
 -- Most recent migration: moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
 
-CREATE VIEW component_arcgis_online_view AS WITH work_types AS (
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
