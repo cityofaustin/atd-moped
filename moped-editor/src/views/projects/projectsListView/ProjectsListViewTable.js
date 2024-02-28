@@ -24,6 +24,7 @@ import {
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
+import ProjectListHeaderMenu from "./ProjectListHeaderMenu";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
@@ -31,11 +32,10 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
+    height: "90%"
   },
   paper: {
     width: "100%",
-    marginBottom: theme.spacing(1),
   },
   table: {
     minWidth: 750,
@@ -216,6 +216,7 @@ const ProjectsListViewTable = () => {
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
+                  columnMenu: ProjectListHeaderMenu,
                 }}
                 slotProps={{
                   columnsPanel: {
