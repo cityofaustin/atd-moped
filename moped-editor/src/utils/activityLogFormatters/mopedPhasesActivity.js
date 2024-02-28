@@ -61,7 +61,6 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     }
   });
 
-  // else render the array as a list of changed fields
   return {
     changeIcon,
     changeText: [
