@@ -72,11 +72,12 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           value = envelope ? envelope.replace("{VALUE}", value) : value;
 
           // If it is a number or boolean, it does not need quotation marks
-          // Otherwise, add quotation marks for the query to identify as string
+          // Otherwise, remove unrecognized graphQL characters (double-quotes or backslash)
+          // and add quotation marks for the query to identify as string
           if (type === "array") {
             value = `[${value}]`;
           } else if (!["number", "boolean"].includes(type)) {
-            value = `"${value}"`;
+            value = `"${value.replace(/"|\\/g, '')}"`;
           }
         } else {
           // We don't have a value
@@ -109,7 +110,10 @@ export const useAdvancedSearch = () => {
     const advancedFilters = makeAdvancedSearchWhereFilters(filters);
     if (advancedFilters.length === 0) return null;
 
-    const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
+    const bracketedFilters = advancedFilters.map((filter) => {
+      console.log(filter);
+      return `{ ${filter} }`;
+    });
 
     if (isOr) {
       // Ex. _or: [{project_lead: {_eq: "COA ATD Project Delivery"}}, {project_sponsor: {_eq: "COA ATD Active Transportation & Street Design"}}]
