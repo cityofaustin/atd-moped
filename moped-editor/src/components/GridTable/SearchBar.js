@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-
 import {
   Button,
   Box,

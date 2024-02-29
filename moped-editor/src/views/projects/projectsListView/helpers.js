@@ -1,11 +1,8 @@
 import { useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
-import { MTableHeader } from "@material-table/core";
 import Link from "@mui/material/Link";
-import typography from "../../../theme/typography";
 import parse from "html-react-parser";
 import { formatDateType, formatTimeStampTZType } from "src/utils/dateAndTime";
-import Pagination from "../../../components/GridTable/Pagination";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../../../components/RenderSignalLink";
@@ -36,11 +33,15 @@ export const filterProjectTeamMembers = (value, view) => {
   });
   // if the view is projectsListView, render each team member as a block
   if (view === "projectsListView") {
-    return Object.keys(uniqueNames).map((key) => (
-      <span key={key} style={{ display: "block" }}>
-        {`${key} - ${uniqueNames[key]}`}
-      </span>
-    ));
+    return (
+      <div style={{ display: "block" }}>
+        {Object.keys(uniqueNames).map((key) => (
+          <span key={key} style={{ display: "block" }}>
+            {`${key} - ${uniqueNames[key]}`}
+          </span>
+        ))}
+      </div>
+    );
   } else {
     const projectTeamMembers = Object.keys(uniqueNames).map(
       (key) => `${key} - ${uniqueNames[key]}`
@@ -72,72 +73,48 @@ export const filterTaskOrderName = (value) => {
 };
 
 export const resolveHasSubprojects = (array) => {
-  if (array) {
-    if (array.length > 0) {
-      return "Yes";
-    }
+  if (array && array.length > 0) {
+    return "Yes";
   }
   return "No";
 };
 
 const filterComponentFullNames = (value) => {
+  if (!value.components) {
+    return "";
+  }
   const componentNamesArray = value.components.split(",");
-  return componentNamesArray.map((comp) => (
-    <span key={comp} style={{ display: "block" }}>
-      {comp}
-    </span>
-  ));
+  return (
+    <div>
+      {componentNamesArray.map((comp) => (
+        <span key={comp} style={{ display: "block" }}>
+          {comp}
+        </span>
+      ))}
+    </div>
+  );
 };
+
+const renderSplitListDisplayBlock = (row, fieldName) =>
+  row[fieldName] && (
+    <div>
+      {row[fieldName].split(",").map((value, i) => (
+        <span key={i} style={{ display: "block" }}>
+          {value}
+        </span>
+      ))}
+    </div>
+  );
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
-/**
- * Various custom components for Material Table
- */
-export const useTableComponents = ({
-  data,
-  queryLimit,
-  queryOffset,
-  setQueryLimit,
-  setQueryOffset,
-  handleTableHeaderClick,
-  sortByColumnIndex,
-  orderByDirection,
-  rowsPerPageOptions,
-}) =>
-  useMemo(
-    () => ({
-      Pagination: (props) => (
-        <Pagination
-          recordCount={data.project_list_view_aggregate?.aggregate.count}
-          queryLimit={queryLimit}
-          setQueryLimit={setQueryLimit}
-          queryOffset={queryOffset}
-          setQueryOffset={setQueryOffset}
-          rowsPerPageOptions={rowsPerPageOptions}
-        />
-      ),
-      Header: (props) => (
-        <MTableHeader
-          {...props}
-          onOrderChange={handleTableHeaderClick}
-          orderBy={sortByColumnIndex}
-          orderDirection={orderByDirection}
-        />
-      ),
-    }),
-    [
-      data,
-      queryLimit,
-      queryOffset,
-      setQueryLimit,
-      setQueryOffset,
-      handleTableHeaderClick,
-      sortByColumnIndex,
-      orderByDirection,
-      rowsPerPageOptions,
-    ]
-  );
+const COLUMN_WIDTHS = {
+  xsmall: 75,
+  small: 125,
+  medium: 200,
+  large: 250,
+  xlarge: 350,
+};
 
 /**
  * The Material Table column settings
@@ -148,7 +125,7 @@ export const useColumns = ({ hiddenColumns }) => {
 
   const columnsToReturnInQuery = useMemo(() => {
     const columnsShownInUI = Object.keys(hiddenColumns)
-      .filter((key) => hiddenColumns[key] === false)
+      .filter((key) => hiddenColumns[key])
       .map((key) => key);
 
     // We must include project_id in every query since it is set as a keyField in the Apollo cache.
@@ -157,7 +134,11 @@ export const useColumns = ({ hiddenColumns }) => {
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
     // Parent project Id needs the parent project name
-    const columnsNeededToRender = ["project_id", "current_phase_key", "parent_project_name"];
+    const columnsNeededToRender = [
+      "project_id",
+      "current_phase_key",
+      "parent_project_name",
+    ];
 
     return [...columnsShownInUI, ...columnsNeededToRender];
   }, [hiddenColumns]);
@@ -165,338 +146,265 @@ export const useColumns = ({ hiddenColumns }) => {
   const columns = useMemo(
     () => [
       {
-        title: "ID",
+        headerName: "ID",
         field: "project_id",
-        hidden: hiddenColumns["project_id"],
+        width: COLUMN_WIDTHS.xsmall,
       },
       {
-        title: "Name",
+        headerName: "Name",
         field: "project_name",
-        hidden: hiddenColumns["project_name"],
-        render: (entry) => (
+        flex: 2,
+        minWidth: COLUMN_WIDTHS.xlarge,
+        renderCell: ({ row }) => (
           <Link
             component={RouterLink}
-            to={`/moped/projects/${entry.project_id}`}
+            to={`/moped/projects/${row.project_id}`}
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
-            {entry.project_name}
+            {row.project_name}
           </Link>
         ),
-        cellStyle: {
-          position: "sticky",
-          left: 0,
-          backgroundColor: "white",
-          minWidth: "20rem",
-          zIndex: 1,
+      },
+      {
+        headerName: "Status",
+        field: "current_phase",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
+        renderCell: ({ row }) => {
+          return (
+            <ProjectStatusBadge
+              phaseName={row.current_phase}
+              phaseKey={row.current_phase_key}
+              condensed
+            />
+          );
         },
       },
       {
-        title: "Status",
-        field: "current_phase",
-        hidden: hiddenColumns["current_phase"],
-        render: (entry) => (
-          <ProjectStatusBadge
-            phaseName={entry.current_phase}
-            phaseKey={entry.current_phase_key}
-            condensed
-          />
-        ),
-      },
-      {
-        title: "Team",
+        headerName: "Team",
         field: "project_team_members",
-        hidden: hiddenColumns["project_team_members"],
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) =>
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.large,
+        renderCell: ({ row }) =>
           filterProjectTeamMembers(
-            entry.project_team_members,
+            row.project_team_members,
             "projectsListView"
           ),
       },
       {
-        title: "Lead",
+        headerName: "Lead",
         field: "project_lead",
-        hidden: hiddenColumns["project_lead"],
-        emptyValue: "-",
-        editable: "never",
-        cellStyle: { whiteSpace: "noWrap" },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Sponsor",
+        headerName: "Sponsor",
         field: "project_sponsor",
-        hidden: hiddenColumns["project_sponsor"],
-        emptyValue: "-",
-        editable: "never",
-        cellStyle: { whiteSpace: "noWrap" },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Partners",
+        headerName: "Partners",
         field: "project_partners",
-        hidden: hiddenColumns["project_partners"],
-        emptyValue: "-",
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.project_partners.split(",").map((partner) => (
-            <span key={partner} style={{ display: "block" }}>
-              {partner}
-            </span>
-          ));
-        },
+        minWidth: COLUMN_WIDTHS.large,
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_partners"),
       },
       {
-        title: "eCAPRIS ID",
+        headerName: "eCapris ID",
         field: "ecapris_subproject_id",
-        hidden: hiddenColumns["ecapris_subproject_id"],
-        render: (entry) => (
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
+        renderCell: ({ row }) => (
           <ExternalLink
-            text={entry.ecapris_subproject_id}
-            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${entry.ecapris_subproject_id}`}
+            text={row.ecapris_subproject_id}
+            url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${row.ecapris_subproject_id}`}
           />
         ),
       },
       {
-        title: "Modified",
+        headerName: "Modified",
+        description: "Date record was last modified",
         field: "updated_at",
-        hidden: hiddenColumns["updated_at"],
-        render: (entry) => formatTimeStampTZType(entry.updated_at),
+        valueFormatter: ({value}) => formatTimeStampTZType(value),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Signal IDs",
+        headerName: "Signal IDs",
         field: "project_feature",
-        hidden: hiddenColumns["project_feature"],
-        sorting: COLUMN_CONFIG["project_feature"].sortable,
-        render: (entry) => {
-          if (!entry?.project_feature) {
-            return "-";
-          } else {
-            const signals = entry.project_feature.filter(
+        sortable: COLUMN_CONFIG["project_feature"].sortable,
+        renderCell: ({ row }) => {
+          if (row?.project_feature) {
+            const signals = row.project_feature.filter(
               (signal) => signal.signal_id && signal.knack_id
             );
             return <RenderSignalLink signals={signals} />;
           }
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Task order(s)",
+        headerName: "Task order(s)",
         field: "task_orders",
-        hidden: hiddenColumns["task_orders"],
-        cellStyle: { whiteSpace: "noWrap" },
-        emptyValue: "-",
-        render: (entry) => {
-          // Empty value won't work in some cases where task_order is an empty array.
-          if (entry?.task_orders.length < 1) {
-            return "-";
+        renderCell: ({ row }) => {
+          if (row.task_orders && row?.task_orders.length > 0) {
+            return (
+              <div>
+                {row.task_orders.map((taskOrder) => (
+                  <span key={taskOrder.task_order} style={{ display: "block" }}>
+                    {taskOrder.task_order}
+                  </span>
+                ))}
+              </div>
+            );
           }
-          // Render values as a comma seperated string
-          return entry.task_orders.map((taskOrder) => (
-            <span key={taskOrder.task_order} style={{ display: "block" }}>
-              {taskOrder.task_order}
-            </span>
-          ));
         },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Type",
+        headerName: "Type",
         field: "type_name",
-        hidden: hiddenColumns["type_name"],
-        emptyValue: "-",
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.type_name.split(",").map((type_name) => (
-            <span key={type_name} style={{ display: "block" }}>
-              {type_name}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "type_name"),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Funding",
+        headerName: "Funding",
         field: "funding_source_name",
-        hidden: hiddenColumns["funding_source_name"],
-        emptyValue: "-",
         cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.funding_source_name
-            .split(",")
-            .map((funding_source_name, i) => (
-              <span key={i} style={{ display: "block" }}>
-                {funding_source_name}
-              </span>
-            ));
-        },
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "funding_source_name"),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Status update",
+        headerName: "Status update",
         field: "project_status_update",
-        hidden: hiddenColumns["project_status_update"],
-        emptyValue: "-",
-        cellStyle: { maxWidth: "30rem" },
-        render: (entry) => parse(String(entry.project_status_update)),
+        renderCell: ({ row }) => {
+          return (
+            row.project_status_update &&
+            parse(String(row.project_status_update))
+          );
+        },
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.xlarge,
       },
       {
-        title: "Construction start",
+        headerName: "Construction start",
         field: "construction_start_date",
-        hidden: hiddenColumns["construction_start_date"],
-        emptyValue: "-",
-        render: (entry) => formatDateType(entry.construction_start_date),
+        valueFormatter: ({ value }) => value && formatDateType(value),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Completion date",
+        headerName: "Completion date",
         field: "completion_end_date",
-        hidden: hiddenColumns["completion_end_date"],
-        emptyValue: "-",
-        render: (entry) => formatDateType(entry.completion_end_date),
+        valueFormatter: ({ value }) => value && formatDateType(value),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Designer",
+        headerName: "Designer",
         field: "project_designer",
-        hidden: hiddenColumns["project_designer"],
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Inspector",
+        headerName: "Inspector",
         field: "project_inspector",
-        hidden: hiddenColumns["project_inspector"],
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Workgroup/Contractors",
+        headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
-        hidden: hiddenColumns["workgroup_contractors"],
-        emptyValue: "-",
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.workgroup_contractors.split(",").map((contractor, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {contractor}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "workgroup_contractors"),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Contract numbers",
+        headerName: "Contract numbers",
         field: "contract_numbers",
-        hidden: hiddenColumns["contract_numbers"],
-        emptyValue: "-",
-        cellStyle: { whiteSpace: "noWrap" },
-        render: (entry) => {
-          return entry.contract_numbers.split(",").map((contractNumber, i) => (
-            <span key={i} style={{ display: "block" }}>
-              {contractNumber}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "contract_numbers"),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Tags",
+        headerName: "Tags",
         field: "project_tags",
-        hidden: hiddenColumns["project_tags"],
-        cellStyle: { whiteSpace: "noWrap" },
-        emptyValue: "-",
-        render: (entry) => {
-          return entry.project_tags.split(",").map((tag) => (
-            <span key={tag} style={{ display: "block" }}>
-              {tag}
-            </span>
-          ));
-        },
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_tags"),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.large,
       },
       {
-        title: "Created by",
+        headerName: "Created by",
         field: "added_by",
-        hidden: hiddenColumns["added_by"],
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Public process status",
+        headerName: "Public process status",
         field: "public_process_status",
-        hidden: hiddenColumns["public_process_status"],
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Interim MPD (Access) ID",
+        headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
-        hidden: hiddenColumns["interim_project_id"],
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Components",
+        headerName: "Components",
         field: "components",
-        hidden: hiddenColumns["components"],
-        emptyValue: "-",
-        render: (entry) => filterComponentFullNames(entry),
+        renderCell: ({ row }) => filterComponentFullNames(row),
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Parent project",
+        headerName: "Parent project",
         field: "parent_project_id",
-        hidden: hiddenColumns["parent_project_id"],
-        emptyValue: "-",
-        render: (entry) => (
+        renderCell: ({ row }) => (
           <Link
             component={RouterLink}
-            to={`/moped/projects/${entry.parent_project_id}`}
+            to={`/moped/projects/${row.parent_project_id}`}
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
-            {entry.parent_project_name}
+            {row.parent_project_name}
           </Link>
         ),
+        sortable: COLUMN_CONFIG["parent_project_id"].sortable,
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.medium,
       },
       {
-        title: "Has subprojects",
+        headerName: "Has subprojects",
         field: "children_project_ids",
-        hidden: hiddenColumns["children_project_ids"],
-        render: (entry) => {
-          const hasChildren = entry.children_project_ids.length > 0;
-          return <span> {hasChildren ? "Yes" : "-"} </span>;
+        valueFormatter: ({ value }) => {
+          const hasChildren = value && value.length > 0;
+          return hasChildren && "Yes";
         },
-        emptyValue: "-",
+        flex: 1,
+        minWidth: COLUMN_WIDTHS.small,
       },
       {
-        title: "Council districts",
+        headerName: "Council districts",
         field: "project_and_child_project_council_districts",
-        hidden: hiddenColumns["project_and_child_project_council_districts"],
-        render: (entry) => {
-          if (entry.project_and_child_project_council_districts.length > 0) {
-            return entry.project_and_child_project_council_districts.join(", ");
-          } else {
-            return <span> - </span>;
-          }
-        },
-        emptyValue: "-",
+        sortable:
+          COLUMN_CONFIG["project_and_child_project_council_districts"].sortable,
+        valueFormatter: ({ value }) => value && value.join(", "),
       },
     ],
-    [hiddenColumns, queryString]
+    [queryString]
   );
 
   return { columns, columnsToReturnInQuery };
 };
-
-/**
- * Defines various Material Table options
- * @param {integer} queryLimit - the current rows per page option
- * @param {object[]} data - the project list view data
- * @returns {object} the material table setings options
- */
-export const useTableOptions = ({ queryLimit, data }) =>
-  useMemo(
-    () => ({
-      search: false,
-      rowStyle: {
-        fontFamily: typography.fontFamily,
-        fontSize: "14px",
-      },
-      pageSize: Math.min(queryLimit, data?.project_list_view?.length),
-      headerStyle: {
-        // material table header row has a zIndex of 10, which
-        // is conflicting with the search/filter dropdown
-        zIndex: 1,
-        whiteSpace: "nowrap",
-        backgroundColor: "white"
-      },
-      columnsButton: true,
-      idSynonym: "project_id",
-    }),
-    [queryLimit, data]
-  );
