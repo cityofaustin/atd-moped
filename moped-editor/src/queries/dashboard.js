@@ -27,7 +27,7 @@ export const DASHBOARD_QUERY = gql`
         }
         moped_proj_notes(
           where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-          order_by: { date_created: desc }
+          order_by: { created_at: desc }
         ) {
           moped_user {
             first_name
