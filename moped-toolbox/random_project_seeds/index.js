@@ -82,7 +82,7 @@ const randomProjectType = () => ({
 const randomNote = () => ({
   project_note: randomString(200),
   project_note_type: randomArrElement(lookups.project_note_types),
-  added_by_user_id: randomArrElement(lookups.users),
+  created_by_user_id: randomArrElement(lookups.users),
 });
 
 const randomTag = () => ({
