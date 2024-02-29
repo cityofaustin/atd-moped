@@ -24,7 +24,6 @@ import {
   CsvDownloadDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
-import ProjectListHeaderMenu from "./ProjectListHeaderMenu";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
@@ -216,7 +215,6 @@ const ProjectsListViewTable = () => {
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
-                  columnMenu: ProjectListHeaderMenu,
                 }}
                 slotProps={{
                   columnsPanel: {
