@@ -219,10 +219,10 @@ LEFT JOIN project_district_association districts ON mp.project_id = districts.pr
 LEFT JOIN LATERAL (
     SELECT
         mpn.project_note,
-        mpn.date_created
+        mpn.created_at AS date_created
     FROM moped_proj_notes mpn
     WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
-    ORDER BY mpn.date_created DESC
+    ORDER BY mpn.created_at DESC
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
