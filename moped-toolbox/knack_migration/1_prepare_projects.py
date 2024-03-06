@@ -40,7 +40,7 @@ def build_note(note, user_name, user_id, note_type=2):
         # project note types are hardcoded. see here: https://github.com/cityofaustin/atd-moped/blob/main/moped-editor/src/views/projects/projectView/ProjectNotes.js#L321
         "project_note_type": note_type,
         "added_by": user_name,
-        "added_by_user_id": user_id,
+        "created_by_user_id": user_id,
         "project_note": note,
     }
 
