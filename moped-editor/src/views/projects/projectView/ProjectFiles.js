@@ -114,7 +114,6 @@ const ProjectFiles = (props) => {
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
-          created_by: getDatabaseId(user),
         },
       },
     })
@@ -273,7 +272,7 @@ const ProjectFiles = (props) => {
       cellStyle: { fontFamily: typography.fontFamily },
       render: (record) => (
         <span>
-          {record?.created_by
+          {record?.created_by_user_id
             ? record?.moped_user?.first_name +
               " " +
               record?.moped_user?.last_name
@@ -285,13 +284,13 @@ const ProjectFiles = (props) => {
       title: "Date uploaded",
       cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) =>
-        new Date(a?.create_date ?? 0) - new Date(b?.create_date ?? 0),
+        new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
       render: (record) => (
         <span>
-          {record?.create_date
+          {record?.created_at
             ? `${formatTimeStampTZType(
-                record.create_date
-              )}, ${makeFullTimeFromTimeStampTZ(record.create_date)}`
+                record.created_at
+              )}, ${makeFullTimeFromTimeStampTZ(record.created_at)}`
             : "N/A"}
         </span>
       ),
