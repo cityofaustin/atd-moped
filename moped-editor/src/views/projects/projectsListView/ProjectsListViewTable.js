@@ -186,7 +186,7 @@ const ProjectsListViewTable = () => {
         <Paper className={classes.paper}>
           <Box
             sx={{
-              height: "70vh",
+              height: "75vh",
               minHeight: "400px",
               marginTop: "14px",
             }}
