@@ -263,7 +263,7 @@ const ProjectFiles = (props) => {
           id="file_description"
           name="file_description"
           value={props?.value ?? ""}
-          onChange={(e) => props.onChange(e.target.value.trim())}
+          onChange={(e) => props.onChange(e.target.value)}
         />
       ),
     },
@@ -392,7 +392,7 @@ const ProjectFiles = (props) => {
                   fileId: newData.project_file_id,
                   fileType: newData.file_type,
                   fileName: newData.file_name || null,
-                  fileDescription: newData.file_description || null,
+                  fileDescription: newData.file_description.trim() || null,
                   fileUrl: newData.file_url || null,
                 },
               }).then(() => {

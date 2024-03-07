@@ -4353,6 +4353,8 @@
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -4372,6 +4374,8 @@
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
