@@ -30,8 +30,15 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
     };
   }
 
-  // delete an existing phase
-  if (change.description[0].field === "is_deleted") {
+  // Multiple fields in the moped_proj_phases table can be updated at once
+  // We list the fields changed in the activity log, this gathers the fields changed
+  const newRecord = change.record_data.event.data.new;
+  const oldRecord = change.record_data.event.data.old;
+
+  let changes = [];
+
+  // if the record has been deleted that supersedes any other changes
+  if (newRecord["is_deleted"] === true) {
     return {
       changeIcon,
       changeText: [
@@ -42,13 +49,6 @@ export const formatPhasesActivity = (change, phaseList, subphaseList) => {
       ],
     };
   }
-
-  // Multiple fields in the moped_proj_phases table can be updated at once
-  // We list the fields changed in the activity log, this gathers the fields changed
-  const newRecord = change.record_data.event.data.new;
-  const oldRecord = change.record_data.event.data.old;
-
-  let changes = [];
 
   // loop through fields to check for differences, push label onto changes Array
   Object.keys(newRecord).forEach((field) => {
