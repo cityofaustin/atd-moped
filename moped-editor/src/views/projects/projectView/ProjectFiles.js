@@ -38,7 +38,7 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "../../../queries/project";
-import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
+import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import {
