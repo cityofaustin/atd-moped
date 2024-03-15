@@ -63,10 +63,7 @@ const ProjectSummaryMap = ({ data }) => {
             setBasemapKey={setBasemapKey}
           />
           <NavigationControl position="bottom-left" showCompass={false} />
-          <BaseMapSourceAndLayers
-            basemapKey={basemapKey}
-            setBasemapKey={setBasemapKey}
-          />
+          <BaseMapSourceAndLayers basemapKey={basemapKey} />
           {/* Wait until the map loads and components-placeholder layer is ready to target */}
           {hasMapLoaded && (
             <>
