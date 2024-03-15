@@ -53,7 +53,7 @@ const ProjectSummaryMap = ({ data }) => {
           ref={mapRef}
           initialViewState={initialViewState}
           style={{ width: "100%", height: "60vh" }}
-          mapStyle={basemaps.streets.mapStyle}
+          mapStyle={basemaps[basemapKey].mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
           onLoad={onMapLoad}
@@ -63,7 +63,10 @@ const ProjectSummaryMap = ({ data }) => {
             setBasemapKey={setBasemapKey}
           />
           <NavigationControl position="bottom-left" showCompass={false} />
-          <BaseMapSourceAndLayers basemapKey={basemapKey} />
+          <BaseMapSourceAndLayers
+            basemapKey={basemapKey}
+            setBasemapKey={setBasemapKey}
+          />
           {/* Wait until the map loads and components-placeholder layer is ready to target */}
           {hasMapLoaded && (
             <>
