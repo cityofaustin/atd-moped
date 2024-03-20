@@ -11,7 +11,7 @@ export const useGetProjectListView = ({
   advancedSearchWhereString,
   queryName,
 }) => {
-  const { query } = useMemo(() => {
+  const query = useMemo(() => {
     const queryString = `query ${queryName} {
       project_list_view (
           ${queryLimit ? `limit: ${queryLimit}` : ""}
@@ -65,7 +65,7 @@ export const useGetProjectListView = ({
       ${queryString}
     `;
 
-    return { query };
+    return query;
   }, [
     columnsToReturn,
     queryLimit,
