@@ -156,7 +156,6 @@ export const useCsvExport = ({
   query,
   exportConfig,
   queryTableName,
-  fetchPolicy,
   setDownloadingDialogOpen,
   setDownloadOptionsDialogOpen,
   columnDownloadOption,
