@@ -1,10 +1,91 @@
-alter table "public"."moped_proj_phases" alter column "updated_at" set default clock_timestamp();
+alter table feature_drawn_lines alter column updated_at set default now();
+alter table feature_drawn_points alter column updated_at set default now();
+alter table feature_intersections alter column updated_at set default now();
+alter table feature_signals alter column updated_at set default now();
+alter table feature_street_segments alter column updated_at set default now();
+alter table moped_project alter column created_at set default now();
+alter table moped_project alter column updated_at set default now();
+alter table moped_proj_components alter column updated_at set default now();
+alter table moped_proj_funding alter column created_at set default now();
+alter table moped_proj_funding alter column updated_at set default now();
+alter table moped_proj_milestones alter column created_at set default now();
+alter table moped_proj_milestones alter column updated_at set default now();
+alter table moped_proj_notes alter column created_at set default now();
+alter table moped_proj_notes alter column updated_at set default now();
+alter table moped_proj_phases alter column created_at set default now();
+alter table moped_proj_phases alter column updated_at set default now();
+alter table moped_proj_work_activity alter column updated_at set default now();
 
-DROP TRIGGER update_moped_proj_phases_and_project_audit_fields ON moped_proj_phases; 
+DROP TRIGGER set_feature_drawn_lines_updated_at ON feature_drawn_lines; 
+DROP TRIGGER set_feature_drawn_points_updated_at ON feature_drawn_points; 
+DROP TRIGGER set_feature_intersections_updated_at ON feature_intersections; 
+DROP TRIGGER set_feature_signals_updated_at ON feature_signals; 
+DROP TRIGGER set_feature_street_segments_updated_at ON feature_street_segments; 
+DROP TRIGGER set_moped_project_updated_at ON moped_project; 
+DROP TRIGGER update_moped_proj_components_and_project_audit_fields ON moped_proj_components; 
+DROP TRIGGER update_moped_proj_funding_and_project_audit_fields ON moped_proj_funding; 
+DROP TRIGGER update_moped_proj_milestones_and_project_audit_fields ON moped_proj_milestones; 
+DROP TRIGGER update_moped_proj_notes_and_project_audit_fields ON moped_proj_notes; 
+DROP TRIGGER update_moped_proj_phases_and_project_audit_fields ON moped_proj_phases;
+DROP TRIGGER update_moped_proj_work_activity_and_project_audit_fields ON moped_proj_work_activity;
+
+CREATE TRIGGER set_feature_drawn_lines_updated_at
+    BEFORE UPDATE ON feature_drawn_lines
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER set_feature_drawn_points_updated_at
+    BEFORE UPDATE ON feature_drawn_points
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER set_feature_intersections_updated_at
+    BEFORE UPDATE ON feature_intersections
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER set_feature_signals_updated_at
+    BEFORE UPDATE ON feature_signals
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER set_feature_street_segments_updated_at
+    BEFORE UPDATE ON feature_street_segments
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER set_moped_project_updated_at
+    BEFORE UPDATE ON moped_project
+    FOR EACH ROW
+    EXECUTE FUNCTION public.set_updated_at();
+
+CREATE TRIGGER update_moped_proj_components_and_project_audit_fields
+    BEFORE UPDATE ON moped_proj_components
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+
+CREATE TRIGGER update_moped_proj_funding_and_project_audit_fields
+    BEFORE UPDATE ON moped_proj_funding
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+
+CREATE TRIGGER update_moped_proj_milestones_and_project_audit_fields
+    BEFORE UPDATE ON moped_proj_milestones
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+
+CREATE TRIGGER update_moped_proj_notes_and_project_audit_fields
+    BEFORE UPDATE ON moped_proj_notes
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
 CREATE TRIGGER update_moped_proj_phases_and_project_audit_fields
     BEFORE UPDATE ON moped_proj_phases
     FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields ();
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
-COMMENT ON TRIGGER update_moped_proj_phases_and_project_audit_fields ON moped_proj_phases IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_phases table.';
+CREATE TRIGGER update_moped_proj_work_activity_and_project_audit_fields
+    BEFORE UPDATE ON moped_proj_work_activity
+    FOR EACH ROW
+    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+
