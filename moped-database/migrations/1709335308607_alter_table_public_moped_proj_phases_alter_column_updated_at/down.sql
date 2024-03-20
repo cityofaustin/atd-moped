@@ -74,4 +74,3 @@ CREATE TRIGGER update_moped_proj_work_activity_and_project_audit_fields
     OR UPDATE ON moped_proj_work_activity
     FOR EACH ROW
     EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-    
