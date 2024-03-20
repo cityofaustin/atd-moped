@@ -38,12 +38,6 @@ import {
 import { getClickedFeatureFromMap } from "./utils/onMapClick";
 import { useHasMapLoaded } from "./utils/useHasMapLoaded";
 
-// See https://github.com/visgl/react-map-gl/issues/1266#issuecomment-753686953
-import mapboxgl from "mapbox-gl";
-mapboxgl.workerClass =
-  // eslint-disable-next-line import/no-webpack-loader-syntax
-  require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
-
 export default function TheMap({
   projectComponents,
   allRelatedComponents,

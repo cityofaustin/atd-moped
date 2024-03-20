@@ -36,8 +36,6 @@ const DashboardLayout = () => {
   const classes = useStyles();
   const { user } = useUser();
 
-  // console.debug("user", user);
-
   return user ? (
     <div className={classes.root}>
       <TopBar />

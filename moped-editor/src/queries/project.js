@@ -52,7 +52,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-        order_by: { date_created: desc }
+        order_by: { created_at: desc }
       ) {
         project_note_id
         project_note
@@ -60,7 +60,7 @@ export const SUMMARY_QUERY = gql`
           first_name
           last_name
         }
-        date_created
+        created_at
       }
       moped_project_types(where: { is_deleted: { _eq: false } }) {
         id

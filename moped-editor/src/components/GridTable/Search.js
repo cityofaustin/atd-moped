@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
