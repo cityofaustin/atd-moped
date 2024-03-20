@@ -3,8 +3,6 @@ alter table feature_drawn_points alter column updated_at set default now();
 alter table feature_intersections alter column updated_at set default now();
 alter table feature_signals alter column updated_at set default now();
 alter table feature_street_segments alter column updated_at set default now();
-alter table moped_project alter column created_at set default now();
-alter table moped_project alter column updated_at set default now();
 alter table moped_proj_components alter column updated_at set default now();
 alter table moped_proj_funding alter column created_at set default now();
 alter table moped_proj_funding alter column updated_at set default now();
@@ -21,7 +19,6 @@ DROP TRIGGER set_feature_drawn_points_updated_at ON feature_drawn_points;
 DROP TRIGGER set_feature_intersections_updated_at ON feature_intersections; 
 DROP TRIGGER set_feature_signals_updated_at ON feature_signals; 
 DROP TRIGGER set_feature_street_segments_updated_at ON feature_street_segments; 
-DROP TRIGGER set_moped_project_updated_at ON moped_project; 
 DROP TRIGGER update_moped_proj_components_and_project_audit_fields ON moped_proj_components; 
 DROP TRIGGER update_moped_proj_funding_and_project_audit_fields ON moped_proj_funding; 
 DROP TRIGGER update_moped_proj_milestones_and_project_audit_fields ON moped_proj_milestones; 
@@ -51,11 +48,6 @@ CREATE TRIGGER set_feature_signals_updated_at
 
 CREATE TRIGGER set_feature_street_segments_updated_at
     BEFORE UPDATE ON feature_street_segments
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-CREATE TRIGGER set_moped_project_updated_at
-    BEFORE UPDATE ON moped_project
     FOR EACH ROW
     EXECUTE FUNCTION public.set_updated_at();
 
