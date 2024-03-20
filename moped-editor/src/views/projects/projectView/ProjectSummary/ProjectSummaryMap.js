@@ -53,7 +53,7 @@ const ProjectSummaryMap = ({ data }) => {
           ref={mapRef}
           initialViewState={initialViewState}
           style={{ width: "100%", height: "60vh" }}
-          mapStyle={basemaps.streets.mapStyle}
+          mapStyle={basemaps[basemapKey].mapStyle}
           {...mapParameters}
           cooperativeGestures={true}
           onLoad={onMapLoad}
