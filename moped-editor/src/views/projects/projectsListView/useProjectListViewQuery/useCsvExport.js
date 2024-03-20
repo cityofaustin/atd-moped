@@ -1,5 +1,5 @@
 import React from "react";
-import { useLazyQuery } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 import { format } from "date-fns";
 import Papa from "papaparse";
 import {
@@ -163,14 +163,7 @@ export const useCsvExport = ({
   setColumnDownloadOption,
   visibleColumns,
 }) => {
-  /**
-   * Instantiates getExport and data variables
-   * @function getExport - It is called to load the data
-   * @property {object} data - The data as retrieved from query (if available)
-   */
-  const [getExport] = useLazyQuery(query, {
-    fetchPolicy: fetchPolicy,
-  });
+  const client = useApolloClient();
 
   /**
    * Open the column download options dialog when export button is clicked
@@ -200,17 +193,22 @@ export const useCsvExport = ({
     setDownloadOptionsDialogOpen(false);
     setDownloadingDialogOpen(true);
     // Fetch data and format, parse, and download CSV when returned
-    getExport().then(({ data }) => {
-      const formattedData = formatExportData(
-        data[queryTableName],
-        exportConfig,
-        columnDownloadOption,
-        visibleColumns
-      );
-      const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
-      downloadFile(csvString);
-      setDownloadingDialogOpen(false);
-    });
+    client
+      .query({
+        query: query,
+        fetchPolicy: "network-first",
+      })
+      .then(({ data }) => {
+        const formattedData = formatExportData(
+          data[queryTableName],
+          exportConfig,
+          columnDownloadOption,
+          visibleColumns
+        );
+        const csvString = Papa.unparse(formattedData, { escapeFormulae: true });
+        downloadFile(csvString);
+        setDownloadingDialogOpen(false);
+      });
   };
 
   return {
