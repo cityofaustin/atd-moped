@@ -109,6 +109,7 @@ export const useComponentLinkParams = ({
     hasComponentSetFromUrl,
     projectComponents,
     setClickedComponent,
+    allRelatedComponents,
     setHasComponentSetFromUrl,
     errorMessageDispatch,
     mapRef,
