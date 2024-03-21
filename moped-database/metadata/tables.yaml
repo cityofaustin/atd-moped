@@ -1749,6 +1749,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
@@ -1756,6 +1759,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
@@ -1788,20 +1794,24 @@
   update_permissions:
     - role: moped-admin
       permission:
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
           - project_component_id
         filter: {}
-        check: {}
     - role: moped-editor
       permission:
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
           - project_component_id
         filter: {}
-        check: {}
   event_triggers:
     - name: activity_log_proj_component_tags
       definition:
@@ -1861,6 +1871,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -1868,6 +1881,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -1900,20 +1916,24 @@
   update_permissions:
     - role: moped-admin
       permission:
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
           - work_type_id
         filter: {}
-        check: {}
     - role: moped-editor
       permission:
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
           - work_type_id
         filter: {}
-        check: {}
   event_triggers:
     - name: activity_log_proj_component_work_types
       definition:
