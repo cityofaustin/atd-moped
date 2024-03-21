@@ -32,7 +32,7 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "90%"
+    height: "90%",
   },
   paper: {
     width: "100%",
@@ -94,12 +94,14 @@ const ProjectsListViewTable = () => {
     storageKey: "mopedProjectListColumnConfig",
   });
 
-  const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
+  const { columns, allColumnsToReturn, visibleColumnsToReturn } = useColumns({
+    hiddenColumns,
+  });
 
   const { query: projectListViewQuery } = useGetProjectListView({
     queryLimit: queryLimit,
     queryOffset: queryOffset,
-    columnsToReturn: columnsToReturnInQuery,
+    columnsToReturn: allColumnsToReturn,
     orderByColumn: orderByColumn,
     orderByDirection: orderByDirection,
     searchWhereString: searchWhereString,
@@ -110,7 +112,7 @@ const ProjectsListViewTable = () => {
   const { query: exportQuery } = useGetProjectListView({
     columnsToReturn:
       columnDownloadOption === "visible"
-        ? columnsToReturnInQuery
+        ? visibleColumnsToReturn
         : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     orderByColumn: orderByColumn,
     orderByDirection: orderByDirection,
@@ -143,7 +145,7 @@ const ProjectsListViewTable = () => {
     columnDownloadOption: columnDownloadOption,
     setColumnDownloadOption: setColumnDownloadOption,
     setDownloadingDialogOpen: setDownloadingDialogOpen,
-    visibleColumns: columnsToReturnInQuery,
+    visibleColumns: visibleColumnsToReturn,
   });
 
   /**
