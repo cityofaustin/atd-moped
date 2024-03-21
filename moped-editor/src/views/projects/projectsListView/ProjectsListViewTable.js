@@ -94,14 +94,15 @@ const ProjectsListViewTable = () => {
     storageKey: "mopedProjectListColumnConfig",
   });
 
-  const { columns, allColumnsToReturn, visibleColumnsToReturn } = useColumns({
-    hiddenColumns,
-  });
+  const { columns, columnsToReturnInListView, visibleColumnsToReturnInExport } =
+    useColumns({
+      hiddenColumns,
+    });
 
   const { query: projectListViewQuery } = useGetProjectListView({
     queryLimit: queryLimit,
     queryOffset: queryOffset,
-    columnsToReturn: allColumnsToReturn,
+    columnsToReturn: columnsToReturnInListView,
     orderByColumn: orderByColumn,
     orderByDirection: orderByDirection,
     searchWhereString: searchWhereString,
@@ -112,7 +113,7 @@ const ProjectsListViewTable = () => {
   const { query: exportQuery } = useGetProjectListView({
     columnsToReturn:
       columnDownloadOption === "visible"
-        ? visibleColumnsToReturn
+        ? visibleColumnsToReturnInExport
         : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
     orderByColumn: orderByColumn,
     orderByDirection: orderByDirection,
@@ -145,7 +146,7 @@ const ProjectsListViewTable = () => {
     columnDownloadOption: columnDownloadOption,
     setColumnDownloadOption: setColumnDownloadOption,
     setDownloadingDialogOpen: setDownloadingDialogOpen,
-    visibleColumns: visibleColumnsToReturn,
+    visibleColumns: visibleColumnsToReturnInExport,
   });
 
   /**

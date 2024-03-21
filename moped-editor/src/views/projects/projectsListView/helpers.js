@@ -123,34 +123,35 @@ export const useColumns = ({ hiddenColumns }) => {
   const location = useLocation();
   const queryString = location.search;
 
-  const [allColumnsToReturn, visibleColumnsToReturn] = useMemo(() => {
-    const columnsShownInUI = Object.keys(hiddenColumns)
-      .filter((key) => hiddenColumns[key])
-      .map((key) => key);
+  const [columnsToReturnInListView, visibleColumnsToReturnInExport] =
+    useMemo(() => {
+      const columnsShownInUI = Object.keys(hiddenColumns)
+        .filter((key) => hiddenColumns[key])
+        .map((key) => key);
 
-    // We must include project_id in every query since it is set as a keyField in the Apollo cache.
-    // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
-    // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
-    // Also, some columns are dependencies of other columns to render, so we need to include them.
-    // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
-    // Parent project Id needs the parent project name
-    const columnsNeededForListView = [
-      "project_id",
-      "current_phase_key",
-      "parent_project_name",
-    ];
-    // If parent project id is selected we also need to include the parent project name in the export
-    const columnsNeededForExport = columnsShownInUI.includes(
-      "parent_project_id"
-    )
-      ? ["project_id", "parent_project_name"]
-      : ["project_id"];
+      // We must include project_id in every query since it is set as a keyField in the Apollo cache.
+      // See https://github.com/cityofaustin/atd-moped/blob/1ecf8745ef13277f784f3d8ba75efa13908acc73/moped-editor/src/App.js#L55
+      // See https://www.apollographql.com/docs/react/caching/cache-configuration/#customizing-cache-ids
+      // Also, some columns are dependencies of other columns to render, so we need to include them.
+      // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
+      // Parent project Id needs the parent project name
+      const columnsNeededForListView = [
+        "project_id",
+        "current_phase_key",
+        "parent_project_name",
+      ];
+      // If parent project id is selected we also need to include the parent project name in the export
+      const columnsNeededForExport = columnsShownInUI.includes(
+        "parent_project_id"
+      )
+        ? ["project_id", "parent_project_name"]
+        : ["project_id"];
 
-    return [
-      [...columnsShownInUI, ...columnsNeededForListView],
-      [...columnsShownInUI, ...columnsNeededForExport],
-    ];
-  }, [hiddenColumns]);
+      return [
+        [...columnsShownInUI, ...columnsNeededForListView],
+        [...columnsShownInUI, ...columnsNeededForExport],
+      ];
+    }, [hiddenColumns]);
 
   const columns = useMemo(
     () => [
@@ -415,5 +416,5 @@ export const useColumns = ({ hiddenColumns }) => {
     [queryString]
   );
 
-  return { columns, allColumnsToReturn, visibleColumnsToReturn };
+  return { columns, columnsToReturnInListView, visibleColumnsToReturnInExport };
 };
