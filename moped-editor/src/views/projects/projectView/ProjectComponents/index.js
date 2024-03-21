@@ -292,7 +292,7 @@ export default function MapView({
                 editState={editState}
                 shouldShowRelatedProjects={shouldShowRelatedProjects}
                 clickedComponent={clickedComponent}
-                setClickedComponent={setClickedComponent}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
                 onClickZoomToComponent={onClickZoomToComponent}
                 allRelatedComponents={allRelatedComponents}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
