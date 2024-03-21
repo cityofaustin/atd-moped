@@ -1,8 +1,3 @@
-alter table feature_drawn_lines alter column updated_at drop default;
-alter table feature_drawn_points alter column updated_at drop default;
-alter table feature_intersections alter column updated_at drop default;
-alter table feature_signals alter column updated_at drop default;
-alter table feature_street_segments alter column updated_at drop default;
 alter table moped_proj_components alter column updated_at drop default;
 alter table moped_proj_funding alter column created_at set default clock_timestamp();
 alter table moped_proj_funding alter column updated_at drop default;
@@ -14,63 +9,20 @@ alter table moped_proj_phases alter column created_at set default clock_timestam
 alter table moped_proj_phases alter column updated_at drop default;
 alter table moped_proj_work_activity alter column updated_at drop default;
 
-CREATE TRIGGER set_feature_drawn_lines_updated_at
-    BEFORE UPDATE ON feature_drawn_lines
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
+CREATE OR REPLACE FUNCTION public.update_self_and_project_updated_audit_fields()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+    -- Update the updated_at field in the current row of the triggering table
+    NEW.updated_at := NOW();
 
-CREATE TRIGGER set_feature_drawn_points_updated_at
-    BEFORE UPDATE ON feature_drawn_points
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
+    -- Update the updated_at and updated_by_user_id fields in the related row of moped_project
+    UPDATE moped_project
+    SET updated_at = NEW.updated_at,
+        updated_by_user_id = NEW.updated_by_user_id
+    WHERE project_id = NEW.project_id;
 
-CREATE TRIGGER set_feature_intersections_updated_at
-    BEFORE UPDATE ON feature_intersections
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-CREATE TRIGGER set_feature_signals_updated_at
-    BEFORE UPDATE ON feature_signals
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-CREATE TRIGGER set_feature_street_segments_updated_at
-    BEFORE UPDATE ON feature_street_segments
-    FOR EACH ROW
-    EXECUTE FUNCTION public.set_updated_at();
-
-CREATE TRIGGER update_moped_proj_components_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_components
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-
-CREATE TRIGGER update_moped_proj_funding_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_funding
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-
-CREATE TRIGGER update_moped_proj_milestones_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_milestones
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-
-CREATE TRIGGER update_moped_proj_notes_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_notes
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-
-CREATE TRIGGER update_moped_proj_phases_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_phases
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
-
-CREATE TRIGGER update_moped_proj_work_activity_and_project_audit_fields
-    BEFORE INSERT
-    OR UPDATE ON moped_proj_work_activity
-    FOR EACH ROW
-    EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+    RETURN NEW;
+END;
+$function$;
