@@ -123,7 +123,7 @@ export const useColumns = ({ hiddenColumns }) => {
   const location = useLocation();
   const queryString = location.search;
 
-  const columnsToReturnInQuery = useMemo(() => {
+  const [allColumnsToReturn, visibleColumnsToReturn] = useMemo(() => {
     const columnsShownInUI = Object.keys(hiddenColumns)
       .filter((key) => hiddenColumns[key])
       .map((key) => key);
@@ -134,13 +134,22 @@ export const useColumns = ({ hiddenColumns }) => {
     // Also, some columns are dependencies of other columns to render, so we need to include them.
     // Ex. Rendering ProjectStatusBadge requires current_phase_key which is not a column shown in the UI
     // Parent project Id needs the parent project name
-    const columnsNeededToRender = [
+    const columnsNeededForListView = [
       "project_id",
       "current_phase_key",
       "parent_project_name",
     ];
+    // If parent project id is selected we also need to include the parent project name in the export
+    const columnsNeededForExport = columnsShownInUI.includes(
+      "parent_project_id"
+    )
+      ? ["project_id", "parent_project_name"]
+      : ["project_id"];
 
-    return [...columnsShownInUI, ...columnsNeededToRender];
+    return [
+      [...columnsShownInUI, ...columnsNeededForListView],
+      [...columnsShownInUI, ...columnsNeededForExport],
+    ];
   }, [hiddenColumns]);
 
   const columns = useMemo(
@@ -227,7 +236,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Modified",
         description: "Date record was last modified",
         field: "updated_at",
-        valueFormatter: ({value}) => formatTimeStampTZType(value),
+        valueFormatter: ({ value }) => formatTimeStampTZType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -406,5 +415,5 @@ export const useColumns = ({ hiddenColumns }) => {
     [queryString]
   );
 
-  return { columns, columnsToReturnInQuery };
+  return { columns, allColumnsToReturn, visibleColumnsToReturn };
 };
