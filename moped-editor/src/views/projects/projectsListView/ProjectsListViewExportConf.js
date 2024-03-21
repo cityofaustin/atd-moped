@@ -90,11 +90,20 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   parent_project_name: {
     label: "Parent project name",
   },
+  parent_project_id: {
+    label: "Parent project ID",
+  },
   children_project_ids: {
     label: "Has subprojects",
     filter: resolveHasSubprojects,
   },
   components: {
     label: "Components",
+  },
+  interim_project_id: {
+    label: "Interim MPD (Access) ID",
+  },
+  project_and_child_project_council_districts: {
+    label: "Council districts",
   },
 };
