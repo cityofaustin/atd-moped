@@ -181,10 +181,17 @@ export default function MapView({
       (component) => component.project_component_id === clickedComponentId
     );
 
-    setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents]);
+    if (!!updatedClickedComponent) {
+      setClickedComponent(updatedClickedComponent)
+    } else {
+      const updatedrelatedClickedComponent = allRelatedComponents.find(
+        (component) => component.project_component_id === clickedComponentId
+      );
+      setClickedComponent(updatedrelatedClickedComponent);
+    }
+  }, [clickedComponent, projectComponents, allRelatedComponents]);
 
-  // Keep draft component state in sync wiht clicked component (when editing)
+  // Keep draft component state in sync with clicked component (when editing)
   useEffect(() => {
     if (clickedComponent && !editState.isEditingComponent) {
       editDispatch({ type: "set_draft_component", payload: clickedComponent });
