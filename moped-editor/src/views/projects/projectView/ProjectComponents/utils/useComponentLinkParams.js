@@ -39,6 +39,7 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
 export const useComponentLinkParams = ({
   setClickedComponent,
   projectComponents,
+  allRelatedComponents,
   errorMessageDispatch,
   mapRef,
 }) => {
@@ -62,9 +63,13 @@ export const useComponentLinkParams = ({
 
     // Set clicked component from search parameter once projectComponents data loads
     if (projectComponents.length > 0) {
-      const componentFromParams = projectComponents.find(
-        (component) => component.project_component_id === componentParamId
-      );
+      const componentFromParams =
+        projectComponents.find(
+          (component) => component.project_component_id === componentParamId
+        ) ||
+        allRelatedComponents.find(
+          (component) => component.project_component_id === componentParamId
+        );
 
       if (componentFromParams) {
         // Set clickedComponent found from params

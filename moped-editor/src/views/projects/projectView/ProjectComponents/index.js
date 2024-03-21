@@ -130,6 +130,7 @@ export default function MapView({
   useComponentLinkParams({
     setClickedComponent,
     projectComponents,
+    allRelatedComponents,
     clickedComponent,
     errorMessageDispatch,
     mapRef,
@@ -177,18 +178,15 @@ export default function MapView({
     if (clickedComponent === null) return;
 
     const clickedComponentId = clickedComponent?.project_component_id;
-    const updatedClickedComponent = projectComponents.find(
-      (component) => component.project_component_id === clickedComponentId
-    );
-
-    if (!!updatedClickedComponent) {
-      setClickedComponent(updatedClickedComponent)
-    } else {
-      const updatedrelatedClickedComponent = allRelatedComponents.find(
+    const updatedClickedComponent =
+      projectComponents.find(
+        (component) => component.project_component_id === clickedComponentId
+      ) ||
+      allRelatedComponents.find(
         (component) => component.project_component_id === clickedComponentId
       );
-      setClickedComponent(updatedrelatedClickedComponent);
-    }
+
+    setClickedComponent(updatedClickedComponent);
   }, [clickedComponent, projectComponents, allRelatedComponents]);
 
   // Keep draft component state in sync with clicked component (when editing)
