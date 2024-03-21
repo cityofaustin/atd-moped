@@ -112,16 +112,14 @@ const buildRecordEntry = (
       ? visibleColumns
       : Object.keys(exportConfig);
   // For each column in the export configuration
-  columnsToExport
-    .filter((column) => column !== "current_phase_key")
-    .forEach((column) => {
-      // column label and data formatting function
-      const { label, filter } = exportConfig[column];
-      // Determine the new column name, if available.
-      const newColumnName = label ? label : column;
-      // If there is a filter, use it. Assign the value to the new column name.
-      entry[newColumnName] = filter ? filter(record[column]) : record[column];
-    });
+  columnsToExport.forEach((column) => {
+    // column label and data formatting function
+    const { label, filter } = exportConfig[column];
+    // Determine the new column name, if available.
+    const newColumnName = label ? label : column;
+    // If there is a filter, use it. Assign the value to the new column name.
+    entry[newColumnName] = filter ? filter(record[column]) : record[column];
+  });
   return entry;
 };
 
