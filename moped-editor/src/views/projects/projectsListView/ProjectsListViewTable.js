@@ -97,6 +97,8 @@ const ProjectsListViewTable = () => {
   const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
 
   const { query: projectListViewQuery } = useGetProjectListView({
+    queryLimit: queryLimit,
+    queryOffset: queryOffset,
     columnsToReturn: columnsToReturnInQuery,
     orderByColumn: orderByColumn,
     orderByDirection: orderByDirection,
