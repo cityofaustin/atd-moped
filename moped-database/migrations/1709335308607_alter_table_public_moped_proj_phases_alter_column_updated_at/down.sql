@@ -2,7 +2,7 @@ alter table moped_proj_components alter column updated_at drop default;
 alter table moped_proj_funding alter column created_at set default clock_timestamp();
 alter table moped_proj_funding alter column updated_at drop default;
 alter table moped_proj_milestones alter column created_at set default clock_timestamp();
-alter table moped_proj_milestones alter column updated_at set drop default;
+alter table moped_proj_milestones alter column updated_at drop default;
 alter table moped_proj_notes alter column created_at set default clock_timestamp();
 alter table moped_proj_notes alter column updated_at drop default;
 alter table moped_proj_phases alter column created_at set default clock_timestamp();
