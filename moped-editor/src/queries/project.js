@@ -933,6 +933,20 @@ export const UPDATE_PROJECT_NAME_QUERY = gql`
   }
 `;
 
+export const UPDATE_SECONDARY_PROJECT_NAME_QUERY = gql`
+  mutation UpdateSecondaryProjectName(
+    $projectId: Int!
+    $projectSecondaryName: String!
+  ) {
+    update_moped_project_by_pk(
+      pk_columns: { project_id: $projectId }
+      _set: { project_name_secondary: $projectSecondaryName }
+    ) {
+      project_name_secondary
+    }
+  }
+`;
+
 export const LOOKUP_TABLES_QUERY = gql`
   query ProjectLookups {
     moped_fund_sources {
