@@ -55,7 +55,7 @@ import {
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ProjectNameEditable from "./ProjectNameEditable";
+import ProjectNameComplex from "./ProjectNameComplex";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import { getSessionDatabaseData } from "../../../auth/user";
@@ -455,13 +455,13 @@ const ProjectView = () => {
                             display="flex"
                             flexDirection="row"
                           >
-                            <ProjectNameEditable
-                              projectName={data.moped_project[0].project_name}
+                            <ProjectNameComplex
+                              projectData={data.moped_project[0]}
                               projectId={projectId}
                               editable={true}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
-                              updatedCallback={handleNameUpdate} // FLH not sure if this is needed
+                              updatedCallback={handleNameUpdate}
                             />
                             <Box>
                               <ProjectStatusBadge
