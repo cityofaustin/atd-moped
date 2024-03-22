@@ -194,13 +194,7 @@ const ProjectNameEditable = (props) => {
             >
               {projectName}
             </Typography>
-            <Typography
-              color="textSecondary"
-              variant="h2"
-              className={classes.titleId}
-            >
-              &nbsp;#{props.projectId}
-            </Typography>
+
           </span>
         )
       }
