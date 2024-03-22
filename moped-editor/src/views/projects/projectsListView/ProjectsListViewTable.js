@@ -4,7 +4,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import { useColumns } from "./helpers.js";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
@@ -192,7 +192,7 @@ const ProjectsListViewTable = () => {
             }}
           >
             {data && data.project_list_view && (
-              <DataGrid
+              <DataGridPro
                 // per the docs: When the height of a row is set to "auto", the final height will follow exactly
                 // the content size and ignore the density. the docs recommend these styles in order to have density
                 // along with get row height auto
