@@ -23,36 +23,44 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectNameComplex = (props) => {
-  // here are the props, i miss typescript
-  // projectData={data.moped_project[0]} ✅
-  // projectId={projectId} ✅
-  // editable={true} ❓
-  // isEditing={isEditing} ✅
-  // setIsEditing={setIsEditing} ✅
-  // updatedCallback={handleNameUpdate} ✅
+  // Incoming props:
+    // projectData={data.moped_project[0]} ✅
+    // projectId={projectId} ✅
+    // editable={true} ❓
+    // isEditing={isEditing} ✅
+    // setIsEditing={setIsEditing} ✅
+    // updatedCallback={handleNameUpdate} ✅
 
-    const DEFAULT_SNACKBAR_STATE = {
+  const classes = useStyles();
+
+  // indicates that the primary title isn't valid via the error state on the input field
+  const [primaryTitleError, setPrimaryTitleError] = useState(false);
+
+  const DEFAULT_SNACKBAR_STATE = {
       open: false,
       message: null,
       severity: "success",
     };
 
-  const [primaryTitleError, setPrimaryTitleError] = useState(false);
+  // used to control the snackbar's contents and visibility
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-  const classes = useStyles();
+
+  // apollo hook returning the async function to update the project names
   const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
 
 
 
+  // this function is fired when the user clicks on the check mark to save the names
   const handleAcceptClick = (e) => {
     e.preventDefault();
 
     const projectName = document.getElementById("project_name").value;
     const secondaryName = document.getElementById("secondary_name").value;
 
-    if (!projectName || projectName.trim() === "") {
+    // Check if the primary name is defined and has meaningful content
+    if (!projectName || projectName.trim() === "") { // if it does not, set the error state
       setPrimaryTitleError(true);
-    } else {
+    } else { // and if it passes the test, clear any error state and save it via a mutation
       setPrimaryTitleError(false);
       updateProjectNames({
         variables: {
@@ -61,29 +69,36 @@ const ProjectNameComplex = (props) => {
           projectNameSecondary: secondaryName,
         },
       })
-      .then((res) => {
+      .then((res) => { // if the mutation is successful, show a success snackbar
         setSnackbarState({
           open: true,
           message: <span>Success! The project names have been updated!</span>,
           severity: "success",
         });
-      })
-        .catch((error) => {
-          console.error("Error updating project names: ", error);
-        })
-        .finally(() => {
-          props.setIsEditing(false);
-          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-          props.updatedCallback();
+      }) 
+      .catch((error) => { // and if it fails, show an error snackbar
+        setSnackbarState({
+          open: true,
+          message: <span>Error. The project names have not been updated.</span>,
+          severity: "error",
         });
+        })
+        .finally(() => { // return to the view mode, clear the snackbar after 3 seconds, 
+                         // and alert the parent component of the change
+        props.setIsEditing(false);
+        setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+        props.updatedCallback();
+      });
     }
   };
 
+  // this is fired when the user clicks on the 'X' to cancel the edit
   const handleCancelClick = (e) => {
     e.preventDefault();
     props.setIsEditing(false);
   };
 
+  // this is fired onChange of the project name field to check if it's valid
   const handleProjectNameChange = (e) => {
     const projectName = document.getElementById("project_name").value;
     if (!projectName) {
@@ -92,10 +107,13 @@ const ProjectNameComplex = (props) => {
       setPrimaryTitleError(false); }
   }
 
+  // this is fired when the snackbar's close button is clicked or by timeout
   const handleSnackbarClose = (event, reason) => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
+  // Because the layout is non-trivially different between view and edit modes,
+  // we're going to use two different JSX blocks to render the component's content.
   const viewModeJSX = (
     <>
       {/* This grid contains two 12-column wide grid items, forcing the secondary name to flow to
@@ -269,8 +287,6 @@ const ProjectNameComplex = (props) => {
       {commonJSX}
     </>
   );
-  
-
 };
 
 export default ProjectNameComplex;
