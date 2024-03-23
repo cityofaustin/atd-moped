@@ -26,6 +26,7 @@ export const SUMMARY_QUERY = gql`
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
       project_name
+      project_name_secondary
       project_description
       ecapris_subproject_id
       knack_project_id
