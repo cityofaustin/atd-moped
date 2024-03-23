@@ -462,13 +462,9 @@ const ProjectView = () => {
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
                               updatedCallback={handleNameUpdate}
+                              currentPhase={currentPhase}
                             />
-                            <Box>
-                              <ProjectStatusBadge
-                                phaseKey={currentPhase?.phase_key}
-                                phaseName={currentPhase?.phase_name}
-                              />
-                            </Box>
+
                           </Box>
                         </Grid>
                         <Grid item xs={1} md={1}>
