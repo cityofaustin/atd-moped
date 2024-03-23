@@ -19,26 +19,15 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
   },
-  paper: {
-    width: "100%",
-    marginBottom: theme.spacing(2),
-  },
-  editIcon: {
-    cursor: "pointer",
-    marginLeft: "8px",
-  },
-  editIconConfirm: {
-    cursor: "pointer",
-    marginTop: "16px",
-    fontSize: "2rem",
-  },
   titleDisplayField: {
     display: "flex",
     cursor: "pointer",
   },
   titleEditField: {
-    "font-size": "1.5rem",
+    "margin-top": "2px",
+    "font-size": "1.0rem",
     "font-weight": "bold",
+    "min-height": "2rem",
   },
   boxField: {
     width: "100%",
@@ -166,20 +155,6 @@ const ProjectSecondaryNameEditable = (props) => {
                   },
                 }}
               />
-            </Grid>
-            <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={handleAcceptClick}
-              >
-                check
-              </Icon>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={(e) => handleCancelClick(e)}
-              >
-                close
-              </Icon>
             </Grid>
           </Grid>
         </form>

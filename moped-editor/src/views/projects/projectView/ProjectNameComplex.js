@@ -8,7 +8,16 @@ import {
   TextField,
 } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  editIconConfirm: {
+    cursor: "pointer",
+    marginTop: "16px",
+    fontSize: "2rem",
+  },
+  fieldGridItemButtons: {
+    width: "70px",
+  }
+}));
 
 
 const ProjectNameComplex = (props) => {
@@ -21,27 +30,62 @@ const ProjectNameComplex = (props) => {
   // setIsEditing={setIsEditing}
   // updatedCallback={handleNameUpdate}
 
-  return (
+  if (props.isEditing) {
+    return (
+      <Grid container>
+        <Grid item xs={7}>
+          <ProjectNameEditable
+            projectName={props.projectData.project_name}
+            projectId={props.projectId}
+            editable={true}
+            isEditing={props.isEditing}
+            setIsEditing={props.setIsEditing}
+            updatedCallback={props.handleNameUpdate}
+          />
+        </Grid>
+        <Grid item xs="4">
+          <ProjectSecondaryNameEditable
+            projectSecondaryName={props.projectData.project_name_secondary}
+            projectId={props.projectId}
+            editable={true}
+            isEditing={props.isEditing}
+            setIsEditing={props.setIsEditing}
+            updatedCallback={props.handleNameUpdate}
+          />
+        </Grid>
+        <form onSubmit={(e) => props.handleAcceptClick(e)}>
+          <Grid item>
+            <Grid container>
+              <Grid item xs={12} sm={12} className={classes.fieldGridItemButtons}>
+                <Icon
+                  className={classes.editIconConfirm}
+                  onClick={props.handleAcceptClick}
+                >
+                  check
+                </Icon>
+                <Icon
+                  className={classes.editIconConfirm}
+                  onClick={(e) => props.handleCancelClick(e)}
+                >
+                  close
+                </Icon>
+              </Grid>
+            </Grid>
+          </Grid>
+        </form>
+      </Grid>
+    );
+  } else {
+    return (
     <>
-      <ProjectNameEditable
-        projectName={props.projectData.project_name}
-        projectId={props.projectId}
-        editable={true}
-        isEditing={props.isEditing}
-        setIsEditing={props.setIsEditing}
-        updatedCallback={props.handleNameUpdate}
-      />
-      <ProjectSecondaryNameEditable
-        projectName={props.projectData.project_name_secondary}
-        projectId={props.projectId}
-        editable={true}
-        isEditing={props.isEditing}
-        setIsEditing={props.setIsEditing}
-        updatedCallback={props.handleNameUpdate}
-      />
-      {
-        // if not Editing Project Name, clicking on project title allows one to edit
-        !props.isEditing && (
+          <ProjectNameEditable
+            projectName={props.projectData.project_name}
+            projectId={props.projectId}
+            editable={true}
+            isEditing={props.isEditing}
+            setIsEditing={props.setIsEditing}
+            updatedCallback={props.handleNameUpdate}
+          />
           <Typography
             color="textSecondary"
             variant="h2"
@@ -49,30 +93,9 @@ const ProjectNameComplex = (props) => {
           >
             &nbsp;#{props.projectId}
           </Typography>
-        )
-      }
-      {props.isEditing && (
-        <form onSubmit={(e) => props.handleAcceptClick(e)}>
-          <Grid container>
-            <Grid item xs={12} sm={1} className={classes.fieldGridItemButtons}>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={props.handleAcceptClick}
-              >
-                check
-              </Icon>
-              <Icon
-                className={classes.editIconConfirm}
-                onClick={(e) => props.handleCancelClick(e)}
-              >
-                close
-              </Icon>
-            </Grid>
-          </Grid>
-        </form>
-      )}
     </>
-  );
+    );
+  }
 };
 
 export default ProjectNameComplex;
