@@ -56,7 +56,6 @@ import {
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameComplex from "./ProjectNameComplex";
-import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import { getSessionDatabaseData } from "../../../auth/user";
 
