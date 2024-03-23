@@ -200,7 +200,7 @@ const ProjectView = () => {
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-  const menuOpen = anchorElement ?? false;
+  const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
