@@ -30,7 +30,6 @@ const ProjectNameComplex = (props) => {
   // updatedCallback={handleNameUpdate} ✅
 
   const [primaryTitleError, setPrimaryTitleError] = useState(false);
-  const [secondaryTitleError, setSecondaryTitleError] = useState(false);
 
   const classes = useStyles();
 
@@ -53,6 +52,15 @@ const ProjectNameComplex = (props) => {
     e.preventDefault();
     props.setIsEditing(false);
   };
+
+  const handleProjectNameChange = (e) => {
+    const projectName = document.getElementById("project_name").value;
+    if (!projectName) {
+      setPrimaryTitleError(true);
+    } else { 
+      setPrimaryTitleError(false);
+    }
+  }
 
   if (!props.isEditing) {
     return (
@@ -136,7 +144,7 @@ const ProjectNameComplex = (props) => {
               }
               multiline={false}
               rows={1}
-              // onChange={(e) => handleProjectNameChange(e)}
+              onChange={(e) => handleProjectNameChange(e)}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -157,13 +165,11 @@ const ProjectNameComplex = (props) => {
               label={"Secondary Name"}
               type="text"
               defaultValue={props.projectData.project_name_secondary}
-              error={secondaryTitleError}
-              placeholder={
-                secondaryTitleError ? "Secondary Name Error" : "Project Byline"
-              }
+              // error={secondaryTitleError}
+              placeholder={ "Project Byline" }
               multiline={false}
               rows={1}
-              // onChange={(e) => handleProjectNameChange(e)}
+              onChange={(e) => handleProjectNameChange(e)}
               InputLabelProps={{
                 shrink: true,
               }}
