@@ -923,26 +923,13 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
   }
 `;
 
-export const UPDATE_PROJECT_NAME_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
+export const UPDATE_PROJECT_NAMES_QUERY = gql`
+  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName }
+      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
     ) {
       project_name
-    }
-  }
-`;
-
-export const UPDATE_SECONDARY_PROJECT_NAME_QUERY = gql`
-  mutation UpdateSecondaryProjectName(
-    $projectId: Int!
-    $projectSecondaryName: String!
-  ) {
-    update_moped_project_by_pk(
-      pk_columns: { project_id: $projectId }
-      _set: { project_name_secondary: $projectSecondaryName }
-    ) {
       project_name_secondary
     }
   }
