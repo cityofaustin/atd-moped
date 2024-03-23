@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import { Grid, Icon, Box, Typography, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
+import { useMutation } from "@apollo/client";
+import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 
 const useStyles = makeStyles((theme) => ({
   editIcons: {
@@ -30,8 +32,8 @@ const ProjectNameComplex = (props) => {
   // updatedCallback={handleNameUpdate} ✅
 
   const [primaryTitleError, setPrimaryTitleError] = useState(false);
-
   const classes = useStyles();
+  const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
 
 
   const handleAcceptClick = (e) => {
@@ -40,11 +42,24 @@ const ProjectNameComplex = (props) => {
     const projectName = document.getElementById("project_name").value;
     const secondaryName = document.getElementById("secondary_name").value;
 
-    if (!projectName) {
+    if (!projectName || projectName.trim() === "") {
       setPrimaryTitleError(true);
     } else {
       setPrimaryTitleError(false);
-      props.updatedCallback();
+      updateProjectNames({
+        variables: {
+          projectId: props.projectId,
+          projectName: projectName,
+          projectNameSecondary: secondaryName,
+        },
+      })
+      .catch((error) => {
+        console.error("Error updating project names: ", error);
+      })
+      .finally(() => {
+        props.setIsEditing(false);
+        props.updatedCallback();
+      });
     }
   };
 
@@ -58,16 +73,16 @@ const ProjectNameComplex = (props) => {
     if (!projectName) {
       setPrimaryTitleError(true);
     } else { 
-      setPrimaryTitleError(false);
-    }
+      setPrimaryTitleError(false); }
   }
 
   if (!props.isEditing) {
     return (
       <>
-        {/* This grid contains two 12-column wide grid items, forcing the secondary name to flow to the next line.
-        Block elements must be avoided, as they prevent the project number and status badge from floating to the
-        immediate right of the project name and number.  */}
+        {/* This grid contains two 12-column wide grid items, forcing the secondary name to flow to
+        the next line. Block elements must be avoided, as they prevent the project number and status
+        badge and project number from floating left up to the project name which 
+        of variable, unknown width. */}
         <Grid container>
           <Grid item xs={12}>
             <Box sx={{ display: "inline", cursor: "pointer" }}>
@@ -93,7 +108,8 @@ const ProjectNameComplex = (props) => {
               </Typography>
             </Box>
 
-            {/* Jogging this up 5 a bit to make it visually centered along the horizontal midline of the project name. */}
+            {/* Jogging this up 5 a bit to make it visually centered along the horizontal 
+            midline of the project name. */}
             <Box sx={{ display: "inline", position: "relative", top: "-5px" }}>
               <ProjectStatusBadge
                 phaseKey={props.currentPhase?.phase_key}
@@ -102,8 +118,8 @@ const ProjectNameComplex = (props) => {
             </Box>
           </Grid>
 
-          {/* The secondary name field is shown conditionally, only if it is defined and not the empty string.
-          This prevents it from taking up height if it's not displaying anything. */}
+          {/* The secondary name field is shown conditionally, only if it is defined and not the 
+          empty string.  This prevents it from taking up height if it's not displaying anything. */}
           {props.projectData.project_name_secondary &&
           props.projectData.project_name_secondary.length > 0 ? (
             <Grid item xs={12}>
@@ -125,8 +141,9 @@ const ProjectNameComplex = (props) => {
   } else {
     return (
       <>
-        {/* This grid contains the project name and secondary name fields, the accept/cancel icons and the badge.
-        Multiple widths are set for each element so that they reflow responsively as the viewport becomes more narrow. */}
+        {/* This grid contains the project name and secondary name fields, the accept/cancel icons 
+        and the badge.  Multiple widths are set for each element so that they reflow responsively 
+        as the viewport becomes more narrow. */}
         <Grid container>
 
           {/* Primary project name field */}
@@ -165,7 +182,6 @@ const ProjectNameComplex = (props) => {
               label={"Secondary Name"}
               type="text"
               defaultValue={props.projectData.project_name_secondary}
-              // error={secondaryTitleError}
               placeholder={ "Project Byline" }
               multiline={false}
               rows={1}
