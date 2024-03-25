@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   Grid,
@@ -33,6 +33,16 @@ const useStyles = makeStyles((theme) => ({
 const ProjectNameComplex = (props) => {
   const classes = useStyles();
 
+  // state to hold values for controlled inputs
+  const [projectName, setProjectName] = useState("");
+  const [secondaryName, setSecondaryName] = useState("");
+
+  // update the state variables when the props change
+  useEffect(() => {
+    setProjectName(props.projectData.project_name || "");
+    setSecondaryName(props.projectData.project_name_secondary || "");
+  }, [props.projectData]);
+
   // indicates that the primary title isn't valid via the error state on the input field
   const [primaryTitleError, setPrimaryTitleError] = useState(false);
 
@@ -51,9 +61,6 @@ const ProjectNameComplex = (props) => {
   // this function is fired when the user clicks on the check mark to save the names
   const handleAcceptClick = (e) => {
     e.preventDefault();
-
-    const projectName = document.getElementById("project_name").value;
-    const secondaryName = document.getElementById("secondary_name").value;
 
     // Check if the primary name is defined and has meaningful content
     if (!projectName || projectName.trim() === "") {
@@ -105,12 +112,18 @@ const ProjectNameComplex = (props) => {
 
   // this is fired onChange of the project name field to check if it's valid
   const handleProjectNameChange = (e) => {
-    const projectName = document.getElementById("project_name").value;
-    if (!projectName) {
+    // Update the state variables when the input changes
+    setProjectName(e.target.value);
+    if (!e.target.value) {
       setPrimaryTitleError(true);
     } else {
       setPrimaryTitleError(false);
     }
+  };
+
+  const handleSecondaryNameChange = (e) => {
+    // Update the secondary name state variable when the input changes
+    setSecondaryName(e.target.value);
   };
 
   // this is fired when the snackbar's close button is clicked or by timeout
@@ -196,14 +209,14 @@ const ProjectNameComplex = (props) => {
             id="project_name"
             label={"Project Name"}
             type="text"
-            defaultValue={props.projectData.project_name}
+            value={projectName}
             error={primaryTitleError}
             placeholder={
               primaryTitleError ? "Title cannot be blank" : "Enter project name"
             }
             multiline={false}
             rows={1}
-            onChange={(e) => handleProjectNameChange(e)}
+            onChange={handleProjectNameChange}
             InputLabelProps={{
               shrink: true,
             }}
@@ -223,11 +236,11 @@ const ProjectNameComplex = (props) => {
             id="secondary_name"
             label={"Secondary Name"}
             type="text"
-            defaultValue={props.projectData.project_name_secondary}
+            value={secondaryName}
             placeholder={"Project Byline"}
             multiline={false}
             rows={1}
-            onChange={(e) => handleProjectNameChange(e)}
+            onChange={handleSecondaryNameChange}
             InputLabelProps={{
               shrink: true,
             }}
