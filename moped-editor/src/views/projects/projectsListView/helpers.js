@@ -227,7 +227,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Modified",
         description: "Date record was last modified",
         field: "updated_at",
-        valueFormatter: ({value}) => formatTimeStampTZType(value),
+        valueFormatter: (value) => formatTimeStampTZType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -296,7 +296,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Construction start",
         field: "construction_start_date",
-        valueFormatter: ({ value }) => value && formatDateType(value),
+        valueFormatter: (value) => value && formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },

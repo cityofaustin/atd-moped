@@ -211,6 +211,7 @@ const ProjectsListViewTable = () => {
                 getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
+                  console.log(newModel)
                   setHiddenColumns(newModel);
                 }}
                 slots={{
