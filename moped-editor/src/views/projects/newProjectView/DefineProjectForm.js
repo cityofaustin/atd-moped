@@ -31,7 +31,6 @@ const DefineProjectForm = ({
                 autoFocus
                 label="Project name"
                 name="project_name"
-                variant="standard"
                 type="text"
                 fullWidth
                 value={projectDetails.project_name}
@@ -45,7 +44,6 @@ const DefineProjectForm = ({
               <TextField
                 label="Secondary name"
                 name="project_name_secondary"
-                variant="standard"
                 type="text"
                 fullWidth
                 value={projectDetails.project_name_secondary || ""}
@@ -86,7 +84,6 @@ const DefineProjectForm = ({
             label="Description"
             name="project_description"
             multiline={true}
-            variant="standard"
             type="text"
             fullWidth
             value={projectDetails.project_description}
