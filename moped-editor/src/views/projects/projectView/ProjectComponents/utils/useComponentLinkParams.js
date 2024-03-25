@@ -38,6 +38,7 @@ const updateParamsWithoutRender = (queryKey, queryValue) => {
  */
 export const useComponentLinkParams = ({
   setClickedComponent,
+  setIsClickedComponentRelated,
   projectComponents,
   allRelatedComponents,
   errorMessageDispatch,
@@ -75,6 +76,12 @@ export const useComponentLinkParams = ({
         // Set clickedComponent found from params
         setClickedComponent(componentFromParams);
 
+        const isComponentRelated = allRelatedComponents.find(
+          (component) => component.project_component_id === componentParamId
+        );
+        // if component is related, the highlight color is green
+        setIsClickedComponentRelated(isComponentRelated);
+
         // Zoom to its extent
         const features = getAllComponentFeatures(componentFromParams);
         const featureCollection = { type: "FeatureCollection", features };
@@ -109,6 +116,7 @@ export const useComponentLinkParams = ({
     hasComponentSetFromUrl,
     projectComponents,
     setClickedComponent,
+    setIsClickedComponentRelated,
     allRelatedComponents,
     setHasComponentSetFromUrl,
     errorMessageDispatch,

@@ -129,6 +129,7 @@ export default function MapView({
 
   useComponentLinkParams({
     setClickedComponent,
+    setIsClickedComponentRelated,
     projectComponents,
     allRelatedComponents,
     clickedComponent,
