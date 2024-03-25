@@ -32,7 +32,7 @@ import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
 
-const drawerWidth = 350;
+export const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -19,6 +19,7 @@ const readOnlyStaticRules = [
   "404:visit",
   "all:visit",
   "style:visit",
+  "projects-map:visit",
 ];
 
 const editorStaticRules = ["newProjects:visit"];
