@@ -11,6 +11,7 @@ import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListV
 import {
   PROJECT_LIST_VIEW_QUERY_CONFIG,
   DEFAULT_HIDDEN_COLS,
+  SHOW_ALL_COLS,
 } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
 import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
@@ -31,7 +32,7 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "90%"
+    height: "90%",
   },
   paper: {
     width: "100%",
@@ -211,8 +212,12 @@ const ProjectsListViewTable = () => {
                 getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
-                  console.log(newModel)
-                  setHiddenColumns(newModel);
+                  console.log(newModel, Object.keys(newModel));
+                  if (Object.keys(newModel).length > 0) {
+                    setHiddenColumns(newModel);
+                  } else {
+                    setHiddenColumns(SHOW_ALL_COLS);
+                  }
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
