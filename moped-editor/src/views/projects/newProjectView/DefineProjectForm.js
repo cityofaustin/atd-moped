@@ -25,20 +25,35 @@ const DefineProjectForm = ({
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
           {!fromSignalAsset && (
-            <TextField
-              required
-              autoFocus
-              label="Project name"
-              name="project_name"
-              variant="standard"
-              type="text"
-              fullWidth
-              value={projectDetails.project_name}
-              error={nameError}
-              helperText="Required"
-              InputLabelProps={{ required: false }}
-              onChange={e => handleFieldChange(e.target.value, e.target.name)}
-            />
+            <>
+              <TextField
+                required
+                autoFocus
+                label="Project name"
+                name="project_name"
+                variant="standard"
+                type="text"
+                fullWidth
+                value={projectDetails.project_name}
+                error={nameError}
+                helperText="Required"
+                InputLabelProps={{ required: false }}
+                onChange={(e) =>
+                  handleFieldChange(e.target.value, e.target.name)
+                }
+              />
+              <TextField
+                label="Secondary name"
+                name="project_name_secondary"
+                variant="standard"
+                type="text"
+                fullWidth
+                value={projectDetails.project_name_secondary || ""}
+                onChange={(e) =>
+                  handleFieldChange(e.target.value, e.target.name)
+                }
+              />
+            </>
           )}
           {fromSignalAsset && (
             <SignalAutocomplete
@@ -59,7 +74,7 @@ const DefineProjectForm = ({
             color="primary"
             name="use_signal_id"
             inputProps={{ "aria-label": "primary checkbox" }}
-            onChange={e => setFromSignalAsset(e.target.checked)}
+            onChange={(e) => setFromSignalAsset(e.target.checked)}
           />
         </Grid>
       </Grid>
@@ -78,7 +93,7 @@ const DefineProjectForm = ({
             error={descriptionError}
             helperText="Required"
             InputLabelProps={{ required: false }}
-            onChange={e => handleFieldChange(e.target.value, e.target.name)}
+            onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
       </Grid>
