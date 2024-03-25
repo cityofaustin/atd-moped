@@ -2650,7 +2650,7 @@
           - milestone_order
           - project_id
           - is_deleted
-        comment: No insert permissions on audit fields
+      comment: No insert permissions on audit fields
     - role: moped-editor
       permission:
         check: {}
@@ -2666,7 +2666,7 @@
           - milestone_order
           - project_id
           - is_deleted
-        comment: No insert permissions on audit fields
+      comment: No insert permissions on audit fields
   select_permissions:
     - role: moped-admin
       permission:
@@ -2735,7 +2735,7 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-        comment: No update permissions on audit fields
+      comment: No update permissions on audit fields
     - role: moped-editor
       permission:
         columns:
@@ -2751,7 +2751,7 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-        comment: No update permissions on audit fields
+      comment: No update permissions on audit fields
   event_triggers:
     - name: activity_log_moped_proj_milestones
       definition:
@@ -2824,7 +2824,7 @@
           - project_id
           - project_note
           - project_note_type
-        comment: No insert permissions on audit fields
+      comment: No insert permissions on audit fields
     - role: moped-editor
       permission:
         check: {}
@@ -2837,7 +2837,7 @@
           - project_id
           - project_note
           - project_note_type
-        comment: No insert permissions on audit fields
+      comment: No insert permissions on audit fields
   select_permissions:
     - role: moped-admin
       permission:
@@ -2897,7 +2897,7 @@
         check: null
         set:
           updated_by_user_id: x-hasura-user-db-id
-        comment: No update permissions on audit fields
+      comment: No update permissions on audit fields
     - role: moped-editor
       permission:
         columns:
@@ -2910,7 +2910,7 @@
         check: null
         set:
           updated_by_user_id: x-hasura-user-db-id
-        comment: No update permissions on audit fields
+      comment: No update permissions on audit fields
   event_triggers:
     - name: activity_log_moped_proj_notes
       definition:
