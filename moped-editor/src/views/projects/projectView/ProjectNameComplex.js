@@ -271,18 +271,16 @@ const ProjectNameComplex = (props) => {
   );
 
   const commonJSX = (
-    <>
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
-    </>
+    <Snackbar
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      open={snackbarState.open}
+      onClose={handleSnackbarClose}
+      key={"datatable-snackbar"}
+    >
+      <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+        {snackbarState.message}
+      </Alert>
+    </Snackbar>
   );
 
   return (
