@@ -1,6 +1,14 @@
 import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Grid, Icon, Box, Typography, TextField, Snackbar, Alert } from "@mui/material";
+import {
+  Grid,
+  Icon,
+  Box,
+  Typography,
+  TextField,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
@@ -24,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
 
 const ProjectNameComplex = (props) => {
   // Incoming props:
-    // projectData={data.moped_project[0]} ✅
-    // projectId={projectId} ✅
-    // editable={true} ❓
-    // isEditing={isEditing} ✅
-    // setIsEditing={setIsEditing} ✅
-    // updatedCallback={handleNameUpdate} ✅
+  // projectData={data.moped_project[0]} ✅
+  // projectId={projectId} ✅
+  // editable={true} ❓
+  // isEditing={isEditing} ✅
+  // setIsEditing={setIsEditing} ✅
+  // updatedCallback={handleNameUpdate} ✅
 
   const classes = useStyles();
 
@@ -37,18 +45,16 @@ const ProjectNameComplex = (props) => {
   const [primaryTitleError, setPrimaryTitleError] = useState(false);
 
   const DEFAULT_SNACKBAR_STATE = {
-      open: false,
-      message: null,
-      severity: "success",
-    };
+    open: false,
+    message: null,
+    severity: "success",
+  };
 
   // used to control the snackbar's contents and visibility
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
 
   // apollo hook returning the async function to update the project names
   const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
-
-
 
   // this function is fired when the user clicks on the check mark to save the names
   const handleAcceptClick = (e) => {
@@ -58,9 +64,11 @@ const ProjectNameComplex = (props) => {
     const secondaryName = document.getElementById("secondary_name").value;
 
     // Check if the primary name is defined and has meaningful content
-    if (!projectName || projectName.trim() === "") { // if it does not, set the error state
+    if (!projectName || projectName.trim() === "") {
+      // if it does not, set the error state
       setPrimaryTitleError(true);
-    } else { // and if it passes the test, clear any error state and save it via a mutation
+    } else {
+      // and if it passes the test, clear any error state and save it via a mutation
       setPrimaryTitleError(false);
       updateProjectNames({
         variables: {
@@ -69,26 +77,31 @@ const ProjectNameComplex = (props) => {
           projectNameSecondary: secondaryName,
         },
       })
-      .then((res) => { // if the mutation is successful, show a success snackbar
-        setSnackbarState({
-          open: true,
-          message: <span>Success! The project names have been updated!</span>,
-          severity: "success",
-        });
-      }) 
-      .catch((error) => { // and if it fails, show an error snackbar
-        setSnackbarState({
-          open: true,
-          message: <span>Error. The project names have not been updated.</span>,
-          severity: "error",
-        });
+        .then((res) => {
+          // if the mutation is successful, show a success snackbar
+          setSnackbarState({
+            open: true,
+            message: <span>Success! The project names have been updated!</span>,
+            severity: "success",
+          });
         })
-        .finally(() => { // return to the view mode, clear the snackbar after 3 seconds, 
-                         // and alert the parent component of the change
-        props.setIsEditing(false);
-        setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
-        props.updatedCallback();
-      });
+        .catch((error) => {
+          // and if it fails, show an error snackbar
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>Error. The project names have not been updated.</span>
+            ),
+            severity: "error",
+          });
+        })
+        .finally(() => {
+          // return to the view mode, clear the snackbar after 3 seconds,
+          // and alert the parent component of the change
+          props.setIsEditing(false);
+          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
+          props.updatedCallback();
+        });
     }
   };
 
@@ -103,9 +116,10 @@ const ProjectNameComplex = (props) => {
     const projectName = document.getElementById("project_name").value;
     if (!projectName) {
       setPrimaryTitleError(true);
-    } else { 
-      setPrimaryTitleError(false); }
-  }
+    } else {
+      setPrimaryTitleError(false);
+    }
+  };
 
   // this is fired when the snackbar's close button is clicked or by timeout
   const handleSnackbarClose = (event, reason) => {
@@ -182,7 +196,6 @@ const ProjectNameComplex = (props) => {
       and the badge.  Multiple widths are set for each element so that they reflow responsively 
       as the viewport becomes more narrow. */}
       <Grid container>
-
         {/* Primary project name field */}
         <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
           <TextField
@@ -219,7 +232,7 @@ const ProjectNameComplex = (props) => {
             label={"Secondary Name"}
             type="text"
             defaultValue={props.projectData.project_name_secondary}
-            placeholder={ "Project Byline" }
+            placeholder={"Project Byline"}
             multiline={false}
             rows={1}
             onChange={(e) => handleProjectNameChange(e)}
@@ -261,7 +274,6 @@ const ProjectNameComplex = (props) => {
             />
           </Box>
         </Grid>
-
       </Grid>
     </>
   );

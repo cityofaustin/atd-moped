@@ -463,7 +463,6 @@ const ProjectView = () => {
                               updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
                             />
-
                           </Box>
                         </Grid>
                         <Grid item xs={1} md={1}>
