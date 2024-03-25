@@ -303,7 +303,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Completion date",
         field: "completion_end_date",
-        valueFormatter: ({ value }) => value && formatDateType(value),
+        valueFormatter: (value) => value && formatDateType(value),
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
@@ -388,7 +388,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Has subprojects",
         field: "children_project_ids",
-        valueFormatter: ({ value }) => {
+        valueFormatter: (value) => {
           const hasChildren = value && value.length > 0;
           return hasChildren && "Yes";
         },
@@ -400,7 +400,7 @@ export const useColumns = ({ hiddenColumns }) => {
         field: "project_and_child_project_council_districts",
         sortable:
           COLUMN_CONFIG["project_and_child_project_council_districts"].sortable,
-        valueFormatter: ({ value }) => value && value.join(", "),
+        valueFormatter: (value) => value && value.join(", "),
       },
     ],
     [queryString]
