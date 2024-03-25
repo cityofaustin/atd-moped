@@ -31,14 +31,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectNameComplex = (props) => {
-  // Incoming props:
-  // projectData={data.moped_project[0]} ✅
-  // projectId={projectId} ✅
-  // editable={true} ❓
-  // isEditing={isEditing} ✅
-  // setIsEditing={setIsEditing} ✅
-  // updatedCallback={handleNameUpdate} ✅
-
   const classes = useStyles();
 
   // indicates that the primary title isn't valid via the error state on the input field

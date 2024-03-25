@@ -457,7 +457,6 @@ const ProjectView = () => {
                             <ProjectNameComplex
                               projectData={data.moped_project[0]}
                               projectId={projectId}
-                              editable={true}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
                               updatedCallback={handleNameUpdate}
