@@ -27,6 +27,7 @@ const DefineProjectForm = ({
           {!fromSignalAsset && (
             <>
               <TextField
+                sx={{ marginBottom: "1.5rem" }}
                 required
                 autoFocus
                 label="Project name"
@@ -42,11 +43,27 @@ const DefineProjectForm = ({
                 }
               />
               <TextField
+                sx={{ marginBottom: "2.5rem" }}
                 label="Secondary name"
                 name="project_name_secondary"
                 type="text"
                 fullWidth
                 value={projectDetails.project_name_secondary || ""}
+                onChange={(e) =>
+                  handleFieldChange(e.target.value, e.target.name)
+                }
+              />
+              <TextField
+                required
+                label="Description"
+                name="project_description"
+                multiline={true}
+                type="text"
+                fullWidth
+                value={projectDetails.project_description}
+                error={descriptionError}
+                helperText="Required"
+                InputLabelProps={{ required: false }}
                 onChange={(e) =>
                   handleFieldChange(e.target.value, e.target.name)
                 }
@@ -73,24 +90,6 @@ const DefineProjectForm = ({
             name="use_signal_id"
             inputProps={{ "aria-label": "primary checkbox" }}
             onChange={(e) => setFromSignalAsset(e.target.checked)}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={6}>
-          <TextField
-            required
-            label="Description"
-            name="project_description"
-            multiline={true}
-            type="text"
-            fullWidth
-            value={projectDetails.project_description}
-            error={descriptionError}
-            helperText="Required"
-            InputLabelProps={{ required: false }}
-            onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
           />
         </Grid>
       </Grid>
