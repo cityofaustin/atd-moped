@@ -91,24 +91,6 @@ const DefineProjectForm = ({
           />
         </Grid>
       </Grid>
-
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={6}>
-          <TextField
-            required
-            label="Description"
-            name="project_description"
-            multiline={true}
-            type="text"
-            fullWidth
-            value={projectDetails.project_description}
-            error={descriptionError}
-            helperText="Required"
-            InputLabelProps={{ required: false }}
-            onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
-          />
-        </Grid>
-      </Grid>
     </form>
   );
 };
