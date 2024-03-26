@@ -27,6 +27,9 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   current_phase: {
     label: "Status",
   },
+  project_description: {
+    label: "Description"
+  },
   project_team_members: {
     label: "Team",
     filter: filterProjectTeamMembers,

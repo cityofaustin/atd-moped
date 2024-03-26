@@ -69,7 +69,8 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       searchable: true,
       sortable: true,
       label: "Project description",
-      showInTable: false,
+      showInTable: true,
+      defaultHidden: true,
       search: {
         label: "Search by project description",
         operator: "_ilike",
