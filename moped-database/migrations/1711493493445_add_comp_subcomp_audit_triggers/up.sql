@@ -24,7 +24,7 @@ EXECUTE FUNCTION update_component_attributes_parent_records_audit_logs();
 
 COMMENT ON TRIGGER moped_proj_component_subcomponents_parent_audit_log_trigger ON moped_proj_components_subcomponents IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_components_subcomponents table.';
 
-CREATE TRIGGER set_moped_proj_component_tags_updated_at
+CREATE TRIGGER set_moped_proj_component_subcomponents_updated_at
 BEFORE INSERT OR UPDATE ON moped_proj_components_subcomponents
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
