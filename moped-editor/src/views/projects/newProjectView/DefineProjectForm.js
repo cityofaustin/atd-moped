@@ -51,6 +51,21 @@ const DefineProjectForm = ({
                   handleFieldChange(e.target.value, e.target.name)
                 }
               />
+              <TextField
+                required
+                label="Description"
+                name="project_description"
+                multiline={true}
+                type="text"
+                fullWidth
+                value={projectDetails.project_description}
+                error={descriptionError}
+                helperText="Required"
+                InputLabelProps={{ required: false }}
+                onChange={(e) =>
+                  handleFieldChange(e.target.value, e.target.name)
+                }
+              />
             </>
           )}
           {fromSignalAsset && (
