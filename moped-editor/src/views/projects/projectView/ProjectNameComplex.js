@@ -202,7 +202,6 @@ const ProjectNameComplex = (props) => {
       {/* Primary project name field */}
       <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
         <TextField
-          variant="standard"
           fullWidth
           id="project_name"
           label={"Project Name"}
@@ -229,7 +228,6 @@ const ProjectNameComplex = (props) => {
       {/* Secondary project name field */}
       <Grid item xs={12} sm={3} sx={{ paddingRight: "30px" }}>
         <TextField
-          variant="standard"
           fullWidth
           id="secondary_name"
           label={"Secondary Name"}
