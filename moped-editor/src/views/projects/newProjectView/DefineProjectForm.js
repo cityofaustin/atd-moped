@@ -27,6 +27,7 @@ const DefineProjectForm = ({
           {!fromSignalAsset && (
             <>
               <TextField
+                sx={{ marginBottom: "1.5rem" }}
                 required
                 autoFocus
                 label="Project name"
@@ -42,6 +43,7 @@ const DefineProjectForm = ({
                 }
               />
               <TextField
+                sx={{ marginBottom: "2.5rem" }}
                 label="Secondary name"
                 name="project_name_secondary"
                 type="text"
