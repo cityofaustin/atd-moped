@@ -9,6 +9,6 @@
   "author": "",
   "license": "CC0 1.0 Universal",
   "dependencies": {
-    "cognito-at-edge": "^1.4.0"
+    "cognito-at-edge": "^1.5.1"
   }
 }
