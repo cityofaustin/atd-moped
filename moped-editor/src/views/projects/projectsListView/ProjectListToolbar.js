@@ -2,7 +2,7 @@ import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarDensitySelector,
-} from "@mui/x-data-grid";
+} from "@mui/x-data-grid-pro";
 
 const ProjectListToolbar = () => (
   <GridToolbarContainer>

@@ -305,3 +305,15 @@ export const DEFAULT_HIDDEN_COLS = Object.entries(
   }
   return acc;
 }, {});
+
+/**
+ * All columns that should be shown, set to true
+ */
+export const SHOW_ALL_COLS = Object.entries(
+  PROJECT_LIST_VIEW_QUERY_CONFIG.columns
+).reduce((acc, [columnName, config]) => {
+  if (config.showInTable === true) {
+    acc[columnName] = true
+  }
+  return acc;
+}, {});
