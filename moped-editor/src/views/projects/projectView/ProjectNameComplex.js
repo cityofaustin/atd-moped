@@ -193,52 +193,56 @@ const ProjectNameComplex = (props) => {
     <Grid container>
       {/* Primary project name field */}
       <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
-        <TextField
-          fullWidth
-          id="project_name"
-          label={"Project Name"}
-          type="text"
-          value={projectName}
-          error={primaryTitleError}
-          placeholder={
-            primaryTitleError ? "Title cannot be blank" : "Enter project name"
-          }
-          multiline={false}
-          rows={1}
-          onChange={handleProjectNameChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            classes: {
-              input: classes.projectNameEditField,
-            },
-          }}
-        />
+        <form onSubmit={(e) => handleAcceptClick(e)}>
+          <TextField
+            fullWidth
+            id="project_name"
+            label={"Project Name"}
+            type="text"
+            value={projectName}
+            error={primaryTitleError}
+            placeholder={
+              primaryTitleError ? "Title cannot be blank" : "Enter project name"
+            }
+            multiline={false}
+            rows={1}
+            onChange={handleProjectNameChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              classes: {
+                input: classes.projectNameEditField,
+              },
+            }}
+          />
+        </form>
       </Grid>
 
       {/* Secondary project name field */}
       <Grid item xs={12} sm={3} sx={{ paddingRight: "25px" }}>
-        <TextField
-          sx={{ marginTop: "12px" }}
-          fullWidth
-          id="secondary_name"
-          label={"Secondary Name"}
-          type="text"
-          value={secondaryName}
-          placeholder={"Secondary Name"}
-          multiline={false}
-          rows={1}
-          onChange={handleSecondaryNameChange}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          InputProps={{
-            classes: {
-              input: classes.projectSecondaryNameEditField,
-            },
-          }}
-        />
+        <form onSubmit={(e) => handleAcceptClick(e)}>
+          <TextField
+            sx={{ marginTop: "12px" }}
+            fullWidth
+            id="secondary_name"
+            label={"Secondary Name"}
+            type="text"
+            value={secondaryName}
+            placeholder={"Secondary Name"}
+            multiline={false}
+            rows={1}
+            onChange={handleSecondaryNameChange}
+            InputLabelProps={{
+              shrink: true,
+            }}
+            InputProps={{
+              classes: {
+                input: classes.projectSecondaryNameEditField,
+              },
+            }}
+          />
+        </form>
       </Grid>
 
       {/* Accept / Cancel icons.
