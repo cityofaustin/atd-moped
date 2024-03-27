@@ -22,7 +22,7 @@ AFTER INSERT OR UPDATE ON moped_proj_components_subcomponents
 FOR EACH ROW
 EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "project_component_id");
 
-COMMENT ON TRIGGER moped_proj_component_subcomponents_parent_audit_log_trigger ON moped_proj_components_subcomponents IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_components_subcomponents table.';
+COMMENT ON TRIGGER moped_proj_component_subcomponents_parent_audit_log_trigger ON moped_proj_components_subcomponents IS 'Trigger to update parent project and component audit fields';
 
 CREATE TRIGGER set_moped_proj_component_subcomponents_updated_at
 BEFORE INSERT OR UPDATE ON moped_proj_components_subcomponents

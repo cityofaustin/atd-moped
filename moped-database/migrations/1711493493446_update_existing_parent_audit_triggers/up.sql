@@ -42,7 +42,7 @@ FOR EACH ROW
 EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "component_id");
 COMMENT ON TRIGGER feature_street_segments_parent_audit_log_trigger ON feature_street_segments IS 'Trigger to update parent project and component audit fields';
 
--- Drop current project component tags and work types triggers that use update_parent_records_audit_logs function
+-- Drop current project component tags and work types triggers that use update_component_attributes_parent_records_audit_logs function
 DROP TRIGGER IF EXISTS moped_proj_component_work_types_parent_audit_log_trigger ON moped_proj_component_work_types;
 DROP TRIGGER IF EXISTS moped_proj_component_tags_parent_audit_log_trigger ON moped_proj_component_tags;
 
@@ -53,14 +53,14 @@ CREATE TRIGGER moped_proj_component_work_types_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON moped_proj_component_work_types
 FOR EACH ROW
 EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "project_component_id");
-COMMENT ON TRIGGER moped_proj_component_work_types_parent_audit_log_trigger ON moped_proj_component_work_types IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_component_work_types table.';
+COMMENT ON TRIGGER moped_proj_component_work_types_parent_audit_log_trigger ON moped_proj_component_work_types IS 'Trigger to update parent project and component audit fields';
 
 -- Trigger for moped_proj_component_tags table
 CREATE TRIGGER moped_proj_component_tags_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON moped_proj_component_tags
 FOR EACH ROW
 EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "project_component_id");
-COMMENT ON TRIGGER moped_proj_component_tags_parent_audit_log_trigger ON moped_proj_component_tags IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_component_tags table.';
+COMMENT ON TRIGGER moped_proj_component_tags_parent_audit_log_trigger ON moped_proj_component_tags IS 'Trigger to update parent project and component audit fields';
 
 -- Last, drop the previous functions
 DROP FUNCTION IF EXISTS update_parent_records_audit_logs;
