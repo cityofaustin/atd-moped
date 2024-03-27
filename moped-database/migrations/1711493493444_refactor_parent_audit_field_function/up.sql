@@ -14,13 +14,14 @@ BEGIN
     
     -- Build update to parent table
     query_to_execute = format('
-         UPDATE %I SET updated_at = ''%s'', updated_by_user_id = %s WHERE %I.%I = $1.%I RETURNING project_id;', 
-         parent_table_name,
-         NEW.updated_at,
-         NEW.updated_by_user_id,
-         parent_table_name,
-         parent_table_primary_key_column_name,
-         child_table_foreign_key_name
+        UPDATE %I SET updated_at = ''%s'', updated_by_user_id = %s WHERE %I.%I = $1.%I RETURNING project_id;', 
+        parent_table_name,
+        NEW.updated_at,
+        -- interpolate NULL as a string to handle when NEW.updated_by_user_id = NULL on CREATE
+        quote_nullable(NEW.updated_by_user_id),
+        parent_table_name,
+        parent_table_primary_key_column_name,
+        child_table_foreign_key_name
     );
 
     -- Execute and store the returned project_id
