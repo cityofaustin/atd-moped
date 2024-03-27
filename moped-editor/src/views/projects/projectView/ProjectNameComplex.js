@@ -161,7 +161,7 @@ const ProjectNameComplex = (props) => {
               sx={{ display: "inline" }}
               onClick={() => props.setIsEditing(true)}
             >
-              - {props.projectData.project_name_secondary}
+              &nbsp;- {props.projectData.project_name_secondary}
             </Typography>
           </Box>
         ) : null}
