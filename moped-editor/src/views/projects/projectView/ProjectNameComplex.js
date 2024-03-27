@@ -233,7 +233,7 @@ const ProjectNameComplex = (props) => {
           label={"Secondary Name"}
           type="text"
           value={secondaryName}
-          placeholder={"Project Byline"}
+          placeholder={"Secondary Name"}
           multiline={false}
           rows={1}
           onChange={handleSecondaryNameChange}
