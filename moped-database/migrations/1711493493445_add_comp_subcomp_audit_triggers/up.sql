@@ -20,7 +20,7 @@ ADD CONSTRAINT project_component_subcomponent_updated_by_fkey FOREIGN KEY (updat
 CREATE TRIGGER moped_proj_component_subcomponents_parent_audit_log_trigger
 AFTER INSERT OR UPDATE ON moped_proj_components_subcomponents
 FOR EACH ROW
-EXECUTE FUNCTION update_component_attributes_parent_records_audit_logs();
+EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "project_component_id");
 
 COMMENT ON TRIGGER moped_proj_component_subcomponents_parent_audit_log_trigger ON moped_proj_components_subcomponents IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_components_subcomponents table.';
 

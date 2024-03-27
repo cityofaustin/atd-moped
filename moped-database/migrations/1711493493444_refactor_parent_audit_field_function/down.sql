@@ -1,0 +1,1 @@
+DROP FUNCTION update_audit_fields_with_dynamic_parent_table_name;
