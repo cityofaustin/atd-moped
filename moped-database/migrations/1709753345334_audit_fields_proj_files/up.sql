@@ -17,4 +17,4 @@ OR UPDATE ON moped_project_files
 FOR EACH ROW
 EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
-COMMENT ON TRIGGER update_moped_project_files_and_project_audit_fields ON moped_project_files IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_phases table.';
+COMMENT ON TRIGGER update_moped_project_files_and_project_audit_fields ON moped_project_files IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_files table.';
