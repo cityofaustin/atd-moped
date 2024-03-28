@@ -192,6 +192,12 @@ export const useColumns = ({ hiddenColumns }) => {
         },
       },
       {
+        headerName: "Description",
+        field: "project_description",
+        flex: 2,
+        minWidth: COLUMN_WIDTHS.xlarge,
+      },
+      {
         headerName: "Team",
         field: "project_team_members",
         flex: 1,
