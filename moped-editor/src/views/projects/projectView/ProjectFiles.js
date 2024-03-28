@@ -38,7 +38,7 @@ import {
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
 } from "../../../queries/project";
-import { getJwt, getDatabaseId, useUser } from "../../../auth/user";
+import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import {
@@ -114,7 +114,6 @@ const ProjectFiles = (props) => {
           file_key: fileDataBundle?.key,
           file_size: fileDataBundle?.file?.fileSize ?? 0,
           file_url: fileDataBundle?.url,
-          created_by: getDatabaseId(user),
         },
       },
     })
@@ -264,7 +263,7 @@ const ProjectFiles = (props) => {
           id="file_description"
           name="file_description"
           value={props?.value ?? ""}
-          onChange={(e) => props.onChange(e.target.value.trim())}
+          onChange={(e) => props.onChange(e.target.value)}
         />
       ),
     },
@@ -273,7 +272,7 @@ const ProjectFiles = (props) => {
       cellStyle: { fontFamily: typography.fontFamily },
       render: (record) => (
         <span>
-          {record?.created_by
+          {record?.created_by_user_id
             ? record?.moped_user?.first_name +
               " " +
               record?.moped_user?.last_name
@@ -285,13 +284,13 @@ const ProjectFiles = (props) => {
       title: "Date uploaded",
       cellStyle: { fontFamily: typography.fontFamily },
       customSort: (a, b) =>
-        new Date(a?.create_date ?? 0) - new Date(b?.create_date ?? 0),
+        new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
       render: (record) => (
         <span>
-          {record?.create_date
+          {record?.created_at
             ? `${formatTimeStampTZType(
-                record.create_date
-              )}, ${makeFullTimeFromTimeStampTZ(record.create_date)}`
+                record.created_at
+              )}, ${makeFullTimeFromTimeStampTZ(record.created_at)}`
             : "N/A"}
         </span>
       ),
@@ -393,7 +392,7 @@ const ProjectFiles = (props) => {
                   fileId: newData.project_file_id,
                   fileType: newData.file_type,
                   fileName: newData.file_name || null,
-                  fileDescription: newData.file_description || null,
+                  fileDescription: newData.file_description.trim() || null,
                   fileUrl: newData.file_url || null,
                 },
               }).then(() => {
