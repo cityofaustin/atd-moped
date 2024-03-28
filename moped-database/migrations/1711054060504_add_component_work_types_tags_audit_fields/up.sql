@@ -30,7 +30,7 @@ ALTER TABLE moped_proj_component_work_types
 ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 ADD COLUMN created_by_user_id INT4 NULL,
 ADD COLUMN updated_by_user_id INT4 NULL,
-ADD COLUMN updated_at TIMESTAMPTZ NULL;
+ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
 COMMENT ON COLUMN moped_proj_component_work_types.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN moped_proj_component_work_types.created_at IS 'Timestamp when the record was created';
@@ -61,7 +61,7 @@ ALTER TABLE moped_proj_component_tags
 ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 ADD COLUMN created_by_user_id INT4 NULL,
 ADD COLUMN updated_by_user_id INT4 NULL,
-ADD COLUMN updated_at TIMESTAMPTZ NULL;
+ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
 COMMENT ON COLUMN moped_proj_component_tags.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN moped_proj_component_tags.created_at IS 'Timestamp when the record was created';
