@@ -4025,19 +4025,20 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
     - role: moped-editor
       permission:
         check: {}
@@ -4045,78 +4046,82 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -4124,19 +4129,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:
@@ -4145,19 +4151,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:

@@ -83,7 +83,6 @@ export const featureSignalsRecordToKnackSignalRecord = (
 export const renderSignalInput = (
   params,
   signalError = false,
-  variant = "standard",
   size = "medium"
 ) => {
   return (
@@ -94,7 +93,6 @@ export const renderSignalInput = (
       label="Signal"
       required
       helperText="Required"
-      variant={variant}
       size={size}
     />
   );
