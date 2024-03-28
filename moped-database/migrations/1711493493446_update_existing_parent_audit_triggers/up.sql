@@ -62,6 +62,13 @@ FOR EACH ROW
 EXECUTE FUNCTION update_audit_fields_with_dynamic_parent_table_name("moped_proj_components", "project_component_id", "project_component_id");
 COMMENT ON TRIGGER moped_proj_component_tags_parent_audit_log_trigger ON moped_proj_component_tags IS 'Trigger to update parent project and component audit fields';
 
--- Last, drop the previous functions
+-- Drop the previous functions
 DROP FUNCTION IF EXISTS update_parent_records_audit_logs;
 DROP FUNCTION IF EXISTS update_component_attributes_parent_records_audit_logs;
+
+-- Last, update the updated_at column default value for the feature tables
+ALTER TABLE feature_drawn_lines ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE feature_drawn_points ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE feature_intersections ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE feature_signals ALTER COLUMN updated_at SET DEFAULT now();
+ALTER TABLE feature_street_segments ALTER COLUMN updated_at SET DEFAULT now();

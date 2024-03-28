@@ -109,3 +109,10 @@ FOR EACH ROW
 EXECUTE FUNCTION update_component_attributes_parent_records_audit_logs();
 
 COMMENT ON TRIGGER moped_proj_component_tags_parent_audit_log_trigger ON moped_proj_component_tags IS 'Trigger to execute the update_component_attributes_parent_records_audit_logs function before each update operation on the moped_proj_component_tags table.';
+
+-- Remove feature tables updated_at default values
+ALTER TABLE feature_drawn_lines ALTER COLUMN updated_at DROP DEFAULT;
+ALTER TABLE feature_drawn_points ALTER COLUMN updated_at DROP DEFAULT;
+ALTER TABLE feature_intersections ALTER COLUMN updated_at DROP DEFAULT;
+ALTER TABLE feature_signals ALTER COLUMN updated_at DROP DEFAULT;
+ALTER TABLE feature_street_segments ALTER COLUMN updated_at DROP DEFAULT;

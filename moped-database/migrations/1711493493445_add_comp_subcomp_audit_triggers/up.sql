@@ -4,7 +4,7 @@ ALTER TABLE moped_proj_components_subcomponents
 ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 ADD COLUMN created_by_user_id INT4 NULL,
 ADD COLUMN updated_by_user_id INT4 NULL,
-ADD COLUMN updated_at TIMESTAMPTZ NULL;
+ADD COLUMN updated_at TIMESTAMPTZ NOT NULL DEFAULT now();
 
 COMMENT ON COLUMN moped_proj_components_subcomponents.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN moped_proj_components_subcomponents.created_at IS 'Timestamp when the record was created';
