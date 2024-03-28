@@ -1,7 +1,7 @@
 ALTER TABLE moped_project_files RENAME COLUMN create_date TO created_at;
 ALTER TABLE moped_project_files RENAME COLUMN created_by TO created_by_user_id;
 
-ALTER TABLE moped_project_files ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE;
+ALTER TABLE moped_project_files ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE DEFAULT now();
 
 ALTER TABLE moped_project_files
 ADD COLUMN updated_by_user_id INTEGER
