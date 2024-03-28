@@ -53,19 +53,6 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
-    // if the new field is null or undefined, its because something was removed
-    if (!lookupList[changeData.new[changedField]]) {
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: `Removed ${entryMap.fields[changedField]?.label} `,
-            style: null,
-          },
-        ],
-      };
-    }
-
     // Changing a field, but need to use lookup table to display
     return {
       changeIcon,
@@ -80,20 +67,38 @@ export const formatProjectActivity = (change, lookupList) => {
         },
       ],
     };
-  }
-  // we dont need the lookup table
-  else {
-    // If the update is an object, show just the field name that was updated.
+  } else {
+    // If the update is an object, first we have to check if the field is null,
+    // as javascript classifies a null value as an object
     if (typeof changeData.new[changedField] === "object") {
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: `Changed ${entryMap.fields[changedField]?.label} `,
-            style: null,
-          },
-        ],
-      };
+      // if the new field is null, its because something was removed
+      if (lookupList[changeData.new[changedField]] == null) {
+        console.log(changeData.old);
+        return {
+          changeIcon,
+          changeText: [
+            {
+              text: `Removed ${entryMap.fields[changedField]?.label} `,
+              style: null,
+            },
+            {
+              text: changeData.old[changedField],
+              style: "boldText",
+            },
+          ],
+        };
+        // if the update truly is an object, show just the field name that was updated
+      } else {
+        return {
+          changeIcon,
+          changeText: [
+            {
+              text: `Changed ${entryMap.fields[changedField]?.label} `,
+              style: null,
+            },
+          ],
+        };
+      }
     }
 
     if (changedField === "knack_project_id") {
