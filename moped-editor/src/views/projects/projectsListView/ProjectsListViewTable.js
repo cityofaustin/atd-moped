@@ -21,7 +21,8 @@ import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
-  CsvDownloadDialog,
+  CsvDownloadingDialog,
+  CsvDownloadOptionsDialog,
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
@@ -31,7 +32,7 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    height: "90%"
+    height: "90%",
   },
   paper: {
     width: "100%",
@@ -57,6 +58,12 @@ const ProjectsListViewTable = () => {
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
+
+  // States that handle the project list export button
+  const [downloadOptionsDialogOpen, setDownloadOptionsDialogOpen] =
+    useState(false);
+  const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
+  const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -87,18 +94,32 @@ const ProjectsListViewTable = () => {
     storageKey: "mopedProjectListColumnConfig",
   });
 
-  const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
+  const { columns, columnsToReturnInListView, visibleColumnsToReturnInExport } =
+    useColumns({
+      hiddenColumns,
+    });
 
-  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
-    columnsToReturn: columnsToReturnInQuery,
-    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
-    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
-    queryLimit,
-    queryOffset,
-    orderByColumn,
-    orderByDirection,
-    searchWhereString,
-    advancedSearchWhereString,
+  const { query: projectListViewQuery } = useGetProjectListView({
+    queryLimit: queryLimit,
+    queryOffset: queryOffset,
+    columnsToReturn: columnsToReturnInListView,
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListView",
+  });
+
+  const { query: exportQuery } = useGetProjectListView({
+    columnsToReturn:
+      columnDownloadOption === "visible"
+        ? visibleColumnsToReturnInExport
+        : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListExport",
   });
 
   const {
@@ -112,13 +133,20 @@ const ProjectsListViewTable = () => {
 
   const data = useCurrentData(projectListViewData);
 
-  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+  const {
+    handleExportButtonClick,
+    handleRadioSelect,
+    handleContinueButtonClick,
+    handleOptionsDialogClose,
+  } = useCsvExport({
     query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
-    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-    limit: queryLimit,
-    setQueryLimit,
+    setDownloadOptionsDialogOpen: setDownloadOptionsDialogOpen,
+    columnDownloadOption: columnDownloadOption,
+    setColumnDownloadOption: setColumnDownloadOption,
+    setDownloadingDialogOpen: setDownloadingDialogOpen,
+    visibleColumns: visibleColumnsToReturnInExport,
   });
 
   /**
@@ -166,7 +194,14 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <CsvDownloadDialog dialogOpen={dialogOpen} />
+        <CsvDownloadOptionsDialog
+          dialogOpen={downloadOptionsDialogOpen}
+          handleDialogClose={handleOptionsDialogClose}
+          handleContinueButtonClick={handleContinueButtonClick}
+          handleRadioSelect={handleRadioSelect}
+          columnDownloadOption={columnDownloadOption}
+        />
+        <CsvDownloadingDialog downloadingDialogOpen={downloadingDialogOpen} />
         <Search
           parentData={data}
           filters={filters}
@@ -186,7 +221,7 @@ const ProjectsListViewTable = () => {
         <Paper className={classes.paper}>
           <Box
             sx={{
-              height: "70vh",
+              height: "75vh",
               minHeight: "400px",
               marginTop: "14px",
             }}

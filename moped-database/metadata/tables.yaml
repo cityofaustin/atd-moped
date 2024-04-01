@@ -4297,15 +4297,18 @@
         foreign_key_constraint_on: project_id
     - name: moped_user
       using:
-        foreign_key_constraint_on: created_by
+        foreign_key_constraint_on: created_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4315,15 +4318,18 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4333,15 +4339,15 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - api_response
-          - create_date
-          - created_by
+          - created_at
+          - created_by_user_id
           - file_description
           - file_key
           - file_metadata
@@ -4360,7 +4366,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_file_id
@@ -4371,7 +4377,7 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
     - role: moped-viewer
@@ -4379,7 +4385,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_file_id
@@ -4390,7 +4396,7 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
   update_permissions:
@@ -4399,7 +4405,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4409,16 +4415,18 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4428,10 +4436,12 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
@@ -4453,7 +4463,7 @@
           action: transform
           template: |-
             {
-              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input! ) { insert_moped_activity_log_one(object: $object) { activity_id } }",
               "variables": {
                 "object": {
                   "record_id": {{ $body.event.data.new.project_file_id }},
@@ -4464,9 +4474,7 @@
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                },
-                "updated_at": {{$body.created_at}},
-                "project_id": {{$body.event.data.new.project_id}}
+                }
               }
             }
         method: POST
