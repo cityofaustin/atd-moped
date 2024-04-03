@@ -8,7 +8,7 @@ const RelatedComponentsList = ({
   editState,
   shouldShowRelatedProjects,
   clickedComponent,
-  setClickedComponent,
+  makeClickedComponentUpdates,
   onClickZoomToComponent,
   allRelatedComponents,
   setIsClickedComponentRelated,
@@ -21,10 +21,10 @@ const RelatedComponentsList = ({
 
   const onListItemClick = (component) => {
     if (isExpanded(component)) {
-      setClickedComponent(null);
+      makeClickedComponentUpdates(null);
       setIsClickedComponentRelated(false);
     } else if (isNotCreatingOrEditing) {
-      setClickedComponent(component);
+      makeClickedComponentUpdates(component);
       setIsClickedComponentRelated(true);
     }
   };

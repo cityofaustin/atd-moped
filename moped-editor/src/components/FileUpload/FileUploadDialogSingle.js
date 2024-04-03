@@ -10,6 +10,7 @@ import {
   TextField,
   FormControl,
   FormControlLabel,
+  FormHelperText,
   InputLabel,
   Select,
   MenuItem,
@@ -204,6 +205,7 @@ const FileUploadDialogSingle = (props) => {
                 <MenuItem value={3}>Estimates</MenuItem>
                 <MenuItem value={4}>Other</MenuItem>
               </Select>
+              <FormHelperText>Required</FormHelperText>
             </FormControl>
 
             <TextField
