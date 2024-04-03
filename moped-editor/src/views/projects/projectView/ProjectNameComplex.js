@@ -16,17 +16,16 @@ import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 const useStyles = makeStyles((theme) => ({
   editIcons: {
     cursor: "pointer",
-    marginTop: "16px",
-    fontSize: "2rem",
+    marginTop: "32px",
+    fontSize: "1.4rem",
   },
   projectNameEditField: {
-    "font-size": "1.5rem",
+    "font-size": "1.4rem",
     "font-weight": "bold",
   },
   projectSecondaryNameEditField: {
-    "font-size": "1.0rem",
+    "font-size": "1.4rem",
     "font-weight": "bold",
-    "padding-top": "0.95rem",
   },
 }));
 
@@ -141,19 +140,7 @@ const ProjectNameComplex = (props) => {
   const viewModeJSX = (
     <Grid container>
       <Grid item xs={12}>
-        <Box sx={{ display: "inline", cursor: "pointer" }}>
-          <Typography
-            color="textPrimary"
-            variant="h2"
-            sx={{ display: "inline" }}
-            onClick={() => props.setIsEditing(true)}
-          >
-            {props.projectData.project_name}
-          </Typography>
-        </Box>
-
-        {props.projectData.project_name_secondary &&
-        props.projectData.project_name_secondary.length > 0 ? (
+        <Box sx={{ position: "relative", top: "0.5rem" }}>
           <Box sx={{ display: "inline", cursor: "pointer" }}>
             <Typography
               color="textPrimary"
@@ -161,26 +148,40 @@ const ProjectNameComplex = (props) => {
               sx={{ display: "inline" }}
               onClick={() => props.setIsEditing(true)}
             >
-              &nbsp;- {props.projectData.project_name_secondary}
+              {props.projectData.project_name}
             </Typography>
           </Box>
-        ) : null}
 
-        <Box sx={{ display: "inline", paddingLeft: "10px" }}>
-          <Typography
-            color="textSecondary"
-            variant="h2"
-            sx={{ display: "inline" }}
-          >
-            #{props.projectId}
-          </Typography>
-        </Box>
+          {props.projectData.project_name_secondary &&
+          props.projectData.project_name_secondary.length > 0 ? (
+            <Box sx={{ display: "inline", cursor: "pointer" }}>
+              <Typography
+                color="textPrimary"
+                variant="h2"
+                sx={{ display: "inline" }}
+                onClick={() => props.setIsEditing(true)}
+              >
+                &nbsp;- {props.projectData.project_name_secondary}
+              </Typography>
+            </Box>
+          ) : null}
 
-        <Box sx={{ display: "inline", position: "relative", top: "0px" }}>
-          <ProjectStatusBadge
-            phaseKey={props.currentPhase?.phase_key}
-            phaseName={props.currentPhase?.phase_name}
-          />
+          <Box sx={{ display: "inline", paddingLeft: "10px" }}>
+            <Typography
+              color="textSecondary"
+              variant="h2"
+              sx={{ display: "inline" }}
+            >
+              #{props.projectId}
+            </Typography>
+          </Box>
+
+          <Box sx={{ display: "inline", position: "relative", top: "-0.4rem" }}>
+            <ProjectStatusBadge
+              phaseKey={props.currentPhase?.phase_key}
+              phaseName={props.currentPhase?.phase_name}
+            />
+          </Box>
         </Box>
       </Grid>
     </Grid>
@@ -195,6 +196,7 @@ const ProjectNameComplex = (props) => {
       <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
         <form onSubmit={(e) => handleAcceptClick(e)}>
           <TextField
+            variant="standard"
             fullWidth
             id="project_name"
             label={"Project Name"}
@@ -223,7 +225,7 @@ const ProjectNameComplex = (props) => {
       <Grid item xs={12} sm={3} sx={{ paddingRight: "25px" }}>
         <form onSubmit={(e) => handleAcceptClick(e)}>
           <TextField
-            sx={{ marginTop: "12px" }}
+            variant="standard"
             fullWidth
             id="secondary_name"
             label={"Secondary Name"}
@@ -247,7 +249,7 @@ const ProjectNameComplex = (props) => {
 
       {/* Accept / Cancel icons.
         This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-      <Grid item xs={12} sm={1} sx={{ minWidth: "65px", marginTop: "1rem" }}>
+      <Grid item xs={12} sm={1} sx={{ minWidth: "65px" }}>
         <Icon
           className={classes.editIcons}
           onClick={(e) => handleAcceptClick(e)}
@@ -265,7 +267,7 @@ const ProjectNameComplex = (props) => {
       {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
         along the horizontal midline of the project name input field. */}
       <Grid item xs={12} md={2}>
-        <Box sx={{ display: "inline", position: "relative", top: "1.5rem" }}>
+        <Box sx={{ display: "inline", position: "relative", top: "1rem" }}>
           <ProjectStatusBadge
             phaseKey={props.currentPhase?.phase_key}
             phaseName={props.currentPhase?.phase_name}
