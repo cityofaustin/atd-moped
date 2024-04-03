@@ -277,25 +277,28 @@ const ProjectNameComplex = (props) => {
     </Grid>
   );
 
-  const commonJSX = (
-    <Snackbar
-      anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      open={snackbarState.open}
-      onClose={handleSnackbarClose}
-      key={"datatable-snackbar"}
-    >
-      <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-        {snackbarState.message}
-      </Alert>
-    </Snackbar>
-  );
-
   return (
     <>
       {props.isEditing ? editModeJSX : viewModeJSX}
-      {commonJSX}
+      <CommonJSX
+        snackbarState={snackbarState}
+        handleSnackbarClose={handleSnackbarClose}
+      />
     </>
   );
 };
 
 export default ProjectNameComplex;
+
+const CommonJSX = ({ snackbarState, handleSnackbarClose }) => (
+  <Snackbar
+    anchorOrigin={{ vertical: "top", horizontal: "right" }}
+    open={snackbarState.open}
+    onClose={handleSnackbarClose}
+    key={"datatable-snackbar"}
+  >
+    <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
+      {snackbarState.message}
+    </Alert>
+  </Snackbar>
+);
