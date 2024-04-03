@@ -133,153 +133,28 @@ const ProjectNameComplex = (props) => {
   // Because the layout is non-trivially different between view and edit modes,
   // we're going to use two different JSX blocks to render the component's content.
 
-  /* This enclosing grid below contains two 12-column wide grid items, forcing the secondary name to flow to
-      the next line. Block elements must be avoided, as they prevent the project number and status
-      badge and project number from floating left up to the project name which 
-      of variable, unknown width. */
-  const viewModeJSX = (
-    <Grid container>
-      <Grid item xs={12}>
-        <Box sx={{ position: "relative", top: "0.5rem" }}>
-          <Box sx={{ display: "inline", cursor: "pointer" }}>
-            <Typography
-              color="textPrimary"
-              variant="h2"
-              sx={{ display: "inline" }}
-              onClick={() => props.setIsEditing(true)}
-            >
-              {props.projectData.project_name}
-            </Typography>
-          </Box>
-
-          {props.projectData.project_name_secondary &&
-          props.projectData.project_name_secondary.length > 0 ? (
-            <Box sx={{ display: "inline", cursor: "pointer" }}>
-              <Typography
-                color="textPrimary"
-                variant="h2"
-                sx={{ display: "inline" }}
-                onClick={() => props.setIsEditing(true)}
-              >
-                &nbsp;- {props.projectData.project_name_secondary}
-              </Typography>
-            </Box>
-          ) : null}
-
-          <Box sx={{ display: "inline", paddingLeft: "10px" }}>
-            <Typography
-              color="textSecondary"
-              variant="h2"
-              sx={{ display: "inline" }}
-            >
-              #{props.projectId}
-            </Typography>
-          </Box>
-
-          <Box sx={{ display: "inline", position: "relative", top: "-0.4rem" }}>
-            <ProjectStatusBadge
-              phaseKey={props.currentPhase?.phase_key}
-              phaseName={props.currentPhase?.phase_name}
-            />
-          </Box>
-        </Box>
-      </Grid>
-    </Grid>
-  );
-
-  /* This enclosing grid below contains the project name and secondary name fields, the 
-    accept/cancel icons and the badge.  Multiple widths are set for each element so that 
-    they reflow responsively as the viewport becomes more narrow. */
-  const editModeJSX = (
-    <Grid container>
-      {/* Primary project name field */}
-      <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
-        <form onSubmit={(e) => handleAcceptClick(e)}>
-          <TextField
-            variant="standard"
-            fullWidth
-            id="project_name"
-            label={"Project Name"}
-            type="text"
-            value={projectName}
-            error={primaryTitleError}
-            placeholder={
-              primaryTitleError ? "Title cannot be blank" : "Enter project name"
-            }
-            multiline={false}
-            rows={1}
-            onChange={handleProjectNameChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              classes: {
-                input: classes.projectNameEditField,
-              },
-            }}
-          />
-        </form>
-      </Grid>
-
-      {/* Secondary project name field */}
-      <Grid item xs={12} sm={3} sx={{ paddingRight: "25px" }}>
-        <form onSubmit={(e) => handleAcceptClick(e)}>
-          <TextField
-            variant="standard"
-            fullWidth
-            id="secondary_name"
-            label={"Secondary Name"}
-            type="text"
-            value={secondaryName}
-            placeholder={"Secondary Name"}
-            multiline={false}
-            rows={1}
-            onChange={handleSecondaryNameChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              classes: {
-                input: classes.projectSecondaryNameEditField,
-              },
-            }}
-          />
-        </form>
-      </Grid>
-
-      {/* Accept / Cancel icons.
-        This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-      <Grid item xs={12} sm={1} sx={{ minWidth: "65px" }}>
-        <Icon
-          className={classes.editIcons}
-          onClick={(e) => handleAcceptClick(e)}
-        >
-          check
-        </Icon>
-        <Icon
-          className={classes.editIcons}
-          onClick={(e) => handleCancelClick(e)}
-        >
-          close
-        </Icon>
-      </Grid>
-
-      {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
-        along the horizontal midline of the project name input field. */}
-      <Grid item xs={12} md={2}>
-        <Box sx={{ display: "inline", position: "relative", top: "1rem" }}>
-          <ProjectStatusBadge
-            phaseKey={props.currentPhase?.phase_key}
-            phaseName={props.currentPhase?.phase_name}
-          />
-        </Box>
-      </Grid>
-    </Grid>
-  );
-
   return (
     <>
-      {props.isEditing ? editModeJSX : viewModeJSX}
+      {props.isEditing ? (
+        <EditMode
+          projectName={projectName}
+          primaryTitleError={primaryTitleError}
+          handleProjectNameChange={handleProjectNameChange}
+          secondaryName={secondaryName}
+          handleSecondaryNameChange={handleSecondaryNameChange}
+          handleAcceptClick={handleAcceptClick}
+          handleCancelClick={handleCancelClick}
+          classes={classes}
+          props={props}
+        />
+      ) : (
+        <ViewMode
+          projectData={props.projectData}
+          setIsEditing={props.setIsEditing}
+          projectId={props.projectId}
+          currentPhase={props.currentPhase}
+        />
+      )}
       <CommonJSX
         snackbarState={snackbarState}
         handleSnackbarClose={handleSnackbarClose}
@@ -301,4 +176,145 @@ const CommonJSX = ({ snackbarState, handleSnackbarClose }) => (
       {snackbarState.message}
     </Alert>
   </Snackbar>
+);
+
+const EditMode = ({
+  projectName,
+  primaryTitleError,
+  handleProjectNameChange,
+  secondaryName,
+  handleSecondaryNameChange,
+  handleAcceptClick,
+  handleCancelClick,
+  classes,
+  props,
+}) => (
+  <Grid container>
+    {/* Primary project name field */}
+    <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
+      <form onSubmit={(e) => handleAcceptClick(e)}>
+        <TextField
+          variant="standard"
+          fullWidth
+          id="project_name"
+          label={"Project Name"}
+          type="text"
+          value={projectName}
+          error={primaryTitleError}
+          placeholder={
+            primaryTitleError ? "Title cannot be blank" : "Enter project name"
+          }
+          multiline={false}
+          rows={1}
+          onChange={handleProjectNameChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            classes: {
+              input: classes.projectNameEditField,
+            },
+          }}
+        />
+      </form>
+    </Grid>
+
+    {/* Secondary project name field */}
+    <Grid item xs={12} sm={3} sx={{ paddingRight: "25px" }}>
+      <form onSubmit={(e) => handleAcceptClick(e)}>
+        <TextField
+          variant="standard"
+          fullWidth
+          id="secondary_name"
+          label={"Secondary Name"}
+          type="text"
+          value={secondaryName}
+          placeholder={"Secondary Name"}
+          multiline={false}
+          rows={1}
+          onChange={handleSecondaryNameChange}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          InputProps={{
+            classes: {
+              input: classes.projectSecondaryNameEditField,
+            },
+          }}
+        />
+      </form>
+    </Grid>
+
+    {/* Accept / Cancel icons.
+      This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
+    <Grid item xs={12} sm={1} sx={{ minWidth: "65px" }}>
+      <Icon className={classes.editIcons} onClick={(e) => handleAcceptClick(e)}>
+        check
+      </Icon>
+      <Icon className={classes.editIcons} onClick={(e) => handleCancelClick(e)}>
+        close
+      </Icon>
+    </Grid>
+
+    {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
+      along the horizontal midline of the project name input field. */}
+    <Grid item xs={12} md={2}>
+      <Box sx={{ display: "inline", position: "relative", top: "1rem" }}>
+        <ProjectStatusBadge
+          phaseKey={props.currentPhase?.phase_key}
+          phaseName={props.currentPhase?.phase_name}
+        />
+      </Box>
+    </Grid>
+  </Grid>
+);
+
+const ViewMode = ({ projectData, setIsEditing, projectId, currentPhase }) => (
+  <Grid container>
+    <Grid item xs={12}>
+      <Box sx={{ position: "relative", top: "0.5rem" }}>
+        <Box sx={{ display: "inline", cursor: "pointer" }}>
+          <Typography
+            color="textPrimary"
+            variant="h2"
+            sx={{ display: "inline" }}
+            onClick={() => setIsEditing(true)}
+          >
+            {projectData.project_name}
+          </Typography>
+        </Box>
+
+        {projectData.project_name_secondary &&
+        projectData.project_name_secondary.length > 0 ? (
+          <Box sx={{ display: "inline", cursor: "pointer" }}>
+            <Typography
+              color="textPrimary"
+              variant="h2"
+              sx={{ display: "inline" }}
+              onClick={() => setIsEditing(true)}
+            >
+              &nbsp;- {projectData.project_name_secondary}
+            </Typography>
+          </Box>
+        ) : null}
+
+        <Box sx={{ display: "inline", paddingLeft: "10px" }}>
+          <Typography
+            color="textSecondary"
+            variant="h2"
+            sx={{ display: "inline" }}
+          >
+            #{projectId}
+          </Typography>
+        </Box>
+
+        <Box sx={{ display: "inline", position: "relative", top: "-0.4rem" }}>
+          <ProjectStatusBadge
+            phaseKey={currentPhase?.phase_key}
+            phaseName={currentPhase?.phase_name}
+          />
+        </Box>
+      </Box>
+    </Grid>
+  </Grid>
 );
