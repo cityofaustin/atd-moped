@@ -27,6 +27,7 @@ const DefineProjectForm = ({
           {!fromSignalAsset && ( // if
             <TextField
               sx={{ marginBottom: "2rem" }}
+              variant="standard"
               required
               autoFocus
               label="Project name"
@@ -55,6 +56,7 @@ const DefineProjectForm = ({
 
           <TextField
             sx={{ marginBottom: ".5rem" }}
+            variant="standard"
             label="Secondary name"
             name="project_name_secondary"
             type="text"
@@ -66,6 +68,7 @@ const DefineProjectForm = ({
         <Grid item xs={3}>
           <InputLabel>Use signal asset</InputLabel>
           <Switch
+            variant="standard"
             type="checkbox"
             checked={fromSignalAsset}
             color="primary"
@@ -78,8 +81,8 @@ const DefineProjectForm = ({
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
           <TextField
+            variant="standard"
             required
-            minRows={5}
             label="Description"
             name="project_description"
             multiline={true}

@@ -88,6 +88,7 @@ export const renderSignalInput = (
   return (
     <TextField
       {...params}
+      variant="standard"
       error={signalError}
       InputLabelProps={{ required: false }}
       label="Signal"
