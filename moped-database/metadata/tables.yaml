@@ -4235,6 +4235,7 @@
             - project_website
             - knack_project_id
             - public_process_status_id
+            - project_name_secondary
       retry_conf:
         interval_sec: 10
         num_retries: 0
