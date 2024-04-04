@@ -53,7 +53,7 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
-    // if the new field is null or undefined, its because something was removed
+    // if the new field value is null or undefined, its because something was removed
     if (!lookupList[changeData.new[changedField]]) {
       return {
         changeIcon,
@@ -65,7 +65,6 @@ export const formatProjectActivity = (change, lookupList) => {
         ],
       };
     }
-
     // Changing a field, but need to use lookup table to display
     return {
       changeIcon,

@@ -71,6 +71,9 @@ export const ProjectActivityLogTableMaps = {
       is_retired: {
         label: "is retired",
       },
+      project_name_secondary: {
+        label: "secondary project name"
+      }
     },
   },
   moped_proj_entities: {
