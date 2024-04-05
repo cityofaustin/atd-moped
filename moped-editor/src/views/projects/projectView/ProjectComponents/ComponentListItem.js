@@ -80,23 +80,25 @@ export default function ComponentListItem({
         </ListItemSecondaryAction>
       </ListItem>
       <Collapse in={isExpanded}>
-        <List component="div" disablePadding dense>
-          {!isComponentMapped && (
-            <ListItem dense className={classes.listItem}>
-              <ListItemText
-                primary={
-                  <Alert severity="error">Component is not mapped</Alert>
-                }
-              />
-            </ListItem>
-          )}
-          {component.description && (
-            <ListItem className={classes.nested}>
-              <ListItemText secondary={component.description} />
-            </ListItem>
-          )}
-          {additionalCollapseListItems}
-        </List>
+        {isExpanded ? (
+          <List component="div" disablePadding dense>
+            {!isComponentMapped && (
+              <ListItem dense className={classes.listItem}>
+                <ListItemText
+                  primary={
+                    <Alert severity="error">Component is not mapped</Alert>
+                  }
+                />
+              </ListItem>
+            )}
+            {component.description && (
+              <ListItem className={classes.nested}>
+                <ListItemText secondary={component.description} />
+              </ListItem>
+            )}
+            {additionalCollapseListItems}
+          </List>
+        ) : null}
       </Collapse>
       <Divider />
     </Box>
