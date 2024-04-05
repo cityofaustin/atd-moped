@@ -4,38 +4,19 @@ import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
 
 const RelatedComponentsList = ({
-  createState,
-  editState,
   shouldShowRelatedProjects,
-  clickedComponent,
-  makeClickedComponentUpdates,
   onClickZoomToComponent,
   allRelatedComponents,
   setIsClickedComponentRelated,
+  isExpanded,
+  onRelatedListItemClick,
 }) => {
-  const isNotCreatingOrEditing =
-    !createState.isCreatingComponent && !editState.isEditingComponent;
-
-  const isExpanded = (component) =>
-    clickedComponent?.project_component_id === component.project_component_id;
-
-  const onListItemClick = (component) => {
-    if (isExpanded(component)) {
-      makeClickedComponentUpdates(null);
-      setIsClickedComponentRelated(false);
-    } else if (isNotCreatingOrEditing) {
-      makeClickedComponentUpdates(component);
-      setIsClickedComponentRelated(true);
-    }
-  };
-
   const onZoomClick = (component) => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(true);
   };
 
   return (
-    isNotCreatingOrEditing &&
     shouldShowRelatedProjects &&
     allRelatedComponents.map((component) => {
       const lineRepresentation =
@@ -46,7 +27,7 @@ const RelatedComponentsList = ({
           component={component}
           isExpanded={isExpanded(component)}
           onZoomClick={() => onZoomClick(component)}
-          onListItemClick={() => onListItemClick(component)}
+          onListItemClick={() => onRelatedListItemClick(component)}
           Icon={
             <ComponentIconByLineRepresentation
               lineRepresentation={lineRepresentation}

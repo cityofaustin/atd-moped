@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import ComponentListItem from "./ComponentListItem";
 import IconButton from "@mui/material/IconButton";
 import EditNoteOutlinedIcon from "@mui/icons-material/EditNoteOutlined";
@@ -13,35 +13,54 @@ import { ComponentIconByLineRepresentation } from "./utils/form";
 import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 
+function useWhatChanged(props) {
+  // cache the last set of props
+  const prev = React.useRef(props);
+
+  React.useEffect(() => {
+    // check each prop to see if it has changed
+    const changed = Object.entries(props).reduce((a, [key, prop]) => {
+      if (prev.current[key] === prop) return a;
+      return {
+        ...a,
+        [key]: {
+          prev: prev.current[key],
+          next: prop,
+        },
+      };
+    }, {});
+
+    if (Object.keys(changed).length > 0) {
+      console.group("Props That Changed");
+      console.log(changed);
+      console.groupEnd();
+    }
+
+    prev.current = props;
+  }, [props]);
+}
+
 const ProjectComponentsList = ({
-  createState,
-  editState,
   editDispatch,
-  clickedComponent,
   onClickZoomToComponent,
   onEditFeatures,
   projectComponents,
   setIsDeletingComponent,
   setIsMovingComponent,
   setIsClickedComponentRelated,
-  makeClickedComponentUpdates,
+  onListItemClick,
+  isExpanded,
 }) => {
-  const isNotCreatingOrEditing =
-    !createState.isCreatingComponent && !editState.isEditingComponent;
-
-  const isExpanded = (component) =>
-    clickedComponent?.project_component_id === component.project_component_id;
-
-  const onListItemClick = (component) => {
-    setIsClickedComponentRelated(false);
-    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
-    if (isExpanded(component)) {
-      makeClickedComponentUpdates(null);
-      editDispatch({ type: "clear_draft_component" });
-    } else if (isNotCreatingOrEditing) {
-      makeClickedComponentUpdates(component);
-    }
-  };
+  useWhatChanged({
+    editDispatch,
+    onClickZoomToComponent,
+    onEditFeatures,
+    projectComponents,
+    setIsDeletingComponent,
+    setIsMovingComponent,
+    setIsClickedComponentRelated,
+    isExpanded,
+  });
 
   const onEditAttributes = () =>
     editDispatch({ type: "start_attributes_edit" });
@@ -84,119 +103,115 @@ const ProjectComponentsList = ({
     return () => clearTimeout(timeout);
   }, [copiedUrl, setCopiedUrl]);
 
-  return (
-    isNotCreatingOrEditing &&
-    projectComponents.map((component) => {
-      const lineRepresentation =
-        component?.moped_components?.line_representation;
-      const isSignal = isSignalComponent(component);
-      const isComponentExpanded = isExpanded(component);
-      const isComponentMapped = getIsComponentMapped(component);
-      return (
-        <ComponentListItem
-          key={component.project_component_id}
-          component={component}
-          isExpanded={isComponentExpanded}
-          onZoomClick={onZoomClick}
-          onListItemClick={onListItemClick}
-          Icon={
-            <ComponentIconByLineRepresentation
-              lineRepresentation={lineRepresentation}
-              color={theme.palette.primary.main}
-            />
-          }
-          selectedBorderColor={theme.palette.primary.main}
-          additionalCollapseListItems={
-            <Stack
-              spacing={2}
-              direction="row"
-              justifyContent="flex-end"
-              my={1}
-              // estimating alignment with zoom ListItemSecondaryAction button
-              mr={2.5}
+  return projectComponents.map((component) => {
+    const lineRepresentation = component?.moped_components?.line_representation;
+    const isSignal = isSignalComponent(component);
+    const isComponentExpanded = isExpanded(component);
+    const isComponentMapped = getIsComponentMapped(component);
+    return (
+      <ComponentListItem
+        key={component.project_component_id}
+        component={component}
+        isExpanded={isComponentExpanded}
+        onZoomClick={onZoomClick}
+        onListItemClick={onListItemClick}
+        Icon={
+          <ComponentIconByLineRepresentation
+            lineRepresentation={lineRepresentation}
+            color={theme.palette.primary.main}
+          />
+        }
+        selectedBorderColor={theme.palette.primary.main}
+        additionalCollapseListItems={
+          <Stack
+            spacing={2}
+            direction="row"
+            justifyContent="flex-end"
+            my={1}
+            // estimating alignment with zoom ListItemSecondaryAction button
+            mr={2.5}
+          >
+            <Tooltip title="Details">
+              <IconButton
+                color="primary"
+                aria-label="edit"
+                onClick={onEditAttributes}
+              >
+                <EditNoteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+
+            <Tooltip
+              title={
+                isSignal
+                  ? "Signal locations can only be changed by editing the component details"
+                  : "Map"
+              }
             >
-              <Tooltip title="Details">
+              {/* this span allows the tooltip to display when IconButton is disabled */}
+              <span>
                 <IconButton
                   color="primary"
-                  aria-label="edit"
-                  onClick={onEditAttributes}
+                  aria-label="map"
+                  onClick={onEditMap}
+                  disabled={isSignal}
                 >
-                  <EditNoteOutlinedIcon />
+                  <EditLocationAltOutlinedIcon
+                    color={isComponentMapped ? undefined : "error"}
+                  />
                 </IconButton>
-              </Tooltip>
+              </span>
+            </Tooltip>
 
-              <Tooltip
-                title={
-                  isSignal
-                    ? "Signal locations can only be changed by editing the component details"
-                    : "Map"
-                }
-              >
-                {/* this span allows the tooltip to display when IconButton is disabled */}
-                <span>
+            <Tooltip
+              PopperProps={{
+                disablePortal: true,
+              }}
+              open={!!copiedUrl}
+              disableFocusListener
+              disableHoverListener
+              disableTouchListener
+              title="Copied!"
+              placement="top"
+            >
+              {/* This span prevents warning about providing title prop to child of Tooltip */}
+              <span>
+                <Tooltip title="Copy link to component" placement="bottom">
                   <IconButton
                     color="primary"
-                    aria-label="map"
-                    onClick={onEditMap}
-                    disabled={isSignal}
+                    aria-label="link"
+                    onClick={copyLinkToClipboard}
                   >
-                    <EditLocationAltOutlinedIcon
-                      color={isComponentMapped ? undefined : "error"}
-                    />
+                    <LinkIcon />
                   </IconButton>
-                </span>
-              </Tooltip>
+                </Tooltip>
+              </span>
+            </Tooltip>
 
-              <Tooltip
-                PopperProps={{
-                  disablePortal: true,
-                }}
-                open={!!copiedUrl}
-                disableFocusListener
-                disableHoverListener
-                disableTouchListener
-                title="Copied!"
-                placement="top"
+            <Tooltip title="Move to another project">
+              <IconButton
+                color="primary"
+                aria-label="move"
+                onClick={onMoveComponentClick}
               >
-                {/* This span prevents warning about providing title prop to child of Tooltip */}
-                <span>
-                  <Tooltip title="Copy link to component" placement="bottom">
-                    <IconButton
-                      color="primary"
-                      aria-label="link"
-                      onClick={copyLinkToClipboard}
-                    >
-                      <LinkIcon />
-                    </IconButton>
-                  </Tooltip>
-                </span>
-              </Tooltip>
+                <DriveFileMoveOutlinedIcon />
+              </IconButton>
+            </Tooltip>
 
-              <Tooltip title="Move to another project">
-                <IconButton
-                  color="primary"
-                  aria-label="move"
-                  onClick={onMoveComponentClick}
-                >
-                  <DriveFileMoveOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-
-              <Tooltip title="Delete">
-                <IconButton
-                  color="primary"
-                  aria-label="delete"
-                  onClick={onDeleteComponentClick}
-                >
-                  <DeleteOutlinedIcon />
-                </IconButton>
-              </Tooltip>
-            </Stack>
-          }
-        />
-      );
-    })
-  );
+            <Tooltip title="Delete">
+              <IconButton
+                color="primary"
+                aria-label="delete"
+                onClick={onDeleteComponentClick}
+              >
+                <DeleteOutlinedIcon />
+              </IconButton>
+            </Tooltip>
+          </Stack>
+        }
+      />
+    );
+  });
 };
 
 export default ProjectComponentsList;

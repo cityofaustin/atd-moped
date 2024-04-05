@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, Profiler } from "react";
+import { useState, useRef, useEffect, Profiler, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -138,10 +138,10 @@ export default function MapView({
   });
 
   /* Bundle updates that need to be made any time a component UI element is clicked */
-  const makeClickedComponentUpdates = (clickedComponent) => {
+  const makeClickedComponentUpdates = useCallback((clickedComponent) => {
     setClickedComponent(clickedComponent);
     updateClickedComponentIdInSearchParams(clickedComponent);
-  };
+  }, []);
 
   const {
     onSaveDraftComponent,
@@ -212,19 +212,22 @@ export default function MapView({
   if (error) console.log(error);
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
-  const onClickZoomToComponent = (component) => {
-    const features = getAllComponentFeatures(component);
-    const featureCollection = { type: "FeatureCollection", features };
+  const onClickZoomToComponent = useCallback(
+    (component) => {
+      const features = getAllComponentFeatures(component);
+      const featureCollection = { type: "FeatureCollection", features };
 
-    makeClickedComponentUpdates(component);
+      makeClickedComponentUpdates(component);
 
-    // move the map
-    zoomMapToFeatureCollection(
-      mapRef,
-      featureCollection,
-      fitBoundsOptions.zoomToClickedComponent
-    );
-  };
+      // move the map
+      zoomMapToFeatureCollection(
+        mapRef,
+        featureCollection,
+        fitBoundsOptions.zoomToClickedComponent
+      );
+    },
+    [makeClickedComponentUpdates]
+  );
 
   /* Start creating and clear clicked component and draft edit states to deselect component */
   const onStartCreatingComponent = () => {
@@ -232,6 +235,36 @@ export default function MapView({
     editDispatch({ type: "clear_draft_component" });
     makeClickedComponentUpdates(null);
   };
+
+  const isExpanded = useCallback(
+    (component) =>
+      clickedComponent?.project_component_id === component.project_component_id,
+    [clickedComponent]
+  );
+
+  const onListItemClick = (component) => {
+    setIsClickedComponentRelated(false);
+    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
+    if (isExpanded(component)) {
+      makeClickedComponentUpdates(null);
+      editDispatch({ type: "clear_draft_component" });
+    } else if (isNotCreatingOrEditing) {
+      makeClickedComponentUpdates(component);
+    }
+  };
+
+  const onRelatedListItemClick = (component) => {
+    if (isExpanded(component)) {
+      makeClickedComponentUpdates(null);
+      setIsClickedComponentRelated(false);
+    } else if (isNotCreatingOrEditing) {
+      makeClickedComponentUpdates(component);
+      setIsClickedComponentRelated(true);
+    }
+  };
+
+  const isNotCreatingOrEditing =
+    !createState.isCreatingComponent && !editState.isEditingComponent;
 
   function onRender(
     id,
@@ -293,31 +326,36 @@ export default function MapView({
                 onSaveDraftComponent={onSaveDraftComponent}
                 onSaveEditedComponent={onSaveEditedComponent}
               />
-              <Profiler id="ProjectComponentsList" onRender={onRender}>
-                <ProjectComponentsList
-                  createState={createState}
-                  editState={editState}
-                  editDispatch={editDispatch}
-                  clickedComponent={clickedComponent}
-                  onClickZoomToComponent={onClickZoomToComponent}
-                  onEditFeatures={onEditFeatures}
-                  projectComponents={projectComponents}
-                  setIsDeletingComponent={setIsDeletingComponent}
-                  setIsMovingComponent={setIsMovingComponent}
-                  setIsClickedComponentRelated={setIsClickedComponentRelated}
-                  makeClickedComponentUpdates={makeClickedComponentUpdates}
-                />
-              </Profiler>
-              <RelatedComponentsList
-                createState={createState}
-                editState={editState}
-                shouldShowRelatedProjects={shouldShowRelatedProjects}
-                clickedComponent={clickedComponent}
-                makeClickedComponentUpdates={makeClickedComponentUpdates}
-                onClickZoomToComponent={onClickZoomToComponent}
-                allRelatedComponents={allRelatedComponents}
-                setIsClickedComponentRelated={setIsClickedComponentRelated}
-              />
+              {isNotCreatingOrEditing ? (
+                <>
+                  <Profiler id="ProjectComponentsList" onRender={onRender}>
+                    <ProjectComponentsList
+                      createState={createState}
+                      editState={editState}
+                      editDispatch={editDispatch}
+                      onClickZoomToComponent={onClickZoomToComponent}
+                      onEditFeatures={onEditFeatures}
+                      projectComponents={projectComponents}
+                      setIsDeletingComponent={setIsDeletingComponent}
+                      setIsMovingComponent={setIsMovingComponent}
+                      setIsClickedComponentRelated={
+                        setIsClickedComponentRelated
+                      }
+                      onListItemClick={onListItemClick}
+                      isExpanded={isExpanded}
+                    />
+                  </Profiler>
+                  <RelatedComponentsList
+                    shouldShowRelatedProjects={shouldShowRelatedProjects}
+                    makeClickedComponentUpdates={makeClickedComponentUpdates}
+                    onClickZoomToComponent={onClickZoomToComponent}
+                    allRelatedComponents={allRelatedComponents}
+                    setIsClickedComponentRelated={setIsClickedComponentRelated}
+                    isExpanded={isExpanded}
+                    onRelatedListItemClick={onRelatedListItemClick}
+                  />
+                </>
+              ) : null}
             </List>
           </div>
         </Drawer>

@@ -83,7 +83,7 @@ export default function ComponentListItem({
           </IconButton>
         </ListItemSecondaryAction>
       </ListItemButton>
-      <Collapse in={isExpanded}>
+      <Collapse in={isExpanded} unmountOnExit>
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
