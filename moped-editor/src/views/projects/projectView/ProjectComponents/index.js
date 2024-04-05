@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Profiler } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -233,6 +233,24 @@ export default function MapView({
     makeClickedComponentUpdates(null);
   };
 
+  function onRender(
+    id,
+    phase,
+    actualDuration,
+    baseDuration,
+    startTime,
+    commitTime
+  ) {
+    console.log({
+      id,
+      phase,
+      actualDuration,
+      baseDuration,
+      startTime,
+      commitTime,
+    });
+  }
+
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -275,19 +293,21 @@ export default function MapView({
                 onSaveDraftComponent={onSaveDraftComponent}
                 onSaveEditedComponent={onSaveEditedComponent}
               />
-              <ProjectComponentsList
-                createState={createState}
-                editState={editState}
-                editDispatch={editDispatch}
-                clickedComponent={clickedComponent}
-                onClickZoomToComponent={onClickZoomToComponent}
-                onEditFeatures={onEditFeatures}
-                projectComponents={projectComponents}
-                setIsDeletingComponent={setIsDeletingComponent}
-                setIsMovingComponent={setIsMovingComponent}
-                setIsClickedComponentRelated={setIsClickedComponentRelated}
-                makeClickedComponentUpdates={makeClickedComponentUpdates}
-              />
+              <Profiler id="ProjectComponentsList" onRender={onRender}>
+                <ProjectComponentsList
+                  createState={createState}
+                  editState={editState}
+                  editDispatch={editDispatch}
+                  clickedComponent={clickedComponent}
+                  onClickZoomToComponent={onClickZoomToComponent}
+                  onEditFeatures={onEditFeatures}
+                  projectComponents={projectComponents}
+                  setIsDeletingComponent={setIsDeletingComponent}
+                  setIsMovingComponent={setIsMovingComponent}
+                  setIsClickedComponentRelated={setIsClickedComponentRelated}
+                  makeClickedComponentUpdates={makeClickedComponentUpdates}
+                />
+              </Profiler>
               <RelatedComponentsList
                 createState={createState}
                 editState={editState}
