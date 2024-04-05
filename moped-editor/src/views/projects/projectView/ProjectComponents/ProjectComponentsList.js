@@ -56,6 +56,14 @@ const ProjectComponentsList = ({
     setIsClickedComponentRelated(false);
   };
 
+  const onMoveComponentClick = () => {
+    setIsMovingComponent(true);
+  };
+
+  const onDeleteComponentClick = () => {
+    setIsDeletingComponent(true);
+  };
+
   /* Component link copy button */
   const [copiedUrl, setCopiedUrl] = useState(null);
 
@@ -82,13 +90,15 @@ const ProjectComponentsList = ({
       const lineRepresentation =
         component?.moped_components?.line_representation;
       const isSignal = isSignalComponent(component);
+      const isComponentExpanded = isExpanded(component);
+      const isComponentMapped = getIsComponentMapped(component);
       return (
         <ComponentListItem
           key={component.project_component_id}
           component={component}
-          isExpanded={isExpanded(component)}
-          onZoomClick={() => onZoomClick(component)}
-          onListItemClick={() => onListItemClick(component)}
+          isExpanded={isComponentExpanded}
+          onZoomClick={onZoomClick}
+          onListItemClick={onListItemClick}
           Icon={
             <ComponentIconByLineRepresentation
               lineRepresentation={lineRepresentation}
@@ -131,9 +141,7 @@ const ProjectComponentsList = ({
                     disabled={isSignal}
                   >
                     <EditLocationAltOutlinedIcon
-                      color={
-                        getIsComponentMapped(component) ? undefined : "error"
-                      }
+                      color={isComponentMapped ? undefined : "error"}
                     />
                   </IconButton>
                 </span>
@@ -168,9 +176,7 @@ const ProjectComponentsList = ({
                 <IconButton
                   color="primary"
                   aria-label="move"
-                  onClick={() => {
-                    setIsMovingComponent(true);
-                  }}
+                  onClick={onMoveComponentClick}
                 >
                   <DriveFileMoveOutlinedIcon />
                 </IconButton>
@@ -180,9 +186,7 @@ const ProjectComponentsList = ({
                 <IconButton
                   color="primary"
                   aria-label="delete"
-                  onClick={() => {
-                    setIsDeletingComponent(true);
-                  }}
+                  onClick={onDeleteComponentClick}
                 >
                   <DeleteOutlinedIcon />
                 </IconButton>

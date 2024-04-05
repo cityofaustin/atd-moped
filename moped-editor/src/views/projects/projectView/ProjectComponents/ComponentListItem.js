@@ -5,6 +5,7 @@ import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
@@ -53,10 +54,9 @@ export default function ComponentListItem({
         borderColor: isExpanded ? selectedBorderColor : COLORS.white,
       }}
     >
-      <ListItem
+      <ListItemButton
         dense
-        button
-        onClick={onListItemClick}
+        onClick={() => onListItemClick(component)}
         className={classes.listItem}
         ref={component._ref}
       >
@@ -74,11 +74,15 @@ export default function ComponentListItem({
           }
         />
         <ListItemSecondaryAction>
-          <IconButton color="primary" onClick={onZoomClick} size="large">
+          <IconButton
+            color="primary"
+            onClick={() => onZoomClick(component)}
+            size="large"
+          >
             <ZoomInIcon />
           </IconButton>
         </ListItemSecondaryAction>
-      </ListItem>
+      </ListItemButton>
       <Collapse in={isExpanded}>
         {isExpanded ? (
           <List component="div" disablePadding dense>
