@@ -65,7 +65,7 @@ const ProjectNameEditable = (props) => {
         variables: {
           projectId: props.projectId,
           projectName: projectName,
-          projectNameSecondary: secondaryName,
+          projectNameSecondary: secondaryName.length > 0 ? secondaryName : null,
         },
       })
         .then((res) => {
