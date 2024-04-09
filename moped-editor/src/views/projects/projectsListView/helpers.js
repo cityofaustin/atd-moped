@@ -183,6 +183,12 @@ export const useColumns = ({ hiddenColumns }) => {
         minWidth: COLUMN_WIDTHS.xlarge,
       },
       {
+        headerName: "Secondary name",
+        field: "project_name_secondary",
+        flex: 2,
+        minWidth: COLUMN_WIDTHS.xlarge,
+      },
+      {
         headerName: "Status",
         field: "current_phase",
         flex: 1,

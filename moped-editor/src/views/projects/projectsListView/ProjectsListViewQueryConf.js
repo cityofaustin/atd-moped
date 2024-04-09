@@ -68,12 +68,25 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     project_name: {
       searchable: true,
       sortable: true,
-      link: "project_id",
       label: "Project name",
       defaultHidden: true,
       showInTable: true,
       search: {
         label: "Search by project name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_name_secondary: {
+      searchable: true,
+      sortable: true,
+      label: "Project secondary name",
+      defaultHidden: true,
+      showInTable: true,
+      search: {
+        label: "Search by project secondary name",
         operator: "_ilike",
         quoted: true,
         envelope: "%{VALUE}%",
