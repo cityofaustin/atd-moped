@@ -161,8 +161,8 @@ export const useColumns = ({ hiddenColumns }) => {
         width: COLUMN_WIDTHS.xsmall,
       },
       {
-        headerName: "Name",
-        field: "project_name",
+        headerName: "Full name",
+        field: "project_name_full",
         flex: 2,
         minWidth: COLUMN_WIDTHS.xlarge,
         renderCell: ({ row }) => (
@@ -172,9 +172,15 @@ export const useColumns = ({ hiddenColumns }) => {
             state={{ queryString }}
             sx={{ color: theme.palette.primary.main }}
           >
-            {row.project_name}
+            {row.project_name_full}
           </Link>
         ),
+      },
+      {
+        headerName: "Name",
+        field: "project_name",
+        flex: 2,
+        minWidth: COLUMN_WIDTHS.xlarge,
       },
       {
         headerName: "Status",
