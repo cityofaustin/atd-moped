@@ -18,6 +18,8 @@ const ProjectNameForm = ({
     <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
       <form onSubmit={(e) => handleAcceptClick(e)}>
         <TextField
+          required
+          autoFocus
           variant="standard"
           fullWidth
           id="project_name"
