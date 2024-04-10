@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
+-- Most recent migration: moped-database/migrations/1712697601393_update_project_list_view_w_full_name/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -99,7 +99,9 @@ parent_child_project_map AS (
 
 SELECT
     mp.project_id,
+    mp.project_name_full,
     mp.project_name,
+    mp.project_name_secondary,
     mp.project_description,
     mp.ecapris_subproject_id,
     mp.project_website,
