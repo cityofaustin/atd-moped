@@ -12,3 +12,5 @@ INSERT INTO public.moped_component_tags ("type", name, slug) VALUES
 ('MAP SRTS', '', 'map_srts'),
 ('MAP Transit Enhancement', '', 'map_transit_enhancement'),
 ('MAP Transit Speed and Reliability (CapMetro ILA)', '', 'map_transit_speed_reliability');
+
+UPDATE public.moped_component_tags SET "type" = 'MAP Bikeways' WHERE slug IN ('bikeways_work_plan_2017', 'bikeways_work_plan_2018', 'bikeways_work_plan_2019', 'bikeways_work_plan_2020', 'bikeways_work_plan_2021', 'bikeways_work_plan_2022', 'bikeways_work_plan_2023', 'bikeways_work_plan_2024', 'bikeways_work_plan_future');
