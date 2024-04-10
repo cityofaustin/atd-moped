@@ -30,7 +30,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   },
   search: {
     placeholder:
-      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
+      "Search by ID, full name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -66,7 +66,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       type: "String",
     },
     project_name: {
-      searchable: true,
+      searchable: false,
       sortable: true,
       label: "Project name",
       defaultHidden: true,
@@ -80,7 +80,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       type: "String",
     },
     project_name_secondary: {
-      searchable: true,
+      searchable: false,
       sortable: true,
       label: "Project secondary name",
       defaultHidden: true,
