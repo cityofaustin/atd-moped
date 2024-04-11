@@ -8,7 +8,7 @@ import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 const useStyles = makeStyles((theme) => ({
   editIcons: {
     cursor: "pointer",
-    marginTop: "32px",
+    // marginTop: "32px",
     fontSize: "1.4rem",
   },
   projectNameEditField: {
@@ -171,7 +171,16 @@ const ProjectNameForm = ({
 
       {/* Accept / Cancel icons.
       This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-      <Grid item xs={12} sm={1} sx={{ minWidth: "65px" }}>
+      <Box
+        display="flex"
+        flexDirection="row"
+        justifyContent="flex-end"
+        alignItems="flex-end"
+        item
+        xs={12}
+        sm={1}
+        sx={{ minWidth: "65px" }}
+      >
         <Icon
           className={classes.editIcons}
           onClick={(e) => handleAcceptClick(e)}
@@ -184,7 +193,7 @@ const ProjectNameForm = ({
         >
           close
         </Icon>
-      </Grid>
+      </Box>
 
       {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
