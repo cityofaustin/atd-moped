@@ -138,6 +138,10 @@ const NewProjectView = () => {
         object: {
           // First we need to copy the project details
           ...projectDetails,
+          project_name_secondary:
+            projectDetails.project_name_secondary.length > 0
+              ? projectDetails.project_name_secondary
+              : null,
           added_by: userId,
           // We need to add the potential phase as a default
           moped_proj_phases: {
