@@ -124,9 +124,9 @@ INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, 
 -- Data for Name: moped_proj_personnel; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 200, '2022-11-12 18:11:16.496855+00', NULL, 'Great designer', 1, false);
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 201, '2022-11-12 18:11:45.61511+00', NULL, 'Friend of the show', 2, false);
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (229, 207, '2022-11-15 16:49:03.086392+00', NULL, NULL, 1, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (227, 200, '2022-11-12 18:11:16.496855+00', NULL, 'Great designer', 1, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (227, 201, '2022-11-12 18:11:45.61511+00', NULL, 'Friend of the show', 2, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (229, 207, '2022-11-15 16:49:03.086392+00', NULL, NULL, 1, false);
 
 
 --

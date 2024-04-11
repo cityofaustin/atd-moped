@@ -170,8 +170,8 @@ export const TEAM_QUERY = gql`
       ) {
         notes
         project_personnel_id
-        date_added
-        added_by
+        created_at
+        created_by_user_id
         is_deleted
         moped_user {
           first_name
