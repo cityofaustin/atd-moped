@@ -8,7 +8,6 @@ import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 const useStyles = makeStyles((theme) => ({
   editIcons: {
     cursor: "pointer",
-    // marginTop: "32px",
     fontSize: "1.4rem",
   },
   projectNameEditField: {
