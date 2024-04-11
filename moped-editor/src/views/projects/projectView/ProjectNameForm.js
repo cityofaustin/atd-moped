@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
 import { Grid, Icon, Box, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
