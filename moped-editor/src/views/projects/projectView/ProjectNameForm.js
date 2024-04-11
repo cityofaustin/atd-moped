@@ -29,14 +29,12 @@ const ProjectNameForm = ({
   const classes = useStyles();
 
   // state to hold values for controlled inputs
-  const [projectName, setProjectName] = useState("");
-  const [secondaryName, setSecondaryName] = useState("");
-
-  // update the state variables when the props change
-  useEffect(() => {
-    setProjectName(props.projectData.project_name || "");
-    setSecondaryName(props.projectData.project_name_secondary || "");
-  }, [props.projectData]);
+  const [projectName, setProjectName] = useState(
+    props.projectData.project_name
+  );
+  const [secondaryName, setSecondaryName] = useState(
+    props.projectData.project_name_secondary
+  );
 
   // indicates that the primary title isn't valid via the error state on the input field
   const [primaryTitleError, setPrimaryTitleError] = useState(false);
