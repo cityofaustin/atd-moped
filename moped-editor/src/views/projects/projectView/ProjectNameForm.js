@@ -122,7 +122,7 @@ const ProjectNameForm = ({
             id="project_name"
             label={"Project name"}
             type="text"
-            value={projectName}
+            value={projectName || ""}
             error={primaryTitleError}
             placeholder={
               primaryTitleError ? "Title cannot be blank" : "Enter project name"
@@ -151,7 +151,7 @@ const ProjectNameForm = ({
             id="secondary_name"
             label={"Secondary name"}
             type="text"
-            value={secondaryName}
+            value={secondaryName || ""}
             placeholder={"Secondary name"}
             multiline={false}
             rows={1}
