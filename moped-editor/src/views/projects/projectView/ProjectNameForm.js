@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Grid, Icon, Box, TextField } from "@mui/material";
+import { Grid, Icon, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
