@@ -142,7 +142,6 @@ const useStyles = makeStyles((theme) => ({
  */
 const useChipStyles = makeStyles((theme) => ({
   root: {
-    marginLeft: "1.5rem",
     fontWeight: "500",
     fontSize: "16px",
     borderRadius: "2rem",
@@ -161,9 +160,7 @@ const useChipStyles = makeStyles((theme) => ({
     backgroundColor: ({ phaseKey }) =>
       getStyle(theme, phaseKey ?? "").background,
   },
-  leftMargin: {
-    marginLeft: "1rem",
-  },
+  leftMargin: {},
 }));
 
 /**

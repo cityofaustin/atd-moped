@@ -69,6 +69,7 @@ const NewProjectView = () => {
   const [projectDetails, setProjectDetails] = useState({
     project_description: "",
     project_name: "",
+    project_name_secondary: "",
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
