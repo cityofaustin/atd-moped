@@ -173,12 +173,11 @@ const ProjectNameForm = ({
       <Box
         display="flex"
         flexDirection="row"
-        justifyContent="flex-end"
+        justifyContent="flex-begin"
         alignItems="flex-end"
         item
         xs={12}
         sm={1}
-        sx={{ minWidth: "65px" }}
       >
         <Icon
           className={classes.editIcons}
