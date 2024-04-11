@@ -120,7 +120,7 @@ const ProjectNameForm = ({
             variant="standard"
             fullWidth
             id="project_name"
-            label={"Project Name"}
+            label={"Project name"}
             type="text"
             value={projectName}
             error={primaryTitleError}
@@ -149,10 +149,10 @@ const ProjectNameForm = ({
             variant="standard"
             fullWidth
             id="secondary_name"
-            label={"Secondary Name"}
+            label={"Secondary name"}
             type="text"
             value={secondaryName}
-            placeholder={"Secondary Name"}
+            placeholder={"Secondary name"}
             multiline={false}
             rows={1}
             onChange={handleSecondaryNameChange}
