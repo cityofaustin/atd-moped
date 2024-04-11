@@ -110,9 +110,9 @@ const ProjectNameForm = ({
   };
 
   return (
-    <Grid container>
+    <Grid container spacing={4}>
       {/* Primary project name field */}
-      <Grid item xs={12} sm={6} sx={{ paddingRight: "30px" }}>
+      <Grid item xs={12} sm={6}>
         <form onSubmit={(e) => handleAcceptClick(e)}>
           <TextField
             required
@@ -143,7 +143,7 @@ const ProjectNameForm = ({
       </Grid>
 
       {/* Secondary project name field */}
-      <Grid item xs={12} sm={3} sx={{ paddingRight: "25px" }}>
+      <Grid item xs={12} sm={3}>
         <form onSubmit={(e) => handleAcceptClick(e)}>
           <TextField
             variant="standard"
@@ -170,14 +170,15 @@ const ProjectNameForm = ({
 
       {/* Accept / Cancel icons.
       This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-      <Box
-        display="flex"
-        flexDirection="row"
-        justifyContent="flex-begin"
-        alignItems="flex-end"
+      <Grid
         item
+        container
+        direction="row"
+        justifyContent="flex-end"
+        alignItems="flex-end"
         xs={12}
         sm={1}
+        sx={{ minWidth: "77px" }}
       >
         <Icon
           className={classes.editIcons}
@@ -191,7 +192,7 @@ const ProjectNameForm = ({
         >
           close
         </Icon>
-      </Box>
+      </Grid>
 
       {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
