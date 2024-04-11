@@ -5191,8 +5191,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5205,6 +5203,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5220,6 +5220,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5247,8 +5249,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5261,6 +5261,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5276,6 +5278,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5303,8 +5307,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5317,6 +5319,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5332,6 +5336,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
