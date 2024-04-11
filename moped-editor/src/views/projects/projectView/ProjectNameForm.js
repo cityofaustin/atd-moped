@@ -1,15 +1,33 @@
 import React, { useState, useEffect } from "react";
+import makeStyles from "@mui/styles/makeStyles";
 import { Grid, Icon, Box, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 
+const useStyles = makeStyles((theme) => ({
+  editIcons: {
+    cursor: "pointer",
+    marginTop: "32px",
+    fontSize: "1.4rem",
+  },
+  projectNameEditField: {
+    "font-size": "1.4rem",
+    "font-weight": "bold",
+  },
+  projectSecondaryNameEditField: {
+    "font-size": "1.4rem",
+    "font-weight": "bold",
+  },
+}));
+
 const ProjectNameForm = ({
-  classes,
   setSnackbarState,
   DEFAULT_SNACKBAR_STATE,
   props,
 }) => {
+  const classes = useStyles();
+
   // state to hold values for controlled inputs
   const [projectName, setProjectName] = useState("");
   const [secondaryName, setSecondaryName] = useState("");

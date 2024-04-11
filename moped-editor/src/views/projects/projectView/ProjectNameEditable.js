@@ -1,29 +1,10 @@
 import React, { useState } from "react";
-import makeStyles from "@mui/styles/makeStyles";
 import { Snackbar, Alert } from "@mui/material";
 
 import ProjectNameForm from "./ProjectNameForm";
 import ProjectName from "./ProjectName";
 
-const useStyles = makeStyles((theme) => ({
-  editIcons: {
-    cursor: "pointer",
-    marginTop: "32px",
-    fontSize: "1.4rem",
-  },
-  projectNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-  projectSecondaryNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-}));
-
 const ProjectNameEditable = (props) => {
-  const classes = useStyles();
-
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
     message: null,
@@ -42,7 +23,6 @@ const ProjectNameEditable = (props) => {
     <>
       {props.isEditing ? (
         <ProjectNameForm
-          classes={classes}
           setSnackbarState={setSnackbarState}
           DEFAULT_SNACKBAR_STATE={DEFAULT_SNACKBAR_STATE}
           props={props}
