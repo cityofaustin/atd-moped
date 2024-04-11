@@ -196,13 +196,11 @@ const ProjectNameForm = ({
 
       {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
-      <Grid item xs={12} md={2}>
-        <Box sx={{ display: "inline", position: "relative", top: "1rem" }}>
-          <ProjectStatusBadge
-            phaseKey={props.currentPhase?.phase_key}
-            phaseName={props.currentPhase?.phase_name}
-          />
-        </Box>
+      <Grid item xs={12} md={2} container alignItems="flex-end">
+        <ProjectStatusBadge
+          phaseKey={props.currentPhase?.phase_key}
+          phaseName={props.currentPhase?.phase_name}
+        />
       </Grid>
     </Grid>
   );
