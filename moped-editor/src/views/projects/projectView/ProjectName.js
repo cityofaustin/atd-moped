@@ -36,7 +36,9 @@ const ProjectName = ({
           </Box>
         ) : null}
 
-        <Box sx={{ display: "inline", paddingLeft: "10px" }}>
+        <Box
+          sx={{ display: "inline", paddingLeft: "10px", paddingRight: "10px" }}
+        >
           <Typography
             color="textSecondary"
             variant="h2"
