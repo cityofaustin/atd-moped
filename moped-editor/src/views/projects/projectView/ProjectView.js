@@ -55,7 +55,7 @@ import {
 } from "../../../queries/project";
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ProjectNameComplex from "./ProjectNameComplex";
+import ProjectNameEditable from "./ProjectNameEditable";
 
 import { getSessionDatabaseData } from "../../../auth/user";
 
@@ -454,7 +454,7 @@ const ProjectView = () => {
                             display="flex"
                             flexDirection="row"
                           >
-                            <ProjectNameComplex
+                            <ProjectNameEditable
                               projectData={data.moped_project[0]}
                               projectId={projectId}
                               isEditing={isEditing}
