@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Grid, Icon, Box, TextField } from "@mui/material";
+import { Grid, Icon, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
@@ -122,7 +122,7 @@ const ProjectNameForm = ({
             id="project_name"
             label={"Project name"}
             type="text"
-            value={projectName}
+            value={projectName || ""}
             error={primaryTitleError}
             placeholder={
               primaryTitleError ? "Title cannot be blank" : "Enter project name"
@@ -151,7 +151,7 @@ const ProjectNameForm = ({
             id="secondary_name"
             label={"Secondary name"}
             type="text"
-            value={secondaryName}
+            value={secondaryName || ""}
             placeholder={"Secondary name"}
             multiline={false}
             rows={1}
@@ -196,13 +196,11 @@ const ProjectNameForm = ({
 
       {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
-      <Grid item xs={12} md={2}>
-        <Box sx={{ display: "inline", position: "relative", top: "1rem" }}>
-          <ProjectStatusBadge
-            phaseKey={props.currentPhase?.phase_key}
-            phaseName={props.currentPhase?.phase_name}
-          />
-        </Box>
+      <Grid item xs={12} md={2} container alignItems="flex-end">
+        <ProjectStatusBadge
+          phaseKey={props.currentPhase?.phase_key}
+          phaseName={props.currentPhase?.phase_name}
+        />
       </Grid>
     </Grid>
   );
