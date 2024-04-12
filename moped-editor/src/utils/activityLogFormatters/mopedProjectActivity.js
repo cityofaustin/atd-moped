@@ -44,6 +44,8 @@ export const formatProjectActivity = (change, lookupList) => {
     }
   });
 
+  // the only way to have more than one change in an update on the project table,
+  // is if the primary and secondary names have both been updated
   const updatedFullName = changes.length > 1;
 
   // the field that was changed in the activity
@@ -138,6 +140,7 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
+    // if both the project name and secondary name fields were updated
     if (updatedFullName) {
       return {
         changeIcon,
@@ -154,6 +157,8 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
+    // if only the name field was updated, the project name full field is still changed
+    // but this was due to the name being updated
     if (changedField === "project_name_full") {
       return {
         changeIcon,
