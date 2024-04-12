@@ -160,7 +160,9 @@ const useChipStyles = makeStyles((theme) => ({
     backgroundColor: ({ phaseKey }) =>
       getStyle(theme, phaseKey ?? "").background,
   },
-  leftMargin: {},
+  leftMargin: {
+    marginLeft: "1rem",
+  },
 }));
 
 /**
