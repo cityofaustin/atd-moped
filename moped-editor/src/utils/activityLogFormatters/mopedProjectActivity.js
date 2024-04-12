@@ -143,11 +143,27 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: "Changed project name to ",
+            text: "Changed full project name to ",
             style: null,
           },
           {
             text: changeData.new["project_name_full"],
+            style: "boldText",
+          },
+        ],
+      };
+    }
+
+    if (changedField === "project_name_full") {
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Changed project name to ",
+            style: null,
+          },
+          {
+            text: changeData.new["project_name"],
             style: "boldText",
           },
         ],
