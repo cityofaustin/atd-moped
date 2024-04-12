@@ -262,7 +262,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "project_note",
+      name: "project_status_update",
       label: "Status update",
       placeholder: "Status update",
       type: "string",
