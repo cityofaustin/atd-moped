@@ -37,9 +37,37 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
 export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   fields: [
     {
+      name: "project_name_full",
+      label: "Full name",
+      placeholder: "Enter full project name",
+      type: "string",
+      defaultOperator: "string_contains_case_insensitive",
+      operators: [
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
       name: "project_name",
       label: "Name",
       placeholder: "Enter project name",
+      type: "string",
+      defaultOperator: "string_contains_case_insensitive",
+      operators: [
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
+      name: "project_name_secondary",
+      label: "Secondary name",
+      placeholder: "Enter secondary project name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
       operators: [
