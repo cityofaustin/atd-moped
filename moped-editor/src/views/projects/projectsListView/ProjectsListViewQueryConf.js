@@ -30,7 +30,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   },
   search: {
     placeholder:
-      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
+      "Search by ID, full name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -50,15 +50,43 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
       type: "Int",
     },
-    project_name: {
+    project_name_full: {
       searchable: true,
       sortable: true,
       link: "project_id",
-      label: "Project name",
+      label: "Full name",
       defaultHidden: false,
       showInTable: true,
       search: {
+        label: "Search by full name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_name: {
+      searchable: false,
+      sortable: true,
+      label: "Project name",
+      defaultHidden: true,
+      showInTable: true,
+      search: {
         label: "Search by project name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_name_secondary: {
+      searchable: false,
+      sortable: true,
+      label: "Project secondary name",
+      defaultHidden: true,
+      showInTable: true,
+      search: {
+        label: "Search by project secondary name",
         operator: "_ilike",
         quoted: true,
         envelope: "%{VALUE}%",

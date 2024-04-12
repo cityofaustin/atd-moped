@@ -274,6 +274,7 @@ const ProjectsListViewTable = () => {
                 pageSizeOptions={
                   PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
                 }
+                sortingMode="server"
               />
             )}
           </Box>
