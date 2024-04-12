@@ -73,6 +73,9 @@ export const ProjectActivityLogTableMaps = {
       },
       project_name_secondary: {
         label: "secondary project name"
+      },
+      project_name_full: {
+        label: "full project name"
       }
     },
   },
