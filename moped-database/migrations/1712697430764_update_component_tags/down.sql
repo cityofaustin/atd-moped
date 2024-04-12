@@ -1,0 +1,3 @@
+DELETE FROM moped_component_tags WHERE slug IN ('map_ped_crossing_2025', 'map_ped_crossing_future', 'map_vision_zero_major_safety', 'map_vision_zero_ped_safety', 'map_vision_zero_rapid_response_small_scale', 'map_vision_zero_speed_management', 'map_vision_zero_street_lighting', 'map_vision_zero_systemic_safety', 'map_vision_zero_systemic_safety_curves', 'map_signals', 'map_srts', 'map_transit_enhancement', 'map_transit_speed_reliability');
+
+UPDATE public.moped_component_tags SET "type" = 'Bikeways - Work Plan' WHERE slug IN ('bikeways_work_plan_2017', 'bikeways_work_plan_2018', 'bikeways_work_plan_2019', 'bikeways_work_plan_2020', 'bikeways_work_plan_2021', 'bikeways_work_plan_2022', 'bikeways_work_plan_2023', 'bikeways_work_plan_2024', 'bikeways_work_plan_future');
