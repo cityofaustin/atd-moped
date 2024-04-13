@@ -133,11 +133,11 @@ INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, creat
 -- Data for Name: moped_proj_personnel_roles; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (1, 200, 8, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (2, 201, 5, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (3, 201, 9, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (9, 207, 8, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (10, 207, 15, false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (1, 200, 8, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id,created_at,  is_deleted) VALUES (2, 201, 5, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (3, 201, 9, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (9, 207, 8, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (10, 207, 15, '2022-11-12 18:11:16.496855+00', false);
 
 
 --
