@@ -143,8 +143,8 @@ export const FiltersCommonOperators = {
   date_is_null: {
     operator: "_is_null",
     label: "is blank",
-    description: "The date is blank.",
-    envelope: null,
+    description: "The date is null.",
+    envelope: "true",
     type: "date",
   },
   string_equals_case_insensitive: {
