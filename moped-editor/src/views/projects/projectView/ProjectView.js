@@ -56,7 +56,6 @@ import {
 import ProjectActivityLog from "./ProjectActivityLog";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import ProjectNameEditable from "./ProjectNameEditable";
-import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import { getSessionDatabaseData } from "../../../auth/user";
 
@@ -200,7 +199,7 @@ const ProjectView = () => {
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-  const menuOpen = anchorElement ?? false;
+  const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
 
@@ -456,19 +455,13 @@ const ProjectView = () => {
                             flexDirection="row"
                           >
                             <ProjectNameEditable
-                              projectName={data.moped_project[0].project_name}
+                              projectData={data.moped_project[0]}
                               projectId={projectId}
-                              editable={true}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
-                              updatedCallback={handleNameUpdate} // FLH not sure if this is needed
+                              updatedCallback={handleNameUpdate}
+                              currentPhase={currentPhase}
                             />
-                            <Box>
-                              <ProjectStatusBadge
-                                phaseKey={currentPhase?.phase_key}
-                                phaseName={currentPhase?.phase_name}
-                              />
-                            </Box>
                           </Box>
                         </Grid>
                         <Grid item xs={1} md={1}>

@@ -35,7 +35,7 @@ export const makeComponentLabel = ({ component_name, component_subtype }) => {
  * @returns {string}
  */
 export const makeComponentTagLabel = ({ type, name }) => {
-  return `${type} - ${name}`;
+  return name ? `${type} - ${name}` : type;
 };
 
 /**
