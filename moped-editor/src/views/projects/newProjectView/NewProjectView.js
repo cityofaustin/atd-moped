@@ -69,6 +69,7 @@ const NewProjectView = () => {
   const [projectDetails, setProjectDetails] = useState({
     project_description: "",
     project_name: "",
+    project_name_secondary: "",
   });
   const [nameError, setNameError] = useState(false);
   const [descriptionError, setDescriptionError] = useState(false);
@@ -137,6 +138,10 @@ const NewProjectView = () => {
         object: {
           // First we need to copy the project details
           ...projectDetails,
+          project_name_secondary:
+            projectDetails.project_name_secondary.length > 0
+              ? projectDetails.project_name_secondary
+              : null,
           added_by: userId,
           // We need to add the potential phase as a default
           moped_proj_phases: {

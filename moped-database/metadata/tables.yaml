@@ -2343,6 +2343,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2350,6 +2353,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2359,25 +2365,37 @@
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -2388,6 +2406,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -2396,6 +2416,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
 - table:
     name: moped_proj_entities
     schema: public
@@ -4101,19 +4123,20 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
     - role: moped-editor
       permission:
         check: {}
@@ -4121,78 +4144,82 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -4200,19 +4227,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:
@@ -4221,19 +4249,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:
@@ -4260,6 +4289,7 @@
             - project_website
             - knack_project_id
             - public_process_status_id
+            - project_name_secondary
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -5215,8 +5245,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5229,6 +5257,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5244,6 +5274,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5271,8 +5303,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5285,6 +5315,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5300,6 +5332,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5327,8 +5361,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5341,6 +5373,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5356,6 +5390,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update

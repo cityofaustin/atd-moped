@@ -26,6 +26,7 @@ export const SUMMARY_QUERY = gql`
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
       project_name
+      project_name_secondary
       project_description
       ecapris_subproject_id
       knack_project_id
@@ -922,13 +923,14 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
   }
 `;
 
-export const UPDATE_PROJECT_NAME_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
+export const UPDATE_PROJECT_NAMES_QUERY = gql`
+  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName }
+      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
     ) {
       project_name
+      project_name_secondary
     }
   }
 `;

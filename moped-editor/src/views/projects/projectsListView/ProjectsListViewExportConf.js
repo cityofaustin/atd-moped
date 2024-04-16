@@ -15,8 +15,14 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_id: {
     label: "ID",
   },
+  project_name_full: {
+    label: "Full name",
+  },
   project_name: {
     label: "Name",
+  },
+  project_name_secondary: {
+    label: "Secondary name",
   },
   project_description: {
     label: "Project Description",

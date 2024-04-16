@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1707416196011_add_council_districts_to_project_view/up.sql
+-- Most recent migration: moped-database/migrations/1712697601393_update_project_list_view_w_full_name/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
