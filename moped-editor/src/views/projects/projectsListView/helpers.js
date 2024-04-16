@@ -255,11 +255,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Modified",
         description: "Date record was last modified",
         field: "updated_at",
-<<<<<<< HEAD
         valueFormatter: (value) => formatTimeStampTZType(value),
-=======
-        valueFormatter: ({ value }) => formatTimeStampTZType(value),
->>>>>>> main
         flex: 1,
         minWidth: COLUMN_WIDTHS.small,
       },
