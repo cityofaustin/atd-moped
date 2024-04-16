@@ -83,18 +83,17 @@ export const featureSignalsRecordToKnackSignalRecord = (
 export const renderSignalInput = (
   params,
   signalError = false,
-  variant = "standard",
   size = "medium"
 ) => {
   return (
     <TextField
       {...params}
+      variant="standard"
       error={signalError}
       InputLabelProps={{ required: false }}
       label="Signal"
       required
       helperText="Required"
-      variant={variant}
       size={size}
     />
   );
