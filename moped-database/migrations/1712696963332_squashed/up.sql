@@ -32,9 +32,9 @@ COMMENT ON COLUMN moped_proj_personnel_roles.updated_at IS 'Timestamp when the r
 COMMENT ON COLUMN moped_proj_personnel_roles.created_by_user_id IS 'ID of the user who created the record';
 COMMENT ON COLUMN moped_proj_personnel_roles.updated_by_user_id IS 'ID of the user who last updated the record';
 
-CREATE TRIGGER update_moped_proj_personnel_roles_and_project_audit_fields
-BEFORE INSERT OR UPDATE ON moped_proj_personnel_roles
-FOR EACH ROW
-EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
+-- CREATE TRIGGER update_moped_proj_personnel_roles_and_project_audit_fields
+-- BEFORE INSERT OR UPDATE ON moped_proj_personnel_roles
+-- FOR EACH ROW
+-- EXECUTE FUNCTION public.update_self_and_project_updated_audit_fields();
 
-COMMENT ON TRIGGER update_moped_proj_personnel_roles_and_project_audit_fields ON moped_proj_personnel_roles IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_personnel_roles table.';
+-- COMMENT ON TRIGGER update_moped_proj_personnel_roles_and_project_audit_fields ON moped_proj_personnel_roles IS 'Trigger to execute the update_self_and_project_updated_audit_fields function before each update operation on the moped_proj_personnel_roles table.';
