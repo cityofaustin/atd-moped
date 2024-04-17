@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
+import { parseGqlString } from "src/utils/gridTableHelpers";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
@@ -72,11 +73,11 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           value = envelope ? envelope.replace("{VALUE}", value) : value;
 
           // If it is a number or boolean, it does not need quotation marks
-          // Otherwise, add quotation marks for the query to identify as string
+          // Otherwise, parse as string and add quotation marks for the query to identify as string
           if (type === "array") {
             value = `[${value}]`;
           } else if (!["number", "boolean"].includes(type)) {
-            value = `"${value}"`;
+            value = `"${parseGqlString(value)}"`;
           }
         } else {
           // We don't have a value

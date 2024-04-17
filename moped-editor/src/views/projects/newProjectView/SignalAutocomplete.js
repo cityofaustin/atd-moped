@@ -1,6 +1,6 @@
 import React from "react";
 import { CircularProgress } from "@mui/material";
-import { Autocomplete, Alert } from '@mui/material';
+import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   knackSignalRecordToFeatureSignalsRecord,

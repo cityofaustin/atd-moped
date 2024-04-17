@@ -244,7 +244,7 @@ const NavigationSearchInput = ({ input404Class }) => {
         const { operator, quoted, envelope } =
           projectSearchQuery.current.config.columns[column].search;
         const searchValue = getSearchValue(
-          projectSearchQuery.current,
+          projectSearchQuery.current.config,
           column,
           searchTerm
         );

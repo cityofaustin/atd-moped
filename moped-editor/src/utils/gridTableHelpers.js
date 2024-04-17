@@ -7,12 +7,20 @@
  * @param {*} value - The value in question
  * @returns {*} - The value output
  */
-export const getSearchValue = (query, column, value) => {
+
+export const parseGqlString = (value) => {
+  // Remove unrecognized graphQL characters (double-quotes or backslash)
+  value = value.replace(/"|\\/g, "");
+  return value;
+};
+
+export const getSearchValue = (queryConfig, column, value) => {
   // Retrieve the type of field (string, float, int, etc)
-  const type = query.config.columns[column].type.toLowerCase();
+  const type = queryConfig.columns[column].type.toLowerCase();
   // Get the invalidValueDefault in the search config object
   const invalidValueDefault =
-    query.config.columns[column].search?.invalidValueDefault ?? null;
+    queryConfig.columns[column].search?.invalidValueDefault ?? null;
+
   // If the type is number of float, attempt to parse as such
   if (["number", "float", "double"].includes(type)) {
     value = Number.parseFloat(value) || invalidValueDefault;
@@ -20,6 +28,10 @@ export const getSearchValue = (query, column, value) => {
   // If integer, attempt to parse as integer
   if (["int", "integer"].includes(type)) {
     value = Number.parseInt(value) || invalidValueDefault;
+  }
+  // If string, parse as string
+  if (typeof value === "string") {
+    value = parseGqlString(value);
   }
   // Any other value types are pass-through for now
   return value;
