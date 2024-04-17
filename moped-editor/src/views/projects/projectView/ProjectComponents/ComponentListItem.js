@@ -41,6 +41,7 @@ export default function ComponentListItem({
   selectedBorderColor,
   additionalListItemText,
   additionalCollapseListItems,
+  style,
 }) {
   const classes = useStyles();
 
@@ -59,6 +60,7 @@ export default function ComponentListItem({
         onClick={() => onListItemClick(component)}
         className={classes.listItem}
         ref={component._ref}
+        style={style}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <ListItemText
