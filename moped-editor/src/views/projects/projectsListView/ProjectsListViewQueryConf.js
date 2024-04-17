@@ -20,7 +20,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [25, 50, 100], // we are limited to max 100 on the data grid community plan
+    rowsPerPageOptions: [100, 250, 1000],
     defaultOffset: 0,
     defaultLimit: 100,
   },

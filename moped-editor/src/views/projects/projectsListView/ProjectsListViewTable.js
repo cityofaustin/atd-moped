@@ -270,6 +270,7 @@ const ProjectsListViewTable = () => {
                 rows={data.project_list_view}
                 onSortModelChange={handleSortClick}
                 disableColumnFilter
+                pagination
                 paginationMode="server"
                 paginationModel={{
                   page: queryOffset / queryLimit,
