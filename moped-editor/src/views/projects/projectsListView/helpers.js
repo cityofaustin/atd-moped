@@ -163,8 +163,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Full name",
         field: "project_name_full",
-        flex: 2,
-        minWidth: COLUMN_WIDTHS.xlarge,
+        width: COLUMN_WIDTHS.xlarge,
         renderCell: ({ row }) => (
           <Link
             component={RouterLink}
@@ -179,20 +178,17 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Name",
         field: "project_name",
-        flex: 2,
-        minWidth: COLUMN_WIDTHS.xlarge,
+        width: COLUMN_WIDTHS.xlarge,
       },
       {
         headerName: "Secondary name",
         field: "project_name_secondary",
-        flex: 2,
-        minWidth: COLUMN_WIDTHS.xlarge,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Status",
         field: "current_phase",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
         renderCell: ({ row }) => {
           return (
             <ProjectStatusBadge
@@ -206,14 +202,12 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Description",
         field: "project_description",
-        flex: 2,
-        minWidth: COLUMN_WIDTHS.xlarge,
+        width: COLUMN_WIDTHS.xlarge,
       },
       {
         headerName: "Team",
         field: "project_team_members",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.large,
+        width: COLUMN_WIDTHS.large,
         renderCell: ({ row }) =>
           filterProjectTeamMembers(
             row.project_team_members,
@@ -223,27 +217,24 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Lead",
         field: "project_lead",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Sponsor",
         field: "project_sponsor",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Partners",
         field: "project_partners",
-        minWidth: COLUMN_WIDTHS.large,
+        width: COLUMN_WIDTHS.large,
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "project_partners"),
       },
       {
         headerName: "eCapris ID",
         field: "ecapris_subproject_id",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
         renderCell: ({ row }) => (
           <ExternalLink
             text={row.ecapris_subproject_id}
@@ -256,8 +247,7 @@ export const useColumns = ({ hiddenColumns }) => {
         description: "Date record was last modified",
         field: "updated_at",
         valueFormatter: (value) => formatTimeStampTZType(value),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Signal IDs",
@@ -271,8 +261,7 @@ export const useColumns = ({ hiddenColumns }) => {
             return <RenderSignalLink signals={signals} />;
           }
         },
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Task order(s)",
@@ -290,15 +279,13 @@ export const useColumns = ({ hiddenColumns }) => {
             );
           }
         },
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Type",
         field: "type_name",
         renderCell: ({ row }) => renderSplitListDisplayBlock(row, "type_name"),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Funding",
@@ -306,8 +293,7 @@ export const useColumns = ({ hiddenColumns }) => {
         cellStyle: { whiteSpace: "noWrap" },
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "funding_source_name"),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Status update",
@@ -318,83 +304,71 @@ export const useColumns = ({ hiddenColumns }) => {
             parse(String(row.project_status_update))
           );
         },
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.xlarge,
+        width: COLUMN_WIDTHS.xlarge,
       },
       {
         headerName: "Construction start",
         field: "construction_start_date",
         valueFormatter: (value) => value && formatDateType(value),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Completion date",
         field: "completion_end_date",
         valueFormatter: (value) => value && formatDateType(value),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Designer",
         field: "project_designer",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Inspector",
         field: "project_inspector",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Workgroup/Contractors",
         field: "workgroup_contractors",
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "workgroup_contractors"),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Contract numbers",
         field: "contract_numbers",
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "contract_numbers"),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Tags",
         field: "project_tags",
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "project_tags"),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.large,
+        width: COLUMN_WIDTHS.large,
       },
       {
         headerName: "Created by",
         field: "added_by",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Public process status",
         field: "public_process_status",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Interim MPD (Access) ID",
         field: "interim_project_id",
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Components",
         field: "components",
         renderCell: ({ row }) => filterComponentFullNames(row),
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Parent project",
@@ -410,8 +384,7 @@ export const useColumns = ({ hiddenColumns }) => {
           </Link>
         ),
         sortable: COLUMN_CONFIG["parent_project_id"].sortable,
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.medium,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Has subprojects",
@@ -420,8 +393,7 @@ export const useColumns = ({ hiddenColumns }) => {
           const hasChildren = value && value.length > 0;
           return hasChildren && "Yes";
         },
-        flex: 1,
-        minWidth: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Council districts",
