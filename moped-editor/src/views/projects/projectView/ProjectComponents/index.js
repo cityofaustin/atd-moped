@@ -305,7 +305,7 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <List>
+            <List style={{ flex: 1 }}>
               <NewComponentToolbar
                 createState={createState}
                 editState={editState}
