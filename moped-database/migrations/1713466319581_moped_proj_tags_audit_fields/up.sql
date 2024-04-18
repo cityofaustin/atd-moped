@@ -1,3 +1,4 @@
+-- Adds audit columns and trigger to moped_proj_tags
 ALTER TABLE moped_proj_tags
 ADD COLUMN created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
 ADD COLUMN created_by_user_id INT4 NULL,
