@@ -74,12 +74,15 @@ const useClient = (user) =>
     });
   }, [user]);
 
+  LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+  console.log(process.env.REACT_APP_MUIX_LICENSE_KEY)
+
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
-  LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>

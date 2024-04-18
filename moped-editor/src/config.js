@@ -4,7 +4,6 @@ const config = {
     APP_ENVIRONMENT: process.env.REACT_APP_HASURA_ENV,
     APP_HASURA_ENDPOINT: process.env.REACT_APP_HASURA_ENDPOINT,
     APP_API_ENDPOINT: process.env.REACT_APP_API_ENDPOINT,
-    MUIX_LICENSE_KEY: process.env.MUIX_LICENSE_KEY
   },
   cognito: {
     APP_CLIENT_ID: process.env.REACT_APP_AWS_COGNITO_APP_CLIENT_ID,
