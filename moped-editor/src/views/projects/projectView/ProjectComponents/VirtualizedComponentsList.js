@@ -142,20 +142,20 @@ const VirtualizedComponentsList = ({
             itemSize={40}
             itemCount={allComponents.length}
           >
-            {({ style }) =>
-              allComponents.map((component) => {
-                return (
-                  <ListItem
-                    key={component.project_component_id}
-                    style={style}
-                  >{`${component.project_component_id} - ${
-                    component.project_id === parseInt(projectId)
-                      ? "Current project"
-                      : "Related"
-                  }`}</ListItem>
-                );
-              })
-            }
+            {({ index, style }) => {
+              const component = allComponents[index];
+
+              return (
+                <ListItem
+                  key={component.project_component_id}
+                  style={style}
+                >{`${component.project_component_id} - ${
+                  component.project_id === parseInt(projectId)
+                    ? "Current project"
+                    : "Related"
+                }`}</ListItem>
+              );
+            }}
           </List>
         )}
       </AutoSizer>

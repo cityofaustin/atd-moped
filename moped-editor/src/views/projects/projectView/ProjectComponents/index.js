@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
   },
   drawerContainer: {
-    overflow: "auto",
+    overflow: "hidden",
     flex: 1,
   },
   drawerPaper: {
