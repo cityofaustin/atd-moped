@@ -3612,6 +3612,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - project_id
           - tag_id
@@ -3619,6 +3622,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - project_id
           - tag_id
@@ -3627,26 +3633,38 @@
     - role: moped-admin
       permission:
         columns:
+          - is_deleted
           - id
           - project_id
           - tag_id
-          - is_deleted
+          - created_by_user_id
+          - updated_by_user_id
+          - created_at
+          - updated_at
         filter: {}
     - role: moped-editor
       permission:
         columns:
+          - is_deleted
           - id
           - project_id
           - tag_id
-          - is_deleted
+          - created_by_user_id
+          - updated_by_user_id
+          - created_at
+          - updated_at
         filter: {}
     - role: moped-viewer
       permission:
         columns:
+          - created_at
+          - created_by_user_id
           - id
+          - is_deleted
           - project_id
           - tag_id
-          - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3657,6 +3675,8 @@
           - is_deleted
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -3665,6 +3685,8 @@
           - is_deleted
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project_tags
       definition:
