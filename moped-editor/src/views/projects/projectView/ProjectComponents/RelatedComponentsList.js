@@ -3,7 +3,7 @@ import Link from "@mui/material/Link";
 import { ComponentIconByLineRepresentation } from "./utils/form";
 import theme from "src/theme/index";
 
-const RelatedComponentsList = ({
+const RelatedComponentsListItem = ({
   shouldShowRelatedProjects,
   onClickZoomToComponent,
   allRelatedComponents,
@@ -50,4 +50,4 @@ const RelatedComponentsList = ({
   );
 };
 
-export default RelatedComponentsList;
+export default RelatedComponentsListItem;
