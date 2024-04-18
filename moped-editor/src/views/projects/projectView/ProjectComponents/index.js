@@ -31,6 +31,7 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import RelatedComponentsList from "./RelatedComponentsList";
 import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
+import VirtualizedComponentsList from "./VirtualizedComponentsList";
 
 const drawerWidth = 350;
 
@@ -236,7 +237,7 @@ export default function MapView({
     makeClickedComponentUpdates(null);
   };
 
-  const isExpanded = useCallback(
+  const getIsExpanded = useCallback(
     (component) =>
       clickedComponent?.project_component_id === component.project_component_id,
     [clickedComponent]
@@ -245,7 +246,7 @@ export default function MapView({
   const onListItemClick = (component) => {
     setIsClickedComponentRelated(false);
     // Clear clickedComponent and draftEditComponent when we are not selecting for edit
-    if (isExpanded(component)) {
+    if (getIsExpanded(component)) {
       makeClickedComponentUpdates(null);
       editDispatch({ type: "clear_draft_component" });
     } else if (isNotCreatingOrEditing) {
@@ -254,7 +255,7 @@ export default function MapView({
   };
 
   const onRelatedListItemClick = (component) => {
-    if (isExpanded(component)) {
+    if (getIsExpanded(component)) {
       makeClickedComponentUpdates(null);
       setIsClickedComponentRelated(false);
     } else if (isNotCreatingOrEditing) {
@@ -328,8 +329,26 @@ export default function MapView({
               />
             </List>
             {isNotCreatingOrEditing ? (
-              <List>
-                <Profiler id="ProjectComponentsList" onRender={onRender}>
+              <VirtualizedComponentsList
+                projectId={projectId}
+                createState={createState}
+                editState={editState}
+                editDispatch={editDispatch}
+                onClickZoomToComponent={onClickZoomToComponent}
+                onEditFeatures={onEditFeatures}
+                projectComponents={projectComponents}
+                allRelatedComponents={allRelatedComponents}
+                setIsDeletingComponent={setIsDeletingComponent}
+                setIsMovingComponent={setIsMovingComponent}
+                setIsClickedComponentRelated={setIsClickedComponentRelated}
+                onListItemClick={onListItemClick}
+                getIsExpanded={getIsExpanded}
+                shouldShowRelatedProjects={shouldShowRelatedProjects}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
+                onRelatedListItemClick={onRelatedListItemClick}
+              />
+            ) : null}
+            {/* <Profiler id="ProjectComponentsList" onRender={onRender}>
                   <ProjectComponentsList
                     createState={createState}
                     editState={editState}
@@ -341,20 +360,18 @@ export default function MapView({
                     setIsMovingComponent={setIsMovingComponent}
                     setIsClickedComponentRelated={setIsClickedComponentRelated}
                     onListItemClick={onListItemClick}
-                    isExpanded={isExpanded}
+                    getIsExpanded={getIsExpanded}
                   />
-                </Profiler>
-                <RelatedComponentsList
-                  shouldShowRelatedProjects={shouldShowRelatedProjects}
-                  makeClickedComponentUpdates={makeClickedComponentUpdates}
-                  onClickZoomToComponent={onClickZoomToComponent}
-                  allRelatedComponents={allRelatedComponents}
-                  setIsClickedComponentRelated={setIsClickedComponentRelated}
-                  isExpanded={isExpanded}
-                  onRelatedListItemClick={onRelatedListItemClick}
-                />
-              </List>
-            ) : null}
+                </Profiler> */}
+            {/* <RelatedComponentsList
+                 shouldShowRelatedProjects={shouldShowRelatedProjects}
+                 makeClickedComponentUpdates={makeClickedComponentUpdates}
+                 onClickZoomToComponent={onClickZoomToComponent}
+                 allRelatedComponents={allRelatedComponents}
+                 setIsClickedComponentRelated={setIsClickedComponentRelated}
+                 getIsExpanded={getIsExpanded}
+                 onRelatedListItemClick={onRelatedListItemClick}
+                 /> */}
           </div>
         </Drawer>
         <main className={classes.content}>

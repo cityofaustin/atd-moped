@@ -49,7 +49,7 @@ const ProjectComponentsList = ({
   setIsMovingComponent,
   setIsClickedComponentRelated,
   onListItemClick,
-  isExpanded,
+  getIsExpanded,
 }) => {
   useWhatChanged({
     editDispatch,
@@ -59,7 +59,7 @@ const ProjectComponentsList = ({
     setIsDeletingComponent,
     setIsMovingComponent,
     setIsClickedComponentRelated,
-    isExpanded,
+    getIsExpanded,
   });
 
   const onEditAttributes = () =>
@@ -109,7 +109,7 @@ const ProjectComponentsList = ({
         const lineRepresentation =
           component?.moped_components?.line_representation;
         const isSignal = isSignalComponent(component);
-        const isComponentExpanded = isExpanded(component);
+        const isComponentExpanded = getIsExpanded(component);
         const isComponentMapped = getIsComponentMapped(component);
         return (
           <ComponentListItem
