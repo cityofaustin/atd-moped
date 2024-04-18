@@ -21,7 +21,10 @@ import {
   createHttpLink,
 } from "@apollo/client";
 
+import { LicenseInfo } from '@mui/x-license';
+
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
+LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
