@@ -28,8 +28,6 @@ import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
 import NewComponentToolbar from "./NewComponentToolbar";
-import RelatedComponentsList from "./RelatedComponentsList";
-import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
 import VirtualizedComponentsList from "./VirtualizedComponentsList";
 
@@ -349,30 +347,6 @@ export default function MapView({
                 onRelatedListItemClick={onRelatedListItemClick}
               />
             ) : null}
-            {/* <Profiler id="ProjectComponentsList" onRender={onRender}>
-                  <ProjectComponentsList
-                    createState={createState}
-                    editState={editState}
-                    editDispatch={editDispatch}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                    onEditFeatures={onEditFeatures}
-                    projectComponents={projectComponents}
-                    setIsDeletingComponent={setIsDeletingComponent}
-                    setIsMovingComponent={setIsMovingComponent}
-                    setIsClickedComponentRelated={setIsClickedComponentRelated}
-                    onListItemClick={onListItemClick}
-                    getIsExpanded={getIsExpanded}
-                  />
-                </Profiler> */}
-            {/* <RelatedComponentsList
-                 shouldShowRelatedProjects={shouldShowRelatedProjects}
-                 makeClickedComponentUpdates={makeClickedComponentUpdates}
-                 onClickZoomToComponent={onClickZoomToComponent}
-                 allRelatedComponents={allRelatedComponents}
-                 setIsClickedComponentRelated={setIsClickedComponentRelated}
-                 getIsExpanded={getIsExpanded}
-                 onRelatedListItemClick={onRelatedListItemClick}
-                 /> */}
           </div>
         </Drawer>
         <main className={classes.content}>

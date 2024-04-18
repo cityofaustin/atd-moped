@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { FixedSizeList as List } from "react-window";
 import ListItem from "@mui/material/ListItem";
 import AutoSizer from "react-virtualized-auto-sizer";
 import ProjectComponentListItem from "./ProjectComponentsList";
+import RelatedComponentsListItem from "./RelatedComponentsList";
 
 function useWhatChanged(props) {
   // cache the last set of props
@@ -83,7 +84,7 @@ const VirtualizedComponentsList = ({
             className="List"
             height={height}
             width={width}
-            itemSize={60}
+            itemSize={85}
             itemCount={allComponents.length}
           >
             {({ index, style }) => {
@@ -91,25 +92,36 @@ const VirtualizedComponentsList = ({
               const isProjectComponent =
                 component.project_id === parseInt(projectId);
 
-              return isProjectComponent ? (
-                <ProjectComponentListItem
-                  editDispatch={editDispatch}
-                  onClickZoomToComponent={onClickZoomToComponent}
-                  onEditFeatures={onEditFeatures}
-                  component={component}
-                  setIsDeletingComponent={setIsDeletingComponent}
-                  setIsMovingComponent={setIsMovingComponent}
-                  setIsClickedComponentRelated={setIsClickedComponentRelated}
-                  onListItemClick={onListItemClick}
-                  getIsExpanded={getIsExpanded}
-                  style={style}
-                />
-              ) : (
-                <ListItem
-                  key={component.project_component_id}
-                  style={style}
-                >{`${component.project_component_id} - ${"Related"}`}</ListItem>
-              );
+              if (isProjectComponent) {
+                return (
+                  <ProjectComponentListItem
+                    editDispatch={editDispatch}
+                    onClickZoomToComponent={onClickZoomToComponent}
+                    onEditFeatures={onEditFeatures}
+                    component={component}
+                    setIsDeletingComponent={setIsDeletingComponent}
+                    setIsMovingComponent={setIsMovingComponent}
+                    setIsClickedComponentRelated={setIsClickedComponentRelated}
+                    onListItemClick={onListItemClick}
+                    getIsExpanded={getIsExpanded}
+                    style={style}
+                  />
+                );
+              } else if (shouldShowRelatedProjects) {
+                return (
+                  <RelatedComponentsListItem
+                    component={component}
+                    makeClickedComponentUpdates={makeClickedComponentUpdates}
+                    onClickZoomToComponent={onClickZoomToComponent}
+                    setIsClickedComponentRelated={setIsClickedComponentRelated}
+                    getIsExpanded={getIsExpanded}
+                    onRelatedListItemClick={onRelatedListItemClick}
+                    style={style}
+                  />
+                );
+              } else {
+                return null;
+              }
             }}
           </List>
         )}
