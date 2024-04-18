@@ -57,6 +57,7 @@
     "@mui/x-data-grid": "^6.18.7",
     "@mui/x-data-grid-pro": "^7.0.0",
     "@mui/x-date-pickers": "^6.19.0",
+    "@mui/x-license": "^7.2.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/user-event": "^14.5.2",
     "@turf/bbox": "^6.5.0",

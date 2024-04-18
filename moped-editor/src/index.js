@@ -6,6 +6,8 @@ import * as serviceWorker from "./serviceWorker";
 import App from "./App";
 
 import Amplify, { Hub } from "aws-amplify";
+import { LicenseInfo } from '@mui/x-license';
+
 
 import config from "./config";
 
@@ -46,6 +48,8 @@ Amplify.configure({
       : {}),
   },
 });
+
+LicenseInfo.setLicenseKey(config.env.MUIX_LICENSE_KEY);
 
 ReactDOM.render(
   <BrowserRouter>
