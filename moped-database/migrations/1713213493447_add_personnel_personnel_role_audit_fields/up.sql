@@ -62,4 +62,3 @@ CREATE TRIGGER set_moped_proj_personnel_roles_updated_at
 BEFORE INSERT OR UPDATE ON moped_proj_personnel_roles
 FOR EACH ROW
 EXECUTE FUNCTION public.set_updated_at();
-
