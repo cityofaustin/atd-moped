@@ -13,8 +13,9 @@ import { ComponentIconByLineRepresentation } from "./utils/form";
 import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 
-import List from "@mui/material/List";
+import { FixedSizeList as List } from "react-window";
 import ListItem from "@mui/material/ListItem";
+import AutoSizer from "react-virtualized-auto-sizer";
 
 function useWhatChanged(props) {
   // cache the last set of props
@@ -131,17 +132,34 @@ const VirtualizedComponentsList = ({
   }, [copiedUrl, setCopiedUrl]);
 
   return (
-    <List>
-      {allComponents.map((component) => {
-        return (
-          <ListItem>{`${component.project_component_id} - ${
-            component.project_id === parseInt(projectId)
-              ? "Current project"
-              : "Related"
-          }`}</ListItem>
-        );
-      })}
-    </List>
+    <div style={{ height: "100%" }}>
+      <AutoSizer>
+        {({ height, width }) => (
+          <List
+            className="List"
+            height={height}
+            width={width}
+            itemSize={40}
+            itemCount={allComponents.length}
+          >
+            {({ style }) =>
+              allComponents.map((component) => {
+                return (
+                  <ListItem
+                    key={component.project_component_id}
+                    style={style}
+                  >{`${component.project_component_id} - ${
+                    component.project_id === parseInt(projectId)
+                      ? "Current project"
+                      : "Related"
+                  }`}</ListItem>
+                );
+              })
+            }
+          </List>
+        )}
+      </AutoSizer>
+    </div>
   );
 };
 
