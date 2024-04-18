@@ -305,7 +305,7 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <List style={{ flex: 1 }}>
+            <List>
               <NewComponentToolbar
                 createState={createState}
                 editState={editState}
@@ -326,37 +326,35 @@ export default function MapView({
                 onSaveDraftComponent={onSaveDraftComponent}
                 onSaveEditedComponent={onSaveEditedComponent}
               />
-              {isNotCreatingOrEditing ? (
-                <>
-                  <Profiler id="ProjectComponentsList" onRender={onRender}>
-                    <ProjectComponentsList
-                      createState={createState}
-                      editState={editState}
-                      editDispatch={editDispatch}
-                      onClickZoomToComponent={onClickZoomToComponent}
-                      onEditFeatures={onEditFeatures}
-                      projectComponents={projectComponents}
-                      setIsDeletingComponent={setIsDeletingComponent}
-                      setIsMovingComponent={setIsMovingComponent}
-                      setIsClickedComponentRelated={
-                        setIsClickedComponentRelated
-                      }
-                      onListItemClick={onListItemClick}
-                      isExpanded={isExpanded}
-                    />
-                  </Profiler>
-                  <RelatedComponentsList
-                    shouldShowRelatedProjects={shouldShowRelatedProjects}
-                    makeClickedComponentUpdates={makeClickedComponentUpdates}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                    allRelatedComponents={allRelatedComponents}
-                    setIsClickedComponentRelated={setIsClickedComponentRelated}
-                    isExpanded={isExpanded}
-                    onRelatedListItemClick={onRelatedListItemClick}
-                  />
-                </>
-              ) : null}
             </List>
+            {isNotCreatingOrEditing ? (
+              <List>
+                <Profiler id="ProjectComponentsList" onRender={onRender}>
+                  <ProjectComponentsList
+                    createState={createState}
+                    editState={editState}
+                    editDispatch={editDispatch}
+                    onClickZoomToComponent={onClickZoomToComponent}
+                    onEditFeatures={onEditFeatures}
+                    projectComponents={projectComponents}
+                    setIsDeletingComponent={setIsDeletingComponent}
+                    setIsMovingComponent={setIsMovingComponent}
+                    setIsClickedComponentRelated={setIsClickedComponentRelated}
+                    onListItemClick={onListItemClick}
+                    isExpanded={isExpanded}
+                  />
+                </Profiler>
+                <RelatedComponentsList
+                  shouldShowRelatedProjects={shouldShowRelatedProjects}
+                  makeClickedComponentUpdates={makeClickedComponentUpdates}
+                  onClickZoomToComponent={onClickZoomToComponent}
+                  allRelatedComponents={allRelatedComponents}
+                  setIsClickedComponentRelated={setIsClickedComponentRelated}
+                  isExpanded={isExpanded}
+                  onRelatedListItemClick={onRelatedListItemClick}
+                />
+              </List>
+            ) : null}
           </div>
         </Drawer>
         <main className={classes.content}>
