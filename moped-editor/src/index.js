@@ -50,6 +50,7 @@ Amplify.configure({
 });
 
 LicenseInfo.setLicenseKey(process.env.MUIX_LICENSE_KEY);
+console.log(process.env.MUIX_LICENSE_KEY)
 
 ReactDOM.render(
   <BrowserRouter>
