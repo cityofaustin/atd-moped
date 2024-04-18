@@ -104,9 +104,11 @@ const ProjectNameForm = ({
     }
   };
 
+  // Update the secondary name state variable when the input changes
   const handleSecondaryNameChange = (e) => {
-    // Update the secondary name state variable when the input changes
-    setSecondaryName(e.target.value);
+    // If user entered an empty string then nullify the value
+    const value = e.target.value.trim() === "" ? null : e.target.value;
+    setSecondaryName(value);
   };
 
   return (
