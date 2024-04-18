@@ -3239,7 +3239,6 @@
         filter: {}
         check: null
         set:
-          created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
@@ -3251,7 +3250,6 @@
         filter: {}
         check: null
         set:
-          created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_personnel
@@ -3375,7 +3373,6 @@
         filter: {}
         check: null
         set:
-          created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
@@ -3386,7 +3383,6 @@
         filter: {}
         check: null
         set:
-          created_by_user_id: x-hasura-user-db-id
           updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_personnel_roles
