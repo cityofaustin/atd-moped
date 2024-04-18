@@ -24,7 +24,6 @@ import {
 import { LicenseInfo } from '@mui/x-license';
 
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
-LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
 
 var pckg = require("../package.json");
 console.info(`🛵 ${pckg.name} ${pckg.version}`);
@@ -80,6 +79,7 @@ const App = () => {
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
+  LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>
