@@ -42,11 +42,11 @@ const defaultFormValues = {
   subphase: null,
   tags: [],
   completionDate: null,
-  locationDescription: "",
-  description: "",
+  locationDescription: null,
+  description: null,
   work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
-  srtsId: "",
+  srtsId: null,
 };
 
 const validationSchema = yup.object().shape({

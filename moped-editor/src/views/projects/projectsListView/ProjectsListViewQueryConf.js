@@ -15,14 +15,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   single_item: "/moped/projects",
   new_item: "/moped/projects/new",
   new_item_label: "New Project",
-  showSearchBar: true,
   showFilters: false,
   showExport: true,
-  showNewItemButton: false,
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [100, 250, 1000],
+    rowsPerPageOptions: [25, 50, 100], // we are limited to max 100 on the data grid community plan
     defaultOffset: 0,
     defaultLimit: 100,
   },
@@ -32,7 +30,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   },
   search: {
     placeholder:
-      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
+      "Search by ID, full name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
     defaultFieldsOperator: "_or",
   },
   columns: {
@@ -52,12 +50,26 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
       type: "Int",
     },
-    project_name: {
+    project_name_full: {
       searchable: true,
       sortable: true,
       link: "project_id",
-      label: "Project name",
+      label: "Full name",
       defaultHidden: false,
+      showInTable: true,
+      search: {
+        label: "Search by full name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_name: {
+      searchable: false,
+      sortable: true,
+      label: "Project name",
+      defaultHidden: true,
       showInTable: true,
       search: {
         label: "Search by project name",
@@ -67,11 +79,26 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
       type: "String",
     },
+    project_name_secondary: {
+      searchable: false,
+      sortable: true,
+      label: "Project secondary name",
+      defaultHidden: true,
+      showInTable: true,
+      search: {
+        label: "Search by project secondary name",
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
     project_description: {
-      hidden: true,
       searchable: true,
       sortable: true,
       label: "Project description",
+      defaultHidden: true,
+      showInTable: true,
       search: {
         label: "Search by project description",
         operator: "_ilike",
@@ -97,7 +124,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     current_phase_key: {
       searchable: false,
       sortable: true,
-      hidden: true,
     },
     project_team_members: {
       searchable: false,
@@ -149,7 +175,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       type: "string",
     },
     ecapris_subproject_id: {
-      hidden: false,
       searchable: true,
       sortable: true,
       label: "eCAPRIS ID",
@@ -164,7 +189,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       },
     },
     updated_at: {
-      hidden: false,
       searchable: false,
       sortable: true,
       defaultHidden: false,
@@ -276,7 +300,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
     },
     parent_project_id: {
       type: "Int",
-      sortable: true,
+      sortable: false,
       defaultHidden: true,
       showInTable: true,
     },
@@ -290,6 +314,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
+    project_and_child_project_council_districts: {
+      type: "array",
+      sortable: false,
+      defaultHidden: true,
+      showInTable: true,
+    },
   },
 };
 
@@ -300,7 +330,7 @@ export const DEFAULT_HIDDEN_COLS = Object.entries(
   PROJECT_LIST_VIEW_QUERY_CONFIG.columns
 ).reduce((acc, [columnName, config]) => {
   if (config.showInTable === true) {
-    acc[columnName] = config.defaultHidden;
+    acc[columnName] = !config.defaultHidden;
   }
   return acc;
 }, {});

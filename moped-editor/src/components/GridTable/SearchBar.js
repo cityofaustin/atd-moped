@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-
 import {
   Button,
   Box,
@@ -17,10 +16,6 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
-import {
-  advancedSearchFilterParamName,
-  advancedSearchIsOrParamName,
-} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 /**
@@ -107,9 +102,9 @@ const SearchBar = ({
   setSearchTerm,
   queryConfig,
   isOr,
-  handleSwitchToSearch,
   loading,
   filtersConfig,
+  resetSimpleSearch,
 }) => {
   const classes = useStyles();
   let [, setSearchParams] = useSearchParams();
@@ -128,7 +123,7 @@ const SearchBar = ({
 
   const handleSearchValueChange = (value) => {
     if (value === "" && searchFieldValue !== "") {
-      handleClearSearchResults();
+      resetSimpleSearch();
     } else {
       setSearchFieldValue(value);
     }
@@ -147,27 +142,11 @@ const SearchBar = ({
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
-    // Clear the advanced search filters
-    handleSwitchToSearch();
-
     // Update state to trigger search and set simple search param
     setSearchTerm(searchFieldValue);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(advancedSearchFilterParamName);
-      prevSearchParams.delete(advancedSearchIsOrParamName);
       prevSearchParams.set(simpleSearchParamName, searchFieldValue);
-      return prevSearchParams;
-    });
-  };
 
-  /**
-   * Clears the search results
-   */
-  const handleClearSearchResults = () => {
-    setSearchTerm("");
-    setSearchFieldValue("");
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.delete(simpleSearchParamName);
       return prevSearchParams;
     });
   };
@@ -182,13 +161,13 @@ const SearchBar = ({
        * On Escape key, clear the search
        */
       case "Escape":
-        handleClearSearchResults();
+        resetSimpleSearch();
         break;
       /**
        * On Enter key, initialize the search
        */
       case "Enter":
-        handleSearchSubmission(null);
+        handleSearchSubmission();
         break;
 
       default:

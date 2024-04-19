@@ -71,6 +71,12 @@ export const ProjectActivityLogTableMaps = {
       is_retired: {
         label: "is retired",
       },
+      project_name_secondary: {
+        label: "secondary project name"
+      },
+      project_name_full: {
+        label: "full project name"
+      }
     },
   },
   moped_proj_entities: {
@@ -151,9 +157,6 @@ export const ProjectActivityLogTableMaps = {
       milestone_name: {
         label: "name",
       },
-      date_added: {
-        label: "date added",
-      },
       milestone_estimate: {
         label: "completion estimate",
       },
@@ -162,6 +165,12 @@ export const ProjectActivityLogTableMaps = {
       },
       is_deleted: {
         label: "is deleted",
+      },
+      created_at: {
+        label: "date added",
+      },
+      created_by_user_id: {
+        label: "added by",
       },
     },
   },
@@ -178,17 +187,11 @@ export const ProjectActivityLogTableMaps = {
       project_note_id: {
         label: "note ID",
       },
-      date_created: {
-        label: "date created",
-      },
       project_note: {
         label: "note",
       },
       is_deleted: {
         label: "is deleted",
-      },
-      added_by_user_id: {
-        label: "added by user ID",
       },
       project_note_type: {
         label: "note type",

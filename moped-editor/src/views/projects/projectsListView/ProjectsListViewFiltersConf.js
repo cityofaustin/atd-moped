@@ -24,6 +24,8 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
   "subprojects_array_is_not_null",
   "string_is_blank",
   "string_is_not_blank",
+  "council_districts_array_is_null",
+  "council_districts_array_is_not_null",
 ];
 
 /**
@@ -35,9 +37,37 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
 export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   fields: [
     {
+      name: "project_name_full",
+      label: "Full name",
+      placeholder: "Enter full project name",
+      type: "string",
+      defaultOperator: "string_contains_case_insensitive",
+      operators: [
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
       name: "project_name",
       label: "Name",
       placeholder: "Enter project name",
+      type: "string",
+      defaultOperator: "string_contains_case_insensitive",
+      operators: [
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+      ],
+    },
+    {
+      name: "project_name_secondary",
+      label: "Secondary name",
+      placeholder: "Enter secondary project name",
       type: "string",
       defaultOperator: "string_contains_case_insensitive",
       operators: [
@@ -232,7 +262,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "project_note",
+      name: "project_status_update",
       label: "Status update",
       placeholder: "Status update",
       type: "string",
@@ -398,7 +428,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "children_project_ids",
-      label: "Has Subprojects",
+      label: "Has subprojects",
       placeholder: "Subproject",
       type: "array",
       operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
@@ -412,6 +442,18 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_contains_case_insensitive",
         "string_is_null",
         "string_is_not_null",
+      ],
+    },
+    {
+      name: "project_and_child_project_council_districts",
+      label: "Council districts",
+      placeholder: "District",
+      type: "array",
+      operators: [
+        "council_districts_array_is_null",
+        "council_districts_array_is_not_null",
+        "council_districts_array_contains",
+        "council_districts_array_is",
       ],
     },
   ],

@@ -168,4 +168,32 @@ export const FiltersCommonOperators = {
     type: "array",
     envelope: "false",
   },
+  council_districts_array_is_null: {
+    operator: "_is_null",
+    label: "is blank",
+    description: "Project has no mapped components in council districts",
+    type: "array",
+    envelope: "true",
+  },
+  council_districts_array_is_not_null: {
+    operator: "_is_null",
+    label: "is not blank",
+    description: "Project has components in council districts",
+    type: "array",
+    envelope: "false",
+  },
+  council_districts_array_contains: {
+    operator: "_contains",
+    label: "contains",
+    description: "Project has components in a given council district",
+    type: "array",
+    envelope: false,
+  },
+  council_districts_array_is: {
+    operator: "_eq",
+    label: "is",
+    description: "Project has components in, and only in, specific council districts",
+    type: "array",
+    envelope: false,
+  },
 };

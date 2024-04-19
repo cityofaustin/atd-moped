@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
-import { Box, Card, CircularProgress, Container, Paper } from "@mui/material";
+import { Box, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import MaterialTable from "@material-table/core";
-import { useTableComponents, useColumns, useTableOptions } from "./helpers.js";
+import { DataGrid } from "@mui/x-data-grid";
+import { useColumns } from "./helpers.js";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import {
@@ -21,8 +21,10 @@ import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
-  CsvDownloadDialog,
+  CsvDownloadingDialog,
+  CsvDownloadOptionsDialog,
 } from "./useProjectListViewQuery/useCsvExport";
+import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
 /**
@@ -30,22 +32,13 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
  */
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: "100%",
-    "& .MuiTableCell-head:nth-of-type(2)": {
-      left: "0px",
-      position: "sticky",
-    },
+    height: "90%",
   },
   paper: {
     width: "100%",
-    marginBottom: theme.spacing(1),
   },
   table: {
     minWidth: 750,
-  },
-  tableCell: {
-    "text-transform": "capitalize",
-    "white-space": "pre-wrap",
   },
   noResults: {
     paddingTop: "25px",
@@ -65,6 +58,12 @@ const ProjectsListViewTable = () => {
   // anchor element for advanced search popper in Search to "attach" to
   // State is handled here so we can listen for changes in a useeffect in this component
   const [advancedSearchAnchor, setAdvancedSearchAnchor] = useState(null);
+
+  // States that handle the project list export button
+  const [downloadOptionsDialogOpen, setDownloadOptionsDialogOpen] =
+    useState(false);
+  const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
+  const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -92,36 +91,35 @@ const ProjectsListViewTable = () => {
 
   const { hiddenColumns, setHiddenColumns } = useHiddenColumnsSettings({
     defaultHiddenColumnSettings: DEFAULT_HIDDEN_COLS,
-    storageKey: "mopedColumnConfig",
+    storageKey: "mopedProjectListColumnConfig",
   });
 
-  const { columns, columnsToReturnInQuery } = useColumns({ hiddenColumns });
+  const { columns, columnsToReturnInListView, visibleColumnsToReturnInExport } =
+    useColumns({
+      hiddenColumns,
+    });
 
-  /**
-   * Keeps localStorage column config in sync with UI interactions
-   * @param {Object} column - the MT column config with the `field` prop - aka the column name
-   * @param {Bool} hidden - the hidden state of the column
-   */
-  const handleColumnChange = useCallback(
-    ({ field }, hidden) => {
-      setHiddenColumns((prevHiddenColumns) => ({
-        ...prevHiddenColumns,
-        [field]: hidden,
-      }));
-    },
-    [setHiddenColumns]
-  );
+  const { query: projectListViewQuery } = useGetProjectListView({
+    queryLimit: queryLimit,
+    queryOffset: queryOffset,
+    columnsToReturn: columnsToReturnInListView,
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListView",
+  });
 
-  const { query: projectListViewQuery, exportQuery } = useGetProjectListView({
-    columnsToReturn: columnsToReturnInQuery,
-    exportColumnsToReturn: Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
-    exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
-    queryLimit,
-    queryOffset,
-    orderByColumn,
-    orderByDirection,
-    searchWhereString,
-    advancedSearchWhereString,
+  const { query: exportQuery } = useGetProjectListView({
+    columnsToReturn:
+      columnDownloadOption === "visible"
+        ? visibleColumnsToReturnInExport
+        : Object.keys(PROJECT_LIST_VIEW_EXPORT_CONFIG),
+    orderByColumn: orderByColumn,
+    orderByDirection: orderByDirection,
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListExport",
   });
 
   const {
@@ -135,68 +133,55 @@ const ProjectsListViewTable = () => {
 
   const data = useCurrentData(projectListViewData);
 
-  const { handleExportButtonClick, dialogOpen } = useCsvExport({
+  const {
+    handleExportButtonClick,
+    handleRadioSelect,
+    handleContinueButtonClick,
+    handleOptionsDialogClose,
+  } = useCsvExport({
     query: exportQuery,
     exportConfig: PROJECT_LIST_VIEW_EXPORT_CONFIG,
     queryTableName: PROJECT_LIST_VIEW_QUERY_CONFIG.table,
-    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-    limit: queryLimit,
-    setQueryLimit,
+    setDownloadOptionsDialogOpen: setDownloadOptionsDialogOpen,
+    columnDownloadOption: columnDownloadOption,
+    setColumnDownloadOption: setColumnDownloadOption,
+    setDownloadingDialogOpen: setDownloadingDialogOpen,
+    visibleColumns: visibleColumnsToReturnInExport,
   });
-
-  const tableOptions = useTableOptions({ queryLimit, data });
-
-  const sortByColumnIndex = columns.findIndex(
-    (column) => column.field === orderByColumn
-  );
 
   /**
    * Handles the header click for sorting asc/desc.
-   * @param {int} columnId
-   * @param {string} newOrderDirection
-   * Note: this is a GridTable function that we are using to override a Material Table sorting function
-   * Their function call uses two variables, columnId and newOrderDirection. We only need the columnId
+   * @param {Array.Object} sortModel, [{field, sort}]
+   * Overrides a DataGrid sorting function
+   * Clicking the sort arrow on a column will toggle between asc, desc, then reset
+   * The Community version of DataGrid only supports sorting by one field, until we upgrade to Pro
+   * we can expect only one item in the array
    **/
-  const handleTableHeaderClick = useCallback(
-    (columnId, newOrderDirection) => {
-      const columnName = columns[columnId]?.field;
-
+  const handleSortClick = useCallback(
+    (sortModel) => {
       // Resets pagination offset to 0 when user clicks a header to display most relevant results
       setQueryOffset(0);
 
-      if (orderByColumn === columnName) {
-        // If the current sortColumn is the same as the new
-        // then invert values and repeat sort on column
-        const direction = orderByDirection === "desc" ? "asc" : "desc";
-        setOrderByDirection(direction);
+      if (sortModel.length > 0) {
+        setOrderByColumn(sortModel[0]?.field);
+        setOrderByDirection(sortModel[0]?.sort);
       } else {
-        // Sort different column in same order as previous column
-        setOrderByColumn(columnName);
+        setOrderByColumn(PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultColumn);
+        setOrderByDirection(
+          PROJECT_LIST_VIEW_QUERY_CONFIG.order.defaultDirection
+        );
       }
     },
-    [
-      setQueryOffset,
-      orderByColumn,
-      orderByDirection,
-      columns,
-      setOrderByDirection,
-      setOrderByColumn,
-    ]
+    [setQueryOffset, setOrderByDirection, setOrderByColumn]
   );
 
-  const tableComponents = useTableComponents({
-    data,
-    loading,
-    queryLimit,
-    queryOffset,
-    setQueryLimit,
-    setQueryOffset,
-    handleTableHeaderClick,
-    sortByColumnIndex,
-    orderByDirection,
-    rowsPerPageOptions:
-      PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions,
-  });
+  const handlePagination = useCallback(
+    (paginationModel) => {
+      setQueryLimit(paginationModel.pageSize);
+      setQueryOffset(paginationModel.pageSize * paginationModel.page);
+    },
+    [setQueryLimit, setQueryOffset]
+  );
 
   /**
    * Store the most recent version of the query in app context so that it
@@ -209,7 +194,14 @@ const ProjectsListViewTable = () => {
   return (
     <ApolloErrorHandler error={error}>
       <Container maxWidth={false} className={classes.root}>
-        <CsvDownloadDialog dialogOpen={dialogOpen} />
+        <CsvDownloadOptionsDialog
+          dialogOpen={downloadOptionsDialogOpen}
+          handleDialogClose={handleOptionsDialogClose}
+          handleContinueButtonClick={handleContinueButtonClick}
+          handleRadioSelect={handleRadioSelect}
+          columnDownloadOption={columnDownloadOption}
+        />
+        <CsvDownloadingDialog downloadingDialogOpen={downloadingDialogOpen} />
         <Search
           parentData={data}
           filters={filters}
@@ -227,22 +219,63 @@ const ProjectsListViewTable = () => {
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
-          <Box mt={3}>
-            {!data && !error ? (
-              <CircularProgress />
-            ) : data && data.project_list_view ? (
-              <Card className={classes.root}>
-                <MaterialTable
-                  onChangeColumnHidden={handleColumnChange}
-                  data={data.project_list_view}
-                  columns={columns}
-                  title=""
-                  options={tableOptions}
-                  components={tableComponents}
-                />
-              </Card>
-            ) : (
-              <span>{error ? error : "Could not fetch data"}</span>
+          <Box
+            sx={{
+              height: "75vh",
+              minHeight: "400px",
+              marginTop: "14px",
+            }}
+          >
+            {data && data.project_list_view && (
+              <DataGrid
+                // per the docs: When the height of a row is set to "auto", the final height will follow exactly
+                // the content size and ignore the density. the docs recommend these styles in order to have density
+                // along with get row height auto
+                sx={{
+                  "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+                    py: "8px",
+                  },
+                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+                    py: "15px",
+                  },
+                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+                    py: "22px",
+                  },
+                }}
+                density="compact"
+                getRowHeight={() => "auto"}
+                columnVisibilityModel={hiddenColumns}
+                onColumnVisibilityModelChange={(newModel) => {
+                  setHiddenColumns(newModel);
+                }}
+                slots={{
+                  toolbar: ProjectListToolbar,
+                }}
+                slotProps={{
+                  columnsPanel: {
+                    // Hiding buttons because when I toggle "show all" its only setting one column to visible
+                    // instead of including every column in the object
+                    disableShowAllButton: true,
+                  },
+                }}
+                columns={columns}
+                getRowId={(row) => row.project_id}
+                disableRowSelectionOnClick
+                rows={data.project_list_view}
+                onSortModelChange={handleSortClick}
+                disableColumnFilter
+                paginationMode="server"
+                paginationModel={{
+                  page: queryOffset / queryLimit,
+                  pageSize: queryLimit,
+                }}
+                onPaginationModelChange={handlePagination}
+                rowCount={data.project_list_view_aggregate?.aggregate.count}
+                pageSizeOptions={
+                  PROJECT_LIST_VIEW_QUERY_CONFIG.pagination.rowsPerPageOptions
+                }
+                sortingMode="server"
+              />
             )}
           </Box>
         </Paper>

@@ -26,6 +26,7 @@ export const SUMMARY_QUERY = gql`
     moped_project(where: { project_id: { _eq: $projectId } }) {
       project_id
       project_name
+      project_name_secondary
       project_description
       ecapris_subproject_id
       knack_project_id
@@ -52,7 +53,7 @@ export const SUMMARY_QUERY = gql`
       }
       moped_proj_notes(
         where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-        order_by: { date_created: desc }
+        order_by: { created_at: desc }
       ) {
         project_note_id
         project_note
@@ -60,7 +61,7 @@ export const SUMMARY_QUERY = gql`
           first_name
           last_name
         }
-        date_created
+        created_at
       }
       moped_project_types(where: { is_deleted: { _eq: false } }) {
         id
@@ -662,8 +663,8 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
       file_size
       file_metadata
       file_description
-      create_date
-      created_by
+      created_at
+      created_by_user_id
       file_url
       moped_user {
         user_id
@@ -922,13 +923,14 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
   }
 `;
 
-export const UPDATE_PROJECT_NAME_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!) {
+export const UPDATE_PROJECT_NAMES_QUERY = gql`
+  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName }
+      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
     ) {
       project_name
+      project_name_secondary
     }
   }
 `;

@@ -192,7 +192,6 @@ const ProjectNotes = (props) => {
           {
             project_note: DOMPurify.sanitize(noteText),
             project_id: projectId,
-            added_by_user_id: Number(userSessionData.user_id),
             project_note_type: newNoteType,
             phase_id: currentPhaseId,
           },
@@ -354,7 +353,7 @@ const ProjectNotes = (props) => {
                      * Only allow the user who wrote the status to edit it
                      */
                     const editableNote =
-                      userSessionData.user_id === item.added_by_user_id;
+                      userSessionData.user_id === item.created_by_user_id;
                     return (
                       <React.Fragment key={item.project_note_id}>
                         <ListItem alignItems="flex-start">
@@ -376,9 +375,9 @@ const ProjectNotes = (props) => {
                                   className={classes.noteDate}
                                 >
                                   {` - ${makeUSExpandedFormDateFromTimeStampTZ(
-                                    item.date_created
+                                    item.created_at
                                   )} ${makeHourAndMinutesFromTimeStampTZ(
-                                    item.date_created
+                                    item.created_at
                                   )}`}
                                 </Typography>
                                 <Typography

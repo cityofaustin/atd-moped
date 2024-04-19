@@ -129,7 +129,9 @@ export default function MapView({
 
   useComponentLinkParams({
     setClickedComponent,
+    setIsClickedComponentRelated,
     projectComponents,
+    allRelatedComponents,
     clickedComponent,
     errorMessageDispatch,
     mapRef,
@@ -177,14 +179,18 @@ export default function MapView({
     if (clickedComponent === null) return;
 
     const clickedComponentId = clickedComponent?.project_component_id;
-    const updatedClickedComponent = projectComponents.find(
-      (component) => component.project_component_id === clickedComponentId
-    );
+    const updatedClickedComponent =
+      projectComponents.find(
+        (component) => component.project_component_id === clickedComponentId
+      ) ||
+      allRelatedComponents.find(
+        (component) => component.project_component_id === clickedComponentId
+      );
 
     setClickedComponent(updatedClickedComponent);
-  }, [clickedComponent, projectComponents]);
+  }, [clickedComponent, projectComponents, allRelatedComponents]);
 
-  // Keep draft component state in sync wiht clicked component (when editing)
+  // Keep draft component state in sync with clicked component (when editing)
   useEffect(() => {
     if (clickedComponent && !editState.isEditingComponent) {
       editDispatch({ type: "set_draft_component", payload: clickedComponent });
@@ -287,7 +293,7 @@ export default function MapView({
                 editState={editState}
                 shouldShowRelatedProjects={shouldShowRelatedProjects}
                 clickedComponent={clickedComponent}
-                setClickedComponent={setClickedComponent}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
                 onClickZoomToComponent={onClickZoomToComponent}
                 allRelatedComponents={allRelatedComponents}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}

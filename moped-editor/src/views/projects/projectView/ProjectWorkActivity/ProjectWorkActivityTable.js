@@ -77,7 +77,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Description",
         field: "description",
-        minWidth: 150,
+        minWidth: 200,
         flex: 1,
         defaultVisible: true,
       },
@@ -206,7 +206,7 @@ const ProjectWorkActivitiesTable = () => {
   });
 
   /**
-   * Initialize which columns should be visibile - must be memoized to safely
+   * Initialize which columns should be visible - must be memoized to safely
    * be used with useHiddenColumnsSettings hook
    */
   const defaultHiddenColumnSettings = useMemo(
