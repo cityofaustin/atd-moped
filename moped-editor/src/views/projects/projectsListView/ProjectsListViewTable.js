@@ -247,7 +247,7 @@ const ProjectsListViewTable = () => {
                 getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
-                  console.log(newModel, Object.keys(newModel));
+                  // when someone toggles "show all columns", datagrid's model is an empty object
                   if (Object.keys(newModel).length > 0) {
                     setHiddenColumns(newModel);
                   } else {
@@ -256,13 +256,6 @@ const ProjectsListViewTable = () => {
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
-                }}
-                slotProps={{
-                  columnsPanel: {
-                    // Hiding buttons because when I toggle "show all" its only setting one column to visible
-                    // instead of including every column in the object
-                    disableShowAllButton: true,
-                  },
                 }}
                 columns={columns}
                 getRowId={(row) => row.project_id}
