@@ -41,7 +41,6 @@ export default function ComponentListItem({
   selectedBorderColor,
   additionalListItemText,
   additionalCollapseListItems,
-  style,
 }) {
   const classes = useStyles();
 
@@ -57,10 +56,9 @@ export default function ComponentListItem({
     >
       <ListItemButton
         dense
-        onClick={() => onListItemClick(component)}
+        onClick={onListItemClick}
         className={classes.listItem}
         ref={component._ref}
-        style={style}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
         <ListItemText
@@ -76,16 +74,12 @@ export default function ComponentListItem({
           }
         />
         <ListItemSecondaryAction>
-          <IconButton
-            color="primary"
-            onClick={() => onZoomClick(component)}
-            size="large"
-          >
+          <IconButton color="primary" onClick={onZoomClick} size="large">
             <ZoomInIcon />
           </IconButton>
         </ListItemSecondaryAction>
       </ListItemButton>
-      <Collapse in={isExpanded} unmountOnExit>
+      <Collapse in={isExpanded}>
         {isExpanded ? (
           <List component="div" disablePadding dense>
             {!isComponentMapped && (
