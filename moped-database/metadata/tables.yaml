@@ -2343,6 +2343,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2350,6 +2353,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2359,25 +2365,37 @@
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -2388,6 +2406,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -2396,6 +2416,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
 - table:
     name: moped_proj_entities
     schema: public
