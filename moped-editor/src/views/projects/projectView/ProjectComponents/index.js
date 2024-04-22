@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, Profiler, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -29,7 +29,7 @@ import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
 import NewComponentToolbar from "./NewComponentToolbar";
 import DraftComponentList from "./DraftComponentList";
-import VirtualizedComponentsList from "./VirtualizedComponentsList";
+import ProjectComponentsList from "./ProjectComponentsList";
 
 const drawerWidth = 350;
 
@@ -266,24 +266,6 @@ export default function MapView({
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
-  function onRender(
-    id,
-    phase,
-    actualDuration,
-    baseDuration,
-    startTime,
-    commitTime
-  ) {
-    console.log({
-      id,
-      phase,
-      actualDuration,
-      baseDuration,
-      startTime,
-      commitTime,
-    });
-  }
-
   return (
     <Dialog fullScreen open={true}>
       <div className={classes.root}>
@@ -328,10 +310,8 @@ export default function MapView({
               />
             </List>
             {isNotCreatingOrEditing ? (
-              <VirtualizedComponentsList
+              <ProjectComponentsList
                 projectId={projectId}
-                createState={createState}
-                editState={editState}
                 editDispatch={editDispatch}
                 onClickZoomToComponent={onClickZoomToComponent}
                 onEditFeatures={onEditFeatures}
@@ -343,7 +323,6 @@ export default function MapView({
                 onListItemClick={onListItemClick}
                 getIsExpanded={getIsExpanded}
                 shouldShowRelatedProjects={shouldShowRelatedProjects}
-                makeClickedComponentUpdates={makeClickedComponentUpdates}
                 onRelatedListItemClick={onRelatedListItemClick}
               />
             ) : null}
