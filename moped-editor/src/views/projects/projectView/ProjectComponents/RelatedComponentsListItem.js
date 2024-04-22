@@ -7,24 +7,33 @@ const RelatedComponentsListItem = ({
   component,
   onClickZoomToComponent,
   setIsClickedComponentRelated,
-  getIsExpanded,
-  onRelatedListItemClick,
-  style,
+  makeClickedComponentUpdates,
+  isExpanded,
+  isNotCreatingOrEditing,
 }) => {
-  const onZoomClick = (component) => {
+  const onZoomClick = () => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(true);
+  };
+
+  const onRelatedListItemClick = () => {
+    if (isExpanded) {
+      makeClickedComponentUpdates(null);
+      setIsClickedComponentRelated(false);
+    } else if (isNotCreatingOrEditing) {
+      makeClickedComponentUpdates(component);
+      setIsClickedComponentRelated(true);
+    }
   };
 
   const lineRepresentation = component?.moped_components?.line_representation;
   return (
     <ComponentListItem
       key={component.project_component_id}
-      style={style}
       component={component}
-      isExpanded={getIsExpanded(component)}
-      onZoomClick={() => onZoomClick(component)}
-      onListItemClick={() => onRelatedListItemClick(component)}
+      isExpanded={isExpanded}
+      onZoomClick={onZoomClick}
+      onListItemClick={onRelatedListItemClick}
       Icon={
         <ComponentIconByLineRepresentation
           lineRepresentation={lineRepresentation}

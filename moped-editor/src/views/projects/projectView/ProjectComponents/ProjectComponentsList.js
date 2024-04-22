@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-import { FixedSizeList as List } from "react-window";
-import AutoSizer from "react-virtualized-auto-sizer";
+import List from "@mui/material/List";
 import ProjectComponentListItem from "./ProjectComponentsListItem";
 import RelatedComponentsListItem from "./RelatedComponentsListItem";
 
@@ -14,10 +13,10 @@ const ProjectComponentsList = ({
   setIsDeletingComponent,
   setIsMovingComponent,
   setIsClickedComponentRelated,
-  onListItemClick,
   getIsExpanded,
   shouldShowRelatedProjects,
-  onRelatedListItemClick,
+  isNotCreatingOrEditing,
+  makeClickedComponentUpdates,
 }) => {
   const allComponents = useMemo(
     () => [...projectComponents, ...allRelatedComponents],
@@ -25,55 +24,42 @@ const ProjectComponentsList = ({
   );
 
   return (
-    <div style={{ height: "100%" }}>
-      <AutoSizer>
-        {({ height, width }) => (
-          <List
-            className="List"
-            height={height}
-            width={width}
-            itemSize={85}
-            itemCount={allComponents.length}
-          >
-            {({ index, style }) => {
-              const component = allComponents[index];
-              const isProjectComponent =
-                component.project_id === parseInt(projectId);
+    <List sx={{ paddingTop: 0 }}>
+      {allComponents.map((component) => {
+        const isProjectComponent = component.project_id === parseInt(projectId);
+        const isExpanded = getIsExpanded(component);
 
-              if (isProjectComponent) {
-                return (
-                  <ProjectComponentListItem
-                    editDispatch={editDispatch}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                    onEditFeatures={onEditFeatures}
-                    component={component}
-                    setIsDeletingComponent={setIsDeletingComponent}
-                    setIsMovingComponent={setIsMovingComponent}
-                    setIsClickedComponentRelated={setIsClickedComponentRelated}
-                    onListItemClick={onListItemClick}
-                    getIsExpanded={getIsExpanded}
-                    style={style}
-                  />
-                );
-              } else if (shouldShowRelatedProjects && !isProjectComponent) {
-                return (
-                  <RelatedComponentsListItem
-                    component={component}
-                    onClickZoomToComponent={onClickZoomToComponent}
-                    setIsClickedComponentRelated={setIsClickedComponentRelated}
-                    getIsExpanded={getIsExpanded}
-                    onRelatedListItemClick={onRelatedListItemClick}
-                    style={style}
-                  />
-                );
-              } else {
-                return null;
-              }
-            }}
-          </List>
-        )}
-      </AutoSizer>
-    </div>
+        if (isProjectComponent) {
+          return (
+            <ProjectComponentListItem
+              editDispatch={editDispatch}
+              onClickZoomToComponent={onClickZoomToComponent}
+              onEditFeatures={onEditFeatures}
+              component={component}
+              setIsDeletingComponent={setIsDeletingComponent}
+              setIsMovingComponent={setIsMovingComponent}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
+              isExpanded={isExpanded}
+              makeClickedComponentUpdates={makeClickedComponentUpdates}
+              isNotCreatingOrEditing={isNotCreatingOrEditing}
+            />
+          );
+        } else if (shouldShowRelatedProjects && !isProjectComponent) {
+          return (
+            <RelatedComponentsListItem
+              component={component}
+              onClickZoomToComponent={onClickZoomToComponent}
+              setIsClickedComponentRelated={setIsClickedComponentRelated}
+              isExpanded={isExpanded}
+              makeClickedComponentUpdates={makeClickedComponentUpdates}
+              isNotCreatingOrEditing={isNotCreatingOrEditing}
+            />
+          );
+        } else {
+          return null;
+        }
+      })}
+    </List>
   );
 };
 

@@ -42,8 +42,7 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
   },
   drawerContainer: {
-    overflow: "hidden",
-    flex: 1,
+    overflow: "auto",
   },
   drawerPaper: {
     width: drawerWidth,
@@ -138,10 +137,10 @@ export default function MapView({
   });
 
   /* Bundle updates that need to be made any time a component UI element is clicked */
-  const makeClickedComponentUpdates = useCallback((clickedComponent) => {
+  const makeClickedComponentUpdates = (clickedComponent) => {
     setClickedComponent(clickedComponent);
     updateClickedComponentIdInSearchParams(clickedComponent);
-  }, []);
+  };
 
   const {
     onSaveDraftComponent,
@@ -242,27 +241,6 @@ export default function MapView({
     [clickedComponent]
   );
 
-  const onListItemClick = (component) => {
-    setIsClickedComponentRelated(false);
-    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
-    if (getIsExpanded(component)) {
-      makeClickedComponentUpdates(null);
-      editDispatch({ type: "clear_draft_component" });
-    } else if (isNotCreatingOrEditing) {
-      makeClickedComponentUpdates(component);
-    }
-  };
-
-  const onRelatedListItemClick = (component) => {
-    if (getIsExpanded(component)) {
-      makeClickedComponentUpdates(null);
-      setIsClickedComponentRelated(false);
-    } else if (isNotCreatingOrEditing) {
-      makeClickedComponentUpdates(component);
-      setIsClickedComponentRelated(true);
-    }
-  };
-
   const isNotCreatingOrEditing =
     !createState.isCreatingComponent && !editState.isEditingComponent;
 
@@ -287,7 +265,7 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <List>
+            <List sx={{ paddingBottom: 0 }}>
               <NewComponentToolbar
                 createState={createState}
                 editState={editState}
@@ -320,10 +298,10 @@ export default function MapView({
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
-                onListItemClick={onListItemClick}
+                makeClickedComponentUpdates={makeClickedComponentUpdates}
                 getIsExpanded={getIsExpanded}
                 shouldShowRelatedProjects={shouldShowRelatedProjects}
-                onRelatedListItemClick={onRelatedListItemClick}
+                isNotCreatingOrEditing={isNotCreatingOrEditing}
               />
             ) : null}
           </div>

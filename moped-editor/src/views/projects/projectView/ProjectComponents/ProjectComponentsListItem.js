@@ -21,9 +21,9 @@ const ProjectComponentListItem = ({
   setIsDeletingComponent,
   setIsMovingComponent,
   setIsClickedComponentRelated,
-  onListItemClick,
-  getIsExpanded,
-  style,
+  isExpanded,
+  makeClickedComponentUpdates,
+  isNotCreatingOrEditing,
 }) => {
   const onEditAttributes = () =>
     editDispatch({ type: "start_attributes_edit" });
@@ -33,7 +33,7 @@ const ProjectComponentListItem = ({
     onEditFeatures();
   };
 
-  const onZoomClick = (component) => {
+  const onZoomClick = () => {
     onClickZoomToComponent(component);
     setIsClickedComponentRelated(false);
   };
@@ -44,6 +44,17 @@ const ProjectComponentListItem = ({
 
   const onDeleteComponentClick = () => {
     setIsDeletingComponent(true);
+  };
+
+  const onListItemClick = () => {
+    setIsClickedComponentRelated(false);
+    // Clear clickedComponent and draftEditComponent when we are not selecting for edit
+    if (isExpanded) {
+      makeClickedComponentUpdates(null);
+      editDispatch({ type: "clear_draft_component" });
+    } else if (isNotCreatingOrEditing) {
+      makeClickedComponentUpdates(component);
+    }
   };
 
   /* Component link copy button */
@@ -68,15 +79,13 @@ const ProjectComponentListItem = ({
 
   const lineRepresentation = component?.moped_components?.line_representation;
   const isSignal = isSignalComponent(component);
-  const isComponentExpanded = getIsExpanded(component);
   const isComponentMapped = getIsComponentMapped(component);
 
   return (
     <ComponentListItem
       key={component.project_component_id}
-      style={style}
       component={component}
-      isExpanded={isComponentExpanded}
+      isExpanded={isExpanded}
       onZoomClick={onZoomClick}
       onListItemClick={onListItemClick}
       Icon={
