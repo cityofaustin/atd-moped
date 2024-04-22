@@ -137,10 +137,10 @@ export default function MapView({
   });
 
   /* Bundle updates that need to be made any time a component UI element is clicked */
-  const makeClickedComponentUpdates = (clickedComponent) => {
+  const makeClickedComponentUpdates = useCallback((clickedComponent) => {
     setClickedComponent(clickedComponent);
     updateClickedComponentIdInSearchParams(clickedComponent);
-  };
+  }, []);
 
   const {
     onSaveDraftComponent,
