@@ -32,6 +32,7 @@ const ProjectComponentsList = ({
         if (isProjectComponent) {
           return (
             <ProjectComponentListItem
+              key={component.project_component_id}
               editDispatch={editDispatch}
               onClickZoomToComponent={onClickZoomToComponent}
               onEditFeatures={onEditFeatures}
@@ -47,6 +48,7 @@ const ProjectComponentsList = ({
         } else if (shouldShowRelatedProjects && !isProjectComponent) {
           return (
             <RelatedComponentsListItem
+              key={component.project_component_id}
               component={component}
               onClickZoomToComponent={onClickZoomToComponent}
               setIsClickedComponentRelated={setIsClickedComponentRelated}
