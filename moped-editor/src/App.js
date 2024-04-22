@@ -75,7 +75,6 @@ const useClient = (user) =>
   }, [user]);
 
   LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
-  // console.log(LicenseInfo.getLicenseKey())
 
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
