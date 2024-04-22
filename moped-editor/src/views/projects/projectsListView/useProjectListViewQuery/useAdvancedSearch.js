@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
+import { addDays, parseISO, format } from "date-fns";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
@@ -83,6 +84,15 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           // We don't have a value
           return null;
         }
+      }
+      // If we are filtering on a date equality we need to create a custom search string to handle the date/timestampz conversion
+      if (type === "date" && gqlOperator === "_eq") {
+        const nextDay = format(
+          addDays(parseISO(value.replaceAll('"', "")), 1),
+          "yyyy-MM-dd"
+        );
+        // Greater/equal to the selected day and less than the next day will return all timestampz for the given date
+        return `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: "${nextDay}" } } ]`;
       }
       return `${field}: { ${gqlOperator}: ${value} }`;
     })
