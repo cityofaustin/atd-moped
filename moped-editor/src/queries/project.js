@@ -924,10 +924,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
 `;
 
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
+  mutation UpdateProjectName(
+    $projectId: Int!
+    $projectName: String!
+    $projectNameSecondary: String
+  ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
+      _set: {
+        project_name: $projectName
+        project_name_secondary: $projectNameSecondary
+      }
     ) {
       project_name
       project_name_secondary
