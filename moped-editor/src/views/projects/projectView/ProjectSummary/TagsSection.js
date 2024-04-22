@@ -19,6 +19,8 @@ import Autocomplete from "@mui/material/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
+import Grid from "@mui/material/Grid";
+
 import {
   TAGS_QUERY,
   DELETE_PROJECT_TAG,
@@ -29,20 +31,17 @@ const useStyles = makeStyles((theme) => ({
   paperTags: {
     padding: "8px",
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
   chipContainer: {
     display: "flex",
     justifyContent: "left",
     flexWrap: "wrap",
     listStyle: "none",
-    padding: "1rem 0",
-    paddingLeft: "16px",
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+    paddingRight: 0,
     margin: 0,
   },
   chipAddContainer: {
-    paddingLeft: "8px",
+    padding: theme.spacing(1),
   },
   tagAutocomplete: {
     minWidth: "250px",
@@ -163,14 +162,17 @@ const TagsSection = ({ projectId }) => {
             isDeleteConfirmationOpen={isDeleteConfirmationOpen}
             setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
           >
-            {data.moped_proj_tags.map((tag) => (
-              <Chip
-                key={tag.id}
-                label={tag.moped_tag.name}
-                onDelete={() => handleDeleteOpen(tag)}
-                className={classes.chip}
-              />
-            ))}
+            <Grid container spacing={1}>
+              {data.moped_proj_tags.map((tag) => (
+                <Grid item spacing={0.5}>
+                  <Chip
+                    key={tag.id}
+                    label={tag.moped_tag.name}
+                    onDelete={() => handleDeleteOpen(tag)}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </DeleteConfirmationModal>
           {addTagMode && (
             <Box
