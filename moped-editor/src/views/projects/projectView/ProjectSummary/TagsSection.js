@@ -18,8 +18,8 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import Autocomplete from "@mui/material/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
-
 import Grid from "@mui/material/Grid";
+import theme from "src/theme";
 
 import {
   TAGS_QUERY,
@@ -164,11 +164,19 @@ const TagsSection = ({ projectId }) => {
           >
             <Grid container spacing={1}>
               {data.moped_proj_tags.map((tag) => (
-                <Grid item spacing={0.5}>
+                <Grid item>
                   <Chip
                     key={tag.id}
                     label={tag.moped_tag.name}
                     onDelete={() => handleDeleteOpen(tag)}
+                    sx={{
+                      height: "auto",
+                      minHeight: theme.spacing(4),
+                      "& .MuiChip-label": {
+                        display: "block",
+                        whiteSpace: "normal",
+                      },
+                    }}
                   />
                 </Grid>
               ))}
