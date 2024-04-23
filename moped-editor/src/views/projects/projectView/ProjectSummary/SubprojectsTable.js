@@ -54,8 +54,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     {
       title: "Full name",
       field: "project_name",
-      width: "35%",
-      validate: (entry) => !!entry.project_name_full,
+      width: "40%",
+      validate: (entry) => (!!entry.project_name),
       render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
@@ -85,7 +85,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       title: "Status",
       field: "status",
       editable: "never",
-      width: "30%",
+      width: "25%",
       customSort: (a, b) =>
         a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
         b.moped_proj_phases?.[0]?.moped_phase?.phase_name
