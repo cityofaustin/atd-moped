@@ -6,6 +6,7 @@ export const SUBPROJECT_QUERY = gql`
       where: { parent_project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       project_name
+      project_name_full
       project_id
       moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
         moped_phase {

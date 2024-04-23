@@ -182,7 +182,7 @@ const DashboardView = () => {
       width: "10%",
     },
     {
-      title: "Name",
+      title: "Full name",
       field: "project.project_name",
       editable: "never",
       cellStyle: { ...typographyStyle },
