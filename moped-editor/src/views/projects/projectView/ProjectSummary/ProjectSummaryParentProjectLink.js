@@ -10,7 +10,6 @@ import { NavLink as RouterLink } from "react-router-dom";
  * @constructor
  */
 const ProjectSummaryParentProjectLink = ({ data, classes }) => {
-  console.log(data.moped_project)
   const parentProjectId = data?.moped_project?.[0]?.parent_project_id;
   const parentProjectName = data?.moped_project[0].moped_project.project_name_full;
 
