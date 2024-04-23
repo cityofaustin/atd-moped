@@ -27,6 +27,7 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_name_secondary
+      project_name_full
       project_description
       ecapris_subproject_id
       knack_project_id
