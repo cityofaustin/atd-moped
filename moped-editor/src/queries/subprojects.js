@@ -27,7 +27,7 @@ export const SUBPROJECT_QUERY = gql`
       }
     ) {
       project_id
-      project_name
+      project_name_full
     }
   }
 `;

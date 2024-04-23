@@ -69,7 +69,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             name="project_name"
             options={data.subprojectOptions}
             getOptionLabel={(option) =>
-              `${option.project_id} - ${option.project_name}`
+              `${option.project_id} - ${option.project_name_full}`
             }
             value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
