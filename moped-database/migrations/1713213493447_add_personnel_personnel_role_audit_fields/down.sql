@@ -1,51 +1,39 @@
+-- Drop trigger to update updated_at on insert or update of moped_proj_personnel_roles
+DROP TRIGGER IF EXISTS set_moped_proj_personnel_roles_updated_at ON moped_proj_personnel_roles;
 
-comment on column "public"."moped_proj_personnel_roles"."updated_by_user_id" is NULL;
+-- Drop trigger to update audit fields on moped_proj_personnel on insert or update of moped_proj_personnel_roles
+DROP TRIGGER IF EXISTS update_moped_proj_personnel_roles_parent_audit_fields ON moped_proj_personnel_roles;
 
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel_roles" add column "updated_by_user_id" integer
---  null;
+-- Drop fk constraints on user audit fields on moped_proj_personnel_roles
+ALTER TABLE moped_proj_personnel_roles
+DROP CONSTRAINT project_personnel_roles_created_by_fkey,
+DROP CONSTRAINT project_personnel_roles_updated_by_fkey;
 
-comment on column "public"."moped_proj_personnel_roles"."created_by_user_id" is NULL;
+-- Drop audit columns on moped_proj_personnel_roles
+ALTER TABLE moped_proj_personnel_roles
+DROP COLUMN created_at,
+DROP COLUMN created_by_user_id,
+DROP COLUMN updated_at,
+DROP COLUMN updated_by_user_id;
 
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel_roles" add column "created_by_user_id" integer
---  null;
+-- Drop triggers to update audit fields on moped_proj_personnel and parent project on insert or update of moped_proj_personnel
+DROP TRIGGER IF EXISTS update_moped_proj_personnel_and_project_audit_fields ON moped_proj_personnel;
 
-comment on column "public"."moped_proj_personnel_roles"."updated_at" is NULL;
+-- Drop fk constraints on user audit fields on moped_proj_personnel
+ALTER TABLE moped_proj_personnel
+DROP CONSTRAINT project_personnel_created_by_fkey,
+DROP CONSTRAINT project_personnel_updated_by_fkey;
 
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel_roles" add column "updated_at" timestamptz
---  not null default now();
+-- Revert and remove audit columns to moped_proj_personnel
+ALTER TABLE moped_proj_personnel
+DROP COLUMN updated_at,
+DROP COLUMN updated_by_user_id;
 
-comment on column "public"."moped_proj_personnel_roles"."created_at" is NULL;
+ALTER TABLE moped_proj_personnel
+RENAME COLUMN created_at TO date_added;
 
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel_roles" add column "created_at" timestamptz
---  not null default now();
+ALTER TABLE moped_proj_personnel
+ALTER COLUMN date_added SET DEFAULT clock_timestamp();
 
-comment on column "public"."moped_proj_personnel"."updated_by_user_id" is NULL;
-
-comment on column "public"."moped_proj_personnel"."updated_at" is NULL;
-
-ALTER TABLE "public"."moped_proj_personnel" ALTER COLUMN "updated_at" TYPE timestamp without time zone;
-
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel" add column "updated_by_user_id" integer
---  null;
-
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
--- alter table "public"."moped_proj_personnel" add column "updated_at" Timestamp
---  not null default now();
-
-alter table "public"."moped_proj_personnel" rename column "created_by_user_id" to "added_by";
-comment on column "public"."moped_proj_personnel"."added_by" is NULL;
-
-alter table "public"."moped_proj_personnel" rename column "created_at" to "date_added";
-comment on column "public"."moped_proj_personnel"."date_added" is NULL;
-alter table "public"."moped_proj_personnel" alter column "date_added" set default clock_timestamp();
+ALTER TABLE moped_proj_personnel
+RENAME COLUMN created_by_user_id TO added_by;
