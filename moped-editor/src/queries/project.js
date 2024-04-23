@@ -38,6 +38,7 @@ export const SUMMARY_QUERY = gql`
       is_deleted
       moped_project {
         project_name
+        project_name_full
       }
       moped_proj_components(
         where: {
