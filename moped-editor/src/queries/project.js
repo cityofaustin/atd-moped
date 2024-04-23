@@ -972,7 +972,7 @@ export const PROJECT_OPTIONS = gql`
       }
     ) {
       project_id
-      project_name
+      project_name_full
     }
   }
 `;
