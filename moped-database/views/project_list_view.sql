@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1712697601393_update_project_list_view_w_full_name/up.sql
+-- Most recent migration: moped-database/migrations/1713896796482_add_full_name_to_list_view/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -136,7 +136,7 @@ SELECT
     999 AS project_development_status_date_fiscal_year,
     'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
     (
-        SELECT moped_project.project_name
+        SELECT moped_project.project_name_full
         FROM moped_project
         WHERE moped_project.project_id = mp.parent_project_id
     ) AS parent_project_name,
