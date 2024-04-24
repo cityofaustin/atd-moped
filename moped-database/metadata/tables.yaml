@@ -1749,6 +1749,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
@@ -1756,6 +1759,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - component_tag_id
           - is_deleted
@@ -1764,26 +1770,38 @@
     - role: moped-admin
       permission:
         columns:
-          - is_deleted
           - component_tag_id
+          - created_at
+          - created_by_user_id
           - id
+          - is_deleted
           - project_component_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
-          - is_deleted
           - component_tag_id
+          - created_at
+          - created_by_user_id
           - id
+          - is_deleted
           - project_component_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
-          - is_deleted
           - component_tag_id
+          - created_at
+          - created_by_user_id
           - id
+          - is_deleted
           - project_component_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -1794,6 +1812,8 @@
           - project_component_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -1802,6 +1822,8 @@
           - project_component_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_proj_component_tags
       definition:
@@ -1861,6 +1883,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -1868,6 +1893,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -1876,26 +1904,38 @@
     - role: moped-admin
       permission:
         columns:
+          - created_at
+          - created_by_user_id
           - id
-          - project_component_id
-          - work_type_id
           - is_deleted
+          - project_component_id
+          - updated_at
+          - updated_by_user_id
+          - work_type_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
+          - created_at
+          - created_by_user_id
           - id
-          - project_component_id
-          - work_type_id
           - is_deleted
+          - project_component_id
+          - updated_at
+          - updated_by_user_id
+          - work_type_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
+          - created_at
+          - created_by_user_id
           - id
-          - project_component_id
-          - work_type_id
           - is_deleted
+          - project_component_id
+          - updated_at
+          - updated_by_user_id
+          - work_type_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -1906,6 +1946,8 @@
           - work_type_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -1914,6 +1956,8 @@
           - work_type_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_proj_component_work_types
       definition:
@@ -2299,6 +2343,9 @@
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2306,6 +2353,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - project_component_id
@@ -2315,25 +2365,37 @@
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-editor
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
     - role: moped-viewer
       permission:
         columns:
           - component_subcomponent_id
+          - created_at
+          - created_by_user_id
           - is_deleted
           - project_component_id
           - subcomponent_id
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -2344,6 +2406,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -2352,6 +2416,8 @@
           - subcomponent_id
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
 - table:
     name: moped_proj_entities
     schema: public
@@ -3542,10 +3608,19 @@
     - name: moped_tag
       using:
         foreign_key_constraint_on: tag_id
+    - name: moped_user_created_by
+      using:
+        foreign_key_constraint_on: created_by_user_id
+    - name: moped_user_updated_by
+      using:
+        foreign_key_constraint_on: updated_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - project_id
           - tag_id
@@ -3553,6 +3628,9 @@
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - project_id
           - tag_id
@@ -3561,26 +3639,38 @@
     - role: moped-admin
       permission:
         columns:
+          - is_deleted
           - id
           - project_id
           - tag_id
-          - is_deleted
+          - created_by_user_id
+          - updated_by_user_id
+          - created_at
+          - updated_at
         filter: {}
     - role: moped-editor
       permission:
         columns:
+          - is_deleted
           - id
           - project_id
           - tag_id
-          - is_deleted
+          - created_by_user_id
+          - updated_by_user_id
+          - created_at
+          - updated_at
         filter: {}
     - role: moped-viewer
       permission:
         columns:
+          - created_at
+          - created_by_user_id
           - id
+          - is_deleted
           - project_id
           - tag_id
-          - is_deleted
+          - updated_at
+          - updated_by_user_id
         filter: {}
   update_permissions:
     - role: moped-admin
@@ -3591,6 +3681,8 @@
           - is_deleted
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -3599,6 +3691,8 @@
           - is_deleted
         filter: {}
         check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project_tags
       definition:
@@ -3624,7 +3718,7 @@
           action: transform
           template: |-
             {
-              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input! ) { insert_moped_activity_log_one(object: $object) { activity_id } }",
               "variables": {
                 "object": {
                   "record_id": {{ $body.event.data.new.id }},
@@ -3635,9 +3729,7 @@
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                },
-                  "updated_at": {{$body.created_at}},
-                  "project_id": {{$body.event.data.new.project_id}}
+                }
             }
                                     }
         method: POST
@@ -4025,19 +4117,20 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
     - role: moped-editor
       permission:
         check: {}
@@ -4045,78 +4138,82 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
           - added_by
+          - date_added
+          - ecapris_subproject_id
           - interim_project_id
+          - is_deleted
+          - knack_project_id
           - parent_project_id
+          - project_description
           - project_id
           - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
           - project_name
+          - project_name_secondary
+          - project_sponsor
           - project_website
-          - date_added
-          - updated_at
-          - is_deleted
           - public_process_status_id
+          - updated_at
         filter: {}
         allow_aggregations: true
   update_permissions:
@@ -4124,19 +4221,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:
@@ -4145,19 +4243,20 @@
       permission:
         columns:
           - added_by
-          - interim_project_id
-          - parent_project_id
-          - project_lead_id
-          - project_sponsor
-          - ecapris_subproject_id
-          - knack_project_id
-          - project_description
-          - project_name
-          - project_website
           - date_added
-          - updated_at
+          - ecapris_subproject_id
+          - interim_project_id
           - is_deleted
+          - knack_project_id
+          - parent_project_id
+          - project_description
+          - project_lead_id
+          - project_name
+          - project_name_secondary
+          - project_sponsor
+          - project_website
           - public_process_status_id
+          - updated_at
         filter: {}
         check: {}
         set:
@@ -4184,6 +4283,7 @@
             - project_website
             - knack_project_id
             - public_process_status_id
+            - project_name_secondary
       retry_conf:
         interval_sec: 10
         num_retries: 0
@@ -4231,15 +4331,18 @@
         foreign_key_constraint_on: project_id
     - name: moped_user
       using:
-        foreign_key_constraint_on: created_by
+        foreign_key_constraint_on: created_by_user_id
   insert_permissions:
     - role: moped-admin
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4249,15 +4352,18 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
     - role: moped-editor
       permission:
         check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4267,15 +4373,15 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
   select_permissions:
     - role: moped-admin
       permission:
         columns:
           - api_response
-          - create_date
-          - created_by
+          - created_at
+          - created_by_user_id
           - file_description
           - file_key
           - file_metadata
@@ -4294,7 +4400,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_file_id
@@ -4305,7 +4411,7 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
     - role: moped-viewer
@@ -4313,7 +4419,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_file_id
@@ -4324,7 +4430,7 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
   update_permissions:
@@ -4333,7 +4439,7 @@
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4343,16 +4449,18 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
           - is_deleted
           - is_scanned
-          - created_by
+          - created_by_user_id
           - file_size
           - file_type
           - project_id
@@ -4362,10 +4470,12 @@
           - file_description
           - file_key
           - file_name
-          - create_date
+          - created_at
           - file_url
         filter: {}
         check: null
+        set:
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_project_files
       definition:
@@ -4387,7 +4497,7 @@
           action: transform
           template: |-
             {
-              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!, $project_id:Int!, $updated_at:timestamptz ) { insert_moped_activity_log_one(object: $object) { activity_id } update_moped_project_by_pk(pk_columns: {project_id: $project_id}, _set: {updated_at: $updated_at}) { updated_at }}",
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input! ) { insert_moped_activity_log_one(object: $object) { activity_id } }",
               "variables": {
                 "object": {
                   "record_id": {{ $body.event.data.new.project_file_id }},
@@ -4398,9 +4508,7 @@
                   "description": [{"newSchema": "true"}],
                   "operation_type": {{ $body.event.op }},
                   "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                },
-                "updated_at": {{$body.created_at}},
-                "project_id": {{$body.event.data.new.project_id}}
+                }
               }
             }
         method: POST
@@ -5131,8 +5239,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5145,6 +5251,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5160,6 +5268,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5187,8 +5297,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5201,6 +5309,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5216,6 +5326,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
@@ -5243,8 +5355,6 @@
           - components
           - construction_start_date
           - contract_numbers
-          - project_council_districts
-          - project_and_child_project_council_districts
           - current_phase
           - current_phase_key
           - current_phase_simple
@@ -5257,6 +5367,8 @@
           - parent_project_id
           - parent_project_name
           - parent_project_url
+          - project_and_child_project_council_districts
+          - project_council_districts
           - project_description
           - project_designer
           - project_development_status
@@ -5272,6 +5384,8 @@
           - project_inspector
           - project_lead
           - project_name
+          - project_name_full
+          - project_name_secondary
           - project_partners
           - project_sponsor
           - project_status_update
