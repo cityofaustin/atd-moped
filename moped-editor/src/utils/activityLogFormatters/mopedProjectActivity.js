@@ -82,19 +82,6 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
-    // if the new field value is null or undefined, its because something was removed
-    if (!lookupList[changeData.new[changedField]]) {
-      return {
-        changeIcon,
-        changeText: [
-          {
-            text: `Removed ${entryMap.fields[changedField]?.label} `,
-            style: null,
-          },
-        ],
-      };
-    }
-    
     // Changing a field, but need to use lookup table to display
     return {
       changeIcon,
@@ -110,17 +97,16 @@ export const formatProjectActivity = (change, lookupList) => {
       ],
     };
   } else {
-    // If the update is an object, first we have to check if the field is null,
-    // as javascript classifies a null value as an object
+    // If the update is an object, first we have to check for a null object
     if (typeof changeData.new[changedField] === "object") {
-      // if the new field is null, its because something was removed
+      // if the new field is null, it is because something was removed
       if (lookupList[changeData.new[changedField]] == null) {
         console.log(changeData.old);
         return {
           changeIcon,
           changeText: [
             {
-              text: `Removed ${entryMap.fields[changedField]?.label} `,
+              text: `Removed ${entryMap.fields[changedField]?.label}`,
               style: null,
             },
             {
