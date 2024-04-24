@@ -97,7 +97,7 @@ export const formatProjectActivity = (change, lookupList) => {
       ],
     };
   } else {
-    // If the update is an object, first we have to check for a null object
+    // If the update is an object, check first for a null object
     if (typeof changeData.new[changedField] === "object") {
       // if the new field is null, it is because something was removed
       if (lookupList[changeData.new[changedField]] == null) {
@@ -106,7 +106,7 @@ export const formatProjectActivity = (change, lookupList) => {
           changeIcon,
           changeText: [
             {
-              text: `Removed ${entryMap.fields[changedField]?.label}`,
+              text: `Removed ${entryMap.fields[changedField]?.label} `,
               style: null,
             },
             {
