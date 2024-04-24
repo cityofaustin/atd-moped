@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
  *  {text: String to display, style: String name of style or null}
  */
 const ProjectActivityEntry = ({ changeIcon, changeText }) => {
-  
   const classes = useStyles();
   return (
     <Box display="flex" p={0}>
