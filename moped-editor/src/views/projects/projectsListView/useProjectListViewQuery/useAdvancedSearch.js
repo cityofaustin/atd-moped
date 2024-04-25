@@ -100,7 +100,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           whereString = `${field}: { ${"_lt"}: ${nextDay} }`;
         } else if (gqlOperator === "_gt") {
           // Greater or equal to the next day will give us all the timestampz that are greater than the selected date
-          whereString = `${field}: { ${"_gte"}: ${nextDay} }`;
+          whereString = `${field}: { ${"_gt"}: ${nextDay} }`;
         }
       }
       return whereString;
