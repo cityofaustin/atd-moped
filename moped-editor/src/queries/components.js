@@ -40,7 +40,7 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       }
     }
     moped_component_tags(
-      order_by: { type: asc }
+      order_by: [{ type: asc }, {name: asc}]
       where: { is_deleted: { _eq: false } }
     ) {
       name
