@@ -27,6 +27,7 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_name_secondary
+      project_name_full
       project_description
       ecapris_subproject_id
       knack_project_id
@@ -38,6 +39,7 @@ export const SUMMARY_QUERY = gql`
       is_deleted
       moped_project {
         project_name
+        project_name_full
       }
       moped_proj_components(
         where: {
@@ -971,7 +973,7 @@ export const PROJECT_OPTIONS = gql`
       }
     ) {
       project_id
-      project_name
+      project_name_full
     }
   }
 `;
