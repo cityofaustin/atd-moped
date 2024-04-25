@@ -407,7 +407,7 @@ const ProjectView = () => {
           title={
             loading
               ? "Project Summary Page"
-              : `${data.moped_project[0].project_name} #${data.moped_project[0].project_id}`
+              : `${data.moped_project[0].project_name_full} #${data.moped_project[0].project_id}`
           }
         >
           <Container maxWidth="xl">
