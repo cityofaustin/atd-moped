@@ -53,7 +53,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     },
     {
       title: "Full name",
-      field: "project_name",
+      field: "project_name_full",
       width: "40%",
       validate: (entry) => (!!entry.project_name),
       render: (entry) => (
