@@ -28,22 +28,12 @@ import {
 import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 
-/**
- * GridTable Style
- */
 const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "90%",
-  },
   paper: {
     width: "100%",
   },
   table: {
     minWidth: 750,
-  },
-  noResults: {
-    paddingTop: "25px",
-    paddingBottom: "16px",
   },
 }));
 
@@ -230,17 +220,15 @@ const ProjectsListViewTable = () => {
             {data && data.project_list_view && (
               <DataGridPro
                 // per the docs: When the height of a row is set to "auto", the final height will follow exactly
-                // the content size and ignore the density. the docs recommend these styles in order to have density
+                // the content size and ignore the density. the docs recommend this style in order to have compact density
                 // along with get row height auto
                 sx={{
                   "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
                     py: "8px",
                   },
-                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
-                    py: "15px",
-                  },
-                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-                    py: "22px",
+                  "&.MuiDataGrid-root": {
+                    "--DataGrid-containerBackground": "#fff",
+                    "--DataGrid-pinnedBackground": "#fff",
                   },
                 }}
                 density="compact"
