@@ -18,7 +18,10 @@ export const formatDateType = (dateString) => {
  * @return {String} Date formatted as MM/DD/YYYY
  */
 export const formatTimeStampTZType = (timeStampTZString) => {
+  console.log(timeStampTZString, "tstamp string");
   const dateObject = new Date(timeStampTZString);
+  console.log(dateObject, "date object");
+  console.log(dateObject.toLocaleDateString("en-US"));
   return dateObject.toLocaleDateString("en-US");
 };
 
