@@ -533,9 +533,9 @@ function start_only() {
   __get_platform;
   START_MODE=$1;
   if [[ "${START_MODE}" = "" ]]; then
-    docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml up -d;
+    docker compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml up -d;
   else
-    docker-compose -f "${START_MODE}" up -d;
+    docker compose -f "${START_MODE}" up -d;
   fi;
 
   echo "Checking the Hasura server is ready...";
@@ -616,7 +616,7 @@ function configure() {
 #
 function stop() {
   __get_platform;
-  docker-compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml down --volumes --remove-orphans;
+  docker compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml down --volumes --remove-orphans;
 }
 
 #
@@ -652,7 +652,7 @@ function prune() {
 # Attaches to the log output of all containers in the cluster
 #
 function follow() {
-  docker-compose logs --follow
+  docker compose logs --follow
 }
 
 #
