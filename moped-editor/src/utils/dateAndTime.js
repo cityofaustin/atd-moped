@@ -1,5 +1,3 @@
-import { parseISO } from "date-fns";
-
 /**
  * Format date from the DB in YYYY-MM-DD format into human-readable locale date
  * in MM/DD/YYYY format
@@ -20,10 +18,7 @@ export const formatDateType = (dateString) => {
  * @return {String} Date formatted as MM/DD/YYYY
  */
 export const formatTimeStampTZType = (timeStampTZString) => {
-  console.log(timeStampTZString, "tstamp string");
-  const dateObject = parseISO(timeStampTZString);
-  console.log(dateObject, "date object");
-  console.log(dateObject.toLocaleDateString("en-US"));
+  const dateObject = new Date(timeStampTZString);
   return dateObject.toLocaleDateString("en-US");
 };
 
