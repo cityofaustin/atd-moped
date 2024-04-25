@@ -87,7 +87,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
       }
       let whereString = `${field}: { ${gqlOperator}: ${value} }`;
       // If we are filtering on a date there are some exceptions we need to handle bc the date/timestampz conversion
-      if (type === "date") {
+      if (type === "date" && !gqlOperator.includes("is_null")) {
         const nextDay = JSON.stringify(
           format(addDays(parseISO(value.replaceAll('"', "")), 1), "yyyy-MM-dd")
         );
