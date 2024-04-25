@@ -55,7 +55,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       title: "Full name",
       field: "project_name_full",
       width: "40%",
-      validate: (entry) => (!!entry.project_name),
+      validate: (entry) => (!!entry.project_name_full),
       render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
