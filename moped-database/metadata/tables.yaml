@@ -4167,6 +4167,7 @@
           - project_id
           - project_lead_id
           - project_name
+          - project_name_full
           - project_name_secondary
           - project_sponsor
           - project_website
@@ -4188,6 +4189,7 @@
           - project_id
           - project_lead_id
           - project_name
+          - project_name_full
           - project_name_secondary
           - project_sponsor
           - project_website
@@ -4209,6 +4211,7 @@
           - project_id
           - project_lead_id
           - project_name
+          - project_name_full
           - project_name_secondary
           - project_sponsor
           - project_website

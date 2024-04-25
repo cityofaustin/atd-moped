@@ -21,7 +21,7 @@ export const useProjectOptions = (data) =>
 
     const options = data.moped_project.map((option) => ({
       value: option.project_id,
-      label: `${option.project_id} - ${option.project_name}`,
+      label: `${option.project_id} - ${option.project_name_full}`,
     }));
 
     return options;

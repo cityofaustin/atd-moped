@@ -128,7 +128,7 @@ const DashboardView = () => {
      * Build data needed in Dashboard Material Table
      */
     selectedData.forEach((project) => {
-      project["project_name"] = project.project.project_name;
+      project["project_name_full"] = project.project.project_name_full;
       project["project_id"] = project.project.project_id;
       project["phase_name"] =
         project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
@@ -182,14 +182,14 @@ const DashboardView = () => {
       width: "10%",
     },
     {
-      title: "Name",
-      field: "project.project_name",
+      title: "Full name",
+      field: "project.project_name_full",
       editable: "never",
       cellStyle: { ...typographyStyle },
       render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
-          value={entry.project_name}
+          value={entry.project_name_full}
         />
       ),
       width: "20%",
