@@ -85,16 +85,24 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           return null;
         }
       }
-      // If we are filtering on a date equality we need to create a custom search string to handle the date/timestampz conversion
-      if (type === "date" && gqlOperator === "_eq") {
-        const nextDay = format(
-          addDays(parseISO(value.replaceAll('"', "")), 1),
-          "yyyy-MM-dd"
+      let whereString = `${field}: { ${gqlOperator}: ${value} }`;
+      // If we are filtering on a date there are some exceptions we need to handle bc the date/timestampz conversion
+      if (type === "date") {
+        const nextDay = JSON.stringify(
+          format(addDays(parseISO(value.replaceAll('"', "")), 1), "yyyy-MM-dd")
         );
-        // Greater/equal to the selected day and less than the next day will return all timestampz for the given date
-        return `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: "${nextDay}" } } ]`;
+        if (gqlOperator === "_eq") {
+          // Greater or equal to the selected day and less than the next day will return all timestampz for the given date
+          whereString = `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: ${nextDay} } } ]`;
+        } else if (gqlOperator === "_lte") {
+          // Less than the next day will give us all the timestamps that are less than or equal to the selected date
+          whereString = `${field}: { ${"_lt"}: ${nextDay} }`;
+        } else if (gqlOperator === "_gt") {
+          // Greater or equal to the next day will give us all the timestamps that are greater than the selected date
+          whereString = `${field}: { ${"_gte"}: ${nextDay} }`;
+        }
       }
-      return `${field}: { ${gqlOperator}: ${value} }`;
+      return whereString;
     })
     .filter((value) => value !== null);
 
