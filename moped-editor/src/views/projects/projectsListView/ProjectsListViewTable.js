@@ -26,6 +26,7 @@ import {
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
+import ProjectsListViewMap from "./ProjectsListViewMap";
 
 /**
  * GridTable Style
@@ -64,6 +65,9 @@ const ProjectsListViewTable = () => {
     useState(false);
   const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
   const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
+
+  /* Toggle between list and map view */
+  const [showMapView, setShowMapView] = useState(false);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -226,7 +230,7 @@ const ProjectsListViewTable = () => {
               marginTop: "14px",
             }}
           >
-            {data && data.project_list_view && (
+            {!showMapView && data && data.project_list_view && (
               <DataGrid
                 // per the docs: When the height of a row is set to "auto", the final height will follow exactly
                 // the content size and ignore the density. the docs recommend these styles in order to have density
@@ -277,6 +281,7 @@ const ProjectsListViewTable = () => {
                 sortingMode="server"
               />
             )}
+            {showMapView && <ProjectsListViewMap />}
           </Box>
         </Paper>
       </Container>
