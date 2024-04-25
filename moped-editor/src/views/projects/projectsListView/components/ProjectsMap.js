@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import MapGL, { NavigationControl } from "react-map-gl";
-import BasemapSpeedDial from "../projectView/ProjectComponents/BasemapSpeedDial";
+import BasemapSpeedDial from "../../projectView/ProjectComponents/BasemapSpeedDial";
 import {
   basemaps,
   mapParameters,
   initialViewState,
-} from "../projectView/ProjectComponents/mapSettings";
+} from "../../projectView/ProjectComponents/mapSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 export default React.forwardRef(function ProjectsMap(_, ref) {
