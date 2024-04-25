@@ -91,7 +91,6 @@ const makeAdvancedSearchWhereFilters = (filters) =>
         const nextDay = JSON.stringify(
           format(addDays(parseISO(value.replaceAll('"', "")), 1), "yyyy-MM-dd")
         );
-        console.log(nextDay);
         if (gqlOperator === "_eq") {
           // Greater or equal to the selected day and less than the next day will return all timestampz for the given date
           whereString = `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: ${nextDay} } } ]`;
@@ -100,7 +99,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           whereString = `${field}: { ${"_lt"}: ${nextDay} }`;
         } else if (gqlOperator === "_gt") {
           // Greater or equal to the next day will give us all the timestampz that are greater than the selected date
-          whereString = `${field}: { ${"_gt"}: ${nextDay} }`;
+          whereString = `${field}: { ${"_gte"}: ${nextDay} }`;
         }
       }
       return whereString;
