@@ -220,6 +220,8 @@ const ProjectsListViewTable = () => {
           isOr={isOr}
           setIsOr={setIsOr}
           loading={loading}
+          showMapView={showMapView}
+          setShowMapView={setShowMapView}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>

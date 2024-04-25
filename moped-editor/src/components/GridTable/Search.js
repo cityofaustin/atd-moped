@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
+import Switch from "@mui/material/Switch";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
@@ -81,6 +82,8 @@ const Search = ({
   isOr,
   setIsOr,
   loading,
+  showMapView,
+  setShowMapView,
 }) => {
   const classes = useStyles();
   const divRef = React.useRef();
@@ -161,11 +164,16 @@ const Search = ({
                   startIcon={<SaveAltIcon />}
                   variant="outlined"
                   color="primary"
-                  fullWidth
                 >
                   Download
                 </Button>
               )}
+              {
+                <Switch
+                  checked={showMapView}
+                  onChange={() => setShowMapView(!showMapView)}
+                />
+              }
             </Grid>
           </Grid>
         </Paper>
