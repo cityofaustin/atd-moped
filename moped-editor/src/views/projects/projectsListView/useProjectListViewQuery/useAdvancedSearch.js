@@ -95,10 +95,10 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           // Greater or equal to the selected day and less than the next day will return all timestampz for the given date
           whereString = `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: ${nextDay} } } ]`;
         } else if (gqlOperator === "_lte") {
-          // Less than the next day will give us all the timestamps that are less than or equal to the selected date
+          // Less than the next day will give us all the timestampz that are less than or equal to the selected date
           whereString = `${field}: { ${"_lt"}: ${nextDay} }`;
         } else if (gqlOperator === "_gt") {
-          // Greater or equal to the next day will give us all the timestamps that are greater than the selected date
+          // Greater or equal to the next day will give us all the timestampz that are greater than the selected date
           whereString = `${field}: { ${"_gte"}: ${nextDay} }`;
         }
       }
