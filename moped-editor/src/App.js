@@ -21,6 +21,8 @@ import {
   createHttpLink,
 } from "@apollo/client";
 
+import { LicenseInfo } from '@mui/x-license';
+
 const HASURA_ENDPOINT = process.env.REACT_APP_HASURA_ENDPOINT;
 
 var pckg = require("../package.json");
@@ -72,11 +74,14 @@ const useClient = (user) =>
     });
   }, [user]);
 
+  LicenseInfo.setLicenseKey(process.env.REACT_APP_MUIX_LICENSE_KEY);
+
 const App = () => {
   const [listViewQuery, setListViewQuery] = useState(null);
   const routing = useRoutes(restrictedRoutes);
   const { user } = useUser();
   const client = useClient(user);
+
   return (
     <ApolloProvider client={client}>
       <StyledEngineProvider injectFirst>

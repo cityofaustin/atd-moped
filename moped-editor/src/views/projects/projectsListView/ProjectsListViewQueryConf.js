@@ -20,7 +20,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
   noResultsMessage: "No projects found.",
   showPagination: true,
   pagination: {
-    rowsPerPageOptions: [25, 50, 100], // we are limited to max 100 on the data grid community plan
+    rowsPerPageOptions: [100, 250, 1000],
     defaultOffset: 0,
     defaultLimit: 100,
   },
@@ -331,6 +331,18 @@ export const DEFAULT_HIDDEN_COLS = Object.entries(
 ).reduce((acc, [columnName, config]) => {
   if (config.showInTable === true) {
     acc[columnName] = !config.defaultHidden;
+  }
+  return acc;
+}, {});
+
+/**
+ * All columns that should be shown, set to true
+ */
+export const SHOW_ALL_COLS = Object.entries(
+  PROJECT_LIST_VIEW_QUERY_CONFIG.columns
+).reduce((acc, [columnName, config]) => {
+  if (config.showInTable === true) {
+    acc[columnName] = true
   }
   return acc;
 }, {});
