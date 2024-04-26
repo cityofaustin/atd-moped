@@ -169,7 +169,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
-            const childProjectId = newData?.project_name?.project_id;
+            const childProjectId = newData?.project_name_full?.project_id;
             return updateProjectSubproject({
               variables: {
                 parentProjectId: projectId,
