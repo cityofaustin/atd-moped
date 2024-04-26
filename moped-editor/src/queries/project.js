@@ -761,7 +761,7 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
 `;
 
 export const PROJECT_UPDATE_SPONSOR = gql`
-  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { project_sponsor: $fieldValueId }
@@ -772,7 +772,7 @@ export const PROJECT_UPDATE_SPONSOR = gql`
 `;
 
 export const PROJECT_UPDATE_LEAD = gql`
-  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { project_lead_id: $fieldValueId }
@@ -926,10 +926,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
 `;
 
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
+  mutation UpdateProjectName(
+    $projectId: Int!
+    $projectName: String!
+    $projectNameSecondary: String
+  ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
+      _set: {
+        project_name: $projectName
+        project_name_secondary: $projectNameSecondary
+      }
     ) {
       project_name
       project_name_secondary
