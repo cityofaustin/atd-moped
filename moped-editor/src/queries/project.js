@@ -983,7 +983,7 @@ export const PROJECT_OPTIONS = gql`
   }
 `;
 
-export const GET_PROJECT_COMPONENTS = gql`
+export const GET_PROJECTS_COMPONENTS = gql`
   query GetProjectsComponents($projectIds: [Int!]) {
     moped_project(where: { project_id: { _in: $projectIds } }) {
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
@@ -1004,6 +1004,19 @@ export const GET_PROJECT_COMPONENTS = gql`
           geography
         }
       }
+    }
+  }
+`;
+
+export const GET_PROJECTS_GEOGRAPHIES = gql`
+  query GetProjectsComponents($projectIds: [Int!]) {
+    project_geography(
+      where: { project_id: { _in: $projectIds }, is_deleted: { _eq: false } }
+    ) {
+      project_id
+      project_name
+      component_id
+      geography
     }
   }
 `;
