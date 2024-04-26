@@ -6,6 +6,8 @@ You will want to check the documentation in the [MOPED Technical Docs](https://a
 
 Broadly, the Moped application uses a backend [PostgreSQL](https://www.postgresql.org/) database server which is protected from the larger internet on a private subnet. An instance of [Hasura](https://hasura.io/)'s [graphql-engine](https://github.com/hasura/graphql-engine) is used as middleware exposing a graphql endpoint for use by the application running on a client's computer. The `graphql-engine` instance is provided by [the official docker images](https://hub.docker.com/r/hasura/graphql-engine) provided by hasura on DockerHub. 
 
+[SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)
+
 ### `graphql-engine` update plan
 
 The update schedule for Moped's `graphql-engine` deployment is as follows:
