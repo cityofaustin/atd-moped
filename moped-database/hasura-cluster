@@ -296,10 +296,10 @@ function __check_dump_complete() {
   local last_line=$(tail -n 3 "$file_path" | head -n 1)
   
   if [[ "$last_line" == *"PostgreSQL database dump complete"* ]]; then
-    echo "PostgreSQL database dump is complete."
+    # echo "PostgreSQL database dump is complete."
     return 0
   else
-    echo "PostgreSQL database dump is not complete."
+    # echo "PostgreSQL database dump is not complete."
     return 1
   fi
 }
@@ -307,14 +307,14 @@ function __check_dump_complete() {
 function replicate() {
   source ./env;
   start_only;
-  echo "Replicating production database to local database... (~ 2-4 minutes)";
   # Get the current date in YYYY-MM-DD format
   current_date=$(date +"%Y-%m-%d");
   snapshot_file="./snapshots/production-$current_date.sql";
 
 
-  # Check if the file already exists and the dump is complete
+  # Check if the file already exists and the export is complete
   if ! __check_dump_complete "$snapshot_file"; then
+    echo "Replicating production database to local database... (~ 2-4 minutes)";
     docker exec -it \
     -e PGPASSWORD=$MOPED_RR_PASSWORD  \
     moped-database-moped-pgsql-1 \
