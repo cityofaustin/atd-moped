@@ -291,6 +291,19 @@ function show_banner() {
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 
+function __check_dump_complete() {
+  local file_path="$1"
+  local last_line=$(tail -n 3 "$file_path" | head -n 1)
+  
+  if [[ "$last_line" == *"PostgreSQL database dump complete"* ]]; then
+    echo "PostgreSQL database dump is complete."
+    return 0
+  else
+    echo "PostgreSQL database dump is not complete."
+    return 1
+  fi
+}
+
 #
 # Let's make sure docker is running...
 #
