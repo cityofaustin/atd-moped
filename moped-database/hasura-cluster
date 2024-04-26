@@ -291,15 +291,15 @@ function show_banner() {
   echo "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -";
 }
 
-function __check_dump_complete() {
+function __check_export_complete() {
   local file_path="$1"
   local last_line=$(tail -n 3 "$file_path" | head -n 1)
   
-  if [[ "$last_line" == *"PostgreSQL database dump complete"* ]]; then
-    # echo "PostgreSQL database dump is complete."
+  if [[ "$last_line" == *"PostgreSQL database export complete"* ]]; then
+    # echo "PostgreSQL database export is complete."
     return 0
   else
-    # echo "PostgreSQL database dump is not complete."
+    # echo "PostgreSQL database export is not complete."
     return 1
   fi
 }
@@ -312,7 +312,7 @@ function replicate() {
   snapshot_file="./snapshots/production-$current_date.sql";
 
   # Check if the file already exists and the export is complete
-  if ! __check_dump_complete "$snapshot_file"; then
+  if ! __check_export_complete "$snapshot_file"; then
     echo "Replicating production database to local database... (~ 2-4 minutes)";
     docker exec -it \
     -e PGPASSWORD=$MOPED_RR_PASSWORD  \
@@ -322,8 +322,8 @@ function replicate() {
     -h $MOPED_RR_HOST \
     $MOPED_RR_DB > $snapshot_file;
     
-    # Check if the dump is complete
-    if __check_dump_complete "$snapshot_file"; then
+    # Check if the export is complete
+    if __check_export_complete "$snapshot_file"; then
       echo "Replication successful."
     else
       echo "Replication failed. The export is not complete."
