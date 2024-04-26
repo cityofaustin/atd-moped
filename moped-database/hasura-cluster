@@ -324,22 +324,22 @@ function replicate() {
     
     # Check if the export is complete
     if __check_export_complete "$snapshot_file"; then
-      echo "Replication successful."
+      echo "Replication successful.";
     else
-      echo "Replication failed. The export is not complete."
-      return 1
+      echo "Replication failed. The export is not complete.";
+      return 1;
     fi
   else
     echo "Snapshot file $snapshot_file already exists, skipping replication. Delete this file to get fresh data.";
   fi;
 
-  docker stop moped-database-hasura-1
+  docker stop moped-database-hasura-1;
   echo 'DROP DATABASE moped; CREATE DATABASE moped' | docker exec -i moped-database-moped-pgsql-1 psql -U moped postgres;
   docker exec -i moped-database-moped-pgsql-1 psql -U moped moped < $snapshot_file;
-  docker start moped-database-hasura-1
+  docker start moped-database-hasura-1;
   __wait_server_ready;
-  hasura migrate apply
-  hasura metadata apply
+  hasura migrate apply;
+  hasura metadata apply;
 }
 
 #
