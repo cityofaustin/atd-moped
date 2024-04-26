@@ -13,11 +13,13 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import AddCircle from "@mui/icons-material/AddCircle";
-import Autocomplete from '@mui/material/Autocomplete';
+import Autocomplete from "@mui/material/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import Grid from "@mui/material/Grid";
+import theme from "src/theme";
 
 import {
   TAGS_QUERY,
@@ -29,20 +31,17 @@ const useStyles = makeStyles((theme) => ({
   paperTags: {
     padding: "8px",
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
   chipContainer: {
     display: "flex",
     justifyContent: "left",
     flexWrap: "wrap",
     listStyle: "none",
-    padding: "1rem 0",
-    paddingLeft: "16px",
+    padding: `${theme.spacing(1)} ${theme.spacing(2)}`,
+    paddingRight: 0,
     margin: 0,
   },
   chipAddContainer: {
-    paddingLeft: "8px",
+    padding: theme.spacing(1),
   },
   tagAutocomplete: {
     minWidth: "250px",
@@ -156,22 +155,32 @@ const TagsSection = ({ projectId }) => {
             Add tag
           </Button>
         </Toolbar>
-        <Box component={"ul"} className={classes.chipContainer}>
+        <Box className={classes.chipContainer}>
           <DeleteConfirmationModal
             type="tag"
             submitDelete={() => handleTagDelete(deleteConfirmationId)}
             isDeleteConfirmationOpen={isDeleteConfirmationOpen}
             setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
           >
-            {data.moped_proj_tags.map((tag) => (
-              <li key={tag.id}>
-                <Chip
-                  label={tag.moped_tag.name}
-                  onDelete={() => handleDeleteOpen(tag)}
-                  className={classes.chip}
-                />
-              </li>
-            ))}
+            <Grid container spacing={1}>
+              {data.moped_proj_tags.map((tag) => (
+                <Grid item>
+                  <Chip
+                    key={tag.id}
+                    label={tag.moped_tag.name}
+                    onDelete={() => handleDeleteOpen(tag)}
+                    sx={{
+                      height: "auto",
+                      minHeight: theme.spacing(4),
+                      "& .MuiChip-label": {
+                        display: "block",
+                        whiteSpace: "normal",
+                      },
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
           </DeleteConfirmationModal>
           {addTagMode && (
             <Box
@@ -201,14 +210,16 @@ const TagsSection = ({ projectId }) => {
                   className={classes.editIconButton}
                   aria-label="Add"
                   onClick={handleTagAdd}
-                  size="large">
+                  size="large"
+                >
                   <Icon fontSize={"small"}>check</Icon>
                 </IconButton>
                 <IconButton
                   className={classes.editIconButton}
                   aria-label="Cancel"
                   onClick={handleNewTagCancel}
-                  size="large">
+                  size="large"
+                >
                   <Icon fontSize={"small"}>close</Icon>
                 </IconButton>
               </div>

@@ -11,7 +11,7 @@ import { NavLink as RouterLink } from "react-router-dom";
  */
 const ProjectSummaryParentProjectLink = ({ data, classes }) => {
   const parentProjectId = data?.moped_project?.[0]?.parent_project_id;
-  const parentProjectName = data?.moped_project[0].moped_project.project_name;
+  const parentProjectName = data?.moped_project[0].moped_project.project_name_full;
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
