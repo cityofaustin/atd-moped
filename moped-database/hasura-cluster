@@ -175,12 +175,6 @@ function start() {
   # Start Hasura
   start_only $START_MODE;
 
-  # We must clone from a profile
-  if [[ $CLONE_FROM_PROFILE != "" ]]; then
-    __clone_remote_postgres $CLONE_FROM_PROFILE;
-    echo "Not implemented";
-  fi;
-
   run_migration;
   status;
 }
