@@ -1,6 +1,4 @@
 # ARM 64 Builds, primarily intended for M1 Macs
-version: '3.7'
-
 services:
 
     moped-pgsql:
