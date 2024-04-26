@@ -304,6 +304,37 @@ function __check_dump_complete() {
   fi
 }
 
+function replicate() {
+  source ./env;
+  start_only;
+  echo "Replicating production database to local database... (~ 2-4 minutes)";
+  # Get the current date in YYYY-MM-DD format
+  current_date=$(date +"%Y-%m-%d");
+  snapshot_file="./snapshots/production-$current_date.sql";
+
+
+  # Check if the file already exists and the dump is complete
+  if ! __check_dump_complete "$snapshot_file"; then
+    docker exec -it \
+    -e PGPASSWORD=$MOPED_RR_PASSWORD  \
+    moped-database-moped-pgsql-1 \
+    pg_dump \
+    -U $MOPED_RR_USERNAME \
+    -h $MOPED_RR_HOST \
+    $MOPED_RR_DB > $snapshot_file;
+    
+    # Check if the dump is complete
+    if __check_dump_complete "$snapshot_file"; then
+      echo "Replication successful."
+    else
+      echo "Replication failed. The export is not complete."
+      return 1
+    fi
+  else
+    echo "Snapshot file $snapshot_file already exists, skipping replication. Delete this file to get fresh data.";
+  fi;
+}
+
 #
 # Let's make sure docker is running...
 #
