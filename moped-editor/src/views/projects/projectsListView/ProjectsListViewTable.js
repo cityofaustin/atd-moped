@@ -283,7 +283,7 @@ const ProjectsListViewTable = () => {
                 sortingMode="server"
               />
             )}
-            {showMapView && <ProjectsListViewMap />}
+            {showMapView && <ProjectsListViewMap data={data} />}
           </Box>
         </Paper>
       </Container>

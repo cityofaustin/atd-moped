@@ -924,10 +924,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
 `;
 
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
+  mutation UpdateProjectName(
+    $projectId: Int!
+    $projectName: String!
+    $projectNameSecondary: String
+  ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
+      _set: {
+        project_name: $projectName
+        project_name_secondary: $projectNameSecondary
+      }
     ) {
       project_name
       project_name_secondary
@@ -972,6 +979,31 @@ export const PROJECT_OPTIONS = gql`
     ) {
       project_id
       project_name
+    }
+  }
+`;
+
+export const GET_PROJECT_COMPONENTS = gql`
+  query GetProjectsComponents($projectIds: [Int!]) {
+    moped_project(where: { project_id: { _in: $projectIds } }) {
+      moped_proj_components(where: { is_deleted: { _eq: false } }) {
+        component_id
+        feature_drawn_lines {
+          geography
+        }
+        feature_drawn_points {
+          geography
+        }
+        feature_intersections {
+          geography
+        }
+        feature_signals {
+          geography
+        }
+        feature_street_segments {
+          geography
+        }
+      }
     }
   }
 `;
