@@ -310,6 +310,7 @@ function replicate() {
   # Get the current date in YYYY-MM-DD format
   current_date=$(date +"%Y-%m-%d");
   snapshot_file="./snapshots/production-$current_date.sql";
+  mkdir -p ./snapshots
 
   # Check if the file already exists and the export is complete
   if ! __check_export_complete "$snapshot_file"; then
