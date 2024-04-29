@@ -6,8 +6,6 @@ You will want to check the documentation in the [MOPED Technical Docs](https://a
 
 Broadly, the Moped application uses a backend [PostgreSQL](https://www.postgresql.org/) database server which is protected from the larger internet on a private subnet. An instance of [Hasura](https://hasura.io/)'s [graphql-engine](https://github.com/hasura/graphql-engine) is used as middleware exposing a graphql endpoint for use by the application running on a client's computer. The `graphql-engine` instance is provided by [the official docker images](https://hub.docker.com/r/hasura/graphql-engine) provided by hasura on DockerHub. 
 
-[SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)
-
 ### `graphql-engine` update plan
 
 The update schedule for Moped's `graphql-engine` deployment is as follows:
@@ -53,7 +51,7 @@ https://hasura.io/docs/1.0/graphql/core/hasura-cli/install-hasura-cli.html
 #### 3. The Hasura Cluster Helper
 
 There is a tool we've created that has a few shortcuts available, it's called [hasura-cluster](https://github.com/cityofaustin/atd-moped/blob/main/moped-database/hasura-cluster).
-This just a bash script that runs a few docker-compose commands.
+It is a bash script that runs a few docker-compose commands.
 
 Syntax:
 
@@ -66,7 +64,7 @@ $ ./hasura-cluster <command> <params>
 $ ./hasura-cluster setenv local
 ```
 
-[2] Start the cluster:
+[2] Start the cluster with seed data
 
 ```
 $ ./hasura-cluster start
@@ -86,90 +84,28 @@ $ hasura console
 $ ./hasura-cluster stop
 ```
 
-### Hasura-Cluster Cloning & Restoring
+### Using production data
 
-There may be occasions where you need to copy the data in staging or production to run it locally. Clone and restore allow for these operations to happen easily.
+Configure your environment:
 
-#### I. Configure
-
-You will first need to configure your environment:
-
-Example:
-
-1. Copy the hasura_cluster template file into your ssh directory with this specific name:
-
-   `$ cp config/hasura_cluster_template.json ~/.ssh/hasura_cluster.json`;
-
-   Note: This script expects to find it with this name `~/.ssh/hasura_cluster.json`
-
-2. Change permissions so only you can read/write to it:
-
-   `chmod 600 ~/.ssh/hasura_cluster.json`
-
-3. Edit the file with nano or vim, and fill-in the blanks:
-
-   `nano ~/.ssh/hasura_cluster.json`
-
-   -or-
-
-   `vim ~/.ssh/hasura_cluster.json`
-
-4. Save and exit
-
-#### II. Clone
-
-Cloning basically runs pg_dump for you and saves the file into the snapshots directory. To do this, you run:
-
-This operation does not insert into your local database.
-
-Syntax:
+1. Copy the env_template file into env and fill in your credentials:
 
 ```bash
-$./hasura-cluster clone [environment]
+   $ cp env_template env
 ```
 
-Example:
-
-- Cloning staging or production:
+2. Pull a copy of production data and start the cluster. This will get a new copy of production (once per day) and store the snapshot in the `./snapshots/` folder. Subsequent invocations of this command on the same day will not download a new copy. 
 
 ```bash
-./hasura-cluster clone staging
-./hasura-cluster clone production
+$ ./hasura-cluster replicate
 ```
 
-
-- Cloning a staging or production backup from S3:
+If you would prefer to bypass downloading a new copy of production and instead just use whatever the last snapshot in the folder, add `--use-latest-snapshot` or `-j` 
 
 ```bash
-./hasura-cluster clone bucket staging "2021-11-03"
-./hasura-cluster clone bucket production "2021-11-03"
+$ ./hasura-cluster --use-latest-snapshot
 ```
 
-
-
-#### III. Restore
-
-This operation loads a snapshot into your local database instance. It does not create a snapshot.
-
-- Listing snapshot files downloaded:
-
-```bash
-./hasura-cluster list local [staging|production]
-```
-
-- Listing files in an s3 bucket:
-
-```bash
-./hasura-cluster list bucket [staging|production]
-```
-
-- Restoring a specific file:
-
-```bash
-./hasura-cluster restore [filename]
-```
-
-NOTE: If hasura isn't running, restore is going to exit with an error.
 
 - Restarting the hasura cluster without migrations:
 
@@ -178,12 +114,11 @@ NOTE: If hasura isn't running, restore is going to exit with an error.
 ```
 ### Hasura-Cluster Reference
 
-- `run_migration`: Runs all 3 hasura migrations: database, metadata, seed data. 
 - `start_only`: Starts the cluster and does NOT run migrations.
-- `start`: Starts the cluster and runs all migrations.
+- `start`: Starts the cluster and runs all migrations, applies metadata and seed data.
 - `stop`: Stops the cluster, removes any volumes left out.
+- `replicate`: Starts the cluster with a downloaded copy of production data from the read replica
 - `prune`: Deletes any volumes left out by the cluster. 
-- `follow`: Shows the logs for the running cluster.
 - `status`: Displays the current status of the cluster
 - `setenv`: Changes the current environment.
 
@@ -195,9 +130,7 @@ read its settings from `config.yaml`.
 
 For example, there should only be a file in the ./config folder called `hasura.local.yaml`
 which contains the connection information for the local cluster. Notice the format
-`hasura.<environment>.yaml`. If for example, you need to connect the Hasura Staging cluster, 
-you would need to create a new file called `hasura.staging.yaml`, provide all the info, 
-then run `$ hasura-cluster setenv staging` and `hasura console`.
+`hasura.<environment>.yaml`.
 
 ### Database Migrations
 
@@ -210,3 +143,5 @@ To version control database views, SQL files are stored in `/views/` and the ste
 More documentation is available in the [MOPED Technical Docs](https://app.gitbook.com/@atd-dts/s/moped-technical-docs/dev-guides/hasura-migrations)
 
 You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/1.0/graphql/core/migrations/index.html). 
+
+[SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)
