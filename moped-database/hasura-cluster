@@ -307,10 +307,16 @@ function __check_export_complete() {
 function replicate() {
   source ./env;
   start_only;
+  mkdir -p ./snapshots;
+
   # Get the current date in YYYY-MM-DD format
   current_date=$(date +"%Y-%m-%d");
   snapshot_file="./snapshots/production-$current_date.sql";
-  mkdir -p ./snapshots
+
+  # If use_any_snapshot is true, use the most recent snapshot
+  if $use_any_snapshot; then
+    snapshot_file="./snapshots/$(ls -t ./snapshots | head -n 1)"
+  fi
 
   # Check if the file already exists and the export is complete
   if ! __check_export_complete "$snapshot_file"; then
@@ -343,11 +349,30 @@ function replicate() {
   hasura metadata apply;
 }
 
+use_any_snapshot=false
+
+# Get the positional argument
+positional_arg="$1"
+shift
+
+# Process named arguments
+while (( "$#" )); do
+  case "$1" in
+    -j|--use-any-snapshot)
+      use_any_snapshot=true
+      shift
+      ;;
+    *)
+      shift
+      ;;
+  esac
+done
+
 #
 # Let's make sure docker is running...
 #
 if [[ "$(__get_docker_running)" != "TRUE" ]]; then
-  show_banner "$1" && echo "Docker is not running. Please start docker on your computer"
+  show_banner "$positional_arg" && echo "Docker is not running. Please start docker on your computer"
   exit;
 fi;
 
@@ -355,7 +380,7 @@ fi;
 # Start the hasura cluster...
 #
 if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
-   show_banner "$@" && $@;
+   show_banner "$positional_arg" && $positional_arg;
 else
-  echo "Hasura Cluster: $@" && $@;
+  echo "Hasura Cluster: $positional_arg" && $positional_arg;
 fi;
