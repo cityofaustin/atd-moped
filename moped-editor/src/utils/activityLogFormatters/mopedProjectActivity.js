@@ -20,6 +20,25 @@ export const formatProjectActivity = (change, lookupList) => {
     };
   }
 
+  const getRemovedField = (changedField) => {
+    // for removed fields use lookup data if available, otherwise use raw field data
+    return {
+      changeIcon,
+      changeText: [
+        {
+          text: `Removed ${entryMap.fields[changedField]?.label} `,
+          style: null,
+        },
+        {
+          text:
+            lookupList[changeData.old[changedField]] ??
+            changeData.old[changedField],
+          style: "boldText",
+        },
+      ],
+    };
+  };
+
   const newRecord = changeData.new;
   const oldRecord = changeData.old;
   let changes = [];
@@ -82,6 +101,11 @@ export const formatProjectActivity = (change, lookupList) => {
       };
     }
 
+    // if the new field value is null or undefined, its because something was removed
+    if (!lookupList[changeData.new[changedField]]) {
+      return getRemovedField(changedField);
+    }
+
     // Changing a field, but need to use lookup table to display
     return {
       changeIcon,
@@ -101,20 +125,7 @@ export const formatProjectActivity = (change, lookupList) => {
     if (typeof changeData.new[changedField] === "object") {
       // if the new field is null, it is because something was removed
       if (lookupList[changeData.new[changedField]] == null) {
-        console.log(changeData.old);
-        return {
-          changeIcon,
-          changeText: [
-            {
-              text: `Removed ${entryMap.fields[changedField]?.label} `,
-              style: null,
-            },
-            {
-              text: changeData.old[changedField],
-              style: "boldText",
-            },
-          ],
-        };
+        return getRemovedField(changedField);
         // if the update truly is an object, show just the field name that was updated
       } else {
         return {
