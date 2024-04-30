@@ -106,7 +106,6 @@ If you would prefer to bypass downloading a new copy of production and instead j
 $ ./hasura-cluster --use-latest-snapshot
 ```
 
-
 - Restarting the hasura cluster without migrations:
 
 ```bash
