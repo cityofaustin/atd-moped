@@ -105,7 +105,6 @@ export const formatProjectActivity = (change, lookupList) => {
     if (!lookupList[changeData.new[changedField]]) {
       return getRemovedField(changedField);
     }
-
     // Changing a field, but need to use lookup table to display
     return {
       changeIcon,
