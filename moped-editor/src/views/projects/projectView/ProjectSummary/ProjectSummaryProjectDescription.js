@@ -97,13 +97,21 @@ const ProjectSummaryProjectDescription = ({
               fullWidth
               multiline={true}
               minRows={4}
+              error={description.length < 1}
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
               value={description}
+              helperText={
+                description.length < 1 ? "Description cannot be blank" : ""
+              }
             />
 
-            <IconButton onClick={handleProjectDescriptionSave} size="large">
+            <IconButton
+              onClick={handleProjectDescriptionSave}
+              size="large"
+              disabled={description.length < 1}
+            >
               <Icon>check</Icon>
             </IconButton>
 
