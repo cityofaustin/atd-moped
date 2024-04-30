@@ -3,6 +3,7 @@ import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
 import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
+import { addDays, parseISO, format } from "date-fns";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
@@ -84,7 +85,24 @@ const makeAdvancedSearchWhereFilters = (filters) =>
           return null;
         }
       }
-      return `${field}: { ${gqlOperator}: ${value} }`;
+      let whereString = `${field}: { ${gqlOperator}: ${value} }`;
+      // If we are filtering on a date there are some exceptions we need to handle bc the date/timestampz conversion
+      if (type === "date" && !gqlOperator.includes("is_null")) {
+        const nextDay = JSON.stringify(
+          format(addDays(parseISO(value.replaceAll('"', "")), 1), "yyyy-MM-dd")
+        );
+        if (gqlOperator === "_eq") {
+          // Greater or equal to the selected day and less than the next day will return all timestampz for the given date
+          whereString = `_and: [ { ${field}: { ${`_gte`}: ${value} } }, { ${field}: { ${`_lt`}: ${nextDay} } } ]`;
+        } else if (gqlOperator === "_lte") {
+          // Less than the next day will give us all the timestampz that are less than or equal to the selected date
+          whereString = `${field}: { ${"_lt"}: ${nextDay} }`;
+        } else if (gqlOperator === "_gt") {
+          // Greater or equal to the next day will give us all the timestampz that are greater than the selected date
+          whereString = `${field}: { ${"_gte"}: ${nextDay} }`;
+        }
+      }
+      return whereString;
     })
     .filter((value) => value !== null);
 

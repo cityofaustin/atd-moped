@@ -52,14 +52,14 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       width: "15%",
     },
     {
-      title: "Name",
-      field: "project_name",
-      width: "35%",
-      validate: (entry) => !!entry.project_name,
+      title: "Full name",
+      field: "project_name_full",
+      width: "40%",
+      validate: (entry) => (!!entry.project_name_full),
       render: (entry) => (
         <RenderFieldLink
           projectId={entry.project_id}
-          value={entry.project_name}
+          value={entry.project_name_full}
         />
       ),
       editComponent: (props) => (
@@ -69,7 +69,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             name="project_name"
             options={data.subprojectOptions}
             getOptionLabel={(option) =>
-              `${option.project_id} - ${option.project_name}`
+              `${option.project_id} - ${option.project_name_full}`
             }
             value={props.value || null}
             onChange={(event, value) => props.onChange(value)}
@@ -85,7 +85,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       title: "Status",
       field: "status",
       editable: "never",
-      width: "30%",
+      width: "25%",
       customSort: (a, b) =>
         a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
         b.moped_proj_phases?.[0]?.moped_phase?.phase_name
@@ -169,7 +169,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         editable={{
           onRowAdd: (newData) => {
-            const childProjectId = newData?.project_name?.project_id;
+            const childProjectId = newData?.project_name_full?.project_id;
             return updateProjectSubproject({
               variables: {
                 parentProjectId: projectId,

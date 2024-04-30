@@ -14,6 +14,7 @@ export const DASHBOARD_QUERY = gql`
       project {
         project_id
         project_name
+        project_name_full
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
@@ -47,6 +48,7 @@ export const DASHBOARD_QUERY = gql`
       project {
         project_id
         project_name
+        project_name_full
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
