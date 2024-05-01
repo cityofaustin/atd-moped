@@ -783,7 +783,7 @@ export const PROJECT_UPDATE_LEAD = gql`
 `;
 
 export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
-  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { public_process_status_id: $fieldValueId }
