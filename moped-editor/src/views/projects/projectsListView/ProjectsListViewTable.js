@@ -253,6 +253,7 @@ const ProjectsListViewTable = () => {
                 disableColumnFilter
                 pagination
                 paginationMode="server"
+                localeText={{ noRowsLabel: "No projects found." }}
                 paginationModel={{
                   page: queryOffset / queryLimit,
                   pageSize: queryLimit,

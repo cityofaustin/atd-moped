@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { CircularProgress, Box, IconButton } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+//import { DataGrid } from "@mui/x-data-grid";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import { green } from "@mui/material/colors";
 import {
   EditOutlined as EditOutlinedIcon,
@@ -27,22 +28,21 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
       {
         headerName: "Phase",
         field: "moped_phase",
-        minWidth: 200,
-        valueGetter: ({ row }) => row.moped_phase?.phase_name,
+        width: 200,
+        valueGetter: (value) => value?.phase_name,
       },
       {
         headerName: "Subphase",
         field: "moped_subphase",
-        minWidth: 200,
-        valueGetter: ({ row }) => row.moped_subphase?.subphase_name,
+        width: 200,
+        valueGetter: (value) => value?.subphase_name,
       },
       {
         headerName: "Start",
         field: "phase_start",
         type: "date",
         /** valueGetter is used by the date sort function inherently used by the `date` type column */
-        valueGetter: ({ row }) =>
-          row.phase_start ? new Date(row.phase_start) : null,
+        valueGetter: (value) => (value ? new Date(value) : null),
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
           let strToRender = row.phase_start
@@ -71,8 +71,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
         field: "phase_end",
         type: "date",
         /** valueGetter is used by the date sort function inherently used by the `date` type column */
-        valueGetter: ({ row }) =>
-          row.phase_end ? new Date(row.phase_end) : null,
+        valueGetter: (value) => (value ? new Date(value) : null),
         /**  the renderCell function controls the react node rendered for this cell */
         renderCell: ({ row }) => {
           let strToRender = row.phase_end
@@ -194,15 +193,24 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
 
   return (
     <>
-      <DataGrid
+      <DataGridPro
+        sx={{
+          "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+            py: "8px",
+          },
+          "&.MuiDataGrid-root": {
+            "--DataGrid-containerBackground": "#fff",
+            "--DataGrid-pinnedBackground": "#fff",
+          },
+        }}
         autoHeight
         columns={columns}
         density="comfortable"
         getRowId={(row) => row.project_phase_id}
         disableRowSelectionOnClick
-        disableColumnMenu
+        // disableColumnMenu
         getRowHeight={() => "auto"}
-        hideFooterPagination={true}
+        // hideFooterPagination={true}
         localeText={{ noRowsLabel: "No phases" }}
         rows={data?.moped_proj_phases || []}
         slots={{
