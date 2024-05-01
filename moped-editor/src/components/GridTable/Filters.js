@@ -147,6 +147,7 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
+  const [searchParameters, setSearchParameters] = useState();
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -235,25 +236,26 @@ const Filters = ({
 
     const remainingFiltersCount = filtersNewState.length;
 
-    if (remainingFiltersCount === 0) {
-      /* Clear search params since we have no advanced filters */
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.delete(advancedSearchFilterParamName);
-        prevSearchParams.delete(advancedSearchIsOrParamName);
+    // if (remainingFiltersCount === 0) {
+    //   /* Clear search params since we have no advanced filters */
+    //   setSearchParams((prevSearchParams) => {
+    //     prevSearchParams.delete(advancedSearchFilterParamName);
+    //     prevSearchParams.delete(advancedSearchIsOrParamName);
 
-        return prevSearchParams;
-      });
-    } else if (remainingFiltersCount === 1) {
+    //     return prevSearchParams;
+    //   });
+    // } else
+    if (remainingFiltersCount === 1) {
       /* Reset isOr to false (all/and) if there is only one filter left */
       setIsOrToggleValue(false);
-    } else {
-      /* Remove the details of the removed filter from search params */
-      const jsonParamString = JSON.stringify(filtersNewState);
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+      // } else {
+      //   /* Remove the details of the removed filter from search params */
+      //   const jsonParamString = JSON.stringify(filtersNewState);
+      //   setSearchParams((prevSearchParams) => {
+      //     prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
 
-        return prevSearchParams;
-      });
+      //     return prevSearchParams;
+      //   });
     }
   };
 
@@ -274,7 +276,7 @@ const Filters = ({
   /**
    * Reset search box and advanced filters
    */
-  const handleResetFilters = useCallback(() => {
+  const handleResetFilters = () => {
     setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
@@ -286,7 +288,7 @@ const Filters = ({
     });
 
     resetSimpleSearch();
-  }, [setSearchParams, setFilters, setIsOr, resetSimpleSearch]);
+  };
 
   /**
    * Applies the current local state and updates the parent's state
@@ -306,6 +308,14 @@ const Filters = ({
       setFilters(filterParameters);
     } else {
       /* If we have no advanced filters, reset query state */
+
+      /* Clear search params since we have no advanced filters */
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
       setFilters([]);
       setIsOr(false);
     }
