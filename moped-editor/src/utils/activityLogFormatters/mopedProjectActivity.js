@@ -30,9 +30,9 @@ export const formatProjectActivity = (change, lookupList) => {
           style: null,
         },
         {
-          text:
-            lookupList[changeData.old[changedField]] ??
-            changeData.old[changedField],
+          text: entryMap.fields[changedField]?.lookup
+            ? lookupList[changeData.old[changedField]]
+            : changeData.old[changedField],
           style: "boldText",
         },
       ],
