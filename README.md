@@ -1,7 +1,7 @@
 # Moped
 ### A comprehensive project tracking platform for Austin's mobility projects 
 🛵 🗺 👷 🚌 🚧 🚴 📊  
-Built by [Data & Technology Services](https://austinmobility.io/) at [Austin Transportation & Public Works](https://www.austintexas.gov/department/transportation-public-works)
+
 ### Resources
 - [About](https://austinmobility.io/products/5086)
 - [Documentation](https://atd-dts.gitbook.io/moped-documentation)
