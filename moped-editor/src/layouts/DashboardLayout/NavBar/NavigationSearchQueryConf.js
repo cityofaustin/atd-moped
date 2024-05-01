@@ -37,6 +37,24 @@ export const NavigationSearchQueryConf = {
       },
       type: "String",
     },
+    project_name_secondary: {
+      searchable: true,
+      search: {
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_name_full: {
+      searchable: true,
+      search: {
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
     project_description: {
       searchable: true,
       search: {
