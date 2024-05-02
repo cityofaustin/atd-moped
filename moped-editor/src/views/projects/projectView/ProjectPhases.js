@@ -64,7 +64,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             </ProjectPhaseDateConfirmationPopover>
           );
         },
-        minWidth: 150,
+        width: 150,
       },
       {
         headerName: "End",
@@ -93,12 +93,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
             </ProjectPhaseDateConfirmationPopover>
           );
         },
-        minWidth: 150,
+        width: 150,
       },
       {
         headerName: "Description",
         field: "phase_description",
-        minWidth: 350,
+        width: 350,
       },
       {
         headerName: "Current",
@@ -195,7 +195,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
     <>
       <DataGridPro
         sx={{
-          "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
+          "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
             py: "8px",
           },
           "&.MuiDataGrid-root": {
@@ -208,9 +208,9 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         density="comfortable"
         getRowId={(row) => row.project_phase_id}
         disableRowSelectionOnClick
-        // disableColumnMenu
+        disableColumnMenu
         getRowHeight={() => "auto"}
-        // hideFooterPagination={true}
+        hideFooter
         localeText={{ noRowsLabel: "No phases" }}
         rows={data?.moped_proj_phases || []}
         slots={{
