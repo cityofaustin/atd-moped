@@ -6,7 +6,7 @@ import {
   GridToolbarColumnsButton,
   GridToolbarContainer,
   GridToolbarFilterButton,
-} from "@mui/x-data-grid";
+} from "@mui/x-data-grid-pro";
 /** Custom toolbar title that resembles the material table titles we use  */
 const WorkActivityToolbar = ({ onClick }) => (
   <>
