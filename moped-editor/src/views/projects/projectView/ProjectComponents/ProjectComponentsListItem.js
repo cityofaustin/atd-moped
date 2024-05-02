@@ -13,7 +13,7 @@ import { ComponentIconByLineRepresentation } from "./utils/form";
 import { getIsComponentMapped } from "./utils/componentList";
 import theme from "src/theme/index";
 
-const ProjectComponentListItem = ({
+const ProjectComponentsListItem = ({
   editDispatch,
   onClickZoomToComponent,
   onEditFeatures,
@@ -186,4 +186,4 @@ const ProjectComponentListItem = ({
   );
 };
 
-export default ProjectComponentListItem;
+export default ProjectComponentsListItem;

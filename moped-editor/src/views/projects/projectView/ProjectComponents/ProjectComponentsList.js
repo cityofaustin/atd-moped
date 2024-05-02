@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import List from "@mui/material/List";
-import ProjectComponentListItem from "./ProjectComponentsListItem";
+import ProjectComponentsListItem from "./ProjectComponentsListItem";
 import RelatedComponentsListItem from "./RelatedComponentsListItem";
 
 const ProjectComponentsList = ({
@@ -31,7 +31,7 @@ const ProjectComponentsList = ({
 
         if (isProjectComponent) {
           return (
-            <ProjectComponentListItem
+            <ProjectComponentsListItem
               key={component.project_component_id}
               editDispatch={editDispatch}
               onClickZoomToComponent={onClickZoomToComponent}
