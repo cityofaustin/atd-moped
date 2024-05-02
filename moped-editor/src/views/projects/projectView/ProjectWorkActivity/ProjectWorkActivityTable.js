@@ -88,8 +88,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "task_orders",
         defaultVisible: true,
         width: 150,
-        valueGetter: (field) =>
-          field?.map((tk) => tk.task_order).join(", "),
+        valueGetter: (field) => field?.map((tk) => tk.task_order).join(", "),
         renderCell: ({ row }) => (
           <div>
             {row.task_orders?.map((tk) => (
@@ -118,7 +117,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "Status",
         field: "moped_work_activity_status",
         defaultVisible: true,
-        valueGetter: ( field ) => (field.name),
+        valueGetter: (field) => field.name,
         width: 150,
       },
       {
@@ -127,9 +126,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         width: 150,
         defaultVisible: true,
         valueGetter: (field) =>
-          isNaN(parseInt(field))
-            ? null
-            : currencyFormatter.format(field),
+          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
       },
       {
         headerName: "Status update",
@@ -142,7 +139,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "updated_by_user",
         width: 150,
         defaultVisible: true,
-        valueGetter: ( field ) => getUserFullName(field),
+        valueGetter: (field) => getUserFullName(field),
       },
       {
         headerName: "Updated at",
@@ -217,6 +214,15 @@ const ProjectWorkActivitiesTable = () => {
     <ApolloErrorHandler errors={error}>
       <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
         <DataGridPro
+          sx={{
+            "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+              py: "8px",
+            },
+            "&.MuiDataGrid-root": {
+              "--DataGrid-containerBackground": "#fff",
+              "--DataGrid-pinnedBackground": "#fff",
+            },
+          }}
           autoHeight
           columns={columns}
           columnVisibilityModel={hiddenColumns}
@@ -227,7 +233,7 @@ const ProjectWorkActivitiesTable = () => {
           density="comfortable"
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
-          hideFooterPagination={true}
+          hideFooter
           localeText={{ noRowsLabel: "No work activites" }}
           rows={activities}
           slots={{
