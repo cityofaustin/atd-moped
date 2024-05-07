@@ -983,31 +983,6 @@ export const PROJECT_OPTIONS = gql`
   }
 `;
 
-export const GET_PROJECTS_COMPONENTS = gql`
-  query GetProjectsComponents($projectIds: [Int!]) {
-    moped_project(where: { project_id: { _in: $projectIds } }) {
-      moped_proj_components(where: { is_deleted: { _eq: false } }) {
-        component_id
-        feature_drawn_lines {
-          geography
-        }
-        feature_drawn_points {
-          geography
-        }
-        feature_intersections {
-          geography
-        }
-        feature_signals {
-          geography
-        }
-        feature_street_segments {
-          geography
-        }
-      }
-    }
-  }
-`;
-
 export const GET_PROJECTS_GEOGRAPHIES = gql`
   query GetProjectsComponents($projectIds: [Int!]) {
     project_geography(

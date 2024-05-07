@@ -283,7 +283,12 @@ const ProjectsListViewTable = () => {
                 sortingMode="server"
               />
             )}
-            {showMapView && <ProjectsListViewMap data={data} />}
+            {showMapView && (
+              <ProjectsListViewMap
+                searchWhereString={searchWhereString}
+                advancedSearchWhereString={advancedSearchWhereString}
+              />
+            )}
           </Box>
         </Paper>
       </Container>
