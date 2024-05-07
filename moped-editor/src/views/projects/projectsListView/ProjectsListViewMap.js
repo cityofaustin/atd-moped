@@ -50,6 +50,7 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
   return (
     <>
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
+      {loading && <Alert severity="info">{`Loading project data...`}</Alert>}
       <ProjectsMap
         ref={mapRef}
         projectsFeatureCollection={projectsFeatureCollection}

@@ -11,7 +11,7 @@ import { MAP_STYLES } from "../../projectView/ProjectComponents/mapStyleSettings
 import "mapbox-gl/dist/mapbox-gl.css";
 
 export default React.forwardRef(function ProjectsMap(
-  { projectsFeatureCollection },
+  { projectsFeatureCollection, loading },
   ref
 ) {
   const [basemapKey, setBasemapKey] = useState("streets");
@@ -34,8 +34,14 @@ export default React.forwardRef(function ProjectsMap(
         type="geojson"
         data={projectsFeatureCollection}
       >
-        <Layer {...MAP_STYLES["project-lines"].layerProps} />
-        <Layer {...MAP_STYLES["project-points"].layerProps} />
+        <Layer
+          {...MAP_STYLES["project-lines"].layerProps}
+          layout={{ visibility: !loading ? "visible" : "none" }}
+        />
+        <Layer
+          {...MAP_STYLES["project-points"].layerProps}
+          layout={{ visibility: !loading ? "visible" : "none" }}
+        />
       </Source>
     </MapGL>
   );
