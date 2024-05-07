@@ -1,4 +1,0 @@
-export MOPED_RR_PASSWORD=8L*csMfCuRZeXoDHvvBXEU8H
-export MOPED_RR_USERNAME=berryc
-export MOPED_RR_HOST=moped-read-replica.austinmobility.io
-export MOPED_RR_DB=atd_moped
