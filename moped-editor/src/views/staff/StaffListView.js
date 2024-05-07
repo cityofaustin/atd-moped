@@ -12,6 +12,7 @@ import {
   EditUserButton,
   CopyMugUsersButton,
 } from "./StaffListViewCustomComponents";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -117,6 +118,7 @@ const StaffListView = () => {
           </Box>
           <Card>
             <DataGridPro
+              sx={dataGridProStyleOverrides}
               disableRowSelectionOnClick
               rows={data?.moped_users}
               columns={staffColumns}

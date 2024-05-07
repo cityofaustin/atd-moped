@@ -19,6 +19,7 @@ import {
   usePhaseNameLookup,
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
@@ -193,15 +194,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   return (
     <>
       <DataGridPro
-        sx={{
-          "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-            py: "8px",
-          },
-          "&.MuiDataGrid-root": {
-            "--DataGrid-containerBackground": "#fff",
-            "--DataGrid-pinnedBackground": "#fff",
-          },
-        }}
+        sx={dataGridProStyleOverrides}
         autoHeight
         columns={columns}
         density="comfortable"

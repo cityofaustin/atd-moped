@@ -18,6 +18,7 @@ import {
 } from "../../../../queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -214,15 +215,7 @@ const ProjectWorkActivitiesTable = () => {
     <ApolloErrorHandler errors={error}>
       <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
         <DataGridPro
-          sx={{
-            "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-              py: "8px",
-            },
-            "&.MuiDataGrid-root": {
-              "--DataGrid-containerBackground": "#fff",
-              "--DataGrid-pinnedBackground": "#fff",
-            },
-          }}
+          sx={dataGridProStyleOverrides}
           autoHeight
           columns={columns}
           columnVisibilityModel={hiddenColumns}
