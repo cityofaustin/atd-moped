@@ -17,54 +17,33 @@ const ProjectsListViewMap = ({ data }) => {
     [data]
   );
 
-  //   const {
-  //     loading,
-  //     error,
-  //     data: componentsData,
-  //   } = useQuery(GET_PROJECTS_COMPONENTS, { variables: { projectIds } });
-
   const {
     loading,
     error,
     data: projectsGeographies,
   } = useQuery(GET_PROJECTS_GEOGRAPHIES, { variables: { projectIds } });
 
-  /* Translate project geographies returned for filtered projects into a map of feature collection by project ID */
-  const projectsFeatureCollections = React.useMemo(() => {
-    const projectGeographiesByProjectId =
-      projectsGeographies?.project_geography.reduce((acc, projectGeography) => {
-        const doesProjectIdExist = acc.hasOwnProperty(
-          projectGeography.project_id
-        );
-        const projectGeographyFeature = {
-          type: "Feature",
-          geometry: projectGeography.geography,
-          properties: projectGeography.attributes,
-        };
+  const projectsFeatureCollection = React.useMemo(() => {
+    const projectGeographiesFeatureCollection =
+      projectsGeographies?.project_geography
+        ? projectsGeographies?.project_geography.reduce(
+            (acc, projectGeography) => {
+              const projectGeographyFeature = {
+                type: "Feature",
+                geometry: projectGeography.geography,
+                properties: projectGeography.attributes,
+              };
 
-        if (doesProjectIdExist) {
-          return {
-            ...acc,
-            [projectGeography.project_id]: {
-              type: "FeatureCollection",
-              features: [
-                ...acc[projectGeography.project_id].features,
-                projectGeographyFeature,
-              ],
+              return {
+                ...acc,
+                features: [...acc.features, projectGeographyFeature],
+              };
             },
-          };
-        } else {
-          return {
-            ...acc,
-            [projectGeography.project_id]: {
-              type: "FeatureCollection",
-              features: [projectGeographyFeature],
-            },
-          };
-        }
-      }, {});
+            { type: "FeatureCollection", features: [] }
+          )
+        : { type: "FeatureCollection", features: [] };
 
-    return projectGeographiesByProjectId;
+    return projectGeographiesFeatureCollection;
   }, [projectsGeographies]);
 
   return (
@@ -72,7 +51,7 @@ const ProjectsListViewMap = ({ data }) => {
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
       <ProjectsMap
         ref={mapRef}
-        projectsFeatureCollections={projectsFeatureCollections}
+        projectsFeatureCollection={projectsFeatureCollection}
         loading={loading}
       />
     </>
