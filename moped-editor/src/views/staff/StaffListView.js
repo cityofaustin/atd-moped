@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Card, Container, CircularProgress } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";
 
 import Page from "src/components/Page";
 import { GET_ALL_USERS } from "src/queries/staff";
@@ -61,7 +61,7 @@ const staffColumns = [
   {
     headerName: "Workgroup",
     field: "moped_workgroup",
-    valueGetter: (props) => props.row.moped_workgroup.workgroup_name,
+    valueGetter: (value) => value.workgroup_name,
     width: 300,
   },
   {
@@ -85,13 +85,13 @@ const staffColumns = [
     headerName: "Active",
     field: "is_deleted",
     // if the user has been deleted (is_deleted === True), then they are not active
-    valueGetter: (props) => (props.value ? "No" : "Yes"),
+    valueGetter: (value) => (value ? "No" : "Yes"),
   },
   {
     headerName: "Last seen",
     field: "last_seen_date",
     type: "date",
-    valueGetter: (props) => (props.value ? new Date(props.value) : null),
+    valueGetter: (value) => (value ? new Date(value) : null),
     width: 200,
   },
 ];
@@ -116,7 +116,7 @@ const StaffListView = () => {
             <AddUserButton />
           </Box>
           <Card>
-            <DataGrid
+            <DataGridPro
               disableRowSelectionOnClick
               rows={data?.moped_users}
               columns={staffColumns}
