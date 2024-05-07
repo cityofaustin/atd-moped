@@ -194,7 +194,7 @@ export const formatProjectActivity = (change, lookupList) => {
     const changeValue =
       // check truthiness to prevent rendering String(null) as "null"
       !!changeData.new[changedField] &&
-      String(changeData.new[changedField]).length > 0
+        String(changeData.new[changedField]).length > 0
         ? changeData.new[changedField]
         : "(none)";
     return {
