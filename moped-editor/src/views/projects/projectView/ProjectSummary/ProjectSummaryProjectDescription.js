@@ -49,26 +49,30 @@ const ProjectSummaryProjectDescription = ({
    * Saves the new project description...
    */
   const handleProjectDescriptionSave = () => {
-    updateProjectDescription({
-      variables: {
-        projectId: projectId,
-        description: description,
-      },
-      refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
-    })
-      .then((data) => {
-        setEditMode(false);
-        snackbarHandle(true, "Project description updated.", "success");
+    if (description.trim().length > 0) {
+      updateProjectDescription({
+        variables: {
+          projectId: projectId,
+          description: description,
+        },
+        refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update project description: " + String(err),
-          "error"
-        );
-        handleProjectDescriptionClose();
-      });
-    setEditMode(false);
+        .then((data) => {
+          setEditMode(false);
+          snackbarHandle(true, "Project description updated.", "success");
+        })
+        .catch((err) => {
+          snackbarHandle(
+            true,
+            "Failed to update project description: " + String(err),
+            "error"
+          );
+          handleProjectDescriptionClose();
+        });
+      setEditMode(false);
+    } else {
+      setDescription(description.trim());
+    }
   };
 
   /**
