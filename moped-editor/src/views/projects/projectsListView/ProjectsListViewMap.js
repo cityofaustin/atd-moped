@@ -28,8 +28,45 @@ const ProjectsListViewMap = ({ data }) => {
     data: projectsGeographies,
   } = useQuery(GET_PROJECTS_GEOGRAPHIES, { variables: { projectIds } });
 
+  const projectsFeatureCollections = React.useMemo(() => {
+    const projectGeographiesByProjectId =
+      projectsGeographies?.project_geography.reduce((acc, projectGeography) => {
+        const doesProjectIdExist = acc.hasOwnProperty(
+          projectGeography.project_id
+        );
+        const projectGeographyFeature = {
+          type: "Feature",
+          geometry: projectGeography.geography,
+          properties: projectGeography.attributes,
+        };
+
+        if (doesProjectIdExist) {
+          return {
+            ...acc,
+            [projectGeography.project_id]: {
+              type: "FeatureCollection",
+              features: [
+                ...acc[projectGeography.project_id].features,
+                projectGeographyFeature,
+              ],
+            },
+          };
+        } else {
+          return {
+            ...acc,
+            [projectGeography.project_id]: {
+              type: "FeatureCollection",
+              features: [projectGeographyFeature],
+            },
+          };
+        }
+      }, {});
+
+    return projectGeographiesByProjectId;
+  }, [projectsGeographies]);
+
   //   console.log(componentsData);
-  console.log(projectsGeographies);
+  console.log(projectsFeatureCollections);
 
   //   useAllComponentsFeatureCollection
 
