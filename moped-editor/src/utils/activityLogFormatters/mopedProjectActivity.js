@@ -123,7 +123,7 @@ export const formatProjectActivity = (change, lookupList) => {
     // If the update is an object, check first for a null object
     if (typeof changeData.new[changedField] === "object") {
       // if the new field is null, it is because something was removed
-      if (lookupList[changeData.new[changedField]] == null) {
+      if (lookupList[changeData.new[changedField]] === null) {
         return getRemovedField(changedField);
         // if the update truly is an object, show just the field name that was updated
       } else {
