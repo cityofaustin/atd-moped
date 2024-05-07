@@ -38,6 +38,7 @@ const staffColumns = [
     width: 50,
     sortable: false,
     filterable: false,
+    hideable: false,
   },
   {
     headerName: "First name",
