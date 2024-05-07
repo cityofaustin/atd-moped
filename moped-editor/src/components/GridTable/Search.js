@@ -128,7 +128,7 @@ const Search = ({
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
-            <Grid item sm={12} md className={classes.gridSearchPadding}>
+            <Grid item xs={12} md className={classes.gridSearchPadding}>
               <SearchBar
                 searchFieldValue={searchFieldValue}
                 setSearchFieldValue={setSearchFieldValue}
@@ -143,7 +143,7 @@ const Search = ({
                 resetSimpleSearch={resetSimpleSearch}
               />
             </Grid>
-            <Grid item sm={12} md="auto" className={classes.downloadButtonGrid}>
+            <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
               <div>
                 {queryConfig.showExport && (
                   <>
