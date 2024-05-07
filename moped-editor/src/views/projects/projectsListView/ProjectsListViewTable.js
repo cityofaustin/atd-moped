@@ -126,6 +126,13 @@ const ProjectsListViewTable = () => {
     queryName: "ProjectListExport",
   });
 
+  const { query: mapQuery } = useGetProjectListView({
+    columnsToReturn: ["project_id"],
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListViewMap",
+  });
+
   const {
     data: projectListViewData,
     loading,
@@ -151,6 +158,10 @@ const ProjectsListViewTable = () => {
     setColumnDownloadOption: setColumnDownloadOption,
     setDownloadingDialogOpen: setDownloadingDialogOpen,
     visibleColumns: visibleColumnsToReturnInExport,
+  });
+
+  const { data: projectMapViewData } = useQuery(mapQuery, {
+    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
   });
 
   /**
@@ -284,10 +295,7 @@ const ProjectsListViewTable = () => {
               />
             )}
             {showMapView && (
-              <ProjectsListViewMap
-                searchWhereString={searchWhereString}
-                advancedSearchWhereString={advancedSearchWhereString}
-              />
+              <ProjectsListViewMap projectMapViewData={projectMapViewData} />
             )}
           </Box>
         </Paper>
