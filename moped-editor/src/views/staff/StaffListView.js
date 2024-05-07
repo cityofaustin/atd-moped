@@ -68,11 +68,11 @@ const staffColumns = [
   {
     headerName: "Role",
     field: "roles",
-    renderCell: (props) => {
-      if (!props.value || !props.value[0]) {
+    valueGetter: value => {
+      if (!value || !value[0]) {
         return "N/A";
       }
-      const role = props.value[0].replace("moped-", "");
+      const role = value[0].replace("moped-", "");
       return role.charAt(0).toUpperCase() + role.slice(1);
     },
     width: 125,

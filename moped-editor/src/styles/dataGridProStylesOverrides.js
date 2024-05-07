@@ -1,5 +1,5 @@
 // per the MUI datagrid docs: When the height of a row is set to "auto", the final height will follow exactly
-// the content size and ignore the density. the docs recommend overriding the density style in order to have 
+// the content size and ignore the density. the docs recommend overriding the density style in order to have
 // compact density along with get row height auto
 
 const dataGridProStyleOverrides = {
