@@ -39,8 +39,8 @@ export const helpItems = [
   },
   {
     linkType: "external",
-    link: "https://atd-dts.gitbook.io/moped/",
-    title: "User guide ",
+    link: "https://atd-dts.gitbook.io/moped-documentation/user-guides/getting-started",
+    title: "User guides ",
     Icon: <HelpOutlineOutlinedIcon fontSize="small" />,
   },
   {
