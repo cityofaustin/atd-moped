@@ -1017,6 +1017,8 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
       project_name
       component_id
       geography
+      attributes
+      component_name
     }
   }
 `;

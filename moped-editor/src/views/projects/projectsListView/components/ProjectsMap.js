@@ -9,8 +9,13 @@ import {
 } from "../../projectView/ProjectComponents/mapSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 
-export default React.forwardRef(function ProjectsMap(_, ref) {
+export default React.forwardRef(function ProjectsMap(
+  { projectsFeatureCollections, loading },
+  ref
+) {
   const [basemapKey, setBasemapKey] = useState("streets");
+
+  console.log({ projectsFeatureCollections, loading });
 
   return (
     <MapGL

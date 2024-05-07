@@ -1,6 +1,7 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import ProjectsMap from "./components/ProjectsMap";
+import Alert from "@mui/material/Alert";
 import {
   GET_PROJECTS_COMPONENTS,
   GET_PROJECTS_GEOGRAPHIES,
@@ -28,6 +29,7 @@ const ProjectsListViewMap = ({ data }) => {
     data: projectsGeographies,
   } = useQuery(GET_PROJECTS_GEOGRAPHIES, { variables: { projectIds } });
 
+  /* Translate project geographies returned for filtered projects into a map of feature collection by project ID */
   const projectsFeatureCollections = React.useMemo(() => {
     const projectGeographiesByProjectId =
       projectsGeographies?.project_geography.reduce((acc, projectGeography) => {
@@ -65,12 +67,16 @@ const ProjectsListViewMap = ({ data }) => {
     return projectGeographiesByProjectId;
   }, [projectsGeographies]);
 
-  //   console.log(componentsData);
-  console.log(projectsFeatureCollections);
-
-  //   useAllComponentsFeatureCollection
-
-  return <ProjectsMap ref={mapRef} />;
+  return (
+    <>
+      {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
+      <ProjectsMap
+        ref={mapRef}
+        projectsFeatureCollections={projectsFeatureCollections}
+        loading={loading}
+      />
+    </>
+  );
 };
 
 export default ProjectsListViewMap;
