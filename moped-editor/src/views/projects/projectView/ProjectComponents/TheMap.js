@@ -105,7 +105,7 @@ export default function TheMap({
         type: "show_error",
         payload: { message: "Zoom in to select features", severity: "error" },
       });
-    } else if (isCreatingComponent || isEditingComponent) {
+    } else {
       errorMessageDispatch({ type: "hide_error" });
     }
   }, [
