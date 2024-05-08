@@ -114,6 +114,7 @@ const Filters = ({
   resetSimpleSearch,
   isOr,
   setIsOr,
+  setSearchParams,
 }) => {
   /**
    * The styling of the search bar
@@ -121,7 +122,7 @@ const Filters = ({
    * @default
    */
   const classes = useStyles();
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [searchParams] = useSearchParams();
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 

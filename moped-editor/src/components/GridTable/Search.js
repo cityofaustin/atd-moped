@@ -185,6 +185,7 @@ const Search = ({
             resetSimpleSearch={resetSimpleSearch}
             isOr={isOr}
             setIsOr={setIsOr}
+            setSearchParams={setSearchParams}
           />
         </Paper>
       </Popper>
