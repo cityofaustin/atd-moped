@@ -85,7 +85,7 @@ const Search = ({
   const classes = useStyles();
   const divRef = React.useRef();
 
-  let [searchParams, setSearchParams] = useSearchParams();
+  let [, setSearchParams] = useSearchParams();
 
   /**
    * The contents of the search box in SearchBar
@@ -186,7 +186,6 @@ const Search = ({
             resetSimpleSearch={resetSimpleSearch}
             isOr={isOr}
             setIsOr={setIsOr}
-            searchParams={searchParams}
             setSearchParams={setSearchParams}
           />
         </Paper>
