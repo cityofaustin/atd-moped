@@ -122,7 +122,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
                 <Button
                   variant="contained"
                   color="primary"
-                  size="large"
                   startIcon={<AddCircleIcon />}
                   ref={addActionRef}
                   onClick={props.action.onClick}
