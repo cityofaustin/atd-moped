@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
@@ -108,14 +108,12 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const Filters = ({
-  filters,
   setFilters,
   handleAdvancedSearchClose,
   filtersConfig,
   resetSimpleSearch,
   isOr,
   setIsOr,
-  searchParams,
   setSearchParams,
 }) => {
   /**
@@ -129,14 +127,24 @@ const Filters = ({
 
   if (error) console.error(error);
 
+  let [searchParams] = useSearchParams();
+
   /* Consume existing filters or start with an empty filter if none exist */
   const initialFilterParameters = useMemo(() => {
-    if (filters.length > 0) {
-      return filters;
-    } else {
-      return [generateEmptyFilter()];
+    if (Array.from(searchParams).length > 0) {
+      const filterSearchParams = searchParams.get(
+        advancedSearchFilterParamName
+      );
+      if (filterSearchParams === null) return [];
+
+      try {
+        return JSON.parse(filterSearchParams);
+      } catch {
+        return [];
+      }
     }
-  }, [filters]);
+    return [];
+  }, [searchParams]);
 
   /**
    * The current local filter parameters so that we can store updated filters and
@@ -148,7 +156,6 @@ const Filters = ({
   const [filterParameters, setFilterParameters] = useState(
     initialFilterParameters
   );
-  const [searchParameters, setSearchParameters] = useState();
 
   /* Track toggle value so we update the query value in handleApplyButtonClick */
   const [isOrToggleValue, setIsOrToggleValue] = useState(isOr);
@@ -237,26 +244,9 @@ const Filters = ({
 
     const remainingFiltersCount = filtersNewState.length;
 
-    // if (remainingFiltersCount === 0) {
-    //   /* Clear search params since we have no advanced filters */
-    //   setSearchParams((prevSearchParams) => {
-    //     prevSearchParams.delete(advancedSearchFilterParamName);
-    //     prevSearchParams.delete(advancedSearchIsOrParamName);
-
-    //     return prevSearchParams;
-    //   });
-    // } else
     if (remainingFiltersCount === 1) {
       /* Reset isOr to false (all/and) if there is only one filter left */
       setIsOrToggleValue(false);
-      // } else {
-      //   /* Remove the details of the removed filter from search params */
-      //   const jsonParamString = JSON.stringify(filtersNewState);
-      //   setSearchParams((prevSearchParams) => {
-      //     prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-
-      //     return prevSearchParams;
-      //   });
     }
   };
 
@@ -627,7 +617,7 @@ const Filters = ({
               handleApplyValidation(filterParameters, filtersConfig) !== null
             }
           >
-            Search
+            Apply
           </Button>
         </Grid>
       </Grid>
