@@ -114,6 +114,7 @@ const Filters = ({
   resetSimpleSearch,
   isOr,
   setIsOr,
+  searchParams,
   setSearchParams,
 }) => {
   /**
@@ -122,7 +123,6 @@ const Filters = ({
    * @default
    */
   const classes = useStyles();
-  let [searchParams] = useSearchParams();
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 

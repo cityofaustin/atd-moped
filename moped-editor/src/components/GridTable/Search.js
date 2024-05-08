@@ -85,7 +85,7 @@ const Search = ({
   const classes = useStyles();
   const divRef = React.useRef();
 
-  let [, setSearchParams] = useSearchParams();
+  let [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * The contents of the search box in SearchBar
@@ -186,6 +186,7 @@ const Search = ({
             isOr={isOr}
             setIsOr={setIsOr}
             setSearchParams={setSearchParams}
+            searchParams={searchParams}
           />
         </Paper>
       </Popper>
