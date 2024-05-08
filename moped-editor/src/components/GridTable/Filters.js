@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
 import { useMakeFilterState } from "./helpers";
@@ -284,8 +283,6 @@ const Filters = ({
       setIsOr(isOrToggleValue);
       setFilters(filterParameters);
     } else {
-      /* If we have no advanced filters, reset query state */
-
       /* Clear search params since we have no advanced filters */
       setSearchParams((prevSearchParams) => {
         prevSearchParams.delete(advancedSearchFilterParamName);
@@ -293,6 +290,7 @@ const Filters = ({
 
         return prevSearchParams;
       });
+      /* If we have no advanced filters, reset query state */
       setFilters([]);
       setIsOr(false);
     }
