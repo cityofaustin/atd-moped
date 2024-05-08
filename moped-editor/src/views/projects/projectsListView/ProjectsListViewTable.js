@@ -244,7 +244,6 @@ const ProjectsListViewTable = () => {
                 localeText={{ noRowsLabel: "No projects found." }}
                 pagination
                 paginationMode="server"
-                localeText={{ noRowsLabel: "No projects found." }}
                 paginationModel={{
                   page: queryOffset / queryLimit,
                   pageSize: queryLimit,
