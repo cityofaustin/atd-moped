@@ -7,7 +7,7 @@ import {
   mapParameters,
   initialViewState,
 } from "../../projectView/ProjectComponents/mapSettings";
-import { MAP_STYLES } from "../../projectView/ProjectComponents/mapStyleSettings";
+import { MAP_STYLES } from "./mapStyleSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 export default React.forwardRef(function ProjectsMap(
