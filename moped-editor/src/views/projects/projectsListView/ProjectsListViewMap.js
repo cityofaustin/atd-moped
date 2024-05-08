@@ -5,9 +5,13 @@ import Alert from "@mui/material/Alert";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
 
-const ProjectsListViewMap = ({ projectMapViewData }) => {
+const ProjectsListViewMap = ({ mapQuery, fetchPolicy }) => {
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
+
+  const { data: projectMapViewData } = useQuery(mapQuery, {
+    fetchPolicy,
+  });
 
   const projectDataById = React.useMemo(
     () =>

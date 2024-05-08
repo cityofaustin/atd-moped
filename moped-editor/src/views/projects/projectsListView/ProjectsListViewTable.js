@@ -160,10 +160,6 @@ const ProjectsListViewTable = () => {
     visibleColumns: visibleColumnsToReturnInExport,
   });
 
-  const { data: projectMapViewData } = useQuery(mapQuery, {
-    fetchPolicy: PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy,
-  });
-
   /**
    * Handles the header click for sorting asc/desc.
    * @param {Array.Object} sortModel, [{field, sort}]
@@ -295,7 +291,12 @@ const ProjectsListViewTable = () => {
               />
             )}
             {showMapView && (
-              <ProjectsListViewMap projectMapViewData={projectMapViewData} />
+              <ProjectsListViewMap
+                mapQuery={mapQuery}
+                fetchPolicy={
+                  PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
+                }
+              />
             )}
           </Box>
         </Paper>
