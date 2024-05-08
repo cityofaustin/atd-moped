@@ -23,13 +23,8 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
   );
 
   const projectIds = React.useMemo(
-    () =>
-      projectMapViewData
-        ? projectMapViewData?.project_list_view?.map(
-            (project) => project.project_id
-          )
-        : [],
-    [projectMapViewData]
+    () => Object.keys(projectDataById),
+    [projectDataById]
   );
 
   const {

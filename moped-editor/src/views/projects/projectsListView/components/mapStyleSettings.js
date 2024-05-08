@@ -1,5 +1,4 @@
 import {
-  COLORS,
   pointsCircleRadiusStops,
   lineWidthStops,
 } from "../../projectView/ProjectComponents/mapStyleSettings";
