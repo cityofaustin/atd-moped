@@ -31,7 +31,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         filterable: false,
         sortable: false,
         defaultVisible: true,
-        width: 125,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
@@ -223,7 +222,6 @@ const ProjectWorkActivitiesTable = () => {
           onColumnVisibilityModelChange={(newModel) =>
             setHiddenColumns(newModel)
           }
-          initialState={{ pinnedColumns: { right: ['Edit'] } }}
           toolbar
           density="comfortable"
           disableRowSelectionOnClick
