@@ -89,11 +89,11 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "task_orders",
         defaultVisible: true,
         width: 150,
-        valueGetter: (field) => field?.map((tk) => tk.task_order).join(", "),
+        valueGetter: (field) => field?.map((tk) => tk.display_name).join(", "),
         renderCell: ({ row }) => (
           <div>
             {row.task_orders?.map((tk) => (
-              <div key={tk.task_order}>{tk.task_order}</div>
+              <div key={tk.task_order}>{tk.display_name}</div>
             ))}
           </div>
         ),
