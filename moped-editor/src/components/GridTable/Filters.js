@@ -2,6 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
+import { useMakeFilterState } from "./helpers";
 
 import {
   Button,
@@ -130,21 +131,10 @@ const Filters = ({
   let [searchParams] = useSearchParams();
 
   /* Consume existing filters or start with an empty filter if none exist */
-  const initialFilterParameters = useMemo(() => {
-    if (Array.from(searchParams).length > 0) {
-      const filterSearchParams = searchParams.get(
-        advancedSearchFilterParamName
-      );
-      if (filterSearchParams === null) return [];
-
-      try {
-        return JSON.parse(filterSearchParams);
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }, [searchParams]);
+  const initialFilterParameters = useMakeFilterState(
+    searchParams,
+    advancedSearchFilterParamName
+  );
 
   /**
    * The current local filter parameters so that we can store updated filters and

@@ -4,32 +4,11 @@ import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf
 import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
 import { addDays, parseISO, format } from "date-fns";
+import { useMakeFilterState } from "src/components/GridTable/helpers";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
 export const advancedSearchIsOrParamName = "isOr";
-
-/**
- * if filter exists in url, get the values and try to parse them
- * Used to initialize filter state
- * @return Object
- */
-const useMakeFilterState = (searchParams) =>
-  useMemo(() => {
-    if (Array.from(searchParams).length > 0) {
-      const filterSearchParams = searchParams.get(
-        advancedSearchFilterParamName
-      );
-      if (filterSearchParams === null) return [];
-
-      try {
-        return JSON.parse(filterSearchParams);
-      } catch {
-        return [];
-      }
-    }
-    return [];
-  }, [searchParams]);
 
 /**
  * Build an array of filter strings to be used in generating the advanced search where string
@@ -109,7 +88,10 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 export const useAdvancedSearch = () => {
   /* Get advanced filters settings from search params if they exist */
   let [searchParams] = useSearchParams();
-  const initialFilterState = useMakeFilterState(searchParams);
+  const initialFilterState = useMakeFilterState(
+    searchParams,
+    advancedSearchFilterParamName
+  );
 
   /* Determine or/any from search params if it exists */
   const isOrFromSearchParams = searchParams.get(advancedSearchIsOrParamName);
