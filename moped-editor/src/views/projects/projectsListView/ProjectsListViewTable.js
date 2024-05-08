@@ -241,6 +241,7 @@ const ProjectsListViewTable = () => {
                 rows={data.project_list_view}
                 onSortModelChange={handleSortClick}
                 disableColumnFilter
+                localeText={{ noRowsLabel: "No projects found." }}
                 pagination
                 paginationMode="server"
                 localeText={{ noRowsLabel: "No projects found." }}
