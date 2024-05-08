@@ -88,7 +88,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         headerName: "Task Order(s)",
         field: "task_orders",
         defaultVisible: true,
-        width: 150,
+        width: 200,
         valueGetter: (field) => field?.map((tk) => tk.display_name).join(", "),
         renderCell: ({ row }) => (
           <div>
