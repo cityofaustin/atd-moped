@@ -15,6 +15,7 @@ export default React.forwardRef(function ProjectsMap(
   ref
 ) {
   // TODO: Style points and lines based on project status
+  console.log(projectsFeatureCollection);
 
   const [basemapKey, setBasemapKey] = useState("streets");
 

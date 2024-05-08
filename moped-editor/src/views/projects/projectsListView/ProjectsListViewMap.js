@@ -8,6 +8,21 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
 
+  const projectDataById = React.useMemo(
+    () =>
+      projectMapViewData
+        ? projectMapViewData?.project_list_view.reduce((acc, project) => {
+            return {
+              ...acc,
+              [project.project_id]: project,
+            };
+          }, {})
+        : {},
+    [projectMapViewData]
+  );
+
+  console.log(projectDataById);
+
   const projectIds = React.useMemo(
     () =>
       projectMapViewData
@@ -32,7 +47,13 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
               const projectGeographyFeature = {
                 type: "Feature",
                 geometry: projectGeography.geography,
-                properties: projectGeography.attributes,
+                properties: {
+                  ...(projectGeography.attributes
+                    ? projectGeography.attributes
+                    : {}),
+                  currentPhase:
+                    projectDataById[projectGeography.project_id]?.current_phase,
+                },
               };
 
               return {
