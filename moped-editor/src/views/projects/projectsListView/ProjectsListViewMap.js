@@ -21,8 +21,6 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
     [projectMapViewData]
   );
 
-  console.log(projectDataById);
-
   const projectIds = React.useMemo(
     () =>
       projectMapViewData
@@ -51,8 +49,9 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
                   ...(projectGeography.attributes
                     ? projectGeography.attributes
                     : {}),
-                  currentPhase:
-                    projectDataById[projectGeography.project_id]?.current_phase,
+                  phaseKey:
+                    projectDataById[projectGeography.project_id]
+                      ?.current_phase_key,
                 },
               };
 
@@ -66,7 +65,7 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
         : { type: "FeatureCollection", features: [] };
 
     return projectGeographiesFeatureCollection;
-  }, [projectsGeographies]);
+  }, [projectsGeographies, projectDataById]);
 
   return (
     <>
