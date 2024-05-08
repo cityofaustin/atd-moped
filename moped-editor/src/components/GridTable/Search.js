@@ -179,7 +179,6 @@ const Search = ({
       >
         <Paper className={classes.advancedSearchPaper}>
           <Filters
-            filters={filters}
             setFilters={setFilters}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}

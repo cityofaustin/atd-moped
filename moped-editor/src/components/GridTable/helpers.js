@@ -139,9 +139,11 @@ export const getDefaultOperator = (filterConfigForField) => {
 };
 
 /**
- * if filter exists in url, get the values and try to parse them
+ * If filter exists in url, get the values and try to parse them
  * Used to initialize filter state
- * @return Object
+ * @param {Object} searchParams - The URL search parameters
+ * @param {String} advancedSearchFilterParamName
+ * @return {Object}
  */
 export const useMakeFilterState = (
   searchParams,
@@ -153,7 +155,6 @@ export const useMakeFilterState = (
         advancedSearchFilterParamName
       );
       if (filterSearchParams === null) return [];
-
       try {
         return JSON.parse(filterSearchParams);
       } catch {
