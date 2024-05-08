@@ -100,7 +100,6 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Filter Search Component aka Advanced Search
- * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
@@ -128,7 +127,7 @@ const Filters = ({
 
   if (error) console.error(error);
 
-  /* Consume existing filters or start with an empty filter if none exist */
+  /* Consume existing URL search params or start with an empty filter if none exist */
   const initialFilterParameters = useMakeFilterState(
     searchParams,
     advancedSearchFilterParamName
@@ -136,7 +135,7 @@ const Filters = ({
 
   /**
    * The current local filter parameters so that we can store updated filters and
-   * then apply them to the query when the search button is clicked.
+   * then apply them to the query when the apply button is clicked.
    * @type {Object} filterParameters - Contains all the current filters
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
