@@ -103,6 +103,8 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
  * @param {Function} resetSimpleSearch - Function to reset the simple search
+ * @param {Object} searchParams - The URL search params
+ * @param {Function} setSearchParams - Function to set the URL search params
  * @return {JSX.Element}
  * @constructor
  */
