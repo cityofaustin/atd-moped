@@ -13,10 +13,10 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.bluePrimary,
+        "circle-stroke-color": ["get", "color"],
         "circle-stroke-width": 2,
         "circle-stroke-opacity": 0.9,
-        "circle-color": COLORS.blueLight,
+        "circle-color": ["get", "color"],
         "circle-opacity": 0.9,
       },
     },
@@ -29,12 +29,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineWidthStops,
-        "line-color": [
-          "case",
-          ["boolean", ["feature-state", "hover"], false],
-          COLORS.pinkDark,
-          COLORS.bluePrimary,
-        ],
+        "line-color": ["get", "color"],
       },
       layout: {
         "line-cap": "round",

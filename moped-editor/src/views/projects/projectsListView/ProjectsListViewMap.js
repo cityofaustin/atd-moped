@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
+import { styleMapping } from "../projectView/ProjectStatusBadge";
 
 const ProjectsListViewMap = ({ projectMapViewData }) => {
   /* Store map instance to call Mapbox GL methods where needed */
@@ -42,6 +43,12 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
       projectsGeographies?.project_geography
         ? projectsGeographies?.project_geography.reduce(
             (acc, projectGeography) => {
+              const phaseKey =
+                projectDataById[projectGeography.project_id]?.current_phase_key;
+              const statusBadgeColor = phaseKey
+                ? styleMapping[phaseKey]?.background
+                : styleMapping.default.background;
+
               const projectGeographyFeature = {
                 type: "Feature",
                 geometry: projectGeography.geography,
@@ -49,9 +56,7 @@ const ProjectsListViewMap = ({ projectMapViewData }) => {
                   ...(projectGeography.attributes
                     ? projectGeography.attributes
                     : {}),
-                  phaseKey:
-                    projectDataById[projectGeography.project_id]
-                      ?.current_phase_key,
+                  color: statusBadgeColor,
                 },
               };
 
