@@ -27,6 +27,7 @@ export const SUMMARY_QUERY = gql`
       project_id
       project_name
       project_name_secondary
+      project_name_full
       project_description
       ecapris_subproject_id
       knack_project_id
@@ -38,6 +39,7 @@ export const SUMMARY_QUERY = gql`
       is_deleted
       moped_project {
         project_name
+        project_name_full
       }
       moped_proj_components(
         where: {
@@ -171,8 +173,8 @@ export const TEAM_QUERY = gql`
       ) {
         notes
         project_personnel_id
-        date_added
-        added_by
+        created_at
+        created_by_user_id
         is_deleted
         moped_user {
           first_name
@@ -759,7 +761,7 @@ export const PROJECT_SUMMARY_STATUS_UPDATE_INSERT = gql`
 `;
 
 export const PROJECT_UPDATE_SPONSOR = gql`
-  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdateSponsor($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { project_sponsor: $fieldValueId }
@@ -770,7 +772,7 @@ export const PROJECT_UPDATE_SPONSOR = gql`
 `;
 
 export const PROJECT_UPDATE_LEAD = gql`
-  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdateLead($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { project_lead_id: $fieldValueId }
@@ -781,7 +783,7 @@ export const PROJECT_UPDATE_LEAD = gql`
 `;
 
 export const PROJECT_UPDATE_PUBLIC_PROCESS = gql`
-  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int!) {
+  mutation ProjectUpdatePublicProcess($projectId: Int!, $fieldValueId: Int) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
       _set: { public_process_status_id: $fieldValueId }
@@ -924,10 +926,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
 `;
 
 export const UPDATE_PROJECT_NAMES_QUERY = gql`
-  mutation UpdateProjectName($projectId: Int!, $projectName: String!, $projectNameSecondary: String) {
+  mutation UpdateProjectName(
+    $projectId: Int!
+    $projectName: String!
+    $projectNameSecondary: String
+  ) {
     update_moped_project_by_pk(
       pk_columns: { project_id: $projectId }
-      _set: { project_name: $projectName, project_name_secondary: $projectNameSecondary}
+      _set: {
+        project_name: $projectName
+        project_name_secondary: $projectNameSecondary
+      }
     ) {
       project_name
       project_name_secondary
@@ -971,7 +980,7 @@ export const PROJECT_OPTIONS = gql`
       }
     ) {
       project_id
-      project_name
+      project_name_full
     }
   }
 `;

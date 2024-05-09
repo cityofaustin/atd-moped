@@ -49,7 +49,7 @@ const NavigationSearchResults = ({
           key={result.project_id}
         >
           <ListItemText
-            primary={result.project_name}
+            primary={result.project_name_full}
             secondary={result.project_id}
           />
         </ListItemLink>

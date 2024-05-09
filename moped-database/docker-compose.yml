@@ -1,6 +1,4 @@
 # Architecture Independent Docker Stack Components for Moped Development Environment
-
-version: '3.7'
 services:
     hasura:
         image: hasura/graphql-engine:v2.38.1
