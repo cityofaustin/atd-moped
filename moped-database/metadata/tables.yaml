@@ -3031,8 +3031,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - entity_id
           - is_deleted
@@ -3041,8 +3041,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - entity_id
           - is_deleted
@@ -3094,7 +3094,7 @@
         filter: {}
         check: {}
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
     - role: moped-editor
       permission:
         columns:
@@ -3104,7 +3104,7 @@
         filter: {}
         check: {}
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
   event_triggers:
     - name: activity_log_moped_proj_partners
       definition:
