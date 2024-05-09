@@ -201,15 +201,25 @@ export const ProjectActivityLogTableMaps = {
   moped_proj_partners: {
     label: "Partner",
     fields: {
-      created_by_user_id: {
+      date_added: {
         icon: "",
-        label: "added By",
-        type: "int4",
+        label: "date added",
+        data_type: "timestamptz",
       },
       created_at: {
         icon: "",
-        label: "date added",
-        type: "timestamptz",
+        label: "created at",
+        data_type: "timestamptz",
+      },
+      added_by: {
+        icon: "",
+        label: "added by",
+        data_type: "integer",
+      },
+      added_by_user_id: {
+        icon: "",
+        label: "added by user",
+        data_type: "integer",
       },
       proj_partner_id: {
         icon: "",
