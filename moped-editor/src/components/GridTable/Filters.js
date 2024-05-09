@@ -129,15 +129,14 @@ const Filters = ({
 
   if (error) console.error(error);
 
+  const isEmptyFilterNeeded = true;
+
   /* Consume existing URL search params or start with an empty filter if none exist */
   let initialFilterParameters = useMakeFilterState(
     searchParams,
-    advancedSearchFilterParamName
+    advancedSearchFilterParamName,
+    isEmptyFilterNeeded
   );
-  initialFilterParameters =
-    initialFilterParameters.length > 0
-      ? initialFilterParameters
-      : [generateEmptyFilter()];
 
   /**
    * The current local filter parameters so that we can store updated filters and

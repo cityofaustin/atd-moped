@@ -147,7 +147,8 @@ export const getDefaultOperator = (filterConfigForField) => {
  */
 export const useMakeFilterState = (
   searchParams,
-  advancedSearchFilterParamName
+  advancedSearchFilterParamName,
+  isEmptyFilterNeeded
 ) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
@@ -161,5 +162,5 @@ export const useMakeFilterState = (
         return [];
       }
     }
-    return [];
-  }, [searchParams, advancedSearchFilterParamName]);
+    return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+  }, [searchParams, advancedSearchFilterParamName, isEmptyFilterNeeded]);
