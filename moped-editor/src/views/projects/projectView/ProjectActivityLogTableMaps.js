@@ -219,7 +219,7 @@ export const ProjectActivityLogTableMaps = {
       added_by_user_id: {
         icon: "",
         label: "added by user",
-        data_type: "int4",
+        type: "int4",
       },
       proj_partner_id: {
         icon: "",
