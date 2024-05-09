@@ -204,22 +204,22 @@ export const ProjectActivityLogTableMaps = {
       date_added: {
         icon: "",
         label: "date added",
-        data_type: "timestamptz",
+        type: "timestamptz",
       },
       created_at: {
         icon: "",
         label: "created at",
-        data_type: "timestamptz",
+        type: "timestamptz",
       },
       added_by: {
         icon: "",
         label: "added by",
-        data_type: "integer",
+        type: "int4",
       },
       added_by_user_id: {
         icon: "",
         label: "added by user",
-        data_type: "integer",
+        data_type: "int4",
       },
       proj_partner_id: {
         icon: "",
