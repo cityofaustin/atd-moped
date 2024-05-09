@@ -145,11 +145,11 @@ export const getDefaultOperator = (filterConfigForField) => {
  * @param {String} advancedSearchFilterParamName
  * @return {Object}
  */
-export const useMakeFilterState = (
+export const useMakeFilterState = ({
   searchParams,
   advancedSearchFilterParamName,
-  isEmptyFilterNeeded
-) =>
+  isEmptyFilterNeeded = false,
+}) =>
   useMemo(() => {
     if (Array.from(searchParams).length > 0) {
       const filterSearchParams = searchParams.get(
