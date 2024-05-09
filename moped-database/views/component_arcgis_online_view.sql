@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1712697601393_update_project_list_view_w_full_name/up.sql
+-- Most recent migration: moped-database/migrations/1713896796482_add_full_name_to_list_view/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT

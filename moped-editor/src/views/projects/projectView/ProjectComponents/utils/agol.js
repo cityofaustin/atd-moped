@@ -47,7 +47,10 @@ const deDedupeFeatures = (features, featureIdProp) => {
 on a previous state is a great use case for useReducer, because
 it allows us to work around an infinite recursion scenario in useEffect  */
 const featureReducer = (geojson, { features, featureIdProp }) => {
-  const allFeatures = [...geojson.features, ...features];
+  const currentFeatures = geojson.features.length > 0 ? geojson.features : [];
+  const newFeatures = features.length > 0 ? features : [];
+
+  const allFeatures = [...currentFeatures, ...newFeatures];
   const uniqueFeatures = deDedupeFeatures(allFeatures, featureIdProp);
   return { type: "FeatureCollection", features: uniqueFeatures };
 };

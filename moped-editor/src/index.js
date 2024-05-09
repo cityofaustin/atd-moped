@@ -7,6 +7,7 @@ import App from "./App";
 
 import Amplify, { Hub } from "aws-amplify";
 
+
 import config from "./config";
 
 // https://aws-amplify.github.io/docs/js/hub
@@ -46,6 +47,7 @@ Amplify.configure({
       : {}),
   },
 });
+
 
 ReactDOM.render(
   <BrowserRouter>

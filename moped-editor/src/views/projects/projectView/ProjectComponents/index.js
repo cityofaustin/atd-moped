@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useQuery } from "@apollo/client";
 import { useParams } from "react-router";
 import makeStyles from "@mui/styles/makeStyles";
@@ -28,9 +28,8 @@ import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { useProjectComponents } from "./utils/useProjectComponents";
 import NewComponentToolbar from "./NewComponentToolbar";
-import RelatedComponentsList from "./RelatedComponentsList";
-import ProjectComponentsList from "./ProjectComponentsList";
 import DraftComponentList from "./DraftComponentList";
+import ProjectComponentsList from "./ProjectComponentsList";
 
 export const drawerWidth = 350;
 
@@ -138,10 +137,10 @@ export default function MapView({
   });
 
   /* Bundle updates that need to be made any time a component UI element is clicked */
-  const makeClickedComponentUpdates = (clickedComponent) => {
+  const makeClickedComponentUpdates = useCallback((clickedComponent) => {
     setClickedComponent(clickedComponent);
     updateClickedComponentIdInSearchParams(clickedComponent);
-  };
+  }, []);
 
   const {
     onSaveDraftComponent,
@@ -212,19 +211,22 @@ export default function MapView({
   if (error) console.log(error);
 
   /* fits clickedComponent to map bounds - called from component list item secondary action */
-  const onClickZoomToComponent = (component) => {
-    const features = getAllComponentFeatures(component);
-    const featureCollection = { type: "FeatureCollection", features };
+  const onClickZoomToComponent = useCallback(
+    (component) => {
+      const features = getAllComponentFeatures(component);
+      const featureCollection = { type: "FeatureCollection", features };
 
-    makeClickedComponentUpdates(component);
+      makeClickedComponentUpdates(component);
 
-    // move the map
-    zoomMapToFeatureCollection(
-      mapRef,
-      featureCollection,
-      fitBoundsOptions.zoomToClickedComponent
-    );
-  };
+      // move the map
+      zoomMapToFeatureCollection(
+        mapRef,
+        featureCollection,
+        fitBoundsOptions.zoomToClickedComponent
+      );
+    },
+    [makeClickedComponentUpdates]
+  );
 
   /* Start creating and clear clicked component and draft edit states to deselect component */
   const onStartCreatingComponent = () => {
@@ -232,6 +234,15 @@ export default function MapView({
     editDispatch({ type: "clear_draft_component" });
     makeClickedComponentUpdates(null);
   };
+
+  const getIsExpanded = useCallback(
+    (component) =>
+      clickedComponent?.project_component_id === component.project_component_id,
+    [clickedComponent]
+  );
+
+  const isNotCreatingOrEditing =
+    !createState.isCreatingComponent && !editState.isEditingComponent;
 
   return (
     <Dialog fullScreen open={true}>
@@ -254,7 +265,7 @@ export default function MapView({
         >
           <PlaceholderToolbar />
           <div className={classes.drawerContainer}>
-            <List>
+            <List sx={{ paddingBottom: 0 }}>
               <NewComponentToolbar
                 createState={createState}
                 editState={editState}
@@ -275,30 +286,24 @@ export default function MapView({
                 onSaveDraftComponent={onSaveDraftComponent}
                 onSaveEditedComponent={onSaveEditedComponent}
               />
+            </List>
+            {isNotCreatingOrEditing ? (
               <ProjectComponentsList
-                createState={createState}
-                editState={editState}
+                projectId={projectId}
                 editDispatch={editDispatch}
-                clickedComponent={clickedComponent}
                 onClickZoomToComponent={onClickZoomToComponent}
                 onEditFeatures={onEditFeatures}
                 projectComponents={projectComponents}
+                allRelatedComponents={allRelatedComponents}
                 setIsDeletingComponent={setIsDeletingComponent}
                 setIsMovingComponent={setIsMovingComponent}
                 setIsClickedComponentRelated={setIsClickedComponentRelated}
                 makeClickedComponentUpdates={makeClickedComponentUpdates}
-              />
-              <RelatedComponentsList
-                createState={createState}
-                editState={editState}
+                getIsExpanded={getIsExpanded}
                 shouldShowRelatedProjects={shouldShowRelatedProjects}
-                clickedComponent={clickedComponent}
-                makeClickedComponentUpdates={makeClickedComponentUpdates}
-                onClickZoomToComponent={onClickZoomToComponent}
-                allRelatedComponents={allRelatedComponents}
-                setIsClickedComponentRelated={setIsClickedComponentRelated}
+                isNotCreatingOrEditing={isNotCreatingOrEditing}
               />
-            </List>
+            ) : null}
           </div>
         </Drawer>
         <main className={classes.content}>

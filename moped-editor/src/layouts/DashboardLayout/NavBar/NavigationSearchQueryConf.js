@@ -28,7 +28,7 @@ export const NavigationSearchQueryConf = {
       },
       type: "Int",
     },
-    project_name: {
+    project_name_full: {
       searchable: true,
       search: {
         operator: "_ilike",

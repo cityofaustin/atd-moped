@@ -5,6 +5,7 @@ import Collapse from "@mui/material/Collapse";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
+import ListItemButton from "@mui/material/ListItemButton";
 import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
@@ -53,9 +54,8 @@ export default function ComponentListItem({
         borderColor: isExpanded ? selectedBorderColor : COLORS.white,
       }}
     >
-      <ListItem
+      <ListItemButton
         dense
-        button
         onClick={onListItemClick}
         className={classes.listItem}
         ref={component._ref}
@@ -78,25 +78,27 @@ export default function ComponentListItem({
             <ZoomInIcon />
           </IconButton>
         </ListItemSecondaryAction>
-      </ListItem>
+      </ListItemButton>
       <Collapse in={isExpanded}>
-        <List component="div" disablePadding dense>
-          {!isComponentMapped && (
-            <ListItem dense className={classes.listItem}>
-              <ListItemText
-                primary={
-                  <Alert severity="error">Component is not mapped</Alert>
-                }
-              />
-            </ListItem>
-          )}
-          {component.description && (
-            <ListItem className={classes.nested}>
-              <ListItemText secondary={component.description} />
-            </ListItem>
-          )}
-          {additionalCollapseListItems}
-        </List>
+        {isExpanded ? (
+          <List component="div" disablePadding dense>
+            {!isComponentMapped && (
+              <ListItem dense className={classes.listItem}>
+                <ListItemText
+                  primary={
+                    <Alert severity="error">Component is not mapped</Alert>
+                  }
+                />
+              </ListItem>
+            )}
+            {component.description && (
+              <ListItem className={classes.nested}>
+                <ListItemText secondary={component.description} />
+              </ListItem>
+            )}
+            {additionalCollapseListItems}
+          </List>
+        ) : null}
       </Collapse>
       <Divider />
     </Box>

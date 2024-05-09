@@ -4,13 +4,14 @@ import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import { useColumns } from "./helpers.js";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
 import {
   PROJECT_LIST_VIEW_QUERY_CONFIG,
   DEFAULT_HIDDEN_COLS,
+  SHOW_ALL_COLS,
 } from "./ProjectsListViewQueryConf";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
 import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
@@ -28,22 +29,12 @@ import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "./ProjectsListViewMap";
 
-/**
- * GridTable Style
- */
 const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "90%",
-  },
   paper: {
     width: "100%",
   },
   table: {
     minWidth: 750,
-  },
-  noResults: {
-    paddingTop: "25px",
-    paddingBottom: "16px",
   },
 }));
 
@@ -242,34 +233,30 @@ const ProjectsListViewTable = () => {
             {!showMapView && data && data.project_list_view && (
               <DataGrid
                 // per the docs: When the height of a row is set to "auto", the final height will follow exactly
-                // the content size and ignore the density. the docs recommend these styles in order to have density
+                // the content size and ignore the density. the docs recommend this style in order to have compact density
                 // along with get row height auto
                 sx={{
                   "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
                     py: "8px",
                   },
-                  "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
-                    py: "15px",
-                  },
-                  "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-                    py: "22px",
+                  "&.MuiDataGrid-root": {
+                    "--DataGrid-containerBackground": "#fff",
+                    "--DataGrid-pinnedBackground": "#fff",
                   },
                 }}
                 density="compact"
                 getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
                 onColumnVisibilityModelChange={(newModel) => {
-                  setHiddenColumns(newModel);
+                  // when someone toggles "show all columns", datagrid's model is an empty object
+                  if (Object.keys(newModel).length > 0) {
+                    setHiddenColumns(newModel);
+                  } else {
+                    setHiddenColumns(SHOW_ALL_COLS);
+                  }
                 }}
                 slots={{
                   toolbar: ProjectListToolbar,
-                }}
-                slotProps={{
-                  columnsPanel: {
-                    // Hiding buttons because when I toggle "show all" its only setting one column to visible
-                    // instead of including every column in the object
-                    disableShowAllButton: true,
-                  },
                 }}
                 columns={columns}
                 getRowId={(row) => row.project_id}
@@ -277,6 +264,8 @@ const ProjectsListViewTable = () => {
                 rows={data.project_list_view}
                 onSortModelChange={handleSortClick}
                 disableColumnFilter
+                localeText={{ noRowsLabel: "No projects found." }}
+                pagination
                 paginationMode="server"
                 paginationModel={{
                   page: queryOffset / queryLimit,
