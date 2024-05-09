@@ -540,12 +540,12 @@ export const ProjectActivityLogTableMaps = {
         label: "project type ID",
         data_type: "integer",
       },
-      created_at: {
+      date_added: {
         icon: "",
         label: "date added",
         data_type: "timestamptz",
       },
-      created_by_user_id: {
+      added_by: {
         icon: "",
         label: "added by",
         data_type: "integer",
