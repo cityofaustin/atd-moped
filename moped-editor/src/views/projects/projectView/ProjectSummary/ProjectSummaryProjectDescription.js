@@ -49,26 +49,30 @@ const ProjectSummaryProjectDescription = ({
    * Saves the new project description...
    */
   const handleProjectDescriptionSave = () => {
-    updateProjectDescription({
-      variables: {
-        projectId: projectId,
-        description: description,
-      },
-      refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
-    })
-      .then((data) => {
-        setEditMode(false);
-        snackbarHandle(true, "Project description updated.", "success");
+    if (description.trim().length > 0) {
+      updateProjectDescription({
+        variables: {
+          projectId: projectId,
+          description: description,
+        },
+        refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update project description: " + String(err),
-          "error"
-        );
-        handleProjectDescriptionClose();
-      });
-    setEditMode(false);
+        .then((data) => {
+          setEditMode(false);
+          snackbarHandle(true, "Project description updated.", "success");
+        })
+        .catch((err) => {
+          snackbarHandle(
+            true,
+            "Failed to update project description: " + String(err),
+            "error"
+          );
+          handleProjectDescriptionClose();
+        });
+      setEditMode(false);
+    } else {
+      setDescription(description.trim());
+    }
   };
 
   /**
@@ -97,13 +101,21 @@ const ProjectSummaryProjectDescription = ({
               fullWidth
               multiline={true}
               minRows={4}
+              error={description.length < 1}
               id="moped-project-description"
               label={null}
               onChange={handleProjectDescriptionChange}
               value={description}
+              helperText={
+                description.length < 1 ? "Description cannot be blank" : ""
+              }
             />
 
-            <IconButton onClick={handleProjectDescriptionSave} size="large">
+            <IconButton
+              onClick={handleProjectDescriptionSave}
+              size="large"
+              disabled={description.length < 1}
+            >
               <Icon>check</Icon>
             </IconButton>
 

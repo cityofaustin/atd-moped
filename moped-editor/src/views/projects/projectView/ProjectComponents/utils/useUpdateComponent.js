@@ -1,4 +1,4 @@
-import { useReducer } from "react";
+import { useCallback, useReducer } from "react";
 import { useMutation } from "@apollo/client";
 import {
   makeLineStringFeatureInsertionData,
@@ -239,7 +239,7 @@ export const useUpdateComponent = ({
 
   const [updateComponentFeatures] = useMutation(UPDATE_COMPONENT_FEATURES);
 
-  const onEditFeatures = () => {
+  const onEditFeatures = useCallback(() => {
     const {
       moped_components: { line_representation },
     } = clickedComponent;
@@ -247,7 +247,7 @@ export const useUpdateComponent = ({
 
     setLinkMode(linkMode);
     editDispatch({ type: "start_map_edit" });
-  };
+  }, [clickedComponent, setLinkMode]);
 
   const onSaveEditedComponent = () => {
     const featureTable =

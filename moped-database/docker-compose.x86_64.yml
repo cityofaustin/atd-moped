@@ -1,6 +1,4 @@
 # X86_64 Builds for Intel Macs, Windows, most Linux, etc.
-version: '3.7'
-
 services:
 
     moped-pgsql:

@@ -26,6 +26,7 @@ export const OPERATORS_WITHOUT_SEARCH_VALUES = [
   "string_is_not_blank",
   "council_districts_array_is_null",
   "council_districts_array_is_not_null",
+  "date_is_null",
 ];
 
 /**
@@ -138,6 +139,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "date_greater_than_equal_to",
         "date_less_than",
         "date_less_than_equal_to",
+        "date_is_null",
       ],
     },
     {
@@ -287,6 +289,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "date_greater_than_equal_to",
         "date_less_than",
         "date_less_than_equal_to",
+        "date_is_null",
       ],
     },
     {
@@ -300,6 +303,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "date_greater_than_equal_to",
         "date_less_than",
         "date_less_than_equal_to",
+        "date_is_null",
       ],
     },
     {

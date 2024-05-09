@@ -305,7 +305,6 @@ const ProjectTeamTable = ({ projectId }) => {
                 <Button
                   variant="contained"
                   color="primary"
-                  size="large"
                   startIcon={<AddCircleIcon />}
                   ref={addActionRef}
                   onClick={props.action.onClick}

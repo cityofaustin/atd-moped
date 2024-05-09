@@ -124,20 +124,20 @@ INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, 
 -- Data for Name: moped_proj_personnel; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 200, '2022-11-12 18:11:16.496855+00', NULL, 'Great designer', 1, false);
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (227, 201, '2022-11-12 18:11:45.61511+00', NULL, 'Friend of the show', 2, false);
-INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, date_added, added_by, notes, user_id, is_deleted) VALUES (229, 207, '2022-11-15 16:49:03.086392+00', NULL, NULL, 1, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (227, 200, '2022-11-12 18:11:16.496855+00', NULL, 'Great designer', 1, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (227, 201, '2022-11-12 18:11:45.61511+00', NULL, 'Friend of the show', 2, false);
+INSERT INTO public.moped_proj_personnel (project_id, project_personnel_id, created_at, created_by_user_id, notes, user_id, is_deleted) VALUES (229, 207, '2022-11-15 16:49:03.086392+00', NULL, NULL, 1, false);
 
 
 --
 -- Data for Name: moped_proj_personnel_roles; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (1, 200, 8, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (2, 201, 5, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (3, 201, 9, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (9, 207, 8, false);
-INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, is_deleted) VALUES (10, 207, 15, false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (1, 200, 8, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (2, 201, 5, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (3, 201, 9, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (9, 207, 8, '2022-11-12 18:11:16.496855+00', false);
+INSERT INTO public.moped_proj_personnel_roles (id, project_personnel_id, project_role_id, created_at, is_deleted) VALUES (10, 207, 15, '2022-11-12 18:11:16.496855+00', false);
 
 
 --
