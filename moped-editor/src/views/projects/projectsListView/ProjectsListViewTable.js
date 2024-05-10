@@ -27,6 +27,7 @@ import {
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -219,18 +220,7 @@ const ProjectsListViewTable = () => {
           >
             {data && data.project_list_view && (
               <DataGridPro
-                // per the docs: When the height of a row is set to "auto", the final height will follow exactly
-                // the content size and ignore the density. the docs recommend this style in order to have compact density
-                // along with get row height auto
-                sx={{
-                  "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {
-                    py: "8px",
-                  },
-                  "&.MuiDataGrid-root": {
-                    "--DataGrid-containerBackground": "#fff",
-                    "--DataGrid-pinnedBackground": "#fff",
-                  },
-                }}
+                sx={dataGridProStyleOverrides}
                 density="compact"
                 getRowHeight={() => "auto"}
                 columnVisibilityModel={hiddenColumns}
@@ -251,6 +241,7 @@ const ProjectsListViewTable = () => {
                 rows={data.project_list_view}
                 onSortModelChange={handleSortClick}
                 disableColumnFilter
+                localeText={{ noRowsLabel: "No projects found." }}
                 pagination
                 paginationMode="server"
                 paginationModel={{

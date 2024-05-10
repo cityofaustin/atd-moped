@@ -182,7 +182,7 @@ const SearchBar = ({
       const fieldFilterConfig = filtersConfig.fields.find(
         (fieldConfig) => fieldConfig.name === filter.field
       );
-      return fieldFilterConfig.label;
+      return fieldFilterConfig?.label;
     });
 
   return (

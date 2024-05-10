@@ -148,7 +148,7 @@ const TagsSection = ({ projectId }) => {
           <Button
             variant="contained"
             color="primary"
-            size="large"
+            size="medium"
             startIcon={<AddCircle />}
             onClick={() => setAddTagMode(true)}
           >

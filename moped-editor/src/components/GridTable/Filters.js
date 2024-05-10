@@ -1,7 +1,7 @@
-import React, { useCallback, useState, useMemo } from "react";
-import { useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
+import { useMakeFilterState } from "./helpers";
 
 import {
   Button,
@@ -99,22 +99,24 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Filter Search Component aka Advanced Search
- * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {Function} setFilters - Set the current filters from useAdvancedSearch hook
  * @param {Function} handleAdvancedSearchClose - Used to close the advanced search
  * @param {Object} filtersConfig - The configuration object for the filters
  * @param {Function} resetSimpleSearch - Function to reset the simple search
+ * @param {Object} searchParams - The URL search params
+ * @param {Function} setSearchParams - Function to set the URL search params
  * @return {JSX.Element}
  * @constructor
  */
 const Filters = ({
-  filters,
   setFilters,
   handleAdvancedSearchClose,
   filtersConfig,
   resetSimpleSearch,
   isOr,
   setIsOr,
+  searchParams,
+  setSearchParams,
 }) => {
   /**
    * The styling of the search bar
@@ -122,24 +124,21 @@ const Filters = ({
    * @default
    */
   const classes = useStyles();
-  let [, setSearchParams] = useSearchParams();
 
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
   if (error) console.error(error);
 
-  /* Consume existing filters or start with an empty filter if none exist */
-  const initialFilterParameters = useMemo(() => {
-    if (filters.length > 0) {
-      return filters;
-    } else {
-      return [generateEmptyFilter()];
-    }
-  }, [filters]);
+  /* Consume existing URL search params or start with an empty filter if none exist */
+  const initialFilterParameters = useMakeFilterState({
+    searchParams,
+    advancedSearchFilterParamName,
+    isEmptyFilterNeeded: true,
+  });
 
   /**
    * The current local filter parameters so that we can store updated filters and
-   * then apply them to the query when the search button is clicked.
+   * then apply them to the query when the apply button is clicked.
    * @type {Object} filterParameters - Contains all the current filters
    * @function setFilterParameters - Update the state of filterParameters
    * @default {filters}
@@ -235,25 +234,9 @@ const Filters = ({
 
     const remainingFiltersCount = filtersNewState.length;
 
-    if (remainingFiltersCount === 0) {
-      /* Clear search params since we have no advanced filters */
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.delete(advancedSearchFilterParamName);
-        prevSearchParams.delete(advancedSearchIsOrParamName);
-
-        return prevSearchParams;
-      });
-    } else if (remainingFiltersCount === 1) {
+    if (remainingFiltersCount === 1) {
       /* Reset isOr to false (all/and) if there is only one filter left */
       setIsOrToggleValue(false);
-    } else {
-      /* Remove the details of the removed filter from search params */
-      const jsonParamString = JSON.stringify(filtersNewState);
-      setSearchParams((prevSearchParams) => {
-        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
-
-        return prevSearchParams;
-      });
     }
   };
 
@@ -274,19 +257,17 @@ const Filters = ({
   /**
    * Reset search box and advanced filters
    */
-  const handleResetFilters = useCallback(() => {
+  const handleResetFilters = () => {
     setFilterParameters([generateEmptyFilter()]);
     setFilters([]);
     setIsOr(false);
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(advancedSearchFilterParamName);
       prevSearchParams.delete(advancedSearchIsOrParamName);
-
       return prevSearchParams;
     });
-
     resetSimpleSearch();
-  }, [setSearchParams, setFilters, setIsOr, resetSimpleSearch]);
+  };
 
   /**
    * Applies the current local state and updates the parent's state
@@ -305,6 +286,13 @@ const Filters = ({
       setIsOr(isOrToggleValue);
       setFilters(filterParameters);
     } else {
+      /* Clear search params since we have no advanced filters */
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
       /* If we have no advanced filters, reset query state */
       setFilters([]);
       setIsOr(false);
@@ -618,7 +606,7 @@ const Filters = ({
               handleApplyValidation(filterParameters, filtersConfig) !== null
             }
           >
-            Search
+            Apply
           </Button>
         </Grid>
       </Grid>
