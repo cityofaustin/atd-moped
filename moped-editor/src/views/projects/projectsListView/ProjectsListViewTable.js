@@ -124,6 +124,8 @@ const ProjectsListViewTable = () => {
     queryName: "ProjectListViewMap",
   });
 
+  const [isMapDataLoading, setIsMapDataLoading] = useState(false);
+
   const {
     data: projectListViewData,
     loading,
@@ -217,7 +219,7 @@ const ProjectsListViewTable = () => {
           handleExportButtonClick={handleExportButtonClick}
           isOr={isOr}
           setIsOr={setIsOr}
-          loading={loading}
+          loading={loading || isMapDataLoading}
           showMapView={showMapView}
           setShowMapView={setShowMapView}
         />
@@ -285,6 +287,7 @@ const ProjectsListViewTable = () => {
                 fetchPolicy={
                   PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
                 }
+                setIsMapDataLoading={setIsMapDataLoading}
               />
             )}
           </Box>

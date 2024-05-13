@@ -10,7 +10,6 @@ import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
-import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -1,11 +1,15 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
 
-const ProjectsListViewMap = ({ mapQuery, fetchPolicy }) => {
+const ProjectsListViewMap = ({
+  mapQuery,
+  fetchPolicy,
+  setIsMapDataLoading,
+}) => {
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
 
@@ -36,6 +40,10 @@ const ProjectsListViewMap = ({ mapQuery, fetchPolicy }) => {
     error,
     data: projectsGeographies,
   } = useQuery(GET_PROJECTS_GEOGRAPHIES, { variables: { projectIds } });
+
+  useEffect(() => {
+    setIsMapDataLoading(loading);
+  }, [loading, setIsMapDataLoading]);
 
   const projectsFeatureCollection = React.useMemo(() => {
     const projectGeographiesFeatureCollection =
@@ -74,7 +82,6 @@ const ProjectsListViewMap = ({ mapQuery, fetchPolicy }) => {
   return (
     <>
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
-      {loading && <Alert severity="info">{`Loading project data...`}</Alert>}
       <ProjectsMap
         ref={mapRef}
         projectsFeatureCollection={projectsFeatureCollection}
