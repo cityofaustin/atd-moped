@@ -147,6 +147,17 @@ const Search = ({
               <div>
                 {queryConfig.showExport && (
                   <>
+                    <FormGroup sx={{ display: "inline" }}>
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={showMapView}
+                            onChange={() => setShowMapView(!showMapView)}
+                          />
+                        }
+                        label="Show Map"
+                      />
+                    </FormGroup>
                     <Button
                       disabled={
                         (parentData?.[queryConfig.table] ?? []).length === 0
@@ -159,19 +170,6 @@ const Search = ({
                     >
                       Download
                     </Button>
-                    <FormGroup
-                      sx={{ display: "inline", marginLeft: theme.spacing(2) }}
-                    >
-                      <FormControlLabel
-                        control={
-                          <Switch
-                            checked={showMapView}
-                            onChange={() => setShowMapView(!showMapView)}
-                          />
-                        }
-                        label="Show Map"
-                      />
-                    </FormGroup>
                   </>
                 )}
               </div>
