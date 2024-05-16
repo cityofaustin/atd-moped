@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import MapGL, { Layer, NavigationControl, Source } from "react-map-gl";
 import BasemapSpeedDial from "../../projectView/ProjectComponents/BasemapSpeedDial";
+import BaseMapSourceAndLayers from "../../projectView/ProjectComponents/BaseMapSourceAndLayers";
 import GeocoderControl from "src/components/Maps/GeocoderControl";
 import {
   basemaps,
@@ -28,16 +29,17 @@ export default React.forwardRef(function ProjectsMap(
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />
       <GeocoderControl position="top-left" marker={false} />
+      <BaseMapSourceAndLayers basemapKey={basemapKey} />
 
       <Source
         id="projects-geographies"
         type="geojson"
         data={projectsFeatureCollection}
       >
-        <Layer
+        {/* <Layer
           {...MAP_STYLES["project-lines"].layerProps}
           layout={{ visibility: !loading ? "visible" : "none" }}
-        />
+        /> */}
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
           layout={{ visibility: !loading ? "visible" : "none" }}

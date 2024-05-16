@@ -2,6 +2,7 @@ import {
   pointsCircleRadiusStops,
   lineWidthStops,
 } from "../../projectView/ProjectComponents/mapStyleSettings";
+import { COLORS } from "../../projectView/ProjectComponents/mapStyleSettings";
 
 export const MAP_STYLES = {
   "project-points": {
@@ -12,8 +13,8 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": ["get", "color"],
-        "circle-stroke-width": 2,
+        "circle-stroke-color": COLORS.black,
+        "circle-stroke-width": 1,
         "circle-stroke-opacity": 0.9,
         "circle-color": ["get", "color"],
         "circle-opacity": 0.9,
