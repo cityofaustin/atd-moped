@@ -3,8 +3,8 @@ DROP TRIGGER IF EXISTS update_moped_proj_partners_and_project_audit_fields ON mo
 
 -- Drop fk constraints on user audit fields on moped_proj_partners
 ALTER TABLE moped_proj_partners
-DROP CONSTRAINT project_types_created_by_fkey,
-DROP CONSTRAINT project_types_updated_by_fkey;
+DROP CONSTRAINT moped_proj_partners_created_by_fkey,
+DROP CONSTRAINT moped_proj_partners_updated_by_fkey;
 
 -- Revert and remove audit columns to moped_proj_partners
 ALTER TABLE moped_proj_partners
