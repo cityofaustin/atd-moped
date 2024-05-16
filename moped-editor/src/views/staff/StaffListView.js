@@ -81,7 +81,7 @@ const staffColumns = [
   {
     headerName: "MUG Member",
     field: "is_user_group_member",
-    valueGetter: (props) => (props.value ? "Yes" : "No"),
+    valueGetter: (value) => (value ? "Yes" : "No"),
   },
   {
     headerName: "Active",
