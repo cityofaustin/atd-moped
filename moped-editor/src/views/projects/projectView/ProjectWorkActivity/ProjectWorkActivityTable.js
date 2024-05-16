@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import Box from "@mui/material/Box";
 import CircularProgress from "@mui/material/CircularProgress";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import IconButton from "@mui/material/IconButton";
@@ -18,6 +18,7 @@ import {
 } from "../../../../queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -56,50 +57,43 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "ID",
         field: "reference_id",
-        minWidth: 125,
-        flex: 1,
+        width: 125,
         defaultVisible: true,
       },
       {
         headerName: "Workgroup/Contractor",
         field: "workgroup_contractor",
-        minWidth: 175,
-        flex: 1,
+        width: 175,
         defaultVisible: true,
       },
       {
         headerName: "Contract #",
         field: "contract_number",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
       },
       {
         headerName: "Description",
         field: "description",
-        minWidth: 200,
-        flex: 1,
+        width: 200,
         defaultVisible: true,
       },
       {
         headerName: "Work Assignment",
         field: "work_assignment_id",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
       },
       {
         headerName: "Task Order(s)",
         field: "task_orders",
         defaultVisible: true,
-        minWidth: 150,
-        flex: 1,
-        valueGetter: ({ row }) =>
-          row.task_orders?.map((tk) => tk.task_order).join(", "),
+        width: 200,
+        valueGetter: (field) => field?.map((tk) => tk.display_name).join(", "),
         renderCell: ({ row }) => (
           <div>
             {row.task_orders?.map((tk) => (
-              <div key={tk.task_order}>{tk.task_order}</div>
+              <div key={tk.task_order}>{tk.display_name}</div>
             ))}
           </div>
         ),
@@ -107,8 +101,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Work Order Link",
         field: "work_order_url",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
         renderCell: ({ row }) =>
           row.work_order_url ? (
@@ -123,46 +116,39 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       },
       {
         headerName: "Status",
-        field: "status",
+        field: "moped_work_activity_status",
         defaultVisible: true,
-        valueGetter: ({ row }) => row.moped_work_activity_status?.name,
-        minWidth: 150,
-        flex: 1,
+        valueGetter: (field) => field.name,
+        width: 150,
       },
       {
         headerName: "Amount",
         field: "contract_amount",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
-        valueGetter: ({ row }) =>
-          isNaN(parseInt(row.contract_amount))
-            ? null
-            : currencyFormatter.format(row.contract_amount),
+        valueGetter: (field) =>
+          isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
       },
       {
         headerName: "Status update",
         field: "status_note",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
       },
       {
         headerName: "Updated by",
         field: "updated_by_user",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
-        valueGetter: ({ row }) => getUserFullName(row.updated_by_user),
+        valueGetter: (field) => getUserFullName(field),
       },
       {
         headerName: "Updated at",
         field: "updated_at",
-        minWidth: 150,
-        flex: 1,
+        width: 150,
         defaultVisible: true,
         type: "date",
-        valueGetter: ({ value }) => (value ? new Date(value) : null),
+        valueGetter: (field) => (field ? new Date(field) : null),
       },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
@@ -228,7 +214,8 @@ const ProjectWorkActivitiesTable = () => {
   return (
     <ApolloErrorHandler errors={error}>
       <Box sx={{ width: "100%", overflow: "auto", minHeight: "700px" }}>
-        <DataGrid
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
           autoHeight
           columns={columns}
           columnVisibilityModel={hiddenColumns}
@@ -239,7 +226,7 @@ const ProjectWorkActivitiesTable = () => {
           density="comfortable"
           disableRowSelectionOnClick
           getRowHeight={() => "auto"}
-          hideFooterPagination={true}
+          hideFooter
           localeText={{ noRowsLabel: "No work activites" }}
           rows={activities}
           slots={{
