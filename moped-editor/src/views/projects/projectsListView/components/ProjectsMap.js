@@ -36,10 +36,14 @@ export default React.forwardRef(function ProjectsMap(
         type="geojson"
         data={projectsFeatureCollection}
       >
-        {/* <Layer
+        <Layer
+          {...MAP_STYLES["project-lines-outline"].layerProps}
+          layout={{ visibility: !loading ? "visible" : "none" }}
+        />
+        <Layer
           {...MAP_STYLES["project-lines"].layerProps}
           layout={{ visibility: !loading ? "visible" : "none" }}
-        /> */}
+        />
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
           layout={{ visibility: !loading ? "visible" : "none" }}
