@@ -10,6 +10,7 @@ import {
 } from "../../projectView/ProjectComponents/mapSettings";
 import { MAP_STYLES } from "./mapStyleSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
+import theme from "src/theme";
 
 export default React.forwardRef(function ProjectsMap(
   { projectsFeatureCollection, loading },
@@ -25,6 +26,10 @@ export default React.forwardRef(function ProjectsMap(
       {...mapParameters}
       reuseMaps
       trackResize
+      style={{
+        // set MUI style border radius to match the map's container
+        borderRadius: theme.spacing(0.5),
+      }}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />
