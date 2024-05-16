@@ -1,13 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useSearchParams } from "react-router-dom";
 import {
-  Button,
   Box,
   TextField,
   InputAdornment,
   SvgIcon,
-  Hidden,
   Icon,
   IconButton,
   Typography,
@@ -16,7 +13,6 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
 import clsx from "clsx";
-import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 
 /**
  * The styling for the search bar components
@@ -40,9 +36,6 @@ const useStyles = makeStyles((theme) => ({
     height: "33px",
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
-  },
-  searchButton: {
-    marginTop: "12px",
   },
   filtersList: {
     padding: "8px",
@@ -83,7 +76,7 @@ const makeFilteredByText = (filters, isOr) => {
 /**
  * Renders a search bar with optional filters
  * @param {string} searchFieldValue - The current value of the search field
- * @param {function} setSearchFieldValue - function to set the current value of the search field
+ * @param {function} handleSearchSubmission - function to handle the search submission
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
@@ -99,7 +92,7 @@ const SearchBar = ({
   filters,
   toggleAdvancedSearch,
   advancedSearchAnchor,
-  setSearchTerm,
+  handleSearchSubmission,
   queryConfig,
   isOr,
   loading,
@@ -107,7 +100,6 @@ const SearchBar = ({
   resetSimpleSearch,
 }) => {
   const classes = useStyles();
-  let [, setSearchParams] = useSearchParams();
 
   /**
    * Attempts to retrieve the default placeholder for the search input field
@@ -127,28 +119,6 @@ const SearchBar = ({
     } else {
       setSearchFieldValue(value);
     }
-  };
-
-  /**
-   * Handles the submission of our search form
-   * @param {Object} e - The event object
-   */
-  const handleSearchSubmission = (event) => {
-    // Stop if we don't have any value entered in the search field
-    if (searchFieldValue.length === 0) {
-      return;
-    }
-
-    // Prevent default behavior on any event
-    if (event) event.preventDefault();
-
-    // Update state to trigger search and set simple search param
-    setSearchTerm(searchFieldValue);
-    setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(simpleSearchParamName, searchFieldValue);
-
-      return prevSearchParams;
-    });
   };
 
   /**
@@ -242,18 +212,6 @@ const SearchBar = ({
           </Typography>
         </Box>
       )}
-      <Hidden smUp>
-        <Button
-          className={classes.searchButton}
-          fullWidth
-          variant="contained"
-          color="primary"
-          startIcon={<Icon>search</Icon>}
-          onClick={handleSearchSubmission}
-        >
-          Search
-        </Button>
-      </Hidden>
     </>
   );
 };

@@ -4,12 +4,15 @@ import { useSearchParams } from "react-router-dom";
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
+import Hidden from "@mui/material/Hidden";
+import Icon from "@mui/material/Icon";
 import Switch from "@mui/material/Switch";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
+import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,10 +21,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   downloadButtonGrid: {
-    padding: "12px",
-  },
-  downloadCsvButton: {
-    height: "43px",
+    padding: theme.spacing(1),
+    alignContent: "center",
   },
   tabStyle: {
     margin: ".5rem",
@@ -51,7 +52,7 @@ const useStyles = makeStyles((theme) => ({
       "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
   },
   gridSearchPadding: {
-    padding: "12px",
+    padding: theme.spacing(1),
   },
 }));
 
@@ -122,6 +123,28 @@ const Search = ({
     });
   };
 
+  /**
+   * Handles the submission of our search form
+   * @param {Object} e - The event object
+   */
+  const handleSearchSubmission = (event) => {
+    // Stop if we don't have any value entered in the search field
+    if (searchFieldValue.length === 0) {
+      return;
+    }
+
+    // Prevent default behavior on any event
+    if (event) event.preventDefault();
+
+    // Update state to trigger search and set simple search param
+    setSearchTerm(searchFieldValue);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set(simpleSearchParamName, searchFieldValue);
+
+      return prevSearchParams;
+    });
+  };
+
   return (
     <div>
       <Box mt={3}>
@@ -131,10 +154,10 @@ const Search = ({
               <SearchBar
                 searchFieldValue={searchFieldValue}
                 setSearchFieldValue={setSearchFieldValue}
+                handleSearchSubmission={handleSearchSubmission}
                 filters={filters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
-                setSearchTerm={setSearchTerm}
                 queryConfig={queryConfig}
                 isOr={isOr}
                 loading={loading}
@@ -146,6 +169,17 @@ const Search = ({
               <div>
                 {queryConfig.showExport && (
                   <>
+                    <Hidden smUp>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<Icon>search</Icon>}
+                        onClick={handleSearchSubmission}
+                        sx={{ marginRight: "12px" }}
+                      >
+                        Search
+                      </Button>
+                    </Hidden>
                     <FormGroup sx={{ display: "inline" }}>
                       <FormControlLabel
                         control={
@@ -154,20 +188,26 @@ const Search = ({
                             onChange={() => setShowMapView(!showMapView)}
                           />
                         }
-                        label="Show Map"
+                        label="Map"
                       />
                     </FormGroup>
                     <Button
                       disabled={
                         (parentData?.[queryConfig.table] ?? []).length === 0
                       }
-                      className={classes.downloadCsvButton}
                       onClick={handleExportButtonClick}
+                      sx={{
+                        // Override startIcon margins to center icon when there is no "Download" text smDown
+                        "& .MuiButton-startIcon": {
+                          marginLeft: { xs: 0, sm: -theme.spacing(0.5) },
+                          marginRight: { xs: 0, sm: theme.spacing(1) },
+                        },
+                      }}
                       startIcon={<SaveAltIcon />}
                       variant="outlined"
                       color="primary"
                     >
-                      Download
+                      <Hidden smDown>Download</Hidden>
                     </Button>
                   </>
                 )}
