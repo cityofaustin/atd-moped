@@ -12,6 +12,8 @@ const ProjectsListViewMap = ({
 }) => {
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
+  const [featuredProjectIds, setFeaturedProjectIds] = React.useState([]);
+  console.log(featuredProjectIds);
 
   const { data: projectMapViewData } = useQuery(mapQuery, {
     fetchPolicy,
@@ -91,6 +93,7 @@ const ProjectsListViewMap = ({
         ref={mapRef}
         projectsFeatureCollection={projectsFeatureCollection}
         loading={loading}
+        setFeaturedProjectIds={setFeaturedProjectIds}
       />
     </>
   );

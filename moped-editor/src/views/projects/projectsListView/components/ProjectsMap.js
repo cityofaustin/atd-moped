@@ -15,7 +15,7 @@ import theme from "src/theme";
 const interactiveLayerIds = Object.keys(MAP_STYLES);
 
 export default React.forwardRef(function ProjectsMap(
-  { projectsFeatureCollection, loading },
+  { projectsFeatureCollection, loading, setFeaturedProjectIds },
   ref
 ) {
   const [basemapKey, setBasemapKey] = useState("streets");
@@ -23,7 +23,9 @@ export default React.forwardRef(function ProjectsMap(
   const handleLayerClick = (event) => {
     const clickedFeatures = event.features.length ? event.features : [];
     const clickedFeaturesIds = clickedFeatures.map((feature) => feature.id);
-    console.log(clickedFeaturesIds);
+
+    const uniqueClickedFeaturesIds = [...new Set(clickedFeaturesIds)];
+    setFeaturedProjectIds(uniqueClickedFeaturesIds);
   };
 
   return (
