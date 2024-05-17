@@ -155,11 +155,13 @@ export const useMakeFilterState = ({
       const filterSearchParams = searchParams.get(
         advancedSearchFilterParamName
       );
-      if (filterSearchParams === null) return [];
+      if (filterSearchParams === null) {
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+      }
       try {
         return JSON.parse(filterSearchParams);
       } catch {
-        return [];
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
       }
     }
     return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
