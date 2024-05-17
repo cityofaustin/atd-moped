@@ -28,15 +28,18 @@ const useStyles = makeStyles((theme) => ({
   tabStyle: {
     margin: ".5rem",
   },
-  advancedSearchRoot: {
-    width: `calc(100% - ${theme.spacing(2)})`,
-    zIndex: "3",
-    paddingLeft: "16px",
-    paddingRight: "16px",
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: "23px",
-      paddingRight: "14px",
+  searchBarContainer: {
+    padding: "2px",
+    [theme.breakpoints.down("sm")]: {
+      paddingBottom: "12px",
     },
+  },
+  advancedSearchRoot: {
+    width: `calc(100% - ${theme.spacing(6)})`,
+    [theme.breakpoints.down("sm")]: {
+      width: `calc(100% - ${theme.spacing(4)})`,
+    },
+    zIndex: "3",
   },
   advancedSearchPaper: {
     paddingTop: theme.spacing(1),
@@ -47,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
       "rgb(0 0 0 / 31%) 0px 0px 1px 0px, rgb(0 0 0 / 25%) 0px 3px 4px -2px",
   },
   gridSearchPadding: {
-    padding: theme.spacing(1),
+    padding: "12px",
   },
 }));
 
