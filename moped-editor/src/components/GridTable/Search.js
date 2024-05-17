@@ -22,16 +22,11 @@ const useStyles = makeStyles((theme) => ({
   },
   downloadButtonGrid: {
     padding: theme.spacing(1),
+    [theme.breakpoints.down("md")]: { paddingTop: 0 },
     alignContent: "center",
   },
   tabStyle: {
     margin: ".5rem",
-  },
-  searchBarContainer: {
-    padding: "2px",
-    [theme.breakpoints.down("sm")]: {
-      paddingBottom: "12px",
-    },
   },
   advancedSearchRoot: {
     width: "calc(100% - 32px)",

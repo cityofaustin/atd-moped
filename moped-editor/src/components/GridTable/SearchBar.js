@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
     color: "rgba(0, 0, 0, 0.54)",
   },
   filtersList: {
-    padding: "8px",
+    paddingTop: theme.spacing(1),
     marginRight: "12px",
   },
   filtersText: {
