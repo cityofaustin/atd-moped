@@ -23,13 +23,13 @@ const useStyles = makeStyles((theme) => ({
   downloadButtonGrid: {
     padding: theme.spacing(1),
     [theme.breakpoints.down("md")]: { paddingTop: 0 },
-    alignContent: "center",
+    alignContent: "top",
   },
   tabStyle: {
     margin: ".5rem",
   },
   advancedSearchRoot: {
-    width: "calc(100% - 32px)",
+    width: `calc(100% - ${theme.spacing(2)})`,
     zIndex: "3",
     paddingLeft: "16px",
     paddingRight: "16px",
@@ -170,7 +170,7 @@ const Search = ({
                         color="primary"
                         startIcon={<Icon>search</Icon>}
                         onClick={handleSearchSubmission}
-                        sx={{ marginRight: "12px" }}
+                        sx={{ marginRight: theme.spacing(2) }}
                       >
                         Search
                       </Button>
