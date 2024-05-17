@@ -3,7 +3,7 @@ import React from "react";
 import { Box, Card, Container, CircularProgress } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useQuery } from "@apollo/client";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import { DataGridPro, GridToolbar } from "@mui/x-data-grid-pro";
 
 import Page from "src/components/Page";
 import { GET_ALL_USERS } from "src/queries/staff";
@@ -12,6 +12,7 @@ import {
   EditUserButton,
   CopyMugUsersButton,
 } from "./StaffListViewCustomComponents";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +38,7 @@ const staffColumns = [
     width: 50,
     sortable: false,
     filterable: false,
+    hideable: false,
   },
   {
     headerName: "First name",
@@ -61,17 +63,17 @@ const staffColumns = [
   {
     headerName: "Workgroup",
     field: "moped_workgroup",
-    valueGetter: (props) => props.row.moped_workgroup.workgroup_name,
+    valueGetter: (value) => value.workgroup_name,
     width: 300,
   },
   {
     headerName: "Role",
     field: "roles",
-    renderCell: (props) => {
-      if (!props.value || !props.value[0]) {
+    valueGetter: value => {
+      if (!value || !value[0]) {
         return "N/A";
       }
-      const role = props.value[0].replace("moped-", "");
+      const role = value[0].replace("moped-", "");
       return role.charAt(0).toUpperCase() + role.slice(1);
     },
     width: 125,
@@ -79,19 +81,19 @@ const staffColumns = [
   {
     headerName: "MUG Member",
     field: "is_user_group_member",
-    valueGetter: (props) => (props.value ? "Yes" : "No"),
+    valueGetter: (value) => (value ? "Yes" : "No"),
   },
   {
     headerName: "Active",
     field: "is_deleted",
     // if the user has been deleted (is_deleted === True), then they are not active
-    valueGetter: (props) => (props.value ? "No" : "Yes"),
+    valueGetter: (value) => (value ? "No" : "Yes"),
   },
   {
     headerName: "Last seen",
     field: "last_seen_date",
     type: "date",
-    valueGetter: (props) => (props.value ? new Date(props.value) : null),
+    valueGetter: (value) => (value ? new Date(value) : null),
     width: 200,
   },
 ];
@@ -116,7 +118,8 @@ const StaffListView = () => {
             <AddUserButton />
           </Box>
           <Card>
-            <DataGrid
+            <DataGridPro
+              sx={dataGridProStyleOverrides}
               disableRowSelectionOnClick
               rows={data?.moped_users}
               columns={staffColumns}

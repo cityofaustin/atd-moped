@@ -1,5 +1,6 @@
 import { OPERATORS_WITHOUT_SEARCH_VALUES } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 import { AUTOCOMPLETE_OPERATORS } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
+import { useMemo } from "react";
 
 /**
  * Generates a copy of an empty filter
@@ -136,3 +137,33 @@ export const getDefaultOperator = (filterConfigForField) => {
 
   return isDefaultOperator ? defaultOperator : fallbackOperator;
 };
+
+/**
+ * If filter exists in url, get the values and try to parse them
+ * Used to initialize filter state
+ * @param {Object} searchParams - The URL search parameters
+ * @param {String} advancedSearchFilterParamName
+ * @param {Boolean} isEmptyFilterNeeded - toggle adding an empty filter to add initial row in the Filters component
+ * @return {Object}
+ */
+export const useMakeFilterState = ({
+  searchParams,
+  advancedSearchFilterParamName,
+  isEmptyFilterNeeded = false,
+}) =>
+  useMemo(() => {
+    if (Array.from(searchParams).length > 0) {
+      const filterSearchParams = searchParams.get(
+        advancedSearchFilterParamName
+      );
+      if (filterSearchParams === null) {
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+      }
+      try {
+        return JSON.parse(filterSearchParams);
+      } catch {
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+      }
+    }
+    return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+  }, [searchParams, advancedSearchFilterParamName, isEmptyFilterNeeded]);

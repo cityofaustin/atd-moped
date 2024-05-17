@@ -91,7 +91,7 @@ const Search = ({
   const classes = useStyles();
   const divRef = React.useRef();
 
-  let [, setSearchParams] = useSearchParams();
+  let [searchParams, setSearchParams] = useSearchParams();
 
   /**
    * The contents of the search box in SearchBar
@@ -118,7 +118,6 @@ const Search = ({
 
     setSearchParams((prevSearchParams) => {
       prevSearchParams.delete(simpleSearchParamName);
-
       return prevSearchParams;
     });
   };
@@ -189,13 +188,14 @@ const Search = ({
       >
         <Paper className={classes.advancedSearchPaper}>
           <Filters
-            filters={filters}
             setFilters={setFilters}
             handleAdvancedSearchClose={handleAdvancedSearchClose}
             filtersConfig={filtersConfig}
             resetSimpleSearch={resetSimpleSearch}
             isOr={isOr}
             setIsOr={setIsOr}
+            setSearchParams={setSearchParams}
+            searchParams={searchParams}
           />
         </Paper>
       </Popper>

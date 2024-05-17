@@ -35,7 +35,7 @@ const DateConfirmationPopover = ({ children, isEnabled, dateType }) => {
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: "center",
-          horizontal: "right",
+          horizontal: "center",
         }}
         onClose={handlePopoverClose}
         disableRestoreFocus
