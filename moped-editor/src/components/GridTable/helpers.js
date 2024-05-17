@@ -143,6 +143,7 @@ export const getDefaultOperator = (filterConfigForField) => {
  * Used to initialize filter state
  * @param {Object} searchParams - The URL search parameters
  * @param {String} advancedSearchFilterParamName
+ * @param {Boolean} isEmptyFilterNeeded - toggle adding an empty filter to add initial row in the Filters component
  * @return {Object}
  */
 export const useMakeFilterState = ({
@@ -155,11 +156,13 @@ export const useMakeFilterState = ({
       const filterSearchParams = searchParams.get(
         advancedSearchFilterParamName
       );
-      if (filterSearchParams === null) return [];
+      if (filterSearchParams === null) {
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
+      }
       try {
         return JSON.parse(filterSearchParams);
       } catch {
-        return [];
+        return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
       }
     }
     return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
