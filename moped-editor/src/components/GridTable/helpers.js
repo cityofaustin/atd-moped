@@ -143,6 +143,7 @@ export const getDefaultOperator = (filterConfigForField) => {
  * Used to initialize filter state
  * @param {Object} searchParams - The URL search parameters
  * @param {String} advancedSearchFilterParamName
+ * @param {Boolean} isEmptyFilterNeeded - toggle adding an empty filter to add initial row in the Filters component
  * @return {Object}
  */
 export const useMakeFilterState = ({
