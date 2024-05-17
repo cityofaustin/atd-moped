@@ -12,11 +12,19 @@ import { MAP_STYLES } from "./mapStyleSettings";
 import "mapbox-gl/dist/mapbox-gl.css";
 import theme from "src/theme";
 
+const interactiveLayerIds = Object.keys(MAP_STYLES);
+
 export default React.forwardRef(function ProjectsMap(
   { projectsFeatureCollection, loading },
   ref
 ) {
   const [basemapKey, setBasemapKey] = useState("streets");
+
+  const handleLayerClick = (event) => {
+    const clickedFeatures = event.features.length ? event.features : [];
+    const clickedFeaturesIds = clickedFeatures.map((feature) => feature.id);
+    console.log(clickedFeaturesIds);
+  };
 
   return (
     <MapGL
@@ -30,6 +38,8 @@ export default React.forwardRef(function ProjectsMap(
         // set MUI style border radius to match the map's container
         borderRadius: theme.spacing(0.5),
       }}
+      interactiveLayerIds={interactiveLayerIds}
+      onClick={handleLayerClick}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />

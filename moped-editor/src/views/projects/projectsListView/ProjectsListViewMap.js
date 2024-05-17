@@ -61,6 +61,7 @@ const ProjectsListViewMap = ({
                 : styleMapping.default.background;
 
               const projectGeographyFeature = {
+                id: projectGeography.project_id,
                 type: "Feature",
                 geometry: projectGeography.geography,
                 properties: {
