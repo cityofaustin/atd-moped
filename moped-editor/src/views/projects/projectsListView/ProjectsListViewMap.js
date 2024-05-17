@@ -5,6 +5,11 @@ import Alert from "@mui/material/Alert";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
 
+// TODO: Update cursor on hover
+// TODO: Get MapDrawer to fit into this map
+// TODO: Show projects in list with links to project summary view
+// TODO: Open project in new tab
+
 const ProjectsListViewMap = ({
   mapQuery,
   fetchPolicy,
