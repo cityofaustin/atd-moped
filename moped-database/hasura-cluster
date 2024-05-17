@@ -306,6 +306,7 @@ function __check_export_complete() {
 
 function replicate() {
   source ./env;
+  stop;
   start_only;
   mkdir -p ./snapshots;
 
@@ -315,6 +316,7 @@ function replicate() {
 
   # If use_any_snapshot is true, use the most recent snapshot
   if $use_any_snapshot; then
+    echo "Using most recent snapshot $snapshot_file"
     snapshot_file="./snapshots/$(ls -t ./snapshots | head -n 1)"
   fi
 
