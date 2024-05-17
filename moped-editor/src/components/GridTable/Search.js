@@ -21,11 +21,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   downloadButtonGrid: {
-    padding: theme.spacing(1),
+    // match the existing padding set in gridSearchPadding
+    padding: "12px",
     [theme.breakpoints.down("md")]: {
       paddingTop: 0,
-      // match the existing padding set in gridSearchPadding
-      paddingLeft: "12px",
     },
     alignContent: "top",
   },

@@ -17,6 +17,7 @@ const ProjectsListViewMap = ({
     fetchPolicy,
   });
 
+  /* Build object to get project data needed for projectsFeatureCollection by project id  */
   const projectDataById = React.useMemo(
     () =>
       projectMapViewData
@@ -30,6 +31,7 @@ const ProjectsListViewMap = ({
     [projectMapViewData]
   );
 
+  /* Build array of project ids to request project geography */
   const projectIds = React.useMemo(
     () => Object.keys(projectDataById),
     [projectDataById]
@@ -41,10 +43,12 @@ const ProjectsListViewMap = ({
     data: projectsGeographies,
   } = useQuery(GET_PROJECTS_GEOGRAPHIES, { variables: { projectIds } });
 
+  /* Update state tied to loading spinner in SearchBar component */
   useEffect(() => {
     setIsMapDataLoading(loading);
   }, [loading, setIsMapDataLoading]);
 
+  /* Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color */
   const projectsFeatureCollection = React.useMemo(() => {
     const projectGeographiesFeatureCollection =
       projectsGeographies?.project_geography
