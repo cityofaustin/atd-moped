@@ -306,6 +306,7 @@ function __check_export_complete() {
 
 function replicate() {
   source ./env;
+  stop;
   start_only;
   mkdir -p ./snapshots;
 
@@ -315,6 +316,7 @@ function replicate() {
 
   # If use_any_snapshot is true, use the most recent snapshot
   if $use_any_snapshot; then
+    echo "Using most recent snapshot $snapshot_file"
     snapshot_file="./snapshots/$(ls -t ./snapshots | head -n 1)"
   fi
 
@@ -351,10 +353,6 @@ function replicate() {
 
 use_any_snapshot=false
 
-# Get the positional argument
-positional_arg="$1"
-shift
-
 # Process named arguments
 while (( "$#" )); do
   case "$1" in
@@ -363,6 +361,8 @@ while (( "$#" )); do
       shift
       ;;
     *)
+      # Save positional arguments in an array
+      positional_args+=("$1")
       shift
       ;;
   esac
@@ -372,15 +372,13 @@ done
 # Let's make sure docker is running...
 #
 if [[ "$(__get_docker_running)" != "TRUE" ]]; then
-  show_banner "$positional_arg" && echo "Docker is not running. Please start docker on your computer"
+    show_banner "${positional_args[0]}" && echo "Docker is not running. Please start docker on your computer"
   exit;
 fi;
 
-#
-# Start the hasura cluster...
-#
+# Do the job
 if [[ "${HIDE_HASURA_KIT_BANNER}" != "TRUE" ]]; then
-   show_banner "$positional_arg" && $positional_arg;
+  show_banner "${positional_args[0]}" && "${positional_args[0]}" "${positional_args[@]:1}";
 else
-  echo "Hasura Cluster: $positional_arg" && $positional_arg;
+  echo "Hasura Cluster: ${positional_args[0]}" && "${positional_args[0]}" "${positional_args[@]:1}";
 fi;
