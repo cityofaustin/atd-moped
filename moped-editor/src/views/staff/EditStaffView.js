@@ -44,6 +44,7 @@ const EditStaffView = () => {
     error: userQueryError,
   } = useQuery(GET_USER, {
     variables: { userId },
+    fetchPolicy: "cache-and-network",
   });
 
   if (userQueryError) {
