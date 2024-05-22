@@ -72,7 +72,6 @@ export const UPDATE_NON_MOPED_USER = gql`
       first_name
       last_name
       title
-      user_id
       moped_workgroup {
         workgroup_id
         workgroup_name
