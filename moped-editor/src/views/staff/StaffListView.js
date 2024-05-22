@@ -101,7 +101,7 @@ const staffColumns = [
 const StaffListView = () => {
   const classes = useStyles();
 
-  const { data, loading, error } = useQuery(GET_ALL_USERS);
+  const { data, loading, error } = useQuery(GET_ALL_USERS, {fetchPolicy: "cache-and-network"}); // breadcrumb
 
   if (error) {
     console.error(error);
