@@ -108,16 +108,16 @@ INSERT INTO public.moped_proj_notes (project_note_id, project_note, created_at, 
 -- Data for Name: moped_proj_partners; Type: TABLE DATA; Schema: public; Owner: moped
 --
 
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (1, 2, 227, '2022-11-12 18:09:10.83628+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (2, 3, 227, '2022-11-12 18:09:10.836658+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (6, 4, 227, '2022-11-12 18:09:10.836667+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (12, 5, 227, '2022-11-12 18:09:10.836672+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (14, 6, 227, '2022-11-12 18:09:10.836677+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (4, 7, 229, '2022-11-15 16:47:43.293093+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (7, 8, 229, '2022-11-15 16:47:43.293178+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (8, 9, 229, '2022-11-15 16:47:43.293185+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (12, 10, 229, '2022-11-15 16:47:43.29319+00', NULL, false);
-INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, date_added, added_by, is_deleted) VALUES (21, 11, 229, '2022-11-15 16:47:43.293194+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (1, 2, 227, '2022-11-12 18:09:10.83628+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (2, 3, 227, '2022-11-12 18:09:10.836658+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (6, 4, 227, '2022-11-12 18:09:10.836667+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (12, 5, 227, '2022-11-12 18:09:10.836672+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (14, 6, 227, '2022-11-12 18:09:10.836677+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (4, 7, 229, '2022-11-15 16:47:43.293093+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (7, 8, 229, '2022-11-15 16:47:43.293178+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (8, 9, 229, '2022-11-15 16:47:43.293185+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (12, 10, 229, '2022-11-15 16:47:43.29319+00', NULL, false);
+INSERT INTO public.moped_proj_partners (entity_id, proj_partner_id, project_id, created_at, created_by_user_id, is_deleted) VALUES (21, 11, 229, '2022-11-15 16:47:43.293194+00', NULL, false);
 
 
 --
