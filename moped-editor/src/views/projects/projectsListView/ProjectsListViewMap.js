@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
+import { NavLink as RouterLink } from "react-router-dom";
 import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
+import Link from "@mui/material/Link";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
@@ -128,9 +130,17 @@ const ProjectsListViewMap = ({
         <List>
           {featuredProjectsData.length > 0 ? (
             featuredProjectsData.map((projectData) => (
-              <ListItem disablePadding>
+              <ListItem key={projectData.project_id} disablePadding>
                 <ListItemText
-                  primary={projectData.project_name_full}
+                  primary={
+                    <Link
+                      component={RouterLink}
+                      to={`/moped/projects/${projectData.project_id}`}
+                      target="_blank"
+                    >
+                      {projectData.project_name_full}
+                    </Link>
+                  }
                   secondary={`#${projectData.project_id}`}
                 />
               </ListItem>
