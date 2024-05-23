@@ -36,6 +36,7 @@ const ProjectsListViewMap = ({
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
   const [featuredProjectIds, setFeaturedProjectIds] = React.useState([]);
+  const shouldShowFeaturedProjects = featuredProjectIds.length > 0;
 
   /* MapDrawer state and handlers */
   const [open, setOpen] = React.useState(false);
@@ -91,7 +92,10 @@ const ProjectsListViewMap = ({
   }, [loading, setIsMapDataLoading]);
 
   /* Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color */
-  const projectsFeatureCollection = React.useMemo(() => {
+  const {
+    projectGeographiesFeatureCollection,
+    featuredProjectsFeatureCollection,
+  } = React.useMemo(() => {
     const projectGeographiesFeatureCollection =
       projectsGeographies?.project_geography
         ? projectsGeographies?.project_geography.reduce(
@@ -99,24 +103,10 @@ const ProjectsListViewMap = ({
               const phaseKey =
                 projectDataById[projectGeography.project_id]?.current_phase_key;
 
-              const shouldMuteUnselectedProjects =
-                featuredProjectIds.length > 0;
-              const isInSelectedProjects = featuredProjectIds.includes(
-                projectGeography.project_id
-              );
-
               // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
-              let statusBadgeColor;
-
-              if (shouldMuteUnselectedProjects) {
-                statusBadgeColor = isInSelectedProjects
-                  ? styleMapping[phaseKey]?.background
-                  : styleMapping.default.background;
-              } else {
-                statusBadgeColor = phaseKey
-                  ? styleMapping[phaseKey]?.background
-                  : styleMapping.default.background;
-              }
+              const statusBadgeColor = phaseKey
+                ? styleMapping[phaseKey]?.background
+                : styleMapping.default.background;
 
               const projectGeographyFeature = {
                 id: projectGeography.project_id,
@@ -139,7 +129,51 @@ const ProjectsListViewMap = ({
           )
         : { type: "FeatureCollection", features: [] };
 
-    return projectGeographiesFeatureCollection;
+    const featuredProjectsFeatureCollection =
+      projectsGeographies?.project_geography
+        ? projectsGeographies?.project_geography.reduce(
+            (acc, projectGeography) => {
+              const phaseKey =
+                projectDataById[projectGeography.project_id]?.current_phase_key;
+
+              const isInSelectedProjects = featuredProjectIds.includes(
+                projectGeography.project_id
+              );
+
+              if (!isInSelectedProjects) {
+                return acc;
+              }
+
+              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
+              const statusBadgeColor = phaseKey
+                ? styleMapping[phaseKey]?.background
+                : styleMapping.default.background;
+
+              const projectGeographyFeature = {
+                id: projectGeography.project_id,
+                type: "Feature",
+                geometry: projectGeography.geography,
+                properties: {
+                  ...(projectGeography.attributes
+                    ? projectGeography.attributes
+                    : {}),
+                  color: statusBadgeColor,
+                },
+              };
+
+              return {
+                ...acc,
+                features: [...acc.features, projectGeographyFeature],
+              };
+            },
+            { type: "FeatureCollection", features: [] }
+          )
+        : { type: "FeatureCollection", features: [] };
+
+    return {
+      projectGeographiesFeatureCollection,
+      featuredProjectsFeatureCollection,
+    };
   }, [featuredProjectIds, projectsGeographies, projectDataById]);
 
   return (
@@ -148,19 +182,19 @@ const ProjectsListViewMap = ({
         <List>
           {featuredProjectsData.length > 0 ? (
             featuredProjectsData.map((projectData) => (
-              <ListItem key={projectData.project_id} disablePadding>
+              <ListItem key={projectData?.project_id} disablePadding>
                 <ListItemText
                   primary={
                     <Link
                       component={RouterLink}
-                      to={`/moped/projects/${projectData.project_id}`}
+                      to={`/moped/projects/${projectData?.project_id}`}
                       target="_blank"
                       state={{ queryString }}
                     >
-                      {projectData.project_name_full}
+                      {projectData?.project_name_full}
                     </Link>
                   }
-                  secondary={`#${projectData.project_id}`}
+                  secondary={`#${projectData?.project_id}`}
                 />
               </ListItem>
             ))
@@ -174,9 +208,11 @@ const ProjectsListViewMap = ({
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
       <ProjectsMap
         ref={mapRef}
-        projectsFeatureCollection={projectsFeatureCollection}
+        projectsFeatureCollection={projectGeographiesFeatureCollection}
+        featuredProjectsFeatureCollection={featuredProjectsFeatureCollection}
         loading={loading}
         setFeaturedProjectIds={setFeaturedProjectIds}
+        shouldShowFeaturedProjects={shouldShowFeaturedProjects}
       />
     </Paper>
   );
