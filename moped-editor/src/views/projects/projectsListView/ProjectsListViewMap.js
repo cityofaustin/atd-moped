@@ -35,6 +35,7 @@ const ProjectsListViewMap = ({
   /* MapDrawer state and handlers */
   const [open, setOpen] = React.useState(false);
 
+  /* Toggle drawer based on whether components are captured in map click or not */
   useEffect(() => {
     if (featuredProjectIds.length > 0) {
       setOpen(true);
@@ -59,6 +60,12 @@ const ProjectsListViewMap = ({
           }, {})
         : {},
     [projectMapViewData]
+  );
+
+  /* Bulid array of project data needed to show in MapDrawer */
+  const featuredProjectsData = React.useMemo(
+    () => featuredProjectIds.map((projectId) => projectDataById[projectId]),
+    [featuredProjectIds, projectDataById]
   );
 
   /* Build array of project ids to request project geography */
@@ -116,16 +123,17 @@ const ProjectsListViewMap = ({
 
   return (
     <Paper component="main" className={classes.content}>
-      <MapDrawer
-        title={"Filter title"}
-        ref={mapRef}
-        open={open}
-        setOpen={setOpen}
-      >
+      <MapDrawer title={"Projects"} ref={mapRef} open={open} setOpen={setOpen}>
         <Stack spacing={1}>
-          {featuredProjectIds.map((projectId) => (
-            <Typography key={projectId}>{projectId}</Typography>
-          ))}
+          {featuredProjectsData.length > 0 ? (
+            featuredProjectsData.map((projectData) => (
+              <Typography
+                key={projectData.project_id}
+              >{`#${projectData.project_id} - ${projectData.project_name_full}`}</Typography>
+            ))
+          ) : (
+            <Typography>No projects selected</Typography>
+          )}
         </Stack>
       </MapDrawer>
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
