@@ -98,9 +98,25 @@ const ProjectsListViewMap = ({
             (acc, projectGeography) => {
               const phaseKey =
                 projectDataById[projectGeography.project_id]?.current_phase_key;
-              const statusBadgeColor = phaseKey
-                ? styleMapping[phaseKey]?.background
-                : styleMapping.default.background;
+
+              const shouldMuteUnselectedProjects =
+                featuredProjectIds.length > 0;
+              const isInSelectedProjects = featuredProjectIds.includes(
+                projectGeography.project_id
+              );
+
+              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
+              let statusBadgeColor;
+
+              if (shouldMuteUnselectedProjects) {
+                statusBadgeColor = isInSelectedProjects
+                  ? styleMapping[phaseKey]?.background
+                  : styleMapping.default.background;
+              } else {
+                statusBadgeColor = phaseKey
+                  ? styleMapping[phaseKey]?.background
+                  : styleMapping.default.background;
+              }
 
               const projectGeographyFeature = {
                 id: projectGeography.project_id,
@@ -124,7 +140,7 @@ const ProjectsListViewMap = ({
         : { type: "FeatureCollection", features: [] };
 
     return projectGeographiesFeatureCollection;
-  }, [projectsGeographies, projectDataById]);
+  }, [featuredProjectIds, projectsGeographies, projectDataById]);
 
   return (
     <Paper component="main" className={classes.content}>
