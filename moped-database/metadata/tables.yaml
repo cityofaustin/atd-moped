@@ -5019,7 +5019,6 @@
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
   select_permissions:
     - role: moped-admin
@@ -5098,7 +5097,6 @@
           - picture
           - roles
           - title
-          - user_id
           - workgroup_id
         filter: {}
         check: {}
