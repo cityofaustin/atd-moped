@@ -35,6 +35,14 @@ const ProjectsListViewMap = ({
   /* MapDrawer state and handlers */
   const [open, setOpen] = React.useState(false);
 
+  useEffect(() => {
+    if (featuredProjectIds.length > 0) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  }, [featuredProjectIds, setOpen]);
+
   const { data: projectMapViewData } = useQuery(mapQuery, {
     fetchPolicy,
   });
