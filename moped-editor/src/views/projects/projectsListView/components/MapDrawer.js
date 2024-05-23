@@ -1,5 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
+import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MuiDrawer from "@mui/material/Drawer";
@@ -74,7 +75,11 @@ function DrawerContent({
             flexGrow={1}
             display={showDrawerContent && open ? "flex" : "none"}
           >
-            <Typography variant="h2" color={theme.palette.text.primary}>
+            <Typography
+              variant="h2"
+              color={theme.palette.text.primary}
+              paddingLeft={theme.spacing(1)}
+            >
               {title}
             </Typography>
           </Grid>
@@ -90,6 +95,7 @@ function DrawerContent({
         display={showDrawerContent && open ? "flex" : "none"}
         overflow="scroll"
         padding={theme.spacing(1)}
+        paddingLeft={theme.spacing(2)}
       >
         {children}
       </Box>

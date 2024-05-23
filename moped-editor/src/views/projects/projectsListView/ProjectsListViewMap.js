@@ -3,9 +3,10 @@ import { useQuery } from "@apollo/client";
 import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
 import makeStyles from "@mui/styles/makeStyles";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
@@ -124,17 +125,22 @@ const ProjectsListViewMap = ({
   return (
     <Paper component="main" className={classes.content}>
       <MapDrawer title={"Projects"} ref={mapRef} open={open} setOpen={setOpen}>
-        <Stack spacing={1}>
+        <List>
           {featuredProjectsData.length > 0 ? (
             featuredProjectsData.map((projectData) => (
-              <Typography
-                key={projectData.project_id}
-              >{`#${projectData.project_id} - ${projectData.project_name_full}`}</Typography>
+              <ListItem disablePadding>
+                <ListItemText
+                  primary={projectData.project_name_full}
+                  secondary={`#${projectData.project_id}`}
+                />
+              </ListItem>
             ))
           ) : (
-            <Typography>No projects selected</Typography>
+            <ListItem disablePadding>
+              <ListItemText primary="No projects selected" />
+            </ListItem>
           )}
-        </Stack>
+        </List>
       </MapDrawer>
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
       <ProjectsMap
