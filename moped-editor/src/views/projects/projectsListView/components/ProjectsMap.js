@@ -20,6 +20,17 @@ export default React.forwardRef(function ProjectsMap(
 ) {
   const [basemapKey, setBasemapKey] = useState("streets");
 
+  /* Handle cursor update on  */
+  const [cursor, setCursor] = useState("grab");
+
+  const onMouseEnter = () => {
+    setCursor("pointer");
+  };
+
+  const onMouseLeave = () => {
+    setCursor("grab");
+  };
+
   const handleLayerClick = (event) => {
     const clickedFeatures = event.features.length ? event.features : [];
     const clickedFeaturesIds = clickedFeatures.map((feature) => feature.id);
@@ -42,6 +53,9 @@ export default React.forwardRef(function ProjectsMap(
       }}
       interactiveLayerIds={interactiveLayerIds}
       onClick={handleLayerClick}
+      cursor={cursor}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />
