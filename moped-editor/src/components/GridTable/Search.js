@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       width: `calc(100% - ${theme.spacing(4)})`,
     },
-    zIndex: "3",
+    // zIndex must be higher than the MUI Drawer used in MapDrawer
+    zIndex: "1201",
   },
   advancedSearchPaper: {
     paddingTop: theme.spacing(1),

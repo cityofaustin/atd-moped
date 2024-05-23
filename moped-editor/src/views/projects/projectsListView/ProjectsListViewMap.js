@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
+import { useLocation } from "react-router-dom";
 import { NavLink as RouterLink } from "react-router-dom";
 import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
@@ -13,10 +14,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
 
-// TODO: Show projects in list with links to project summary view
-// TODO: Open project in new tab
-
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   content: {
     display: "flex",
     height: "100%",
@@ -30,6 +28,10 @@ const ProjectsListViewMap = ({
   setIsMapDataLoading,
 }) => {
   const classes = useStyles();
+
+  /* Get search params to pass in project links for back button in Project Summary view */
+  const location = useLocation();
+  const queryString = location.search;
 
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
@@ -65,7 +67,7 @@ const ProjectsListViewMap = ({
     [projectMapViewData]
   );
 
-  /* Bulid array of project data needed to show in MapDrawer */
+  /* Build array of project data needed to show in MapDrawer */
   const featuredProjectsData = React.useMemo(
     () => featuredProjectIds.map((projectId) => projectDataById[projectId]),
     [featuredProjectIds, projectDataById]
@@ -137,6 +139,7 @@ const ProjectsListViewMap = ({
                       component={RouterLink}
                       to={`/moped/projects/${projectData.project_id}`}
                       target="_blank"
+                      state={{ queryString }}
                     >
                       {projectData.project_name_full}
                     </Link>
