@@ -23,11 +23,11 @@ export default React.forwardRef(function ProjectsMap(
   /* Handle cursor update on  */
   const [cursor, setCursor] = useState("grab");
 
-  const onMouseEnter = () => {
+  const handleMouseEnter = () => {
     setCursor("pointer");
   };
 
-  const onMouseLeave = () => {
+  const handleMouseLeave = () => {
     setCursor("grab");
   };
 
@@ -54,8 +54,8 @@ export default React.forwardRef(function ProjectsMap(
       interactiveLayerIds={interactiveLayerIds}
       onClick={handleLayerClick}
       cursor={cursor}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <BasemapSpeedDial basemapKey={basemapKey} setBasemapKey={setBasemapKey} />
       <NavigationControl position="bottom-left" showCompass={false} />

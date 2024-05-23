@@ -102,9 +102,11 @@ function DrawerContent({
  * See https://mui.com/material-ui/react-drawer/#responsive-drawer
  * See https://mui.com/material-ui/react-drawer/#mini-variant-drawer
  */
-export default React.forwardRef(function MapDrawer({ children, title }, ref) {
+export default React.forwardRef(function MapDrawer(
+  { children, title, open, setOpen },
+  ref
+) {
   /* Control desktop drawer and content visibility */
-  const [open, setOpen] = React.useState(true);
   const [showDrawerContent, setShowDrawerContent] = React.useState(true);
 
   const toggleDrawer = () => {

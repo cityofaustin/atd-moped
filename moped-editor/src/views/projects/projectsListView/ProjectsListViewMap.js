@@ -1,23 +1,39 @@
 import React, { useEffect } from "react";
 import { useQuery } from "@apollo/client";
+import MapDrawer from "./components/MapDrawer";
 import ProjectsMap from "./components/ProjectsMap";
 import Alert from "@mui/material/Alert";
+import Paper from "@mui/material/Paper";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import makeStyles from "@mui/styles/makeStyles";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 import { styleMapping } from "../projectView/ProjectStatusBadge";
 
-// TODO: Get MapDrawer to fit into this map
 // TODO: Show projects in list with links to project summary view
 // TODO: Open project in new tab
+
+const useStyles = makeStyles((theme) => ({
+  content: {
+    display: "flex",
+    height: "100%",
+    width: "100%",
+  },
+}));
 
 const ProjectsListViewMap = ({
   mapQuery,
   fetchPolicy,
   setIsMapDataLoading,
 }) => {
+  const classes = useStyles();
+
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
   const [featuredProjectIds, setFeaturedProjectIds] = React.useState([]);
-  console.log(featuredProjectIds);
+
+  /* MapDrawer state and handlers */
+  const [open, setOpen] = React.useState(false);
 
   const { data: projectMapViewData } = useQuery(mapQuery, {
     fetchPolicy,
@@ -91,7 +107,19 @@ const ProjectsListViewMap = ({
   }, [projectsGeographies, projectDataById]);
 
   return (
-    <>
+    <Paper component="main" className={classes.content}>
+      <MapDrawer
+        title={"Filter title"}
+        ref={mapRef}
+        open={open}
+        setOpen={setOpen}
+      >
+        <Stack spacing={1}>
+          {featuredProjectIds.map((projectId) => (
+            <Typography key={projectId}>{projectId}</Typography>
+          ))}
+        </Stack>
+      </MapDrawer>
       {error && <Alert severity="error">{`Unable to load project data`}</Alert>}
       <ProjectsMap
         ref={mapRef}
@@ -99,7 +127,7 @@ const ProjectsListViewMap = ({
         loading={loading}
         setFeaturedProjectIds={setFeaturedProjectIds}
       />
-    </>
+    </Paper>
   );
 };
 
