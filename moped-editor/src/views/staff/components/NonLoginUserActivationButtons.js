@@ -60,7 +60,7 @@ const NonLoginUserActivationButtons = ({
   };
 
   const handleUpdateNonLoginUser = async () => {
-    const { password, __typename, ...restOfFormValues } =
+    const { password, __typename, user_id, ...restOfFormValues } =
       transformFormDataIntoDatabaseTypes(formValues);
     updateNonMopedUser({
       variables: {
