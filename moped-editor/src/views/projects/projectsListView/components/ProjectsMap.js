@@ -77,7 +77,9 @@ export default React.forwardRef(function ProjectsMap(
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
-          // layout={{ visibility: !loading ? "visible" : "none" }}
+          layout={{
+            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
+          }}
         />
         <Layer
           {...MAP_STYLES["project-lines"].layerProps}
@@ -87,7 +89,9 @@ export default React.forwardRef(function ProjectsMap(
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
-          // layout={{ visibility: !loading ? "visible" : "none" }}
+          layout={{
+            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
+          }}
         />
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
@@ -97,7 +101,9 @@ export default React.forwardRef(function ProjectsMap(
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
-          // layout={{ visibility: !loading ? "visible" : "none" }}
+          layout={{
+            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
+          }}
         />
       </Source>
 
@@ -112,12 +118,14 @@ export default React.forwardRef(function ProjectsMap(
           layout={{
             visibility: shouldShowFeaturedProjects ? "visible" : "none",
           }}
+          id="project-lines-muted"
         />
         <Layer
           {...MAP_STYLES["project-points-muted"].layerProps}
           layout={{
             visibility: shouldShowFeaturedProjects ? "visible" : "none",
           }}
+          id="project-points-muted"
         />
       </Source>
 
