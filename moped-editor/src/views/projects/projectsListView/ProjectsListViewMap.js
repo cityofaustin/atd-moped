@@ -22,6 +22,8 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// TODO: Split into points and lines using line_representation columns
+
 const ProjectsListViewMap = ({
   mapQuery,
   fetchPolicy,
@@ -210,7 +212,6 @@ const ProjectsListViewMap = ({
         ref={mapRef}
         projectsFeatureCollection={projectGeographiesFeatureCollection}
         featuredProjectsFeatureCollection={featuredProjectsFeatureCollection}
-        loading={loading}
         setFeaturedProjectIds={setFeaturedProjectIds}
         shouldShowFeaturedProjects={shouldShowFeaturedProjects}
       />

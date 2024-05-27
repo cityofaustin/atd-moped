@@ -20,7 +20,6 @@ export default React.forwardRef(function ProjectsMap(
     projectsFeatureCollection,
     featuredProjectsFeatureCollection,
     shouldShowFeaturedProjects,
-    loading,
     setFeaturedProjectIds,
   },
   ref
