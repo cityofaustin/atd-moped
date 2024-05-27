@@ -57,4 +57,34 @@ export const MAP_STYLES = {
       },
     },
   },
+  "project-points-muted": {
+    layerProps: {
+      id: "project-points",
+      _featureIdProp: "INTERSECTIONID",
+      type: "circle",
+      paint: {
+        "circle-radius": pointsCircleRadiusStops,
+        "circle-stroke-color": COLORS.mutedGray,
+        "circle-stroke-width": 1,
+        "circle-stroke-opacity": 0.9,
+        "circle-color": COLORS.mutedGray,
+        "circle-opacity": 0.9,
+      },
+    },
+  },
+  "project-lines-muted": {
+    layerProps: {
+      id: "project-lines",
+      _featureIdProp: "CTN_SEGMENT_ID",
+      type: "line",
+      paint: {
+        "line-width": lineWidthStops,
+        "line-color": COLORS.mutedGray,
+        "line-opacity": 0.9,
+      },
+      layout: {
+        "line-cap": "round",
+      },
+    },
+  },
 };

@@ -69,6 +69,7 @@ export default React.forwardRef(function ProjectsMap(
       <GeocoderControl position="top-left" marker={false} />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
 
+      {/* Project features with status badge color */}
       <Source
         id="projects-geographies"
         type="geojson"
@@ -76,7 +77,7 @@ export default React.forwardRef(function ProjectsMap(
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
-          layout={{ visibility: !loading ? "visible" : "none" }}
+          // layout={{ visibility: !loading ? "visible" : "none" }}
         />
         <Layer
           {...MAP_STYLES["project-lines"].layerProps}
@@ -86,7 +87,7 @@ export default React.forwardRef(function ProjectsMap(
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
-          layout={{ visibility: !loading ? "visible" : "none" }}
+          // layout={{ visibility: !loading ? "visible" : "none" }}
         />
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
@@ -96,9 +97,31 @@ export default React.forwardRef(function ProjectsMap(
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
-          layout={{ visibility: !loading ? "visible" : "none" }}
+          // layout={{ visibility: !loading ? "visible" : "none" }}
         />
       </Source>
+
+      {/* Muted project features */}
+      <Source
+        id="projects-geographies-muted"
+        type="geojson"
+        data={projectsFeatureCollection}
+      >
+        <Layer
+          {...MAP_STYLES["project-lines-muted"].layerProps}
+          layout={{
+            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+          }}
+        />
+        <Layer
+          {...MAP_STYLES["project-points-muted"].layerProps}
+          layout={{
+            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+          }}
+        />
+      </Source>
+
+      {/* Featured project features */}
       <Source
         id="projects-featured-geographies"
         type="geojson"
