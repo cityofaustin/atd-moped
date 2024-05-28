@@ -13,12 +13,12 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import theme from "src/theme";
 import { styleMapping } from "../../projectView/ProjectStatusBadge";
 
-const interactiveLayerIds = Object.keys(MAP_STYLES);
-
 export default React.forwardRef(function ProjectsMap(
   {
-    projectsFeatureCollection,
-    featuredProjectsFeatureCollection,
+    projectsFeatureCollectionLines,
+    projectsFeatureCollectionPoints,
+    featuredProjectsFeatureCollectionLines,
+    featuredProjectsFeatureCollectionPoints,
     shouldShowFeaturedProjects,
     setFeaturedProjectIds,
   },
@@ -57,7 +57,15 @@ export default React.forwardRef(function ProjectsMap(
         // set MUI style border radius to match the map's container
         borderRadius: theme.spacing(0.5),
       }}
-      interactiveLayerIds={interactiveLayerIds}
+      interactiveLayerIds={[
+        "project-lines-outline",
+        "project-lines",
+        "project-points",
+        "project-lines-muted",
+        "project-points-muted",
+        "project-lines-featured",
+        "project-points-featured",
+      ]}
       onClick={handleLayerClick}
       cursor={cursor}
       onMouseEnter={handleMouseEnter}
@@ -68,17 +76,18 @@ export default React.forwardRef(function ProjectsMap(
       <GeocoderControl position="top-left" marker={false} />
       <BaseMapSourceAndLayers basemapKey={basemapKey} />
 
-      {/* Project features with status badge color */}
+      {/* Project line features with status badge color */}
       <Source
-        id="projects-geographies"
+        id="projects-geographies-lines"
         type="geojson"
-        data={projectsFeatureCollection}
+        data={projectsFeatureCollectionLines}
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
           layout={{
             visibility: !shouldShowFeaturedProjects ? "visible" : "none",
           }}
+          id="project-lines-outline"
         />
         <Layer
           {...MAP_STYLES["project-lines"].layerProps}
@@ -91,7 +100,16 @@ export default React.forwardRef(function ProjectsMap(
           layout={{
             visibility: !shouldShowFeaturedProjects ? "visible" : "none",
           }}
+          id="project-lines"
         />
+      </Source>
+
+      {/* Project point features with status badge color */}
+      <Source
+        id="projects-geographies-points"
+        type="geojson"
+        data={projectsFeatureCollectionPoints}
+      >
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
           paint={{
@@ -103,14 +121,15 @@ export default React.forwardRef(function ProjectsMap(
           layout={{
             visibility: !shouldShowFeaturedProjects ? "visible" : "none",
           }}
+          id="project-points"
         />
       </Source>
 
-      {/* Muted project features */}
+      {/* Muted line project features */}
       <Source
-        id="projects-geographies-muted"
+        id="projects-geographies-lines-muted"
         type="geojson"
-        data={projectsFeatureCollection}
+        data={projectsFeatureCollectionLines}
       >
         <Layer
           {...MAP_STYLES["project-lines-muted"].layerProps}
@@ -119,6 +138,14 @@ export default React.forwardRef(function ProjectsMap(
           }}
           id="project-lines-muted"
         />
+      </Source>
+
+      {/* Muted point project features */}
+      <Source
+        id="projects-geographies-points-muted"
+        type="geojson"
+        data={projectsFeatureCollectionPoints}
+      >
         <Layer
           {...MAP_STYLES["project-points-muted"].layerProps}
           layout={{
@@ -128,11 +155,11 @@ export default React.forwardRef(function ProjectsMap(
         />
       </Source>
 
-      {/* Featured project features */}
+      {/* Featured line project features */}
       <Source
-        id="projects-featured-geographies"
+        id="projects-featured-lines-geographies"
         type="geojson"
-        data={featuredProjectsFeatureCollection}
+        data={featuredProjectsFeatureCollectionLines}
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
@@ -148,6 +175,13 @@ export default React.forwardRef(function ProjectsMap(
           }}
           id="project-lines-featured"
         />
+      </Source>
+      {/* Featured line project features */}
+      <Source
+        id="projects-featured-points-geographies"
+        type="geojson"
+        data={featuredProjectsFeatureCollectionPoints}
+      >
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
           layout={{

@@ -15,8 +15,6 @@ export const lineWidthStops = {
 export const MAP_STYLES = {
   "project-points": {
     layerProps: {
-      id: "project-points",
-      _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
@@ -30,8 +28,6 @@ export const MAP_STYLES = {
   },
   "project-lines": {
     layerProps: {
-      id: "project-lines",
-      _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
         "line-width": lineWidthStops,
@@ -45,8 +41,6 @@ export const MAP_STYLES = {
   },
   "project-lines-outline": {
     layerProps: {
-      id: "project-lines-outline",
-      _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
         "line-width": lineOutlineWidthStops,
@@ -59,8 +53,6 @@ export const MAP_STYLES = {
   },
   "project-points-muted": {
     layerProps: {
-      id: "project-points",
-      _featureIdProp: "INTERSECTIONID",
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
@@ -74,8 +66,6 @@ export const MAP_STYLES = {
   },
   "project-lines-muted": {
     layerProps: {
-      id: "project-lines",
-      _featureIdProp: "CTN_SEGMENT_ID",
       type: "line",
       paint: {
         "line-width": lineWidthStops,

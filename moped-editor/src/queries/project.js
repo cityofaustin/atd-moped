@@ -996,6 +996,7 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
       geography
       attributes
       component_name
+      line_representation
     }
   }
 `;
