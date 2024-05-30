@@ -34,14 +34,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   advancedSearchRoot: {
-    width: "calc(100% - 32px)",
-    zIndex: "3",
-    paddingLeft: "16px",
-    paddingRight: "16px",
-    [theme.breakpoints.down("md")]: {
-      paddingLeft: "23px",
-      paddingRight: "14px",
+    width: `calc(100% - ${theme.spacing(6)})`,
+    [theme.breakpoints.down("sm")]: {
+      width: `calc(100% - ${theme.spacing(4)})`,
     },
+    zIndex: "3",
   },
   advancedSearchPaper: {
     paddingTop: theme.spacing(1),
