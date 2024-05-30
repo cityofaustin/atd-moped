@@ -1,6 +1,25 @@
 import React from "react";
 import { styleMapping } from "../../ProjectStatusBadge";
 
+const initialProjectGeographiesMap = {
+  projectGeographiesFeatureCollectionLines: {
+    type: "FeatureCollection",
+    features: [],
+  },
+  projectGeographiesFeatureCollectionPoints: {
+    type: "FeatureCollection",
+    features: [],
+  },
+  featuredProjectsFeatureCollectionLines: {
+    type: "FeatureCollection",
+    features: [],
+  },
+  featuredProjectsFeatureCollectionPoints: {
+    type: "FeatureCollection",
+    features: [],
+  },
+};
+
 /* Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color */
 export const useProjectGeographies = ({
   projectsGeographies,
@@ -8,167 +27,89 @@ export const useProjectGeographies = ({
   featuredProjectIds,
 }) =>
   React.useMemo(() => {
-    const projectGeographiesFeatureCollectionLines =
-      projectsGeographies?.project_geography
-        ? projectsGeographies?.project_geography.reduce(
-            (acc, projectGeography) => {
-              const lineRepresentation = projectGeography?.line_representation;
+    const projectGeographiesArr = projectsGeographies?.project_geography;
 
-              const phaseKey =
-                projectDataById[projectGeography.project_id]?.current_phase_key;
+    if (!projectGeographiesArr) return initialProjectGeographiesMap;
 
-              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
-              const statusBadgeColor = phaseKey
-                ? styleMapping[phaseKey]?.background
-                : styleMapping.default.background;
+    const projectGeographiesMap = projectGeographiesArr.reduce(
+      (acc, projectGeography) => {
+        console.log(projectGeography);
+        const lineRepresentation = projectGeography?.line_representation;
+        const phaseKey =
+          projectDataById[projectGeography.project_id]?.current_phase_key;
 
-              const projectGeographyFeature = {
-                id: projectGeography.project_id,
-                type: "Feature",
-                geometry: projectGeography.geography,
-                properties: {
-                  ...(projectGeography.attributes
-                    ? projectGeography.attributes
-                    : {}),
-                  color: statusBadgeColor,
-                },
-              };
+        // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
+        const statusBadgeColor = phaseKey
+          ? styleMapping[phaseKey]?.background
+          : styleMapping.default.background;
 
-              return lineRepresentation
-                ? {
-                    ...acc,
-                    features: [...acc.features, projectGeographyFeature],
-                  }
-                : acc;
+        const projectGeographyFeature = {
+          id: projectGeography.project_id,
+          type: "Feature",
+          geometry: projectGeography.geography,
+          properties: {
+            ...(projectGeography.attributes ? projectGeography.attributes : {}),
+            color: statusBadgeColor,
+          },
+        };
+
+        // Check if project is featured and add to line or point feature collections
+        const isFeatured = featuredProjectIds.includes(
+          projectGeography.project_id
+        );
+        const isFeaturedLine = lineRepresentation && isFeatured;
+        const isFeaturePoint = !lineRepresentation && isFeatured;
+
+        if (isFeaturedLine) {
+          return {
+            ...acc,
+            featuredProjectsFeatureCollectionLines: {
+              type: "FeatureCollection",
+              features: [
+                ...acc.featuredProjectsFeatureCollectionLines.features,
+                projectGeographyFeature,
+              ],
             },
-            { type: "FeatureCollection", features: [] }
-          )
-        : { type: "FeatureCollection", features: [] };
-
-    const projectGeographiesFeatureCollectionPoints =
-      projectsGeographies?.project_geography
-        ? projectsGeographies?.project_geography.reduce(
-            (acc, projectGeography) => {
-              const lineRepresentation = projectGeography?.line_representation;
-              const phaseKey =
-                projectDataById[projectGeography.project_id]?.current_phase_key;
-
-              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
-              const statusBadgeColor = phaseKey
-                ? styleMapping[phaseKey]?.background
-                : styleMapping.default.background;
-
-              const projectGeographyFeature = {
-                id: projectGeography.project_id,
-                type: "Feature",
-                geometry: projectGeography.geography,
-                properties: {
-                  ...(projectGeography.attributes
-                    ? projectGeography.attributes
-                    : {}),
-                  color: statusBadgeColor,
-                },
-              };
-
-              return !lineRepresentation
-                ? {
-                    ...acc,
-                    features: [...acc.features, projectGeographyFeature],
-                  }
-                : acc;
+          };
+        } else if (isFeaturePoint) {
+          return {
+            ...acc,
+            featuredProjectsFeatureCollectionPoints: {
+              type: "FeatureCollection",
+              features: [
+                ...acc.featuredProjectsFeatureCollectionPoints.features,
+                projectGeographyFeature,
+              ],
             },
-            { type: "FeatureCollection", features: [] }
-          )
-        : { type: "FeatureCollection", features: [] };
-
-    const featuredProjectsFeatureCollectionLines =
-      projectsGeographies?.project_geography
-        ? projectsGeographies?.project_geography.reduce(
-            (acc, projectGeography) => {
-              const phaseKey =
-                projectDataById[projectGeography.project_id]?.current_phase_key;
-
-              const isInSelectedProjects = featuredProjectIds.includes(
-                projectGeography.project_id
-              );
-              const lineRepresentation = projectGeography?.line_representation;
-
-              if (!isInSelectedProjects || !lineRepresentation) {
-                return acc;
-              }
-
-              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
-              const statusBadgeColor = phaseKey
-                ? styleMapping[phaseKey]?.background
-                : styleMapping.default.background;
-
-              const projectGeographyFeature = {
-                id: projectGeography.project_id,
-                type: "Feature",
-                geometry: projectGeography.geography,
-                properties: {
-                  ...(projectGeography.attributes
-                    ? projectGeography.attributes
-                    : {}),
-                  color: statusBadgeColor,
-                },
-              };
-
-              return {
-                ...acc,
-                features: [...acc.features, projectGeographyFeature],
-              };
+          };
+        } else if (lineRepresentation) {
+          return {
+            ...acc,
+            projectGeographiesFeatureCollectionLines: {
+              type: "FeatureCollection",
+              features: [
+                ...acc.projectGeographiesFeatureCollectionLines.features,
+                projectGeographyFeature,
+              ],
             },
-            { type: "FeatureCollection", features: [] }
-          )
-        : { type: "FeatureCollection", features: [] };
-
-    const featuredProjectsFeatureCollectionPoints =
-      projectsGeographies?.project_geography
-        ? projectsGeographies?.project_geography.reduce(
-            (acc, projectGeography) => {
-              const phaseKey =
-                projectDataById[projectGeography.project_id]?.current_phase_key;
-
-              const isInSelectedProjects = featuredProjectIds.includes(
-                projectGeography.project_id
-              );
-              const lineRepresentation = projectGeography?.line_representation;
-
-              if (!isInSelectedProjects || lineRepresentation) {
-                return acc;
-              }
-
-              // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
-              const statusBadgeColor = phaseKey
-                ? styleMapping[phaseKey]?.background
-                : styleMapping.default.background;
-
-              const projectGeographyFeature = {
-                id: projectGeography.project_id,
-                type: "Feature",
-                geometry: projectGeography.geography,
-                properties: {
-                  ...(projectGeography.attributes
-                    ? projectGeography.attributes
-                    : {}),
-                  color: statusBadgeColor,
-                },
-              };
-
-              return {
-                ...acc,
-                features: [...acc.features, projectGeographyFeature],
-              };
+          };
+        } else if (!lineRepresentation) {
+          return {
+            ...acc,
+            projectGeographiesFeatureCollectionPoints: {
+              type: "FeatureCollection",
+              features: [
+                ...acc.projectGeographiesFeatureCollectionPoints.features,
+                projectGeographyFeature,
+              ],
             },
-            { type: "FeatureCollection", features: [] }
-          )
-        : { type: "FeatureCollection", features: [] };
+          };
+        } else {
+          return acc;
+        }
+      },
+      initialProjectGeographiesMap
+    );
 
-    return {
-      projectGeographiesFeatureCollectionLines,
-      projectGeographiesFeatureCollectionPoints,
-      featuredProjectsFeatureCollectionLines,
-      featuredProjectsFeatureCollectionPoints,
-    };
+    return projectGeographiesMap;
   }, [featuredProjectIds, projectsGeographies, projectDataById]);
