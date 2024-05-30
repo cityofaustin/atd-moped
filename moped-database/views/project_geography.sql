@@ -1,9 +1,10 @@
--- Most recent migration: moped-database/migrations/1707416196012_add_check_for_deleted_components/up.sql
+-- Most recent migration: moped-database/migrations/1716843075050_add_line_rep_to_proj_geo_view/up.sql
 
 CREATE OR REPLACE VIEW project_geography AS SELECT
     moped_project.project_id,
     uniform_features.id AS feature_id,
     moped_components.component_id AS component_archtype_id,
+    moped_components.line_representation,
     moped_proj_components.project_component_id AS component_id,
     moped_proj_components.is_deleted,
     moped_project.project_name,
