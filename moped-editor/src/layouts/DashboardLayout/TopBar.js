@@ -82,10 +82,6 @@ export const navigationItems = [
     href: "/moped/staff",
     title: "Staff",
   },
-  {
-    href: "/moped/map",
-    title: "Map",
-  },
 ];
 
 const TopBar = ({ className, ...rest }) => {

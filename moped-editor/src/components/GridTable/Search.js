@@ -2,11 +2,15 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
 import { Box, Button, Grid, Paper, Popper } from "@mui/material";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormGroup from "@mui/material/FormGroup";
+import Switch from "@mui/material/Switch";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
+import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -81,6 +85,8 @@ const Search = ({
   isOr,
   setIsOr,
   loading,
+  showMapView,
+  setShowMapView,
 }) => {
   const classes = useStyles();
   const divRef = React.useRef();
@@ -121,13 +127,7 @@ const Search = ({
       <Box mt={3}>
         <Paper ref={divRef}>
           <Grid container className={classes.searchBarContainer}>
-            <Grid
-              item
-              xs={12}
-              sm={8}
-              lg={10}
-              className={classes.gridSearchPadding}
-            >
+            <Grid item xs={12} md className={classes.gridSearchPadding}>
               <SearchBar
                 searchFieldValue={searchFieldValue}
                 setSearchFieldValue={setSearchFieldValue}
@@ -142,29 +142,38 @@ const Search = ({
                 resetSimpleSearch={resetSimpleSearch}
               />
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={4}
-              md={4}
-              lg={2}
-              className={classes.downloadButtonGrid}
-            >
-              {queryConfig.showExport && (
-                <Button
-                  disabled={
-                    (parentData?.[queryConfig.table] ?? []).length === 0
-                  }
-                  className={classes.downloadCsvButton}
-                  onClick={handleExportButtonClick}
-                  startIcon={<SaveAltIcon />}
-                  variant="outlined"
-                  color="primary"
-                  fullWidth
-                >
-                  Download
-                </Button>
-              )}
+            <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
+              <div>
+                {queryConfig.showExport && (
+                  <>
+                    <Button
+                      disabled={
+                        (parentData?.[queryConfig.table] ?? []).length === 0
+                      }
+                      className={classes.downloadCsvButton}
+                      onClick={handleExportButtonClick}
+                      startIcon={<SaveAltIcon />}
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Download
+                    </Button>
+                    <FormGroup
+                      sx={{ display: "inline", marginLeft: theme.spacing(2) }}
+                    >
+                      <FormControlLabel
+                        control={
+                          <Switch
+                            checked={showMapView}
+                            onChange={() => setShowMapView(!showMapView)}
+                          />
+                        }
+                        label="Show Map"
+                      />
+                    </FormGroup>
+                  </>
+                )}
+              </div>
             </Grid>
           </Grid>
         </Paper>

@@ -27,6 +27,7 @@ import {
 } from "./useProjectListViewQuery/useCsvExport";
 import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
+import ProjectsListViewMap from "./ProjectsListViewMap";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const useStyles = makeStyles((theme) => ({
@@ -56,6 +57,9 @@ const ProjectsListViewTable = () => {
     useState(false);
   const [columnDownloadOption, setColumnDownloadOption] = useState("visible");
   const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
+
+  /* Toggle between list and map view */
+  const [showMapView, setShowMapView] = useState(false);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -208,6 +212,8 @@ const ProjectsListViewTable = () => {
           isOr={isOr}
           setIsOr={setIsOr}
           loading={loading}
+          showMapView={showMapView}
+          setShowMapView={setShowMapView}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
@@ -218,7 +224,7 @@ const ProjectsListViewTable = () => {
               marginTop: "14px",
             }}
           >
-            {data && data.project_list_view && (
+            {!showMapView && data && data.project_list_view && (
               <DataGridPro
                 sx={dataGridProStyleOverrides}
                 density="compact"
@@ -256,6 +262,7 @@ const ProjectsListViewTable = () => {
                 sortingMode="server"
               />
             )}
+            {showMapView && <ProjectsListViewMap />}
           </Box>
         </Paper>
       </Container>
