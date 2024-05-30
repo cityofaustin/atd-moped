@@ -278,6 +278,8 @@ const ProjectsListViewTable = () => {
                   PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
                 }
                 setIsMapDataLoading={setIsMapDataLoading}
+                searchWhereString={searchWhereString}
+                advancedSearchWhereString={advancedSearchWhereString}
               />
             )}
           </Box>

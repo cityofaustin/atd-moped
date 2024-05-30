@@ -22,12 +22,12 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-// TODO: Clear featured IDs when filters are reset
-
 const ProjectsListViewMap = ({
   mapQuery,
   fetchPolicy,
   setIsMapDataLoading,
+  searchWhereString,
+  advancedSearchWhereString,
 }) => {
   const classes = useStyles();
 
@@ -49,10 +49,13 @@ const ProjectsListViewMap = ({
   useEffect(() => {
     if (featuredProjectIds.length > 0) {
       setOpen(true);
-    } else {
-      setOpen(false);
     }
   }, [featuredProjectIds, setOpen]);
+
+  /* Clear featured project IDs when search filters are changed or reset */
+  useEffect(() => {
+    setFeaturedProjectIds([]);
+  }, [searchWhereString, advancedSearchWhereString]);
 
   const { data: projectMapViewData } = useQuery(mapQuery, {
     fetchPolicy,

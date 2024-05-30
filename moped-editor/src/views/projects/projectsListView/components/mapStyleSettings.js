@@ -56,7 +56,7 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.mutedGray,
+        "circle-stroke-color": COLORS.black,
         "circle-stroke-width": 1,
         "circle-stroke-opacity": 0.9,
         "circle-color": COLORS.mutedGray,
