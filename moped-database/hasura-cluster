@@ -316,8 +316,8 @@ function replicate() {
 
   # If use_any_snapshot is true, use the most recent snapshot
   if $use_any_snapshot; then
-    echo "Using most recent snapshot $snapshot_file"
     snapshot_file="./snapshots/$(ls -t ./snapshots | head -n 1)"
+    echo "Using most recent snapshot $snapshot_file"
   fi
 
   # Check if the file already exists and the export is complete

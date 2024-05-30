@@ -164,7 +164,7 @@ const TagsSection = ({ projectId }) => {
           >
             <Grid container spacing={1}>
               {data.moped_proj_tags.map((tag) => (
-                <Grid item>
+                <Grid item key={tag.id}>
                   <Chip
                     key={tag.id}
                     label={tag.moped_tag.name}
