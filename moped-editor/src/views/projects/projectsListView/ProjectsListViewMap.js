@@ -11,7 +11,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import Paper from "@mui/material/Paper";
 import makeStyles from "@mui/styles/makeStyles";
-import { useProjectGeographies } from "../projectView/ProjectSummary/utils/useProjectGeographies";
+import { useProjectGeographies } from "./useProjectGeographies/useProjectGeographies";
 import { GET_PROJECTS_GEOGRAPHIES } from "src/queries/project";
 
 const useStyles = makeStyles(() => ({
@@ -21,6 +21,8 @@ const useStyles = makeStyles(() => ({
     width: "100%",
   },
 }));
+
+// TODO: Clear featured IDs when filters are reset
 
 const ProjectsListViewMap = ({
   mapQuery,

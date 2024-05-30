@@ -24,9 +24,10 @@ export default React.forwardRef(function ProjectsMap(
   },
   ref
 ) {
+  /* Store basemap key */
   const [basemapKey, setBasemapKey] = useState("streets");
 
-  /* Handle cursor update on  */
+  /* Store cursor */
   const [cursor, setCursor] = useState("grab");
 
   const handleMouseEnter = () => {
@@ -84,9 +85,6 @@ export default React.forwardRef(function ProjectsMap(
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
-          layout={{
-            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
-          }}
           id="project-lines-outline"
         />
         <Layer
@@ -96,9 +94,6 @@ export default React.forwardRef(function ProjectsMap(
             "line-color": !shouldShowFeaturedProjects
               ? ["get", "color"]
               : styleMapping.default.background,
-          }}
-          layout={{
-            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
           }}
           id="project-lines"
         />
@@ -117,9 +112,6 @@ export default React.forwardRef(function ProjectsMap(
             "circle-color": !shouldShowFeaturedProjects
               ? ["get", "color"]
               : styleMapping.default.background,
-          }}
-          layout={{
-            visibility: !shouldShowFeaturedProjects ? "visible" : "none",
           }}
           id="project-points"
         />
@@ -176,6 +168,7 @@ export default React.forwardRef(function ProjectsMap(
           id="project-lines-featured"
         />
       </Source>
+
       {/* Featured line project features */}
       <Source
         id="projects-featured-points-geographies"

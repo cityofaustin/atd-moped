@@ -1,6 +1,7 @@
 import React from "react";
-import { styleMapping } from "../../ProjectStatusBadge";
+import { styleMapping } from "../../projectView/ProjectStatusBadge";
 
+/* Initial feature collections to pass to the map when data has not yet loaded */
 const initialProjectGeographiesMap = {
   projectGeographiesFeatureCollectionLines: {
     type: "FeatureCollection",
@@ -20,7 +21,11 @@ const initialProjectGeographiesMap = {
   },
 };
 
-/* Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color */
+/**  Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color
+ * @param {Object} projectsGeographies - Object with project geographies data
+ * @param {Object} projectDataById - Object with project data by project id to add to feature properties
+ * @param {Array} featuredProjectIds - Array of project ids that are featured (clicked on map)
+ */
 export const useProjectGeographies = ({
   projectsGeographies,
   projectDataById,
