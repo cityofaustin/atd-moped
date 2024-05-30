@@ -69,7 +69,7 @@ const staffColumns = [
   {
     headerName: "Role",
     field: "roles",
-    valueGetter: value => {
+    valueGetter: (value) => {
       if (!value || !value[0]) {
         return "N/A";
       }
@@ -101,7 +101,9 @@ const staffColumns = [
 const StaffListView = () => {
   const classes = useStyles();
 
-  const { data, loading, error } = useQuery(GET_ALL_USERS);
+  const { data, loading, error } = useQuery(GET_ALL_USERS, {
+    fetchPolicy: "cache-and-network",
+  });
 
   if (error) {
     console.error(error);
