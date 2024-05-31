@@ -29,6 +29,7 @@ import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "./ProjectsListViewMap";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import ActivityMetrics from "src/components/ActivityMetrics";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -272,15 +273,17 @@ const ProjectsListViewTable = () => {
               />
             )}
             {showMapView && (
-              <ProjectsListViewMap
-                mapQuery={mapQuery}
-                fetchPolicy={
-                  PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
-                }
-                setIsMapDataLoading={setIsMapDataLoading}
-                searchWhereString={searchWhereString}
-                advancedSearchWhereString={advancedSearchWhereString}
-              />
+              <ActivityMetrics eventName="projects_map_load">
+                <ProjectsListViewMap
+                  mapQuery={mapQuery}
+                  fetchPolicy={
+                    PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
+                  }
+                  setIsMapDataLoading={setIsMapDataLoading}
+                  searchWhereString={searchWhereString}
+                  advancedSearchWhereString={advancedSearchWhereString}
+                />
+              </ActivityMetrics>
             )}
           </Box>
         </Paper>
