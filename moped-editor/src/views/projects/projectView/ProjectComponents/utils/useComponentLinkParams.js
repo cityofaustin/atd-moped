@@ -63,7 +63,7 @@ export const useComponentLinkParams = ({
     }
 
     // Set clicked component from search parameter once projectComponents data loads
-    if (projectComponents.length > 0) {
+    if (projectComponents.length > 0 || allRelatedComponents.length > 0) {
       const componentFromParams =
         projectComponents.find(
           (component) => component.project_component_id === componentParamId
