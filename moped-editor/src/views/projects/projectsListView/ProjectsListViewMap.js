@@ -122,7 +122,6 @@ const ProjectsListViewMap = ({
                     <Link
                       component={RouterLink}
                       to={`/moped/projects/${projectData?.project_id}`}
-                      target="_blank"
                       state={{ queryString }}
                     >
                       {projectData?.project_name_full}
