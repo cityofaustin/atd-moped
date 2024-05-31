@@ -38,12 +38,11 @@ export const useProjectGeographies = ({
 
     const projectGeographiesMap = projectGeographiesArr.reduce(
       (acc, projectGeography) => {
-        console.log(projectGeography);
         const lineRepresentation = projectGeography?.line_representation;
         const phaseKey =
           projectDataById[projectGeography.project_id]?.current_phase_key;
 
-        // Set color based on phase key or default and mute if not in selected projects (if there are any selected)
+        // Set color based on phase key or default if not defined
         const statusBadgeColor = phaseKey
           ? styleMapping[phaseKey]?.background
           : styleMapping.default.background;
@@ -58,13 +57,14 @@ export const useProjectGeographies = ({
           },
         };
 
-        // Check if project is featured and add to line or point feature collections
+        // Check if project is featured and if it is a line or point feature
         const isFeatured = featuredProjectIds.includes(
           projectGeography.project_id
         );
         const isFeaturedLine = lineRepresentation && isFeatured;
         const isFeaturePoint = !lineRepresentation && isFeatured;
 
+        // Sort into featured or non-featured project and line and point geographies for map layers
         if (isFeaturedLine) {
           return {
             ...acc,

@@ -18,7 +18,7 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.black,
+        "circle-stroke-color": COLORS.white,
         "circle-stroke-width": 1,
         "circle-stroke-opacity": 0.9,
         "circle-color": ["get", "color"],
@@ -44,7 +44,7 @@ export const MAP_STYLES = {
       type: "line",
       paint: {
         "line-width": lineOutlineWidthStops,
-        "line-color": COLORS.black,
+        "line-color": COLORS.white,
       },
       layout: {
         "line-cap": "round",
@@ -56,7 +56,7 @@ export const MAP_STYLES = {
       type: "circle",
       paint: {
         "circle-radius": pointsCircleRadiusStops,
-        "circle-stroke-color": COLORS.black,
+        "circle-stroke-color": COLORS.white,
         "circle-stroke-width": 1,
         "circle-stroke-opacity": 0.9,
         "circle-color": COLORS.mutedGray,
