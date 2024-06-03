@@ -105,9 +105,10 @@ export const useComponentLinkParams = ({
             Please check this project's activity log for more details.`,
             severity: "error",
             onClose: () => {
-              errorMessageDispatch({ type: "hide_error" });
+              errorMessageDispatch({ type: "hide_component_error" });
               updateParamsWithoutRender("project_component_id", null);
             },
+            messageType: "componentLinkError"
           },
         });
       }
