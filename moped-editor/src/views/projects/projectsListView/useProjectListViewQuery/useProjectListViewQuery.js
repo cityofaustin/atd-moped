@@ -16,7 +16,11 @@ export const useGetProjectListView = ({
       project_list_view (
           ${queryLimit ? `limit: ${queryLimit}` : ""}
           ${queryOffset ? `offset: ${queryOffset}` : ""}
-          order_by: {${orderByColumn}: ${orderByDirection}}
+          ${
+            orderByColumn && orderByDirection
+              ? `order_by: {${orderByColumn}: ${orderByDirection}}`
+              : ""
+          }
           where: { 
             ${
               searchWhereString && advancedSearchWhereString

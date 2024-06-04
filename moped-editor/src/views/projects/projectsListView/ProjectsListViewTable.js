@@ -118,6 +118,15 @@ const ProjectsListViewTable = () => {
     queryName: "ProjectListExport",
   });
 
+  const { query: mapQuery } = useGetProjectListView({
+    columnsToReturn: ["project_id", "current_phase_key"],
+    searchWhereString: searchWhereString,
+    advancedSearchWhereString: advancedSearchWhereString,
+    queryName: "ProjectListViewMap",
+  });
+
+  const [isMapDataLoading, setIsMapDataLoading] = useState(false);
+
   const {
     data: projectListViewData,
     loading,
@@ -211,7 +220,7 @@ const ProjectsListViewTable = () => {
           handleExportButtonClick={handleExportButtonClick}
           isOr={isOr}
           setIsOr={setIsOr}
-          loading={loading}
+          loading={loading || isMapDataLoading}
           showMapView={showMapView}
           setShowMapView={setShowMapView}
         />
@@ -262,7 +271,15 @@ const ProjectsListViewTable = () => {
                 sortingMode="server"
               />
             )}
-            {showMapView && <ProjectsListViewMap />}
+            {showMapView && (
+              <ProjectsListViewMap
+                mapQuery={mapQuery}
+                fetchPolicy={
+                  PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
+                }
+                setIsMapDataLoading={setIsMapDataLoading}
+              />
+            )}
           </Box>
         </Paper>
       </Container>
