@@ -4,8 +4,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -78,7 +78,7 @@ comp_geography AS (
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
-    ) feature_union
+    ) AS feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -86,8 +86,8 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM moped_proj_components_subcomponents mpcs
-    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    FROM moped_proj_components_subcomponents AS mpcs
+    LEFT JOIN moped_subcomponents AS ms ON mpcs.subcomponent_id = ms.subcomponent_id
     WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
@@ -96,8 +96,8 @@ component_tags AS (
     SELECT
         mpct.project_component_id,
         string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
-    FROM moped_proj_component_tags mpct
-    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    FROM moped_proj_component_tags AS mpct
+    LEFT JOIN moped_component_tags AS mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
 )
@@ -165,7 +165,7 @@ SELECT
     plv.parent_project_id,
     plv.parent_project_name,
     plv.parent_project_url,
-    'placeholder text'::text AS parent_project_name_with_descriptor,
+    plv.parent_project_name AS parent_project_name_with_descriptor,
     'placeholder text'::text AS related_project_ids,
     'placeholder text'::text AS related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
@@ -180,14 +180,14 @@ SELECT
     plv.project_development_status_date_fiscal_year,
     plv.project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
-FROM moped_proj_components mpc
+FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
-LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
-LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
-LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
-LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+LEFT JOIN project_list_view AS plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
