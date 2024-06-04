@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1713896796482_add_full_name_to_list_view/up.sql
+-- Most recent migration: moped-database/migrations/1717525278049_add_proj_descriptor_plv_cols/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -130,8 +130,8 @@ SELECT
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
-    'placeholder text'::text AS project_name_descriptor,
-    'placeholder text'::text AS project_name_with_descriptor,
+    plv.project_name_secondary AS project_name_descriptor,
+    plv.project_name_full AS project_name_with_descriptor,
     plv.project_description,
     plv.ecapris_subproject_id,
     plv.project_website,
@@ -165,7 +165,7 @@ SELECT
     plv.parent_project_id,
     plv.parent_project_name,
     plv.parent_project_url,
-    'placeholder text'::text AS parent_project_name_with_descriptor,
+    plv.parent_project_name AS parent_project_name_with_descriptor,
     'placeholder text'::text AS related_project_ids,
     'placeholder text'::text AS related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
