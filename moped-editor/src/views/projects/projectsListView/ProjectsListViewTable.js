@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext, useCallback } from "react";
 import { Box, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import Search from "../../../components/GridTable/Search";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
@@ -29,6 +30,9 @@ import ProjectListToolbar from "./ProjectListToolbar";
 import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "./ProjectsListViewMap";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import ActivityMetrics from "src/components/ActivityMetrics";
+
+export const mapSearchParamName = "map";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,7 +63,11 @@ const ProjectsListViewTable = () => {
   const [downloadingDialogOpen, setDownloadingDialogOpen] = useState(false);
 
   /* Toggle between list and map view */
-  const [showMapView, setShowMapView] = useState(false);
+  const [searchParams] = useSearchParams();
+  const initialShowMapView = searchParams.get(mapSearchParamName)
+    ? searchParams.get(mapSearchParamName) === "true"
+    : false;
+  const [showMapView, setShowMapView] = useState(initialShowMapView);
 
   /* Project list query */
   const { queryLimit, setQueryLimit, queryOffset, setQueryOffset } =
@@ -119,7 +127,7 @@ const ProjectsListViewTable = () => {
   });
 
   const { query: mapQuery } = useGetProjectListView({
-    columnsToReturn: ["project_id", "current_phase_key"],
+    columnsToReturn: ["project_id", "current_phase_key", "project_name_full"],
     searchWhereString: searchWhereString,
     advancedSearchWhereString: advancedSearchWhereString,
     queryName: "ProjectListViewMap",
@@ -272,13 +280,17 @@ const ProjectsListViewTable = () => {
               />
             )}
             {showMapView && (
-              <ProjectsListViewMap
-                mapQuery={mapQuery}
-                fetchPolicy={
-                  PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
-                }
-                setIsMapDataLoading={setIsMapDataLoading}
-              />
+              <ActivityMetrics eventName="projects_map_load">
+                <ProjectsListViewMap
+                  mapQuery={mapQuery}
+                  fetchPolicy={
+                    PROJECT_LIST_VIEW_QUERY_CONFIG.options.useQuery.fetchPolicy
+                  }
+                  setIsMapDataLoading={setIsMapDataLoading}
+                  searchWhereString={searchWhereString}
+                  advancedSearchWhereString={advancedSearchWhereString}
+                />
+              </ActivityMetrics>
             )}
           </Box>
         </Paper>
