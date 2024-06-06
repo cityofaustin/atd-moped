@@ -12,6 +12,7 @@ import Filters from "src/components/GridTable/Filters";
 import SearchBar from "./SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
+import { mapSearchParamName } from "src/views/projects/projectsListView/ProjectsListViewTable";
 import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
@@ -146,6 +147,15 @@ const Search = ({
     });
   };
 
+  const handleMapToggle = () => {
+    setShowMapView(!showMapView);
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set(mapSearchParamName, !showMapView);
+
+      return prevSearchParams;
+    });
+  };
+
   return (
     <div>
       <Box mt={3}>
@@ -186,7 +196,7 @@ const Search = ({
                         control={
                           <Switch
                             checked={showMapView}
-                            onChange={() => setShowMapView(!showMapView)}
+                            onChange={handleMapToggle}
                           />
                         }
                         label="Map"
