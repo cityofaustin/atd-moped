@@ -984,3 +984,19 @@ export const PROJECT_OPTIONS = gql`
     }
   }
 `;
+
+export const GET_PROJECTS_GEOGRAPHIES = gql`
+  query GetProjectsComponents($projectIds: [Int!]) {
+    project_geography(
+      where: { project_id: { _in: $projectIds }, is_deleted: { _eq: false } }
+    ) {
+      project_id
+      project_name
+      component_id
+      geography
+      attributes
+      component_name
+      line_representation
+    }
+  }
+`;
