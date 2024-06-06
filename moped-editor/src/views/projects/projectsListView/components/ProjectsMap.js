@@ -17,10 +17,10 @@ export default React.forwardRef(function ProjectsMap(
   {
     projectsFeatureCollectionLines,
     projectsFeatureCollectionPoints,
-    featuredProjectsFeatureCollectionLines,
-    featuredProjectsFeatureCollectionPoints,
-    shouldShowFeaturedProjects,
-    setFeaturedProjectIds,
+    selectedProjectsFeatureCollectionLines,
+    selectedProjectsFeatureCollectionPoints,
+    shouldShowSelectedProjects,
+    setSelectedProjectIds,
   },
   ref
 ) {
@@ -43,7 +43,7 @@ export default React.forwardRef(function ProjectsMap(
     const clickedFeaturesIds = clickedFeatures.map((feature) => feature.id);
 
     const uniqueClickedFeaturesIds = [...new Set(clickedFeaturesIds)];
-    setFeaturedProjectIds(uniqueClickedFeaturesIds);
+    setSelectedProjectIds(uniqueClickedFeaturesIds);
   };
 
   return (
@@ -64,8 +64,8 @@ export default React.forwardRef(function ProjectsMap(
         "project-points",
         "project-lines-muted",
         "project-points-muted",
-        "project-lines-featured",
-        "project-points-featured",
+        "project-lines-selected",
+        "project-points-selected",
       ]}
       onClick={handleLayerClick}
       cursor={cursor}
@@ -91,7 +91,7 @@ export default React.forwardRef(function ProjectsMap(
           {...MAP_STYLES["project-lines"].layerProps}
           paint={{
             ...MAP_STYLES["project-lines"].layerProps.paint,
-            "line-color": !shouldShowFeaturedProjects
+            "line-color": !shouldShowSelectedProjects
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
@@ -109,7 +109,7 @@ export default React.forwardRef(function ProjectsMap(
           {...MAP_STYLES["project-points"].layerProps}
           paint={{
             ...MAP_STYLES["project-points"].layerProps.paint,
-            "circle-color": !shouldShowFeaturedProjects
+            "circle-color": !shouldShowSelectedProjects
               ? ["get", "color"]
               : styleMapping.default.background,
           }}
@@ -126,7 +126,7 @@ export default React.forwardRef(function ProjectsMap(
         <Layer
           {...MAP_STYLES["project-lines-muted"].layerProps}
           layout={{
-            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+            visibility: shouldShowSelectedProjects ? "visible" : "none",
           }}
           id="project-lines-muted"
         />
@@ -141,46 +141,46 @@ export default React.forwardRef(function ProjectsMap(
         <Layer
           {...MAP_STYLES["project-points-muted"].layerProps}
           layout={{
-            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+            visibility: shouldShowSelectedProjects ? "visible" : "none",
           }}
           id="project-points-muted"
         />
       </Source>
 
-      {/* Featured line project features */}
+      {/* Selected line project features */}
       <Source
-        id="projects-featured-lines-geographies"
+        id="projects-selected-lines-geographies"
         type="geojson"
-        data={featuredProjectsFeatureCollectionLines}
+        data={selectedProjectsFeatureCollectionLines}
       >
         <Layer
           {...MAP_STYLES["project-lines-outline"].layerProps}
           layout={{
-            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+            visibility: shouldShowSelectedProjects ? "visible" : "none",
           }}
-          id="project-lines-outline-featured"
+          id="project-lines-outline-selected"
         />
         <Layer
           {...MAP_STYLES["project-lines"].layerProps}
           layout={{
-            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+            visibility: shouldShowSelectedProjects ? "visible" : "none",
           }}
-          id="project-lines-featured"
+          id="project-lines-selected"
         />
       </Source>
 
-      {/* Featured line project features */}
+      {/* Selected line project features */}
       <Source
-        id="projects-featured-points-geographies"
+        id="projects-selected-points-geographies"
         type="geojson"
-        data={featuredProjectsFeatureCollectionPoints}
+        data={selectedProjectsFeatureCollectionPoints}
       >
         <Layer
           {...MAP_STYLES["project-points"].layerProps}
           layout={{
-            visibility: shouldShowFeaturedProjects ? "visible" : "none",
+            visibility: shouldShowSelectedProjects ? "visible" : "none",
           }}
-          id="project-points-featured"
+          id="project-points-selected"
         />
       </Source>
     </MapGL>
