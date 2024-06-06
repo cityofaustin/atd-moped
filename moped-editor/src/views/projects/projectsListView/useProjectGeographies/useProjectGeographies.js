@@ -11,11 +11,11 @@ const initialProjectGeographiesMap = {
     type: "FeatureCollection",
     features: [],
   },
-  featuredProjectsFeatureCollectionLines: {
+  selectedProjectsFeatureCollectionLines: {
     type: "FeatureCollection",
     features: [],
   },
-  featuredProjectsFeatureCollectionPoints: {
+  selectedProjectsFeatureCollectionPoints: {
     type: "FeatureCollection",
     features: [],
   },
@@ -24,12 +24,12 @@ const initialProjectGeographiesMap = {
 /**  Build feature collection to pass to the map, add project_geography attributes to feature properties along with status color
  * @param {Object} projectsGeographies - Object with project geographies data
  * @param {Object} projectDataById - Object with project data by project id to add to feature properties
- * @param {Array} featuredProjectIds - Array of project ids that are featured (clicked on map)
+ * @param {Array} selectedProjectIds - Array of project ids that are selected (clicked on map)
  */
 export const useProjectGeographies = ({
   projectsGeographies,
   projectDataById,
-  featuredProjectIds,
+  selectedProjectIds,
 }) =>
   React.useMemo(() => {
     const projectGeographiesArr = projectsGeographies?.project_geography;
@@ -57,32 +57,32 @@ export const useProjectGeographies = ({
           },
         };
 
-        // Check if project is featured and if it is a line or point feature
-        const isFeatured = featuredProjectIds.includes(
+        // Check if project is selected and if it is a line or point feature
+        const isSelected = selectedProjectIds.includes(
           projectGeography.project_id
         );
-        const isFeaturedLine = lineRepresentation && isFeatured;
-        const isFeaturePoint = !lineRepresentation && isFeatured;
+        const isSelectedLine = lineRepresentation && isSelected;
+        const isSelectedPoint = !lineRepresentation && isSelected;
 
-        // Sort into featured or non-featured project and line and point geographies for map layers
-        if (isFeaturedLine) {
+        // Sort into selected or non-selected project and line and point geographies for map layers
+        if (isSelectedLine) {
           return {
             ...acc,
-            featuredProjectsFeatureCollectionLines: {
+            selectedProjectsFeatureCollectionLines: {
               type: "FeatureCollection",
               features: [
-                ...acc.featuredProjectsFeatureCollectionLines.features,
+                ...acc.selectedProjectsFeatureCollectionLines.features,
                 projectGeographyFeature,
               ],
             },
           };
-        } else if (isFeaturePoint) {
+        } else if (isSelectedPoint) {
           return {
             ...acc,
-            featuredProjectsFeatureCollectionPoints: {
+            selectedProjectsFeatureCollectionPoints: {
               type: "FeatureCollection",
               features: [
-                ...acc.featuredProjectsFeatureCollectionPoints.features,
+                ...acc.selectedProjectsFeatureCollectionPoints.features,
                 projectGeographyFeature,
               ],
             },
@@ -117,4 +117,4 @@ export const useProjectGeographies = ({
     );
 
     return projectGeographiesMap;
-  }, [featuredProjectIds, projectsGeographies, projectDataById]);
+  }, [selectedProjectIds, projectsGeographies, projectDataById]);

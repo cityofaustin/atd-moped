@@ -38,23 +38,23 @@ const ProjectsListViewMap = ({
   /* Store map instance to call Mapbox GL methods where needed */
   const mapRef = React.useRef();
 
-  /* Store featured project IDs for sidebar items */
-  const [featuredProjectIds, setFeaturedProjectIds] = React.useState([]);
-  const shouldShowFeaturedProjects = featuredProjectIds.length > 0;
+  /* Store selected project IDs for sidebar items */
+  const [selectedProjectIds, setSelectedProjectIds] = React.useState([]);
+  const shouldShowSelectedProjects = selectedProjectIds.length > 0;
 
   /* MapDrawer state and handlers */
   const [open, setOpen] = React.useState(false);
 
   /* Toggle drawer based on whether components are captured in map click or not */
   useEffect(() => {
-    if (featuredProjectIds.length > 0) {
+    if (selectedProjectIds.length > 0) {
       setOpen(true);
     }
-  }, [featuredProjectIds, setOpen]);
+  }, [selectedProjectIds, setOpen]);
 
-  /* Clear featured project IDs when search filters are changed or reset */
+  /* Clear selected project IDs when search filters are changed or reset */
   useEffect(() => {
-    setFeaturedProjectIds([]);
+    setSelectedProjectIds([]);
   }, [searchWhereString, advancedSearchWhereString]);
 
   const { data: projectMapViewData } = useQuery(mapQuery, {
@@ -76,9 +76,9 @@ const ProjectsListViewMap = ({
   );
 
   /* Build array of project data needed to show in MapDrawer */
-  const featuredProjectsData = React.useMemo(
-    () => featuredProjectIds.map((projectId) => projectDataById[projectId]),
-    [featuredProjectIds, projectDataById]
+  const selectedProjectsData = React.useMemo(
+    () => selectedProjectIds.map((projectId) => projectDataById[projectId]),
+    [selectedProjectIds, projectDataById]
   );
 
   /* Build array of project ids to request project geography */
@@ -102,10 +102,10 @@ const ProjectsListViewMap = ({
   const {
     projectGeographiesFeatureCollectionLines,
     projectGeographiesFeatureCollectionPoints,
-    featuredProjectsFeatureCollectionLines,
-    featuredProjectsFeatureCollectionPoints,
+    selectedProjectsFeatureCollectionLines,
+    selectedProjectsFeatureCollectionPoints,
   } = useProjectGeographies({
-    featuredProjectIds,
+    selectedProjectIds,
     projectsGeographies,
     projectDataById,
   });
@@ -114,8 +114,8 @@ const ProjectsListViewMap = ({
     <Paper component="main" className={classes.content}>
       <MapDrawer title={"Projects"} ref={mapRef} open={open} setOpen={setOpen}>
         <List>
-          {featuredProjectsData.length > 0 ? (
-            featuredProjectsData.map((projectData) => (
+          {selectedProjectsData.length > 0 ? (
+            selectedProjectsData.map((projectData) => (
               <ListItem key={projectData?.project_id} disablePadding>
                 <ListItemText
                   primary={
@@ -133,7 +133,7 @@ const ProjectsListViewMap = ({
             ))
           ) : (
             <ListItem disablePadding>
-              <ListItemText primary="No projects selected" />
+              <ListItemText primary="Select components on map to list projects" />
             </ListItem>
           )}
         </List>
@@ -147,14 +147,14 @@ const ProjectsListViewMap = ({
         projectsFeatureCollectionPoints={
           projectGeographiesFeatureCollectionPoints
         }
-        featuredProjectsFeatureCollectionLines={
-          featuredProjectsFeatureCollectionLines
+        selectedProjectsFeatureCollectionLines={
+          selectedProjectsFeatureCollectionLines
         }
-        featuredProjectsFeatureCollectionPoints={
-          featuredProjectsFeatureCollectionPoints
+        selectedProjectsFeatureCollectionPoints={
+          selectedProjectsFeatureCollectionPoints
         }
-        setFeaturedProjectIds={setFeaturedProjectIds}
-        shouldShowFeaturedProjects={shouldShowFeaturedProjects}
+        setSelectedProjectIds={setSelectedProjectIds}
+        shouldShowSelectedProjects={shouldShowSelectedProjects}
       />
     </Paper>
   );
