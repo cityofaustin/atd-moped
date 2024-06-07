@@ -118,6 +118,7 @@ const StaffForm = ({
   } = useQuery(WORKGROUPS_QUERY);
 
   console.log("errors ", errors)
+  console.log("user api errors ", userApiErrors)
 
   /**
    * Closes the modal
