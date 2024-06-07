@@ -103,10 +103,14 @@ export default function TheMap({
     if (shouldShowZoomAlert) {
       errorMessageDispatch({
         type: "show_error",
-        payload: { message: "Zoom in to select features", severity: "error" },
+        payload: {
+          message: "Zoom in to select features",
+          severity: "error",
+          messageType: "componentZoomError",
+        },
       });
     } else {
-      errorMessageDispatch({ type: "hide_error" });
+      errorMessageDispatch({ type: "hide_zoom_error" });
     }
   }, [
     currentZoom,
