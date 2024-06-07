@@ -31,7 +31,7 @@ import NewComponentToolbar from "./NewComponentToolbar";
 import DraftComponentList from "./DraftComponentList";
 import ProjectComponentsList from "./ProjectComponentsList";
 
-const drawerWidth = 350;
+export const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
   root: {

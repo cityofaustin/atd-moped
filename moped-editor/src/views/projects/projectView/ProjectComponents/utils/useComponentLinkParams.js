@@ -63,7 +63,7 @@ export const useComponentLinkParams = ({
     }
 
     // Set clicked component from search parameter once projectComponents data loads
-    if (projectComponents.length > 0) {
+    if (projectComponents.length > 0 || allRelatedComponents.length > 0) {
       const componentFromParams =
         projectComponents.find(
           (component) => component.project_component_id === componentParamId
@@ -105,9 +105,10 @@ export const useComponentLinkParams = ({
             Please check this project's activity log for more details.`,
             severity: "error",
             onClose: () => {
-              errorMessageDispatch({ type: "hide_error" });
+              errorMessageDispatch({ type: "hide_component_error" });
               updateParamsWithoutRender("project_component_id", null);
             },
+            messageType: "componentLinkError"
           },
         });
       }

@@ -128,6 +128,13 @@ const StaffListView = () => {
               getRowId={(row) => row.user_id}
               slots={{ toolbar: GridToolbar }}
               slotProps={{ toolbar: { showQuickFilter: true } }}
+              initialState={{
+                filter: {
+                  filterModel: {
+                    items: [{ field: 'is_deleted', operator: 'equals', value: 'Yes' }],
+                  },
+                },
+              }}
             />
           </Card>
         </Container>
