@@ -117,7 +117,6 @@ const StaffForm = ({
     data: workgroups,
   } = useQuery(WORKGROUPS_QUERY);
 
-  console.log("errors ", errors)
   console.log("user api errors ", userApiErrors)
 
   /**
