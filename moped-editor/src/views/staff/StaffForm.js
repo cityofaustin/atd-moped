@@ -117,6 +117,8 @@ const StaffForm = ({
     data: workgroups,
   } = useQuery(WORKGROUPS_QUERY);
 
+  console.log("errors ", errors)
+
   /**
    * Closes the modal
    */
@@ -224,7 +226,7 @@ const StaffForm = ({
               {...register("password")}
               error={!!errors.password || !!userApiErrors?.password}
               helperText={
-                errors.password?.message ||
+                errors.password?.message || // what is this message
                 formatApiErrors(userApiErrors?.password)
               }
             />
