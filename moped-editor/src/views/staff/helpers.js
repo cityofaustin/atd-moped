@@ -70,7 +70,7 @@ const errorsToTranslate = {
     "not a valid email format",
   "value does not match regex '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$'":
     "password must be at least 12 characters long, include at least one lowercase letter, one uppercase letter, one number, and one special character: _-!@%^~?.:&()[]$",
-  "min length is 8": "",
+  "min length is 8": "password is too short",
 };
 
 export const formatApiErrors = (errorsArray) =>
