@@ -54,6 +54,14 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
+# TODO: Get component project's updated_at date
+# TODO: Check if the last run date
+# TODO: If the component project's updated_at date is greater than the last run date, then update the component project
+# TODO: If not, do not update the component in AGOL
+# TODO: Determine if can update the component in AGOL by OBJECTID
+# TODO: Or, if we should delete the component in AGOL and re-add it. Do OBJECTIDs need to be stable?
+
+
 def main():
     logger.info("Getting token...")
     get_token()
