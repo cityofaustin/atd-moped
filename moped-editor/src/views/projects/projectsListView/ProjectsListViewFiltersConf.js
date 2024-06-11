@@ -162,6 +162,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       label: "Team",
       placeholder: "Team member",
       type: "string",
+      lookup: {
+        table_name: "moped_users",
+        field_name: "first_name",
+      },
       operators: [
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",

@@ -966,6 +966,14 @@ export const LOOKUP_TABLES_QUERY = gql`
       name
       id
     }
+    moped_users(
+      order_by: { last_name: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
+      first_name
+      last_name
+      user_id
+    }
   }
 `;
 
