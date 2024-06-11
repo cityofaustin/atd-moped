@@ -377,8 +377,11 @@ const Filters = ({
         const operators = fieldConfig?.operators ?? [];
 
         /* If the field uses a lookup table, get the table and field names  */
-        const { table_name: lookupTable, field_name: lookupField } =
-          fieldConfig?.lookup ?? {};
+        const {
+          table_name: lookupTable,
+          field_name: lookupField,
+          getOptionLabel,
+        } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
@@ -487,10 +490,13 @@ const Filters = ({
                         value={value || null}
                         options={data[lookupTable]}
                         disabled={!filterParameters[filterIndex].operator}
-                        getOptionLabel={(option) =>
-                          Object.hasOwn(option, lookupField)
-                            ? option[lookupField]
-                            : option
+                        getOptionLabel={
+                          getOptionLabel
+                            ? (option) => getOptionLabel(option)
+                            : (option) =>
+                                Object.hasOwn(option, lookupField)
+                                  ? option[lookupField]
+                                  : option
                         }
                         onChange={(e, value) => {
                           if (value) {

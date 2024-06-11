@@ -164,7 +164,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_users",
-        field_name: "first_name",
+        getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
       },
       operators: [
         "string_contains_case_insensitive",
