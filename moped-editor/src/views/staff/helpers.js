@@ -84,7 +84,7 @@ export const formatApiErrors = (errorsArray) =>
  */
 export const passwordLooksGood = (password) =>
   new RegExp(
-    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$'"
+    "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$"
   ).test(password);
 
 /**
