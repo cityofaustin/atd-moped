@@ -60,6 +60,7 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
 # TODO: If not, do not update the component in AGOL
 # TODO: Determine if can update the component in AGOL by OBJECTID
 # TODO: Or, if we should delete the component in AGOL and re-add it. Do OBJECTIDs need to be stable?
+# TODO: See https://github.com/cityofaustin/atd-knack-services for example
 
 
 def main():
