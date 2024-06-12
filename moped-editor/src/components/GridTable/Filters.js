@@ -397,8 +397,6 @@ const Filters = ({
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
 
-        console.log(lookupTable, operator, loading, lookupOperators);
-
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -504,7 +502,7 @@ const Filters = ({
                       lookupOperators
                     ) ? (
                       <Autocomplete
-                        freeSolo
+                        freeSolo // TODO: Add based on operator type in config: is, contains, etc.
                         value={value || null}
                         options={data[lookupTable].map((option) =>
                           getOptionLabel(option)

@@ -1,5 +1,4 @@
 import { OPERATORS_WITHOUT_SEARCH_VALUES } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
-import { AUTOCOMPLETE_OPERATORS } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
 import { useMemo } from "react";
 
 /**

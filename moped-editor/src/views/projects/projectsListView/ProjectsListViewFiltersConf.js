@@ -1,17 +1,6 @@
 import { FiltersCommonOperators } from "../../../components/GridTable/FiltersCommonOperators";
 
 /**
- * Array of operators that should be autocompleted
- * @constant
- * @type {array}
- * @default
- */
-export const AUTOCOMPLETE_OPERATORS = [
-  "string_equals_case_insensitive",
-  "string_does_not_equal_case_insensitive",
-];
-
-/**
  * Array of operators that do not require a search value Ex. "is blank"
  * @constant
  * @type {array}
