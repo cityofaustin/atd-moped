@@ -261,7 +261,6 @@ const Filters = ({
     const filtersNewState = [...filterParameters];
     // Patch the new state
     filtersNewState[filterIndex].value = value;
-    debugger;
     // Update the state
     setFilterParameters(filtersNewState);
   };
@@ -391,7 +390,6 @@ const Filters = ({
         /* If the field uses a lookup table, get the table and field names  */
         const {
           table_name: lookupTable,
-          field_name: lookupField,
           operators: lookupOperators,
           getOptionLabel,
         } = fieldConfig?.lookup ?? {};
@@ -506,27 +504,14 @@ const Filters = ({
                       lookupOperators
                     ) ? (
                       <Autocomplete
+                        freeSolo
                         value={value || null}
-                        options={data[lookupTable]}
+                        options={data[lookupTable].map((option) =>
+                          getOptionLabel(option)
+                        )}
                         disabled={!filterParameters[filterIndex].operator}
-                        getOptionLabel={getOptionLabel}
                         onChange={(e, value) => {
-                          if (value) {
-                            console.log(value);
-                            handleSearchValueChange(
-                              filterIndex,
-                              getOptionLabel(value)
-                            );
-                          } else {
-                            // value is null when the Autocomplete selection is cleared
-                            handleSearchValueChange(filterIndex, value);
-                          }
-                        }}
-                        isOptionEqualToValue={(option, value) => {
-                          if (Object.hasOwn(value, "name")) {
-                            return option.name === value.name;
-                          }
-                          return option[lookupField] === value;
+                          handleSearchValueChange(filterIndex, value);
                         }}
                         renderInput={(params) => (
                           <TextField
