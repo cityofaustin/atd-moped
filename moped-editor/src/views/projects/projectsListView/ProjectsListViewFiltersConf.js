@@ -116,7 +116,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       defaultOperator: "string_equals_case_insensitive",
       lookup: {
         table_name: "moped_types",
-        field_name: "type_name",
+        getOptionLabel: (option) => option.type_name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -191,7 +191,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_entity",
-        field_name: "entity_name",
+        getOptionLabel: (option) => option.entity_name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -214,7 +214,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_entity",
-        field_name: "entity_name",
+        getOptionLabel: (option) => option.entity_name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -237,7 +237,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_entity",
-        field_name: "entity_name",
+        getOptionLabel: (option) => option.entity_name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -275,7 +275,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_fund_sources",
-        field_name: "funding_source_name",
+        getOptionLabel: (option) => option.funding_source_name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -401,7 +401,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_tags",
-        field_name: "name",
+        getOptionLabel: (option) => option.name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",
@@ -435,7 +435,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_public_process_statuses",
-        field_name: "name",
+        getOptionLabel: (option) => option.name,
         operators: [
           "string_equals_case_insensitive",
           "string_does_not_equal_case_insensitive",

@@ -192,8 +192,14 @@ const Filters = ({
    * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
    * @param {string} lookupTable - The lookup table name
+   * @param {Array} lookupOperators - operators set in filter config to show autocomplete
    */
-  const handleFilterOperatorChange = (filterIndex, operator, lookupTable) => {
+  const handleFilterOperatorChange = (
+    filterIndex,
+    operator,
+    lookupTable,
+    lookupOperators
+  ) => {
     // Clone state
     const filtersNewState = [...filterParameters];
 
@@ -203,7 +209,12 @@ const Filters = ({
     // if we are switching to an autocomplete input or using an operator
     // without a search value, clear the search value
     if (
-      shouldRenderAutocompleteInput(lookupTable, operator, loading) ||
+      shouldRenderAutocompleteInput(
+        lookupTable,
+        operator,
+        loading,
+        lookupOperators
+      ) ||
       isFilterNullType(operator)
     ) {
       filtersNewState[filterIndex].value = null;
@@ -250,6 +261,7 @@ const Filters = ({
     const filtersNewState = [...filterParameters];
     // Patch the new state
     filtersNewState[filterIndex].value = value;
+    debugger;
     // Update the state
     setFilterParameters(filtersNewState);
   };
@@ -380,15 +392,14 @@ const Filters = ({
         const {
           table_name: lookupTable,
           field_name: lookupField,
+          operators: lookupOperators,
           getOptionLabel,
         } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
 
-        console.log(
-          shouldRenderAutocompleteInput(lookupTable, operator, loading)
-        );
+        console.log(lookupTable, operator, loading, lookupOperators);
 
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
@@ -456,7 +467,8 @@ const Filters = ({
                       handleFilterOperatorChange(
                         filterIndex,
                         e.target.value,
-                        lookupTable
+                        lookupTable,
+                        lookupOperators
                       )
                     }
                     label="field"
@@ -490,20 +502,14 @@ const Filters = ({
                     (shouldRenderAutocompleteInput(
                       lookupTable,
                       operator,
-                      loading
+                      loading,
+                      lookupOperators
                     ) ? (
                       <Autocomplete
                         value={value || null}
                         options={data[lookupTable]}
                         disabled={!filterParameters[filterIndex].operator}
-                        getOptionLabel={
-                          getOptionLabel
-                            ? (option) => getOptionLabel(option)
-                            : (option) =>
-                                Object.hasOwn(option, lookupField)
-                                  ? option[lookupField]
-                                  : option
-                        }
+                        getOptionLabel={getOptionLabel}
                         onChange={(e, value) => {
                           if (value) {
                             console.log(value);
