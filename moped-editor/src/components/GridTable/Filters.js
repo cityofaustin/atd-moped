@@ -386,6 +386,10 @@ const Filters = ({
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
 
+        console.log(
+          shouldRenderAutocompleteInput(lookupTable, operator, loading)
+        );
+
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -474,6 +478,8 @@ const Filters = ({
                   </Select>
                 </FormControl>
               </Grid>
+
+              {/* Select or enter value */}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl
                   fullWidth
@@ -500,9 +506,10 @@ const Filters = ({
                         }
                         onChange={(e, value) => {
                           if (value) {
+                            console.log(value);
                             handleSearchValueChange(
                               filterIndex,
-                              value[lookupField]
+                              getOptionLabel(value)
                             );
                           } else {
                             // value is null when the Autocomplete selection is cleared
