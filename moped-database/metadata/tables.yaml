@@ -44,7 +44,7 @@
           - funding_source_name
           - knack_data_tracker_project_record_id
           - parent_project_name
-          - parent_project_name_with_descriptor
+          - parent_project_name_full
           - parent_project_url
           - project_added_by
           - project_description
@@ -52,8 +52,8 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_name_descriptor
-          - project_name_with_descriptor
+          - project_name_secondary
+          - project_name_full
           - project_partners
           - project_phase_name
           - project_phase_name_simple
@@ -126,7 +126,7 @@
           - funding_source_name
           - knack_data_tracker_project_record_id
           - parent_project_name
-          - parent_project_name_with_descriptor
+          - parent_project_name_full
           - parent_project_url
           - project_added_by
           - project_description
@@ -134,8 +134,8 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_name_descriptor
-          - project_name_with_descriptor
+          - project_name_secondary
+          - project_name_full
           - project_partners
           - project_phase_name
           - project_phase_name_simple
@@ -208,7 +208,7 @@
           - funding_source_name
           - knack_data_tracker_project_record_id
           - parent_project_name
-          - parent_project_name_with_descriptor
+          - parent_project_name_full
           - parent_project_url
           - project_added_by
           - project_description
@@ -216,8 +216,8 @@
           - project_inspector
           - project_lead
           - project_name
-          - project_name_descriptor
-          - project_name_with_descriptor
+          - project_name_secondary
+          - project_name_full
           - project_partners
           - project_phase_name
           - project_phase_name_simple
