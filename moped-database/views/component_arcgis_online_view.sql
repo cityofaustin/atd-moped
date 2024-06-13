@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1717525278049_add_proj_descriptor_plv_cols/up.sql
+-- Most recent migration: moped-database/migrations/1718314926409_add_council_districts_searchable/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -13,7 +13,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
 council_districts AS (
     SELECT
         features.component_id AS project_component_id,
-        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts
+        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
+        string_agg(DISTINCT lpad(features_council_districts.council_district_id::text, 2, '0'::text), ', '::text) AS council_districts_searchable
     FROM features_council_districts
     LEFT JOIN features ON features_council_districts.feature_id = features.id
     WHERE features.is_deleted = false
@@ -100,6 +101,16 @@ component_tags AS (
     LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
+),
+
+related_projects AS (
+    SELECT
+        pmp.project_id,
+        string_agg(cmp.project_id::text, ', '::text) AS related_project_ids,
+        string_agg(lpad(cmp.project_id::text, 6, '0'::text), ', '::text) AS related_project_ids_searchable
+    FROM moped_project pmp
+    LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
+    GROUP BY pmp.project_id
 )
 
 SELECT
@@ -111,7 +122,7 @@ SELECT
     comp_geography.line_geometry,
     comp_geography.signal_ids,
     council_districts.council_districts,
-    'placeholder text'::text AS council_districts_searchable,
+    council_districts.council_districts_searchable,
     NOT coalesce(council_districts.council_districts IS null OR council_districts.council_districts = ''::text, false) AS is_within_city_limits,
     comp_geography.length_feet_total,
     round(comp_geography.length_feet_total::numeric / 5280::numeric, 2) AS length_miles_total,
@@ -166,8 +177,8 @@ SELECT
     plv.parent_project_name,
     plv.parent_project_url,
     plv.parent_project_name AS parent_project_name_full,
-    'placeholder text'::text AS related_project_ids,
-    'placeholder text'::text AS related_project_ids_searchable,
+    rp.related_project_ids,
+    rp.related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
@@ -190,4 +201,5 @@ LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
 LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
 LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
 LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
