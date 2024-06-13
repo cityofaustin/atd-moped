@@ -22,6 +22,7 @@ import MaterialTable, {
   MTableAction,
   MTableToolbar,
 } from "@material-table/core";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
@@ -45,6 +46,7 @@ import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides"; 
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -138,6 +140,166 @@ const useFdusArray = (projectFunding) =>
     );
   }, [projectFunding]);
 
+  
+
+//  /** Hook that provides memoized column settings */
+//  // const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
+//   const useColumns = ({ getLookupValueByID }) =>
+//    useMemo(() => {
+//      return [
+//       {
+//         headerName: "Source",
+//         field: "funding_source_id",
+//         renderCell: (row) =>
+//           getLookupValueByID(
+//             "moped_fund_sources",
+//             "funding_source",
+//             row.funding_source_id,
+//           ),
+//         // lookup: queryArrayToLookupObject(
+//         //   data.moped_fund_sources,
+//         //   "funding_source_id",
+//         //   "funding_source_name"
+//         // ),
+//         // editComponent: (props) => (
+//         //   <LookupAutocompleteComponent
+//         //     {...props}
+//         //     name={"funding_source"}
+//         //     lookupTableName={"moped_fund_sources"}
+//         //     data={data.moped_fund_sources}
+//         //   />
+//         // ),
+//       },
+//       {
+//         headerName: "",
+//         field: "Edit",
+//         hideable: false,
+//         filterable: false,
+//         sortable: false,
+//         defaultVisible: true,
+//         renderCell: ({ row }) => {
+//           return deleteInProgress ? (
+//             <CircularProgress color="primary" size={20} />
+//           ) : (
+//             <div>
+//               <IconButton
+//                 aria-label="edit"
+//                 sx={{ color: "inherit" }}
+//                 onClick={() => setEditActivity(row)}
+//               >
+//                 <EditOutlinedIcon />
+//               </IconButton>
+//               <IconButton
+//                 aria-label="delete"
+//                 sx={{ color: "inherit" }}
+//                 onClick={() => onDeleteActivity({ id: row.id })}
+//               >
+//                 <DeleteOutlineIcon />
+//               </IconButton>
+//             </div>
+//           );
+//         },
+//       },
+//       {
+//         headerName: "ID",
+//         field: "reference_id",
+//         width: 125,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Workgroup/Contractor",
+//         field: "workgroup_contractor",
+//         width: 175,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Contract #",
+//         field: "contract_number",
+//         width: 150,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Description",
+//         field: "description",
+//         width: 200,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Work Assignment",
+//         field: "work_assignment_id",
+//         width: 150,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Task Order(s)",
+//         field: "task_orders",
+//         defaultVisible: true,
+//         width: 200,
+//         valueGetter: (field) => field?.map((tk) => tk.display_name).join(", "),
+//         renderCell: ({ row }) => (
+//           <div>
+//             {row.task_orders?.map((tk) => (
+//               <div key={tk.task_order}>{tk.display_name}</div>
+//             ))}
+//           </div>
+//         ),
+//       },
+//       {
+//         headerName: "Work Order Link",
+//         field: "work_order_url",
+//         width: 150,
+//         defaultVisible: true,
+//         renderCell: ({ row }) =>
+//           row.work_order_url ? (
+//             <Link
+//               href={row.work_order_url}
+//               target={"_blank"}
+//               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+//             >
+//               {row.work_order_url}
+//             </Link>
+//           ) : null,
+//       },
+//       {
+//         headerName: "Status",
+//         field: "moped_work_activity_status",
+//         defaultVisible: true,
+//         valueGetter: (field) => field.name,
+//         width: 150,
+//       },
+//       {
+//         headerName: "Amount",
+//         field: "contract_amount",
+//         width: 150,
+//         defaultVisible: true,
+//         valueGetter: (field) =>
+//           isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
+//       },
+//       {
+//         headerName: "Status update",
+//         field: "status_note",
+//         width: 150,
+//         defaultVisible: true,
+//       },
+//       {
+//         headerName: "Updated by",
+//         field: "updated_by_user",
+//         width: 150,
+//         defaultVisible: true,
+//         valueGetter: (field) => getUserFullName(field),
+//       },
+//       {
+//         headerName: "Updated at",
+//         field: "updated_at",
+//         width: 150,
+//         defaultVisible: true,
+//         type: "date",
+//         valueGetter: (field) => (field ? new Date(field) : null),
+// //       },
+//     ];
+//   }, []);
+//   //}, [deleteInProgress, onDeleteActivity, setEditActivity]);
+
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
    * imperatively.
@@ -202,6 +364,7 @@ const ProjectFundingTable = () => {
       `${attribute}_name`
     ];
   };
+
 
   const userId = getDatabaseId(user);
 
@@ -429,6 +592,127 @@ const ProjectFundingTable = () => {
     },
   ];
 
+  const dataGridColumns = [
+    {
+      headerName: "Source",
+      field: "funding_source_id",
+      editable: true,
+      width: 200,
+      renderCell: ({value}) =>
+        getLookupValueByID(
+          "moped_fund_sources",
+          "funding_source",
+          value
+        ),
+      renderEditCell: (props) => ( // update this component!!! 
+        <LookupAutocompleteComponent
+          {...props}
+          name={"funding_source"}
+          lookupTableName={"moped_fund_sources"}
+          data={data.moped_fund_sources}
+        />
+      ),
+    },
+    {
+      headerName: "Program",
+      field: "funding_program_id",
+      renderCell: ({value}) =>
+        getLookupValueByID(
+          "moped_fund_programs",
+          "funding_program",
+          value
+        ),
+      renderEditCell: (props) => (
+        <LookupAutocompleteComponent
+          {...props}
+          name={"funding_program"}
+          lookupTableName={"moped_fund_programs"}
+          data={data.moped_fund_programs}
+        />
+      ),
+    },
+    {
+      headerName: "Description",
+      field: "funding_description",
+      width: 200,
+      renderEditCellt: (props) => (
+        <TextField
+          variant="standard"
+          id="funding_description"
+          name="funding_description"
+          multiline
+          value={props.value}
+          onChange={(e) => props.onChange(e.target.value)}
+        />
+      ),
+    },
+    {
+      headerName: "Status",
+      field: "funding_status_id",
+      renderCell: ({value}) =>
+        getLookupValueByID(
+          "moped_fund_status",
+          "funding_status",
+          value
+        ),
+      renderEditCell: (props) => (
+        <LookupSelectComponent
+          {...props}
+          name={"funding_status"}
+          defaultValue={1}
+          data={data.moped_fund_status}
+        />
+      ),
+    },
+    {
+      headerName: "Fund",
+      field: "fund",
+      width: 200,
+      renderCell: ({row}) =>
+        !!row.fund?.fund_name ? (
+          <>
+            <Typography>{row.fund?.fund_id} |</Typography>
+            <Typography>{row.fund?.fund_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
+      editComponent: (props) => (
+        <FundAutocompleteComponent {...props} data={data.moped_funds} />
+      ),
+    },
+    {
+      headerName: "Dept-unit",
+      field: "dept_unit",
+      width: 200,
+      renderCell: ({row}) => 
+        !!row.dept_unit?.unit_long_name ? (
+          <>
+            <Typography>
+              {row.dept_unit?.dept} | {row.dept_unit?.unit} |
+            </Typography>
+            <Typography>{row.dept_unit?.unit_long_name}</Typography>
+          </>
+        ) : (
+          ""
+        ),
+      editComponent: (props) => (
+        <FundingDeptUnitAutocomplete
+          classes={classes.deptAutocomplete}
+          props={props}
+          value={props.value}
+        />
+      ),
+    },
+    {
+      headerName: "Amount",
+      field: "funding_amount",
+      renderCell: ({value}) => currencyFormatter.format(value),
+      editComponent: (props) => <DollarAmountIntegerField {...props} />,
+      type: "currency",
+    },
+  ];
+
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
 
   return (
@@ -622,6 +906,29 @@ const ProjectFundingTable = () => {
               }),
         }}
       />
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          autoHeight
+          columns={dataGridColumns}
+          rows={data.moped_proj_funding}
+          getRowId={(row) => row.proj_funding_id}
+          // columnVisibilityModel={hiddenColumns}
+          // onColumnVisibilityModelChange={(newModel) =>
+          //   setHiddenColumns(newModel)
+          // }
+          // toolbar
+          // density="comfortable"
+          // disableRowSelectionOnClick
+          // getRowHeight={() => "auto"}
+          // hideFooter
+          // localeText={{ noRowsLabel: "No work activites" }}
+          // slots={{
+          //   toolbar: WorkActivityToolbar,
+          // }}
+          // slotProps={{
+          //   toolbar: { onClick: onClickAddActivity },
+          // }}
+        />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}

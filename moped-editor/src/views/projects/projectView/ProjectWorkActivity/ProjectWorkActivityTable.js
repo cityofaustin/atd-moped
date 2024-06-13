@@ -18,7 +18,7 @@ import {
 } from "../../../../queries/funding";
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";   
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
