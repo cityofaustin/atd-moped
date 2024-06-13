@@ -6,6 +6,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   Button,
   CircularProgress,
+  IconButton,
   Snackbar,
   TextField,
   Typography,
@@ -331,7 +332,7 @@ const ProjectFundingTable = () => {
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
-  const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
+  const [deleteProjectFunding, {loading: deleteInProgress}] = useMutation(DELETE_PROJECT_FUNDING);
 
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
@@ -593,6 +594,36 @@ const ProjectFundingTable = () => {
   ];
 
   const dataGridColumns = [
+    {
+      headerName: "",
+      field: "edit",
+      hideable: false,
+      filterable: false,
+      sortable: false,
+      editable: false,
+      renderCell: ({ row }) => {
+        return deleteInProgress ? (
+          <CircularProgress color="primary" size={20} />
+        ) : (
+          <div>
+            <IconButton
+              aria-label="edit"
+              sx={{ color: "inherit" }}
+              // onClick={() => setEditActivity(row)}
+            >
+              <EditOutlinedIcon />
+            </IconButton>
+            <IconButton
+              aria-label="delete"
+              sx={{ color: "inherit" }}
+              // onClick={() => onDeleteActivity({ id: row.id })}
+            >
+              <DeleteOutlineIcon />
+            </IconButton>
+          </div>
+        );
+      },
+    },
     {
       headerName: "Source",
       field: "funding_source_id",
