@@ -167,7 +167,7 @@ SELECT
     mpc.interim_project_component_id,
     mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
-    coalesce(substantial_completion_date, mpd.min_phase_date) AS substantial_completion_date_estimated,
+    CASE WHEN substantial_completion_date IS NOT null THEN null ELSE mpd.min_phase_date END AS substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
