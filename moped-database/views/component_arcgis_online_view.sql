@@ -111,6 +111,24 @@ related_projects AS (
     FROM moped_project pmp
     LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
     GROUP BY pmp.project_id
+),
+
+min_phase_dates AS (
+    WITH min_dates AS (
+        SELECT
+            mpp.project_id,
+            min(mpp.phase_start) AS min_phase_start,
+            min(mpp.phase_end) AS min_phase_end
+        FROM moped_proj_phases mpp
+        LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
+        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.phase_start IS NOT null AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
+        GROUP BY mpp.project_id
+    )
+
+    SELECT
+        min_dates.project_id,
+        least(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date
+    FROM min_dates
 )
 
 SELECT
@@ -137,7 +155,7 @@ SELECT
     mpc.interim_project_component_id,
     mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
-    '2024-01-01T00:00:00-06:00'::text AS substantial_completion_date_estimated,
+    coalesce(plv.substantial_completion_date, mpd.min_phase_date) AS substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
@@ -202,4 +220,5 @@ LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.pro
 LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
 LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
+LEFT JOIN min_phase_dates mpd ON mpc.project_id = mpd.project_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
