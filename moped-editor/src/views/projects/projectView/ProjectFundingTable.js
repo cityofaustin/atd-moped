@@ -17,13 +17,14 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
+import CheckIcon from '@mui/icons-material/Check';
 import makeStyles from "@mui/styles/makeStyles";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
   MTableToolbar,
 } from "@material-table/core";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes,   GridActionsCellItem, } from "@mui/x-data-grid-pro";
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
@@ -149,154 +150,6 @@ const useFdusArray = (projectFunding) =>
 //    useMemo(() => {
 //      return [
 //       {
-//         headerName: "Source",
-//         field: "funding_source_id",
-//         renderCell: (row) =>
-//           getLookupValueByID(
-//             "moped_fund_sources",
-//             "funding_source",
-//             row.funding_source_id,
-//           ),
-//         // lookup: queryArrayToLookupObject(
-//         //   data.moped_fund_sources,
-//         //   "funding_source_id",
-//         //   "funding_source_name"
-//         // ),
-//         // editComponent: (props) => (
-//         //   <LookupAutocompleteComponent
-//         //     {...props}
-//         //     name={"funding_source"}
-//         //     lookupTableName={"moped_fund_sources"}
-//         //     data={data.moped_fund_sources}
-//         //   />
-//         // ),
-//       },
-//       {
-//         headerName: "",
-//         field: "Edit",
-//         hideable: false,
-//         filterable: false,
-//         sortable: false,
-//         defaultVisible: true,
-//         renderCell: ({ row }) => {
-//           return deleteInProgress ? (
-//             <CircularProgress color="primary" size={20} />
-//           ) : (
-//             <div>
-//               <IconButton
-//                 aria-label="edit"
-//                 sx={{ color: "inherit" }}
-//                 onClick={() => setEditActivity(row)}
-//               >
-//                 <EditOutlinedIcon />
-//               </IconButton>
-//               <IconButton
-//                 aria-label="delete"
-//                 sx={{ color: "inherit" }}
-//                 onClick={() => onDeleteActivity({ id: row.id })}
-//               >
-//                 <DeleteOutlineIcon />
-//               </IconButton>
-//             </div>
-//           );
-//         },
-//       },
-//       {
-//         headerName: "ID",
-//         field: "reference_id",
-//         width: 125,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Workgroup/Contractor",
-//         field: "workgroup_contractor",
-//         width: 175,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Contract #",
-//         field: "contract_number",
-//         width: 150,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Description",
-//         field: "description",
-//         width: 200,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Work Assignment",
-//         field: "work_assignment_id",
-//         width: 150,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Task Order(s)",
-//         field: "task_orders",
-//         defaultVisible: true,
-//         width: 200,
-//         valueGetter: (field) => field?.map((tk) => tk.display_name).join(", "),
-//         renderCell: ({ row }) => (
-//           <div>
-//             {row.task_orders?.map((tk) => (
-//               <div key={tk.task_order}>{tk.display_name}</div>
-//             ))}
-//           </div>
-//         ),
-//       },
-//       {
-//         headerName: "Work Order Link",
-//         field: "work_order_url",
-//         width: 150,
-//         defaultVisible: true,
-//         renderCell: ({ row }) =>
-//           row.work_order_url ? (
-//             <Link
-//               href={row.work_order_url}
-//               target={"_blank"}
-//               sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-//             >
-//               {row.work_order_url}
-//             </Link>
-//           ) : null,
-//       },
-//       {
-//         headerName: "Status",
-//         field: "moped_work_activity_status",
-//         defaultVisible: true,
-//         valueGetter: (field) => field.name,
-//         width: 150,
-//       },
-//       {
-//         headerName: "Amount",
-//         field: "contract_amount",
-//         width: 150,
-//         defaultVisible: true,
-//         valueGetter: (field) =>
-//           isNaN(parseInt(field)) ? null : currencyFormatter.format(field),
-//       },
-//       {
-//         headerName: "Status update",
-//         field: "status_note",
-//         width: 150,
-//         defaultVisible: true,
-//       },
-//       {
-//         headerName: "Updated by",
-//         field: "updated_by_user",
-//         width: 150,
-//         defaultVisible: true,
-//         valueGetter: (field) => getUserFullName(field),
-//       },
-//       {
-//         headerName: "Updated at",
-//         field: "updated_at",
-//         width: 150,
-//         defaultVisible: true,
-//         type: "date",
-//         valueGetter: (field) => (field ? new Date(field) : null),
-// //       },
 //     ];
 //   }, []);
 //   //}, [deleteInProgress, onDeleteActivity, setEditActivity]);
@@ -324,6 +177,7 @@ const ProjectFundingTable = () => {
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project funding will be returned
+    // chia do we still need this
     variables: {
       projectId: projectId ?? 0,
     },
@@ -341,6 +195,7 @@ const ProjectFundingTable = () => {
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [rowModesModel, setRowModesModel] = useState({});
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
@@ -348,6 +203,10 @@ const ProjectFundingTable = () => {
   };
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
 
   if (loading || !data) return <CircularProgress />;
 
@@ -601,27 +460,46 @@ const ProjectFundingTable = () => {
       filterable: false,
       sortable: false,
       editable: false,
-      renderCell: ({ row }) => {
-        return deleteInProgress ? (
-          <CircularProgress color="primary" size={20} />
-        ) : (
-          <div>
-            <IconButton
-              aria-label="edit"
-              sx={{ color: "inherit" }}
-              // onClick={() => setEditActivity(row)}
-            >
-              <EditOutlinedIcon />
-            </IconButton>
-            <IconButton
-              aria-label="delete"
-              sx={{ color: "inherit" }}
-              // onClick={() => onDeleteActivity({ id: row.id })}
-            >
-              <DeleteOutlineIcon />
-            </IconButton>
-          </div>
-        );
+      type: 'actions',
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (deleteInProgress) {
+          return <CircularProgress color="primary" size={20} />
+        }
+        else if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<CheckIcon />}
+                label="Save"
+                sx={{
+                  color: 'primary.main',
+                }}
+                //onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                //icon={<CancelIcon />} // x icon
+                label="Cancel"
+                className="textPrimary"
+                //onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+        return [
+            <GridActionsCellItem
+              icon={<EditOutlinedIcon />}
+              label="Edit"
+              className="textPrimary"
+              // onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteOutlineIcon />}
+              label="Delete"
+              //onClick={handleDeleteClick(id)}
+              color="inherit"
+            />,
+          ];
       },
     },
     {
@@ -943,15 +821,14 @@ const ProjectFundingTable = () => {
           columns={dataGridColumns}
           rows={data.moped_proj_funding}
           getRowId={(row) => row.proj_funding_id}
-          // columnVisibilityModel={hiddenColumns}
-          // onColumnVisibilityModelChange={(newModel) =>
-          //   setHiddenColumns(newModel)
-          // }
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
           // toolbar
-          // density="comfortable"
+          density="comfortable"
           // disableRowSelectionOnClick
-          // getRowHeight={() => "auto"}
-          // hideFooter
+          getRowHeight={() => "auto"}
+          hideFooter
           // localeText={{ noRowsLabel: "No work activites" }}
           // slots={{
           //   toolbar: WorkActivityToolbar,
