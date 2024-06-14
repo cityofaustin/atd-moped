@@ -113,26 +113,34 @@ related_projects AS (
     GROUP BY pmp.project_id
 ),
 
--- substantial_completion_date_estimated
--- Derived from the earliest moped_proj_phases phase_start or phase_end where the date is estimated and the phase name is complete or post_construction IF substantial_completion_date is null
--- from project_list_view
+min_phase_dates AS (
+    WITH min_dates AS (
+        SELECT
+            mpp.project_id,
+            min(mpp.phase_start) AS min_phase_start,
+            min(mpp.phase_end) AS min_phase_end
+        FROM
+            moped_proj_phases AS mpp
+        LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
+        WHERE
+            mpp.is_phase_end_confirmed = false
+            AND mpp.is_phase_start_confirmed = false
+            AND phase_start IS NOT null
+            AND mpp.is_deleted = false
+            AND mp.phase_name_simple = 'Complete'::text
+        GROUP BY
+            mpp.project_id
+    )
 
-min_phase_dates AS WITH min_dates AS (
-    (SELECT
-        mpp.project_id,
-        min(mpp.phase_start) as min_phase_start,
-        min(mpp.phase_end) as min_phase_end
+    SELECT
+        min_dates.project_id,
+        least(
+            min_dates.min_phase_start,
+            min_dates.min_phase_end
+        ) AS min_phase_date
     FROM
-        moped_proj_phases mpp
-	LEFT JOIN moped_phases mp ON mp.phase_id = mpp.phase_id
-    WHERE
-        mpp.is_phase_end_confirmed = FALSE
-        AND mpp.is_phase_start_confirmed = FALSE
-        AND phase_start IS NOT NULL
-        AND mpp.is_deleted = FALSE
-        AND mp.phase_name_simple = 'Complete'::text
-    GROUP BY mpp.project_id)
-    SELECT min_dates.project_id, LEAST(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date FROM min_dates)
+        min_dates
+)
 
 
 SELECT
