@@ -6,7 +6,6 @@ import { useQuery, useMutation } from "@apollo/client";
 import {
   Button,
   CircularProgress,
-  IconButton,
   Snackbar,
   TextField,
   Typography,
@@ -355,11 +354,42 @@ const ProjectFundingTable = () => {
     // }
   };
 
-  const processRowUpdate = (newRow) => {
-    console.log(newRow)
-    const updatedRow = { ...newRow, isNew: false };
-    // setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    return updatedRow;
+  const processRowUpdate = (updatedRow, originalRow) => {
+    console.log(updatedRow, originalRow)
+
+    const updateProjectFundingData = updatedRow;
+
+    // Remove unexpected variables
+    delete updateProjectFundingData.__typename;
+
+    updateProjectFundingData.funding_amount =
+      updateProjectFundingData.funding_amount || null;
+    updateProjectFundingData.funding_description =
+      !updateProjectFundingData.funding_description ||
+      updateProjectFundingData.funding_description.trim() === ""
+        ? null
+        : updateProjectFundingData.funding_description;
+
+    return updateProjectFunding({
+      variables: updateProjectFundingData,
+    })
+      
+      .then(() => refetch())
+      // from the data grid docs:
+      // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+      .then(() => updatedRow)
+      .catch((error) => {
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              There was a problem updating funding. Error message:{" "}
+              {error.message}
+            </span>
+          ),
+          severity: "error",
+        });
+      });
   };
 
   /**
@@ -868,7 +898,7 @@ const ProjectFundingTable = () => {
           // disableRowSelectionOnClick
           getRowHeight={() => "auto"}
           hideFooter
-          // localeText={{ noRowsLabel: "No work activites" }}
+          localeText={{ noRowsLabel: "No funding sources" }}
           // slots={{
           //   toolbar: WorkActivityToolbar,
           // }}
