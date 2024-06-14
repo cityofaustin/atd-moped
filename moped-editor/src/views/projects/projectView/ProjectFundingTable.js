@@ -253,9 +253,7 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={props.name}
       options={props.data}
-      renderInput={(params) => (
-        <TextField variant="standard" {...params} multiline />
-      )}
+      renderInput={(params) => <TextField variant="standard" {...params} />}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string instead of accessing the name
         typeof option === "string" ? option : option[`${props.name}_name`]
@@ -284,9 +282,7 @@ const ProjectFundingTable = () => {
       PopperComponent={CustomPopper}
       id={"moped_funds"}
       options={props.data}
-      renderInput={(params) => (
-        <TextField variant="standard" {...params} multiline />
-      )}
+      renderInput={(params) => <TextField variant="standard" {...params} />}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string
         typeof option === "string"
@@ -551,6 +547,11 @@ const ProjectFundingTable = () => {
                     newData.funding_description.trim() === ""
                       ? null
                       : newData.funding_description,
+                  funding_amount:
+                    !newData.funding_amount ||
+                    newData.funding_amount.trim() === ""
+                      ? null
+                      : newData.funding_amount,
                   // If no new funding status is selected, the default should be used
                   funding_status_id: newData.funding_status_id || 1,
                 },
