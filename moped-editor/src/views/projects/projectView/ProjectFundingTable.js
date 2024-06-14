@@ -18,6 +18,7 @@ import {
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
 import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 import makeStyles from "@mui/styles/makeStyles";
 import MaterialTable, {
   MTableEditRow,
@@ -328,6 +329,39 @@ const ProjectFundingTable = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDeleteClick = (id) => () => {
+    console.log("delete ", id)
+    // setRows(rows.filter((row) => row.id !== id));
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+
+    // const editedRow = rows.find((row) => row.id === id);
+    // if (editedRow.isNew) {
+    //   setRows(rows.filter((row) => row.id !== id));
+    // }
+  };
+
+  const processRowUpdate = (newRow) => {
+    console.log(newRow)
+    const updatedRow = { ...newRow, isNew: false };
+    // setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
+    return updatedRow;
+  };
+
   /**
    * Column configuration for <MaterialTable>
    */
@@ -462,11 +496,13 @@ const ProjectFundingTable = () => {
       editable: false,
       type: 'actions',
       getActions: ({ id }) => {
+        console.log(id)
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         if (deleteInProgress) {
           return <CircularProgress color="primary" size={20} />
         }
         else if (isInEditMode) {
+          console.log("what")
             return [
               <GridActionsCellItem
                 icon={<CheckIcon />}
@@ -474,13 +510,13 @@ const ProjectFundingTable = () => {
                 sx={{
                   color: 'primary.main',
                 }}
-                //onClick={handleSaveClick(id)}
+                onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
-                //icon={<CancelIcon />} // x icon
+                icon={<CloseIcon />} // x icon
                 label="Cancel"
                 className="textPrimary"
-                //onClick={handleCancelClick(id)}
+                onClick={handleCancelClick(id)}
                 color="inherit"
               />,
             ];
@@ -490,13 +526,13 @@ const ProjectFundingTable = () => {
               icon={<EditOutlinedIcon />}
               label="Edit"
               className="textPrimary"
-              // onClick={handleEditClick(id)}
+              onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
               icon={<DeleteOutlineIcon />}
               label="Delete"
-              //onClick={handleDeleteClick(id)}
+              onClick={handleDeleteClick(id)}
               color="inherit"
             />,
           ];
@@ -505,7 +541,6 @@ const ProjectFundingTable = () => {
     {
       headerName: "Source",
       field: "funding_source_id",
-      editable: true,
       width: 200,
       renderCell: ({value}) =>
         getLookupValueByID(
@@ -544,16 +579,19 @@ const ProjectFundingTable = () => {
       headerName: "Description",
       field: "funding_description",
       width: 200,
-      renderEditCellt: (props) => (
-        <TextField
-          variant="standard"
-          id="funding_description"
-          name="funding_description"
-          multiline
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
-      ),
+      editable: true,
+      // renderEditCell: (props) => {
+      //   console.log(props)
+      //   return (
+      //   <TextField
+      //     variant="standard"
+      //     id="funding_description"
+      //     name="funding_description"
+      //     multiline
+      //     value={props.value}
+      //     onChange={(e) => props.onChange(e.target.value)}
+      //   />
+      // )},
     },
     {
       headerName: "Status",
@@ -824,6 +862,7 @@ const ProjectFundingTable = () => {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
+          processRowUpdate={processRowUpdate}
           // toolbar
           density="comfortable"
           // disableRowSelectionOnClick
