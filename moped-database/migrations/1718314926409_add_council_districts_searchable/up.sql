@@ -4,8 +4,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -79,7 +79,7 @@ comp_geography AS (
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
-    ) feature_union
+    ) AS feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -87,8 +87,8 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM moped_proj_components_subcomponents mpcs
-    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    FROM moped_proj_components_subcomponents AS mpcs
+    LEFT JOIN moped_subcomponents AS ms ON mpcs.subcomponent_id = ms.subcomponent_id
     WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
@@ -97,8 +97,8 @@ component_tags AS (
     SELECT
         mpct.project_component_id,
         string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
-    FROM moped_proj_component_tags mpct
-    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    FROM moped_proj_component_tags AS mpct
+    LEFT JOIN moped_component_tags AS mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
 ),
@@ -111,7 +111,28 @@ related_projects AS (
     FROM moped_project AS pmp
     LEFT JOIN moped_project AS cmp ON pmp.project_id = cmp.parent_project_id
     GROUP BY pmp.project_id
-)
+),
+
+-- substantial_completion_date_estimated
+-- Derived from the earliest moped_proj_phases phase_start or phase_end where the date is estimated and the phase name is complete or post_construction IF substantial_completion_date is null
+-- from project_list_view
+
+min_phase_dates AS WITH min_dates AS (
+    (SELECT
+        mpp.project_id,
+        min(mpp.phase_start) as min_phase_start,
+        min(mpp.phase_end) as min_phase_end
+    FROM
+        moped_proj_phases mpp
+	LEFT JOIN moped_phases mp ON mp.phase_id = mpp.phase_id
+    WHERE
+        mpp.is_phase_end_confirmed = FALSE
+        AND mpp.is_phase_start_confirmed = FALSE
+        AND phase_start IS NOT NULL
+        AND mpp.is_deleted = FALSE
+        AND mp.phase_name_simple = 'Complete'::text
+    GROUP BY mpp.project_id)
+    SELECT min_dates.project_id, LEAST(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date FROM min_dates)
 
 
 SELECT
@@ -138,7 +159,7 @@ SELECT
     mpc.interim_project_component_id,
     mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
-    '2024-01-01T00:00:00-06:00'::text AS substantial_completion_date_estimated,
+    coalesce(substantial_completion_date, mpd.min_phase_date) AS substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
@@ -192,15 +213,16 @@ SELECT
     plv.project_development_status_date_fiscal_year,
     plv.project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
-FROM moped_proj_components mpc
+FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
-LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
-LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
-LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
-LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
+LEFT JOIN project_list_view AS plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
+LEFT JOIN min_phase_dates AS mpd ON mpc.project_id = mpd.project_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
