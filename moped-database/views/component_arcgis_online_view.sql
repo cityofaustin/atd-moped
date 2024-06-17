@@ -106,8 +106,8 @@ component_tags AS (
 related_projects AS (
     SELECT
         pmp.project_id,
-        string_agg(cmp.project_id::text, ', '::text) AS related_project_ids,
-        string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text) AS related_project_ids_searchable
+        concat_ws(', '::text, pmp.project_id, string_agg(cmp.project_id::text, ', '::text)) AS related_project_ids_with_self,
+        concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
     FROM moped_project pmp
     LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
     GROUP BY pmp.project_id
@@ -198,8 +198,8 @@ SELECT
     plv.parent_project_name,
     plv.parent_project_url,
     plv.parent_project_name AS parent_project_name_full,
-    rp.related_project_ids,
-    rp.related_project_ids_searchable,
+    rp.related_project_ids_with_self AS related_project_ids,
+    rp.related_project_ids_searchable_with_self AS related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
