@@ -107,7 +107,7 @@ related_projects AS (
     SELECT
         pmp.project_id,
         string_agg(cmp.project_id::text, ', '::text) AS related_project_ids,
-        string_agg(lpad(cmp.project_id::text, 6, '0'::text), ', '::text) AS related_project_ids_searchable
+        string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text) AS related_project_ids_searchable
     FROM moped_project pmp
     LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
     GROUP BY pmp.project_id
