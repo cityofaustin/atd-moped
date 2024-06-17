@@ -1,8 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-} from "@mui/material";
+import { Box, Typography, Chip } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
 /**
@@ -31,6 +28,8 @@ const useStyles = makeStyles((theme) => ({
   filtersList: {
     paddingTop: theme.spacing(1),
     marginRight: "12px",
+    display: "flex",
+    alignItems: "start",
   },
   filtersText: {
     fontSize: ".9rem",
@@ -73,13 +72,17 @@ const makeFilteredByText = (filters, isOr) => {
 const FiltersChips = ({ filters, isOr, filtersConfig }) => {
   const classes = useStyles();
 
-  console.log(filters);
-
   const filtersApplied = filters.map((filter) => {
     const fieldFilterConfig = filtersConfig.fields.find(
       (fieldConfig) => fieldConfig.name === filter.field
     );
-    return fieldFilterConfig?.label;
+    const fieldOperatorConfig = filtersConfig.operators[filter.operator];
+    return (
+      <>
+        <span style={{ fontWeight: 600 }}> {fieldFilterConfig?.label} </span>{" "}
+        {fieldOperatorConfig?.label} {filter.value}
+      </>
+    );
   });
 
   console.log(filtersApplied);
@@ -87,9 +90,9 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
     <Box className={classes.filtersList}>
       <Typography align="right" className={classes.filtersText}>
         {makeFilteredByText(filters, isOr)}{" "}
-        <span className={classes.filtersSpan}>{`${filtersApplied.join(
-          ", "
-        )}`}</span>
+        {filtersApplied.map((filter, index) => (
+          <Chip key={index} label={filter} sx={{ marginLeft: "4px" }} />
+        ))}
       </Typography>
     </Box>
   );
