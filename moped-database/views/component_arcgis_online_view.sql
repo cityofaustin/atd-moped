@@ -121,7 +121,7 @@ min_phase_dates AS (
             min(mpp.phase_end) AS min_phase_end
         FROM moped_proj_phases mpp
         LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
-        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.phase_start IS NOT null AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
+        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
         GROUP BY mpp.project_id
     )
 
