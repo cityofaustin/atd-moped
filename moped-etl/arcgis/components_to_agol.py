@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
 # docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  moped-agol /bin/bash
+import argparse
+import logging
+from datetime import datetime, timezone
+
+from process.logging import get_logger
 from settings import COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
 from utils import (
     make_hasura_request,
@@ -63,11 +68,11 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
 # TODO: See https://github.com/cityofaustin/atd-knack-services for example
 
 
-def main():
+def main(args):
     logger.info("Getting token...")
     get_token()
 
-    logger.info("Downloading component data...")
+    logger.info("Getting components from recently updated projects...")
     data = make_hasura_request(query=COMPONENTS_QUERY)["component_arcgis_online_view"]
 
     logger.info(f"{len(data)} component records to process")
@@ -132,5 +137,34 @@ def main():
 
 
 if __name__ == "__main__":
-    logger = get_logger(__file__)
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-d",
+        "--date",
+        type=str,
+        default=datetime.now(timezone.utc).isoformat(),
+        help=f"ISO date string of latest updated_at value to find project records to update.",
+    )
+
+    parser.add_argument(
+        "-f",
+        "--full",
+        action="store_true",
+    )
+
+    parser.add_argument("-t", "--test", action="store_true")
+
+    args = parser.parse_args()
+
+    log_level = logging.DEBUG if args.test else logging.INFO
+    logger = get_logger(name="components-to-agol", level=log_level)
+
+    if args.full:
+        logger.info(f"Starting sync. Replacing all projects component geo data...")
+    else:
+        logger.info(
+            f"Starting sync. Finding projects updated since {args.date} and replacing components geo data..."
+        )
+
+    # main(args)
