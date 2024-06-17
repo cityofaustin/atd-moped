@@ -125,7 +125,6 @@ min_phase_dates AS (
         WHERE
             mpp.is_phase_end_confirmed = false
             AND mpp.is_phase_start_confirmed = false
-            AND phase_start IS NOT null
             AND mpp.is_deleted = false
             AND mp.phase_name_simple = 'Complete'::text
         GROUP BY
