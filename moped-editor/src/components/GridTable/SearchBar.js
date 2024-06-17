@@ -36,18 +36,6 @@ const useStyles = makeStyles((theme) => ({
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
-  filtersList: {
-    paddingTop: theme.spacing(1),
-    marginRight: "12px",
-  },
-  filtersText: {
-    fontSize: ".9rem",
-    color: theme.palette.text.secondary,
-  },
-  filtersSpan: {
-    fontWeight: 600,
-    textTransform: "uppercase",
-  },
 }));
 
 /**

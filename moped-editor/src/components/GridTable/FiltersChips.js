@@ -8,23 +8,6 @@ import makeStyles from "@mui/styles/makeStyles";
  * @constant
  */
 const useStyles = makeStyles((theme) => ({
-  advancedSearchSelected: {
-    backgroundColor: "rgba(0, 0, 0, 0.04)",
-    height: "33px",
-    width: "33px",
-    color: "rgba(0, 0, 0, 0.54)",
-  },
-  advancedSearchActive: {
-    backgroundColor: theme.palette.primary.main,
-    color: theme.palette.background.paper,
-    height: "33px",
-    width: "33px",
-  },
-  tuneIcon: {
-    height: "33px",
-    width: "33px",
-    color: "rgba(0, 0, 0, 0.54)",
-  },
   filtersList: {
     paddingTop: theme.spacing(1),
     marginRight: "12px",
@@ -64,8 +47,10 @@ const makeFilteredByText = (filters, isOr) => {
 };
 
 /**
- * Renders a search bar with optional filters
+ * Renders filters applied in advanced search
  * @param {Object} filtersConfig - The filters configuration for the current table
+ * @param {Array|Objects} filters - applied filters
+ * @param {Boolean} isOr - true if ANY filters are matched, false if ALL
  * @return {JSX.Element}
  * @constructor
  */
@@ -85,7 +70,6 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
     );
   });
 
-  console.log(filtersApplied);
   return (
     <Box className={classes.filtersList}>
       <Typography align="right" className={classes.filtersText}>
