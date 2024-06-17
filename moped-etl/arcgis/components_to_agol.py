@@ -61,10 +61,12 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
 
 # TODO: Get component project's updated_at date
 # TODO: Check if the last run date
-# TODO: If the component project's updated_at date is greater than the last run date, then update the component project
+# TODO: If the component project's updated_at date is greater than the last run date, get the updated components
+# TODO: Before updating the component in AGOL, deleted all existing components from updated project
+# TODO: Log ids of deleted components and log ids replaced components (for troubleshooting etl failures)
 # TODO: If not, do not update the component in AGOL
-# TODO: Determine if can update the component in AGOL by OBJECTID
-# TODO: Or, if we should delete the component in AGOL and re-add it. Do OBJECTIDs need to be stable?
+# TODO: Query the objectids of components in AGOL per updated project
+# TODO: Batch or 1 by 1? If batch, how many components per batch?
 # TODO: See https://github.com/cityofaustin/atd-knack-services for example
 
 
