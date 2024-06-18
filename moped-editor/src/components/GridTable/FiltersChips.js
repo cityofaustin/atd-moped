@@ -2,11 +2,6 @@ import React from "react";
 import { Box, Typography, Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-/**
- * The styling for the FilterChips components
- * @type {Object}
- * @constant
- */
 const useStyles = makeStyles((theme) => ({
   filtersList: {
     paddingTop: theme.spacing(1),

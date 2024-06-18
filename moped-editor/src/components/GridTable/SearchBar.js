@@ -41,13 +41,16 @@ const useStyles = makeStyles((theme) => ({
 /**
  * Renders a search bar with optional filters
  * @param {string} searchFieldValue - The current value of the search field
- * @param {function} handleSearchSubmission - function to handle the search submission
+ * @param {function} setSearchFieldValue - function to update searchFieldValue
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
- * @param {Function} setSearchTerm - set the current search term set in the query
+ * @param {function} handleSearchSubmission - function to handle the search submission
  * @param {Object} queryConfig - the query configuration object with placeholder text
+ * @param {Boolean} isOr -  true if ANY filters are matched, false if ALL
+ * @param {Boolean} loading - if project list query is loading
  * @param {Object} filtersConfig - The filters configuration for the current table
+ * @param {function} resetSimpleSearch - resets search term, search field value and params
  * @return {JSX.Element}
  * @constructor
  */
