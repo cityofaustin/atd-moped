@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Chip } from "@mui/material";
+import { Box, Typography, Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
 /**
@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "start",
   },
   filtersText: {
+    fontFamily: "Roboto",
     fontSize: ".9rem",
     color: theme.palette.text.secondary,
   },
@@ -72,11 +73,17 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
 
   return (
     <Box className={classes.filtersList}>
-      <Typography align="right" className={classes.filtersText}>
-        {makeFilteredByText(filters, isOr)}{" "}
-        {filtersApplied.map((filter, index) => (
-          <Chip key={index} label={filter} sx={{ marginLeft: "4px" }} />
-        ))}
+      <Typography className={classes.filtersText}>
+        <Grid container alignItems={"center"} spacing={0.5}>
+          <Grid item spacing={0.25}>
+            {makeFilteredByText(filters, isOr)}{" "}
+          </Grid>
+          {filtersApplied.map((filter, index) => (
+            <Grid item spacing={0.25}>
+              <Chip key={index} label={filter} />
+            </Grid>
+          ))}
+        </Grid>
       </Typography>
     </Box>
   );
