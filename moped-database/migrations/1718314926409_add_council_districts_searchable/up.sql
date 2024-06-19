@@ -110,6 +110,7 @@ related_projects AS (
         concat_ws(', ', lpad(pmp.project_id::text, 5, '0'), string_agg(lpad(cmp.project_id::text, 5, '0'), ', '::text)) AS related_project_ids_searchable_with_self
     FROM moped_project AS pmp
     LEFT JOIN moped_project AS cmp ON pmp.project_id = cmp.parent_project_id
+    WHERE cmp.is_deleted = false
     GROUP BY pmp.project_id
 ),
 
