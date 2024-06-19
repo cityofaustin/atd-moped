@@ -21,25 +21,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Create text to show advanced filters and logic applied in the UI
- * @param {Object} filters - The current filters applied
+ * Create text to show logic applied in the UI
  * @param {Boolean} isOr - The current logic applied
  * @returns {string} - The text to display
  */
-const makeFilteredByText = (filters, isOr) => {
-  const filtersCount = Object.keys(filters).length;
-  let filteredByText = "Filtered by ";
-
-  /* Only show logic string if more than one filter applied */
-  if (filtersCount === 1) return filteredByText;
-
+const makeFilteredByText = (isOr) => {
+  console.log(isOr);
   if (isOr) {
-    filteredByText += "any ";
+    return (
+      <>
+        Matching
+        <span style={{ fontWeight: 600 }}> any </span> filter
+      </>
+    );
   } else {
-    filteredByText += "all ";
+    return (
+      <>
+        Matching
+        <span style={{ fontWeight: 600 }}> all </span> filters
+      </>
+    );
   }
-
-  return filteredByText;
 };
 
 /**
@@ -53,6 +55,8 @@ const makeFilteredByText = (filters, isOr) => {
 const FiltersChips = ({ filters, isOr, filtersConfig }) => {
   const classes = useStyles();
 
+  const filtersCount = Object.keys(filters).length;
+
   const filtersLabels = filters.map((filter) => {
     const fieldFilterConfig = filtersConfig.fields.find(
       (fieldConfig) => fieldConfig.name === filter.field
@@ -65,9 +69,11 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText}>
         <Grid container alignItems={"center"} spacing={0.5}>
-          <Grid item spacing={0.25}>
-            {makeFilteredByText(filters, isOr)}{" "}
-          </Grid>
+          {filtersCount > 1 && (
+            <Grid item spacing={0.25}>
+              <Chip label={makeFilteredByText(isOr)} />
+            </Grid>
+          )}
           {filtersLabels.map((filter, index) => (
             <Grid item spacing={0.25}>
               <Chip
