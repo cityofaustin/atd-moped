@@ -33,7 +33,11 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
       (fieldConfig) => fieldConfig.name === filter.field
     );
     const fieldOperatorConfig = filtersConfig.operators[filter.operator];
-    return [fieldFilterConfig?.label, fieldOperatorConfig?.label, filter.value];
+    return {
+      filterLabel: fieldFilterConfig?.label,
+      operatorLabel: fieldOperatorConfig?.label,
+      filterValue: filter.value,
+    };
   });
 
   return (
@@ -66,8 +70,10 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
                 key={index}
                 label={
                   <>
-                    <span style={{ fontWeight: 600 }}> {filter[0]} </span>{" "}
-                    {filter[1]} {filter[2]}
+                    <span style={{ fontWeight: 600 }}>
+                      {filter.filterLabel}
+                    </span>
+                    {filter.operatorLabel} {filter.filterValue}
                   </>
                 }
               />
