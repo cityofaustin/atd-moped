@@ -53,17 +53,12 @@ const makeFilteredByText = (filters, isOr) => {
 const FiltersChips = ({ filters, isOr, filtersConfig }) => {
   const classes = useStyles();
 
-  const filtersApplied = filters.map((filter) => {
+  const filtersLabels = filters.map((filter) => {
     const fieldFilterConfig = filtersConfig.fields.find(
       (fieldConfig) => fieldConfig.name === filter.field
     );
     const fieldOperatorConfig = filtersConfig.operators[filter.operator];
-    return (
-      <>
-        <span style={{ fontWeight: 600 }}> {fieldFilterConfig?.label} </span>{" "}
-        {fieldOperatorConfig?.label} {filter.value}
-      </>
-    );
+    return [fieldFilterConfig?.label, fieldOperatorConfig?.label, filter.value];
   });
 
   return (
@@ -73,9 +68,17 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
           <Grid item spacing={0.25}>
             {makeFilteredByText(filters, isOr)}{" "}
           </Grid>
-          {filtersApplied.map((filter, index) => (
+          {filtersLabels.map((filter, index) => (
             <Grid item spacing={0.25}>
-              <Chip key={index} label={filter} />
+              <Chip
+                key={index}
+                label={
+                  <>
+                    <span style={{ fontWeight: 600 }}> {filter[0]} </span>{" "}
+                    {filter[1]} {filter[2]}
+                  </>
+                }
+              />
             </Grid>
           ))}
         </Grid>
