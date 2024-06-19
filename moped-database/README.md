@@ -94,7 +94,7 @@ Configure your environment:
    $ cp env_template env
 ```
 
-1. Pull a copy of production data, start the cluster, and apply local migrations and metadata. This will get a new copy of production (once per day) and store the snapshot in the `./snapshots/` folder. Subsequent invocations of this command on the same day will not download a new copy. 
+2. Pull a copy of production data, start the cluster, and apply local migrations and metadata. This will get a new copy of production (once per day) and store the snapshot in the `./snapshots/` folder. Subsequent invocations of this command on the same day will not download a new copy. 
 
 ```bash
 $ ./hasura-cluster replicate
