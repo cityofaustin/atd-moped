@@ -16,30 +16,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Create text to show logic applied in the UI
- * @param {Boolean} isOr - The current logic applied
- * @returns {string} - The text to display
- */
-const makeFilteredByText = (isOr) => {
-  console.log(isOr);
-  if (isOr) {
-    return (
-      <>
-        Matching
-        <span style={{ fontWeight: 600 }}> any </span> filter
-      </>
-    );
-  } else {
-    return (
-      <>
-        Matching
-        <span style={{ fontWeight: 600 }}> all </span> filters
-      </>
-    );
-  }
-};
-
-/**
  * Renders filters applied in advanced search
  * @param {Object} filtersConfig - The filters configuration for the current table
  * @param {Array|Objects} filters - applied filters
@@ -66,7 +42,22 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
         <Grid container alignItems={"center"} spacing={0.5}>
           {filtersCount > 1 && (
             <Grid item spacing={0.25}>
-              <Chip label={makeFilteredByText(isOr)} />
+              <Chip
+                variant="outlined"
+                label={
+                  isOr ? (
+                    <>
+                      Matching
+                      <span style={{ fontWeight: 600 }}> any </span> filter
+                    </>
+                  ) : (
+                    <>
+                      Matching
+                      <span style={{ fontWeight: 600 }}> all </span> filters
+                    </>
+                  )
+                }
+              />
             </Grid>
           )}
           {filtersLabels.map((filter, index) => (
