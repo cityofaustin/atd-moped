@@ -72,7 +72,7 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
                   <>
                     <span style={{ fontWeight: 600 }}>
                       {filter.filterLabel}
-                    </span>
+                    </span>{" "}
                     {filter.operatorLabel} {filter.filterValue}
                   </>
                 }
