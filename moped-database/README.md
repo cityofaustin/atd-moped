@@ -103,7 +103,7 @@ $ ./hasura-cluster replicate
 If you would prefer to bypass downloading a new copy of production and instead just use whatever the last snapshot in the folder, add `--use-any-snapshot` or `-j` 
 
 ```bash
-$ ./hasura-cluster --use-any-snapshot
+$ ./hasura-cluster replicate -j
 ```
 
 - Restarting the hasura cluster without migrations:
