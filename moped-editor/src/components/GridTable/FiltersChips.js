@@ -5,7 +5,6 @@ import makeStyles from "@mui/styles/makeStyles";
 const useStyles = makeStyles((theme) => ({
   filtersList: {
     paddingTop: theme.spacing(1),
-    marginRight: "12px",
     display: "flex",
     alignItems: "start",
   },
@@ -13,10 +12,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Roboto",
     fontSize: ".9rem",
     color: theme.palette.text.secondary,
-  },
-  filtersSpan: {
-    fontWeight: 600,
-    textTransform: "uppercase",
   },
 }));
 
