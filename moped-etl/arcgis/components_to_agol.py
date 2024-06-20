@@ -6,7 +6,7 @@ import logging
 from datetime import datetime, timezone
 
 from process.logging import get_logger
-from settings import COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
+from settings import ALL_COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
 from utils import (
     make_hasura_request,
     get_token,
@@ -75,67 +75,78 @@ def main(args):
     get_token()
 
     logger.info("Getting components from recently updated projects...")
-    data = make_hasura_request(query=COMPONENTS_QUERY)["component_arcgis_online_view"]
+
+    if args.full:
+        data = make_hasura_request(query=ALL_COMPONENTS_QUERY)[
+            "component_arcgis_online_view"
+        ]
+    else:
+        data = make_hasura_request(
+            query=COMPONENTS_QUERY,
+            variables={"project_updated_at": args.date},
+        )["component_arcgis_online_view"]
 
     logger.info(f"{len(data)} component records to process")
 
-    # lines and points must be stored in different layers in AGOL
-    all_features = {"lines": [], "points": [], "combined": []}
+    return
 
-    logger.info("Building Esri feature objects...")
-    for component in data:
-        # extract geometry and line geometry from component data
-        # for line features, the line geometry is redundant/identical to geometry
-        # for point features, it is the buffered ring around the point as defined
-        # in the Moped component view
-        geometry = component.pop("geometry")
-        line_geometry = component.pop("line_geometry")
+    # # lines and points must be stored in different layers in AGOL
+    # all_features = {"lines": [], "points": [], "combined": []}
 
-        if not geometry:
-            continue
+    # logger.info("Building Esri feature objects...")
+    # for component in data:
+    #     # extract geometry and line geometry from component data
+    #     # for line features, the line geometry is redundant/identical to geometry
+    #     # for point features, it is the buffered ring around the point as defined
+    #     # in the Moped component view
+    #     geometry = component.pop("geometry")
+    #     line_geometry = component.pop("line_geometry")
 
-        esri_geometry_key = get_esri_geometry_key(geometry)
-        feature = make_esri_feature(
-            esri_geometry_key=esri_geometry_key, geometry=geometry, attributes=component
-        )
+    #     if not geometry:
+    #         continue
 
-        # adds a special `source_geometry_type` column that will be useful on the `combined` layer
-        # so that we can keep track of if the original feature was a point or line geometry
-        feature["attributes"]["source_geometry_type"] = (
-            "point" if esri_geometry_key == "points" else "line"
-        )
+    #     esri_geometry_key = get_esri_geometry_key(geometry)
+    #     feature = make_esri_feature(
+    #         esri_geometry_key=esri_geometry_key, geometry=geometry, attributes=component
+    #     )
 
-        if not feature:
-            continue
+    #     # adds a special `source_geometry_type` column that will be useful on the `combined` layer
+    #     # so that we can keep track of if the original feature was a point or line geometry
+    #     feature["attributes"]["source_geometry_type"] = (
+    #         "point" if esri_geometry_key == "points" else "line"
+    #     )
 
-        if esri_geometry_key == "points":
-            all_features["points"].append(feature)
-            # create the point -> line feature
-            if line_geometry["type"] == "LineString":
-                # if we're converting a single point to a line, we need to convert that line geom to
-                # a multi-line geometry
-                line_geometry["coordinates"] = [line_geometry["coordinates"]]
-            line_feature = make_esri_feature(
-                esri_geometry_key="paths", geometry=line_geometry, attributes=component
-            )
-            all_features["combined"].append(line_feature)
-        else:
-            all_features["lines"].append(feature)
-            all_features["combined"].append(feature)
+    #     if not feature:
+    #         continue
 
-    for feature_type in ["points", "lines", "combined"]:
-        logger.info(f"Processing {feature_type} features...")
-        features = all_features[feature_type]
+    #     if esri_geometry_key == "points":
+    #         all_features["points"].append(feature)
+    #         # create the point -> line feature
+    #         if line_geometry["type"] == "LineString":
+    #             # if we're converting a single point to a line, we need to convert that line geom to
+    #             # a multi-line geometry
+    #             line_geometry["coordinates"] = [line_geometry["coordinates"]]
+    #         line_feature = make_esri_feature(
+    #             esri_geometry_key="paths", geometry=line_geometry, attributes=component
+    #         )
+    #         all_features["combined"].append(line_feature)
+    #     else:
+    #         all_features["lines"].append(feature)
+    #         all_features["combined"].append(feature)
 
-        logger.info("Deleting all existing features...")
-        delete_features(feature_type)
+    # for feature_type in ["points", "lines", "combined"]:
+    #     logger.info(f"Processing {feature_type} features...")
+    #     features = all_features[feature_type]
 
-        logger.info(
-            f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-        )
-        for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-            logger.info("Uploading chunk....")
-            add_features(feature_type, feature_chunk)
+    #     logger.info("Deleting all existing features...")
+    #     delete_features(feature_type)
+
+    #     logger.info(
+    #         f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+    #     )
+    #     for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+    #         logger.info("Uploading chunk....")
+    #         add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
@@ -153,6 +164,7 @@ if __name__ == "__main__":
         "-f",
         "--full",
         action="store_true",
+        help=f"Delete and replace all project components.",
     )
 
     parser.add_argument("-t", "--test", action="store_true")
@@ -163,10 +175,10 @@ if __name__ == "__main__":
     logger = get_logger(name="components-to-agol", level=log_level)
 
     if args.full:
-        logger.info(f"Starting sync. Replacing all projects component geo data...")
+        logger.info(f"Starting sync. Replacing all projects' components data...")
     else:
         logger.info(
-            f"Starting sync. Finding projects updated since {args.date} and replacing components geo data..."
+            f"Starting sync. Finding projects updated since {args.date} and replacing components data..."
         )
 
-    # main(args)
+    main(args)
