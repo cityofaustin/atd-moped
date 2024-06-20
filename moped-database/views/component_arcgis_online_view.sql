@@ -110,6 +110,7 @@ related_projects AS (
         concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
     FROM moped_project pmp
     LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
+    WHERE cmp.is_deleted = false
     GROUP BY pmp.project_id
 ),
 
@@ -155,10 +156,7 @@ SELECT
     mpc.interim_project_component_id,
     mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
-    CASE
-        WHEN plv.substantial_completion_date IS NOT null THEN null::timestamp with time zone
-        ELSE mpd.min_phase_date
-    END AS substantial_completion_date_estimated,
+    plv.substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
