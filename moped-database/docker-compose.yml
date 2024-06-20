@@ -24,6 +24,24 @@ services:
         command: ["graphql-engine", "serve",  "--enable-console"]
 
 
+    moped-pgsql:
+        image: "frankinaustin/postgis:12-3.4"
+        volumes:
+            - moped-db-vol:/var/lib/postgresql/data
+        expose:
+            - 5432
+        ports:
+            - 5432:5432
+        environment:
+            - POSTGRES_USER=moped
+            - POSTGRES_PASSWORD=moped
+            - POSTGRES_DB=moped
+        command: ["postgres",
+            "-c", "jit=off",
+            "-c","log_statement=ddl",
+            "-c", "log_min_messages=info"]
+
+
 # There is a volume which is common
 volumes:
     moped-db-vol:

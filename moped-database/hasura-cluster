@@ -27,12 +27,7 @@ function __get_platform() {
 
 function __set_postgresql_image() {
   __get_platform;
-  if [ $PLATFORM = "arm64" ]
-    then
-      HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.2";
-    else
-      HASURA_CLUSTER_POSTGRES_IMAGE="postgis/postgis:12-master";
-    fi
+  HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.4";
   echo "Database Docker Image: ${HASURA_CLUSTER_POSTGRES_IMAGE}"
 }
 
@@ -149,7 +144,7 @@ function start_only() {
   __get_platform;
   START_MODE=$1;
   if [[ "${START_MODE}" = "" ]]; then
-    docker compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml up -d;
+    docker compose -f docker-compose.yml up -d;
   else
     docker compose -f "${START_MODE}" up -d;
   fi;
@@ -200,7 +195,7 @@ function setenv() {
 #
 function stop() {
   __get_platform;
-  docker compose -f docker-compose.yml -f docker-compose.${PLATFORM}.yml down --volumes --remove-orphans;
+  docker compose -f docker-compose.yml down --volumes --remove-orphans;
 }
 
 #
