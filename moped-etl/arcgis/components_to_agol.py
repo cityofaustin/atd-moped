@@ -6,7 +6,11 @@ import logging
 from datetime import datetime, timezone
 
 from process.logging import get_logger
-from settings import ALL_COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
+from settings import (
+    COMPONENTS_QUERY,
+    COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+    UPLOAD_CHUNK_SIZE,
+)
 from utils import (
     make_hasura_request,
     get_token,
@@ -77,13 +81,13 @@ def main(args):
     logger.info("Getting components from recently updated projects...")
 
     if args.full:
-        data = make_hasura_request(query=ALL_COMPONENTS_QUERY)[
+        data = make_hasura_request(query=COMPONENTS_QUERY)[
             "component_arcgis_online_view"
         ]
     else:
         data = make_hasura_request(
-            query=COMPONENTS_QUERY,
-            variables={"project_updated_at": args.date},
+            query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+            variables={"lastRunDate": args.date},
         )["component_arcgis_online_view"]
 
     logger.info(f"{len(data)} component records to process")

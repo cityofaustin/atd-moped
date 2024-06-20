@@ -2,7 +2,7 @@ UPLOAD_CHUNK_SIZE = 100
 
 LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
 
-ALL_COMPONENTS_QUERY = """
+COMPONENTS_QUERY = """
 {
   component_arcgis_online_view {
     completion_date

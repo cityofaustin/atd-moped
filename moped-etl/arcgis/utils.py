@@ -38,7 +38,7 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-def make_hasura_request(*, query):
+def make_hasura_request(*, query, variables=None):
     """Fetch data from hasura
 
     Args:
@@ -54,7 +54,7 @@ def make_hasura_request(*, query):
         "X-Hasura-Admin-Secret": HASURA_ADMIN_SECRET,
         "content-type": "application/json",
     }
-    payload = {"query": query}
+    payload = {"query": query, "variables": variables}
     res = requests.post(HASURA_ENDPOINT, json=payload, headers=headers)
     res.raise_for_status()
     data = res.json()
@@ -211,5 +211,6 @@ def get_logger(name, level=logging.INFO):
     logger.addHandler(handler)
     logger.setLevel(level)
     return logger
+
 
 logger = get_logger(__file__)
