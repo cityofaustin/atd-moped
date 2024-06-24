@@ -1,17 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  Box,
   TextField,
   InputAdornment,
   SvgIcon,
   Icon,
   IconButton,
-  Typography,
   CircularProgress,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Search as SearchIcon } from "react-feather";
+import FiltersChips from "./FiltersChips";
 import clsx from "clsx";
 
 /**
@@ -37,52 +36,21 @@ const useStyles = makeStyles((theme) => ({
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
-  filtersList: {
-    paddingTop: theme.spacing(1),
-    marginRight: "12px",
-  },
-  filtersText: {
-    fontSize: ".9rem",
-    color: theme.palette.text.secondary,
-  },
-  filtersSpan: {
-    fontWeight: 600,
-    textTransform: "uppercase",
-  },
 }));
-
-/**
- * Create text to show advanced filters and logic applied in the UI
- * @param {Object} filters - The current filters applied
- * @param {Boolean} isOr - The current logic applied
- * @returns {string} - The text to display
- */
-const makeFilteredByText = (filters, isOr) => {
-  const filtersCount = Object.keys(filters).length;
-  let filteredByText = "Filtered by ";
-
-  /* Only show logic string if more than one filter applied */
-  if (filtersCount === 1) return filteredByText;
-
-  if (isOr) {
-    filteredByText += "any ";
-  } else {
-    filteredByText += "all ";
-  }
-
-  return filteredByText;
-};
 
 /**
  * Renders a search bar with optional filters
  * @param {string} searchFieldValue - The current value of the search field
- * @param {function} handleSearchSubmission - function to handle the search submission
+ * @param {function} setSearchFieldValue - function to update searchFieldValue
  * @param {Object} filters - The current filters from useAdvancedSearch hook
  * @param {function} toggleAdvancedSearch - function to toggle if advanced search (filters) is open
  * @param {Object} advancedSearchAnchor - anchor element for advanced search popper to "attach" to
- * @param {Function} setSearchTerm - set the current search term set in the query
+ * @param {function} handleSearchSubmission - function to handle the search submission
  * @param {Object} queryConfig - the query configuration object with placeholder text
+ * @param {Boolean} isOr -  true if ANY filters are matched, false if ALL
+ * @param {Boolean} loading - if project list query is loading
  * @param {Object} filtersConfig - The filters configuration for the current table
+ * @param {function} resetSimpleSearch - resets search term, search field value and params
  * @return {JSX.Element}
  * @constructor
  */
@@ -146,14 +114,6 @@ const SearchBar = ({
   };
 
   const filterStateActive = filters.length > 0;
-  const filtersApplied =
-    filterStateActive &&
-    filters.map((filter) => {
-      const fieldFilterConfig = filtersConfig.fields.find(
-        (fieldConfig) => fieldConfig.name === filter.field
-      );
-      return fieldFilterConfig?.label;
-    });
 
   return (
     <>
@@ -203,14 +163,11 @@ const SearchBar = ({
         value={searchFieldValue}
       />
       {filterStateActive && (
-        <Box className={classes.filtersList}>
-          <Typography align="right" className={classes.filtersText}>
-            {makeFilteredByText(filters, isOr)}{" "}
-            <span className={classes.filtersSpan}>{`${filtersApplied.join(
-              ", "
-            )}`}</span>
-          </Typography>
-        </Box>
+        <FiltersChips
+          filters={filters}
+          filtersConfig={filtersConfig}
+          isOr={isOr}
+        />
       )}
     </>
   );
