@@ -192,6 +192,7 @@ def get_token():
         "referer": "http://www.arcgis.com",
         "f": "pjson",
     }
+    print(data)
     res = requests.post(url, data=data)
     res.raise_for_status()
     # like all the Esri REST endpoints this endpoint returns 200 where you would expect

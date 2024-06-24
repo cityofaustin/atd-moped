@@ -124,7 +124,7 @@ query GetProjectsComponents($lastRunDate: timestamptz) {
     line_geometry
     parent_project_id
     parent_project_name
-    parent_project_name_with_descriptor
+    parent_project_name_full
     parent_project_url
     project_added_by
     project_component_id
@@ -142,8 +142,8 @@ query GetProjectsComponents($lastRunDate: timestamptz) {
     project_inspector
     project_lead
     project_name
-    project_name_descriptor
-    project_name_with_descriptor
+    project_name_secondary
+    project_name_full
     project_partners
     project_phase_id
     project_phase_name
