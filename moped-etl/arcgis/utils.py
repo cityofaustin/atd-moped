@@ -92,7 +92,7 @@ def handle_arcgis_response(response_data):
     return
 
 
-def delete_features(feature_type):
+def delete_all_features(feature_type):
     """Deletes all features from an arcgis online feature service.
 
     Args:
@@ -105,7 +105,31 @@ def delete_features(feature_type):
     data = {
         "token": os.getenv("AGOL_TOKEN"),
         "f": "json",
-        "where": "1=1",
+        "where": f"project_id={project_id}",
+        "returnDeleteResults": False,
+    }
+    res = resilient_layer_request(endpoint, data=data)
+    response_data = res.json()
+    try:
+        assert response_data["success"]
+    except AssertionError:
+        raise Exception(f"Delete features failed: {response_data}")
+
+
+def delete_features_by_project_id(feature_type, project_id):
+    """Deletes all features from an arcgis online feature service.
+
+    Args:
+        feature_type (Str): the feature type we're adding: "points" or "lines"
+
+    Raises:
+        Exception: if the deletion failes
+    """
+    endpoint = get_endpoint("deleteFeatures", feature_type)
+    data = {
+        "token": os.getenv("AGOL_TOKEN"),
+        "f": "json",
+        "where": f"project_id={project_id}",
         "returnDeleteResults": False,
     }
     res = resilient_layer_request(endpoint, data=data)
