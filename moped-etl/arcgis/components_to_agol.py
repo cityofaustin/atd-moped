@@ -198,7 +198,7 @@ def main(args):
                 all_features["lines"].append(feature)
                 all_features["combined"].append(feature)
 
-        # Get project IDs that need to have features deleted & replaced and then delete them from AGOL
+        # Get project IDs that need to have features deleted & replaced
         project_ids = []
 
         for component in data:
@@ -206,13 +206,14 @@ def main(args):
 
         project_ids_for_feature_delete = list(set(project_ids))
 
-        for project_id in project_ids_for_feature_delete:
-            logger.info(f"Deleting all existing features for project {project_id}...")
-            delete_features_by_project_id(project_id)
-
         # Adding updated features to AGOL
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
+            logger.info(
+                f"Deleting all existing {feature_type} features for updated projects..."
+            )
+            delete_features_by_project_ids(feature_type, project_ids)
+
             features = all_features[feature_type]
 
             logger.info(
