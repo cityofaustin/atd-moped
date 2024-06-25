@@ -94,16 +94,16 @@ Configure your environment:
    $ cp env_template env
 ```
 
-2. Pull a copy of production data and start the cluster. This will get a new copy of production (once per day) and store the snapshot in the `./snapshots/` folder. Subsequent invocations of this command on the same day will not download a new copy. 
+2. Pull a copy of production data, start the cluster, and apply local migrations and metadata. This will get a new copy of production (once per day) and store the snapshot in the `./snapshots/` folder. Subsequent invocations of this command on the same day will not download a new copy. 
 
 ```bash
 $ ./hasura-cluster replicate
 ```
 
-If you would prefer to bypass downloading a new copy of production and instead just use whatever the last snapshot in the folder, add `--use-latest-snapshot` or `-j` 
+If you would prefer to bypass downloading a new copy of production and instead just use whatever the last snapshot in the folder, add `--use-any-snapshot` or `-j` 
 
 ```bash
-$ ./hasura-cluster --use-latest-snapshot
+$ ./hasura-cluster replicate -j
 ```
 
 - Restarting the hasura cluster without migrations:
@@ -116,7 +116,8 @@ $ ./hasura-cluster --use-latest-snapshot
 - `start_only`: Starts the cluster and does NOT run migrations.
 - `start`: Starts the cluster and runs all migrations, applies metadata and seed data.
 - `stop`: Stops the cluster, removes any volumes left out.
-- `replicate`: Starts the cluster with a downloaded copy of production data from the read replica
+- `replicate`: Download a copy of the production database, start it and apply local migrations and metadata
+- `replicate -j` : Start the cluster with the most recent snapshot in the `./snapshots` directory
 - `prune`: Deletes any volumes left out by the cluster. 
 - `status`: Displays the current status of the cluster
 - `setenv`: Changes the current environment.

@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1713896796482_add_full_name_to_list_view/up.sql
+-- Most recent migration: moped-database/migrations/1718314926409_add_council_districts_searchable/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -95,6 +95,58 @@ parent_child_project_map AS (
     LEFT JOIN project_council_district_map project_and_children_districts ON projects.self_and_children_project_ids = project_and_children_districts.project_id
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
     GROUP BY projects.project_id
+),
+
+min_confirmed_phase_dates AS (
+    WITH min_dates AS (
+        SELECT
+            phases.project_id,
+            min(phases.phase_start) AS min_date
+        FROM moped_proj_phases phases
+        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+        WHERE true AND phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = true AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
+        GROUP BY phases.project_id
+        UNION ALL
+        SELECT
+            phases.project_id,
+            min(phases.phase_end) AS min_date
+        FROM moped_proj_phases phases
+        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+        WHERE true AND phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = true AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
+        GROUP BY phases.project_id
+    )
+
+    SELECT
+        min_dates.project_id,
+        min(min_dates.min_date) AS min_phase_date
+    FROM min_dates
+    GROUP BY min_dates.project_id
+),
+
+min_estimated_phase_dates AS (
+    WITH min_dates AS (
+        SELECT
+            phases.project_id,
+            min(phases.phase_start) AS min_date
+        FROM moped_proj_phases phases
+        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+        WHERE true AND phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = false AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
+        GROUP BY phases.project_id
+        UNION ALL
+        SELECT
+            phases.project_id,
+            min(phases.phase_end) AS min_date
+        FROM moped_proj_phases phases
+        LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
+        WHERE true AND phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = false AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
+        GROUP BY phases.project_id
+    )
+
+    SELECT
+        min_dates.project_id,
+        min(min_dates.min_date) AS min_phase_date
+    FROM min_dates
+    GROUP BY min_dates.project_id
 )
 
 SELECT
@@ -160,20 +212,11 @@ SELECT
         FROM moped_proj_phases phases
         WHERE true AND phases.project_id = mp.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
     ) AS completion_end_date,
-    (
-        SELECT min(min_confirmed_dates.min_confirmed_date) AS min
-        FROM (
-            SELECT min(phases.phase_start) AS min_confirmed_date
-            FROM moped_proj_phases phases
-            LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-            WHERE true AND phases.phase_start IS NOT null AND phases.is_phase_start_confirmed = true AND phases.project_id = mp.project_id AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-            UNION ALL
-            SELECT min(phases.phase_end) AS min_confirmed_date
-            FROM moped_proj_phases phases
-            LEFT JOIN moped_phases ON phases.phase_id = moped_phases.phase_id
-            WHERE true AND phases.phase_end IS NOT null AND phases.is_phase_end_confirmed = true AND phases.project_id = mp.project_id AND moped_phases.phase_name_simple = 'Complete'::text AND phases.is_deleted = false
-        ) min_confirmed_dates
-    ) AS substantial_completion_date,
+    mcpd.min_phase_date AS substantial_completion_date,
+    CASE
+        WHEN mcpd.min_phase_date IS NOT null THEN null::timestamp with time zone
+        ELSE mepd.min_phase_date
+    END AS substantial_completion_date_estimated,
     (
         SELECT string_agg(concat(users.first_name, ' ', users.last_name), ', '::text) AS string_agg
         FROM moped_proj_personnel mpp
@@ -218,6 +261,8 @@ LEFT JOIN moped_public_process_statuses mpps ON mp.public_process_status_id = mp
 LEFT JOIN child_project_lookup cpl ON mp.project_id = cpl.parent_id
 LEFT JOIN moped_proj_components_subtypes mpcs ON mp.project_id = mpcs.project_id
 LEFT JOIN project_district_association districts ON mp.project_id = districts.project_id
+LEFT JOIN min_confirmed_phase_dates mcpd ON mp.project_id = mcpd.project_id
+LEFT JOIN min_estimated_phase_dates mepd ON mp.project_id = mepd.project_id
 LEFT JOIN LATERAL (
     SELECT
         mpn.project_note,
@@ -228,4 +273,4 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
