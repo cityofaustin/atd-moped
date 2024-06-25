@@ -64,14 +64,6 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
-# TODO: Before updating the component in AGOL, deleted all existing components from updated project
-# TODO: Log ids of deleted components and log ids replaced components (for troubleshooting etl failures)
-# TODO: If not, do not update the component in AGOL
-# TODO: Query the objectids of components in AGOL per updated project
-# TODO: Batch or 1 by 1? If batch, how many components per batch?
-# TODO: See https://github.com/cityofaustin/atd-knack-services for example
-
-
 def main(args):
     logger.info("Getting token...")
     get_token()
