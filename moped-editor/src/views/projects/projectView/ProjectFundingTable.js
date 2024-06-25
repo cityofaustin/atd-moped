@@ -16,15 +16,20 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
-import CheckIcon from '@mui/icons-material/Check';
-import CloseIcon from '@mui/icons-material/Close';
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import makeStyles from "@mui/styles/makeStyles";
 import MaterialTable, {
   MTableEditRow,
   MTableAction,
   MTableToolbar,
 } from "@material-table/core";
-import { DataGridPro, GridRowModes,   GridActionsCellItem, } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiContext,
+} from "@mui/x-data-grid-pro";
 import typography from "../../../theme/typography";
 
 import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
@@ -48,7 +53,7 @@ import SubprojectFundingModal from "./SubprojectFundingModal";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides"; 
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -142,8 +147,6 @@ const useFdusArray = (projectFunding) =>
     );
   }, [projectFunding]);
 
-  
-
 //  /** Hook that provides memoized column settings */
 //  // const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
 //   const useColumns = ({ getLookupValueByID }) =>
@@ -186,7 +189,9 @@ const ProjectFundingTable = () => {
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
-  const [deleteProjectFunding, {loading: deleteInProgress}] = useMutation(DELETE_PROJECT_FUNDING);
+  const [deleteProjectFunding, { loading: deleteInProgress }] = useMutation(
+    DELETE_PROJECT_FUNDING
+  );
 
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
@@ -225,7 +230,6 @@ const ProjectFundingTable = () => {
     ];
   };
 
-
   const userId = getDatabaseId(user);
 
   /**
@@ -262,35 +266,53 @@ const ProjectFundingTable = () => {
    * @param {*} props
    * @returns {React component}
    */
-  const LookupAutocompleteComponent = (props) => (
-    <Autocomplete
-      style={{ minWidth: "200px" }}
-      value={
-        // if we are editing, the autocomplete has the value provided by the material table, which is the record id
-        // need to get its corresponding text value
-        props.value
-          ? getLookupValueByID(props.lookupTableName, props.name, props.value)
-          : null
-      }
-      // use customized popper component so menu expands to fullwidth
-      PopperComponent={CustomPopper}
-      id={props.name}
-      options={props.data}
-      renderInput={(params) => <TextField variant="standard" {...params} />}
-      getOptionLabel={(option) =>
-        // if our value is a string, just return the string instead of accessing the name
-        typeof option === "string" ? option : option[`${props.name}_name`]
-      }
-      isOptionEqualToValue={(value, option) =>
-        value[`${props.name}_name`] === option
-      }
-      onChange={(e, value) => {
-        value
-          ? props.onChange(value[`${props.name}_id`])
-          : props.onChange(null);
-      }}
-    />
-  );
+  const LookupAutocompleteComponent = (props) => {
+    console.log(props);
+
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+    const ref = React.useRef(null);
+
+    const handleChange = (event, newValue) => {
+      apiRef.current.setEditCellValue({
+        id,
+        field,
+        value: newValue ? newValue[`${props.name}_id`] : null,
+      });
+    };
+
+    return (
+      <Autocomplete
+        style={{ minWidth: "200px" }}
+        ref={ref}
+        value={
+          // if we are editing, the autocomplete has the value provided by the material table, which is the record id
+          // need to get its corresponding text value
+          props.value
+            ? getLookupValueByID(props.lookupTableName, props.name, value)
+            : null
+        }
+        // use customized popper component so menu expands to fullwidth
+        PopperComponent={CustomPopper}
+        id={props.name}
+        options={props.data}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
+        getOptionLabel={(option) =>
+          // if our value is a string, just return the string instead of accessing the name
+          typeof option === "string" ? option : option[`${props.name}_name`]
+        }
+        isOptionEqualToValue={(value, option) =>
+          value[`${props.name}_name`] === option
+        }
+        onChange={handleChange}
+        // onChange={(e, value) => {
+        //   value
+        //     ? props.onChange(value[`${props.name}_id`])
+        //     : props.onChange(null);
+        // }}
+      />
+    );
+  };
 
   /**
    * Autocomplete component for Funds
@@ -332,13 +354,12 @@ const ProjectFundingTable = () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
-
   const handleSaveClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log("delete ", id)
+    console.log("delete ", id);
     // setRows(rows.filter((row) => row.id !== id));
   };
 
@@ -355,7 +376,7 @@ const ProjectFundingTable = () => {
   };
 
   const processRowUpdate = (updatedRow, originalRow) => {
-    console.log(updatedRow, originalRow)
+    console.log(updatedRow, originalRow);
 
     const updateProjectFundingData = updatedRow;
 
@@ -370,26 +391,27 @@ const ProjectFundingTable = () => {
         ? null
         : updateProjectFundingData.funding_description;
 
-    return updateProjectFunding({
-      variables: updateProjectFundingData,
-    })
-      
-      .then(() => refetch())
-      // from the data grid docs:
-      // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-      .then(() => updatedRow)
-      .catch((error) => {
-        setSnackbarState({
-          open: true,
-          message: (
-            <span>
-              There was a problem updating funding. Error message:{" "}
-              {error.message}
-            </span>
-          ),
-          severity: "error",
-        });
-      });
+    return (
+      updateProjectFunding({
+        variables: updateProjectFundingData,
+      })
+        .then(() => refetch())
+        // from the data grid docs:
+        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+        .then(() => updatedRow)
+        .catch((error) => {
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                There was a problem updating funding. Error message:{" "}
+                {error.message}
+              </span>
+            ),
+            severity: "error",
+          });
+        })
+    );
   };
 
   /**
@@ -524,61 +546,59 @@ const ProjectFundingTable = () => {
       filterable: false,
       sortable: false,
       editable: false,
-      type: 'actions',
+      type: "actions",
       getActions: ({ id }) => {
-        console.log(id)
+        console.log(id);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         if (deleteInProgress) {
-          return <CircularProgress color="primary" size={20} />
-        }
-        else if (isInEditMode) {
-          console.log("what")
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon />}
-                label="Save"
-                sx={{
-                  color: 'primary.main',
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon />} // x icon
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-        return [
+          return <CircularProgress color="primary" size={20} />;
+        } else if (isInEditMode) {
+          console.log("what");
+          return [
             <GridActionsCellItem
-              icon={<EditOutlinedIcon />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
+              icon={<CheckIcon />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
-              icon={<DeleteOutlineIcon />}
-              label="Delete"
-              onClick={handleDeleteClick(id)}
+              icon={<CloseIcon />} // x icon
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
               color="inherit"
             />,
           ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditOutlinedIcon />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutlineIcon />}
+            label="Delete"
+            onClick={handleDeleteClick(id)}
+            color="inherit"
+          />,
+        ];
       },
     },
     {
       headerName: "Source",
       field: "funding_source_id",
       width: 200,
-      renderCell: ({value}) =>
-        getLookupValueByID(
-          "moped_fund_sources",
-          "funding_source",
-          value
-        ),
-      renderEditCell: (props) => ( // update this component!!! 
+      editable: true,
+      renderCell: ({ value }) =>
+        getLookupValueByID("moped_fund_sources", "funding_source", value),
+      renderEditCell: (
+        props
+      ) => (
         <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
@@ -590,12 +610,9 @@ const ProjectFundingTable = () => {
     {
       headerName: "Program",
       field: "funding_program_id",
-      renderCell: ({value}) =>
-        getLookupValueByID(
-          "moped_fund_programs",
-          "funding_program",
-          value
-        ),
+      editable: true,
+      renderCell: ({ value }) =>
+        getLookupValueByID("moped_fund_programs", "funding_program", value),
       renderEditCell: (props) => (
         <LookupAutocompleteComponent
           {...props}
@@ -626,12 +643,8 @@ const ProjectFundingTable = () => {
     {
       headerName: "Status",
       field: "funding_status_id",
-      renderCell: ({value}) =>
-        getLookupValueByID(
-          "moped_fund_status",
-          "funding_status",
-          value
-        ),
+      renderCell: ({ value }) =>
+        getLookupValueByID("moped_fund_status", "funding_status", value),
       renderEditCell: (props) => (
         <LookupSelectComponent
           {...props}
@@ -645,7 +658,7 @@ const ProjectFundingTable = () => {
       headerName: "Fund",
       field: "fund",
       width: 200,
-      renderCell: ({row}) =>
+      renderCell: ({ row }) =>
         !!row.fund?.fund_name ? (
           <>
             <Typography>{row.fund?.fund_id} |</Typography>
@@ -662,7 +675,7 @@ const ProjectFundingTable = () => {
       headerName: "Dept-unit",
       field: "dept_unit",
       width: 200,
-      renderCell: ({row}) => 
+      renderCell: ({ row }) =>
         !!row.dept_unit?.unit_long_name ? (
           <>
             <Typography>
@@ -684,7 +697,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Amount",
       field: "funding_amount",
-      renderCell: ({value}) => currencyFormatter.format(value),
+      renderCell: ({ value }) => currencyFormatter.format(value),
       editComponent: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
     },
@@ -883,29 +896,29 @@ const ProjectFundingTable = () => {
               }),
         }}
       />
-        <DataGridPro
-          sx={dataGridProStyleOverrides}
-          autoHeight
-          columns={dataGridColumns}
-          rows={data.moped_proj_funding}
-          getRowId={(row) => row.proj_funding_id}
-          editMode="row"
-          rowModesModel={rowModesModel}
-          onRowModesModelChange={handleRowModesModelChange}
-          processRowUpdate={processRowUpdate}
-          // toolbar
-          density="comfortable"
-          // disableRowSelectionOnClick
-          getRowHeight={() => "auto"}
-          hideFooter
-          localeText={{ noRowsLabel: "No funding sources" }}
-          // slots={{
-          //   toolbar: WorkActivityToolbar,
-          // }}
-          // slotProps={{
-          //   toolbar: { onClick: onClickAddActivity },
-          // }}
-        />
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        autoHeight
+        columns={dataGridColumns}
+        rows={data.moped_proj_funding}
+        getRowId={(row) => row.proj_funding_id}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        processRowUpdate={processRowUpdate}
+        // toolbar
+        density="comfortable"
+        // disableRowSelectionOnClick
+        getRowHeight={() => "auto"}
+        hideFooter
+        localeText={{ noRowsLabel: "No funding sources" }}
+        // slots={{
+        //   toolbar: WorkActivityToolbar,
+        // }}
+        // slotProps={{
+        //   toolbar: { onClick: onClickAddActivity },
+        // }}
+      />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}
