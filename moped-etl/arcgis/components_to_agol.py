@@ -15,7 +15,7 @@ from utils import (
     make_hasura_request,
     get_token,
     delete_all_features,
-    delete_features_by_project_id,
+    delete_features_by_project_ids,
     add_features,
     chunks,
     get_logger,
@@ -198,7 +198,7 @@ def main(args):
                 all_features["lines"].append(feature)
                 all_features["combined"].append(feature)
 
-        # Get project IDs that need to have features deleted & replaced
+        # Get unique project IDs that need to have features deleted & replaced
         project_ids = []
 
         for component in data:
@@ -206,13 +206,20 @@ def main(args):
 
         project_ids_for_feature_delete = list(set(project_ids))
 
-        # Adding updated features to AGOL
+        # Delete outdated feature from AGOL and add updated features
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
             logger.info(
-                f"Deleting all existing {feature_type} features for updated projects..."
+                f"Deleting all existing features in {feature_type} layer for updated projects..."
             )
-            delete_features_by_project_ids(feature_type, project_ids)
+            for delete_chunk in chunks(
+                project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
+            ):
+                joined_project_ids = ",".join(delete_chunk)
+                logger.info(
+                    f"Deleting features for project ids {joined_project_ids}..."
+                )
+                delete_features_by_project_ids(feature_type, delete_chunk)
 
             features = all_features[feature_type]
 
@@ -242,12 +249,8 @@ if __name__ == "__main__":
         help=f"Delete and replace all project components.",
     )
 
-    parser.add_argument("-t", "--test", action="store_true")
-
     args = parser.parse_args()
-
-    log_level = logging.DEBUG if args.test else logging.INFO
-    logger = get_logger(name="components-to-agol", level=log_level)
+    logger = get_logger(name="components-to-agol", level=logging.INFO)
 
     if args.full:
         logger.info(f"Starting sync. Replacing all projects' components data...")

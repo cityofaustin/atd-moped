@@ -127,11 +127,12 @@ def delete_features_by_project_ids(feature_type, project_ids):
         Exception: if the deletion failes
     """
     endpoint = get_endpoint("deleteFeatures", feature_type)
+    joined_project_ids = ",".join(project_ids)
     data = {
         "token": os.getenv("AGOL_TOKEN"),
         "f": "json",
-        "where": f"project_id in {", ".join(project_ids)}",
-        "returnDeleteResults": False
+        "where": f"project_id IN ({joined_project_ids})",
+        "returnDeleteResults": False,
     }
     res = resilient_layer_request(endpoint, data=data)
     response_data = res.json()
