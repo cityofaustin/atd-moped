@@ -147,15 +147,6 @@ const useFdusArray = (projectFunding) =>
     );
   }, [projectFunding]);
 
-//  /** Hook that provides memoized column settings */
-//  // const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
-//   const useColumns = ({ getLookupValueByID }) =>
-//    useMemo(() => {
-//      return [
-//       {
-//     ];
-//   }, []);
-//   //}, [deleteInProgress, onDeleteActivity, setEditActivity]);
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -261,14 +252,8 @@ const ProjectFundingTable = () => {
     }, {});
   };
 
-  /**
-   * Component for autocomplete using a lookup table as options
-   * @param {*} props
-   * @returns {React component}
-   */
-  const LookupAutocompleteComponent = (props) => {
-    console.log(props);
 
+  const LookupAutocompleteComponent = (props) => {
     const { id, value, field } = props;
     const apiRef = useGridApiContext();
     const ref = React.useRef(null);
@@ -305,24 +290,29 @@ const ProjectFundingTable = () => {
           value[`${props.name}_name`] === option
         }
         onChange={handleChange}
-        // onChange={(e, value) => {
-        //   value
-        //     ? props.onChange(value[`${props.name}_id`])
-        //     : props.onChange(null);
-        // }}
       />
     );
   };
 
-  /**
-   * Autocomplete component for Funds
-   * @param {*} props
-   * @returns {React component}
-   */
-  const FundAutocompleteComponent = (props) => (
+
+  const FundAutocompleteComponent = (props) => {
+    const { id, value, field } = props;
+    const apiRef = useGridApiContext();
+    const ref = React.useRef(null);
+
+    const handleChange = (event, newValue) => {
+      apiRef.current.setEditCellValue({
+        id,
+        field,
+        value: newValue ?? null,
+      });
+    };
+
+  return (
     <Autocomplete
       className={classes.fundSelectStyle}
-      value={props.value ? props.value : null}
+      ref={ref}
+      value={value ?? null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
       id={"moped_funds"}
@@ -337,11 +327,10 @@ const ProjectFundingTable = () => {
       isOptionEqualToValue={(value, option) =>
         value.fund_id === option.fund_id && value.fund_name === option.fund_name
       }
-      onChange={(e, value) => {
-        value ? props.onChange(value) : props.onChange(null);
-      }}
+      onChange={handleChange}
     />
   );
+}
 
   /**
    * Return Snackbar state to default, closed state
@@ -658,6 +647,7 @@ const ProjectFundingTable = () => {
       headerName: "Fund",
       field: "fund",
       width: 200,
+      editable: true,
       renderCell: ({ row }) =>
         !!row.fund?.fund_name ? (
           <>
@@ -667,7 +657,7 @@ const ProjectFundingTable = () => {
         ) : (
           ""
         ),
-      editComponent: (props) => (
+      renderEditCell: (props) => (
         <FundAutocompleteComponent {...props} data={data.moped_funds} />
       ),
     },
