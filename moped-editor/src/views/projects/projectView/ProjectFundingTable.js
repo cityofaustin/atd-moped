@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 
@@ -192,6 +192,7 @@ const ProjectFundingTable = () => {
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [rows, setRows] = useState(data?.moped_proj_funding);
   const [rowModesModel, setRowModesModel] = useState({});
 
   const handleSubprojectDialogClose = () => {
@@ -202,8 +203,16 @@ const ProjectFundingTable = () => {
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
   const handleRowModesModelChange = (newRowModesModel) => {
+    console.log("handle")
     setRowModesModel(newRowModesModel);
   };
+
+  
+  useEffect(() => {
+    if (data && data.moped_proj_funding.length > 0) {
+      setRows(data.moped_proj_funding);
+    }
+  }, [data]);
 
   if (loading || !data) return <CircularProgress />;
 
@@ -339,6 +348,38 @@ const ProjectFundingTable = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
+  const handleAddRecordClick = () => {
+    const id = Math.floor(Math.random() * 10000);
+    console.log(id)
+    setRows((oldRows) => {
+      console.log(oldRows)
+      return ([
+      ...oldRows,
+      {
+        funding_source_id: null,
+        funding_program_id: null,
+        funding_description: null,
+        funding_status_id: null,
+        fund: null,
+        dept_unit: null,
+        funding_amount: null,
+        isNew: true,
+      },
+    ])});
+    setRowModesModel((oldModel) => {
+      console.log(oldModel, id)
+      const newthing = {
+        ...oldModel,
+        [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
+      }
+      console.log(newthing)
+    //   return ({
+    //   ...oldModel,
+    //   [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
+    // })});
+    return newthing; })
+  };
+
   const handleEditClick = (id) => () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
@@ -348,8 +389,7 @@ const ProjectFundingTable = () => {
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log("delete ", id);
-    // setRows(rows.filter((row) => row.id !== id));
+    setRows(rows.filter((row) => row.id !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -358,15 +398,14 @@ const ProjectFundingTable = () => {
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
 
-    // const editedRow = rows.find((row) => row.id === id);
-    // if (editedRow.isNew) {
-    //   setRows(rows.filter((row) => row.id !== id));
-    // }
+    const editedRow = rows.find((row) => row.id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
   };
 
   const processRowUpdate = (updatedRow, originalRow) => {
-    console.log(updatedRow, originalRow);
-
+    console.log("process row update");
     const updateProjectFundingData = updatedRow;
 
     // Remove unexpected variables
@@ -537,12 +576,10 @@ const ProjectFundingTable = () => {
       editable: false,
       type: "actions",
       getActions: ({ id }) => {
-        console.log(id);
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
         if (deleteInProgress) {
           return <CircularProgress color="primary" size={20} />;
         } else if (isInEditMode) {
-          console.log("what");
           return [
             <GridActionsCellItem
               icon={<CheckIcon />}
@@ -553,7 +590,7 @@ const ProjectFundingTable = () => {
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
-              icon={<CloseIcon />} // x icon
+              icon={<CloseIcon />}
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelClick(id)}
@@ -906,11 +943,11 @@ const ProjectFundingTable = () => {
           }}
           slotProps={{
             toolbar: {
-              onClick: () => console.log("click"),
+              onClick: handleAddRecordClick,
               projectId: projectId,
               eCaprisID: eCaprisID,
-              data:data,
-              refetch:refetch,
+              data: data,
+              refetch: refetch,
               snackbarHandle: snackbarHandle,
               classes: classes,
               noWrapper: true,
