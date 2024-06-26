@@ -9,6 +9,7 @@ import {
   Snackbar,
   TextField,
   Typography,
+  Box,
 } from "@mui/material";
 import { Alert, Autocomplete } from "@mui/material";
 import {
@@ -50,6 +51,7 @@ import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProject
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
+import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
@@ -146,7 +148,6 @@ const useFdusArray = (projectFunding) =>
         `${record.fund?.fund_id} ${record.dept_unit?.dept} ${record.dept_unit?.unit}`
     );
   }, [projectFunding]);
-
 
 const ProjectFundingTable = () => {
   /** addAction Ref - mutable ref object used to access add action button
@@ -252,7 +253,6 @@ const ProjectFundingTable = () => {
     }, {});
   };
 
-
   const LookupAutocompleteComponent = (props) => {
     const { id, value, field } = props;
     const apiRef = useGridApiContext();
@@ -294,7 +294,6 @@ const ProjectFundingTable = () => {
     );
   };
 
-
   const FundAutocompleteComponent = (props) => {
     const { id, value, field } = props;
     const apiRef = useGridApiContext();
@@ -308,29 +307,30 @@ const ProjectFundingTable = () => {
       });
     };
 
-  return (
-    <Autocomplete
-      className={classes.fundSelectStyle}
-      ref={ref}
-      value={value ?? null}
-      // use customized popper component so menu expands to fullwidth
-      PopperComponent={CustomPopper}
-      id={"moped_funds"}
-      options={props.data}
-      renderInput={(params) => <TextField variant="standard" {...params} />}
-      getOptionLabel={(option) =>
-        // if our value is a string, just return the string
-        typeof option === "string"
-          ? option
-          : `${option.fund_id} | ${option.fund_name}`
-      }
-      isOptionEqualToValue={(value, option) =>
-        value.fund_id === option.fund_id && value.fund_name === option.fund_name
-      }
-      onChange={handleChange}
-    />
-  );
-}
+    return (
+      <Autocomplete
+        className={classes.fundSelectStyle}
+        ref={ref}
+        value={value ?? null}
+        // use customized popper component so menu expands to fullwidth
+        PopperComponent={CustomPopper}
+        id={"moped_funds"}
+        options={props.data}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
+        getOptionLabel={(option) =>
+          // if our value is a string, just return the string
+          typeof option === "string"
+            ? option
+            : `${option.fund_id} | ${option.fund_name}`
+        }
+        isOptionEqualToValue={(value, option) =>
+          value.fund_id === option.fund_id &&
+          value.fund_name === option.fund_name
+        }
+        onChange={handleChange}
+      />
+    );
+  };
 
   /**
    * Return Snackbar state to default, closed state
@@ -585,9 +585,7 @@ const ProjectFundingTable = () => {
       editable: true,
       renderCell: ({ value }) =>
         getLookupValueByID("moped_fund_sources", "funding_source", value),
-      renderEditCell: (
-        props
-      ) => (
+      renderEditCell: (props) => (
         <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
@@ -886,29 +884,41 @@ const ProjectFundingTable = () => {
               }),
         }}
       />
-      <DataGridPro
-        sx={dataGridProStyleOverrides}
-        autoHeight
-        columns={dataGridColumns}
-        rows={data.moped_proj_funding}
-        getRowId={(row) => row.proj_funding_id}
-        editMode="row"
-        rowModesModel={rowModesModel}
-        onRowModesModelChange={handleRowModesModelChange}
-        processRowUpdate={processRowUpdate}
-        // toolbar
-        density="comfortable"
-        // disableRowSelectionOnClick
-        getRowHeight={() => "auto"}
-        hideFooter
-        localeText={{ noRowsLabel: "No funding sources" }}
-        // slots={{
-        //   toolbar: WorkActivityToolbar,
-        // }}
-        // slotProps={{
-        //   toolbar: { onClick: onClickAddActivity },
-        // }}
-      />
+      <Box my={4}>
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          autoHeight
+          columns={dataGridColumns}
+          rows={data.moped_proj_funding}
+          getRowId={(row) => row.proj_funding_id}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          processRowUpdate={processRowUpdate}
+          toolbar
+          density="comfortable"
+          // disableRowSelectionOnClick
+          getRowHeight={() => "auto"}
+          hideFooter
+          localeText={{ noRowsLabel: "No funding sources" }}
+          slots={{
+            toolbar: ProjectFundingToolbar,
+          }}
+          slotProps={{
+            toolbar: {
+              onClick: () => console.log("click"),
+              projectId: projectId,
+              eCaprisID: eCaprisID,
+              data:data,
+              refetch:refetch,
+              snackbarHandle: snackbarHandle,
+              classes: classes,
+              noWrapper: true,
+              setIsDialogOpen: setIsDialogOpen,
+            },
+          }}
+        />
+      </Box>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}
