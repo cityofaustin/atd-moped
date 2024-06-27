@@ -117,7 +117,7 @@ def delete_all_features(feature_type):
 
 
 def delete_features_by_project_ids(feature_type, project_ids):
-    """Deletes all features from an arcgis online feature service.
+    """Deletes features from an arcgis online feature service associated with projects in a list ids.
 
     Args:
         feature_type (Str): the feature type we're adding: "points" or "lines"
@@ -218,7 +218,6 @@ def get_token():
         "referer": "http://www.arcgis.com",
         "f": "pjson",
     }
-    print(data)
     res = requests.post(url, data=data)
     res.raise_for_status()
     # like all the Esri REST endpoints this endpoint returns 200 where you would expect

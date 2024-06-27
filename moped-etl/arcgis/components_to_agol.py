@@ -7,7 +7,6 @@ from datetime import datetime, timezone
 
 from process.logging import get_logger
 from settings import (
-    COMPONENTS_QUERY,
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
     UPLOAD_CHUNK_SIZE,
 )
@@ -70,9 +69,10 @@ def main(args):
 
     if args.full:
         logger.info("Getting component features from all projects...")
-        data = make_hasura_request(query=COMPONENTS_QUERY)[
-            "component_arcgis_online_view"
-        ]
+        data = make_hasura_request(
+            query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+            variables={"where": {project_updated_at: {_gt: args.date}}},
+        )["component_arcgis_online_view"]
 
         # lines and points must be stored in different layers in AGOL
         all_features = {"lines": [], "points": [], "combined": []}
@@ -139,7 +139,7 @@ def main(args):
         logger.info("Getting component features from recently updated projects...")
         data = make_hasura_request(
             query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-            variables={"lastRunDate": args.date},
+            variables={"where": {"project_updated_at": {"_gt": args.date}}},
         )["component_arcgis_online_view"]
 
         # lines and points must be stored in different layers in AGOL
@@ -207,11 +207,11 @@ def main(args):
             for delete_chunk in chunks(
                 project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
             ):
-                joined_project_ids = ",".join(delete_chunk)
+                joined_project_ids = ", ".join(str(x) for x in delete_chunk)
                 logger.info(
-                    f"Deleting features for project ids {joined_project_ids}..."
+                    f"Deleting {len(project_ids_for_feature_delete)} features with project ids {joined_project_ids} in chunks of {UPLOAD_CHUNK_SIZE}..."
                 )
-                delete_features_by_project_ids(feature_type, delete_chunk)
+                # delete_features_by_project_ids(feature_type, delete_chunk)
 
             features = all_features[feature_type]
 
@@ -220,8 +220,10 @@ def main(args):
             )
             for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                 logger.info("Uploading chunk....")
-                add_features(feature_type, feature_chunk)
+                # add_features(feature_type, feature_chunk)
 
+
+# TODO: Combine gql queries to use bool exp for full or last update date, see https://stackoverflow.com/a/68408384
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -230,7 +232,7 @@ if __name__ == "__main__":
         "-d",
         "--date",
         type=str,
-        default=datetime.now(timezone.utc).isoformat(),
+        default=None,
         help=f"ISO date string of latest updated_at value to find project records to update.",
     )
 
