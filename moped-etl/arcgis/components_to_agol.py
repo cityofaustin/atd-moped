@@ -71,7 +71,7 @@ def main(args):
         logger.info("Getting component features from all projects...")
         data = make_hasura_request(
             query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-            variables={"where": {project_updated_at: {_gt: args.date}}},
+            variables={"where": {}},
         )["component_arcgis_online_view"]
 
         # lines and points must be stored in different layers in AGOL
@@ -220,10 +220,8 @@ def main(args):
             )
             for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                 logger.info("Uploading chunk....")
-                # add_features(feature_type, feature_chunk)
+                add_features(feature_type, feature_chunk)
 
-
-# TODO: Combine gql queries to use bool exp for full or last update date, see https://stackoverflow.com/a/68408384
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
