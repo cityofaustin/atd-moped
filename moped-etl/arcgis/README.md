@@ -19,10 +19,16 @@ The AGOL layers can be found here:
 
 2. Create and activate a Python environment that meets the requirments in `requirements.txt`. Alternatively, you can use the provided Dockerfile.
  
-3. Run the script.
+3. Run the script
+
+If you want to fully replace the dataset:
 
 ```shell
-$ python components_to_agol.py
+$ python components_to_agol.py -f
+```
+Or, if you want to replace only data updated since a timestamp with time zone:
+```shell
+$ python components_to_agol.py -d <timestamptz>
 ```
 
 or, to mount your local copy to a Docker container
