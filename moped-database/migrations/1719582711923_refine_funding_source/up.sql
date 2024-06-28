@@ -23,6 +23,40 @@ funding_sources_lookup AS (
     GROUP BY mpf_1.project_id
 ),
 
+funding_source_and_program_lookup AS (
+    SELECT
+        moped_proj_funding.project_id,
+        string_agg(
+            DISTINCT
+            CASE -- this case is here because we can't count on having a program name for every source.
+                WHEN moped_fund_sources.funding_source_name IS NOT null AND moped_fund_programs.funding_program_name IS NOT null
+                    THEN concat(moped_fund_sources.funding_source_name, ' - ', moped_fund_programs.funding_program_name)
+                WHEN moped_fund_sources.funding_source_name IS NOT null
+                    THEN moped_fund_sources.funding_source_name
+            END,
+            ', '
+            ORDER BY
+                CASE
+                    WHEN moped_fund_sources.funding_source_name IS NOT null AND moped_fund_programs.funding_program_name IS NOT null
+                        THEN concat(moped_fund_sources.funding_source_name, ' - ', moped_fund_programs.funding_program_name)
+                    WHEN moped_fund_sources.funding_source_name IS NOT null
+                        THEN moped_fund_sources.funding_source_name
+                END
+        ) AS funding_source_and_program_names
+    FROM
+        moped_proj_funding
+    LEFT JOIN
+        moped_fund_sources
+        ON moped_proj_funding.funding_source_id = moped_fund_sources.funding_source_id
+    LEFT JOIN
+        moped_fund_programs
+        ON moped_proj_funding.funding_program_id = moped_fund_programs.funding_program_id
+    WHERE
+        moped_proj_funding.is_deleted = false
+    GROUP BY
+        moped_proj_funding.project_id
+),
+
 project_type_lookup AS (
     SELECT
         mpt.project_id,
@@ -202,6 +236,7 @@ SELECT
         WHERE true AND components.is_deleted = false AND components.project_id = mp.project_id AND feature_signals.signal_id IS NOT null AND feature_signals.is_deleted = false
     ) AS project_feature,
     fsl.funding_source_name,
+    funding_source_and_program_lookup.funding_source_and_program_names,
     ptl.type_name,
     (
         SELECT min(phases.phase_start) AS min
@@ -250,6 +285,7 @@ SELECT
 FROM moped_project AS mp
 LEFT JOIN project_person_list_lookup AS ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup AS fsl ON mp.project_id = fsl.project_id
+LEFT JOIN funding_source_and_program_lookup ON mp.project_id = funding_source_and_program_lookup.project_id
 LEFT JOIN project_type_lookup AS ptl ON mp.project_id = ptl.project_id
 LEFT JOIN moped_entity AS me ON mp.project_sponsor = me.entity_id
 LEFT JOIN moped_entity AS mel ON mp.project_lead_id = mel.entity_id
@@ -274,7 +310,7 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) AS proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, funding_source_and_program_lookup.funding_source_and_program;
 
 
 
