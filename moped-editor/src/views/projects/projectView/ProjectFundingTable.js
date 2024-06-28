@@ -30,6 +30,7 @@ import {
   GridRowModes,
   GridActionsCellItem,
   useGridApiContext,
+  useGridApiRef,
 } from "@mui/x-data-grid-pro";
 import typography from "../../../theme/typography";
 
@@ -155,6 +156,7 @@ const ProjectFundingTable = () => {
    * @type {object} addActionRef
    * */
   const addActionRef = React.useRef();
+  const apiRef = useGridApiRef();
 
   const classes = useStyles();
 
@@ -352,10 +354,10 @@ const ProjectFundingTable = () => {
     const id = Math.floor(Math.random() * 10000);
     console.log(id)
     setRows((oldRows) => {
-      console.log(oldRows)
       return ([
       ...oldRows,
       {
+        id,
         funding_source_id: null,
         funding_program_id: null,
         funding_description: null,
@@ -365,22 +367,20 @@ const ProjectFundingTable = () => {
         funding_amount: null,
         isNew: true,
       },
-    ])});
+    ])
+  });
     setRowModesModel((oldModel) => {
-      console.log(oldModel, id)
-      const newthing = {
-        ...oldModel,
-        [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
-      }
-      console.log(newthing)
-    //   return ({
-    //   ...oldModel,
-    //   [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
-    // })});
-    return newthing; })
+      const currentModel = apiRef.current.getRowModels()
+      return ({
+      ...currentModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
+    })});
+    console.log(apiRef.current.getRowModels())
   };
 
   const handleEditClick = (id) => () => {
+    console.log("handle edit")
+    console.log(apiRef.current.getRowModels())
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
@@ -399,6 +399,7 @@ const ProjectFundingTable = () => {
     });
 
     const editedRow = rows.find((row) => row.id === id);
+    console.log(editedRow)
     if (editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
@@ -441,6 +442,11 @@ const ProjectFundingTable = () => {
         })
     );
   };
+
+  const handleRowEditStop = (params, event) => {
+    console.log(params, event)
+
+  }
 
   /**
    * Column configuration for <MaterialTable>
@@ -924,6 +930,7 @@ const ProjectFundingTable = () => {
       <Box my={4}>
         <DataGridPro
           sx={dataGridProStyleOverrides}
+          apiRef={apiRef}
           autoHeight
           columns={dataGridColumns}
           rows={data.moped_proj_funding}
@@ -931,6 +938,7 @@ const ProjectFundingTable = () => {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
+          onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
           toolbar
           density="comfortable"
