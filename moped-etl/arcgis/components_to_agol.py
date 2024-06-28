@@ -169,16 +169,14 @@ def main(args):
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
             logger.info(
-                f"Deleting all existing features in {feature_type} layer for updated projects..."
+                f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
             for delete_chunk in chunks(
                 project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
             ):
                 joined_project_ids = ", ".join(str(x) for x in delete_chunk)
-                logger.info(
-                    f"Deleting {len(project_ids_for_feature_delete)} features with project ids {joined_project_ids} in chunks of {UPLOAD_CHUNK_SIZE}..."
-                )
-                delete_features_by_project_ids(feature_type, delete_chunk)
+                logger.info(f"Deleting features with project ids {joined_project_ids}")
+                delete_features_by_project_ids(feature_type, joined_project_ids)
 
             features = all_features[feature_type]
 
