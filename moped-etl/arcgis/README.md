@@ -26,7 +26,7 @@ If you want to fully replace the dataset:
 ```shell
 $ python components_to_agol.py -f
 ```
-Or, if you want to replace only data updated since a timestamp with time zone:
+Or, if you want to replace only data updated since a timestamp with time zone offset:
 ```shell
 $ python components_to_agol.py -d <timestamptz>
 ```

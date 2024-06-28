@@ -196,7 +196,7 @@ if __name__ == "__main__":
         "--date",
         type=str,
         default=None,
-        help=f"ISO date string of latest updated_at value to find project records to update.",
+        help=f"ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update.",
     )
 
     parser.add_argument(
@@ -210,7 +210,9 @@ if __name__ == "__main__":
     logger = get_logger(name="components-to-agol", level=logging.INFO)
 
     if args.date and args.full:
-        raise Exception("Please provide either a date or the full flag and not both.")
+        raise Exception(
+            "Please provide either the -d flag with ISO date string with TZ offset or the -f flag and not both."
+        )
 
     if args.full:
         logger.info(f"Starting sync. Replacing all projects' components data...")
