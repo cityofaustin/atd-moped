@@ -126,15 +126,23 @@ def main(args):
     logger.info("Getting token...")
     get_token()
 
+    variables = (
+        {"where": {}}
+        if args.full
+        else {"where": {"project_updated_at": {"_gt": args.date}}}
+    )
+
+    logger.info(
+        f"Getting {'all' if args.full else 'recently updated'} component features from all projects..."
+    )
+    data = make_hasura_request(
+        query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+        variables=variables,
+    )["component_arcgis_online_view"]
+
+    all_features = make_all_features(data)
+
     if args.full:
-        logger.info("Getting component features from all projects...")
-        data = make_hasura_request(
-            query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-            variables={"where": {}},
-        )["component_arcgis_online_view"]
-
-        all_features = make_all_features(data)
-
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
             features = all_features[feature_type]
@@ -149,14 +157,6 @@ def main(args):
                 logger.info("Uploading chunk....")
                 add_features(feature_type, feature_chunk)
     else:
-        logger.info("Getting component features from recently updated projects...")
-        data = make_hasura_request(
-            query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-            variables={"where": {"project_updated_at": {"_gt": args.date}}},
-        )["component_arcgis_online_view"]
-
-        all_features = make_all_features(data)
-
         # Get unique project IDs that need to have features deleted & replaced
         project_ids = []
 
