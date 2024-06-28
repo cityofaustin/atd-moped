@@ -178,7 +178,7 @@ def main(args):
                 logger.info(
                     f"Deleting {len(project_ids_for_feature_delete)} features with project ids {joined_project_ids} in chunks of {UPLOAD_CHUNK_SIZE}..."
                 )
-                # delete_features_by_project_ids(feature_type, delete_chunk)
+                delete_features_by_project_ids(feature_type, delete_chunk)
 
             features = all_features[feature_type]
 
