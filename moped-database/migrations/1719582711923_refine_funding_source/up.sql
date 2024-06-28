@@ -16,9 +16,9 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 funding_sources_lookup AS (
     SELECT
         mpf_1.project_id,
-        string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
-    FROM moped_proj_funding mpf_1
-    LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
+        string_agg(DISTINCT mfs.funding_source_name, ', ' ORDER BY mfs.funding_source_name) AS funding_source_name
+    FROM moped_proj_funding AS mpf_1
+    LEFT JOIN moped_fund_sources AS mfs ON mpf_1.funding_source_id = mfs.funding_source_id
     WHERE mpf_1.is_deleted = false
     GROUP BY mpf_1.project_id
 ),
