@@ -63,6 +63,65 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
+def make_all_features(data):
+    """Take a list of component feature records and create Esri feature objects for lines, points, and combined layers in AGOL.
+
+    Args:
+        data (dict): a list of component feature records
+
+    Returns:
+        dict: An object with lists of Esri feature objects for lines, points, and combined layers
+    """
+    all_features = {"lines": [], "points": [], "combined": []}
+
+    logger.info("Building Esri feature objects...")
+    for component in data:
+        # extract geometry and line geometry from component data
+        # for line features, the line geometry is redundant/identical to geometry
+        # for point features, it is the buffered ring around the point as defined
+        # in the Moped component view
+        geometry = component.pop("geometry")
+        line_geometry = component.pop("line_geometry")
+
+        if not geometry:
+            continue
+
+        esri_geometry_key = get_esri_geometry_key(geometry)
+        feature = make_esri_feature(
+            esri_geometry_key=esri_geometry_key,
+            geometry=geometry,
+            attributes=component,
+        )
+
+        # adds a special `source_geometry_type` column that will be useful on the `combined` layer
+        # so that we can keep track of if the original feature was a point or line geometry
+        feature["attributes"]["source_geometry_type"] = (
+            "point" if esri_geometry_key == "points" else "line"
+        )
+
+        if not feature:
+            continue
+
+        if esri_geometry_key == "points":
+            all_features["points"].append(feature)
+            # create the point -> line feature
+            if line_geometry["type"] == "LineString":
+                # if we're converting a single point to a line, we need to convert that line geom to
+                # a multi-line geometry
+                line_geometry["coordinates"] = [line_geometry["coordinates"]]
+            line_feature = make_esri_feature(
+                esri_geometry_key="paths",
+                geometry=line_geometry,
+                attributes=component,
+            )
+            all_features["combined"].append(line_feature)
+        else:
+            all_features["lines"].append(feature)
+            all_features["combined"].append(feature)
+
+    return all_features
+
+
 def main(args):
     logger.info("Getting token...")
     get_token()
@@ -74,53 +133,7 @@ def main(args):
             variables={"where": {}},
         )["component_arcgis_online_view"]
 
-        # lines and points must be stored in different layers in AGOL
-        all_features = {"lines": [], "points": [], "combined": []}
-
-        logger.info("Building Esri feature objects...")
-        for component in data:
-            # extract geometry and line geometry from component data
-            # for line features, the line geometry is redundant/identical to geometry
-            # for point features, it is the buffered ring around the point as defined
-            # in the Moped component view
-            geometry = component.pop("geometry")
-            line_geometry = component.pop("line_geometry")
-
-            if not geometry:
-                continue
-
-            esri_geometry_key = get_esri_geometry_key(geometry)
-            feature = make_esri_feature(
-                esri_geometry_key=esri_geometry_key,
-                geometry=geometry,
-                attributes=component,
-            )
-
-            # adds a special `source_geometry_type` column that will be useful on the `combined` layer
-            # so that we can keep track of if the original feature was a point or line geometry
-            feature["attributes"]["source_geometry_type"] = (
-                "point" if esri_geometry_key == "points" else "line"
-            )
-
-            if not feature:
-                continue
-
-            if esri_geometry_key == "points":
-                all_features["points"].append(feature)
-                # create the point -> line feature
-                if line_geometry["type"] == "LineString":
-                    # if we're converting a single point to a line, we need to convert that line geom to
-                    # a multi-line geometry
-                    line_geometry["coordinates"] = [line_geometry["coordinates"]]
-                line_feature = make_esri_feature(
-                    esri_geometry_key="paths",
-                    geometry=line_geometry,
-                    attributes=component,
-                )
-                all_features["combined"].append(line_feature)
-            else:
-                all_features["lines"].append(feature)
-                all_features["combined"].append(feature)
+        all_features = make_all_features(data)
 
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
@@ -142,53 +155,7 @@ def main(args):
             variables={"where": {"project_updated_at": {"_gt": args.date}}},
         )["component_arcgis_online_view"]
 
-        # lines and points must be stored in different layers in AGOL
-        all_features = {"lines": [], "points": [], "combined": []}
-
-        logger.info("Building Esri feature objects...")
-        for component in data:
-            # extract geometry and line geometry from component data
-            # for line features, the line geometry is redundant/identical to geometry
-            # for point features, it is the buffered ring around the point as defined
-            # in the Moped component view
-            geometry = component.pop("geometry")
-            line_geometry = component.pop("line_geometry")
-
-            if not geometry:
-                continue
-
-            esri_geometry_key = get_esri_geometry_key(geometry)
-            feature = make_esri_feature(
-                esri_geometry_key=esri_geometry_key,
-                geometry=geometry,
-                attributes=component,
-            )
-
-            # adds a special `source_geometry_type` column that will be useful on the `combined` layer
-            # so that we can keep track of if the original feature was a point or line geometry
-            feature["attributes"]["source_geometry_type"] = (
-                "point" if esri_geometry_key == "points" else "line"
-            )
-
-            if not feature:
-                continue
-
-            if esri_geometry_key == "points":
-                all_features["points"].append(feature)
-                # create the point -> line feature
-                if line_geometry["type"] == "LineString":
-                    # if we're converting a single point to a line, we need to convert that line geom to
-                    # a multi-line geometry
-                    line_geometry["coordinates"] = [line_geometry["coordinates"]]
-                line_feature = make_esri_feature(
-                    esri_geometry_key="paths",
-                    geometry=line_geometry,
-                    attributes=component,
-                )
-                all_features["combined"].append(line_feature)
-            else:
-                all_features["lines"].append(feature)
-                all_features["combined"].append(feature)
+        all_features = make_all_features(data)
 
         # Get unique project IDs that need to have features deleted & replaced
         project_ids = []
