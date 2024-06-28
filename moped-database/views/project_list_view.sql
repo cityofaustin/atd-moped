@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1718314926409_add_council_districts_searchable/up.sql
+-- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -15,7 +15,7 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 funding_sources_lookup AS (
     SELECT
         mpf_1.project_id,
-        string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
+        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name
     FROM moped_proj_funding mpf_1
     LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
     WHERE mpf_1.is_deleted = false
