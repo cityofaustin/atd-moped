@@ -169,7 +169,7 @@ def main(args):
         for feature_type in ["points", "lines", "combined"]:
             logger.info(f"Processing {feature_type} features...")
             logger.info(
-                f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+                f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
             for delete_chunk in chunks(
                 project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
