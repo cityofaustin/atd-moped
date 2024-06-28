@@ -99,7 +99,7 @@ def delete_all_features(feature_type):
         feature_type (Str): the feature type we're adding: "points" or "lines"
 
     Raises:
-        Exception: if the deletion failes
+        Exception: if the deletion fails
     """
     endpoint = get_endpoint("deleteFeatures", feature_type)
     data = {
@@ -124,7 +124,7 @@ def delete_features_by_project_ids(feature_type, project_ids):
         project_ids (List): the project ids to delete
 
     Raises:
-        Exception: if the deletion failes
+        Exception: if the deletion fails
     """
     endpoint = get_endpoint("deleteFeatures", feature_type)
     joined_project_ids = ",".join(project_ids)

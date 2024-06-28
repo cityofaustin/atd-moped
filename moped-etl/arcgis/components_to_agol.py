@@ -211,6 +211,9 @@ if __name__ == "__main__":
     args = parser.parse_args()
     logger = get_logger(name="components-to-agol", level=logging.INFO)
 
+    if args.date and args.full:
+        raise Exception("Please provide either a date or the full flag and not both.")
+
     if args.full:
         logger.info(f"Starting sync. Replacing all projects' components data...")
     else:
