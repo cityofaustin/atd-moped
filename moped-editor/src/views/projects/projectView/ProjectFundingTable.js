@@ -202,10 +202,11 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
+  console.log("row modes model", rowModesModel, "rows ", rows)
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    console.log("handle")
+    console.log("handle", newRowModesModel)
     setRowModesModel(newRowModesModel);
   };
 
@@ -366,16 +367,20 @@ const ProjectFundingTable = () => {
         dept_unit: null,
         funding_amount: null,
         isNew: true,
+        proj_funding_id: id,
       },
     ])
   });
     setRowModesModel((oldModel) => {
       const currentModel = apiRef.current.getRowModels()
+      console.log(currentModel, oldModel)
       return ({
-      ...currentModel,
+      ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
     })});
-    console.log(apiRef.current.getRowModels())
+    const row = apiRef.current.getRowNode(1087)
+    const rowNode = apiRef.current.getRowNode(334);
+    console.log(row, rowNode)
   };
 
   const handleEditClick = (id) => () => {
@@ -389,7 +394,7 @@ const ProjectFundingTable = () => {
   };
 
   const handleDeleteClick = (id) => () => {
-    setRows(rows.filter((row) => row.id !== id));
+    setRows(rows.filter((row) => row.proj_funding_id !== id));
   };
 
   const handleCancelClick = (id) => () => {
@@ -397,9 +402,7 @@ const ProjectFundingTable = () => {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    const editedRow = rows.find((row) => row.id === id);
-    console.log(editedRow)
+    const editedRow = rows.find((row) => row.proj_funding_id === id);
     if (editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
