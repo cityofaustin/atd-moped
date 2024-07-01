@@ -207,23 +207,23 @@ SELECT
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    IF current_phase.phase_name_simple = 'Complete' THEN 'Complete'
-        ELSIF mepd.min_phase_date IS NOT null THEN
-        CASE
-            WHEN current_phase.phase_name_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
-            ELSE 'Estimated End Date'
-        END
-        ELSIF (
-            SELECT min(phases.phase_start) AS min
+    CASE WHEN current_phase.phase_name_simple = 'Complete' THEN 'Complete'
+        WHEN mepd.min_phase_date IS NOT null
+            THEN
+                CASE
+                    WHEN current_phase.phase_name_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
+                    ELSE 'Estimated End Date'
+                END
+        WHEN (
+            SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
         ) IS NOT null THEN 'Estimated Public Meeting Date'
-        ELSIF(
-            SELECT min(phases.phase_start) AS min
+        WHEN (
+            SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
-        ) IS NOT null THEN 'Estimated Start of Project Development' 
-
+        ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
     '2024-01-01T00:00:00-06:00'::text AS project_development_status_date,
     9999 AS project_development_status_date_calendar_year,
