@@ -182,6 +182,7 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_name,
+    plv.funding_source_and_program_names,
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
