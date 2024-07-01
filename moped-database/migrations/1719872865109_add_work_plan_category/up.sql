@@ -218,11 +218,13 @@ SELECT
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            LIMIT 1
         ) IS NOT null THEN 'Estimated Public Meeting Date'
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
+            LIMIT 1
         ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
     '2024-01-01T00:00:00-06:00'::text AS project_development_status_date,
