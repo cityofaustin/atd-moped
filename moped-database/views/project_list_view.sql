@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1718314926409_add_council_districts_searchable/up.sql
+-- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -14,12 +14,29 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 
 funding_sources_lookup AS (
     SELECT
-        mpf_1.project_id,
-        string_agg(mfs.funding_source_name, ', '::text) AS funding_source_name
-    FROM moped_proj_funding mpf_1
-    LEFT JOIN moped_fund_sources mfs ON mpf_1.funding_source_id = mfs.funding_source_id
-    WHERE mpf_1.is_deleted = false
-    GROUP BY mpf_1.project_id
+        mpf.project_id,
+        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
+        string_agg(
+            DISTINCT
+            CASE
+                WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
+                ELSE null::text
+            END, ', '::text ORDER BY (
+                CASE
+                    WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
+                    WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                    WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
+                    ELSE null::text
+                END
+            )
+        ) AS funding_source_and_program_names
+    FROM moped_proj_funding mpf
+    LEFT JOIN moped_fund_sources mfs ON mpf.funding_source_id = mfs.funding_source_id
+    LEFT JOIN moped_fund_programs mfp ON mpf.funding_program_id = mfp.funding_program_id
+    WHERE mpf.is_deleted = false
+    GROUP BY mpf.project_id
 ),
 
 project_type_lookup AS (
@@ -201,6 +218,7 @@ SELECT
         WHERE true AND components.is_deleted = false AND components.project_id = mp.project_id AND feature_signals.signal_id IS NOT null AND feature_signals.is_deleted = false
     ) AS project_feature,
     fsl.funding_source_name,
+    fsl.funding_source_and_program_names,
     ptl.type_name,
     (
         SELECT min(phases.phase_start) AS min
@@ -273,4 +291,4 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
