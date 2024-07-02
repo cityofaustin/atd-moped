@@ -5328,6 +5328,7 @@
           - project_website
           - public_process_status
           - substantial_completion_date
+          - substantial_completion_date_estimated
           - task_order_names
           - task_order_names_short
           - task_orders
@@ -5387,6 +5388,7 @@
           - project_website
           - public_process_status
           - substantial_completion_date
+          - substantial_completion_date_estimated
           - task_order_names
           - task_order_names_short
           - task_orders
@@ -5446,6 +5448,7 @@
           - project_website
           - public_process_status
           - substantial_completion_date
+          - substantial_completion_date_estimated
           - task_order_names
           - task_order_names_short
           - task_orders
