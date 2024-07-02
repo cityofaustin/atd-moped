@@ -21,11 +21,13 @@ funding_sources_lookup AS (
             CASE
                 WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                 WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                 ELSE null::text
             END, ', '::text ORDER BY (
                 CASE
                     WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                     WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                    WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                     ELSE null::text
                 END
             )
