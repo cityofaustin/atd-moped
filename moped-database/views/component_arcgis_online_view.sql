@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1718314926409_add_council_districts_searchable/up.sql
+-- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -182,6 +182,7 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_name,
+    plv.funding_source_and_program_names AS funding_sources,
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
