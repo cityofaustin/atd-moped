@@ -434,24 +434,6 @@ related_projects AS (
     LEFT JOIN moped_project AS cmp ON pmp.project_id = cmp.parent_project_id
     WHERE cmp.is_deleted = false
     GROUP BY pmp.project_id
-),
-
-min_phase_dates AS (
-    WITH min_dates AS (
-        SELECT
-            mpp.project_id,
-            min(mpp.phase_start) AS min_phase_start,
-            min(mpp.phase_end) AS min_phase_end
-        FROM moped_proj_phases AS mpp
-        LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
-        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
-        GROUP BY mpp.project_id
-    )
-
-    SELECT
-        min_dates.project_id,
-        least(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date
-    FROM min_dates
 )
 
 SELECT
@@ -543,5 +525,4 @@ LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.
 LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
 LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
-LEFT JOIN min_phase_dates AS mpd ON mpc.project_id = mpd.project_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
