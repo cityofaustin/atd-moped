@@ -30,6 +30,7 @@ query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
     ecapris_subproject_id
     feature_ids
     funding_source_name
+    funding_sources
     geometry
     interim_project_component_id
     interim_project_id
