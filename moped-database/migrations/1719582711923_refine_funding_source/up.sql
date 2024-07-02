@@ -24,6 +24,8 @@ funding_sources_lookup AS (
                     THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                 WHEN mfs.funding_source_name IS NOT null
                     THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null
+                    THEN mfp.funding_program_name
             END,
             ', '
             ORDER BY
@@ -32,6 +34,8 @@ funding_sources_lookup AS (
                         THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                     WHEN mfs.funding_source_name IS NOT null
                         THEN mfs.funding_source_name
+                    WHEN mfp.funding_program_name IS NOT null
+                        THEN mfp.funding_program_name
                 END
         ) AS funding_source_and_program_names
     FROM moped_proj_funding AS mpf
