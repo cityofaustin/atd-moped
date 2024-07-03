@@ -1,11 +1,11 @@
--- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
+DROP VIEW IF EXISTS component_arcgis_online_view;
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -13,8 +13,7 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
 council_districts AS (
     SELECT
         features.component_id AS project_component_id,
-        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
-        string_agg(DISTINCT lpad(features_council_districts.council_district_id::text, 2, '0'::text), ', '::text) AS council_districts_searchable
+        string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts
     FROM features_council_districts
     LEFT JOIN features ON features_council_districts.feature_id = features.id
     WHERE features.is_deleted = false
@@ -79,7 +78,7 @@ comp_geography AS (
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
-    ) feature_union
+    ) AS feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -87,8 +86,8 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM moped_proj_components_subcomponents mpcs
-    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    FROM moped_proj_components_subcomponents AS mpcs
+    LEFT JOIN moped_subcomponents AS ms ON mpcs.subcomponent_id = ms.subcomponent_id
     WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
@@ -97,39 +96,10 @@ component_tags AS (
     SELECT
         mpct.project_component_id,
         string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
-    FROM moped_proj_component_tags mpct
-    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    FROM moped_proj_component_tags AS mpct
+    LEFT JOIN moped_component_tags AS mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
-),
-
-related_projects AS (
-    SELECT
-        pmp.project_id,
-        concat_ws(', '::text, pmp.project_id, string_agg(cmp.project_id::text, ', '::text)) AS related_project_ids_with_self,
-        concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
-    FROM moped_project pmp
-    LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
-    WHERE cmp.is_deleted = false
-    GROUP BY pmp.project_id
-),
-
-min_phase_dates AS (
-    WITH min_dates AS (
-        SELECT
-            mpp.project_id,
-            min(mpp.phase_start) AS min_phase_start,
-            min(mpp.phase_end) AS min_phase_end
-        FROM moped_proj_phases mpp
-        LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
-        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
-        GROUP BY mpp.project_id
-    )
-
-    SELECT
-        min_dates.project_id,
-        least(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date
-    FROM min_dates
 )
 
 SELECT
@@ -141,7 +111,7 @@ SELECT
     comp_geography.line_geometry,
     comp_geography.signal_ids,
     council_districts.council_districts,
-    council_districts.council_districts_searchable,
+    'placeholder text'::text AS council_districts_searchable,
     NOT coalesce(council_districts.council_districts IS null OR council_districts.council_districts = ''::text, false) AS is_within_city_limits,
     comp_geography.length_feet_total,
     round(comp_geography.length_feet_total::numeric / 5280::numeric, 2) AS length_miles_total,
@@ -156,12 +126,12 @@ SELECT
     mpc.interim_project_component_id,
     mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
-    plv.substantial_completion_date_estimated,
+    '2024-01-01T00:00:00-06:00'::text AS substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
     plv.project_name,
-    plv.project_name_secondary,
-    plv.project_name_full,
+    plv.project_name_secondary AS project_name_secondary,
+    plv.project_name_full AS project_name_full,
     plv.project_description,
     plv.ecapris_subproject_id,
     plv.project_website,
@@ -182,7 +152,6 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_name,
-    plv.funding_source_and_program_names AS funding_sources,
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
@@ -197,8 +166,8 @@ SELECT
     plv.parent_project_name,
     plv.parent_project_url,
     plv.parent_project_name AS parent_project_name_full,
-    rp.related_project_ids_with_self AS related_project_ids,
-    rp.related_project_ids_searchable_with_self AS related_project_ids_searchable,
+    'placeholder text'::text AS related_project_ids,
+    'placeholder text'::text AS related_project_ids_searchable,
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
@@ -211,16 +180,14 @@ SELECT
     plv.project_development_status_date_fiscal_year,
     plv.project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
-FROM moped_proj_components mpc
+FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
-LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
-LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
-LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
-LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
-LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
-LEFT JOIN min_phase_dates mpd ON mpc.project_id = mpd.project_id
+LEFT JOIN project_list_view AS plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;

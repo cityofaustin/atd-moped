@@ -68,8 +68,9 @@ export function useUserApi() {
 const errorsToTranslate = {
   "value does not match regex '^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$'":
     "not a valid email format",
-  "value does not match regex '^[a-zA-Z0-9_-!@%^*~?.:&*()[]$]*$'":
-    "password must be at least 12 characters long, it must include at least one lowercase letter, one uppercase letter, one number, and one special character: _-!@%^~?.:&()[]$",
+  "value does not match regex '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$'":
+    "password must be at least 12 characters long, include at least one lowercase letter, one uppercase letter, one number, and one special character: _-!@%^~?.:&()[]$",
+  "min length is 8": "password is too short",
 };
 
 export const formatApiErrors = (errorsArray) =>
