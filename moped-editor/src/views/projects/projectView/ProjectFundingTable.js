@@ -217,7 +217,7 @@ const ProjectFundingTable = () => {
     }
   }, [data]);
 
-  if (loading || !data) return <CircularProgress />;
+  if (loading || !data || !rows ) return <CircularProgress />;
 
   /**
    * Get lookup value for a given table using a record ID and returning a name
@@ -358,7 +358,7 @@ const ProjectFundingTable = () => {
       return ([
       ...oldRows,
       {
-        id,
+       // id,
         funding_source_id: null,
         funding_program_id: null,
         funding_description: null,
@@ -379,7 +379,7 @@ const ProjectFundingTable = () => {
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
     })});
     const row = apiRef.current.getRowNode(1087)
-    const rowNode = apiRef.current.getRowNode(334);
+    const rowNode = apiRef.current.getRowNode(id);
     console.log(row, rowNode)
   };
 
@@ -936,7 +936,8 @@ const ProjectFundingTable = () => {
           apiRef={apiRef}
           autoHeight
           columns={dataGridColumns}
-          rows={data.moped_proj_funding}
+          rows={rows}
+          // rows={data.moped_proj_funding}
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
