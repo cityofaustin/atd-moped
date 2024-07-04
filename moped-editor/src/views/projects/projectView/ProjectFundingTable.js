@@ -205,7 +205,7 @@ const ProjectFundingTable = () => {
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    console.log("handle", newRowModesModel)
+    console.log("handle", newRowModesModel);
     setRowModesModel(newRowModesModel);
   };
 
@@ -215,7 +215,7 @@ const ProjectFundingTable = () => {
     }
   }, [data]);
 
-  if (loading || !data || !rows ) return <CircularProgress />;
+  if (loading || !data || !rows) return <CircularProgress />;
 
   /**
    * Get lookup value for a given table using a record ID and returning a name
@@ -381,29 +381,28 @@ const ProjectFundingTable = () => {
   };
 
   const handleDeleteClick = (id) => () => {
-    console.log("dleete click")
     setRows(rows.filter((row) => row.proj_funding_id !== id));
 
     const deletedRow = rows.find((row) => row.proj_funding_id === id);
     if (!deletedRow.isNew) {
-    deleteProjectFunding({
-      variables: {
-        proj_funding_id: id,
-      },
-    })
-      .then(() => refetch())
-      .catch((error) => {
-        setSnackbarState({
-          open: true,
-          message: (
-            <span>
-              There was a problem deleting funding. Error message:{" "}
-              {error.message}
-            </span>
-          ),
-          severity: "error",
-        });
+      deleteProjectFunding({
+        variables: {
+          proj_funding_id: id,
+        },
       })
+        .then(() => refetch())
+        .catch((error) => {
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                There was a problem deleting funding. Error message:{" "}
+                {error.message}
+              </span>
+            ),
+            severity: "error",
+          });
+        });
     }
   };
 
@@ -420,6 +419,10 @@ const ProjectFundingTable = () => {
 
   const processRowUpdate = (updatedRow, originalRow) => {
     console.log("process row update");
+    console.log(updatedRow, originalRow)
+    if (updatedRow.isNew) {
+      console.log("we have some issues")
+    }
     const updateProjectFundingData = updatedRow;
 
     // Remove unexpected variables
@@ -457,8 +460,21 @@ const ProjectFundingTable = () => {
   };
 
   const handleRowEditStop = (params, event) => {
-    console.log(params, event)
+    console.log("row edit stop")
+    console.log(params, event);
+  };
 
+  const handleProcessUpdateError = error => {
+    setSnackbarState({
+      open: true,
+      message: (
+        <span>
+          There was a problem updating funding. Error message:{" "}
+          {error.message}
+        </span>
+      ),
+      severity: "error",
+    });
   }
 
   /**
@@ -952,6 +968,7 @@ const ProjectFundingTable = () => {
           onRowModesModelChange={handleRowModesModelChange}
           onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessUpdateError}
           toolbar
           density="comfortable"
           // disableRowSelectionOnClick
