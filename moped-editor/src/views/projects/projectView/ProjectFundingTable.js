@@ -4,7 +4,6 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
-  Button,
   CircularProgress,
   Snackbar,
   TextField,
@@ -13,18 +12,12 @@ import {
 } from "@mui/material";
 import { Alert, Autocomplete } from "@mui/material";
 import {
-  AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import makeStyles from "@mui/styles/makeStyles";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar,
-} from "@material-table/core";
 import {
   DataGridPro,
   GridRowModes,
@@ -32,9 +25,6 @@ import {
   useGridApiContext,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
-import typography from "../../../theme/typography";
-
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import { currencyFormatter } from "../../../utils/numberFormatters";
 
 // Error Handler
@@ -48,12 +38,10 @@ import {
 } from "../../../queries/funding";
 
 import { getDatabaseId, useUser } from "../../../auth/user";
-import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
-import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
@@ -151,11 +139,6 @@ const useFdusArray = (projectFunding) =>
   }, [projectFunding]);
 
 const ProjectFundingTable = () => {
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
-  const addActionRef = React.useRef();
   const apiRef = useGridApiRef();
 
   const classes = useStyles();
@@ -183,9 +166,7 @@ const ProjectFundingTable = () => {
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
-  const [deleteProjectFunding, { loading: deleteInProgress }] = useMutation(
-    DELETE_PROJECT_FUNDING
-  );
+  const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
   const DEFAULT_SNACKBAR_STATE = {
     open: false,
@@ -248,20 +229,20 @@ const ProjectFundingTable = () => {
     });
   };
 
-  /**
-   * Lookup object formatted from GraphQL query data response into the
-   * shape that <MaterialTable> expects
-   * @param {array} arr - array of items from data object {ex: data.moped_fund_sources}
-   * @param {key} string - item attribute to return as key ex: "funding_source_id"
-   * @param {value} string - item attribute to return as value ex: "funding_source_name"
-   * @return {object} - object of key/pair values with lookup item id and name
-   */
-  const queryArrayToLookupObject = (arr, key, value) => {
-    return arr.reduce((obj, item) => {
-      obj[item[key]] = item[value];
-      return obj;
-    }, {});
-  };
+  // /**
+  //  * Lookup object formatted from GraphQL query data response into the
+  //  * shape that <MaterialTable> expects
+  //  * @param {array} arr - array of items from data object {ex: data.moped_fund_sources}
+  //  * @param {key} string - item attribute to return as key ex: "funding_source_id"
+  //  * @param {value} string - item attribute to return as value ex: "funding_source_name"
+  //  * @return {object} - object of key/pair values with lookup item id and name
+  //  */
+  // const queryArrayToLookupObject = (arr, key, value) => {
+  //   return arr.reduce((obj, item) => {
+  //     obj[item[key]] = item[value];
+  //     return obj;
+  //   }, {});
+  // };
 
   const LookupAutocompleteComponent = (props) => {
     const { id, value, field } = props;
@@ -419,12 +400,9 @@ const ProjectFundingTable = () => {
 
   const processRowUpdate = (updatedRow, originalRow) => {
     console.log("process row update");
-    console.log(updatedRow, originalRow)
-    if (updatedRow.isNew) {
-      console.log("we have some issues")
-    }
-    const updateProjectFundingData = updatedRow;
+    console.log(updatedRow, originalRow);
 
+    const updateProjectFundingData = updatedRow;
     // Remove unexpected variables
     delete updateProjectFundingData.__typename;
 
@@ -436,6 +414,51 @@ const ProjectFundingTable = () => {
         ? null
         : updateProjectFundingData.funding_description;
 
+    if (updatedRow.isNew) {
+      delete updateProjectFundingData.isNew;
+      delete updateProjectFundingData.id;
+      updateProjectFundingData.proj_funding_id = null;
+
+      return (
+      addProjectFunding({
+        variables: {
+          objects: {
+            ...updateProjectFundingData,
+            project_id: projectId,
+            // preventing empty strings from being saved
+            // funding_description:
+            //   !newData.funding_description ||
+            //   newData.funding_description.trim() === ""
+            //     ? null
+            //     : newData.funding_description,
+            // funding_amount:
+            //   !newData.funding_amount ||
+            //   newData.funding_amount.trim() === ""
+            //     ? null
+            //     : newData.funding_amount,
+            // If no new funding status is selected, the default should be used
+            funding_status_id: updateProjectFundingData.funding_status_id || 1,
+          },
+        },
+      })
+        .then(() => refetch())
+        // from the data grid docs:
+        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+        .then(() => updatedRow)
+        .catch((error) => {
+          setSnackbarState({
+            open: true,
+            message: (
+              <span>
+                There was a problem adding funding. Error message:{" "}
+                {error.message}
+              </span>
+            ),
+            severity: "error",
+          });
+        })
+      )
+    }
     return (
       updateProjectFunding({
         variables: updateProjectFundingData,
@@ -460,146 +483,21 @@ const ProjectFundingTable = () => {
   };
 
   const handleRowEditStop = (params, event) => {
-    console.log("row edit stop")
+    console.log("row edit stop");
     console.log(params, event);
   };
 
-  const handleProcessUpdateError = error => {
+  const handleProcessUpdateError = (error) => {
     setSnackbarState({
       open: true,
       message: (
         <span>
-          There was a problem updating funding. Error message:{" "}
-          {error.message}
+          There was a problem updating funding. Error message: {error.message}
         </span>
       ),
       severity: "error",
     });
-  }
-
-  /**
-   * Column configuration for <MaterialTable>
-   */
-  const columns = [
-    {
-      title: "Source",
-      field: "funding_source_id",
-      render: (row) =>
-        getLookupValueByID(
-          "moped_fund_sources",
-          "funding_source",
-          row.funding_source_id
-        ),
-      lookup: queryArrayToLookupObject(
-        data.moped_fund_sources,
-        "funding_source_id",
-        "funding_source_name"
-      ),
-      editComponent: (props) => (
-        <LookupAutocompleteComponent
-          {...props}
-          name={"funding_source"}
-          lookupTableName={"moped_fund_sources"}
-          data={data.moped_fund_sources}
-        />
-      ),
-    },
-    {
-      title: "Program",
-      field: "funding_program_id",
-      render: (row) =>
-        getLookupValueByID(
-          "moped_fund_programs",
-          "funding_program",
-          row.funding_program_id
-        ),
-      editComponent: (props) => (
-        <LookupAutocompleteComponent
-          {...props}
-          name={"funding_program"}
-          lookupTableName={"moped_fund_programs"}
-          data={data.moped_fund_programs}
-        />
-      ),
-    },
-    {
-      title: "Description",
-      field: "funding_description",
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="funding_description"
-          name="funding_description"
-          multiline
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Status",
-      field: "funding_status_id",
-      render: (row) =>
-        getLookupValueByID(
-          "moped_fund_status",
-          "funding_status",
-          row.funding_status_id
-        ),
-      editComponent: (props) => (
-        <LookupSelectComponent
-          {...props}
-          name={"funding_status"}
-          defaultValue={1}
-          data={data.moped_fund_status}
-        />
-      ),
-    },
-    {
-      title: "Fund",
-      field: "fund",
-      render: (entry) =>
-        !!entry.fund?.fund_name ? (
-          <>
-            <Typography>{entry.fund?.fund_id} |</Typography>
-            <Typography>{entry.fund?.fund_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
-      editComponent: (props) => (
-        <FundAutocompleteComponent {...props} data={data.moped_funds} />
-      ),
-    },
-    {
-      title: "Dept-unit",
-      field: "dept_unit",
-      render: (entry) =>
-        !!entry.dept_unit?.unit_long_name ? (
-          <>
-            <Typography>
-              {entry.dept_unit?.dept} | {entry.dept_unit?.unit} |
-            </Typography>
-            <Typography>{entry.dept_unit?.unit_long_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
-      editComponent: (props) => (
-        <FundingDeptUnitAutocomplete
-          classes={classes.deptAutocomplete}
-          props={props}
-          value={props.value}
-        />
-      ),
-    },
-    {
-      title: "Amount",
-      field: "funding_amount",
-      render: (row) => currencyFormatter.format(row.funding_amount),
-      editComponent: (props) => <DollarAmountIntegerField {...props} />,
-      type: "currency",
-    },
-  ];
+  };
 
   const dataGridColumns = [
     {
@@ -684,18 +582,6 @@ const ProjectFundingTable = () => {
       field: "funding_description",
       width: 200,
       editable: true,
-      // renderEditCell: (props) => {
-      //   console.log(props)
-      //   return (
-      //   <TextField
-      //     variant="standard"
-      //     id="funding_description"
-      //     name="funding_description"
-      //     multiline
-      //     value={props.value}
-      //     onChange={(e) => props.onChange(e.target.value)}
-      //   />
-      // )},
     },
     {
       headerName: "Status",
@@ -765,195 +651,6 @@ const ProjectFundingTable = () => {
 
   return (
     <ApolloErrorHandler errors={error}>
-      <MaterialTable
-        columns={columns}
-        components={{
-          EditRow: (props) => (
-            <MTableEditRow
-              {...props}
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) {
-                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                }
-              }}
-            />
-          ),
-          Action: (props) => {
-            // Add action icons when for NOT "add"
-            if (
-              typeof props.action === typeof Function ||
-              props.action.tooltip !== "Add"
-            ) {
-              return <MTableAction {...props} />;
-            } else {
-              // else add "Add ..." button
-              return !!eCaprisID ? (
-                <ButtonDropdownMenu
-                  buttonWrapperStyle={classes.fundingButton}
-                  addAction={props.action.onClick}
-                  openActionDialog={setIsDialogOpen}
-                  parentButtonText="Add Funding Source"
-                  firstOptionText="New funding source"
-                  secondOptionText="From eCapris"
-                />
-              ) : (
-                <Button
-                  className={classes.fundingButton}
-                  variant="contained"
-                  color="primary"
-                  startIcon={<AddCircleIcon />}
-                  ref={addActionRef}
-                  onClick={props.action.onClick}
-                >
-                  Add Funding Source
-                </Button>
-              );
-            }
-          },
-          Toolbar: (props) => (
-            // to have it align with table content
-            <div style={{ marginLeft: "-10px" }}>
-              <MTableToolbar {...props} />
-            </div>
-          ),
-        }}
-        data={data.moped_proj_funding}
-        title={
-          <div>
-            <Typography
-              variant="h2"
-              color="primary"
-              style={{ paddingTop: "1em" }}
-            >
-              Funding sources
-            </Typography>
-            <ProjectSummaryProjectECapris
-              projectId={projectId}
-              data={data}
-              refetch={refetch}
-              snackbarHandle={snackbarHandle}
-              classes={classes}
-              noWrapper
-            />
-          </div>
-        }
-        options={{
-          ...(data.moped_proj_funding.length < PAGING_DEFAULT_COUNT + 1 && {
-            paging: false,
-          }),
-          search: false,
-          rowStyle: {
-            fontFamily: typography.fontFamily,
-          },
-          actionsColumnIndex: -1,
-          addRowPosition: "first",
-          idSynonym: "proj_funding_id",
-        }}
-        localization={{
-          header: {
-            actions: "",
-          },
-          body: {
-            emptyDataSourceMessage: (
-              <Typography variant="body1">
-                No funding sources to display
-              </Typography>
-            ),
-          },
-        }}
-        icons={{
-          Delete: DeleteOutlineIcon,
-          Edit: EditOutlinedIcon,
-        }}
-        editable={{
-          onRowAdd: (newData) =>
-            addProjectFunding({
-              variables: {
-                objects: {
-                  ...newData,
-                  project_id: projectId,
-                  // preventing empty strings from being saved
-                  funding_description:
-                    !newData.funding_description ||
-                    newData.funding_description.trim() === ""
-                      ? null
-                      : newData.funding_description,
-                  funding_amount:
-                    !newData.funding_amount ||
-                    newData.funding_amount.trim() === ""
-                      ? null
-                      : newData.funding_amount,
-                  // If no new funding status is selected, the default should be used
-                  funding_status_id: newData.funding_status_id || 1,
-                },
-              },
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem adding funding. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              }),
-          onRowUpdate: (newData, oldData) => {
-            const updateProjectFundingData = newData;
-
-            // Remove unexpected variables
-            delete updateProjectFundingData.__typename;
-
-            updateProjectFundingData.funding_amount =
-              updateProjectFundingData.funding_amount || null;
-            updateProjectFundingData.funding_description =
-              !updateProjectFundingData.funding_description ||
-              updateProjectFundingData.funding_description.trim() === ""
-                ? null
-                : updateProjectFundingData.funding_description;
-
-            return updateProjectFunding({
-              variables: updateProjectFundingData,
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem updating funding. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              });
-          },
-          onRowDelete: (oldData) =>
-            deleteProjectFunding({
-              variables: {
-                proj_funding_id: oldData.proj_funding_id,
-              },
-            })
-              .then(() => refetch())
-              .catch((error) => {
-                setSnackbarState({
-                  open: true,
-                  message: (
-                    <span>
-                      There was a problem deleting funding. Error message:{" "}
-                      {error.message}
-                    </span>
-                  ),
-                  severity: "error",
-                });
-              }),
-        }}
-      />
       <Box my={4}>
         <DataGridPro
           sx={dataGridProStyleOverrides}
