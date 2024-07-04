@@ -202,7 +202,6 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
-  console.log("row modes model", rowModesModel, "rows ", rows)
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -210,7 +209,6 @@ const ProjectFundingTable = () => {
     setRowModesModel(newRowModesModel);
   };
 
-  
   useEffect(() => {
     if (data && data.moped_proj_funding.length > 0) {
       setRows(data.moped_proj_funding);
@@ -353,12 +351,10 @@ const ProjectFundingTable = () => {
 
   const handleAddRecordClick = () => {
     const id = Math.floor(Math.random() * 10000);
-    console.log(id)
-    setRows((oldRows) => {
-      return ([
+    setRows((oldRows) => [
       ...oldRows,
       {
-       // id,
+        id,
         funding_source_id: null,
         funding_program_id: null,
         funding_description: null,
@@ -369,23 +365,14 @@ const ProjectFundingTable = () => {
         isNew: true,
         proj_funding_id: id,
       },
-    ])
-  });
-    setRowModesModel((oldModel) => {
-      const currentModel = apiRef.current.getRowModels()
-      console.log(currentModel, oldModel)
-      return ({
+    ]);
+    setRowModesModel((oldModel) => ({
       ...oldModel,
       [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
-    })});
-    const row = apiRef.current.getRowNode(1087)
-    const rowNode = apiRef.current.getRowNode(id);
-    console.log(row, rowNode)
+    }));
   };
 
   const handleEditClick = (id) => () => {
-    console.log("handle edit")
-    console.log(apiRef.current.getRowModels())
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   };
 
@@ -394,7 +381,30 @@ const ProjectFundingTable = () => {
   };
 
   const handleDeleteClick = (id) => () => {
+    console.log("dleete click")
     setRows(rows.filter((row) => row.proj_funding_id !== id));
+
+    const deletedRow = rows.find((row) => row.proj_funding_id === id);
+    if (!deletedRow.isNew) {
+    deleteProjectFunding({
+      variables: {
+        proj_funding_id: id,
+      },
+    })
+      .then(() => refetch())
+      .catch((error) => {
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              There was a problem deleting funding. Error message:{" "}
+              {error.message}
+            </span>
+          ),
+          severity: "error",
+        });
+      })
+    }
   };
 
   const handleCancelClick = (id) => () => {
@@ -586,9 +596,7 @@ const ProjectFundingTable = () => {
       type: "actions",
       getActions: ({ id }) => {
         const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (deleteInProgress) {
-          return <CircularProgress color="primary" size={20} />;
-        } else if (isInEditMode) {
+        if (isInEditMode) {
           return [
             <GridActionsCellItem
               icon={<CheckIcon />}
