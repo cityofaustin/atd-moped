@@ -587,6 +587,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Status",
       field: "funding_status_id",
+      editable: true,
       renderCell: ({ value }) =>
         getLookupValueByID("moped_fund_status", "funding_status", value),
       renderEditCell: (props) => (
@@ -620,6 +621,7 @@ const ProjectFundingTable = () => {
       headerName: "Dept-unit",
       field: "dept_unit",
       width: 200,
+      editable: true,
       renderCell: ({ row }) =>
         !!row.dept_unit?.unit_long_name ? (
           <>
