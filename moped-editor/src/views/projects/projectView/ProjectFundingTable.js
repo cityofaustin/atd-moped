@@ -331,6 +331,8 @@ const ProjectFundingTable = () => {
   };
 
   const handleAddRecordClick = () => {
+    // use a random id to keep track of row in row modes model and data grid rows
+    // before the record is added to the db
     const id = Math.floor(Math.random() * 10000);
     setRows((oldRows) => [
       ...oldRows,
@@ -362,9 +364,11 @@ const ProjectFundingTable = () => {
   };
 
   const handleDeleteClick = (id) => () => {
+    // remove row from rows in state
     setRows(rows.filter((row) => row.proj_funding_id !== id));
 
     const deletedRow = rows.find((row) => row.proj_funding_id === id);
+    // if the deleted row is in the db, delete from db
     if (!deletedRow.isNew) {
       deleteProjectFunding({
         variables: {
@@ -399,7 +403,6 @@ const ProjectFundingTable = () => {
   };
 
   const processRowUpdate = (updatedRow, originalRow) => {
-
     const updateProjectFundingData = updatedRow;
     // Remove unexpected variables
     delete updateProjectFundingData.__typename;
@@ -562,6 +565,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Program",
       field: "funding_program_id",
+      width: 200,
       editable: true,
       renderCell: ({ value }) =>
         getLookupValueByID("moped_fund_programs", "funding_program", value),
@@ -638,6 +642,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Amount",
       field: "funding_amount",
+      editable: true,
       renderCell: ({ value }) => currencyFormatter.format(value),
       editComponent: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
