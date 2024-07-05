@@ -482,11 +482,6 @@ const ProjectFundingTable = () => {
     }
   };
 
-  const handleRowEditStop = (params, event) => {
-    console.log("row edit stop");
-    console.log(params, event);
-  };
-
   const handleProcessUpdateError = (error) => {
     setSnackbarState({
       open: true,
@@ -588,6 +583,7 @@ const ProjectFundingTable = () => {
       headerName: "Status",
       field: "funding_status_id",
       editable: true,
+      width: 200,
       renderCell: ({ value }) =>
         getLookupValueByID("moped_fund_status", "funding_status", value),
       renderEditCell: (props) => (
@@ -633,7 +629,7 @@ const ProjectFundingTable = () => {
         ) : (
           ""
         ),
-      editComponent: (props) => (
+      renderEditCell: (props) => (
         <FundingDeptUnitAutocomplete
           classes={classes.deptAutocomplete}
           props={props}
@@ -646,7 +642,7 @@ const ProjectFundingTable = () => {
       field: "funding_amount",
       editable: true,
       renderCell: ({ value }) => currencyFormatter.format(value),
-      editComponent: (props) => <DollarAmountIntegerField {...props} />,
+      renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
     },
   ];
@@ -667,7 +663,6 @@ const ProjectFundingTable = () => {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
-          onRowEditStop={handleRowEditStop}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessUpdateError}
           toolbar
@@ -676,6 +671,7 @@ const ProjectFundingTable = () => {
           getRowHeight={() => "auto"}
           hideFooter
           localeText={{ noRowsLabel: "No funding sources" }}
+          initialState={{ pinnedColumns: { left: ["edit"] } }}
           slots={{
             toolbar: ProjectFundingToolbar,
           }}
