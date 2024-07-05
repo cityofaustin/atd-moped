@@ -175,6 +175,7 @@ const ProjectFundingTable = () => {
   };
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState(data?.moped_proj_funding);
   const [rowModesModel, setRowModesModel] = useState({});
 
@@ -184,11 +185,6 @@ const ProjectFundingTable = () => {
   };
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
-
-  const handleRowModesModelChange = (newRowModesModel) => {
-    console.log("handle", newRowModesModel);
-    setRowModesModel(newRowModesModel);
-  };
 
   useEffect(() => {
     if (data && data.moped_proj_funding.length > 0) {
@@ -330,6 +326,10 @@ const ProjectFundingTable = () => {
     setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
   const handleAddRecordClick = () => {
     const id = Math.floor(Math.random() * 10000);
     setRows((oldRows) => [
@@ -399,13 +399,12 @@ const ProjectFundingTable = () => {
   };
 
   const processRowUpdate = (updatedRow, originalRow) => {
-    console.log("process row update");
-    console.log(updatedRow, originalRow);
 
     const updateProjectFundingData = updatedRow;
     // Remove unexpected variables
     delete updateProjectFundingData.__typename;
 
+    // preventing empty strings from being saved
     updateProjectFundingData.funding_amount =
       updateProjectFundingData.funding_amount || null;
     updateProjectFundingData.funding_description =
@@ -425,17 +424,6 @@ const ProjectFundingTable = () => {
             objects: {
               ...updateProjectFundingData,
               project_id: projectId,
-              // preventing empty strings from being saved
-              // funding_description:
-              //   !newData.funding_description ||
-              //   newData.funding_description.trim() === ""
-              //     ? null
-              //     : newData.funding_description,
-              // funding_amount:
-              //   !newData.funding_amount ||
-              //   newData.funding_amount.trim() === ""
-              //     ? null
-              //     : newData.funding_amount,
               // If no new funding status is selected, the default should be used
               funding_status_id:
                 updateProjectFundingData.funding_status_id || 1,
@@ -443,6 +431,7 @@ const ProjectFundingTable = () => {
           },
         })
           .then((response) => {
+            // replace the temporary row id with the one proj funding id from the record creation
             const record_id =
               response.data.insert_moped_proj_funding.returning[0]
                 .proj_funding_id;

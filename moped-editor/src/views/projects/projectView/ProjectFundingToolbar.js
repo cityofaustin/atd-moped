@@ -5,7 +5,6 @@ import Typography from "@mui/material/Typography";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
 
-/** Custom toolbar title that resembles the material table titles we use  */
 const ProjectFundingToolbar = ({
   onClick,
   eCaprisID,
