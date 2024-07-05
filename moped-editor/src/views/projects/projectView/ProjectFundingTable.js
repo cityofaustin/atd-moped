@@ -417,69 +417,77 @@ const ProjectFundingTable = () => {
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
       delete updateProjectFundingData.id;
-      updateProjectFundingData.proj_funding_id = null;
+      delete updateProjectFundingData.proj_funding_id;
 
       return (
-      addProjectFunding({
-        variables: {
-          objects: {
-            ...updateProjectFundingData,
-            project_id: projectId,
-            // preventing empty strings from being saved
-            // funding_description:
-            //   !newData.funding_description ||
-            //   newData.funding_description.trim() === ""
-            //     ? null
-            //     : newData.funding_description,
-            // funding_amount:
-            //   !newData.funding_amount ||
-            //   newData.funding_amount.trim() === ""
-            //     ? null
-            //     : newData.funding_amount,
-            // If no new funding status is selected, the default should be used
-            funding_status_id: updateProjectFundingData.funding_status_id || 1,
+        addProjectFunding({
+          variables: {
+            objects: {
+              ...updateProjectFundingData,
+              project_id: projectId,
+              // preventing empty strings from being saved
+              // funding_description:
+              //   !newData.funding_description ||
+              //   newData.funding_description.trim() === ""
+              //     ? null
+              //     : newData.funding_description,
+              // funding_amount:
+              //   !newData.funding_amount ||
+              //   newData.funding_amount.trim() === ""
+              //     ? null
+              //     : newData.funding_amount,
+              // If no new funding status is selected, the default should be used
+              funding_status_id:
+                updateProjectFundingData.funding_status_id || 1,
+            },
           },
-        },
-      })
-        .then(() => refetch())
-        // from the data grid docs:
-        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-        .then(() => updatedRow)
-        .catch((error) => {
-          setSnackbarState({
-            open: true,
-            message: (
-              <span>
-                There was a problem adding funding. Error message:{" "}
-                {error.message}
-              </span>
-            ),
-            severity: "error",
-          });
         })
-      )
+          .then((response) => {
+            const record_id =
+              response.data.insert_moped_proj_funding.returning[0]
+                .proj_funding_id;
+            updatedRow.proj_funding_id = record_id;
+          })
+          .then(() => refetch())
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
+          .catch((error) => {
+            setSnackbarState({
+              open: true,
+              message: (
+                <span>
+                  There was a problem adding funding. Error message:{" "}
+                  {error.message}
+                </span>
+              ),
+              severity: "error",
+            });
+          })
+      );
+    } else {
+      return (
+        updateProjectFunding({
+          variables: updateProjectFundingData,
+        })
+          .then(() => refetch())
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
+          .catch((error) => {
+            setSnackbarState({
+              open: true,
+              message: (
+                <span>
+                  There was a problem updating funding. Error message:{" "}
+                  {error.message}
+                </span>
+              ),
+              severity: "error",
+            });
+          })
+      );
     }
-    return (
-      updateProjectFunding({
-        variables: updateProjectFundingData,
-      })
-        .then(() => refetch())
-        // from the data grid docs:
-        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-        .then(() => updatedRow)
-        .catch((error) => {
-          setSnackbarState({
-            open: true,
-            message: (
-              <span>
-                There was a problem updating funding. Error message:{" "}
-                {error.message}
-              </span>
-            ),
-            severity: "error",
-          });
-        })
-    );
   };
 
   const handleRowEditStop = (params, event) => {
