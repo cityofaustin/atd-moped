@@ -85,23 +85,6 @@ const useStyles = makeStyles((theme) => ({
     top: "1rem",
     right: "1rem",
   },
-  chipContainer: {
-    display: "flex",
-    justifyContent: "left",
-    flexWrap: "wrap",
-    listStyle: "none",
-    padding: "2rem 0",
-    margin: 0,
-  },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
-  chipAddContainer: {
-    minWidth: "500px",
-  },
-  chipAddMultiselect: {
-    width: "100%",
-  },
   deptAutocomplete: {
     width: "300px",
     fontSize: ".875em",
@@ -225,21 +208,6 @@ const ProjectFundingTable = () => {
     });
   };
 
-  // /**
-  //  * Lookup object formatted from GraphQL query data response into the
-  //  * shape that <MaterialTable> expects
-  //  * @param {array} arr - array of items from data object {ex: data.moped_fund_sources}
-  //  * @param {key} string - item attribute to return as key ex: "funding_source_id"
-  //  * @param {value} string - item attribute to return as value ex: "funding_source_name"
-  //  * @return {object} - object of key/pair values with lookup item id and name
-  //  */
-  // const queryArrayToLookupObject = (arr, key, value) => {
-  //   return arr.reduce((obj, item) => {
-  //     obj[item[key]] = item[value];
-  //     return obj;
-  //   }, {});
-  // };
-
   const LookupAutocompleteComponent = (props) => {
     const { id, value, field } = props;
     const apiRef = useGridApiContext();
@@ -330,6 +298,7 @@ const ProjectFundingTable = () => {
     setRowModesModel(newRowModesModel);
   };
 
+  // adds a blank row to the table and updates the row modes model
   const handleAddRecordClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
@@ -363,6 +332,7 @@ const ProjectFundingTable = () => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   };
 
+  // handles row delete
   const handleDeleteClick = (id) => () => {
     // remove row from rows in state
     setRows(rows.filter((row) => row.proj_funding_id !== id));
@@ -391,6 +361,7 @@ const ProjectFundingTable = () => {
     }
   };
 
+  // when a user cancels editing by clicking the X in the actions
   const handleCancelClick = (id) => () => {
     setRowModesModel({
       ...rowModesModel,
@@ -402,6 +373,7 @@ const ProjectFundingTable = () => {
     }
   };
 
+  // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
     const updateProjectFundingData = updatedRow;
     // Remove unexpected variables
@@ -667,7 +639,6 @@ const ProjectFundingTable = () => {
           onProcessRowUpdateError={handleProcessUpdateError}
           toolbar
           density="comfortable"
-          // disableRowSelectionOnClick
           getRowHeight={() => "auto"}
           hideFooter
           localeText={{ noRowsLabel: "No funding sources" }}
