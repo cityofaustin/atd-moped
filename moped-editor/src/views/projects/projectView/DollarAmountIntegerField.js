@@ -4,16 +4,21 @@ import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
 } from "src/utils/numberFormatters";
+import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
  * MUI TextField wrapper that limits input to 0-9 for project funding amount
  * and handles editors pasting a number with a decimal Ex. $86,753.09 -> 86753
- * @param {Function} props.onChange - Material Table handler to update field value
- * @param {String} props.value - Material Table field value
+ * @param {Integer} id - Data Grid row id
+ * @param {String} value - field value
+ * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DollarAmountIntegerField = ({ onChange, value }) => {
-  const handleInputChange = event => {
+const DollarAmountIntegerField = ({ id, value, field }) => {
+  const apiRef = useGridApiContext();
+  const ref = React.useRef(null);
+
+  const handleChange = (event, newValue) => {
     const { value: inputValue } = event.target;
 
     // First, remove decimal point and trailing characters onChange to handle pasted numbers
@@ -22,18 +27,24 @@ const DollarAmountIntegerField = ({ onChange, value }) => {
     // Then, remove all non-integers
     const valueWithIntegersOnly = removeNonIntegers(valueWithoutDecimals);
 
-    onChange(valueWithIntegersOnly);
+    apiRef.current.setEditCellValue({
+      id,
+      field,
+      value: valueWithIntegersOnly,
+    });
   };
 
   return (
     <TextField
       variant="standard"
       id="funding_amount"
+      ref={ref}
       name="funding_amount"
       type="text"
       inputMode="numeric"
-      value={value}
-      onChange={handleInputChange} />
+      value={value ?? ""}
+      onChange={handleChange}
+    />
   );
 };
 
