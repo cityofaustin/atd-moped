@@ -13,4 +13,5 @@
 #### Ship list
 - [ ] Code reviewed 
 - [ ] Product manager approved
-- [ ] Added to [QA test script](https://docs.google.com/spreadsheets/d/1n_O6MLh9cwwPf57HUM394Ea-z9uuoEV1-QW4axNZXLE/edit#) if applicable
+- [ ] Product manager checked [DB view dependencies](https://atd-dts.gitbook.io/moped-documentation/product-management/updating-the-arcgis-online-components-database-view)
+- [ ] Product manager added to [QA test script](https://docs.google.com/spreadsheets/d/1n_O6MLh9cwwPf57HUM394Ea-z9uuoEV1-QW4axNZXLE/edit#) if applicable

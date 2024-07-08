@@ -38,7 +38,7 @@ def chunks(lst, n):
         yield lst[i : i + n]
 
 
-def make_hasura_request(*, query):
+def make_hasura_request(*, query, variables=None):
     """Fetch data from hasura
 
     Args:
@@ -54,7 +54,7 @@ def make_hasura_request(*, query):
         "X-Hasura-Admin-Secret": HASURA_ADMIN_SECRET,
         "content-type": "application/json",
     }
-    payload = {"query": query}
+    payload = {"query": query, "variables": variables}
     res = requests.post(HASURA_ENDPOINT, json=payload, headers=headers)
     res.raise_for_status()
     data = res.json()
@@ -92,20 +92,45 @@ def handle_arcgis_response(response_data):
     return
 
 
-def delete_features(feature_type):
+def delete_all_features(feature_type):
     """Deletes all features from an arcgis online feature service.
 
     Args:
         feature_type (Str): the feature type we're adding: "points" or "lines"
 
     Raises:
-        Exception: if the deletion failes
+        Exception: if the deletion fails
     """
     endpoint = get_endpoint("deleteFeatures", feature_type)
     data = {
         "token": os.getenv("AGOL_TOKEN"),
         "f": "json",
         "where": "1=1",
+        "returnDeleteResults": False,
+    }
+    res = resilient_layer_request(endpoint, data=data)
+    response_data = res.json()
+    try:
+        assert response_data["success"]
+    except AssertionError:
+        raise Exception(f"Delete features failed: {response_data}")
+
+
+def delete_features_by_project_ids(feature_type, project_ids):
+    """Deletes features from an arcgis online feature service associated with projects in a list ids.
+
+    Args:
+        feature_type (Str): the feature type we're adding: "points" or "lines"
+        project_ids (List): the project ids to delete
+
+    Raises:
+        Exception: if the deletion fails
+    """
+    endpoint = get_endpoint("deleteFeatures", feature_type)
+    data = {
+        "token": os.getenv("AGOL_TOKEN"),
+        "f": "json",
+        "where": f"project_id IN ({project_ids})",
         "returnDeleteResults": False,
     }
     res = resilient_layer_request(endpoint, data=data)
@@ -211,5 +236,6 @@ def get_logger(name, level=logging.INFO):
     logger.addHandler(handler)
     logger.setLevel(level)
     return logger
+
 
 logger = get_logger(__file__)
