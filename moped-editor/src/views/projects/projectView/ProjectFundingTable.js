@@ -159,7 +159,7 @@ const ProjectFundingTable = () => {
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
-  const [rows, setRows] = useState(data?.moped_proj_funding);
+  const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
 
   const handleSubprojectDialogClose = () => {
@@ -175,7 +175,7 @@ const ProjectFundingTable = () => {
     }
   }, [data]);
 
-  if (loading || !data || !rows) return <CircularProgress />;
+  if (loading || !data) return <CircularProgress />;
 
   /**
    * Get lookup value for a given table using a record ID and returning a name
