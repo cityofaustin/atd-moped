@@ -61,9 +61,16 @@ export const shouldRenderAutocompleteInput = (
   loading,
   lookupOperators
 ) => {
-  console.log(lookupTable, operator, loading, lookupOperators);
   return lookupTable && !loading && lookupOperators.includes(operator);
 };
+
+/**
+ * Returns true if free solo should be used for the autocomplete input with the given operator
+ * Contains operators use free solo to support both arbitrary values and values from the dropdown suggestions
+ * @param {string} operator - The chosen operator name
+ * @returns {boolean}
+ */
+export const shouldUseFreeSolo = (operator) => operator.includes("contains");
 
 /**
  * Check if a filter has complete values
