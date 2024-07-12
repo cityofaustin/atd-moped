@@ -2,9 +2,9 @@ UPLOAD_CHUNK_SIZE = 100
 
 LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
 
-COMPONENTS_QUERY = """
-{
-  component_arcgis_online_view {
+COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
+query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
+  component_arcgis_online_view(where: $where) {
     completion_date
     completion_end_date
     component_categories
@@ -30,6 +30,7 @@ COMPONENTS_QUERY = """
     ecapris_subproject_id
     feature_ids
     funding_source_name
+    funding_sources
     geometry
     interim_project_component_id
     interim_project_id
