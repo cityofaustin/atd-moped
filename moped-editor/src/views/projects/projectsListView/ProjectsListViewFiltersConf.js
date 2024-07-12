@@ -158,10 +158,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       lookup: {
         table_name: "moped_users",
         getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
-        operators: [
-          "string_contains_case_insensitive",
-          "string_equals_case_insensitive",
-        ],
+        operators: ["string_contains_case_insensitive"],
       },
       operators: [
         "string_contains_case_insensitive",
@@ -389,11 +386,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       lookup: {
         table_name: "moped_tags",
         getOptionLabel: (option) => option.name,
-        operators: [
-          "string_equals_case_insensitive",
-          "string_does_not_equal_case_insensitive",
-          "string_contains_case_insensitive",
-        ],
+        operators: ["string_contains_case_insensitive"],
       },
       operators: [
         "string_contains_case_insensitive",
