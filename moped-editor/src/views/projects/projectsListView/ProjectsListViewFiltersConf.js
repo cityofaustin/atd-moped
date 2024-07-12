@@ -140,6 +140,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       label: "Status",
       placeholder: "Status",
       type: "string",
+      lookup: {
+        table_name: "moped_phases",
+        getOptionLabel: (option) => option.phase_name_simple,
+        operators: ["string_equals_case_insensitive"],
+      },
       operators: [
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",

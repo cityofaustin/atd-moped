@@ -974,6 +974,13 @@ export const LOOKUP_TABLES_QUERY = gql`
       last_name
       user_id
     }
+    moped_phases(
+      order_by: { phase_name_simple: asc }
+      distinct_on: phase_name_simple
+    ) {
+      phase_id
+      phase_name_simple
+    }
   }
 `;
 
