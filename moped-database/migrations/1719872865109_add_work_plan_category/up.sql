@@ -1,33 +1,6 @@
 DROP VIEW IF EXISTS component_arcgis_online_view;
 DROP VIEW IF EXISTS project_list_view;
 
--- TODO: Need current_phase.phase_name_simple
--- TODO: Need substantial completion date
-
--- >> forecast notable phases in a project’s development. 
--- 	>> possible names: project forecasting: project development status/date
--- Since my code is steeped in VBA here is the basic logic. The result is a field value for WorkPlanCategory and WorkPlanCategoryDate 
--- If PhaseSimple = Complete
--- WorkPlanCategory = "Complete"
--- 	WorkPlanCategoryDate = ActualEndDateProj
--- ElseIf Estimated (boolean flag) Substantial Completion Date is not null
--- 	If PhaseSimple = "Construction"
--- 		WorkPlanCategory = "Estimated End Date (In Construction)"
--- 	Else
--- 		WorkPlanCategory = "Estimated End Date"
--- 	WorkPlanCategoryDate = EstEndDate
--- ElseIf EstPublicMeetingDate (this is a milestone) is not null null
--- 	WorkPlanCategory = "Estimated Public Meeting Date"
--- 	WorkPlanCategoryDate = rstProjects!EstPublicMeetingDate
--- ElseIf Estimated Start Project Development (milestone) is not null
--- WorkPlanCategory = "Estimated Start of Project Development"
---     	WorkPlanCategoryDate = Estimated Start Project Development
-
--- JC >> ActualEndDateProj: find the earliest confirmed date within the (phase_simple  = complete) + component override (component always trumps project phasing)
--- JC >> add placeholder columns on component geo view
--- JC >> revisit “completion dates” in project list view (and component view)
-
-
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -227,7 +200,26 @@ SELECT
             LIMIT 1
         ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
-    '2024-01-01T00:00:00-06:00'::text AS project_development_status_date,
+    CASE WHEN current_phase.phase_name_simple = 'Complete' THEN '2024-01-01T00:00:00-06:00'::text
+        WHEN mepd.min_phase_date IS NOT null
+            THEN
+                CASE
+                    WHEN current_phase.phase_name_simple = 'Construction' THEN '2024-01-01T00:00:00-06:00'::text
+                    ELSE '2024-01-01T00:00:00-06:00'::text
+                END
+        WHEN (
+            SELECT mpm.milestone_id
+            FROM moped_proj_milestones AS mpm
+            WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            LIMIT 1
+        ) IS NOT null THEN '2024-01-01T00:00:00-06:00'::text
+        WHEN (
+            SELECT mpm.milestone_id
+            FROM moped_proj_milestones AS mpm
+            WHERE true AND mpm.project_id = mp.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
+            LIMIT 1
+        ) IS NOT null THEN '2024-01-01T00:00:00-06:00'::text
+    END AS project_development_status_date,
     9999 AS project_development_status_date_calendar_year,
     'placeholder text'::text AS project_development_status_date_calendar_year_month,
     'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
