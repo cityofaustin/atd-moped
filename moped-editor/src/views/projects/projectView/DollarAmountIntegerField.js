@@ -37,6 +37,7 @@ const DollarAmountIntegerField = ({ id, value, field }) => {
   return (
     <TextField
       variant="standard"
+      inputProps={{ style: { fontSize: ".875rem" } }}
       id="funding_amount"
       ref={ref}
       name="funding_amount"

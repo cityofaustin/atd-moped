@@ -24,10 +24,22 @@ const LookupSelectComponent = (props) => {
   return (
     <Select
       variant="standard"
-      style={{ minWidth: "8em" }}
       id={props.name}
       value={value || props.defaultValue}
       ref={ref}
+      disableUnderline
+      sx={{
+        minWidth: "8em",
+        padding: "10px",
+        fontSize: ".875rem",
+        // adding a border despite disabling it above because the default border is much lower than other inputs
+        "& .MuiSelect-select": {
+          borderBottom: "1px rgba(0, 0, 0, 0.42) solid",
+        },
+        "& .MuiSelect-select:hover": {
+          borderBottom: "2px #212121 solid",
+        },
+      }}
     >
       {props.data.map((item) => (
         <MenuItem

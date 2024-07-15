@@ -17,8 +17,8 @@ const DeptUnitInput = (params, error = false, variant) => {
       {...params}
       error={error}
       InputLabelProps={{ required: false }}
-      label="Dept-unit"
       variant={variant}
+      inputProps={{ ...params.inputProps, style: { fontSize: ".875rem" } }}
     />
   );
 };
@@ -63,6 +63,7 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
     <Autocomplete
       className={classes}
       ref={ref}
+      sx={{ alignContent: "center", width: "150px", padding: "8px" }}
       id="dept-unit-id"
       filterOptions={filterOptions}
       getOptionLabel={(option) => formatLabel(option)}

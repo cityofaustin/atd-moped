@@ -9,7 +9,6 @@ import {
   CircularProgress,
   Snackbar,
   TextField,
-  Typography,
   Box,
 } from "@mui/material";
 import {
@@ -99,6 +98,7 @@ const useStyles = makeStyles((theme) => ({
   },
   fundSelectStyle: {
     width: "10em",
+    alignContent: "center",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -108,6 +108,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
+  },
+  autocompleteLookupInput: {
+    minWidth: "200px",
+    alignContent: "center",
+    padding: "8px"
   },
 }));
 
@@ -225,7 +230,7 @@ const ProjectFundingTable = () => {
 
     return (
       <Autocomplete
-        style={{ minWidth: "200px" }}
+        className={classes.autocompleteLookupInput}
         ref={ref}
         value={
           // if we are editing, the autocomplete has the value provided by the material table, which is the record id
@@ -238,7 +243,16 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={props.name}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField
+            variant="standard"
+            {...params}
+            inputProps={{
+              ...params.inputProps,
+              style: { fontSize: ".875rem" },
+            }}
+          />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string instead of accessing the name
           typeof option === "string" ? option : option[`${props.name}_name`]
@@ -273,7 +287,16 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={"moped_funds"}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField
+            variant="standard"
+            {...params}
+            inputProps={{
+              ...params.inputProps,
+              style: { fontSize: ".875rem" },
+            }}
+          />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string
           typeof option === "string"
@@ -583,7 +606,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Dept-unit",
       field: "dept_unit",
-      width: 200,
+      width: 225,
       editable: true,
       valueFormatter: (value) =>
         !!value?.unit_long_name
@@ -602,7 +625,7 @@ const ProjectFundingTable = () => {
       headerName: "Amount",
       field: "funding_amount",
       editable: true,
-      renderCell: ({ value }) => currencyFormatter.format(value),
+      valueFormatter: (value) => currencyFormatter.format(value),
       renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
     },
