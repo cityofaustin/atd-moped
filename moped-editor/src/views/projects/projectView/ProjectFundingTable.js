@@ -97,7 +97,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fundSelectStyle: {
-    width: "10em",
+    width: "190px",
     alignContent: "center",
   },
   fieldLabelText: {
@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
   autocompleteLookupInput: {
     minWidth: "200px",
     alignContent: "center",
-    padding: "8px"
+    padding: "8px",
   },
 }));
 
@@ -624,6 +624,7 @@ const ProjectFundingTable = () => {
     {
       headerName: "Amount",
       field: "funding_amount",
+      width: 100,
       editable: true,
       valueFormatter: (value) => currencyFormatter.format(value),
       renderEditCell: (props) => <DollarAmountIntegerField {...props} />,

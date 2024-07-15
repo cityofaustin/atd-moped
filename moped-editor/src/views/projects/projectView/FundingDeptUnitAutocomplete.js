@@ -61,9 +61,14 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
 
   return (
     <Autocomplete
-      className={classes}
       ref={ref}
-      sx={{ alignContent: "center", width: "150px", padding: "8px" }}
+      sx={{
+        alignContent: "center",
+        width: "150px",
+        paddingLeft: "8px",
+        paddingRight: "8px",
+        width: "190px"
+      }}
       id="dept-unit-id"
       filterOptions={filterOptions}
       getOptionLabel={(option) => formatLabel(option)}
