@@ -4,13 +4,14 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
+  Alert,
+  Autocomplete,
   CircularProgress,
   Snackbar,
   TextField,
   Typography,
   Box,
 } from "@mui/material";
-import { Alert, Autocomplete } from "@mui/material";
 import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
@@ -25,6 +26,7 @@ import {
   useGridApiContext,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
+import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "../../../utils/numberFormatters";
 
 // Error Handler
@@ -302,7 +304,7 @@ const ProjectFundingTable = () => {
   const handleAddRecordClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
-    const id = Math.floor(Math.random() * 10000);
+    const id = uuidv4()
     setRows((oldRows) => [
       ...oldRows,
       {
@@ -637,6 +639,7 @@ const ProjectFundingTable = () => {
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessUpdateError}
+          disableRowSelectionOnClick
           toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
