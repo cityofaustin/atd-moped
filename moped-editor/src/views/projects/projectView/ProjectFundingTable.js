@@ -304,7 +304,7 @@ const ProjectFundingTable = () => {
   const handleAddRecordClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
-    const id = uuidv4()
+    const id = uuidv4();
     setRows((oldRows) => [
       ...oldRows,
       {
@@ -574,15 +574,8 @@ const ProjectFundingTable = () => {
       field: "fund",
       width: 200,
       editable: true,
-      renderCell: ({ row }) =>
-        !!row.fund?.fund_name ? (
-          <>
-            <Typography>{row.fund?.fund_id} |</Typography>
-            <Typography>{row.fund?.fund_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
+      valueFormatter: (value) =>
+        !!value?.fund_name ? `${value?.fund_id} | ${value?.fund_name}` : "",
       renderEditCell: (props) => (
         <FundAutocompleteComponent {...props} data={data.moped_funds} />
       ),
@@ -592,17 +585,11 @@ const ProjectFundingTable = () => {
       field: "dept_unit",
       width: 200,
       editable: true,
-      renderCell: ({ row }) =>
-        !!row.dept_unit?.unit_long_name ? (
-          <>
-            <Typography>
-              {row.dept_unit?.dept} | {row.dept_unit?.unit} |
-            </Typography>
-            <Typography>{row.dept_unit?.unit_long_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
+      valueFormatter: (value) =>
+        !!value?.unit_long_name
+          ? `${value?.dept} | ${value?.unit} |
+            ${value?.unit_long_name}`
+          : "",
       renderEditCell: (props) => (
         <FundingDeptUnitAutocomplete
           classes={classes.deptAutocomplete}
@@ -632,7 +619,6 @@ const ProjectFundingTable = () => {
           autoHeight
           columns={dataGridColumns}
           rows={rows}
-          // rows={data.moped_proj_funding}
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
