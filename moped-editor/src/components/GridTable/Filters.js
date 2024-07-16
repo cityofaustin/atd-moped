@@ -38,7 +38,6 @@ import {
   handleApplyValidation,
   isFilterNullType,
   shouldRenderAutocompleteInput,
-  shouldUseFreeSolo,
 } from "./helpers";
 import { FiltersCommonOperators } from "./FiltersCommonOperators";
 
@@ -503,7 +502,6 @@ const Filters = ({
                       lookupOperators
                     ) ? (
                       <Autocomplete
-                        freeSolo={shouldUseFreeSolo(operator)}
                         value={value || null}
                         options={data[lookupTable].map((option) =>
                           getOptionLabel(option)
