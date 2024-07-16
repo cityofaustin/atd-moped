@@ -205,7 +205,7 @@ SELECT
     END AS project_development_status,
     CASE WHEN current_phase.phase_name_simple = 'Complete'
             THEN (
-                SELECT max(phases.phase_end) AS max
+                SELECT max(phases.phase_end)::text AS max
                 FROM moped_proj_phases AS phases
                 WHERE true AND phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
             )
