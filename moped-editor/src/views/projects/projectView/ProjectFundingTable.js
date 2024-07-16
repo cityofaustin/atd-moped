@@ -683,7 +683,7 @@ const ProjectFundingTable = () => {
         />
       </Box>
       <DeleteConfirmationModal
-        type={"funding row"}
+        type={"funding source"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
