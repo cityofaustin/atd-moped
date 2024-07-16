@@ -28,7 +28,6 @@ import {
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "../../../utils/numberFormatters";
 
-// Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import {
@@ -46,6 +45,7 @@ import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -168,10 +168,18 @@ const ProjectFundingTable = () => {
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
     refetch();
+  };
+
+  const handleDeleteOpen = (id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
   };
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
@@ -532,7 +540,7 @@ const ProjectFundingTable = () => {
           <GridActionsCellItem
             icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
             label="Delete"
-            onClick={handleDeleteClick(id)}
+            onClick={() => handleDeleteOpen(id)}
             color="inherit"
           />,
         ];
@@ -674,6 +682,12 @@ const ProjectFundingTable = () => {
           }}
         />
       </Box>
+      <DeleteConfirmationModal
+        type={"funding row"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}
