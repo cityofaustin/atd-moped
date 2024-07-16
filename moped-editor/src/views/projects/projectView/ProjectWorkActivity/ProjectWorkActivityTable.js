@@ -25,36 +25,6 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
   useMemo(() => {
     return [
       {
-        headerName: "",
-        field: "Edit",
-        hideable: false,
-        filterable: false,
-        sortable: false,
-        defaultVisible: true,
-        renderCell: ({ row }) => {
-          return deleteInProgress ? (
-            <CircularProgress color="primary" size={20} />
-          ) : (
-            <div>
-              <IconButton
-                aria-label="edit"
-                sx={{ color: "inherit" }}
-                onClick={() => setEditActivity(row)}
-              >
-                <EditOutlinedIcon />
-              </IconButton>
-              <IconButton
-                aria-label="delete"
-                sx={{ color: "inherit" }}
-                onClick={() => onDeleteActivity({ id: row.id })}
-              >
-                <DeleteOutlineIcon />
-              </IconButton>
-            </div>
-          );
-        },
-      },
-      {
         headerName: "ID",
         field: "reference_id",
         width: 125,
@@ -150,6 +120,37 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         type: "date",
         valueGetter: (field) => (field ? new Date(field) : null),
       },
+      {
+        headerName: "",
+        field: "Edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
+        defaultVisible: true,
+        width: 100,
+        renderCell: ({ row }) => {
+          return deleteInProgress ? (
+            <CircularProgress color="primary" size={20} />
+          ) : (
+            <div style={{width: "100px"}}>
+              <IconButton
+                aria-label="edit"
+                sx={{ color: "inherit" }}
+                onClick={() => setEditActivity(row)}
+              >
+                <EditOutlinedIcon />
+              </IconButton>
+              <IconButton
+                aria-label="delete"
+                sx={{ color: "inherit" }}
+                onClick={() => onDeleteActivity({ id: row.id })}
+              >
+                <DeleteOutlineIcon />
+              </IconButton>
+            </div>
+          );
+        },
+      },
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
 
@@ -228,6 +229,7 @@ const ProjectWorkActivitiesTable = () => {
           getRowHeight={() => "auto"}
           hideFooter
           localeText={{ noRowsLabel: "No work activites" }}
+          initialState={{ pinnedColumns: { right: ["Edit"] } }}
           rows={activities}
           slots={{
             toolbar: WorkActivityToolbar,

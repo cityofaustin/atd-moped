@@ -501,52 +501,6 @@ const ProjectFundingTable = () => {
 
   const dataGridColumns = [
     {
-      headerName: "",
-      field: "edit",
-      hideable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      type: "actions",
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<CheckIcon sx={{ fontSize: "24px" }} />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CloseIcon sx={{ fontSize: "24px" }} />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
-        return [
-          <GridActionsCellItem
-            icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
-            label="Delete"
-            onClick={() => handleDeleteOpen(id)}
-            color="inherit"
-          />,
-        ];
-      },
-    },
-    {
       headerName: "Source",
       field: "funding_source_id",
       width: 200,
@@ -638,6 +592,52 @@ const ProjectFundingTable = () => {
       renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
     },
+    {
+      headerName: "",
+      field: "edit",
+      hideable: false,
+      filterable: false,
+      sortable: false,
+      editable: false,
+      type: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+            label="Delete"
+            onClick={() => handleDeleteOpen(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    }
   ];
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
@@ -663,7 +663,7 @@ const ProjectFundingTable = () => {
           getRowHeight={() => "auto"}
           hideFooter
           localeText={{ noRowsLabel: "No funding sources" }}
-          initialState={{ pinnedColumns: { left: ["edit"] } }}
+          initialState={{ pinnedColumns: { right: ["edit"] } }}
           slots={{
             toolbar: ProjectFundingToolbar,
           }}
