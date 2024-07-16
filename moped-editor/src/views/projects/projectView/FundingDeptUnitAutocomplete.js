@@ -64,7 +64,6 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       ref={ref}
       sx={{
         alignContent: "center",
-        width: "150px",
         paddingLeft: "8px",
         paddingRight: "8px",
         width: "190px"
