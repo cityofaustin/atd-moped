@@ -505,7 +505,7 @@ const ProjectFundingTable = () => {
         if (isInEditMode) {
           return [
             <GridActionsCellItem
-              icon={<CheckIcon />}
+              icon={<CheckIcon sx={{ fontSize: "24px" }} />}
               label="Save"
               sx={{
                 color: "primary.main",
@@ -513,7 +513,7 @@ const ProjectFundingTable = () => {
               onClick={handleSaveClick(id)}
             />,
             <GridActionsCellItem
-              icon={<CloseIcon />}
+              icon={<CloseIcon sx={{ fontSize: "24px" }} />}
               label="Cancel"
               className="textPrimary"
               onClick={handleCancelClick(id)}
@@ -523,14 +523,14 @@ const ProjectFundingTable = () => {
         }
         return [
           <GridActionsCellItem
-            icon={<EditOutlinedIcon />}
+            icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
             label="Edit"
             className="textPrimary"
             onClick={handleEditClick(id)}
             color="inherit"
           />,
           <GridActionsCellItem
-            icon={<DeleteOutlineIcon />}
+            icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
             label="Delete"
             onClick={handleDeleteClick(id)}
             color="inherit"
