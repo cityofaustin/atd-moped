@@ -147,7 +147,6 @@ const ProjectFundingTable = () => {
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project funding will be returned
-    // chia do we still need this
     variables: {
       projectId: projectId ?? 0,
     },
@@ -319,7 +318,6 @@ const ProjectFundingTable = () => {
     // before the record is added to the db
     const id = uuidv4();
     setRows((oldRows) => [
-      ...oldRows,
       {
         id,
         funding_source_id: null,
@@ -332,6 +330,7 @@ const ProjectFundingTable = () => {
         isNew: true,
         proj_funding_id: id,
       },
+      ...oldRows,
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,

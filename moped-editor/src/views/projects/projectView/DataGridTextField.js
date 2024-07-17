@@ -3,8 +3,6 @@ import { TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
- * MUI TextField wrapper that limits input to 0-9 for project funding amount
- * and handles editors pasting a number with a decimal Ex. $86,753.09 -> 86753
  * @param {Integer} id - Data Grid row id
  * @param {String} value - field value
  * @param {String} field - name of field
