@@ -192,7 +192,7 @@ SELECT
                 END
         WHEN (
             -- latest completed or estimated "Public meeting" milestone date
-            SELECT coalesce(max(mpm.date_completed), max(mpm.date_estimated))::text
+            SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text)
             FROM moped_proj_milestones AS mpm
             WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
         ) IS NOT null THEN 'Estimated Public Meeting Date'
@@ -200,44 +200,44 @@ SELECT
             -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
             SELECT min(mpp.phase_start)::text
             FROM moped_proj_phases AS mpp
-            LEFT JOIN moped_phases AS mp ON mpp.phase_id = moped_phases.phase_id
+            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
             WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
         ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
     CASE WHEN current_phase.phase_name_simple = 'Complete'
             THEN (
-                SELECT max(phases.phase_end)::text AS max
+                SELECT max(phases.phase_end)::text
                 FROM moped_proj_phases AS phases
                 WHERE phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
             )
         WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
             THEN
                 CASE
-                    WHEN current_phase.phase_name_simple != 'Construction' THEN plv.substantial_completion_date_estimated
+                    WHEN current_phase.phase_name_simple != 'Construction' THEN plv.substantial_completion_date_estimated::text
                 END
         WHEN (
-            -- latest completed or estimated "Public meeting" milestone date
-            SELECT coalesce(max(mpm.date_completed), max(mpm.date_estimated))::text
+        -- latest completed or estimated "Public meeting" milestone date
+            SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text)
             FROM moped_proj_milestones AS mpm
             WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
         ) IS NOT null
             THEN (
-                -- latest completed or estimated "Public meeting" milestone date
-                SELECT coalesce(max(mpm.date_completed), max(mpm.date_estimated))::text
+            -- latest completed or estimated "Public meeting" milestone date
+                SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text)
                 FROM moped_proj_milestones AS mpm
                 WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
             )
         WHEN (
-            -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
+        -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
             SELECT min(mpp.phase_start)::text
             FROM moped_proj_phases AS mpp
-            LEFT JOIN moped_phases AS mp ON mpp.phase_id = moped_phases.phase_id
+            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
             WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
         ) IS NOT null THEN (
-            -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
+        -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
             SELECT min(mpp.phase_start)::text
             FROM moped_proj_phases AS mpp
-            LEFT JOIN moped_phases AS mp ON mpp.phase_id = moped_phases.phase_id
+            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
             WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
         )
     END AS project_development_status_date,
