@@ -205,11 +205,7 @@ SELECT
         ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
     CASE WHEN current_phase.phase_name_simple = 'Complete'
-            THEN (
-                SELECT max(phases.phase_end)::text
-                FROM moped_proj_phases AS phases
-                WHERE phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
-            )
+            THEN plv.substantial_completion_date::text
         WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
             THEN
                 CASE
