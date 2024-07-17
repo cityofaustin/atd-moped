@@ -40,6 +40,7 @@ import {
 import { getDatabaseId, useUser } from "../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
+import DataGridTextField from "./DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import CustomPopper from "../../../components/CustomPopper";
@@ -518,6 +519,7 @@ const ProjectFundingTable = () => {
       field: "funding_description",
       width: 200,
       editable: true,
+      renderEditCell: (props) => <DataGridTextField {...props} />,
     },
     {
       headerName: "Status",
