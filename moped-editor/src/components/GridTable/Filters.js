@@ -397,6 +397,14 @@ const Filters = ({
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
 
+        /* Use option formatter and dedupe items to handle cases like same team member name options
+         * See https://github.com/mui/material-ui/issues/26492
+         **/
+        const options = data[lookupTable]
+          ? data[lookupTable].map((option) => getOptionLabel(option))
+          : [];
+        const dedupedOptions = [...new Set(options)];
+
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -503,9 +511,7 @@ const Filters = ({
                     ) ? (
                       <Autocomplete
                         value={value || null}
-                        options={data[lookupTable].map((option) =>
-                          getOptionLabel(option)
-                        )}
+                        options={dedupedOptions}
                         disabled={!filterParameters[filterIndex].operator}
                         onChange={(e, value) => {
                           handleSearchValueChange(filterIndex, value);
