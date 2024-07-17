@@ -184,7 +184,7 @@ SELECT
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     CASE WHEN current_phase.phase_name_simple = 'Complete' THEN 'Complete'
-        WHEN plv.substantial_completion_date_estimated IS NOT null
+        WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
             THEN
                 CASE
                     WHEN plv.current_phase_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
@@ -209,10 +209,10 @@ SELECT
                 FROM moped_proj_phases AS phases
                 WHERE true AND phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
             )
-        WHEN plv.substantial_completion_date_estimated IS NOT null
+        WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
             THEN
                 CASE
-                    WHEN current_phase.phase_name_simple != 'Construction' THEN '2024-01-01T00:00:00-06:00'::text
+                    WHEN current_phase.phase_name_simple != 'Construction' THEN plv.substantial_completion_date_estimated
                 END
         WHEN (
             SELECT mpm.milestone_id
