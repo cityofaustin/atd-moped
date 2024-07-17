@@ -219,13 +219,24 @@ SELECT
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
             LIMIT 1
-        ) IS NOT null THEN '2024-01-01T00:00:00-06:00'::text
+        ) IS NOT null
+            THEN (
+                SELECT coalesce(max(mpm.date_completed), max(mpm.date_estimated))::text
+                FROM moped_proj_milestones AS mpm
+                WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            )
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
             WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
             LIMIT 1
-        ) IS NOT null THEN '2024-01-01T00:00:00-06:00'::text
+        ) IS NOT null THEN (
+            SELECT min(mpp.phase_start)::text
+            FROM moped_proj_phases AS mpp
+            LEFT JOIN moped_phases AS mp ON mpp.phase_id = moped_phases.phase_id
+            WHERE true AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
+        )
+        -- earliest date, estimated or confirmed, of any phase with simple name that is “Active” or “Construction”
     END AS project_development_status_date,
     plv.project_development_status_date_calendar_year,
     plv.project_development_status_date_calendar_year_month,
