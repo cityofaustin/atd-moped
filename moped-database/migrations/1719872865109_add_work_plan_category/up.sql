@@ -193,13 +193,13 @@ SELECT
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
-            WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
             LIMIT 1
         ) IS NOT null THEN 'Estimated Public Meeting Date'
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
-            WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
+            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
             LIMIT 1
         ) IS NOT null THEN 'Estimated Start of Project Development'
     END AS project_development_status,
@@ -207,7 +207,7 @@ SELECT
             THEN (
                 SELECT max(phases.phase_end)::text AS max
                 FROM moped_proj_phases AS phases
-                WHERE true AND phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
+                WHERE phases.project_id = mpc.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
             )
         WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
             THEN
@@ -217,26 +217,27 @@ SELECT
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
-            WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
             LIMIT 1
         ) IS NOT null
             THEN (
+                -- latest completed or estimated "Public meeting" milestone date
                 SELECT coalesce(max(mpm.date_completed), max(mpm.date_estimated))::text
                 FROM moped_proj_milestones AS mpm
-                WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+                WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
             )
         WHEN (
             SELECT mpm.milestone_id
             FROM moped_proj_milestones AS mpm
-            WHERE true AND mpm.project_id = mpc.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
+            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 66 AND mpm.is_deleted = false
             LIMIT 1
         ) IS NOT null THEN (
+            -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
             SELECT min(mpp.phase_start)::text
             FROM moped_proj_phases AS mpp
             LEFT JOIN moped_phases AS mp ON mpp.phase_id = moped_phases.phase_id
-            WHERE true AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
+            WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
         )
-        -- earliest date, estimated or confirmed, of any phase with simple name that is “Active” or “Construction”
     END AS project_development_status_date,
     plv.project_development_status_date_calendar_year,
     plv.project_development_status_date_calendar_year_month,
