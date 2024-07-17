@@ -400,7 +400,7 @@ const Filters = ({
         /* Use option formatter and dedupe items to handle cases like same team member name options
          * See https://github.com/mui/material-ui/issues/26492
          **/
-        const options = data[lookupTable]
+        const options = data?.[lookupTable]
           ? data[lookupTable].map((option) => getOptionLabel(option))
           : [];
         const dedupedOptions = [...new Set(options)];
