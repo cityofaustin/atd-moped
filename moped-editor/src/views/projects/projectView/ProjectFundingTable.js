@@ -88,7 +88,6 @@ const useStyles = makeStyles((theme) => ({
   },
   deptAutocomplete: {
     width: "300px",
-    fontSize: ".875em",
     "& .MuiAutocomplete-inputRoot": {
       marginBottom: "16px",
     },
@@ -112,7 +111,7 @@ const useStyles = makeStyles((theme) => ({
   autocompleteLookupInput: {
     minWidth: "200px",
     alignContent: "center",
-    padding: "8px",
+    padding: theme.spacing(1),
   },
 }));
 
@@ -251,16 +250,7 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={props.name}
         options={props.data}
-        renderInput={(params) => (
-          <TextField
-            variant="standard"
-            {...params}
-            inputProps={{
-              ...params.inputProps,
-              style: { fontSize: ".875rem" },
-            }}
-          />
-        )}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string instead of accessing the name
           typeof option === "string" ? option : option[`${props.name}_name`]
@@ -295,16 +285,7 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={"moped_funds"}
         options={props.data}
-        renderInput={(params) => (
-          <TextField
-            variant="standard"
-            {...params}
-            inputProps={{
-              ...params.inputProps,
-              style: { fontSize: ".875rem" },
-            }}
-          />
-        )}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string
           typeof option === "string"
@@ -637,7 +618,7 @@ const ProjectFundingTable = () => {
           />,
         ];
       },
-    }
+    },
   ];
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;

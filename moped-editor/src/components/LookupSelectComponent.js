@@ -2,6 +2,7 @@ import React from "react";
 import { MenuItem, Select } from "@mui/material";
 import { handleKeyEvent } from "../utils/materialTableHelpers";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import theme from "src/theme";
 
 /**
  * Component for dropdown select using a lookup table as options
@@ -30,8 +31,7 @@ const LookupSelectComponent = (props) => {
       disableUnderline
       sx={{
         minWidth: "8em",
-        padding: "10px",
-        fontSize: ".875rem",
+        padding: theme.spacing(1),
         // adding a border despite disabling it above because the default border is much lower than other inputs
         "& .MuiSelect-select": {
           borderBottom: "1px rgba(0, 0, 0, 0.42) solid",

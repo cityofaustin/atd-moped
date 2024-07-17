@@ -4,6 +4,7 @@ import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import theme from "src/theme";
 
 /*
  * Transportation Project Financial Codes
@@ -18,7 +19,6 @@ const DeptUnitInput = (params, error = false, variant) => {
       error={error}
       InputLabelProps={{ required: false }}
       variant={variant}
-      inputProps={{ ...params.inputProps, style: { fontSize: ".875rem" } }}
     />
   );
 };
@@ -64,8 +64,8 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       ref={ref}
       sx={{
         alignContent: "center",
-        paddingLeft: "8px",
-        paddingRight: "8px",
+        paddingLeft: theme.spacing(1),
+        paddingRight: theme.spacing(1),
         width: "190px"
       }}
       id="dept-unit-id"
