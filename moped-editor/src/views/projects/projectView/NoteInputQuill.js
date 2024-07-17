@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   Box,
   Button,
@@ -9,19 +9,19 @@ import {
   RadioGroup,
   FormControlLabel,
 } from "@mui/material";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 
-const quillModules = {
-  toolbar: [
-    ["bold", "italic", "underline", "strike"],
-    [{ list: "ordered" }, { list: "bullet" }],
-    ["link"],
-    ["clean"],
-  ],
-};
+import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
+import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import { $generateHtmlFromNodes } from '@lexical/html';
+import { $getRoot, $getSelection } from 'lexical';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,8 +33,19 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     color: theme.palette.secondary.dark,
   },
-  quillText: {
-    color: theme.palette.text.primary,
+  contentEditable: {
+    height: "300px",
+    width: "100%",
+    padding: "8px 8px",
+    border: "1px solid #fff"
+  },
+  placeholder: {
+    position: "absolute",
+    top: "24px",
+    paddingLeft: "8px"
+  },
+  editorWrapper: {
+    position: "relative"
   },
   showButtonItem: {
     margin: theme.spacing(2),
@@ -62,6 +73,14 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
   </RadioGroup>
 );
 
+const theme = {};
+
+// Catch any errors that occur during Lexical updates and log them
+// or throw them as needed.
+const onError = (error) => {
+  console.error(error);
+}
+
 const NoteInputQuill = ({
   noteText,
   setNoteText,
@@ -78,25 +97,69 @@ const NoteInputQuill = ({
   isStatusEditModal,
 }) => {
   const classes = useStyles();
-  const ref = useRef();
 
-  useEffect(() => {
-    // autofocuses the quill input
-    ref?.current.focus();
-  }, []);
+  const initialConfig = {
+    namespace: 'MyEditor',
+    theme,
+    onError,
+  };
+
+
+  // useEffect(() => {
+  //   const [editor] = useLexicalComposerContext();
+  //   noteText === "" ? editor.update(() => {
+  //     const root = $getRoot();
+  //     root.clear();
+  //   }) : console.log("something")
+  // }, [noteText]);
+
+  // const handleClearEditor = useCallback(() => {
+  //   editor.update(() => {
+  //     const root = $getRoot();
+  //     root.clear();
+  //   })
+
+  //   editor.focus();
+  // }, [editor])
+
+  // noteText === "" ?? handleClearEditor()
+
+  const CustomOnChangePlugin = ({ onChange }) => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      return editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          const noteText = $generateHtmlFromNodes(editor, null);
+          onChange(noteText);
+        });
+      });
+    }, [editor, onChange]);
+    return null;
+  }
+
+  const onChange = (noteText) => {
+    setNoteText(noteText)
+  };
+
+  // if (noteText === "") {
+  //   CustomOnChangePlugin(onChange)
+  // }
 
   return (
     <Container>
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
-          <Box className={classes.quillText} pt={2}>
-            <ReactQuill
-              theme="snow"
-              value={noteText}
-              onChange={setNoteText}
-              modules={quillModules}
-              ref={ref}
-            />
+          <Box className={classes.editorWrapper} pt={2}>
+            <LexicalComposer initialConfig={initialConfig}>
+              <RichTextPlugin
+                contentEditable={<ContentEditable className={classes.contentEditable} />}
+                placeholder={<div className={classes.placeholder}>Enter some text...</div>}
+                ErrorBoundary={LexicalErrorBoundary}
+              />
+              <HistoryPlugin />
+              <AutoFocusPlugin />
+              <CustomOnChangePlugin onChange={onChange} />
+            </LexicalComposer>
           </Box>
         </Grid>
         <Grid
