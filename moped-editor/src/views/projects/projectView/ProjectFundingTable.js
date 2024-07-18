@@ -208,9 +208,14 @@ const ProjectFundingTable = () => {
           const index = columnFields.findIndex(
             (field) => field === params.field
           );
+          const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
+            params.id
+          );
           const nextFieldToFocus =
             columnFields[event.shiftKey ? index - 1 : index + 1];
           apiRef.current.setCellFocus(params.id, nextFieldToFocus);
+          // if the column is not visible, bring it into view
+          apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
         }
       }
     },
