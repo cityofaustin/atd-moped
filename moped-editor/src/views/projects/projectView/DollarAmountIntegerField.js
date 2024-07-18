@@ -14,9 +14,15 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DollarAmountIntegerField = ({ id, value, field }) => {
+const DollarAmountIntegerField = ({ id, value, field, hasFocus }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
     const { value: inputValue } = event.target;
@@ -39,7 +45,7 @@ const DollarAmountIntegerField = ({ id, value, field }) => {
       variant="standard"
       style={{ width: "80px", paddingTop: "inherit" }}
       id="funding_amount"
-      ref={ref}
+      inputRef={ref}
       name="funding_amount"
       type="text"
       inputMode="numeric"

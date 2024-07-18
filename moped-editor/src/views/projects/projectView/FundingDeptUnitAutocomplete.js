@@ -12,13 +12,14 @@ import theme from "src/theme";
 const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/bgrt-2m2z.json?dept_unit_status=Active&$limit=9999";
 
-const DeptUnitInput = (params, error = false, variant) => {
+const DeptUnitInput = (params, error = false, variant, ref) => {
   return (
     <TextField
       {...params}
       error={error}
       InputLabelProps={{ required: false }}
       variant={variant}
+      inputRef={ref}
     />
   );
 };
@@ -34,9 +35,15 @@ const DeptUnitInput = (params, error = false, variant) => {
 const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
   const { data, loading, error } = useSocrataJson(SOCRATA_ENDPOINT);
 
-  const { id, field } = props;
+  const { id, field, hasFocus } = props;
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (newValue) => {
     apiRef.current.setEditCellValue({
@@ -61,12 +68,11 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
 
   return (
     <Autocomplete
-      ref={ref}
       sx={{
         alignContent: "center",
         paddingLeft: theme.spacing(1),
         paddingRight: theme.spacing(1),
-        width: "190px"
+        width: "190px",
       }}
       id="dept-unit-id"
       filterOptions={filterOptions}
@@ -74,7 +80,7 @@ const FundingDeptUnitAutocomplete = ({ classes, props, value }) => {
       onChange={(e, value) => handleChange(value)}
       loading={loading}
       options={data}
-      renderInput={(params) => DeptUnitInput(params, null, "standard")}
+      renderInput={(params) => DeptUnitInput(params, null, "standard", ref)}
       value={value ?? null}
       isOptionEqualToValue={(value, option) =>
         value.unit_long_name === option.unit_long_name

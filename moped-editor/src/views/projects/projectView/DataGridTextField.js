@@ -8,9 +8,15 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DataGridTextField = ({ id, value, field }) => {
+const DataGridTextField = ({ id, value, field, hasFocus }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
     const { value: inputValue } = event.target;
@@ -27,7 +33,7 @@ const DataGridTextField = ({ id, value, field }) => {
       variant="standard"
       style={{ width: "inherit", paddingTop: "inherit" }}
       id={field}
-      ref={ref}
+      inputRef={ref}
       name={field}
       type="text"
       value={value ?? ""}

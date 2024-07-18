@@ -10,9 +10,15 @@ import theme from "src/theme";
  * @returns {React component}
  */
 const LookupSelectComponent = (props) => {
-  const { id, value, field } = props;
+  const { id, value, field, hasFocus } = props;
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (newValue) => {
     apiRef.current.setEditCellValue({
@@ -27,7 +33,7 @@ const LookupSelectComponent = (props) => {
       variant="standard"
       id={props.name}
       value={value || props.defaultValue}
-      ref={ref}
+      inputRef={ref}
       disableUnderline
       sx={{
         minWidth: "8em",

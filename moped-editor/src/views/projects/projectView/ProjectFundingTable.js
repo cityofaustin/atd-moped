@@ -24,6 +24,7 @@ import {
   GridActionsCellItem,
   useGridApiContext,
   useGridApiRef,
+  gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "../../../utils/numberFormatters";
@@ -189,6 +190,41 @@ const ProjectFundingTable = () => {
     }
   }, [data]);
 
+  const handleTabKeyDown = React.useCallback(
+    (params, event) => {
+      if (params.cellMode === GridRowModes.Edit) {
+        if (event.key === "Tab") {
+          const columnFields = gridColumnFieldsSelector(apiRef).filter(
+            (field) =>
+              apiRef.current.isCellEditable(
+                apiRef.current.getCellParams(params.id, field)
+              )
+          );
+
+          // Always prevent going to the next element in the tab sequence because the focus is
+          // handled manually to support edit components rendered inside Portals
+          event.preventDefault();
+
+          const index = columnFields.findIndex(
+            (field) => field === params.field
+          );
+          const nextFieldToFocus =
+            columnFields[event.shiftKey ? index - 1 : index + 1];
+          apiRef.current.setCellFocus(params.id, nextFieldToFocus);
+          console.log(nextFieldToFocus);
+          setRowModesModel((oldModel) => ({
+            ...oldModel,
+            [params.id]: {
+              mode: GridRowModes.Edit,
+              fieldToFocus: nextFieldToFocus,
+            },
+          }));
+        }
+      }
+    },
+    [apiRef]
+  );
+
   if (loading || !data) return <CircularProgress />;
 
   /**
@@ -223,9 +259,15 @@ const ProjectFundingTable = () => {
   };
 
   const LookupAutocompleteComponent = (props) => {
-    const { id, value, field } = props;
+    const { id, value, field, hasFocus } = props;
     const apiRef = useGridApiContext();
     const ref = React.useRef(null);
+
+    React.useEffect(() => {
+      if (hasFocus) {
+        ref.current.focus();
+      }
+    }, [hasFocus]);
 
     const handleChange = (event, newValue) => {
       apiRef.current.setEditCellValue({
@@ -238,7 +280,6 @@ const ProjectFundingTable = () => {
     return (
       <Autocomplete
         className={classes.autocompleteLookupInput}
-        ref={ref}
         value={
           // if we are editing, the autocomplete has the value provided by the material table, which is the record id
           // need to get its corresponding text value
@@ -250,7 +291,9 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={props.name}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField variant="standard" {...params} inputRef={ref} />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string instead of accessing the name
           typeof option === "string" ? option : option[`${props.name}_name`]
@@ -264,9 +307,15 @@ const ProjectFundingTable = () => {
   };
 
   const FundAutocompleteComponent = (props) => {
-    const { id, value, field } = props;
+    const { id, value, field, hasFocus } = props;
     const apiRef = useGridApiContext();
     const ref = React.useRef(null);
+
+    React.useEffect(() => {
+      if (hasFocus) {
+        ref.current.focus();
+      }
+    }, [hasFocus]);
 
     const handleChange = (event, newValue) => {
       apiRef.current.setEditCellValue({
@@ -279,13 +328,14 @@ const ProjectFundingTable = () => {
     return (
       <Autocomplete
         className={classes.fundSelectStyle}
-        ref={ref}
         value={value ?? null}
         // use customized popper component so menu expands to fullwidth
         PopperComponent={CustomPopper}
         id={"moped_funds"}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField variant="standard" {...params} inputRef={ref} />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string
           typeof option === "string"
@@ -630,6 +680,7 @@ const ProjectFundingTable = () => {
         <DataGridPro
           sx={dataGridProStyleOverrides}
           apiRef={apiRef}
+          ref={apiRef}
           autoHeight
           columns={dataGridColumns}
           rows={rows}
@@ -644,6 +695,7 @@ const ProjectFundingTable = () => {
           density="comfortable"
           getRowHeight={() => "auto"}
           hideFooter
+          onCellKeyDown={handleTabKeyDown}
           localeText={{ noRowsLabel: "No funding sources" }}
           initialState={{ pinnedColumns: { right: ["edit"] } }}
           slots={{
