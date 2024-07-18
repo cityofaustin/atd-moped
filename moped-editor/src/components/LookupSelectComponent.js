@@ -2,6 +2,7 @@ import React from "react";
 import { MenuItem, Select } from "@mui/material";
 import { handleKeyEvent } from "../utils/materialTableHelpers";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import theme from "src/theme";
 
 /**
  * Component for dropdown select using a lookup table as options
@@ -9,9 +10,15 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @returns {React component}
  */
 const LookupSelectComponent = (props) => {
-  const { id, value, field } = props;
+  const { id, value, field, hasFocus } = props;
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (newValue) => {
     apiRef.current.setEditCellValue({
@@ -24,10 +31,21 @@ const LookupSelectComponent = (props) => {
   return (
     <Select
       variant="standard"
-      style={{ minWidth: "8em" }}
       id={props.name}
       value={value || props.defaultValue}
-      ref={ref}
+      inputRef={ref}
+      disableUnderline
+      sx={{
+        minWidth: "8em",
+        padding: theme.spacing(1),
+        // adding a border despite disabling it above because the default border is much lower than other inputs
+        "& .MuiSelect-select": {
+          borderBottom: "1px rgba(0, 0, 0, 0.42) solid",
+        },
+        "& .MuiSelect-select:hover": {
+          borderBottom: "2px #212121 solid",
+        },
+      }}
     >
       {props.data.map((item) => (
         <MenuItem

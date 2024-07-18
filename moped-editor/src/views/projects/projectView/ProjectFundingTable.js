@@ -4,13 +4,13 @@ import { useQuery, useMutation } from "@apollo/client";
 
 // Material
 import {
+  Alert,
+  Autocomplete,
   CircularProgress,
   Snackbar,
   TextField,
-  Typography,
   Box,
 } from "@mui/material";
-import { Alert, Autocomplete } from "@mui/material";
 import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
@@ -24,10 +24,11 @@ import {
   GridActionsCellItem,
   useGridApiContext,
   useGridApiRef,
+  gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
+import { v4 as uuidv4 } from "uuid";
 import { currencyFormatter } from "../../../utils/numberFormatters";
 
-// Error Handler
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 
 import {
@@ -40,11 +41,13 @@ import {
 import { getDatabaseId, useUser } from "../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
+import DataGridTextField from "./DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import CustomPopper from "../../../components/CustomPopper";
 import LookupSelectComponent from "../../../components/LookupSelectComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -87,7 +90,6 @@ const useStyles = makeStyles((theme) => ({
   },
   deptAutocomplete: {
     width: "300px",
-    fontSize: ".875em",
     "& .MuiAutocomplete-inputRoot": {
       marginBottom: "16px",
     },
@@ -96,7 +98,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   fundSelectStyle: {
-    width: "10em",
+    width: "190px",
+    alignContent: "center",
   },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
@@ -106,6 +109,11 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
+  },
+  autocompleteLookupInput: {
+    minWidth: "200px",
+    alignContent: "center",
+    padding: theme.spacing(1),
   },
 }));
 
@@ -140,7 +148,6 @@ const ProjectFundingTable = () => {
   const { loading, error, data, refetch } = useQuery(FUNDING_QUERY, {
     // sending a null projectId will cause a graphql error
     // id 0 used when creating a new project, no project funding will be returned
-    // chia do we still need this
     variables: {
       projectId: projectId ?? 0,
     },
@@ -161,10 +168,18 @@ const ProjectFundingTable = () => {
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const handleSubprojectDialogClose = () => {
     setIsDialogOpen(false);
     refetch();
+  };
+
+  const handleDeleteOpen = (id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
   };
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
@@ -174,6 +189,38 @@ const ProjectFundingTable = () => {
       setRows(data.moped_proj_funding);
     }
   }, [data]);
+
+  const handleTabKeyDown = React.useCallback(
+    (params, event) => {
+      if (params.cellMode === GridRowModes.Edit) {
+        if (event.key === "Tab") {
+          const columnFields = gridColumnFieldsSelector(apiRef).filter(
+            (field) =>
+              apiRef.current.isCellEditable(
+                apiRef.current.getCellParams(params.id, field)
+              )
+          );
+
+          // Always prevent going to the next element in the tab sequence because the focus is
+          // handled manually to support edit components rendered inside Portals
+          event.preventDefault();
+
+          const index = columnFields.findIndex(
+            (field) => field === params.field
+          );
+          const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
+            params.id
+          );
+          const nextFieldToFocus =
+            columnFields[event.shiftKey ? index - 1 : index + 1];
+          apiRef.current.setCellFocus(params.id, nextFieldToFocus);
+          // if the column is not visible, bring it into view
+          apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
+        }
+      }
+    },
+    [apiRef]
+  );
 
   if (loading || !data) return <CircularProgress />;
 
@@ -209,9 +256,15 @@ const ProjectFundingTable = () => {
   };
 
   const LookupAutocompleteComponent = (props) => {
-    const { id, value, field } = props;
+    const { id, value, field, hasFocus } = props;
     const apiRef = useGridApiContext();
     const ref = React.useRef(null);
+
+    React.useEffect(() => {
+      if (hasFocus) {
+        ref.current.focus();
+      }
+    }, [hasFocus]);
 
     const handleChange = (event, newValue) => {
       apiRef.current.setEditCellValue({
@@ -223,8 +276,7 @@ const ProjectFundingTable = () => {
 
     return (
       <Autocomplete
-        style={{ minWidth: "200px" }}
-        ref={ref}
+        className={classes.autocompleteLookupInput}
         value={
           // if we are editing, the autocomplete has the value provided by the material table, which is the record id
           // need to get its corresponding text value
@@ -236,7 +288,9 @@ const ProjectFundingTable = () => {
         PopperComponent={CustomPopper}
         id={props.name}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField variant="standard" {...params} inputRef={ref} />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string instead of accessing the name
           typeof option === "string" ? option : option[`${props.name}_name`]
@@ -250,9 +304,15 @@ const ProjectFundingTable = () => {
   };
 
   const FundAutocompleteComponent = (props) => {
-    const { id, value, field } = props;
+    const { id, value, field, hasFocus } = props;
     const apiRef = useGridApiContext();
     const ref = React.useRef(null);
+
+    React.useEffect(() => {
+      if (hasFocus) {
+        ref.current.focus();
+      }
+    }, [hasFocus]);
 
     const handleChange = (event, newValue) => {
       apiRef.current.setEditCellValue({
@@ -265,13 +325,14 @@ const ProjectFundingTable = () => {
     return (
       <Autocomplete
         className={classes.fundSelectStyle}
-        ref={ref}
         value={value ?? null}
         // use customized popper component so menu expands to fullwidth
         PopperComponent={CustomPopper}
         id={"moped_funds"}
         options={props.data}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField variant="standard" {...params} inputRef={ref} />
+        )}
         getOptionLabel={(option) =>
           // if our value is a string, just return the string
           typeof option === "string"
@@ -302,9 +363,8 @@ const ProjectFundingTable = () => {
   const handleAddRecordClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
-    const id = Math.floor(Math.random() * 10000);
+    const id = uuidv4();
     setRows((oldRows) => [
-      ...oldRows,
       {
         id,
         funding_source_id: null,
@@ -317,6 +377,7 @@ const ProjectFundingTable = () => {
         isNew: true,
         proj_funding_id: id,
       },
+      ...oldRows,
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
@@ -468,52 +529,6 @@ const ProjectFundingTable = () => {
 
   const dataGridColumns = [
     {
-      headerName: "",
-      field: "edit",
-      hideable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      type: "actions",
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<CheckIcon />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CloseIcon />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
-        return [
-          <GridActionsCellItem
-            icon={<EditOutlinedIcon />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
-          />,
-          <GridActionsCellItem
-            icon={<DeleteOutlineIcon />}
-            label="Delete"
-            onClick={handleDeleteClick(id)}
-            color="inherit"
-          />,
-        ];
-      },
-    },
-    {
       headerName: "Source",
       field: "funding_source_id",
       width: 200,
@@ -550,6 +565,7 @@ const ProjectFundingTable = () => {
       field: "funding_description",
       width: 200,
       editable: true,
+      renderEditCell: (props) => <DataGridTextField {...props} />,
     },
     {
       headerName: "Status",
@@ -572,15 +588,8 @@ const ProjectFundingTable = () => {
       field: "fund",
       width: 200,
       editable: true,
-      renderCell: ({ row }) =>
-        !!row.fund?.fund_name ? (
-          <>
-            <Typography>{row.fund?.fund_id} |</Typography>
-            <Typography>{row.fund?.fund_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
+      valueFormatter: (value) =>
+        !!value?.fund_name ? `${value?.fund_id} | ${value?.fund_name}` : "",
       renderEditCell: (props) => (
         <FundAutocompleteComponent {...props} data={data.moped_funds} />
       ),
@@ -588,19 +597,13 @@ const ProjectFundingTable = () => {
     {
       headerName: "Dept-unit",
       field: "dept_unit",
-      width: 200,
+      width: 225,
       editable: true,
-      renderCell: ({ row }) =>
-        !!row.dept_unit?.unit_long_name ? (
-          <>
-            <Typography>
-              {row.dept_unit?.dept} | {row.dept_unit?.unit} |
-            </Typography>
-            <Typography>{row.dept_unit?.unit_long_name}</Typography>
-          </>
-        ) : (
-          ""
-        ),
+      valueFormatter: (value) =>
+        !!value?.unit_long_name
+          ? `${value?.dept} | ${value?.unit} |
+            ${value?.unit_long_name}`
+          : "",
       renderEditCell: (props) => (
         <FundingDeptUnitAutocomplete
           classes={classes.deptAutocomplete}
@@ -612,10 +615,57 @@ const ProjectFundingTable = () => {
     {
       headerName: "Amount",
       field: "funding_amount",
+      width: 100,
       editable: true,
-      renderCell: ({ value }) => currencyFormatter.format(value),
+      valueFormatter: (value) => currencyFormatter.format(value),
       renderEditCell: (props) => <DollarAmountIntegerField {...props} />,
       type: "currency",
+    },
+    {
+      headerName: "",
+      field: "edit",
+      hideable: false,
+      filterable: false,
+      sortable: false,
+      editable: false,
+      type: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+            label="Delete"
+            onClick={() => handleDeleteOpen(id)}
+            color="inherit"
+          />,
+        ];
+      },
     },
   ];
 
@@ -627,22 +677,24 @@ const ProjectFundingTable = () => {
         <DataGridPro
           sx={dataGridProStyleOverrides}
           apiRef={apiRef}
+          ref={apiRef}
           autoHeight
           columns={dataGridColumns}
           rows={rows}
-          // rows={data.moped_proj_funding}
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={handleProcessUpdateError}
+          disableRowSelectionOnClick
           toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
           hideFooter
+          onCellKeyDown={handleTabKeyDown}
           localeText={{ noRowsLabel: "No funding sources" }}
-          initialState={{ pinnedColumns: { left: ["edit"] } }}
+          initialState={{ pinnedColumns: { right: ["edit"] } }}
           slots={{
             toolbar: ProjectFundingToolbar,
           }}
@@ -661,6 +713,12 @@ const ProjectFundingTable = () => {
           }}
         />
       </Box>
+      <DeleteConfirmationModal
+        type={"funding source"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         open={snackbarState.open}
