@@ -211,14 +211,6 @@ const ProjectFundingTable = () => {
           const nextFieldToFocus =
             columnFields[event.shiftKey ? index - 1 : index + 1];
           apiRef.current.setCellFocus(params.id, nextFieldToFocus);
-          console.log(nextFieldToFocus);
-          setRowModesModel((oldModel) => ({
-            ...oldModel,
-            [params.id]: {
-              mode: GridRowModes.Edit,
-              fieldToFocus: nextFieldToFocus,
-            },
-          }));
         }
       }
     },
