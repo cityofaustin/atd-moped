@@ -192,8 +192,14 @@ const Filters = ({
    * @param {string} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
    * @param {string} lookupTable - The lookup table name
+   * @param {Array} lookupOperators - operators set in filter config to show autocomplete
    */
-  const handleFilterOperatorChange = (filterIndex, operator, lookupTable) => {
+  const handleFilterOperatorChange = (
+    filterIndex,
+    operator,
+    lookupTable,
+    lookupOperators
+  ) => {
     // Clone state
     const filtersNewState = [...filterParameters];
 
@@ -203,7 +209,12 @@ const Filters = ({
     // if we are switching to an autocomplete input or using an operator
     // without a search value, clear the search value
     if (
-      shouldRenderAutocompleteInput(lookupTable, operator, loading) ||
+      shouldRenderAutocompleteInput(
+        lookupTable,
+        operator,
+        loading,
+        lookupOperators
+      ) ||
       isFilterNullType(operator)
     ) {
       filtersNewState[filterIndex].value = null;
@@ -377,11 +388,22 @@ const Filters = ({
         const operators = fieldConfig?.operators ?? [];
 
         /* If the field uses a lookup table, get the table and field names  */
-        const { table_name: lookupTable, field_name: lookupField } =
-          fieldConfig?.lookup ?? {};
+        const {
+          table_name: lookupTable,
+          operators: lookupOperators,
+          getOptionLabel,
+        } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
+
+        /* Use option formatter and dedupe items to handle cases like same team member name options
+         * See https://github.com/mui/material-ui/issues/26492
+         **/
+        const options = data?.[lookupTable]
+          ? data[lookupTable].map((option) => getOptionLabel(option))
+          : [];
+        const dedupedOptions = [...new Set(options)];
 
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
@@ -449,7 +471,8 @@ const Filters = ({
                       handleFilterOperatorChange(
                         filterIndex,
                         e.target.value,
-                        lookupTable
+                        lookupTable,
+                        lookupOperators
                       )
                     }
                     label="field"
@@ -471,6 +494,8 @@ const Filters = ({
                   </Select>
                 </FormControl>
               </Grid>
+
+              {/* Select or enter value */}
               <Grid item xs={12} md={4} className={classes.gridItemPadding}>
                 <FormControl
                   fullWidth
@@ -481,33 +506,15 @@ const Filters = ({
                     (shouldRenderAutocompleteInput(
                       lookupTable,
                       operator,
-                      loading
+                      loading,
+                      lookupOperators
                     ) ? (
                       <Autocomplete
                         value={value || null}
-                        options={data[lookupTable]}
+                        options={dedupedOptions}
                         disabled={!filterParameters[filterIndex].operator}
-                        getOptionLabel={(option) =>
-                          Object.hasOwn(option, lookupField)
-                            ? option[lookupField]
-                            : option
-                        }
                         onChange={(e, value) => {
-                          if (value) {
-                            handleSearchValueChange(
-                              filterIndex,
-                              value[lookupField]
-                            );
-                          } else {
-                            // value is null when the Autocomplete selection is cleared
-                            handleSearchValueChange(filterIndex, value);
-                          }
-                        }}
-                        isOptionEqualToValue={(option, value) => {
-                          if (Object.hasOwn(value, "name")) {
-                            return option.name === value.name;
-                          }
-                          return option[lookupField] === value;
+                          handleSearchValueChange(filterIndex, value);
                         }}
                         renderInput={(params) => (
                           <TextField
