@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import {
   Box,
   Button,
@@ -20,7 +20,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes } from '@lexical/html';
-import { $getRoot, $getSelection } from 'lexical';
+import { $getRoot } from 'lexical';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -104,27 +104,8 @@ const NoteInputQuill = ({
     onError,
   };
 
-
-  // useEffect(() => {
-  //   const [editor] = useLexicalComposerContext();
-  //   noteText === "" ? editor.update(() => {
-  //     const root = $getRoot();
-  //     root.clear();
-  //   }) : console.log("something")
-  // }, [noteText]);
-
-  // const handleClearEditor = useCallback(() => {
-  //   editor.update(() => {
-  //     const root = $getRoot();
-  //     root.clear();
-  //   })
-
-  //   editor.focus();
-  // }, [editor])
-
-  // noteText === "" ?? handleClearEditor()
-
-  const CustomOnChangePlugin = ({ onChange }) => {
+  // On change, return editor content as HTML
+  const OnChangePlugin = ({ onChange }) => {
     const [editor] = useLexicalComposerContext();
     useEffect(() => {
       return editor.registerUpdateListener(({ editorState }) => {
@@ -137,13 +118,22 @@ const NoteInputQuill = ({
     return null;
   }
 
-  const onChange = (noteText) => {
-    setNoteText(noteText)
-  };
+  // On successful save, clear and refocus the editor
+  const OnSavePlugin = () => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      noteAddSuccess && editor.update(() => {
+        const root = $getRoot();
+        root.clear();
+      })
+      editor.focus();
+    }, [editor, noteText]);
+    return null;
+  }
 
-  // if (noteText === "") {
-  //   CustomOnChangePlugin(onChange)
-  // }
+  const onChange = (noteText) => {
+    setNoteText(noteText);
+  };
 
   return (
     <Container>
@@ -158,7 +148,8 @@ const NoteInputQuill = ({
               />
               <HistoryPlugin />
               <AutoFocusPlugin />
-              <CustomOnChangePlugin onChange={onChange} />
+              <OnChangePlugin onChange={onChange} />
+              <OnSavePlugin />
             </LexicalComposer>
           </Box>
         </Grid>
