@@ -492,7 +492,7 @@ const ProjectFundingTable = () => {
           })
       );
     } else {
-      // Remove __typename since we cleaned it up in the updateProjectFundingData and check if the row has changed
+      // Remove __typename since we removed it from updatedRow and check if the row has changed
       delete originalRow.__typename;
       const hasRowChanged = !isEqual(updatedRow, originalRow);
 
