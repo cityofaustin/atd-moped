@@ -146,8 +146,8 @@ const NoteInputQuill = ({
       const isTextInEditor = !!textArray;
       const isTextinDatabase = noteText !== "" || "<p><br></p>"
 
-      // If user clicked 'edit' on an existing note and editor is empty,
-      // populate editor with the stored note
+      // If user is editing a note and editor is empty,
+      // populate editor with stored note
       editingNote && !isTextInEditor && isTextinDatabase &&
         editor.update(() => {
           $getRoot()
