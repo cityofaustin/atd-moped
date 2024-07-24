@@ -19,8 +19,8 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $generateHtmlFromNodes } from '@lexical/html';
-import { $getRoot } from 'lexical';
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
+import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -125,15 +125,45 @@ const NoteInputQuill = ({
       noteAddSuccess && editor.update(() => {
         const root = $getRoot();
         root.clear();
-      })
+      });
+
       editor.focus();
-    }, [editor, noteText]);
+    }, [editor, noteAddSuccess]);
     return null;
   }
 
   const onChange = (noteText) => {
     setNoteText(noteText);
   };
+
+  // On edit, load the selected comment and refocus the editor
+  const OnEditPlugin = () => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      const editorState = editor.getEditorState()
+      const nodeMap = editorState._nodeMap;
+      const textArray = [...nodeMap.entries()][2];
+      const isTextInEditor = !!textArray;
+      const isTextinDatabase = noteText !== "" || "<p><br></p>"
+      editingNote && isTextinDatabase && !isTextInEditor &&
+        editor.update(() => {
+          $getRoot()
+            .getChildren()
+            .forEach((n) => n.remove());
+          const parser = new DOMParser();
+          const dom = parser.parseFromString(noteText, 'text/html');
+          const nodes = $generateNodesFromDOM(editor, dom);
+          const paragraphNode = $createParagraphNode();
+          nodes.forEach((n) => {
+            console.log(n);
+            paragraphNode.append(n);
+          });
+          $getRoot().append(paragraphNode);
+        });
+      editor.focus();
+    }, [editor, editingNote]);
+    return null;
+  }
 
   return (
     <Container>
@@ -150,6 +180,7 @@ const NoteInputQuill = ({
               <AutoFocusPlugin />
               <OnChangePlugin onChange={onChange} />
               <OnSavePlugin />
+              <OnEditPlugin />
             </LexicalComposer>
           </Box>
         </Grid>
