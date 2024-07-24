@@ -10,7 +10,7 @@ import theme from "src/theme";
  * Transportation Project Financial Codes
  */
 const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/bgrt-2m2z.json?dept_unit_status=Active&$limit=9999";
+  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=9999";
 
 const DeptUnitInput = (params, error = false, variant, ref) => {
   return (
