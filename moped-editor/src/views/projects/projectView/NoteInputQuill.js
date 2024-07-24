@@ -145,7 +145,10 @@ const NoteInputQuill = ({
       const textArray = [...nodeMap.entries()][2];
       const isTextInEditor = !!textArray;
       const isTextinDatabase = noteText !== "" || "<p><br></p>"
-      editingNote && isTextinDatabase && !isTextInEditor &&
+
+      // If user clicked 'edit' on an existing note and editor is empty,
+      // populate editor with the stored note
+      editingNote && !isTextInEditor && isTextinDatabase &&
         editor.update(() => {
           $getRoot()
             .getChildren()
@@ -153,12 +156,9 @@ const NoteInputQuill = ({
           const parser = new DOMParser();
           const dom = parser.parseFromString(noteText, 'text/html');
           const nodes = $generateNodesFromDOM(editor, dom);
-          const paragraphNode = $createParagraphNode();
-          nodes.forEach((n) => {
-            console.log(n);
-            paragraphNode.append(n);
+          nodes.forEach((node) => {
+            $getRoot().append(node);
           });
-          $getRoot().append(paragraphNode);
         });
       editor.focus();
     }, [editor, editingNote]);
