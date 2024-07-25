@@ -1,5 +1,42 @@
 DROP VIEW IF EXISTS component_arcgis_online_view;
 
+CREATE OR REPLACE FUNCTION public.get_project_development_status()
+ RETURNS text
+ LANGUAGE plpgsql
+AS $function$
+DECLARE 
+  latest_public_meeting_date text;
+  earliest_active_or_construction_phase_date text;
+BEGIN
+	 -- find latest completed or estimated "Public meeting" milestone date
+            SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text) INTO latest_public_meeting_date
+            FROM moped_proj_milestones AS mpm
+            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
+            
+    -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
+            SELECT min(mpp.phase_start)::text INTO earliest_active_or_construction_phase_date
+            FROM moped_proj_phases AS mpp
+            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
+            WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
+
+	
+    RETURN CASE WHEN current_phase.phase_name_simple = 'Complete' THEN 'Complete'
+        WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
+            THEN
+                CASE
+                    WHEN plv.current_phase_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
+                    ELSE 'Estimated End Date'
+                END
+        WHEN 
+           latest_public_meeting_date
+         IS NOT null THEN 'Estimated Public Meeting Date'
+        WHEN earliest_active_or_construction_phase_date IS NOT null THEN 'Estimated Start of Project Development'
+    END
+    
+    
+    END;
+$function$
+
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
