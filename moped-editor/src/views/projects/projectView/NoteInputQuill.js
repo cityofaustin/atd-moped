@@ -20,7 +20,9 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
-import { $getRoot, $createParagraphNode, $createTextNode } from 'lexical';
+import { $getRoot } from 'lexical';
+import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { LinkNode } from '@lexical/link';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -101,6 +103,9 @@ const NoteInputQuill = ({
   const initialConfig = {
     namespace: 'MyEditor',
     theme,
+    nodes: [
+      LinkNode,
+    ],
     onError,
   };
 
@@ -132,10 +137,6 @@ const NoteInputQuill = ({
     return null;
   }
 
-  const onChange = (noteText) => {
-    setNoteText(noteText);
-  };
-
   // On edit, load the selected comment and refocus the editor
   const OnEditPlugin = () => {
     const [editor] = useLexicalComposerContext();
@@ -165,6 +166,10 @@ const NoteInputQuill = ({
     return null;
   }
 
+  const onChange = (noteText) => {
+    setNoteText(noteText);
+  };
+
   return (
     <Container>
       <Grid container direction="column" spacing={1}>
@@ -181,6 +186,7 @@ const NoteInputQuill = ({
               <OnChangePlugin onChange={onChange} />
               <OnSavePlugin />
               <OnEditPlugin />
+              <LinkPlugin />
             </LexicalComposer>
           </Box>
         </Grid>
