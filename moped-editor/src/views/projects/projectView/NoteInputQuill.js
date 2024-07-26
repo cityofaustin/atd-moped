@@ -133,7 +133,7 @@ const NoteInputQuill = ({
       });
 
       editor.focus();
-    }, [editor, noteAddSuccess]);
+    }, [editor]);
     return null;
   }
 
@@ -162,7 +162,7 @@ const NoteInputQuill = ({
           });
         });
       editor.focus();
-    }, [editor, editingNote]);
+    }, [editor]);
     return null;
   }
 
