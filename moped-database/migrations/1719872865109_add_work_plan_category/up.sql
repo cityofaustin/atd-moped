@@ -1,28 +1,5 @@
 DROP VIEW IF EXISTS component_arcgis_online_view;
 
-CREATE OR REPLACE FUNCTION public.get_project_development_status(latest_public_meeting_date text, earliest_active_or_construction_phase_date text, completion_date timestamptz, substantial_completion_date timestamptz, current_phase_simple text)
-RETURNS text
-LANGUAGE plpgsql
-AS $function$
-BEGIN       
-    IF current_phase_simple = 'Complete' THEN 
-        RETURN 'Complete';
-    ELSIF coalesce(completion_date, substantial_completion_date) IS NOT null THEN
-        IF current_phase_simple = 'Construction' THEN
-            RETURN 'Estimated End Date (In Construction)';
-        ELSE 
-            RETURN 'Estimated End Date';
-        END IF;
-    ELSIF latest_public_meeting_date IS NOT null THEN 
-        RETURN 'Estimated Public Meeting Date';
-    ELSIF earliest_active_or_construction_phase_date IS NOT null THEN 
-        RETURN 'Estimated Start of Project Development';
-    ELSE
-        RETURN null;
-    END IF;
-END;
-$function$;
-
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
@@ -227,7 +204,16 @@ SELECT
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
-    get_project_development_status(lpmd.latest, eaocpd.earliest, mpc.completion_date, plv.substantial_completion_date, current_phase.phase_name_simple) AS project_development_status,
+    CASE WHEN current_phase.phase_name_simple = 'Complete' THEN 'Complete'
+        WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
+            THEN
+                CASE
+                    WHEN plv.current_phase_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
+                    ELSE 'Estimated End Date'
+                END
+        WHEN lpmd.latest IS NOT null THEN 'Estimated Public Meeting Date'
+        WHEN eaocpd.earliest IS NOT null THEN 'Estimated Start of Project Development'
+    END AS project_development_status,
     CASE WHEN current_phase.phase_name_simple = 'Complete'
             THEN plv.substantial_completion_date::text
         WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
@@ -235,38 +221,16 @@ SELECT
                 CASE
                     WHEN current_phase.phase_name_simple != 'Construction' THEN plv.substantial_completion_date_estimated::text
                 END
-        WHEN (
-        -- latest completed or estimated "Public meeting" milestone date
-            SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text)
-            FROM moped_proj_milestones AS mpm
-            WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
-        ) IS NOT null
-            THEN (
-            -- latest completed or estimated "Public meeting" milestone date
-                SELECT coalesce(max(mpm.date_actual)::text, max(mpm.date_estimate)::text)
-                FROM moped_proj_milestones AS mpm
-                WHERE mpm.project_id = mpc.project_id AND mpm.milestone_id = 65 AND mpm.is_deleted = false
-            )
-        WHEN (
-        -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
-            SELECT min(mpp.phase_start)::text
-            FROM moped_proj_phases AS mpp
-            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
-            WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
-        ) IS NOT null THEN (
-        -- earliest estimated or confirmed date of any phase with simple name that is “Active” or “Construction”
-            SELECT min(mpp.phase_start)::text
-            FROM moped_proj_phases AS mpp
-            LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
-            WHERE mpp.project_id = mpc.project_id AND mp.phase_name_simple IN ('Active', 'Construction') AND mpp.is_deleted = false
-        )
+        WHEN lpmd.latest IS NOT null
+            THEN lpmd.latest
+        WHEN eaocpd.earliest IS NOT null THEN eaocpd.earliest
     END AS project_development_status_date,
-    plv.project_development_status_date_calendar_year,
-    plv.project_development_status_date_calendar_year_month,
-    plv.project_development_status_date_calendar_year_month_numeric,
-    plv.project_development_status_date_calendar_year_quarter,
-    plv.project_development_status_date_fiscal_year,
-    plv.project_development_status_date_fiscal_year_quarter,
+    9999 AS project_development_status_date_calendar_year,
+    'placeholder text'::text AS project_development_status_date_calendar_year_month,
+    'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
+    'placeholder text'::text AS project_development_status_date_calendar_year_quarter,
+    999 AS project_development_status_date_fiscal_year,
+    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
 FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
