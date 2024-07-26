@@ -1,11 +1,20 @@
 #!/usr/bin/env python
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
 # docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  moped-agol /bin/bash
-from settings import COMPONENTS_QUERY, UPLOAD_CHUNK_SIZE
+import argparse
+import logging
+from datetime import datetime, timezone
+
+from process.logging import get_logger
+from settings import (
+    COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+    UPLOAD_CHUNK_SIZE,
+)
 from utils import (
     make_hasura_request,
     get_token,
-    delete_features,
+    delete_all_features,
+    delete_features_by_project_ids,
     add_features,
     chunks,
     get_logger,
@@ -54,16 +63,15 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
-def main():
-    logger.info("Getting token...")
-    get_token()
+def make_all_features(data):
+    """Take a list of component feature records and create Esri feature objects for lines, points, and combined layers in AGOL.
 
-    logger.info("Downloading component data...")
-    data = make_hasura_request(query=COMPONENTS_QUERY)["component_arcgis_online_view"]
+    Args:
+        data (dict): a list of component feature records
 
-    logger.info(f"{len(data)} component records to process")
-
-    # lines and points must be stored in different layers in AGOL
+    Returns:
+        dict: An object with lists of Esri feature objects for lines, points, and combined layers
+    """
     all_features = {"lines": [], "points": [], "combined": []}
 
     logger.info("Building Esri feature objects...")
@@ -80,7 +88,9 @@ def main():
 
         esri_geometry_key = get_esri_geometry_key(geometry)
         feature = make_esri_feature(
-            esri_geometry_key=esri_geometry_key, geometry=geometry, attributes=component
+            esri_geometry_key=esri_geometry_key,
+            geometry=geometry,
+            attributes=component,
         )
 
         # adds a special `source_geometry_type` column that will be useful on the `combined` layer
@@ -100,28 +110,115 @@ def main():
                 # a multi-line geometry
                 line_geometry["coordinates"] = [line_geometry["coordinates"]]
             line_feature = make_esri_feature(
-                esri_geometry_key="paths", geometry=line_geometry, attributes=component
+                esri_geometry_key="paths",
+                geometry=line_geometry,
+                attributes=component,
             )
             all_features["combined"].append(line_feature)
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
 
-    for feature_type in ["points", "lines", "combined"]:
-        logger.info(f"Processing {feature_type} features...")
-        features = all_features[feature_type]
+    return all_features
 
-        logger.info("Deleting all existing features...")
-        delete_features(feature_type)
 
-        logger.info(
-            f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-        )
-        for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-            logger.info("Uploading chunk....")
-            add_features(feature_type, feature_chunk)
+def main(args):
+    logger.info("Getting token...")
+    get_token()
+
+    variables = (
+        {"where": {}}
+        if args.full
+        else {"where": {"project_updated_at": {"_gt": args.date}}}
+    )
+
+    logger.info(
+        f"Getting {'all' if args.full else 'recently updated'} component features from all projects..."
+    )
+    data = make_hasura_request(
+        query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+        variables=variables,
+    )["component_arcgis_online_view"]
+
+    all_features = make_all_features(data)
+
+    if args.full:
+        for feature_type in ["points", "lines", "combined"]:
+            logger.info(f"Processing {feature_type} features...")
+            features = all_features[feature_type]
+
+            logger.info("Deleting all existing features...")
+            delete_all_features(feature_type)
+
+            logger.info(
+                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+            )
+            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+                logger.info("Uploading chunk....")
+                add_features(feature_type, feature_chunk)
+    else:
+        # Get unique project IDs that need to have features deleted & replaced
+        project_ids = []
+
+        for component in data:
+            project_ids.append(component["project_id"])
+
+        project_ids_for_feature_delete = list(set(project_ids))
+
+        # Delete outdated feature from AGOL and add updated features
+        for feature_type in ["points", "lines", "combined"]:
+            logger.info(f"Processing {feature_type} features...")
+            logger.info(
+                f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+            )
+            for delete_chunk in chunks(
+                project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
+            ):
+                joined_project_ids = ", ".join(str(x) for x in delete_chunk)
+                logger.info(f"Deleting features with project ids {joined_project_ids}")
+                delete_features_by_project_ids(feature_type, joined_project_ids)
+
+            features = all_features[feature_type]
+
+            logger.info(
+                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+            )
+            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+                logger.info("Uploading chunk....")
+                add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
-    logger = get_logger(__file__)
-    main()
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(
+        "-d",
+        "--date",
+        type=str,
+        default=None,
+        help=f"ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update.",
+    )
+
+    parser.add_argument(
+        "-f",
+        "--full",
+        action="store_true",
+        help=f"Delete and replace all project components.",
+    )
+
+    args = parser.parse_args()
+    logger = get_logger(name="components-to-agol", level=logging.INFO)
+
+    if args.date and args.full:
+        raise Exception(
+            "Please provide either the -d flag with ISO date string with TZ offset or the -f flag and not both."
+        )
+
+    if args.full:
+        logger.info(f"Starting sync. Replacing all projects' components data...")
+    else:
+        logger.info(
+            f"Starting sync. Finding projects updated since {args.date} and replacing components data..."
+        )
+
+    main(args)
