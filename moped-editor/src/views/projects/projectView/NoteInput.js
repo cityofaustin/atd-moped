@@ -83,7 +83,64 @@ const onError = (error) => {
   console.error(error);
 }
 
-const NoteInputQuill = ({
+  // On change, return editor content as HTML
+  const OnChangePlugin = ({ onChange }) => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      return editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          const noteText = $generateHtmlFromNodes(editor, null);
+          onChange(noteText);
+        });
+      });
+    }, [editor, onChange]);
+    return null;
+  }
+
+  // On successful save, clear and refocus the editor
+  const OnSavePlugin = (noteAddSuccess) => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      noteAddSuccess && editor.update(() => {
+        const root = $getRoot();
+        root.clear();
+      });
+
+      editor.focus();
+    }, [editor, noteAddSuccess]);
+    return null;
+  }
+
+  // On edit, load the selected comment and refocus the editor
+  const OnEditPlugin = (noteText, editingNote) => {
+    const [editor] = useLexicalComposerContext();
+    useEffect(() => {
+      const editorState = editor.getEditorState()
+      const nodeMap = editorState._nodeMap;
+      const textArray = [...nodeMap.entries()][2];
+      const isTextInEditor = !!textArray;
+      const isTextinDatabase = noteText !== "" || "<p><br></p>"
+
+      // If user is editing a note and editor is empty,
+      // populate editor with stored note
+      editingNote && !isTextInEditor && isTextinDatabase &&
+        editor.update(() => {
+          $getRoot()
+            .getChildren()
+            .forEach((n) => n.remove());
+          const parser = new DOMParser();
+          const dom = parser.parseFromString(noteText, 'text/html');
+          const nodes = $generateNodesFromDOM(editor, dom);
+          nodes.forEach((node) => {
+            $getRoot().append(node);
+          });
+        });
+      editor.focus();
+    }, [editor, editingNote, noteText]);
+    return null;
+  }
+
+const NoteInput = ({
   noteText,
   setNoteText,
   newNoteType,
@@ -109,63 +166,6 @@ const NoteInputQuill = ({
     onError,
   };
 
-  // On change, return editor content as HTML
-  const OnChangePlugin = ({ onChange }) => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      return editor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          const noteText = $generateHtmlFromNodes(editor, null);
-          onChange(noteText);
-        });
-      });
-    }, [editor, onChange]);
-    return null;
-  }
-
-  // On successful save, clear and refocus the editor
-  const OnSavePlugin = () => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      noteAddSuccess && editor.update(() => {
-        const root = $getRoot();
-        root.clear();
-      });
-
-      editor.focus();
-    }, [editor]);
-    return null;
-  }
-
-  // On edit, load the selected comment and refocus the editor
-  const OnEditPlugin = () => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      const editorState = editor.getEditorState()
-      const nodeMap = editorState._nodeMap;
-      const textArray = [...nodeMap.entries()][2];
-      const isTextInEditor = !!textArray;
-      const isTextinDatabase = noteText !== "" || "<p><br></p>"
-
-      // If user is editing a note and editor is empty,
-      // populate editor with stored note
-      editingNote && !isTextInEditor && isTextinDatabase &&
-        editor.update(() => {
-          $getRoot()
-            .getChildren()
-            .forEach((n) => n.remove());
-          const parser = new DOMParser();
-          const dom = parser.parseFromString(noteText, 'text/html');
-          const nodes = $generateNodesFromDOM(editor, dom);
-          nodes.forEach((node) => {
-            $getRoot().append(node);
-          });
-        });
-      editor.focus();
-    }, [editor]);
-    return null;
-  }
-
   const onChange = (noteText) => {
     setNoteText(noteText);
   };
@@ -184,8 +184,8 @@ const NoteInputQuill = ({
               <HistoryPlugin />
               <AutoFocusPlugin />
               <OnChangePlugin onChange={onChange} />
-              <OnSavePlugin />
-              <OnEditPlugin />
+              <OnSavePlugin noteAddSuccess={noteAddSuccess}/>
+              <OnEditPlugin noteText={noteText} editingNote={editingNote}/>
               <LinkPlugin />
             </LexicalComposer>
           </Box>
@@ -236,4 +236,4 @@ const NoteInputQuill = ({
   );
 };
 
-export default NoteInputQuill;
+export default NoteInput;
