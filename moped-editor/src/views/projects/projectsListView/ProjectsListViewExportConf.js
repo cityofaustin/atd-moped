@@ -60,7 +60,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   type_name: {
     label: "Type",
   },
-  funding_source_name: {
+  funding_source_and_program_names: {
     label: "Funding",
   },
   project_status_update: {
