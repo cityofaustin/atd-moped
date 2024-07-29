@@ -33,6 +33,7 @@ const FiltersChips = ({
   isOr,
   filtersConfig,
   setSearchParams,
+  setIsOr,
 }) => {
   const classes = useStyles();
 
@@ -60,8 +61,15 @@ const FiltersChips = ({
     filtersNewState.splice(filterIndex, 1);
     setFilters(filtersNewState);
 
+    const remainingFiltersCount = filtersNewState.length;
+
+    if (remainingFiltersCount === 1) {
+      /* Reset isOr to false (all/and) if there is only one filter left */
+      setIsOr(false);
+    }
+
     // Update search params in url
-    if (filtersNewState.length > 0) {
+    if (remainingFiltersCount > 0) {
       setSearchParams((prevSearchParams) => {
         const jsonParamString = JSON.stringify(filtersNewState);
 

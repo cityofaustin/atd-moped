@@ -175,8 +175,8 @@ const Search = ({
                 loading={loading}
                 filtersConfig={filtersConfig}
                 resetSimpleSearch={resetSimpleSearch}
+                setIsOr={setIsOr}
                 setSearchParams={setSearchParams}
-                searchParams={searchParams}
               />
             </Grid>
             <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
