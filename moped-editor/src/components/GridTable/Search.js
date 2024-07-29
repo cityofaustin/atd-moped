@@ -167,6 +167,7 @@ const Search = ({
                 setSearchFieldValue={setSearchFieldValue}
                 handleSearchSubmission={handleSearchSubmission}
                 filters={filters}
+                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
                 queryConfig={queryConfig}

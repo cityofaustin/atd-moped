@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useQuery } from "@apollo/client";
-import { useMakeFilterState } from "./helpers";
 
 import {
   Button,
@@ -38,6 +37,7 @@ import {
   handleApplyValidation,
   isFilterNullType,
   shouldRenderAutocompleteInput,
+  useMakeFilterState
 } from "./helpers";
 import { FiltersCommonOperators } from "./FiltersCommonOperators";
 

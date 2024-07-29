@@ -58,6 +58,7 @@ const SearchBar = ({
   searchFieldValue,
   setSearchFieldValue,
   filters,
+  setFilters,
   toggleAdvancedSearch,
   advancedSearchAnchor,
   handleSearchSubmission,
@@ -165,6 +166,7 @@ const SearchBar = ({
       {filterStateActive && (
         <FiltersChips
           filters={filters}
+          setFilters={setFilters}
           filtersConfig={filtersConfig}
           isOr={isOr}
         />

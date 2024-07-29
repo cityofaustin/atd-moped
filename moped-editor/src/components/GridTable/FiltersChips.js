@@ -23,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const FiltersChips = ({ filters, isOr, filtersConfig }) => {
+const FiltersChips = ({ filters, setFilters, isOr, filtersConfig }) => {
   const classes = useStyles();
+  console.log(filters)
 
   const filtersCount = Object.keys(filters).length;
 
@@ -40,9 +41,16 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
     };
   });
 
+  const handleDeleteButtonClick = (filterIndex) => {
+    /* Clone the state, delete the filter index of the button clicked, and update filter state */
+    const filtersNewState = [...filters];
+    filtersNewState.splice(filterIndex, 1);
+    setFilters(filtersNewState);
+  };
+
   return (
     <Box className={classes.filtersList}>
-      <Typography className={classes.filtersText}>
+      <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
           {filtersCount > 1 && (
             <Grid item spacing={0.25}>
@@ -65,8 +73,10 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
             </Grid>
           )}
           {filtersLabels.map((filter, index) => (
-            <Grid item spacing={0.25}>
+            <Grid item spacing={0.25} key={index}> {// I need to update this spacing 
+              }
               <Chip
+                onDelete={()=>handleDeleteButtonClick(index)}
                 key={index}
                 label={
                   <>
