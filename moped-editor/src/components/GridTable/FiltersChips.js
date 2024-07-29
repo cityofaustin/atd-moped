@@ -50,14 +50,18 @@ const FiltersChips = ({
     };
   });
 
+  /**
+   * Triggered by Filter Chip delete click
+   * Removes specified filter from state and update the url params
+   * @param {string} filterIndex - The index of the filter to be deleted
+   */
   const handleDeleteButtonClick = (filterIndex) => {
-    /* Clone the state, delete the filter index of the button clicked, and update filter state */
     const filtersNewState = [...filters];
     filtersNewState.splice(filterIndex, 1);
     setFilters(filtersNewState);
 
+    // Update search params in url
     if (filtersNewState.length > 0) {
-      /* If we have advanced filters, set query state values and update search params */
       setSearchParams((prevSearchParams) => {
         const jsonParamString = JSON.stringify(filtersNewState);
 
@@ -65,7 +69,7 @@ const FiltersChips = ({
         return prevSearchParams;
       });
     } else {
-      /* Clear search params since we have no advanced filters */
+      // no filters left, clear search params
       setSearchParams((prevSearchParams) => {
         prevSearchParams.delete(advancedSearchFilterParamName);
         prevSearchParams.delete(advancedSearchIsOrParamName);
