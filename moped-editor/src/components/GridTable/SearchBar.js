@@ -67,6 +67,8 @@ const SearchBar = ({
   loading,
   filtersConfig,
   resetSimpleSearch,
+  setSearchParams,
+  searchParams,
 }) => {
   const classes = useStyles();
 
@@ -169,6 +171,7 @@ const SearchBar = ({
           setFilters={setFilters}
           filtersConfig={filtersConfig}
           isOr={isOr}
+          setSearchParams={setSearchParams}
         />
       )}
     </>

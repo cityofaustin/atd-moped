@@ -1,6 +1,10 @@
 import React from "react";
 import { Box, Typography, Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -23,9 +27,14 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const FiltersChips = ({ filters, setFilters, isOr, filtersConfig }) => {
+const FiltersChips = ({
+  filters,
+  setFilters,
+  isOr,
+  filtersConfig,
+  setSearchParams,
+}) => {
   const classes = useStyles();
-  console.log(filters)
 
   const filtersCount = Object.keys(filters).length;
 
@@ -46,6 +55,24 @@ const FiltersChips = ({ filters, setFilters, isOr, filtersConfig }) => {
     const filtersNewState = [...filters];
     filtersNewState.splice(filterIndex, 1);
     setFilters(filtersNewState);
+
+    if (filtersNewState.length > 0) {
+      /* If we have advanced filters, set query state values and update search params */
+      setSearchParams((prevSearchParams) => {
+        const jsonParamString = JSON.stringify(filtersNewState);
+
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+        return prevSearchParams;
+      });
+    } else {
+      /* Clear search params since we have no advanced filters */
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
+    }
   };
 
   return (
@@ -53,7 +80,7 @@ const FiltersChips = ({ filters, setFilters, isOr, filtersConfig }) => {
       <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
           {filtersCount > 1 && (
-            <Grid item spacing={0.25}>
+            <Grid item>
               <Chip
                 variant="outlined"
                 label={
@@ -73,11 +100,9 @@ const FiltersChips = ({ filters, setFilters, isOr, filtersConfig }) => {
             </Grid>
           )}
           {filtersLabels.map((filter, index) => (
-            <Grid item spacing={0.25} key={index}> {// I need to update this spacing 
-              }
+            <Grid item key={index}>
               <Chip
-                onDelete={()=>handleDeleteButtonClick(index)}
-                key={index}
+                onDelete={() => handleDeleteButtonClick(index)}
                 label={
                   <>
                     <span style={{ fontWeight: 600 }}>
