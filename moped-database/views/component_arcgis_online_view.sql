@@ -203,19 +203,8 @@ SELECT
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
-    CASE
-        WHEN current_phase.phase_name_simple = 'Complete'::text THEN 'Complete'::text
-        WHEN coalesce(mpc.completion_date, plv.substantial_completion_date) IS NOT null
-            THEN
-                CASE
-                    WHEN plv.current_phase_simple = 'Construction'::text THEN 'Estimated End Date (In Construction)'::text
-                    ELSE 'Estimated End Date'::text
-                END
-        WHEN lpmd.latest IS NOT null THEN 'Estimated Public Meeting Date'::text
-        WHEN eaocpd.earliest IS NOT null THEN 'Estimated Start of Project Development'::text
-        ELSE null::text
-    END AS project_development_status,
-    get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, mpc.project_id, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
+    get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple) AS project_development_status,
+    get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
     9999 AS project_development_status_date_calendar_year,
     'placeholder text'::text AS project_development_status_date_calendar_year_month,
     'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
