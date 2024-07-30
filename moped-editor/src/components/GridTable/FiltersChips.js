@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import { formatDateType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -33,10 +34,11 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
       (fieldConfig) => fieldConfig.name === filter.field
     );
     const fieldOperatorConfig = filtersConfig.operators[filter.operator];
+    const isDateType = fieldFilterConfig.type === "date";
     return {
       filterLabel: fieldFilterConfig?.label,
       operatorLabel: fieldOperatorConfig?.label,
-      filterValue: filter.value,
+      filterValue: isDateType ? formatDateType(filter.value) : filter.value,
     };
   });
 
