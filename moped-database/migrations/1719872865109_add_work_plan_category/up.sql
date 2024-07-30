@@ -307,7 +307,7 @@ BEGIN
 END;
 $function$;
 
--- Create function to determine project development status date and reuse for other date formats in view
+-- Create function to determine project development status and reuse for other date formats in view
 CREATE OR REPLACE FUNCTION public.get_project_development_status(latest_public_meeting_date timestamptz, earliest_active_or_construction_phase_date timestamptz, substantial_completion_date timestamptz, substantial_completion_date_estimated timestamptz, current_phase_simple text)
 RETURNS text
 LANGUAGE plpgsql

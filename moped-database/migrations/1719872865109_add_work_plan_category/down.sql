@@ -1,6 +1,9 @@
 DROP VIEW IF EXISTS component_arcgis_online_view;
 DROP VIEW IF EXISTS project_list_view;
 
+DROP FUNCTION IF EXISTS get_project_development_status;
+DROP FUNCTION IF EXISTS get_project_development_status_date;
+
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
