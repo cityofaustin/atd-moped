@@ -293,7 +293,7 @@ RETURNS timestamptz
 LANGUAGE plpgsql
 AS $function$
 BEGIN
-    IF lower(current_phase_simple) = 'complete' AND substantial_completion_date IS NOT null THEN 
+    IF lower(current_phase_simple) = 'complete' THEN 
         RETURN substantial_completion_date;
     ELSIF substantial_completion_date_estimated IS NOT null THEN
         RETURN substantial_completion_date_estimated;
@@ -309,11 +309,11 @@ $function$;
 
 -- Create function to determine project development status date and reuse for other date formats in view
 CREATE OR REPLACE FUNCTION public.get_project_development_status(latest_public_meeting_date timestamptz, earliest_active_or_construction_phase_date timestamptz, substantial_completion_date timestamptz, substantial_completion_date_estimated timestamptz, current_phase_simple text)
-RETURNS timestamptz
+RETURNS text
 LANGUAGE plpgsql
 AS $function$
 BEGIN
-    IF lower(current_phase_simple) = 'complete' AND substantial_completion_date IS NOT null THEN
+    IF lower(current_phase_simple) = 'complete' THEN
         RETURN 'Complete';
     ELSIF substantial_completion_date_estimated IS NOT null THEN
         IF lower(current_phase_simple) = 'construction' THEN 
@@ -325,6 +325,8 @@ BEGIN
         RETURN 'Estimated Public Meeting Date';
     ELSIF earliest_active_or_construction_phase_date IS NOT null THEN 
         RETURN 'Estimated Start of Project Development';
+    ELSE
+        RETURN null;
     END IF;
 END;
 $function$;
