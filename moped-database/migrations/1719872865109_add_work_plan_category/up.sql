@@ -288,12 +288,12 @@ WHERE mp.is_deleted = false
 GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
 
 -- Create function to determine project development status date and reuse for other date formats in view
-CREATE OR REPLACE FUNCTION public.get_project_development_status_date(latest_public_meeting_date timestamptz, earliest_active_or_construction_phase_date timestamptz, component_project_id int, substantial_completion_date timestamptz, substantial_completion_date_estimated timestamptz, current_phase_simple text)
+CREATE OR REPLACE FUNCTION public.get_project_development_status_date(latest_public_meeting_date timestamptz, earliest_active_or_construction_phase_date timestamptz, substantial_completion_date timestamptz, substantial_completion_date_estimated timestamptz, current_phase_simple text)
 RETURNS timestamptz
 LANGUAGE plpgsql
 AS $function$
 BEGIN
-    IF current_phase_simple = 'Complete' AND substantial_completion_date IS NOT null THEN 
+    IF lower(current_phase_simple) = 'complete' AND substantial_completion_date IS NOT null THEN 
         RETURN substantial_completion_date;
     ELSIF substantial_completion_date_estimated IS NOT null THEN
         RETURN substantial_completion_date_estimated;
@@ -303,6 +303,28 @@ BEGIN
         RETURN earliest_active_or_construction_phase_date;
     ELSE
         RETURN null;
+    END IF;
+END;
+$function$;
+
+-- Create function to determine project development status date and reuse for other date formats in view
+CREATE OR REPLACE FUNCTION public.get_project_development_status(latest_public_meeting_date timestamptz, earliest_active_or_construction_phase_date timestamptz, substantial_completion_date timestamptz, substantial_completion_date_estimated timestamptz, current_phase_simple text)
+RETURNS timestamptz
+LANGUAGE plpgsql
+AS $function$
+BEGIN
+    IF lower(current_phase_simple) = 'complete' AND substantial_completion_date IS NOT null THEN
+        RETURN 'Complete';
+    ELSIF substantial_completion_date_estimated IS NOT null THEN
+        IF lower(current_phase_simple) = 'construction' THEN 
+            RETURN 'Estimated End Date (In Construction)';
+        ELSE
+            RETURN 'Estimated End Date';
+        END IF;
+    ELSIF latest_public_meeting_date IS NOT null THEN
+        RETURN 'Estimated Public Meeting Date';
+    ELSIF earliest_active_or_construction_phase_date IS NOT null THEN 
+        RETURN 'Estimated Start of Project Development';
     END IF;
 END;
 $function$;
@@ -513,17 +535,8 @@ SELECT
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
-    CASE WHEN current_phase.phase_name_simple = 'Complete' AND plv.substantial_completion_date IS NOT null THEN 'Complete'
-        WHEN plv.substantial_completion_date_estimated IS NOT null
-            THEN
-                CASE
-                    WHEN plv.current_phase_simple = 'Construction' THEN 'Estimated End Date (In Construction)'
-                    ELSE 'Estimated End Date'
-                END
-        WHEN lpmd.latest IS NOT null THEN 'Estimated Public Meeting Date'
-        WHEN eaocpd.earliest IS NOT null THEN 'Estimated Start of Project Development'
-    END AS project_development_status,
-    get_project_development_status_date(lpmd.latest, eaocpd.earliest, mpc.project_id, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
+    get_project_development_status(lpmd.latest, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status,
+    get_project_development_status_date(lpmd.latest, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
     9999 AS project_development_status_date_calendar_year,
     'placeholder text'::text AS project_development_status_date_calendar_year_month,
     'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
