@@ -165,7 +165,7 @@ const SearchBar = ({
         variant="outlined"
         value={searchFieldValue}
       />
-      {filterStateActive && (
+      {filterStateActive && !advancedSearchAnchor && (
         <FiltersChips
           filters={filters}
           setFilters={setFilters}
