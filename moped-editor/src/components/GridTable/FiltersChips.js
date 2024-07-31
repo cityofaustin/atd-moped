@@ -66,15 +66,19 @@ const FiltersChips = ({
     const remainingFiltersCount = filtersNewState.length;
 
     if (remainingFiltersCount === 1) {
-      /* Reset isOr to false (all/and) if there is only one filter left */
+      // Reset isOr to false (all/and) if there is only one filter left
       setIsOr(false);
+      // update params as well
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set(advancedSearchIsOrParamName, false);
+        return prevSearchParams;
+      });
     }
 
     // Update search params in url
     if (remainingFiltersCount > 0) {
       setSearchParams((prevSearchParams) => {
         const jsonParamString = JSON.stringify(filtersNewState);
-
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
       });
