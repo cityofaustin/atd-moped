@@ -56,7 +56,7 @@ const FiltersChips = ({
   /**
    * Triggered by Filter Chip delete click
    * Removes specified filter from state and update the url params
-   * @param {string} filterIndex - The index of the filter to be deleted
+   * @param {number} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteButtonClick = (filterIndex) => {
     const filtersNewState = [...filters];

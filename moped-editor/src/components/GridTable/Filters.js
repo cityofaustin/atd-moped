@@ -189,7 +189,7 @@ const Filters = ({
 
   /**
    * Handles the click event on the operator drop-down
-   * @param {string} filterIndex - filterParameters index to modify
+   * @param {Number} filterIndex - filterParameters index to modify
    * @param {Object} operator - The operator object being clicked
    * @param {string} lookupTable - The lookup table name
    * @param {Array} lookupOperators - operators set in filter config to show autocomplete
@@ -235,7 +235,7 @@ const Filters = ({
 
   /**
    * Deletes a filter from the state
-   * @param {string} filterIndex - The index of the filter to be deleted
+   * @param {Number} filterIndex - The index of the filter to be deleted
    */
   const handleDeleteFilterButtonClick = (filterIndex) => {
     /* Clone the state, delete the filter index of the button clicked, and update filter state */
@@ -253,7 +253,7 @@ const Filters = ({
 
   /**
    * The user will type a new search value
-   * @param {string} filterIndex - filterParameters index to modify
+   * @param {Number} filterIndex - filterParameters index to modify
    * @param {string} value - The value to assign to that filter
    */
   const handleSearchValueChange = (filterIndex, value) => {
