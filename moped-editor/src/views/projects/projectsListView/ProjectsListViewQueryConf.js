@@ -226,7 +226,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-    funding_source_name: {
+    funding_source_and_program_names: {
       type: "string",
       sortable: true,
       defaultHidden: true,
@@ -342,7 +342,7 @@ export const SHOW_ALL_COLS = Object.entries(
   PROJECT_LIST_VIEW_QUERY_CONFIG.columns
 ).reduce((acc, [columnName, config]) => {
   if (config.showInTable === true) {
-    acc[columnName] = true
+    acc[columnName] = true;
   }
   return acc;
 }, {});
