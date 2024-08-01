@@ -25,7 +25,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteInputQuill from "./NoteInputQuill";
+import NoteInput from "./NoteInput";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
@@ -299,7 +299,7 @@ const ProjectNotes = (props) => {
         {!editingNote && (
           <Grid item xs={12}>
             <Card>
-              <NoteInputQuill
+              <NoteInput
                 noteText={noteText}
                 setNoteText={setNoteText}
                 newNoteType={newNoteType}
@@ -403,7 +403,7 @@ const ProjectNotes = (props) => {
                             }
                             secondary={
                               noteId === item.project_note_id ? (
-                                <NoteInputQuill
+                                <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}
                                   editingNote={editingNote}
