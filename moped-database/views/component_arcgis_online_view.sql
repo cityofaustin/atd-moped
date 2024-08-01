@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
+-- Most recent migration: moped-database/migrations/1719872865109_add_work_plan_category/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -114,22 +114,23 @@ related_projects AS (
     GROUP BY pmp.project_id
 ),
 
-min_phase_dates AS (
-    WITH min_dates AS (
-        SELECT
-            mpp.project_id,
-            min(mpp.phase_start) AS min_phase_start,
-            min(mpp.phase_end) AS min_phase_end
-        FROM moped_proj_phases mpp
-        LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
-        WHERE mpp.is_phase_end_confirmed = false AND mpp.is_phase_start_confirmed = false AND mpp.is_deleted = false AND mp.phase_name_simple = 'Complete'::text
-        GROUP BY mpp.project_id
-    )
-
+latest_public_meeting_date AS (
     SELECT
-        min_dates.project_id,
-        least(min_dates.min_phase_start, min_dates.min_phase_end) AS min_phase_date
-    FROM min_dates
+        mpm.project_id,
+        coalesce(max(mpm.date_actual), max(mpm.date_estimate)) AS latest
+    FROM moped_proj_milestones mpm
+    WHERE mpm.milestone_id = 65 AND mpm.is_deleted = false
+    GROUP BY mpm.project_id
+),
+
+earliest_active_or_construction_phase_date AS (
+    SELECT
+        mpp.project_id,
+        min(mpp.phase_start) AS earliest
+    FROM moped_proj_phases mpp
+    LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
+    WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
+    GROUP BY mpp.project_id
 )
 
 SELECT
@@ -202,14 +203,14 @@ SELECT
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
-    plv.project_development_status,
-    plv.project_development_status_date,
-    plv.project_development_status_date_calendar_year,
-    plv.project_development_status_date_calendar_year_month,
-    plv.project_development_status_date_calendar_year_month_numeric,
-    plv.project_development_status_date_calendar_year_quarter,
-    plv.project_development_status_date_fiscal_year,
-    plv.project_development_status_date_fiscal_year_quarter,
+    get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple) AS project_development_status,
+    get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
+    9999 AS project_development_status_date_calendar_year,
+    'placeholder text'::text AS project_development_status_date_calendar_year_month,
+    'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
+    'placeholder text'::text AS project_development_status_date_calendar_year_quarter,
+    999 AS project_development_status_date_fiscal_year,
+    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
 FROM moped_proj_components mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
@@ -222,5 +223,6 @@ LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.pro
 LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
 LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
-LEFT JOIN min_phase_dates mpd ON mpc.project_id = mpd.project_id
+LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
+LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;

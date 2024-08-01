@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1719582711923_refine_funding_source/up.sql
+-- Most recent migration: moped-database/migrations/1719872865109_add_work_plan_category/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -196,14 +196,6 @@ SELECT
     work_activities.task_order_names,
     work_activities.task_order_names_short,
     work_activities.task_orders,
-    'placeholder text'::text AS project_development_status,
-    '2024-01-01T00:00:00-06:00'::text AS project_development_status_date,
-    9999 AS project_development_status_date_calendar_year,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
-    'placeholder text'::text AS project_development_status_date_calendar_year_quarter,
-    999 AS project_development_status_date_fiscal_year,
-    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
     (
         SELECT moped_project.project_name_full
         FROM moped_project
