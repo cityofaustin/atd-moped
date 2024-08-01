@@ -1,6 +1,11 @@
 import React from "react";
 import { Box, Typography, Chip, Grid } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
+import {
+  advancedSearchFilterParamName,
+  advancedSearchIsOrParamName,
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import { formatDateType } from "src/utils/dateAndTime";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -23,7 +28,14 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const FiltersChips = ({ filters, isOr, filtersConfig }) => {
+const FiltersChips = ({
+  filters,
+  setFilters,
+  isOr,
+  filtersConfig,
+  setSearchParams,
+  setIsOr,
+}) => {
   const classes = useStyles();
 
   const filtersCount = Object.keys(filters).length;
@@ -33,19 +45,60 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
       (fieldConfig) => fieldConfig.name === filter.field
     );
     const fieldOperatorConfig = filtersConfig.operators[filter.operator];
+    const isDateType = fieldFilterConfig.type === "date";
     return {
       filterLabel: fieldFilterConfig?.label,
       operatorLabel: fieldOperatorConfig?.label,
-      filterValue: filter.value,
+      filterValue: isDateType ? formatDateType(filter.value) : filter.value,
     };
   });
 
+  /**
+   * Triggered by Filter Chip delete click
+   * Removes specified filter from state and update the url params
+   * @param {number} filterIndex - The index of the filter to be deleted
+   */
+  const handleDeleteButtonClick = (filterIndex) => {
+    const filtersNewState = [...filters];
+    filtersNewState.splice(filterIndex, 1);
+    setFilters(filtersNewState);
+
+    const remainingFiltersCount = filtersNewState.length;
+
+    if (remainingFiltersCount === 1) {
+      // Reset isOr to false (all/and) if there is only one filter left
+      setIsOr(false);
+      // update params as well
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.set(advancedSearchIsOrParamName, false);
+        return prevSearchParams;
+      });
+    }
+
+    // Update search params in url
+    if (remainingFiltersCount > 0) {
+      setSearchParams((prevSearchParams) => {
+        const jsonParamString = JSON.stringify(filtersNewState);
+        prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
+        return prevSearchParams;
+      });
+    } else {
+      // no filters left, clear search params
+      setSearchParams((prevSearchParams) => {
+        prevSearchParams.delete(advancedSearchFilterParamName);
+        prevSearchParams.delete(advancedSearchIsOrParamName);
+
+        return prevSearchParams;
+      });
+    }
+  };
+
   return (
     <Box className={classes.filtersList}>
-      <Typography className={classes.filtersText}>
+      <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
           {filtersCount > 1 && (
-            <Grid item spacing={0.25}>
+            <Grid item>
               <Chip
                 variant="outlined"
                 label={
@@ -65,9 +118,9 @@ const FiltersChips = ({ filters, isOr, filtersConfig }) => {
             </Grid>
           )}
           {filtersLabels.map((filter, index) => (
-            <Grid item spacing={0.25}>
+            <Grid item key={index}>
               <Chip
-                key={index}
+                onDelete={() => handleDeleteButtonClick(index)}
                 label={
                   <>
                     <span style={{ fontWeight: 600 }}>
