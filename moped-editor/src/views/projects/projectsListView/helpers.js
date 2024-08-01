@@ -289,10 +289,10 @@ export const useColumns = ({ hiddenColumns }) => {
       },
       {
         headerName: "Funding",
-        field: "funding_source_name",
+        field: "funding_source_and_program_names",
         cellStyle: { whiteSpace: "noWrap" },
         renderCell: ({ row }) =>
-          renderSplitListDisplayBlock(row, "funding_source_name"),
+          renderSplitListDisplayBlock(row, "funding_source_and_program_names"),
         width: COLUMN_WIDTHS.medium,
       },
       {

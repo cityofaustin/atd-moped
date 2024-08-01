@@ -142,7 +142,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       type: "string",
       lookup: {
         table_name: "moped_phases",
-        getOptionLabel: (option) => option.phase_name_simple,
+        getOptionLabel: (option) => option.phase_name,
         operators: ["string_equals_case_insensitive"],
       },
       operators: [
