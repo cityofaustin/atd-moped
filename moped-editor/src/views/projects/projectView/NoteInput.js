@@ -105,7 +105,7 @@ const OnSavePlugin = ({ noteAddSuccess }) => {
       root.clear();
     });
     editor.focus();
-  }, [noteAddSuccess]);
+  }, [noteAddSuccess, editor]);
   return null;
 }
 
@@ -129,7 +129,7 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
           });
         });
       editor.focus();
-  }, [editingNote, htmlContent]);
+  }, [editingNote, htmlContent, editor]);
   return null;
 }
 
