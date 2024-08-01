@@ -24,7 +24,6 @@ import { $getRoot } from 'lexical';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { LinkNode } from '@lexical/link';
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -83,62 +82,56 @@ const onError = (error) => {
   console.error(error);
 }
 
-  // On change, return editor content as HTML
-  const OnChangePlugin = ({ onChange }) => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      return editor.registerUpdateListener(({ editorState }) => {
-        editorState.read(() => {
-          const noteText = $generateHtmlFromNodes(editor, null);
-          onChange(noteText);
-        });
+// On change, return editor content as HTML
+const OnChangePlugin = ({ onChange }) => {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    return editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+        const htmlContent = $generateHtmlFromNodes(editor, null);
+        onChange(htmlContent);
       });
-    }, [editor, onChange]);
-    return null;
-  }
+    });
+  });
+  return null;
+}
 
-  // On successful save, clear and refocus the editor
-  const OnSavePlugin = (noteAddSuccess) => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      noteAddSuccess && editor.update(() => {
-        const root = $getRoot();
-        root.clear();
-      });
+// On successful save, clear and refocus the editor
+const OnSavePlugin = ({ noteAddSuccess }) => {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    noteAddSuccess && editor.update(() => {
+      const root = $getRoot();
+      root.clear();
+    });
+    editor.focus();
+  }, [noteAddSuccess]);
+  return null;
+}
 
-      editor.focus();
-    }, [editor, noteAddSuccess]);
-    return null;
-  }
-
-  // On edit, load the selected comment and refocus the editor
-  const OnEditPlugin = (noteText, editingNote) => {
-    const [editor] = useLexicalComposerContext();
-    useEffect(() => {
-      const editorState = editor.getEditorState()
-      const nodeMap = editorState._nodeMap;
-      const textArray = [...nodeMap.entries()][2];
-      const isTextInEditor = !!textArray;
-      const isTextinDatabase = noteText !== "" || "<p><br></p>"
-
-      // If user is editing a note and editor is empty,
+// On edit, load the selected comment and refocus the editor
+const OnEditPlugin = ({ htmlContent, editingNote }) => {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+      const isTextinDatabase = !!htmlContent.replace(/<[^>]*>/g, "");
+      // If user clicks edit and there is a stored note,
       // populate editor with stored note
-      editingNote && !isTextInEditor && isTextinDatabase &&
+      editingNote && isTextinDatabase &&
         editor.update(() => {
           $getRoot()
             .getChildren()
             .forEach((n) => n.remove());
           const parser = new DOMParser();
-          const dom = parser.parseFromString(noteText, 'text/html');
+          const dom = parser.parseFromString(htmlContent, 'text/html');
           const nodes = $generateNodesFromDOM(editor, dom);
           nodes.forEach((node) => {
             $getRoot().append(node);
           });
         });
       editor.focus();
-    }, [editor, editingNote, noteText]);
-    return null;
-  }
+  }, [editingNote, htmlContent]);
+  return null;
+}
 
 const NoteInput = ({
   noteText,
@@ -166,8 +159,8 @@ const NoteInput = ({
     onError,
   };
 
-  const onChange = (noteText) => {
-    setNoteText(noteText);
+  const onChange = (htmlContent) => {
+    setNoteText(htmlContent);
   };
 
   return (
@@ -175,7 +168,7 @@ const NoteInput = ({
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
           <Box className={classes.editorWrapper} pt={2}>
-            <LexicalComposer initialConfig={initialConfig}>
+            <LexicalComposer initialConfig={initialConfig} >
               <RichTextPlugin
                 contentEditable={<ContentEditable className={classes.contentEditable} />}
                 placeholder={<div className={classes.placeholder}>Enter some text...</div>}
@@ -184,8 +177,8 @@ const NoteInput = ({
               <HistoryPlugin />
               <AutoFocusPlugin />
               <OnChangePlugin onChange={onChange} />
-              <OnSavePlugin noteAddSuccess={noteAddSuccess}/>
-              <OnEditPlugin noteText={noteText} editingNote={editingNote}/>
+              <OnSavePlugin noteAddSuccess={noteAddSuccess} />
+              <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
               <LinkPlugin />
             </LexicalComposer>
           </Box>
