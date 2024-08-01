@@ -113,22 +113,26 @@ const OnSavePlugin = ({ noteAddSuccess }) => {
 const OnEditPlugin = ({ htmlContent, editingNote }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
-      const isTextinDatabase = !!htmlContent.replace(/<[^>]*>/g, "");
-      // If user clicks edit and there is a stored note,
-      // populate editor with stored note
-      editingNote && isTextinDatabase &&
-        editor.update(() => {
-          $getRoot()
-            .getChildren()
-            .forEach((n) => n.remove());
-          const parser = new DOMParser();
-          const dom = parser.parseFromString(htmlContent, 'text/html');
-          const nodes = $generateNodesFromDOM(editor, dom);
-          nodes.forEach((node) => {
-            $getRoot().append(node);
-          });
+    const editorState = editor.getEditorState()
+    const nodeMap = editorState._nodeMap;
+    const textArray = [...nodeMap.entries()][2];
+    const isTextInEditor = !!textArray;
+    const isTextinDatabase = !!htmlContent.replace(/<[^>]*>/g, "");
+    // If user clicks edit and there is a stored note and a clear editor,
+    // populate editor with stored note
+    editingNote && !isTextInEditor && isTextinDatabase &&
+      editor.update(() => {
+        $getRoot()
+          .getChildren()
+          .forEach((n) => n.remove());
+        const parser = new DOMParser();
+        const dom = parser.parseFromString(htmlContent, 'text/html');
+        const nodes = $generateNodesFromDOM(editor, dom);
+        nodes.forEach((node) => {
+          $getRoot().append(node);
         });
-      editor.focus();
+      });
+    editor.focus();
   }, [editingNote, htmlContent, editor]);
   return null;
 }
