@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
+import isEqual from "lodash/isEqual";
 
 // Material
 import {
@@ -491,27 +492,35 @@ const ProjectFundingTable = () => {
           })
       );
     } else {
-      return (
-        updateProjectFunding({
-          variables: updateProjectFundingData,
-        })
-          .then(() => refetch())
-          // from the data grid docs:
-          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => updatedRow)
-          .catch((error) => {
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  There was a problem updating funding. Error message:{" "}
-                  {error.message}
-                </span>
-              ),
-              severity: "error",
-            });
+      // Remove __typename since we removed it from updatedRow and check if the row has changed
+      delete originalRow.__typename;
+      const hasRowChanged = !isEqual(updatedRow, originalRow);
+
+      if (!hasRowChanged) {
+        return Promise.resolve(updatedRow);
+      } else {
+        return (
+          updateProjectFunding({
+            variables: updateProjectFundingData,
           })
-      );
+            .then(() => refetch())
+            // from the data grid docs:
+            // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+            .then(() => updatedRow)
+            .catch((error) => {
+              setSnackbarState({
+                open: true,
+                message: (
+                  <span>
+                    There was a problem updating funding. Error message:{" "}
+                    {error.message}
+                  </span>
+                ),
+                severity: "error",
+              });
+            })
+        );
+      }
     }
   };
 

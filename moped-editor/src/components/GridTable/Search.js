@@ -167,6 +167,7 @@ const Search = ({
                 setSearchFieldValue={setSearchFieldValue}
                 handleSearchSubmission={handleSearchSubmission}
                 filters={filters}
+                setFilters={setFilters}
                 toggleAdvancedSearch={toggleAdvancedSearch}
                 advancedSearchAnchor={advancedSearchAnchor}
                 queryConfig={queryConfig}
@@ -174,6 +175,8 @@ const Search = ({
                 loading={loading}
                 filtersConfig={filtersConfig}
                 resetSimpleSearch={resetSimpleSearch}
+                setIsOr={setIsOr}
+                setSearchParams={setSearchParams}
               />
             </Grid>
             <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
