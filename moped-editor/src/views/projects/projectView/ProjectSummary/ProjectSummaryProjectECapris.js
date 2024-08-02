@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 
+import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import {
@@ -8,7 +9,6 @@ import {
   PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID,
 } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@mui/icons-material";
 
 /**
  * Custom wrapper for the eCapris edit field
@@ -175,16 +175,10 @@ const ProjectSummaryProjectECapris = ({
           <ProjectSummaryLabel
             text={
               (eCapris && (
-                <>
-                  <Link
-                    rel="noopener noreferrer"
-                    href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
-                    target={"_blank"}
-                  >
-                    {eCapris}
-                    <OpenInNew className={classes.linkIcon} />
-                  </Link>
-                </>
+                <ExternalLink
+                  text={eCapris}
+                  url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                />
               )) ||
               ""
             }

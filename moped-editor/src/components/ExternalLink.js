@@ -3,7 +3,7 @@ import Link from "@mui/material/Link";
 import makeStyles from "@mui/styles/makeStyles";
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   iconStyle: {
     fontSize: "1rem",
     marginLeft: "2px",
@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * LinkWithIcon component
+ * ExternalLink component
  * @param {string} url - link url
  * @param {string} text - link text
  * @param {string} linkColor - color of the link
