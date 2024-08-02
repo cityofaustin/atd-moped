@@ -76,7 +76,7 @@ const CreateComponentModal = ({
     }
   };
 
-  const onClose = (reason) => {
+  const onClose = (event, reason) => {
     if (reason && reason === "backdropClick")
       return;
     setLinkMode(null);
