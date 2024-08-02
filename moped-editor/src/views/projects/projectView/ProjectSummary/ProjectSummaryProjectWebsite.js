@@ -127,7 +127,7 @@ const ProjectSummaryProjectWebsite = ({
           <ProjectSummaryLabel
             text={
               (website && website.length > 0 && (
-                <ExternalLink text={website} url={website} />
+                <ExternalLink text={website} url={website} stopPropagation />
               )) ||
               ""
             }

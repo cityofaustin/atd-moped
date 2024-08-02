@@ -178,6 +178,7 @@ const ProjectSummaryProjectECapris = ({
                 <ExternalLink
                   text={eCapris}
                   url={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
+                  stopPropagation
                 />
               )) ||
               ""

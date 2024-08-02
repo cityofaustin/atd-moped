@@ -18,14 +18,28 @@ const useStyles = makeStyles(() => ({
  * @param {string} text - link text
  * @param {string} linkColor - color of the link
  * @param {Object} linkProps - Props supported by MUI Link to override defaults or set other options
+ * @param {Boolean} stopPropagation - stop propagation of the click event from link click event or not
  * @returns {JSX.Element}
  * @constructor
  */
-const ExternalLink = ({ url, text, linkColor, iconStyle, linkProps }) => {
+const ExternalLink = ({
+  url,
+  text,
+  linkColor,
+  iconStyle,
+  linkProps,
+  stopPropagation = false,
+}) => {
   const classes = useStyles();
 
   return (
-    <span>
+    <span
+      onClick={(e) => {
+        if (stopPropagation) {
+          e.stopPropagation();
+        }
+      }}
+    >
       {!!text ? (
         <Link
           href={url}
