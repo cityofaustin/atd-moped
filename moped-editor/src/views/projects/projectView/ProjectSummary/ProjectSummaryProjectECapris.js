@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  Link,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
@@ -162,7 +155,8 @@ const ProjectSummaryProjectECapris = ({
               id="moped-project-ecapris"
               label={null}
               onChange={handleProjectECaprisChange}
-              value={eCapris} />
+              value={eCapris}
+            />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectECaprisSave}
@@ -182,14 +176,12 @@ const ProjectSummaryProjectECapris = ({
             text={
               (eCapris && (
                 <>
-                  <Typography variant={"inherit"} color={"primary"}>
-                    {eCapris}{" "}
-                  </Typography>
                   <Link
                     rel="noopener noreferrer"
                     href={`https://ecapris.austintexas.gov/index.cfm?fuseaction=subprojects.subprojectData&SUBPROJECT_ID=${eCapris}`}
                     target={"_blank"}
                   >
+                    {eCapris}
                     <OpenInNew className={classes.linkIcon} />
                   </Link>
                 </>
