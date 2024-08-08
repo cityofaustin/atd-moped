@@ -2,6 +2,7 @@ import {
   Box,
   ButtonGroup,
   Button,
+  Divider
 } from "@mui/material";
 
 import {
@@ -23,10 +24,6 @@ import {
 } from "@mui/icons-material";
 
 // import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-
-const Divider = () => (
-  <Box width="1px" bg="#aaa" margin="0 6px" h={4}></Box>
-)
 
 const RichTextAction = {
   Bold: "bold",
@@ -61,7 +58,6 @@ const RICH_TEXT_OPTIONS = [
     id: RichTextAction.Highlight,
     icon: <Highlight />,
     label: "Highlight",
-    fontSize: 10,
   },
   {
     id: RichTextAction.ListOrdered,
@@ -130,14 +126,13 @@ const ToolbarPlugin = () => {
         variant="ghost"
         color="#444"
       >
-        {RICH_TEXT_OPTIONS.map(({ id, label, icon, fontSize }) =>
+        {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
           id === RichTextAction.Divider ? (
-            <Divider />
+            <Divider orientation="vertical" flexItem />
           ) : (
             <Button
               aria-label={label}
               startIcon={icon}
-              fontSize={fontSize}
             />
           )
         )}
