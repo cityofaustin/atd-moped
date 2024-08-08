@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
+import ToolbarPlugin from "./ToolbarPlugin";
 
 import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
@@ -171,8 +172,9 @@ const NoteInput = ({
     <Container>
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
-          <Box className={classes.editorWrapper} pt={2}>
-            <LexicalComposer initialConfig={initialConfig} >
+          <LexicalComposer initialConfig={initialConfig} >
+            <ToolbarPlugin />
+            <Box className={classes.editorWrapper} pt={2}>
               <RichTextPlugin
                 contentEditable={<ContentEditable className={classes.contentEditable} />}
                 placeholder={<div className={classes.placeholder}>Enter some text...</div>}
@@ -184,8 +186,8 @@ const NoteInput = ({
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
               <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
               <LinkPlugin />
-            </LexicalComposer>
-          </Box>
+            </Box>
+          </LexicalComposer>
         </Grid>
         <Grid
           item
