@@ -48,7 +48,6 @@ const RICH_TEXT_OPTIONS = [
   { id: RichTextAction.Bold, icon: <FormatBold />, label: "Bold" },
   { id: RichTextAction.Italics, icon: <FormatItalic />, label: "Italics" },
   { id: RichTextAction.Underline, icon: <FormatUnderlined />, label: "Underline" },
-  { id: RichTextAction.Divider },
   {
     id: RichTextAction.Strikethrough,
     icon: <FormatStrikethrough />,
@@ -59,6 +58,8 @@ const RICH_TEXT_OPTIONS = [
     icon: <Highlight />,
     label: "Highlight",
   },
+  { id: RichTextAction.Divider },
+
   {
     id: RichTextAction.ListOrdered,
     icon: <FormatListNumbered />,
