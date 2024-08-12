@@ -1,0 +1,7 @@
+services:
+  arcgis:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    entrypoint: /bin/bash
