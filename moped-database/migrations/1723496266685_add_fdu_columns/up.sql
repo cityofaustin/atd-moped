@@ -6,3 +6,6 @@ END) STORED,
 ADD COLUMN fund_name text GENERATED ALWAYS AS (
     CASE WHEN fund IS null THEN null ELSE coalesce(fund ->> 'fund_name', ' ') END
 ) STORED;
+
+COMMENT ON COLUMN moped_proj_funding.fund_dept_unit IS 'Fund, department, and unit numbers concatenated; null if fund or unit is not populated';
+COMMENT ON COLUMN moped_proj_funding.fund_name IS 'Fund name; null if fund is not populated';
