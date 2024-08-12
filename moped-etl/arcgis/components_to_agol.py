@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
-# docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  moped-agol /bin/bash
+# docker compose run arcgis;
 import argparse
 import logging
 from datetime import datetime, timezone
