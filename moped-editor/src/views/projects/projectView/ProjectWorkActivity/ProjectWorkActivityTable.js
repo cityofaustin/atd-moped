@@ -19,6 +19,7 @@ import {
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -158,6 +159,12 @@ const ProjectWorkActivitiesTable = () => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
+
+  // new code /////
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [activityToDelete, setActivityToDelete] = useState(null);
+  /////////////////
+
   const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
@@ -172,15 +179,34 @@ const ProjectWorkActivitiesTable = () => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
+  // const onDeleteActivity = useCallback(
+  //   ({ id }) => {
+  //     window.confirm("How is it going?") &&
+  //       deleteContract({ variables: { id } }).then(() => {
+  //         refetch();
+  //       });
+  //   },
+  //   [deleteContract, refetch]
+  // );
+
+  // new code /////
   const onDeleteActivity = useCallback(
     ({ id }) => {
-      window.confirm("Are you sure you want to delete this activity?") &&
-        deleteContract({ variables: { id } }).then(() => {
-          refetch();
-        });
+      setActivityToDelete(id);
+      setIsDeleteConfirmationOpen(true);
     },
-    [deleteContract, refetch]
+    []
   );
+
+  const handleDeleteConfirmed = useCallback(() => {
+    if (activityToDelete) {
+      deleteContract({ variables: { id: activityToDelete } }).then(() => {
+        refetch();
+        setActivityToDelete(null);
+      });
+    }
+  }, [activityToDelete, deleteContract, refetch]);
+  /////////////////
 
   const onSubmitCallback = () => {
     refetch().then(() => setEditActivity(null));
@@ -246,6 +272,12 @@ const ProjectWorkActivitiesTable = () => {
           onSubmitCallback={onSubmitCallback}
         />
       )}
+      <DeleteConfirmationModal
+        type="work activity"
+        submitDelete={handleDeleteConfirmed}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}>
+      </DeleteConfirmationModal>
     </ApolloErrorHandler>
   );
 };
