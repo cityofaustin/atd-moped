@@ -12,6 +12,7 @@ from settings import (
 )
 from utils import (
     make_hasura_request,
+    make_hasura_sql_query,
     get_token,
     delete_all_features,
     delete_features_by_project_ids,
@@ -125,6 +126,25 @@ def make_all_features(data):
 def main(args):
     logger.info("Getting token...")
     get_token()
+
+    query = """
+SELECT 
+    ST_GeometryType(dump.geom) AS geometry_type,
+    dump.geom AS mixed_geometry_native_geometry,
+    dump.path[1] AS point_index,
+    component_arcgis_online_view.*
+FROM 
+    component_arcgis_online_view,
+    LATERAL ST_Dump(ST_GeomFromGeoJSON(component_arcgis_online_view.geometry)) AS dump
+WHERE
+    ST_GeometryType(ST_GeomFromGeoJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'
+    LIMIT 10
+"""
+
+    result = make_hasura_sql_query(query=query)
+    print(f"Result: {result}")
+
+    return
 
     variables = (
         {"where": {}}
