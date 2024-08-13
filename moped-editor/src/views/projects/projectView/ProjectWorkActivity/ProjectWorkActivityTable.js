@@ -159,11 +159,8 @@ const ProjectWorkActivitiesTable = () => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
-
-  // new code /////
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
-  /////////////////
 
   const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
@@ -179,17 +176,6 @@ const ProjectWorkActivitiesTable = () => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  // const onDeleteActivity = useCallback(
-  //   ({ id }) => {
-  //     window.confirm("How is it going?") &&
-  //       deleteContract({ variables: { id } }).then(() => {
-  //         refetch();
-  //       });
-  //   },
-  //   [deleteContract, refetch]
-  // );
-
-  // new code /////
   const onDeleteActivity = useCallback(
     ({ id }) => {
       setActivityToDelete(id);
@@ -206,7 +192,6 @@ const ProjectWorkActivitiesTable = () => {
       });
     }
   }, [activityToDelete, deleteContract, refetch]);
-  /////////////////
 
   const onSubmitCallback = () => {
     refetch().then(() => setEditActivity(null));
