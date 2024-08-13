@@ -11,6 +11,7 @@ from settings import LAYER_IDS
 AGOL_USERNAME = os.getenv("AGOL_USERNAME")
 AGOL_PASSWORD = os.getenv("AGOL_PASSWORD")
 HASURA_ENDPOINT = os.getenv("HASURA_ENDPOINT")
+HASURA_SQL_ENDPOINT = os.getenv("HASURA_SQL_ENDPOINT")
 HASURA_ADMIN_SECRET = os.getenv("HASURA_ADMIN_SECRET")
 AGOL_ORG_BASE_URL = "https://austin.maps.arcgis.com"
 
@@ -60,6 +61,33 @@ def make_hasura_request(*, query, variables=None):
     data = res.json()
     try:
         return data["data"]
+    except KeyError:
+        raise ValueError(data)
+
+
+def make_hasura_sql_query(*, query, variables=None):
+    """Fetch data from hasura
+
+    Args:
+        query (str): the hasura query
+
+    Raises:
+        ValueError: If no data is returned
+
+    Returns:
+        dict: Hasura JSON response data
+    """
+    headers = {
+        "X-Hasura-Admin-Secret": HASURA_ADMIN_SECRET,
+        "Content-Type": "application/json",
+    }
+    payload = {"type": "run_sql", "args": {"sql": query}}
+
+    res = requests.post(HASURA_SQL_ENDPOINT, json=payload, headers=headers)
+    res.raise_for_status()
+    data = res.json()
+    try:
+        return data["result"]
     except KeyError:
         raise ValueError(data)
 
