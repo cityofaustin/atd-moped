@@ -133,7 +133,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{width: "100px"}}>
+            <div style={{ width: "100px" }}>
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit" }}
@@ -159,7 +159,8 @@ const ProjectWorkActivitiesTable = () => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
-  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] = useState(false);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
   const [activityToDelete, setActivityToDelete] = useState(null);
 
   const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
@@ -176,13 +177,10 @@ const ProjectWorkActivitiesTable = () => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  const onDeleteActivity = useCallback(
-    ({ id }) => {
-      setActivityToDelete(id);
-      setIsDeleteConfirmationOpen(true);
-    },
-    []
-  );
+  const onDeleteActivity = useCallback(({ id }) => {
+    setActivityToDelete(id);
+    setIsDeleteConfirmationOpen(true);
+  }, []);
 
   const handleDeleteConfirmed = useCallback(() => {
     if (activityToDelete) {
