@@ -261,8 +261,8 @@ const ProjectWorkActivitiesTable = () => {
         type="work activity"
         submitDelete={handleDeleteConfirmed}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
-        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}>
-      </DeleteConfirmationModal>
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
     </ApolloErrorHandler>
   );
 };
