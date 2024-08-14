@@ -24,6 +24,8 @@ import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
 import { $getRoot } from 'lexical';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { LinkNode } from '@lexical/link';
+import { ListPlugin } from '@lexical/react/LexicalListPlugin';
+import { ListNode, ListItemNode } from '@lexical/list';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,6 +54,13 @@ const useStyles = makeStyles((theme) => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
+  // richTextEditor: {
+  //   text: {
+  //     underline: {
+  //       textDecoration: "underline"
+  //     }
+  //   }
+  // }
 }));
 
 /**
@@ -75,7 +84,7 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
   </RadioGroup>
 );
 
-const theme = {};
+// const theme = {};
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed.
@@ -90,6 +99,7 @@ const OnChangePlugin = ({ onChange }) => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const htmlContent = $generateHtmlFromNodes(editor, null);
+        console.log(htmlContent);
         onChange(htmlContent);
       });
     });
@@ -157,9 +167,11 @@ const NoteInput = ({
 
   const initialConfig = {
     namespace: 'MyEditor',
-    theme,
+    theme: classes,
     nodes: [
       LinkNode,
+      ListNode,
+      ListItemNode
     ],
     onError,
   };
@@ -186,6 +198,7 @@ const NoteInput = ({
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
               <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
               <LinkPlugin />
+              <ListPlugin />
             </Box>
           </LexicalComposer>
         </Grid>

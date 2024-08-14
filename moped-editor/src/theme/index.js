@@ -28,6 +28,9 @@ const theme = createTheme(adaptV4Theme({
       primary: "#212121",
       secondary: "#848484",
       header: "#848484",
+      underline: {
+        textDecoration: "underline"
+      }
     },
     map: {
       transparent: "rgba(0,0,0,0)",

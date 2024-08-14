@@ -1,10 +1,11 @@
+import { useEffect, useState } from "react";
+
 import {
   Box,
   ButtonGroup,
   Button,
   Divider
 } from "@mui/material";
-
 import {
   Redo,
   Undo,
@@ -23,7 +24,23 @@ import {
   FormatClear
 } from "@mui/icons-material";
 
-// import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import {
+  $getSelection,
+  $isRangeSelection,
+  CAN_REDO_COMMAND,
+  CAN_UNDO_COMMAND,
+  FORMAT_ELEMENT_COMMAND,
+  FORMAT_TEXT_COMMAND,
+  REDO_COMMAND,
+  SELECTION_CHANGE_COMMAND,
+  UNDO_COMMAND,
+  COMMAND_PRIORITY_LOW
+} from "lexical";
+import { mergeRegister } from "@lexical/utils";
+import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList } from "@lexical/list";
+import { $wrapNodes } from "@lexical/selection";
 
 const RichTextAction = {
   Bold: "bold",
@@ -116,7 +133,61 @@ const RICH_TEXT_OPTIONS = [
 ];
 
 const ToolbarPlugin = () => {
-  // const [editor] = useLexicalComposerContext();
+  const [editor] = useLexicalComposerContext();
+
+  editor.registerCommand(INSERT_UNORDERED_LIST_COMMAND, () => {
+    insertList(editor, 'bullet');
+    return true;
+}, COMMAND_PRIORITY_LOW);
+
+  const onAction = (id) => {
+    console.log(id);
+    switch (id) {
+      case "bold":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+        break;
+      case "italics":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+        break;
+      case "underline":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+        break;
+      case "strikethrough":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
+        break;
+      case "highlight":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight");
+        break;
+      case "formatListNumbered":
+        editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+        break;
+      case "formatListBulleted":
+        editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+        break;
+      case "link":
+        break;
+      case "leftAlign":
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+        break;
+      case "centerAlign":
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+        break;
+      case "rightAlign":
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+        break;
+      case "justifyAlign":
+        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+        break;
+      case "undo":
+        editor.dispatchCommand(UNDO_COMMAND, undefined);
+        break;
+      case "redo":
+        editor.dispatchCommand(REDO_COMMAND, undefined);
+        break;
+      case "formatClear":
+        break;
+    }
+  }
 
   return (
     <Box
@@ -134,6 +205,7 @@ const ToolbarPlugin = () => {
             <Button
               aria-label={label}
               startIcon={icon}
+              onClick={() => onAction(id)}
             />
           )
         )}
