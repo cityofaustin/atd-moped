@@ -64,11 +64,12 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
-def make_all_features(data):
+def make_all_features(data, exploded_geometry):
     """Take a list of component feature records and create Esri feature objects for lines, points, and combined layers in AGOL.
 
     Args:
         data (dict): a list of component feature records
+        exploded_geometry (dict): a dictionary of exploded geometry data from the component_arcgis_online_view
 
     Returns:
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
