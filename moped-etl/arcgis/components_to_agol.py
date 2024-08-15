@@ -145,10 +145,8 @@ WHERE
     LIMIT 10
 """
 
-    result = make_hasura_sql_query(query=query)
-    print(f"Result: {result}")
-
-    return
+    exploded_geometry = make_hasura_sql_query(query=query)
+    # print(f"Result: {exploded_geometry}")
 
     variables = (
         {"where": {}}
@@ -164,7 +162,7 @@ WHERE
         variables=variables,
     )["component_arcgis_online_view"]
 
-    all_features = make_all_features(data)
+    all_features = make_all_features(data, exploded_geometry)
 
     if args.full:
         for feature_type in ["points", "lines", "combined"]:
