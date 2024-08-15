@@ -234,6 +234,11 @@ if __name__ == "__main__":
             "Please provide either the -d flag with ISO date string with TZ offset or the -f flag and not both."
         )
 
+    if not args.date and not args.full:
+        raise Exception(
+            "Please provide either the -d flag with ISO date string with TZ offset or the -f flag."
+        )
+
     if args.full:
         logger.info(f"Starting sync. Replacing all projects' components data...")
     else:
