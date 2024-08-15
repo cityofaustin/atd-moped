@@ -112,7 +112,9 @@ const EditAttributesModal = ({
       });
   };
 
-  const onClose = () => {
+  const onClose = (event, reason) => {
+    if (reason && reason === "backdropClick")
+      return;
     editDispatch({ type: "cancel_attributes_edit" });
   };
 

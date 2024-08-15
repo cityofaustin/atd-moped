@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Grid, Link, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
-import { OpenInNew } from "@mui/icons-material";
+import ExternalLink from "src/components/ExternalLink";
 
 /**
  * ProjectSummaryWorkOrders Component
@@ -35,13 +35,7 @@ const ProjectSummaryWorkOrders = ({
         <ProjectSummaryLabel
           className={classes.fieldLabelDataTrackerLink}
           text={
-            <Link
-              href={knackProjectURL}
-              target={"_blank"}
-            >
-              {"View in Data Tracker"}
-              <OpenInNew className={classes.linkIcon} />
-            </Link>
+            <ExternalLink text="View in Data Tracker" url={knackProjectURL} />
           }
           classes={classes}
           spanClassName={classes.fieldLabelTextSpanNoBorder}
