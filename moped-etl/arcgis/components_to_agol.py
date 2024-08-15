@@ -77,10 +77,13 @@ def make_all_features(data):
 
     logger.info("Building Esri feature objects...")
     for component in data:
-        # extract geometry and line geometry from component data
-        # for line features, the line geometry is redundant/identical to geometry
+        # extract geometry and line geometry from component data.
+
+        # for line features, the line geometry is redundant/identical to geometry.
+
         # for point features, it is the buffered ring around the point as defined
-        # in the Moped component view
+        # in the Moped component view.
+
         geometry = component.pop("geometry")
         line_geometry = component.pop("line_geometry")
 
