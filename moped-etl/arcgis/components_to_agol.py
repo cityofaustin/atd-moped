@@ -215,15 +215,17 @@ if __name__ == "__main__":
         "-d",
         "--date",
         type=str,
+        nargs="?",
+        const=(datetime.now(timezone.utc) - timedelta(days=7)).isoformat(),
         default=None,
-        help=f"ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update.",
+        help="ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update. Defaults to 7 days ago if -d is used without a value.",
     )
 
     parser.add_argument(
         "-f",
         "--full",
         action="store_true",
-        help=f"Delete and replace all project components.",
+        help="Delete and replace all project components.",
     )
 
     args = parser.parse_args()
