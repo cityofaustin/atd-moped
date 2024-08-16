@@ -39,7 +39,7 @@ import {
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
 import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList, $isListItemNode, $isListNode } from "@lexical/list";
 import { $wrapNodes } from "@lexical/selection";
 
 const RichTextAction = {
@@ -48,8 +48,8 @@ const RichTextAction = {
   Underline: "underline",
   Strikethrough: "strikethrough",
   Highlight: "highlight",
-  ListOrdered: "formatListNumbered",
-  ListUnordered: "formatListBulleted",
+  ListOrdered: "number",
+  ListUnordered: "bullet",
   Link: "link",
   LeftAlign: "leftAlign",
   CenterAlign: "centerAlign",
@@ -80,12 +80,12 @@ const RICH_TEXT_OPTIONS = [
   {
     id: RichTextAction.ListOrdered,
     icon: <FormatListNumbered />,
-    label: "Ordered list",
+    label: "Numbered list",
   },
   {
     id: RichTextAction.ListUnordered,
     icon: <FormatListBulleted />,
-    label: "Unordered list",
+    label: "Bulleted list",
   },
   {
     id: RichTextAction.Link,
@@ -136,9 +136,22 @@ const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
 
   editor.registerCommand(INSERT_UNORDERED_LIST_COMMAND, () => {
-    insertList(editor, 'bullet');
+    console.log("adding bullet");
+    insertList(editor, "bullet");
     return true;
-}, COMMAND_PRIORITY_LOW);
+  }, COMMAND_PRIORITY_LOW);
+
+  useEffect(() => {
+    return mergeRegister(editor.registerUpdateListener(({ editorState }) => {
+      editorState.read(() => {
+       const selection = $getSelection();
+       const node = selection.getNodes()[0];
+       console.log($isListNode(node));
+       console.log($isListItemNode(node));
+       console.log(selection.hasFormat("bullet"));
+      })
+    }))
+  }, [editor]);
 
   const onAction = (id) => {
     console.log(id);
@@ -158,11 +171,11 @@ const ToolbarPlugin = () => {
       case "highlight":
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight");
         break;
-      case "formatListNumbered":
-        editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, undefined);
+      case "number":
+        editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, "number");
         break;
-      case "formatListBulleted":
-        editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, undefined);
+      case "bullet":
+        editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, "bullet");
         break;
       case "link":
         break;
