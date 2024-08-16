@@ -26,6 +26,7 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { LinkNode } from '@lexical/link';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { ListNode, ListItemNode } from '@lexical/list';
+import PlaygroundEditorTheme from "./PlaygroundEditorTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -54,13 +55,6 @@ const useStyles = makeStyles((theme) => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
-  // richTextEditor: {
-  //   text: {
-  //     underline: {
-  //       textDecoration: "underline"
-  //     }
-  //   }
-  // }
 }));
 
 /**
@@ -167,7 +161,7 @@ const NoteInput = ({
 
   const initialConfig = {
     namespace: 'MyEditor',
-    theme: classes,
+    theme: PlaygroundEditorTheme,
     nodes: [
       LinkNode,
       ListNode,
