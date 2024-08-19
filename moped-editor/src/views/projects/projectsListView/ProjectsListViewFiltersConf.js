@@ -258,7 +258,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "funding_source_name",
+      name: "funding_source_and_program_names",
       label: "Funding source",
       placeholder: "Funding source",
       type: "string",
@@ -274,10 +274,29 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
         "string_contains_case_insensitive",
         "string_begins_with_case_insensitive",
         "string_ends_with_case_insensitive",
-        "string_equals_case_insensitive",
-        "string_does_not_equal_case_insensitive",
         "string_is_null",
-        "string_is_not_null",
+        "string_is_not_null"
+      ],
+    },
+    {
+      name: "funding_source_and_program_names",
+      label: "Funding program",
+      placeholder: "Funding program",
+      type: "string",
+      lookup: {
+        table_name: "moped_fund_sources",
+        getOptionLabel: (option) => option.funding_source_name,
+        operators: [
+          "string_equals_case_insensitive",
+          "string_does_not_equal_case_insensitive",
+        ],
+      },
+      operators: [
+        "string_contains_case_insensitive",
+        "string_begins_with_case_insensitive",
+        "string_ends_with_case_insensitive",
+        "string_is_null",
+        "string_is_not_null"
       ],
     },
     {
