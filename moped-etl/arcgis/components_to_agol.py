@@ -164,6 +164,20 @@ def make_all_features(data, exploded_geometry):
     return all_features
 
 
+def transform_data(input_data):
+    if not input_data or len(input_data) < 2:
+        return []
+
+    field_names = input_data[0]
+    result = []
+
+    for row in input_data[1:]:
+        obj = {field: value for field, value in zip(field_names, row)}
+        result.append(obj)
+
+    return result
+
+
 def main(args):
     logger.info("Getting token...")
     get_token()
