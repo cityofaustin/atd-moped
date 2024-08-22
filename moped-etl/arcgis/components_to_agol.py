@@ -3,6 +3,7 @@
 # docker compose run arcgis;
 import argparse
 import logging
+import json
 from datetime import datetime, timezone, timedelta
 
 from process.logging import get_logger
@@ -62,6 +63,11 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     }
     feature["geometry"][esri_geometry_key] = geometry["coordinates"]
     return feature
+
+
+def write_pretty_json(variable, filename):
+    with open(filename, "w") as file:
+        json.dump(variable, file, indent=4, sort_keys=True)
 
 
 def make_all_features(data, exploded_geometry):
