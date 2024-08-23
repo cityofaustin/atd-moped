@@ -48,6 +48,7 @@ import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import CustomPopper from "../../../../components/CustomPopper";
 import LookupSelectComponent from "../../../../components/LookupSelectComponent";
 import LookupAutocompleteComponent from "./LookupAutocompleteComponent";
+import FundAutocompleteComponent from "./FundAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
@@ -90,19 +91,6 @@ const useStyles = makeStyles((theme) => ({
     top: "1rem",
     right: "1rem",
   },
-  deptAutocomplete: {
-    width: "300px",
-    "& .MuiAutocomplete-inputRoot": {
-      marginBottom: "16px",
-    },
-    "& .MuiFormLabel-root": {
-      color: theme.palette.text.primary,
-    },
-  },
-  fundSelectStyle: {
-    width: "190px",
-    alignContent: "center",
-  },
   fieldLabelText: {
     width: "calc(100% - 2rem)",
     paddingLeft: theme.spacing(0.5),
@@ -111,11 +99,6 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: theme.spacing(0.5),
       cursor: "pointer",
     },
-  },
-  autocompleteLookupInput: {
-    minWidth: "200px",
-    alignContent: "center",
-    padding: theme.spacing(1),
   },
 }));
 
@@ -261,99 +244,6 @@ const ProjectFundingTable = () => {
       message: message,
       severity: severity,
     });
-  };
-
-  // const LookupAutocompleteComponent = (props) => {
-  //   const { id, value, field, hasFocus } = props;
-  //   const apiRef = useGridApiContext();
-  //   const ref = React.useRef(null);
-
-  //   React.useEffect(() => {
-  //     if (hasFocus) {
-  //       ref.current.focus();
-  //     }
-  //   }, [hasFocus]);
-
-  //   const handleChange = (event, newValue) => {
-  //     apiRef.current.setEditCellValue({
-  //       id,
-  //       field,
-  //       value: newValue ? newValue[`${props.name}_id`] : null,
-  //     });
-  //   };
-
-  //   return (
-  //     <Autocomplete
-  //       className={classes.autocompleteLookupInput}
-  //       value={
-  //         // if we are editing, the autocomplete has the value provided by the material table, which is the record id
-  //         // need to get its corresponding text value
-  //         props.value
-  //           ? getLookupValueByID(props.lookupTableName, props.name, value)
-  //           : null
-  //       }
-  //       // use customized popper component so menu expands to fullwidth
-  //       PopperComponent={CustomPopper}
-  //       id={props.name}
-  //       options={props.data}
-  //       renderInput={(params) => (
-  //         <TextField variant="standard" {...params} inputRef={ref} />
-  //       )}
-  //       getOptionLabel={(option) =>
-  //         // if our value is a string, just return the string instead of accessing the name
-  //         typeof option === "string" ? option : option[`${props.name}_name`]
-  //       }
-  //       isOptionEqualToValue={(value, option) =>
-  //         value[`${props.name}_name`] === option
-  //       }
-  //       onChange={handleChange}
-  //     />
-  //   );
-  // };
-
-  const FundAutocompleteComponent = (props) => {
-    const { id, value, field, hasFocus } = props;
-    const apiRef = useGridApiContext();
-    const ref = React.useRef(null);
-
-    React.useEffect(() => {
-      if (hasFocus) {
-        ref.current.focus();
-      }
-    }, [hasFocus]);
-
-    const handleChange = (event, newValue) => {
-      apiRef.current.setEditCellValue({
-        id,
-        field,
-        value: newValue ?? null,
-      });
-    };
-
-    return (
-      <Autocomplete
-        className={classes.fundSelectStyle}
-        value={value ?? null}
-        // use customized popper component so menu expands to fullwidth
-        PopperComponent={CustomPopper}
-        id={"moped_funds"}
-        options={props.data}
-        renderInput={(params) => (
-          <TextField variant="standard" {...params} inputRef={ref} />
-        )}
-        getOptionLabel={(option) =>
-          // if our value is a string, just return the string
-          typeof option === "string"
-            ? option
-            : `${option.fund_id} | ${option.fund_name}`
-        }
-        isOptionEqualToValue={(value, option) =>
-          value.fund_id === option.fund_id &&
-          value.fund_name === option.fund_name
-        }
-        onChange={handleChange}
-      />
-    );
   };
 
   /**
@@ -627,7 +517,6 @@ const ProjectFundingTable = () => {
           : "",
       renderEditCell: (props) => (
         <FundingDeptUnitAutocomplete
-          classes={classes.deptAutocomplete}
           props={props}
           value={props.value}
         />

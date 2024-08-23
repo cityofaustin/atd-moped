@@ -2,23 +2,16 @@ import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import makeStyles from "@mui/styles/makeStyles";
-import { getLookupValueByID } from "./utils/helpers";
 import CustomPopper from "src/components/CustomPopper";
 
 const useStyles = makeStyles((theme) => ({
-  autocompleteLookupInput: {
-    minWidth: "200px",
+  fundSelectStyle: {
+    width: "190px",
     alignContent: "center",
-    padding: theme.spacing(1),
   },
 }));
 
-/**
- * Component for dropdown select using a lookup table as options
- * @param {*} props
- * @returns {React component}
- */
-const LookupAutocompleteComponent = (props) => {
+const FundAutocompleteComponent = (props) => {
   const classes = useStyles();
   const { id, value, field, hasFocus } = props;
   const apiRef = useGridApiContext();
@@ -34,37 +27,33 @@ const LookupAutocompleteComponent = (props) => {
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: newValue ? newValue[`${props.name}_id`] : null,
+      value: newValue ?? null,
     });
   };
 
   return (
     <Autocomplete
-      className={classes.autocompleteLookupInput}
-      value={
-        // if we are editing, the autocomplete has the value provided by the material table, which is the record id
-        // need to get its corresponding text value
-        props.value
-          ? getLookupValueByID(props.lookupTable, props.name, value)
-          : null
-      }
+      className={classes.fundSelectStyle}
+      value={value ?? null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
-      id={props.name}
+      id={"moped_funds"}
       options={props.data}
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />
       )}
       getOptionLabel={(option) =>
-        // if our value is a string, just return the string instead of accessing the name
-        typeof option === "string" ? option : option[`${props.name}_name`]
+        // if our value is a string, just return the string
+        typeof option === "string"
+          ? option
+          : `${option.fund_id} | ${option.fund_name}`
       }
       isOptionEqualToValue={(value, option) =>
-        value[`${props.name}_name`] === option
+        value.fund_id === option.fund_id && value.fund_name === option.fund_name
       }
       onChange={handleChange}
     />
   );
 };
 
-export default LookupAutocompleteComponent;
+export default FundAutocompleteComponent;
