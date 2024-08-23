@@ -274,22 +274,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
     {
-      name: "funding_source_and_program_names",
-      label: "Funding program",
-      placeholder: "Funding program",
-      type: "string",
-      lookup: {
-        table_name: "moped_fund_programs",
-        getOptionLabel: (option) => option.funding_program_name,
-        operators: ["string_contains_case_insensitive"],
-      },
-      operators: [
-        "string_contains_case_insensitive",
-        "string_is_null",
-        "string_is_not_null",
-      ],
-    },
-    {
       name: "project_status_update",
       label: "Status update",
       placeholder: "Status update",
