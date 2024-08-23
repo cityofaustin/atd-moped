@@ -28,27 +28,28 @@ import {
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import { v4 as uuidv4 } from "uuid";
-import { currencyFormatter } from "../../../utils/numberFormatters";
+import { currencyFormatter } from "../../../../utils/numberFormatters";
 
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import {
   FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-} from "../../../queries/funding";
+} from "../../../../queries/funding";
 
-import { getDatabaseId, useUser } from "../../../auth/user";
+import { getDatabaseId, useUser } from "../../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
-import DataGridTextField from "./DataGridTextField";
+import DataGridTextField from "../DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
-import CustomPopper from "../../../components/CustomPopper";
-import LookupSelectComponent from "../../../components/LookupSelectComponent";
+import CustomPopper from "../../../../components/CustomPopper";
+import LookupSelectComponent from "../../../../components/LookupSelectComponent";
+import LookupAutocompleteComponent from "./LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -130,9 +131,17 @@ const useFdusArray = (projectFunding) =>
     );
   }, [projectFunding]);
 
+  /** Hook that provides memoized column settings */
+const useColumns = ({  }) =>
+  useMemo(() => {
+    return [
+
+
+    ];
+  }, []);
+
 const ProjectFundingTable = () => {
   const apiRef = useGridApiRef();
-
   const classes = useStyles();
 
   /**
@@ -223,8 +232,6 @@ const ProjectFundingTable = () => {
     [apiRef]
   );
 
-  if (loading || !data) return <CircularProgress />;
-
   /**
    * Get lookup value for a given table using a record ID and returning a name
    * @param {string} lookupTable - Name of lookup table as found within the GQL data query object
@@ -256,53 +263,53 @@ const ProjectFundingTable = () => {
     });
   };
 
-  const LookupAutocompleteComponent = (props) => {
-    const { id, value, field, hasFocus } = props;
-    const apiRef = useGridApiContext();
-    const ref = React.useRef(null);
+  // const LookupAutocompleteComponent = (props) => {
+  //   const { id, value, field, hasFocus } = props;
+  //   const apiRef = useGridApiContext();
+  //   const ref = React.useRef(null);
 
-    React.useEffect(() => {
-      if (hasFocus) {
-        ref.current.focus();
-      }
-    }, [hasFocus]);
+  //   React.useEffect(() => {
+  //     if (hasFocus) {
+  //       ref.current.focus();
+  //     }
+  //   }, [hasFocus]);
 
-    const handleChange = (event, newValue) => {
-      apiRef.current.setEditCellValue({
-        id,
-        field,
-        value: newValue ? newValue[`${props.name}_id`] : null,
-      });
-    };
+  //   const handleChange = (event, newValue) => {
+  //     apiRef.current.setEditCellValue({
+  //       id,
+  //       field,
+  //       value: newValue ? newValue[`${props.name}_id`] : null,
+  //     });
+  //   };
 
-    return (
-      <Autocomplete
-        className={classes.autocompleteLookupInput}
-        value={
-          // if we are editing, the autocomplete has the value provided by the material table, which is the record id
-          // need to get its corresponding text value
-          props.value
-            ? getLookupValueByID(props.lookupTableName, props.name, value)
-            : null
-        }
-        // use customized popper component so menu expands to fullwidth
-        PopperComponent={CustomPopper}
-        id={props.name}
-        options={props.data}
-        renderInput={(params) => (
-          <TextField variant="standard" {...params} inputRef={ref} />
-        )}
-        getOptionLabel={(option) =>
-          // if our value is a string, just return the string instead of accessing the name
-          typeof option === "string" ? option : option[`${props.name}_name`]
-        }
-        isOptionEqualToValue={(value, option) =>
-          value[`${props.name}_name`] === option
-        }
-        onChange={handleChange}
-      />
-    );
-  };
+  //   return (
+  //     <Autocomplete
+  //       className={classes.autocompleteLookupInput}
+  //       value={
+  //         // if we are editing, the autocomplete has the value provided by the material table, which is the record id
+  //         // need to get its corresponding text value
+  //         props.value
+  //           ? getLookupValueByID(props.lookupTableName, props.name, value)
+  //           : null
+  //       }
+  //       // use customized popper component so menu expands to fullwidth
+  //       PopperComponent={CustomPopper}
+  //       id={props.name}
+  //       options={props.data}
+  //       renderInput={(params) => (
+  //         <TextField variant="standard" {...params} inputRef={ref} />
+  //       )}
+  //       getOptionLabel={(option) =>
+  //         // if our value is a string, just return the string instead of accessing the name
+  //         typeof option === "string" ? option : option[`${props.name}_name`]
+  //       }
+  //       isOptionEqualToValue={(value, option) =>
+  //         value[`${props.name}_name`] === option
+  //       }
+  //       onChange={handleChange}
+  //     />
+  //   );
+  // };
 
   const FundAutocompleteComponent = (props) => {
     const { id, value, field, hasFocus } = props;
@@ -535,6 +542,11 @@ const ProjectFundingTable = () => {
       severity: "error",
     });
   };
+  const columns = useColumns({
+
+  });
+
+  if (loading || !data) return <CircularProgress />;
 
   const dataGridColumns = [
     {
@@ -548,7 +560,7 @@ const ProjectFundingTable = () => {
         <LookupAutocompleteComponent
           {...props}
           name={"funding_source"}
-          lookupTableName={"moped_fund_sources"}
+          lookupTable={data["moped_fund_sources"]}
           data={data.moped_fund_sources}
         />
       ),
@@ -564,7 +576,7 @@ const ProjectFundingTable = () => {
         <LookupAutocompleteComponent
           {...props}
           name={"funding_program"}
-          lookupTableName={"moped_fund_programs"}
+          lookupTable={data["moped_fund_programs"]}
           data={data.moped_fund_programs}
         />
       ),
