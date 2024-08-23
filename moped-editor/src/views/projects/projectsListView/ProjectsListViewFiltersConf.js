@@ -259,7 +259,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "funding_source_name",
-      label: "Funding source",
+      label: "Funding sources",
       placeholder: "Funding source",
       type: "string",
       lookup: {
