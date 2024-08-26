@@ -158,6 +158,6 @@ Format (ie, clean up all my indention and fix things you can fix automatically):
 
 More documentation is available in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
 
-You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/1.0/graphql/core/migrations/index.html). 
+You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/2.0/migrations-metadata-seeds/overview/). 
 
 [SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)
