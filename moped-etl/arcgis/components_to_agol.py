@@ -81,15 +81,11 @@ def make_all_features(data, exploded_geometry):
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
     """
 
-    print(f"Exploded Geometry: {exploded_geometry[1]}")
-
     all_features = {"lines": [], "points": [], "combined": [], "exploded": []}
 
     logger.info("Building Esri feature objects...")
     for component in data:
 
-        print("\n\n\n")
-        print(f"Component: {component}")
         # extract geometry and line geometry from component data.
 
         # for line features, the line geometry is redundant/identical to geometry.
@@ -99,9 +95,6 @@ def make_all_features(data, exploded_geometry):
 
         geometry = component.pop("geometry")
         line_geometry = component.pop("line_geometry")
-
-        # print(f"\nGeometry: {geometry}")
-        # print(f"\nLine Geometry: {line_geometry}")
 
         if not geometry:
             continue
