@@ -143,7 +143,31 @@ def make_all_features(data, exploded_geometry):
                 if element["project_component_id"] == str(project_component_id)
             ]
 
-            all_features["exploded"].extend(matching_elements)
+            for component in matching_elements:
+
+                geometry_json = component.pop(
+                    "geometry"
+                )  # python has a dictionary.pop(), it trips me up
+
+                geometry = json.loads(
+                    geometry_json
+                )  # Decode JSON string into Python dictionary
+
+                if not geometry:
+                    continue
+                esri_geometry_key = get_esri_geometry_key(geometry)
+                feature = make_esri_feature(
+                    esri_geometry_key=esri_geometry_key,
+                    geometry=geometry,
+                    attributes=component,
+                )
+                feature["attributes"]["source_geometry_type"] = (
+                    "point" if esri_geometry_key == "points" else "line"
+                )
+                if not feature:
+                    continue
+
+                all_features["exploded"].extend(matching_elements)
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
@@ -172,7 +196,7 @@ def main(args):
     query = """
 SELECT 
     --ST_GeometryType(dump.geom) AS geometry_type,
-    dump.geom AS mixed_geometry_native_geometry,
+    ST_AsGeoJSON(dump.geom) as geometry,
     --dump.path[1] AS point_index,
     --component_arcgis_online_view.*
     component_arcgis_online_view.completion_date,
