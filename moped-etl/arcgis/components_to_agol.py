@@ -195,8 +195,7 @@ WHERE
     ST_GeometryType(ST_GeomFromGeoJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'
 """
 
-    exploded_geometry = make_hasura_sql_query(query=query)
-    # print(f"Result: {exploded_geometry}")
+    exploded_geometry = transform_data(make_hasura_sql_query(query=query))
 
     variables = (
         {"where": {}}
