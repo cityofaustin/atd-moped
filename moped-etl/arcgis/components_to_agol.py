@@ -193,7 +193,6 @@ FROM
     LATERAL ST_Dump(ST_GeomFromGeoJSON(component_arcgis_online_view.geometry)) AS dump
 WHERE
     ST_GeometryType(ST_GeomFromGeoJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'
-    LIMIT 10
 """
 
     exploded_geometry = make_hasura_sql_query(query=query)
