@@ -140,7 +140,7 @@ To version control database views, SQL files are stored in `/views/` and the ste
 
 ### SQL Formatting
 
-We use SQLFluff to format SQL code. You'll need to get `sqlfluff` installed on your computer and in the path. If you're using `brew`, you can `brew install sqlfluff`. Make sure it's in your path by doing `which sqlfluff` in your terminal, and if it gives you the path to program, then you're good to go. 
+We use [SQLFluff](https://sqlfluff.com/) to format SQL code. You'll need to get `sqlfluff` installed on your computer and in the path. If you're using `brew`, you can `brew install sqlfluff`. Make sure it's in your path by doing `which sqlfluff` in your terminal, and if it gives you the path to program, then you're good to go. 
 
 VSCode users: The extension I'm using to provide linting and formatting capabilities in VSCode is [here](https://marketplace.visualstudio.com/items?itemName=dorzey.vscode-sqlfluff).
 
