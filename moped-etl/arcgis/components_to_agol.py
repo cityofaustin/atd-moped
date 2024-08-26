@@ -129,27 +129,16 @@ def make_all_features(data, exploded_geometry):
             )
             all_features["combined"].append(line_feature)
 
-            pc_id = feature["attributes"]["project_component_id"]
+            project_component_id = feature["attributes"]["project_component_id"]
 
-            # print(f"\nProject Component ID: {pc_id}")
-            # print("\n^ We're working with some points here\n")
-
-            # first_pc_id = exploded_geometry[1]["project_component_id"]
-            # print(f"\nFirst Project Component ID: {first_pc_id}")
-            # print(f"\nExploded Geometry: {exploded_geometry[1]}\n")
-
-            # Find the element in exploded_geometry that matches the project_component_id
+            # Find the elements in exploded_geometry which match the project_component_id
             matching_elements = [
                 element
                 for element in exploded_geometry
-                if element["project_component_id"] == str(pc_id)
+                if element["project_component_id"] == str(project_component_id)
             ]
 
-            # print(f"Matching Elements: {matching_elements}")
-            # write_pretty_json(exploded_geometry, "exploded_geometry.json")
-
-            all_features["exploded"].append(matching_elements)
-
+            all_features["exploded"].extend(matching_elements)
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
