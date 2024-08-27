@@ -423,14 +423,14 @@ const ProjectFundingTable = () => {
     (id) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
     },
-    []
+    [rowModesModel]
   );
 
   const handleSaveClick = useCallback(
     (id) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
     },
-    []
+    [rowModesModel]
   );
 
   // handles row delete
@@ -462,7 +462,7 @@ const ProjectFundingTable = () => {
           });
       }
     },
-    []
+    [rows, deleteProjectFunding, refetch ]
   );
 
   // when a user cancels editing by clicking the X in the actions
