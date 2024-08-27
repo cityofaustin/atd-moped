@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
@@ -123,7 +123,11 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ value }) =>
-          getLookupValueByID(data["moped_fund_sources"], "funding_source", value),
+          getLookupValueByID(
+            data["moped_fund_sources"],
+            "funding_source",
+            value
+          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -139,7 +143,11 @@ const useColumns = ({
         width: 200,
         editable: true,
         renderCell: ({ value }) =>
-          getLookupValueByID(data["moped_fund_programs"], "funding_program", value),
+          getLookupValueByID(
+            data["moped_fund_programs"],
+            "funding_program",
+            value
+          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -162,7 +170,11 @@ const useColumns = ({
         editable: true,
         width: 200,
         renderCell: ({ value }) =>
-          getLookupValueByID(data["moped_fund_status"], "funding_status", value),
+          getLookupValueByID(
+            data["moped_fund_status"],
+            "funding_status",
+            value
+          ),
         renderEditCell: (props) => (
           <LookupSelectComponent
             {...props}
@@ -309,10 +321,10 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
-  const handleDeleteOpen = (id) => {
+  const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
-  };
+  }, []);
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
@@ -407,42 +419,51 @@ const ProjectFundingTable = () => {
     }));
   };
 
-  const handleEditClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
-  };
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    []
+  );
 
-  const handleSaveClick = (id) => () => {
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  };
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    []
+  );
 
   // handles row delete
-  const handleDeleteClick = (id) => () => {
-    // remove row from rows in state
-    setRows(rows.filter((row) => row.proj_funding_id !== id));
+  const handleDeleteClick = useCallback(
+    (id) => () => {
+      // remove row from rows in state
+      setRows(rows.filter((row) => row.proj_funding_id !== id));
 
-    const deletedRow = rows.find((row) => row.proj_funding_id === id);
-    // if the deleted row is in the db, delete from db
-    if (!deletedRow.isNew) {
-      deleteProjectFunding({
-        variables: {
-          proj_funding_id: id,
-        },
-      })
-        .then(() => refetch())
-        .catch((error) => {
-          setSnackbarState({
-            open: true,
-            message: (
-              <span>
-                There was a problem deleting funding. Error message:{" "}
-                {error.message}
-              </span>
-            ),
-            severity: "error",
+      const deletedRow = rows.find((row) => row.proj_funding_id === id);
+      // if the deleted row is in the db, delete from db
+      if (!deletedRow.isNew) {
+        deleteProjectFunding({
+          variables: {
+            proj_funding_id: id,
+          },
+        })
+          .then(() => refetch())
+          .catch((error) => {
+            setSnackbarState({
+              open: true,
+              message: (
+                <span>
+                  There was a problem deleting funding. Error message:{" "}
+                  {error.message}
+                </span>
+              ),
+              severity: "error",
+            });
           });
-        });
-    }
-  };
+      }
+    },
+    []
+  );
 
   // when a user cancels editing by clicking the X in the actions
   const handleCancelClick = (id) => () => {
