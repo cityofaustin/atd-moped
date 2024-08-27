@@ -378,7 +378,7 @@ if __name__ == "__main__":
 
     if not args.date and not args.full:
         raise Exception(
-            "Please provide either the -d flag with ISO date string with TZ offset or the -f flag."
+            "Please provide either the -d flag with optional ISO date string with TZ offset or the -f flag."
         )
 
     if args.full:
