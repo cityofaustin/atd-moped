@@ -91,11 +91,11 @@ def make_all_features(data, exploded_geometry):
     logger.info("Building Esri feature objects...")
     for component in data:
 
-        # extract geometry and line geometry from component data.
+        # Extract geometry and line geometry from component data.
 
-        # for line features, the line geometry is redundant/identical to geometry.
+        # For line features, the line geometry is redundant/identical to geometry.
 
-        # for point features, it is the buffered ring around the point as defined
+        # For point features, it is the buffered ring around the point as defined
         # in the Moped component view.
 
         geometry = component.pop("geometry")
