@@ -156,7 +156,7 @@ def make_all_features(data, exploded_geometry):
                 if not feature:
                     continue
 
-                all_features["exploded"].extend(matching_elements)
+                all_features["exploded"].append(feature)
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
