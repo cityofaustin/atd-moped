@@ -196,8 +196,8 @@ def main(args):
     query = """
 SELECT 
     --ST_GeometryType(dump.geom) AS geometry_type,
+    --dump.path[1] AS point_index, -- ordinal value of the point in the MultiPoint geometry
     ST_AsGeoJSON(dump.geom) as geometry,
-    --dump.path[1] AS point_index,
     component_arcgis_online_view.completion_date,
     component_arcgis_online_view.completion_end_date,
     component_arcgis_online_view.component_categories,
