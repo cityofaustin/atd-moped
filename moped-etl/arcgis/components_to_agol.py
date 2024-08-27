@@ -198,7 +198,6 @@ SELECT
     --ST_GeometryType(dump.geom) AS geometry_type,
     ST_AsGeoJSON(dump.geom) as geometry,
     --dump.path[1] AS point_index,
-    --component_arcgis_online_view.*
     component_arcgis_online_view.completion_date,
     component_arcgis_online_view.completion_end_date,
     component_arcgis_online_view.component_categories,
