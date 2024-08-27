@@ -179,7 +179,18 @@ def transform_data(input_data):
     result = []
 
     for row in input_data[1:]:
-        obj = {field: value for field, value in zip(field_names, row)}
+        obj = {}
+        for field, value in zip(field_names, row):
+            if value == "NULL":
+                obj[field] = None
+            else:
+                try:
+                    obj[field] = int(value)
+                except ValueError:
+                    try:
+                        obj[field] = float(value)
+                    except ValueError:
+                        obj[field] = value
         result.append(obj)
 
     return result
