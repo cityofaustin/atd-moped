@@ -1,6 +1,6 @@
 UPLOAD_CHUNK_SIZE = 100
 
-LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
+LAYER_IDS = {"points": 0, "lines": 1, "combined": 2, "exploded": 3}
 
 COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
 query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
