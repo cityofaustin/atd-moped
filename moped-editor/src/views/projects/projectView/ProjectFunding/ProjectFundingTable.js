@@ -133,7 +133,6 @@ const useColumns = ({
             {...props}
             name={"funding_source"}
             lookupTable={data["moped_fund_sources"]}
-            data={data.moped_fund_sources}
           />
         ),
       },
@@ -153,7 +152,6 @@ const useColumns = ({
             {...props}
             name={"funding_program"}
             lookupTable={data["moped_fund_programs"]}
-            data={data.moped_fund_programs}
           />
         ),
       },

@@ -15,12 +15,23 @@ const useStyles = makeStyles((theme) => ({
 
 /**
  * Component for dropdown select using a lookup table as options
- * @param {*} props
+ * @param {Number} id - row id in Data Grid
+ * @param {string} value - Field value
+ * @param {string} field - name of Field
+ * @param {Boolean} hasFocus - is field focused
+ * @param {String} name - name of lookup table
+ * @param {Array|Objects} lookupTable - the lookup table data
  * @returns {React component}
  */
-const LookupAutocompleteComponent = (props) => {
+const LookupAutocompleteComponent = ({
+  id,
+  value,
+  field,
+  hasFocus,
+  name,
+  lookupTable,
+}) => {
   const classes = useStyles();
-  const { id, value, field, hasFocus } = props;
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -34,7 +45,7 @@ const LookupAutocompleteComponent = (props) => {
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: newValue ? newValue[`${props.name}_id`] : null,
+      value: newValue ? newValue[`${name}_id`] : null,
     });
   };
 
@@ -44,24 +55,20 @@ const LookupAutocompleteComponent = (props) => {
       value={
         // if we are editing, the autocomplete has the value provided by the material table, which is the record id
         // need to get its corresponding text value
-        props.value
-          ? getLookupValueByID(props.lookupTable, props.name, value)
-          : null
+        value ? getLookupValueByID(lookupTable, name, value) : null
       }
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
-      id={props.name}
-      options={props.data}
+      id={name}
+      options={lookupTable}
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />
       )}
       getOptionLabel={(option) =>
         // if our value is a string, just return the string instead of accessing the name
-        typeof option === "string" ? option : option[`${props.name}_name`]
+        typeof option === "string" ? option : option[`${name}_name`]
       }
-      isOptionEqualToValue={(value, option) =>
-        value[`${props.name}_name`] === option
-      }
+      isOptionEqualToValue={(value, option) => value[`${name}_name`] === option}
       onChange={handleChange}
     />
   );
