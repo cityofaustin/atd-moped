@@ -226,7 +226,7 @@ def main(args):
         project_ids_for_feature_delete = list(set(project_ids))
 
         # Delete outdated feature from AGOL and add updated features
-        for feature_type in ["points", "lines", "combined"]:
+        for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
             logger.info(
                 f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
