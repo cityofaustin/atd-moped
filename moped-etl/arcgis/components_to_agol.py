@@ -45,7 +45,7 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
 
     Args:
-        esri_geometry_key (str): `paths` or `points`: see the `get_esri_geometry_key` docstring
+        esri_geometry_key (str): `paths` or `points`, `point`: see the `get_esri_geometry_key` docstring
         geometry (dict): A geojson geometry object, such as one returned from our
             component view in Moped
         attribute (dict): Any additional properties to be included as feature attributes
@@ -136,7 +136,7 @@ def make_all_features(data, exploded_geometry):
             matching_elements = [
                 element
                 for element in exploded_geometry
-                if element["project_component_id"] == str(project_component_id)
+                if element["project_component_id"] == project_component_id
             ]
 
             for component in matching_elements:
@@ -151,15 +151,15 @@ def make_all_features(data, exploded_geometry):
 
                 if not geometry:
                     continue
-                esri_geometry_key = get_esri_geometry_key(geometry)
+                # esri_geometry_key = get_esri_geometry_key(geometry)
+                esri_geometry_key = "point"
                 feature = make_esri_feature(
                     esri_geometry_key=esri_geometry_key,
                     geometry=geometry,
                     attributes=component,
                 )
-                feature["attributes"]["source_geometry_type"] = (
-                    "point" if esri_geometry_key == "points" else "line"
-                )
+                feature["attributes"]["source_geometry_type"] = "point"
+
                 if not feature:
                     continue
 
