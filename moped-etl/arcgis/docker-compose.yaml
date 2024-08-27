@@ -4,6 +4,7 @@ services:
       context: .
     volumes:
       - .:/app
-    entrypoint: /bin/bash
+    entrypoint: python /app/components_to_agol.py
+    command: -d
     env_file:
       - env_file
