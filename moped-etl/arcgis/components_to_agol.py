@@ -66,11 +66,6 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     return feature
 
 
-def write_pretty_json(variable, filename):
-    with open(filename, "w") as file:
-        json.dump(variable, file, indent=4, sort_keys=True)
-
-
 def make_all_features(data, exploded_geometry):
     """Take a list of component feature records and create Esri feature objects for lines, points, and combined layers in AGOL.
 
