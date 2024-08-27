@@ -147,7 +147,7 @@ def make_all_features(data, exploded_geometry):
 
                 geometry_json = component.pop(
                     "geometry"
-                )  # python has a dictionary.pop(), it trips me up
+                )  # reminder, this is `pop()` on a dict, not an array
 
                 geometry = json.loads(
                     geometry_json
