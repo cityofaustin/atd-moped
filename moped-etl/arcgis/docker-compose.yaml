@@ -7,4 +7,3 @@ services:
     entrypoint: /bin/bash
     env_file:
       - env_file
-    network_mode: host
