@@ -403,7 +403,7 @@ const ProjectFundingTable = () => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "source" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
     }));
   };
 
