@@ -62,7 +62,14 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
             "spatialReference": {"wkid": 4326},
         },
     }
-    feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    if (esri_geometry_key == "points") or (esri_geometry_key == "paths"):
+        feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    else:
+        # geometry
+        # print("geometry:")
+        feature["geometry"]["y"] = geometry["coordinates"][0][1]
+        feature["geometry"]["x"] = geometry["coordinates"][0][0]
+        # quit()
     return feature
 
 
