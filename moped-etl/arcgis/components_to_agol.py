@@ -87,9 +87,7 @@ def make_all_features(data, exploded_geometry):
     for component in data:
 
         # Extract geometry and line geometry from component data.
-
         # For line features, the line geometry is redundant/identical to geometry.
-
         # For point features, it is the buffered ring around the point as defined
         # in the Moped component view.
 
