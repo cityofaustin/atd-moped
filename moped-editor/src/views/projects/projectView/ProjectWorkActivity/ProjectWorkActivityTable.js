@@ -186,9 +186,10 @@ const ProjectWorkActivitiesTable = () => {
     if (activityToDelete) {
       deleteContract({ variables: { id: activityToDelete } })
         .then(() => refetch())
-        .then((resp) => {
-          console.log(resp)
-          setActivityToDelete(null)});
+        .then(() => {
+          setActivityToDelete(null);
+          setIsDeleteConfirmationOpen(false);
+        });
     }
   }, [activityToDelete, deleteContract, refetch]);
 
