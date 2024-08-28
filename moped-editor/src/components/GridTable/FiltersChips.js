@@ -101,6 +101,7 @@ const FiltersChips = ({
             <Grid item>
               <Chip
                 variant="outlined"
+                onClick={() => setIsOr((prevState) => !prevState)}
                 label={
                   isOr ? (
                     <>
