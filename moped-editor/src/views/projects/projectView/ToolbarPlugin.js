@@ -26,7 +26,6 @@ import {
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
-  $nodesOfType,
   $getSelection,
   $isRangeSelection,
   CAN_REDO_COMMAND,
@@ -39,7 +38,7 @@ import {
   COMMAND_PRIORITY_LOW
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList, $isListItemNode, $isListNode, $createListItemNode, ListNode } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
 import { $wrapNodes } from "@lexical/selection";
 
 const RichTextAction = {
@@ -48,17 +47,17 @@ const RichTextAction = {
   Underline: "underline",
   Strikethrough: "strikethrough",
   Highlight: "highlight",
-  ListOrdered: "number",
-  ListUnordered: "bullet",
+  Number: "number",
+  Bullet: "bullet",
   Link: "link",
-  LeftAlign: "leftAlign",
-  CenterAlign: "centerAlign",
-  RightAlign: "rightAlign",
-  JustifyAlign: "justifyAlign",
+  Left: "left",
+  Center: "center",
+  Right: "right",
+  Justify: "justify",
   Divider: "divider",
   Undo: "undo",
   Redo: "redo",
-  Clear: "formatClear"
+  Clear: "clear"
 }
 
 const RICH_TEXT_OPTIONS = [
@@ -78,12 +77,12 @@ const RICH_TEXT_OPTIONS = [
   { id: RichTextAction.Divider },
 
   {
-    id: RichTextAction.ListOrdered,
+    id: RichTextAction.Number,
     icon: <FormatListNumbered />,
     label: "Numbered list",
   },
   {
-    id: RichTextAction.ListUnordered,
+    id: RichTextAction.Bullet,
     icon: <FormatListBulleted />,
     label: "Bulleted list",
   },
@@ -94,22 +93,22 @@ const RICH_TEXT_OPTIONS = [
   },
   { id: RichTextAction.Divider },
   {
-    id: RichTextAction.LeftAlign,
+    id: RichTextAction.Left,
     icon: <FormatAlignLeft />,
     label: "Align Left",
   },
   {
-    id: RichTextAction.CenterAlign,
+    id: RichTextAction.Center,
     icon: <FormatAlignCenter />,
     label: "Align Center",
   },
   {
-    id: RichTextAction.RightAlign,
+    id: RichTextAction.Right,
     icon: <FormatAlignRight />,
     label: "Align Right",
   },
   {
-    id: RichTextAction.JustifyAlign,
+    id: RichTextAction.Justify,
     icon: <FormatAlignJustify />,
     label: "Align Justify",
   },
@@ -162,13 +161,21 @@ const ToolbarPlugin = () => {
         [RichTextAction.Underline]: selection.hasFormat("underline"),
         [RichTextAction.Strikethrough]: selection.hasFormat("strikethrough"),
         [RichTextAction.Highlight]: selection.hasFormat("highlight"),
-        [RichTextAction.ListOrdered]: checkListType(selection, "number"),
-        [RichTextAction.ListUnordered]: checkListType(selection, "bullet"),
+        [RichTextAction.Number]: checkListType(selection, "number"),
+        [RichTextAction.Bullet]: checkListType(selection, "bullet"),
+        // [RichTextAction.Link]: selection.hasFormat("link"),
       }
-      console.log(newSelectionMap);
       setSelectionMap(newSelectionMap)
     }
   }
+
+  // Checks for selected list formatting, removes if already applied or adds if not applied
+  const handleListUpdate = (command, listType) => {
+    const isListApplied = selectionMap[listType];
+    isListApplied ?
+      editor.dispatchCommand(REMOVE_LIST_COMMAND) :
+      editor.dispatchCommand(command);
+  };
 
   useEffect(() => {
     return mergeRegister(
@@ -209,12 +216,6 @@ const ToolbarPlugin = () => {
       ))
   }, [editor]);
 
-  // editor.registerCommand(INSERT_UNORDERED_LIST_COMMAND, () => {
-  //   insertList(editor, "bullet");
-  //   $createListItemNode()
-  //   return true;
-  // }, COMMAND_PRIORITY_LOW);
-
   const getSelectedButtonProps = (isSelected) =>
     isSelected
       ? {
@@ -241,23 +242,23 @@ const ToolbarPlugin = () => {
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight");
         break;
       case "number":
-        editor.dispatchCommand(INSERT_ORDERED_LIST_COMMAND, "number");
+        handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
         break;
       case "bullet":
-        editor.dispatchCommand(INSERT_UNORDERED_LIST_COMMAND, "bullet");
+        handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
         break;
-      case "link":
-        break;
-      case "leftAlign":
+      // case "link":
+      //   break;
+      case "left":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
         break;
-      case "centerAlign":
+      case "center":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
         break;
-      case "rightAlign":
+      case "right":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
         break;
-      case "justifyAlign":
+      case "justify":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         break;
       case "undo":
@@ -266,8 +267,8 @@ const ToolbarPlugin = () => {
       case "redo":
         editor.dispatchCommand(REDO_COMMAND, undefined);
         break;
-      case "formatClear":
-        break;
+      // case "clear":
+      //   break;
     }
   }
 
