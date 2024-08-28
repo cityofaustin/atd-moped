@@ -26,6 +26,7 @@ import {
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $nodesOfType,
   $getSelection,
   $isRangeSelection,
   CAN_REDO_COMMAND,
@@ -38,8 +39,7 @@ import {
   COMMAND_PRIORITY_LOW
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
-import { HeadingTagType, $createHeadingNode } from "@lexical/rich-text";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList, $isListItemNode, $isListNode } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, insertList, removeList, $isListItemNode, $isListNode, $createListItemNode, ListNode } from "@lexical/list";
 import { $wrapNodes } from "@lexical/selection";
 
 const RichTextAction = {
@@ -134,27 +134,96 @@ const RICH_TEXT_OPTIONS = [
 
 const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
+  const [disableMap, setDisableMap] = useState({
+    [RichTextAction.Undo]: true,
+    [RichTextAction.Redo]: true
+  });
+  const [selectionMap, setSelectionMap] = useState({});
 
-  editor.registerCommand(INSERT_UNORDERED_LIST_COMMAND, () => {
-    console.log("adding bullet");
-    insertList(editor, "bullet");
-    return true;
-  }, COMMAND_PRIORITY_LOW);
+  const checkListType = (selection, listType) => {
+    let hasListType = false;
+    const selectionNodes = selection.getNodes();
+    selectionNodes.forEach((selectedNode) => {
+      const selectedNodeParent = selectedNode.getParent()
+      if (selectedNodeParent.__type === "listitem") {
+        const selectedNodeGrandparent = selectedNodeParent.getParent();
+        hasListType = selectedNodeGrandparent.__listType === listType;
+      }
+    })
+    return hasListType
+  }
+
+  const updateToolbar = () => {
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      const newSelectionMap = {
+        [RichTextAction.Bold]: selection.hasFormat("bold"),
+        [RichTextAction.Italics]: selection.hasFormat("italic"),
+        [RichTextAction.Underline]: selection.hasFormat("underline"),
+        [RichTextAction.Strikethrough]: selection.hasFormat("strikethrough"),
+        [RichTextAction.Highlight]: selection.hasFormat("highlight"),
+        [RichTextAction.ListOrdered]: checkListType(selection, "number"),
+        [RichTextAction.ListUnordered]: checkListType(selection, "bullet"),
+      }
+      console.log(newSelectionMap);
+      setSelectionMap(newSelectionMap)
+    }
+  }
 
   useEffect(() => {
-    return mergeRegister(editor.registerUpdateListener(({ editorState }) => {
-      editorState.read(() => {
-       const selection = $getSelection();
-       const node = selection.getNodes()[0];
-       console.log($isListNode(node));
-       console.log($isListItemNode(node));
-       console.log(selection.hasFormat("bullet"));
-      })
-    }))
+    return mergeRegister(
+      editor.registerUpdateListener(({ editorState }) => {
+        editorState.read(() => {
+          updateToolbar();
+        })
+      }),
+      editor.registerCommand(
+        SELECTION_CHANGE_COMMAND,
+        (payLoad) => {
+          updateToolbar();
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        CAN_UNDO_COMMAND,
+        (payLoad) => {
+          setDisableMap((prevDisableMap) => ({
+            ...prevDisableMap,
+            undo: !payLoad
+          }))
+          return false;
+        },
+        COMMAND_PRIORITY_LOW
+      ),
+      editor.registerCommand(
+        CAN_REDO_COMMAND,
+        (payLoad => {
+          setDisableMap((prevDisableMap) => ({
+            ...prevDisableMap,
+            redo: !payLoad
+          }))
+          return false;
+        }),
+        COMMAND_PRIORITY_LOW
+      ))
   }, [editor]);
 
+  // editor.registerCommand(INSERT_UNORDERED_LIST_COMMAND, () => {
+  //   insertList(editor, "bullet");
+  //   $createListItemNode()
+  //   return true;
+  // }, COMMAND_PRIORITY_LOW);
+
+  const getSelectedButtonProps = (isSelected) =>
+    isSelected
+      ? {
+        color: "success",
+        variant: "contained"
+      }
+      : {};
+
   const onAction = (id) => {
-    console.log(id);
     switch (id) {
       case "bold":
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
@@ -219,6 +288,8 @@ const ToolbarPlugin = () => {
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
+              disabled={disableMap[id]}
+              {...getSelectedButtonProps(selectionMap[id])}
             />
           )
         )}

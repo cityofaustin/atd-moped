@@ -93,7 +93,6 @@ const OnChangePlugin = ({ onChange }) => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const htmlContent = $generateHtmlFromNodes(editor, null);
-        console.log(htmlContent);
         onChange(htmlContent);
       });
     });
