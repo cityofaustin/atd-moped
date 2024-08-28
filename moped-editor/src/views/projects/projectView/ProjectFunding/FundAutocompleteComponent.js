@@ -37,7 +37,7 @@ const FundAutocompleteComponent = (props) => {
       value={value ?? null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
-      id={"moped_funds"}
+      id="moped_funds"
       options={props.data}
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />
