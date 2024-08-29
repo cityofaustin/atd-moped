@@ -184,10 +184,12 @@ const ProjectWorkActivitiesTable = () => {
 
   const handleDeleteConfirmed = useCallback(() => {
     if (activityToDelete) {
-      deleteContract({ variables: { id: activityToDelete } }).then(() => {
-        refetch();
-        setActivityToDelete(null);
-      });
+      deleteContract({ variables: { id: activityToDelete } })
+        .then(() => refetch())
+        .then(() => {
+          setActivityToDelete(null);
+          setIsDeleteConfirmationOpen(false);
+        });
     }
   }, [activityToDelete, deleteContract, refetch]);
 

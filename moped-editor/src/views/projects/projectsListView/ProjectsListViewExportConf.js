@@ -4,6 +4,7 @@ import {
   filterTaskOrderName,
   resolveHasSubprojects,
 } from "./helpers.js";
+import { formatTimeStampTZType } from "src/utils/dateAndTime.js";
 
 /**
  * The ProjectsListView export settings
@@ -68,9 +69,11 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   },
   construction_start_date: {
     label: "Construction start",
+    filter: formatTimeStampTZType,
   },
   completion_end_date: {
     label: "Completion date",
+    filter: formatTimeStampTZType,
   },
   project_inspector: {
     label: "Inspector",

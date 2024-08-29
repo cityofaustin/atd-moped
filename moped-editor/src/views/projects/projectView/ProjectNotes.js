@@ -235,7 +235,9 @@ const ProjectNotes = (props) => {
         projectId: Number(projectId),
         projectNoteId: project_note_id,
       },
-    });
+    })
+      .then(() => setIsDeleteConfirmationOpen(false))
+      .catch((error) => console.error(error));
   };
 
   /**
