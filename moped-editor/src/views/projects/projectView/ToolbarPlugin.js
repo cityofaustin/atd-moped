@@ -39,7 +39,7 @@ import {
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
 import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
-import { TOGGLE_LINK_COMMAND } from "@lexical/link";
+import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
 
 const RichTextAction = {
   Bold: "bold",
@@ -163,7 +163,7 @@ const ToolbarPlugin = () => {
         [RichTextAction.Highlight]: selection.hasFormat("highlight"),
         [RichTextAction.Number]: checkListType(selection, "number"),
         [RichTextAction.Bullet]: checkListType(selection, "bullet"),
-        // [RichTextAction.Link]: selection.hasFormat("link"),
+        [RichTextAction.Link]: checkLink(selection),
       }
       setSelectionMap(newSelectionMap)
     }
@@ -177,14 +177,30 @@ const ToolbarPlugin = () => {
       editor.dispatchCommand(command);
   };
 
+  const checkLink = (selection) => {
+    let isLink = false;
+    const selectionNodes = selection.getNodes();
+    selectionNodes.forEach((selectedNode) => {
+      const selectedNodeParent = selectedNode.getParent()
+      if ($isLinkNode(selectedNodeParent)) {
+        isLink = true
+      }
+    })
+    return isLink;
+  }
+
   const handleLinkUpdate = () => {
-    navigator.clipboard.readText().then(val => {
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
-        url: val, target: "_blank"
+    const isLinkApplied = selectionMap["link"];
+    isLinkApplied ?
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
+      :
+      navigator.clipboard.readText().then(val => {
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+          url: val, target: "_blank"
+        })
+      }).catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
       })
-    }).catch(err => {
-      console.error('Failed to read clipboard contents: ', err);
-    });
   };
 
   useEffect(() => {
