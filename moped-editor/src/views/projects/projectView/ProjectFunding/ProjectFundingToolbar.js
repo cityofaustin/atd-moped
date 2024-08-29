@@ -2,8 +2,8 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
-import ProjectSummaryProjectECapris from "./ProjectSummary/ProjectSummaryProjectECapris";
+import ButtonDropdownMenu from "../../../../components/ButtonDropdownMenu";
+import ProjectSummaryProjectECapris from "../ProjectSummary/ProjectSummaryProjectECapris";
 
 const ProjectFundingToolbar = ({
   onClick,

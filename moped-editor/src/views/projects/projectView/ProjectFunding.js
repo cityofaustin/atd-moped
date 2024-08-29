@@ -1,7 +1,7 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
 import CardContent from "@mui/material/CardContent";
-import ProjectFundingTable from "./ProjectFundingTable";
+import ProjectFundingTable from "./ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "./ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
 
