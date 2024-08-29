@@ -446,6 +446,7 @@ const ProjectFundingTable = () => {
           },
         })
           .then(() => refetch())
+          .then(() => setIsDeleteConfirmationOpen(false))
           .catch((error) => {
             setSnackbarState({
               open: true,
@@ -460,7 +461,7 @@ const ProjectFundingTable = () => {
           });
       }
     },
-    [rows, deleteProjectFunding, refetch ]
+    [rows, deleteProjectFunding, refetch]
   );
 
   // when a user cancels editing by clicking the X in the actions
