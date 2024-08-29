@@ -93,6 +93,23 @@ const FiltersChips = ({
     }
   };
 
+  /**
+   * Triggered by Filter Chip any/all click
+   * Gets previous IsOr state and sets the IsOr state and the url params state to be the opposite
+   */
+  const toggleIsOrOnClick = () => {
+    let newIsOrState = null;
+    setIsOr((prevState) => {
+      newIsOrState = !prevState;
+      return newIsOrState;
+    });
+
+    setSearchParams((prevSearchParams) => {
+      prevSearchParams.set(advancedSearchIsOrParamName, newIsOrState);
+      return prevSearchParams;
+    });
+  };
+
   return (
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText} component="span">
@@ -101,7 +118,7 @@ const FiltersChips = ({
             <Grid item>
               <Chip
                 variant="outlined"
-                onClick={() => setIsOr((prevState) => !prevState)}
+                onClick={toggleIsOrOnClick}
                 label={
                   isOr ? (
                     <>
