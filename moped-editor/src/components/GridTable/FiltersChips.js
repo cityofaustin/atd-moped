@@ -95,17 +95,12 @@ const FiltersChips = ({
 
   /**
    * Triggered by Filter Chip any/all click
-   * Gets previous IsOr state and sets the IsOr state and the url params state to be the opposite
+   * Sets the IsOr state and the url params state to be the opposite of current isOr state
    */
   const toggleIsOrOnClick = () => {
-    let newIsOrState = null;
-    setIsOr((prevState) => {
-      newIsOrState = !prevState;
-      return newIsOrState;
-    });
-
+    setIsOr(!isOr);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(advancedSearchIsOrParamName, newIsOrState);
+      prevSearchParams.set(advancedSearchIsOrParamName, !isOr);
       return prevSearchParams;
     });
   };
