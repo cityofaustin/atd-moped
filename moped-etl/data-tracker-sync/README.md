@@ -41,13 +41,16 @@ and test copies. The steps are as follows:
 2. Create a new project in Moped and set the environment variable called TEST_MOPED_PROJECT_ID to the
 Moped project ID
 3. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
-UTC time and set the `--start` argument to that timestamp
-4. To execute the sync script, run the following command to build the image and then run the script  
-with your timestamp filled in:
+UTC time and set the `--start` argument to that timestamp. You can use:
+```js
+const dateObj = new Date();
+dateObj.toISOString();
+```
+4. To execute the sync script, run the following command to build the image:
 ```bash
 docker build -t atddocker/atd-moped-etl-data-tracker-sync .
 ```
-
+then run the script with your timestamp filled in:
 ```bash
 docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atddocker/atd-moped-etl-data-tracker-sync python data_tracker_sync.py --date <your timestamp> --test
 ```
