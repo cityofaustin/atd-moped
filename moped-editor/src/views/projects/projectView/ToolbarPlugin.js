@@ -38,7 +38,7 @@ import {
   COMMAND_PRIORITY_LOW
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND, $isListNode, $isListItemNode } from "@lexical/list";
 import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
 
 const RichTextAction = {
@@ -141,16 +141,21 @@ const ToolbarPlugin = () => {
 
   const checkListType = (selection, listType) => {
     let hasListType = false;
-    const selectionNodes = selection.getNodes();
-    selectionNodes.forEach((selectedNode) => {
+    const selectedNodes = selection.getNodes();
+    selectedNodes.forEach((selectedNode) => {
       const selectedNodeParent = selectedNode.getParent()
-      if (selectedNodeParent?.__type === "listitem") {
+      // Check for list formatting and confirm the list type
+      if ($isListNode(selectedNodeParent)) {
+        hasListType = selectedNodeParent.__listType === listType;
+      }
+      // Check for a list item and confirm the parent list type
+      if ($isListItemNode(selectedNodeParent)) {
         const selectedNodeGrandparent = selectedNodeParent.getParent();
         hasListType = selectedNodeGrandparent.__listType === listType;
       }
     })
-    return hasListType
-  }
+    return hasListType;
+  };
 
   const updateToolbar = () => {
     const selection = $getSelection();
@@ -187,7 +192,7 @@ const ToolbarPlugin = () => {
       }
     })
     return isLink;
-  }
+  };
 
   const handleLinkUpdate = () => {
     const isLinkApplied = selectionMap["link"];
