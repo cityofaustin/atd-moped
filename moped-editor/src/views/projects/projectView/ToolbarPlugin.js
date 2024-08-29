@@ -41,91 +41,91 @@ import { mergeRegister } from "@lexical/utils";
 import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND, $isListNode, $isListItemNode } from "@lexical/list";
 import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
 
-const RichTextAction = {
-  Bold: "bold",
-  Italics: "italics",
-  Underline: "underline",
-  Strikethrough: "strikethrough",
-  Highlight: "highlight",
-  Number: "number",
-  Bullet: "bullet",
-  Link: "link",
-  Left: "left",
-  Center: "center",
-  Right: "right",
-  Justify: "justify",
-  Divider: "divider",
-  Undo: "undo",
-  Redo: "redo",
-  Clear: "clear"
+const richTextAction = {
+  bold: "bold",
+  italics: "italics",
+  underline: "underline",
+  strikethrough: "strikethrough",
+  highlight: "highlight",
+  number: "number",
+  bullet: "bullet",
+  link: "link",
+  left: "left",
+  center: "center",
+  right: "right",
+  justify: "justify",
+  divider: "divider",
+  undo: "undo",
+  redo: "redo",
+  clear: "clear"
 }
 
 const RICH_TEXT_OPTIONS = [
-  { id: RichTextAction.Bold, icon: <FormatBold />, label: "Bold" },
-  { id: RichTextAction.Italics, icon: <FormatItalic />, label: "Italics" },
-  { id: RichTextAction.Underline, icon: <FormatUnderlined />, label: "Underline" },
+  { id: richTextAction.bold, icon: <FormatBold />, label: "Bold" },
+  { id: richTextAction.italics, icon: <FormatItalic />, label: "Italics" },
+  { id: richTextAction.underline, icon: <FormatUnderlined />, label: "Underline" },
   {
-    id: RichTextAction.Strikethrough,
+    id: richTextAction.strikethrough,
     icon: <FormatStrikethrough />,
     label: "Strikethrough",
   },
   {
-    id: RichTextAction.Highlight,
+    id: richTextAction.highlight,
     icon: <Highlight />,
     label: "Highlight",
   },
-  { id: RichTextAction.Divider },
+  { id: richTextAction.divider },
 
   {
-    id: RichTextAction.Number,
+    id: richTextAction.number,
     icon: <FormatListNumbered />,
     label: "Numbered list",
   },
   {
-    id: RichTextAction.Bullet,
+    id: richTextAction.bullet,
     icon: <FormatListBulleted />,
     label: "Bulleted list",
   },
   {
-    id: RichTextAction.Link,
+    id: richTextAction.link,
     icon: <Link />,
     label: "Link",
   },
-  { id: RichTextAction.Divider },
+  { id: richTextAction.divider },
   {
-    id: RichTextAction.Left,
+    id: richTextAction.left,
     icon: <FormatAlignLeft />,
     label: "Align Left",
   },
   {
-    id: RichTextAction.Center,
+    id: richTextAction.center,
     icon: <FormatAlignCenter />,
     label: "Align Center",
   },
   {
-    id: RichTextAction.Right,
+    id: richTextAction.right,
     icon: <FormatAlignRight />,
     label: "Align Right",
   },
   {
-    id: RichTextAction.Justify,
+    id: richTextAction.justify,
     icon: <FormatAlignJustify />,
     label: "Align Justify",
   },
 
-  { id: RichTextAction.Divider },
+  { id: richTextAction.divider },
   {
-    id: RichTextAction.Undo,
+    id: richTextAction.undo,
     icon: <Undo />,
     label: "Undo",
   },
   {
-    id: RichTextAction.Redo,
+    id: richTextAction.redo,
     icon: <Redo />,
     label: "Redo",
   },
   {
-    id: RichTextAction.Clear,
+    id: richTextAction.clear,
     icon: <FormatClear />,
     label: "Clear formatting",
   },
@@ -133,9 +133,10 @@ const RICH_TEXT_OPTIONS = [
 
 const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext();
+
   const [disableMap, setDisableMap] = useState({
-    [RichTextAction.Undo]: true,
-    [RichTextAction.Redo]: true
+    [richTextAction.undo]: true,
+    [richTextAction.redo]: true
   });
   const [selectionMap, setSelectionMap] = useState({});
 
@@ -157,23 +158,6 @@ const ToolbarPlugin = () => {
     return hasListType;
   };
 
-  const updateToolbar = () => {
-    const selection = $getSelection();
-    if ($isRangeSelection(selection)) {
-      const newSelectionMap = {
-        [RichTextAction.Bold]: selection.hasFormat("bold"),
-        [RichTextAction.Italics]: selection.hasFormat("italic"),
-        [RichTextAction.Underline]: selection.hasFormat("underline"),
-        [RichTextAction.Strikethrough]: selection.hasFormat("strikethrough"),
-        [RichTextAction.Highlight]: selection.hasFormat("highlight"),
-        [RichTextAction.Number]: checkListType(selection, "number"),
-        [RichTextAction.Bullet]: checkListType(selection, "bullet"),
-        [RichTextAction.Link]: checkLink(selection),
-      }
-      setSelectionMap(newSelectionMap)
-    }
-  }
-
   // Checks for selected list formatting, removes if already applied or adds if not applied
   const handleListUpdate = (command, listType) => {
     const isListApplied = selectionMap[listType];
@@ -184,8 +168,8 @@ const ToolbarPlugin = () => {
 
   const checkLink = (selection) => {
     let isLink = false;
-    const selectionNodes = selection.getNodes();
-    selectionNodes.forEach((selectedNode) => {
+    const selectedNodes = selection.getNodes();
+    selectedNodes.forEach((selectedNode) => {
       const selectedNodeParent = selectedNode.getParent()
       if ($isLinkNode(selectedNodeParent)) {
         isLink = true
@@ -194,6 +178,7 @@ const ToolbarPlugin = () => {
     return isLink;
   };
 
+  // to do: add url validation and figure out why links are not opening in a new tab
   const handleLinkUpdate = () => {
     const isLinkApplied = selectionMap["link"];
     isLinkApplied ?
@@ -207,6 +192,34 @@ const ToolbarPlugin = () => {
         console.error('Failed to read clipboard contents: ', err);
       })
   };
+
+  // to do: for some reason you can't clear a link and a list at the same time
+  const clearFormatting = () => {
+    const formatTypes = Object.keys(selectionMap);
+    formatTypes.forEach((formatType) => {
+      if (selectionMap[formatType]) {
+        onAction(formatType);
+      }
+    });
+  };
+
+  // to do: for some reason the link and list buttons can't be active at the same time (even through formatting is applied)
+  const updateToolbar = () => {
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      const newSelectionMap = {
+        [richTextAction.bold]: selection.hasFormat("bold"),
+        [richTextAction.italics]: selection.hasFormat("italic"),
+        [richTextAction.underline]: selection.hasFormat("underline"),
+        [richTextAction.strikethrough]: selection.hasFormat("strikethrough"),
+        [richTextAction.highlight]: selection.hasFormat("highlight"),
+        [richTextAction.number]: checkListType(selection, "number"),
+        [richTextAction.bullet]: checkListType(selection, "bullet"),
+        [richTextAction.link]: checkLink(selection),
+      }
+      setSelectionMap(newSelectionMap)
+    }
+  }
 
   useEffect(() => {
     return mergeRegister(
@@ -247,6 +260,7 @@ const ToolbarPlugin = () => {
       ))
   }, [editor]);
 
+  // to do: add custom styling
   const getSelectedButtonProps = (isSelected) =>
     isSelected
       ? {
@@ -299,8 +313,9 @@ const ToolbarPlugin = () => {
       case "redo":
         editor.dispatchCommand(REDO_COMMAND, undefined);
         break;
-      // case "clear":
-      //   break;
+      case "clear":
+        clearFormatting();
+        break;
     }
   }
 
@@ -314,7 +329,7 @@ const ToolbarPlugin = () => {
         color="#444"
       >
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
-          id === RichTextAction.Divider ? (
+          id === richTextAction.Divider ? (
             <Divider orientation="vertical" flexItem />
           ) : (
             <Button
