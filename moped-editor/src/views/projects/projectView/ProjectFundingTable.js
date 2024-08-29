@@ -408,6 +408,7 @@ const ProjectFundingTable = () => {
         },
       })
         .then(() => refetch())
+        .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
           setSnackbarState({
             open: true,
