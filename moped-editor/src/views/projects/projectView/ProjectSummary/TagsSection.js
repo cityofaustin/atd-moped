@@ -111,6 +111,7 @@ const TagsSection = ({ projectId }) => {
       },
     })
       .then(() => refetch())
+      .then(() => setIsDeleteConfirmationOpen(false))
       .catch((error) => {
         console.error(error);
       });
