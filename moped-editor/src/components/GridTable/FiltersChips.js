@@ -118,6 +118,7 @@ const FiltersChips = ({
             <Grid item>
               <Chip
                 variant="outlined"
+                color="primary"
                 onClick={toggleIsOrOnClick}
                 label={
                   isOr ? (
