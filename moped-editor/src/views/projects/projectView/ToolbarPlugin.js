@@ -39,7 +39,7 @@ import {
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
 import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
-import { $wrapNodes } from "@lexical/selection";
+import { TOGGLE_LINK_COMMAND } from "@lexical/link";
 
 const RichTextAction = {
   Bold: "bold",
@@ -144,7 +144,7 @@ const ToolbarPlugin = () => {
     const selectionNodes = selection.getNodes();
     selectionNodes.forEach((selectedNode) => {
       const selectedNodeParent = selectedNode.getParent()
-      if (selectedNodeParent.__type === "listitem") {
+      if (selectedNodeParent?.__type === "listitem") {
         const selectedNodeGrandparent = selectedNodeParent.getParent();
         hasListType = selectedNodeGrandparent.__listType === listType;
       }
@@ -247,8 +247,9 @@ const ToolbarPlugin = () => {
       case "bullet":
         handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
         break;
-      // case "link":
-      //   break;
+      case "link":
+        editor.dispatchCommand(TOGGLE_LINK_COMMAND, { url: "https://www.google.com/", target: "_blank" })
+        break;
       case "left":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
         break;
