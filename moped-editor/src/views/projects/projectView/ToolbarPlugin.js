@@ -177,16 +177,15 @@ const ToolbarPlugin = () => {
       editor.dispatchCommand(command);
   };
 
-  // const getLink = () => {
-  //   navigator.clipboard.readText()
-  //     .then(text => {
-  //       console.log(text);
-  //       return text;
-  //     })
-  //     .catch(err => {
-  //       console.error('Failed to read clipboard contents: ', err);
-  //     });
-  // };
+  const handleLinkUpdate = () => {
+    navigator.clipboard.readText().then(val => {
+      editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
+        url: val, target: "_blank"
+      })
+    }).catch(err => {
+      console.error('Failed to read clipboard contents: ', err);
+    });
+  };
 
   useEffect(() => {
     return mergeRegister(
@@ -259,12 +258,7 @@ const ToolbarPlugin = () => {
         handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
         break;
       case "link":
-        editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
-          url: navigator.clipboard.readText().then(val => {
-            console.log(val);
-            return val
-          }), target: "_blank"
-        })
+        handleLinkUpdate();
         break;
       case "left":
         editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
