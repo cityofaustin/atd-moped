@@ -178,7 +178,7 @@ const NoteInput = ({
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
           <LexicalComposer initialConfig={initialConfig} >
-            <ToolbarPlugin />
+            <ToolbarPlugin noteAddSuccess={noteAddSuccess}  />
             <Box className={classes.editorWrapper} pt={2}>
               <RichTextPlugin
                 contentEditable={<ContentEditable className={classes.contentEditable} />}

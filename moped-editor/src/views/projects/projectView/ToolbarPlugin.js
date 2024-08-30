@@ -131,7 +131,7 @@ const RICH_TEXT_OPTIONS = [
   },
 ];
 
-const ToolbarPlugin = () => {
+const ToolbarPlugin = ({ noteAddSuccess }) => {
   const [editor] = useLexicalComposerContext();
 
   const [disableMap, setDisableMap] = useState({
@@ -323,6 +323,11 @@ const ToolbarPlugin = () => {
       default:
         break;
     }
+  }
+
+  // to do: wrap this in a useEffect hook
+  if (noteAddSuccess) {
+    noteAddSuccess && clearFormatting();
   }
 
   return (
