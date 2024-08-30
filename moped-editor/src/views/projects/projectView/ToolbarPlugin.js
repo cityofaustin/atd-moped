@@ -198,7 +198,6 @@ const ToolbarPlugin = () => {
       })
   };
 
-  // to do: for some reason you can't clear a link and a list at the same time
   const clearFormatting = () => {
     const formatTypes = Object.keys(selectionMap);
     formatTypes.forEach((formatType) => {
@@ -208,25 +207,25 @@ const ToolbarPlugin = () => {
     });
   };
 
-  // to do: for some reason the link and list buttons can't be active at the same time (even through formatting is applied)
-  const updateToolbar = () => {
-    const selection = $getSelection();
-    if ($isRangeSelection(selection)) {
-      const newSelectionMap = {
-        [richTextAction.bold]: selection.hasFormat("bold"),
-        [richTextAction.italics]: selection.hasFormat("italic"),
-        [richTextAction.underline]: selection.hasFormat("underline"),
-        [richTextAction.strikethrough]: selection.hasFormat("strikethrough"),
-        [richTextAction.highlight]: selection.hasFormat("highlight"),
-        [richTextAction.number]: checkListType(selection, "number"),
-        [richTextAction.bullet]: checkListType(selection, "bullet"),
-        [richTextAction.link]: checkLink(selection),
-      }
-      setSelectionMap(newSelectionMap)
-    }
-  }
-
   useEffect(() => {
+    // to do: move this function outside of useEffect without causing warnings
+    const updateToolbar = () => {
+      const selection = $getSelection();
+      if ($isRangeSelection(selection)) {
+        const newSelectionMap = {
+          [richTextAction.bold]: selection.hasFormat("bold"),
+          [richTextAction.italics]: selection.hasFormat("italic"),
+          [richTextAction.underline]: selection.hasFormat("underline"),
+          [richTextAction.strikethrough]: selection.hasFormat("strikethrough"),
+          [richTextAction.highlight]: selection.hasFormat("highlight"),
+          [richTextAction.number]: checkListType(selection, "number"),
+          [richTextAction.bullet]: checkListType(selection, "bullet"),
+          [richTextAction.link]: checkLink(selection),
+        }
+        setSelectionMap(newSelectionMap)
+      }
+    }
+
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -263,7 +262,7 @@ const ToolbarPlugin = () => {
         }),
         COMMAND_PRIORITY_LOW
       ))
-  }, [editor, updateToolbar]);
+  }, [editor]);
 
   // to do: add custom styling
   const getSelectedButtonProps = (isSelected) =>
