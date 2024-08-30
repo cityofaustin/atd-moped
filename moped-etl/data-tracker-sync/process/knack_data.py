@@ -70,9 +70,7 @@ def build_knack_project_from_moped_project(moped_project_record, is_test=False):
     return {
         "field_4133": moped_project_record["project_id"],
         "field_3857": moped_project_record["project_name"],
-        "field_4875": moped_project_record[
-            "is_deleted"
-        ],  # TODO: Update to field_4922 for production Data Tracker
+        "field_4922": moped_project_record["is_deleted"],
         "field_4136": phase_name,
         "field_3861": signals,
         "field_4162": make_moped_project_url(moped_project_record["project_id"]),
