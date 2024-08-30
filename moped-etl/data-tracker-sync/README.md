@@ -19,10 +19,8 @@ within an Airflow DAG. To test locally, we can use a local file.
 
 Make a copy of `env_template` and call it `env_file`. Fill in the values as follows:
 - HASURA_ secrets: these point to the local Moped Hasura instance
-- KNACK_ secrets: these point to the test Data Tracker app and be found in the `development`
-section of the 1Password entry called **Knack AMD Data Tracker**. They can also be
-found by navigating to the **API & Code** section within a test copy of Data Tracker app 
-in the Knack Builder.
+- KNACK_ secrets: these point to the test Data Tracker app and be found by navigating
+-  to the **API & Code** section within a test copy of Data Tracker app in the Knack Builder.
 - TEST_KNACK_SIGNAL_RECORD_ID: this is the Knack record ID of a signal in the test
 Data Tracker app. You can find one by going to the `signals` table in the Knack app
 and copying a unique signal ID from the URL that shows when you edit a row.
