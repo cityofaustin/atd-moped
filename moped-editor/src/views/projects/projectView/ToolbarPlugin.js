@@ -145,7 +145,7 @@ const ToolbarPlugin = () => {
     const selectedNodes = selection.getNodes();
     selectedNodes.forEach((selectedNode) => {
       const selectedNodeParent = selectedNode.getParent()
-      const selectedNodeGrandparent = selectedNodeParent.getParent();
+      const selectedNodeGrandparent = selectedNodeParent?.getParent();
       const selectedNodeGreatGrandparent = selectedNodeGrandparent?.getParent();
       // Check for list formatting and confirm the list type
       if ($isListNode(selectedNodeParent)) {
