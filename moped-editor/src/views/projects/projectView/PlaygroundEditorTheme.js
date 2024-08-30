@@ -6,7 +6,7 @@
  *
  */
 
-import {EditorThemeClasses} from 'lexical';
+// import {EditorThemeClasses} from 'lexical';
 
 import './PlaygroundEditorTheme.css';
 

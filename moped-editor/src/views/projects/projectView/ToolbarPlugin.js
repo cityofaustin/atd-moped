@@ -145,16 +145,19 @@ const ToolbarPlugin = () => {
     const selectedNodes = selection.getNodes();
     selectedNodes.forEach((selectedNode) => {
       const selectedNodeParent = selectedNode.getParent()
+      const selectedNodeGrandparent = selectedNodeParent.getParent();
+      const selectedNodeGreatGrandparent = selectedNodeGrandparent?.getParent();
       // Check for list formatting and confirm the list type
       if ($isListNode(selectedNodeParent)) {
         hasListType = selectedNodeParent.__listType === listType;
-        console.log(selectedNodeParent.getParent())
       }
       // Check for a list item and confirm the parent list type
       if ($isListItemNode(selectedNodeParent)) {
-        const selectedNodeGrandparent = selectedNodeParent.getParent();
         hasListType = selectedNodeGrandparent.__listType === listType;
-        console.log(selectedNodeGrandparent.getParent())
+      }
+      // to do: iterate through higher level nodes rather than do manual checks like this
+      if ($isListItemNode(selectedNodeGrandparent)) {
+        hasListType = selectedNodeGreatGrandparent.__listType === listType;
       }
     })
     return hasListType;
