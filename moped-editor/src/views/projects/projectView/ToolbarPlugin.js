@@ -148,11 +148,13 @@ const ToolbarPlugin = () => {
       // Check for list formatting and confirm the list type
       if ($isListNode(selectedNodeParent)) {
         hasListType = selectedNodeParent.__listType === listType;
+        console.log(selectedNodeParent.getParent())
       }
       // Check for a list item and confirm the parent list type
       if ($isListItemNode(selectedNodeParent)) {
         const selectedNodeGrandparent = selectedNodeParent.getParent();
         hasListType = selectedNodeGrandparent.__listType === listType;
+        console.log(selectedNodeGrandparent.getParent())
       }
     })
     return hasListType;
@@ -258,7 +260,7 @@ const ToolbarPlugin = () => {
         }),
         COMMAND_PRIORITY_LOW
       ))
-  }, [editor]);
+  }, [editor, updateToolbar]);
 
   // to do: add custom styling
   const getSelectedButtonProps = (isSelected) =>
@@ -315,6 +317,8 @@ const ToolbarPlugin = () => {
         break;
       case "clear":
         clearFormatting();
+        break;
+      default:
         break;
     }
   }
