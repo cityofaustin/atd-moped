@@ -312,13 +312,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "project_designer",
-      label: "Designer",
+      label: "Designers",
       placeholder: "Designer",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
-        "string_begins_with_case_insensitive",
-        "string_ends_with_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
         "string_is_null",
@@ -327,13 +325,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     },
     {
       name: "project_inspector",
-      label: "Inspector",
+      label: "Inspectors",
       placeholder: "Inspector",
       type: "string",
       operators: [
         "string_contains_case_insensitive",
-        "string_begins_with_case_insensitive",
-        "string_ends_with_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
         "string_is_null",
@@ -463,10 +459,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       placeholder: "District",
       type: "array",
       operators: [
-        "council_districts_array_is_null",
-        "council_districts_array_is_not_null",
         "council_districts_array_contains",
         "council_districts_array_is",
+        "council_districts_array_is_null",
+        "council_districts_array_is_not_null",
       ],
     },
   ],
