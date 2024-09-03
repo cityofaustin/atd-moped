@@ -392,6 +392,7 @@ const Filters = ({
           table_name: lookupTable,
           operators: lookupOperators,
           getOptionLabel,
+          showFreeSolo
         } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
@@ -512,6 +513,7 @@ const Filters = ({
                       <Autocomplete
                         value={value || null}
                         options={dedupedOptions}
+                        freeSolo={operator === "string_contains_case_insensitive" && showFreeSolo}
                         disabled={!filterParameters[filterIndex].operator}
                         onChange={(e, value) => {
                           handleSearchValueChange(filterIndex, value);
