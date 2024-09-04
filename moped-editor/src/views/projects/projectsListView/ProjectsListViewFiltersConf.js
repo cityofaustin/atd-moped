@@ -312,6 +312,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Designers",
     placeholder: "Designer",
     type: "string",
+    lookup: {
+      table_name: "moped_users",
+      getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
+      operators: [
+        "string_contains_case_insensitive",
+        "string_equals_case_insensitive",
+      ],
+      showFreeSolo: true,
+    },
     operators: [
       "string_contains_case_insensitive",
       "string_equals_case_insensitive",
@@ -325,6 +334,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Inspectors",
     placeholder: "Inspector",
     type: "string",
+    lookup: {
+      table_name: "moped_users",
+      getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
+      operators: [
+        "string_contains_case_insensitive",
+        "string_equals_case_insensitive",
+      ],
+      showFreeSolo: true,
+    },
     operators: [
       "string_contains_case_insensitive",
       "string_equals_case_insensitive",
