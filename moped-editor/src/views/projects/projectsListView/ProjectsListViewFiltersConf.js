@@ -99,7 +99,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Type",
     placeholder: "Enter Project type",
     type: "string",
-    defaultOperator: "string_equals_case_insensitive",
+    defaultOperator: "string_contains_case_insensitive",
     lookup: {
       table_name: "moped_types",
       getOptionLabel: (option) => option.type_name,
