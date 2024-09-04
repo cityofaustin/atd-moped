@@ -99,9 +99,7 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
   if (filterParameters) {
     filterParameters.forEach((filter) => {
       const { field: fieldName, value, operator } = filter;
-      const fieldConfig = filtersConfig.fields.find(
-        (field) => field.name === fieldName
-      );
+      const fieldConfig = filtersConfig[fieldName];
       const type = fieldConfig?.type;
 
       if (fieldName === null) {
@@ -182,7 +180,8 @@ export const useCreateAutocompleteOptions = (filtersConfig, data) =>
       return {};
     }
     let dedupedOptions = {};
-    filtersConfig.fields.forEach((fieldConfig) => {
+    Object.keys(filtersConfig).forEach((fieldName) => {
+      const fieldConfig = filtersConfig[fieldName];
       if (fieldConfig.lookup) {
         const { table_name: lookupTable, getOptionLabel } =
           fieldConfig?.lookup ?? {};

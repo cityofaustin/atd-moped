@@ -42,10 +42,7 @@ const FiltersChips = ({
   const filtersCount = Object.keys(filters).length;
 
   const filtersLabels = filters.map((filter) => {
-    // fix it here too
-    const fieldFilterConfig = filtersConfig.fields.find(
-      (fieldConfig) => fieldConfig.name === filter.field
-    );
+    const fieldFilterConfig = filtersConfig[filter.field];
     const fieldOperatorConfig = FILTERS_COMMON_OPERATORS[filter.operator];
     const isDateType = fieldFilterConfig.type === "date";
     return {

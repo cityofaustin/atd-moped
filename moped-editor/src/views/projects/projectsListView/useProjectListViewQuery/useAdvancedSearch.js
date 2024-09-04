@@ -21,10 +21,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
       let { field, value, operator } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
-      // fix it here
-      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
-        (fieldConfig) => fieldConfig.name === field
-      );
+      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field]
       const { type } = filterConfigForField;
 
       // Use operator name to get the GraphQL operator config for that operator

@@ -166,9 +166,8 @@ const Filters = ({
     const filtersNewState = [...filterParameters];
 
     // Find the field we need to gather options from
-    const fieldDetails = filtersConfig.fields.find(
-      (filter) => filter.name === field
-    );
+    const fieldDetails = filtersConfig[field];
+    console.log(field, fieldDetails)
 
     // Update the field and operator values or handle when the clear X icon is clicked
     if (fieldDetails) {
@@ -384,9 +383,7 @@ const Filters = ({
         const { field: fieldName, operator, value } = filter;
 
         /* Get field configuration and values need for inputs */
-        const fieldConfig = filtersConfig.fields.find(
-          (field) => field.name === fieldName
-        );
+        const fieldConfig = filtersConfig[fieldName];
         const { label, type } = fieldConfig ?? {};
         const operators = fieldConfig?.operators ?? [];
 
@@ -418,7 +415,8 @@ const Filters = ({
                   <Autocomplete
                     value={label || null}
                     id={`filter-field-select-${filterIndex}`}
-                    options={filtersConfig.fields}
+                    // options={filtersConfig.fields}
+                    options={Object.values(filtersConfig)}
                     getOptionLabel={(f) =>
                       Object.hasOwn(f, "label") ? f.label : f
                     }
