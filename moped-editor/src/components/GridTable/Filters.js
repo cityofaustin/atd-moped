@@ -37,7 +37,9 @@ import {
   handleApplyValidation,
   isFilterNullType,
   shouldRenderAutocompleteInput,
-  useMakeFilterState
+  useMakeFilterState,
+  autocompleteOptions,
+  useCreateAutocompleteOptions
 } from "./helpers";
 import { FiltersCommonOperators } from "./FiltersCommonOperators";
 
@@ -153,6 +155,9 @@ const Filters = ({
   /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
 
+  const autocompleteOptions = useCreateAutocompleteOptions(filtersConfig, data)
+
+  console.log(autocompleteOptions)
   /**
    * Handles the click event on the field drop-down menu
    * @param {string} filterIndex - filterParameters index to modify
@@ -406,6 +411,8 @@ const Filters = ({
           : [];
         const dedupedOptions = [...new Set(options)];
 
+        console.log(dedupedOptions, "hi")
+
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
             <Grid
@@ -512,7 +519,8 @@ const Filters = ({
                     ) ? (
                       <Autocomplete
                         value={value || null}
-                        options={dedupedOptions}
+                        // options={dedupedOptions}
+                        options={autocompleteOptions[fieldName]}
                         freeSolo={operator === "string_contains_case_insensitive" && showFreeSolo}
                         disabled={!filterParameters[filterIndex].operator}
                         onChange={(e, value) => {

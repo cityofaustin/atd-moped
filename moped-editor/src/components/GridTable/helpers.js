@@ -168,3 +168,22 @@ export const useMakeFilterState = ({
     }
     return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
   }, [searchParams, advancedSearchFilterParamName, isEmptyFilterNeeded]);
+
+export const useCreateAutocompleteOptions = (filtersConfig, data) =>
+  useMemo(() => {
+    let dedupedOptions = {};
+    filtersConfig.fields.forEach((fieldConfig) => {
+      if (fieldConfig.lookup) {
+        const { table_name: lookupTable, getOptionLabel } =
+          fieldConfig?.lookup ?? {};
+        const options = data[lookupTable]
+          ? data[lookupTable].map((option) => getOptionLabel(option))
+          : [];
+        dedupedOptions = {
+          ...dedupedOptions,
+          [fieldConfig.name]: [...new Set(options)],
+        };
+      }
+    });
+    return dedupedOptions;
+  }, [filtersConfig, data]);
