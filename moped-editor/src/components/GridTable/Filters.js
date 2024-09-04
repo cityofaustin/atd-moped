@@ -38,7 +38,6 @@ import {
   isFilterNullType,
   shouldRenderAutocompleteInput,
   useMakeFilterState,
-  autocompleteOptions,
   useCreateAutocompleteOptions
 } from "./helpers";
 import { FiltersCommonOperators } from "./FiltersCommonOperators";
@@ -157,7 +156,6 @@ const Filters = ({
 
   const autocompleteOptions = useCreateAutocompleteOptions(filtersConfig, data)
 
-  console.log(autocompleteOptions)
   /**
    * Handles the click event on the field drop-down menu
    * @param {string} filterIndex - filterParameters index to modify
@@ -396,22 +394,11 @@ const Filters = ({
         const {
           table_name: lookupTable,
           operators: lookupOperators,
-          getOptionLabel,
           showFreeSolo
         } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
-
-        /* Use option formatter and dedupe items to handle cases like same team member name options
-         * See https://github.com/mui/material-ui/issues/26492
-         **/
-        const options = data?.[lookupTable]
-          ? data[lookupTable].map((option) => getOptionLabel(option))
-          : [];
-        const dedupedOptions = [...new Set(options)];
-
-        console.log(dedupedOptions, "hi")
 
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>

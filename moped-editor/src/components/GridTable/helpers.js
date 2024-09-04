@@ -169,6 +169,13 @@ export const useMakeFilterState = ({
     return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
   }, [searchParams, advancedSearchFilterParamName, isEmptyFilterNeeded]);
 
+/**
+ *  Use option formatter and dedupe items to handle cases like same team member name options
+ * See https://github.com/mui/material-ui/issues/26492
+ * @param {Object} filtersConfig - Configuration for the filters
+ * @param {Array} data - raw lookup tables
+ * @return {Array} of deduped and formatted lookup table data
+ */
 export const useCreateAutocompleteOptions = (filtersConfig, data) =>
   useMemo(() => {
     let dedupedOptions = {};
