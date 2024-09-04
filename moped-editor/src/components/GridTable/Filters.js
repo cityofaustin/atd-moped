@@ -40,7 +40,7 @@ import {
   useMakeFilterState,
   useCreateAutocompleteOptions
 } from "./helpers";
-import { FiltersCommonOperators } from "./FiltersCommonOperators";
+import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 
 /**
  * The styling for the filter components
@@ -474,7 +474,7 @@ const Filters = ({
                     data-testid="operator-select"
                   >
                     {operators.map((operator, operatorIndex) => {
-                      const label = FiltersCommonOperators[operator]?.label;
+                      const label = FILTERS_COMMON_OPERATORS[operator]?.label;
                       return (
                         <MenuItem
                           value={operator}

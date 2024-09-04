@@ -1,4 +1,3 @@
-import { FiltersCommonOperators } from "../../../components/GridTable/FiltersCommonOperators";
 
 /**
  * Array of operators that do not require a search value Ex. "is blank"
@@ -477,8 +476,4 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
     },
   ],
-
-  operators: {
-    ...FiltersCommonOperators,
-  },
 };

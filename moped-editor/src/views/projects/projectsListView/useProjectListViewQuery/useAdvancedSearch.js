@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
-import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
+import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
 import { addDays, parseISO, format } from "date-fns";
 import { useMakeFilterState } from "src/components/GridTable/helpers";
@@ -21,13 +21,14 @@ const makeAdvancedSearchWhereFilters = (filters) =>
       let { field, value, operator } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
+      // fix it here
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
         (fieldConfig) => fieldConfig.name === field
       );
       const { type } = filterConfigForField;
 
       // Use operator name to get the GraphQL operator config for that operator
-      const operatorConfig = FiltersCommonOperators[operator];
+      const operatorConfig = FILTERS_COMMON_OPERATORS[operator];
       let {
         envelope,
         specialNullValue,

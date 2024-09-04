@@ -178,6 +178,9 @@ export const useMakeFilterState = ({
  */
 export const useCreateAutocompleteOptions = (filtersConfig, data) =>
   useMemo(() => {
+    if (!data) {
+      return {};
+    }
     let dedupedOptions = {};
     filtersConfig.fields.forEach((fieldConfig) => {
       if (fieldConfig.lookup) {
