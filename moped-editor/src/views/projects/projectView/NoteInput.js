@@ -44,8 +44,10 @@ const useStyles = makeStyles((theme) => ({
     padding: "16px 16px",
     border: "4px solid",
     borderRadius: "8px",
+    fontSize: "1rem",
     borderColor: theme.palette.primary.main,
-    fontFamily: theme.typography.fontFamily
+    fontFamily: theme.typography.fontFamily,
+    color: theme.palette.text.primary,
   },
   placeholder: {
     position: "absolute",
@@ -63,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
   },
   startIcon: {
     margin: 0,
+    color: theme.palette.text.primary,
   }
 }));
 
