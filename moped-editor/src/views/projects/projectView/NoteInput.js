@@ -40,15 +40,17 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.dark,
   },
   contentEditable: {
-    height: "300px",
     width: "100%",
-    padding: "8px 8px",
-    border: "1px solid #fff"
+    padding: "16px 16px",
+    border: "4px solid",
+    borderRadius: "8px",
+    borderColor: theme.palette.primary.main,
+    fontFamily: theme.typography.fontFamily
   },
   placeholder: {
     position: "absolute",
-    top: "24px",
-    paddingLeft: "8px"
+    top: "36px",
+    paddingLeft: "20px"
   },
   editorWrapper: {
     position: "relative"
