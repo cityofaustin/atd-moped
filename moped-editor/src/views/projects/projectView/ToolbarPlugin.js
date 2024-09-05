@@ -131,7 +131,7 @@ const RICH_TEXT_OPTIONS = [
   },
 ];
 
-const ToolbarPlugin = ({ noteAddSuccess }) => {
+const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   const [editor] = useLexicalComposerContext();
 
   const [disableMap, setDisableMap] = useState({
@@ -264,12 +264,10 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
       ))
   }, [editor]);
 
-  // to do: add custom styling
   const getSelectedButtonProps = (isSelected) =>
     isSelected
       ? {
-        color: "success",
-        variant: "contained"
+        className: classes.toolbarButtons
       }
       : {};
 
@@ -333,6 +331,8 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
   return (
     <Box
       paddingTop="16px"
+      display="flex"
+      justifyContent="center"
     >
       <ButtonGroup
         size="xs"
@@ -344,6 +344,7 @@ const ToolbarPlugin = ({ noteAddSuccess }) => {
             <Divider orientation="vertical" flexItem />
           ) : (
             <Button
+              classes={{startIcon: classes.startIcon}}
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}

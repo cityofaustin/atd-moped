@@ -22,6 +22,7 @@ import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
 import { $getRoot } from 'lexical';
+import { $isRootTextContentEmpty } from '@lexical/text';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { LinkNode } from '@lexical/link';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
@@ -55,6 +56,12 @@ const useStyles = makeStyles((theme) => ({
   showButtonItem: {
     margin: theme.spacing(2),
   },
+  toolbarButtons: {
+    backgroundColor: theme.palette.primary.main,
+  },
+  startIcon: {
+    margin: 0,
+  }
 }));
 
 /**
@@ -92,7 +99,8 @@ const OnChangePlugin = ({ onChange }) => {
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
-        const htmlContent = $generateHtmlFromNodes(editor, null);
+        const isEditorEmpty = $isRootTextContentEmpty();
+        const htmlContent = isEditorEmpty ? null : $generateHtmlFromNodes(editor, null);
         onChange(htmlContent);
       });
     });
@@ -121,7 +129,7 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
     const nodeMap = editorState._nodeMap;
     const textArray = [...nodeMap.entries()][2];
     const isTextInEditor = !!textArray;
-    const isTextinDatabase = !!htmlContent.replace(/<[^>]*>/g, "");
+    const isTextinDatabase = !!htmlContent;
     // If user clicks edit and there is a stored note and a clear editor,
     // populate editor with stored note
     editingNote && !isTextInEditor && isTextinDatabase &&
@@ -178,7 +186,7 @@ const NoteInput = ({
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
           <LexicalComposer initialConfig={initialConfig} >
-            <ToolbarPlugin noteAddSuccess={noteAddSuccess}  />
+            <ToolbarPlugin noteAddSuccess={noteAddSuccess} classes={classes} />
             <Box className={classes.editorWrapper} pt={2}>
               <RichTextPlugin
                 contentEditable={<ContentEditable className={classes.contentEditable} />}
@@ -228,7 +236,7 @@ const NoteInput = ({
             )}
             <ProjectSaveButton
               // disable save button if no text after removing html tags
-              disabled={!noteText.replace(/<[^>]*>/g, "")}
+              disabled={!noteText}
               label={<>Save</>}
               loading={noteAddLoading}
               success={noteAddSuccess}
