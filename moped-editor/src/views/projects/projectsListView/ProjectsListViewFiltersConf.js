@@ -118,6 +118,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Modified",
     placeholder: "Last modified",
     type: "date",
+    defaultOperator: "date_equals",
     operators: [
       "date_equals",
       "date_greater_than",
@@ -137,6 +138,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.phase_name,
       operators: ["string_equals_case_insensitive"],
     },
+    defaultOperator: "string_equals_case_insensitive",
     operators: [
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
@@ -157,6 +159,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
       operators: ["string_contains_case_insensitive"],
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -180,6 +183,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_equals_case_insensitive",
     operators: [
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
@@ -205,6 +209,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_equals_case_insensitive",
     operators: [
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
@@ -225,6 +230,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.entity_name,
       operators: ["string_contains_case_insensitive"],
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -238,6 +244,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Task orders",
     placeholder: "Task order",
     type: "string",
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -258,6 +265,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.funding_source_name,
       operators: ["string_contains_case_insensitive"],
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_is_null",
@@ -269,6 +277,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Status update",
     placeholder: "Status update",
     type: "string",
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -284,6 +293,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Construction start",
     placeholder: "Construction start",
     type: "date",
+    defaultOperator: "date_equals",
     operators: [
       "date_equals",
       "date_greater_than",
@@ -298,6 +308,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Completion date",
     placeholder: "Completion date",
     type: "date",
+    defaultOperator: "date_equals",
     operators: [
       "date_equals",
       "date_greater_than",
@@ -321,6 +332,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_equals_case_insensitive",
@@ -343,6 +355,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_equals_case_insensitive",
@@ -356,6 +369,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Workgroup/Contractors",
     placeholder: "Workgroup or Contractor",
     type: "string",
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -371,6 +385,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Contract numbers",
     placeholder: "Contract number",
     type: "string",
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -391,6 +406,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.name,
       operators: ["string_contains_case_insensitive"],
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -413,6 +429,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
@@ -436,6 +453,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       ],
       showFreeSolo: true,
     },
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -466,6 +484,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Has subprojects",
     placeholder: "Subproject",
     type: "array",
+    defaultOperator: "subprojects_array_is_null",
     operators: ["subprojects_array_is_null", "subprojects_array_is_not_null"],
   },
   components: {
@@ -473,6 +492,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Components",
     placeholder: "component",
     type: "string",
+    defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
       "string_is_null",
@@ -484,6 +504,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Council districts",
     placeholder: "District",
     type: "array",
+    defaultOperator: "council_districts_array_contains",
     operators: [
       "council_districts_array_contains",
       "council_districts_array_is",
