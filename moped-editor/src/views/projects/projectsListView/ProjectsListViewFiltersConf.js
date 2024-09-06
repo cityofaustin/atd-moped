@@ -103,7 +103,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_types",
       getOptionLabel: (option) => option.type_name,
-      operators: ["string_contains_case_insensitive"],
+      operators: [
+        "string_contains_case_insensitive",
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+      ],
     },
     operators: [
       "string_contains_case_insensitive",
@@ -228,7 +232,11 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_entity",
       getOptionLabel: (option) => option.entity_name,
-      operators: ["string_contains_case_insensitive"],
+      operators: [
+        "string_contains_case_insensitive",
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+      ],
     },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
