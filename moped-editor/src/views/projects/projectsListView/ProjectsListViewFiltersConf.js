@@ -142,7 +142,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_phases",
       getOptionLabel: (option) => option.phase_name,
-      operators: ["string_equals_case_insensitive"],
+      operators: [
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+      ],
     },
     defaultOperator: "string_equals_case_insensitive",
     operators: [
@@ -185,7 +188,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       operators: [
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
-        "string_contains_case_insensitive",
       ],
     },
     defaultOperator: "string_equals_case_insensitive",
@@ -210,7 +212,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       operators: [
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
-        "string_contains_case_insensitive",
       ],
     },
     defaultOperator: "string_equals_case_insensitive",
@@ -433,10 +434,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
       operators: [
         "string_equals_case_insensitive",
-        "string_contains_case_insensitive",
+        "string_does_not_equal_case_insensitive",
       ],
     },
-    defaultOperator: "string_contains_case_insensitive",
+    defaultOperator: "string_equals_case_insensitive",
     operators: [
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
@@ -456,16 +457,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       operators: [
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
-        "string_contains_case_insensitive",
       ],
     },
-    defaultOperator: "string_contains_case_insensitive",
+    defaultOperator: "string_equals_case_insensitive",
     operators: [
+      "string_equals_case_insensitive",
+      "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
-      "string_equals_case_insensitive",
-      "string_does_not_equal_case_insensitive",
       "string_is_null",
       "string_is_not_null",
     ],
