@@ -154,7 +154,7 @@ const Filters = ({
   /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
 
-  const autocompleteOptions = useCreateAutocompleteOptions(filtersConfig, data);
+  const autocompleteOptionsMap = useCreateAutocompleteOptions(filtersConfig, data);
 
   /**
    * Handles the click event on the field drop-down menu
@@ -390,7 +390,6 @@ const Filters = ({
         const {
           table_name: lookupTable,
           operators: lookupOperators,
-          showFreeSolo,
         } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
@@ -502,12 +501,7 @@ const Filters = ({
                     ) ? (
                       <Autocomplete
                         value={value || null}
-                        options={autocompleteOptions[fieldName]}
-                        // allow freeSolo option when the operator is contains and contains is not its only operator
-                        freeSolo={
-                          operator === "string_contains_case_insensitive" &&
-                          showFreeSolo
-                        }
+                        options={autocompleteOptionsMap[fieldName]}
                         disabled={!filterParameters[filterIndex].operator}
                         onChange={(e, value) => {
                           handleSearchValueChange(filterIndex, value);
