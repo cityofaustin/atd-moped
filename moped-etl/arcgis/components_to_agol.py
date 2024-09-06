@@ -9,12 +9,10 @@ from datetime import datetime, timezone, timedelta
 from process.logging import get_logger
 from settings import (
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-    EXPLODED_GEOMETRY_SQL_QUERY,
     UPLOAD_CHUNK_SIZE,
 )
 from utils import (
     make_hasura_request,
-    make_hasura_sql_query,
     get_token,
     delete_all_features,
     delete_features_by_project_ids,
