@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, Link, TextField, Typography } from "@mui/material";
+import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
 
+import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
-import { OpenInNew } from "@mui/icons-material";
 import { isValidUrl, makeUrlValid } from "src/utils/urls";
 
 /**
@@ -127,10 +127,7 @@ const ProjectSummaryProjectWebsite = ({
           <ProjectSummaryLabel
             text={
               (website && website.length > 0 && (
-                <Link href={website} target={"_blank"}>
-                  {website}
-                  <OpenInNew className={classes.linkIcon} />
-                </Link>
+                <ExternalLink text={website} url={website} stopPropagation />
               )) ||
               ""
             }

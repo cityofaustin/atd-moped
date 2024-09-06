@@ -43,7 +43,7 @@ const DeleteConfirmationModal = ({
             startIcon={<DeleteIcon />}
             onClick={() => {
               submitDelete();
-              handleDeleteClose();
+              // closing the confirmation modal should happen after the delete mutation completes
             }}
           >
             <span>Delete</span>

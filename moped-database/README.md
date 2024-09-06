@@ -1,6 +1,6 @@
 # MOPED Database
 
-You will want to check the documentation in the [MOPED Technical Docs](https://app.gitbook.com/@atd-dts/s/moped-technical-docs/dev-guides/hasura-migrations)
+You will want to check the documentation in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
 
 ## Architecture Description
 
@@ -138,10 +138,26 @@ which contains the connection information for the local cluster. Notice the form
 
 To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](/views/README.md).
 
+### SQL Formatting
+
+We use [SQLFluff](https://sqlfluff.com/) to format SQL code. You'll need to get `sqlfluff` installed on your computer and in the path. If you're using `brew`, you can `brew install sqlfluff`. Make sure it's in your path by doing `which sqlfluff` in your terminal, and if it gives you the path to program, then you're good to go. 
+
+VSCode users: The extension I'm using to provide linting and formatting capabilities in VSCode is [here](https://marketplace.visualstudio.com/items?itemName=dorzey.vscode-sqlfluff).
+
+Users of other editors can adapt the following commands to best suit their needs. These are being run from the `moped-editor/moped-database/views` folder. 
+
+Lint (ie, tell me what i'm doing wrong):
+
+`sqlfluff lint --config ../../.sqlfluff project_list_view.sql`
+
+Format (ie, clean up all my indention and fix things you can fix automatically):
+
+`sqlfluff format --config ../../.sqlfluff project_list_view.sql`
+
 ## Read the docs
 
-More documentation is available in the [MOPED Technical Docs](https://app.gitbook.com/@atd-dts/s/moped-technical-docs/dev-guides/hasura-migrations)
+More documentation is available in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
 
-You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/1.0/graphql/core/migrations/index.html). 
+You are also encouraged to learn [Hasura Migrations from their documentation](https://hasura.io/docs/2.0/migrations-metadata-seeds/overview/). 
 
 [SchemaSpy Analysis of moped](https://db-docs.austinmobility.io/atd-moped-production/index.html)

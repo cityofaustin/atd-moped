@@ -76,7 +76,9 @@ const CreateComponentModal = ({
     }
   };
 
-  const onClose = () => {
+  const onClose = (event, reason) => {
+    if (reason && reason === "backdropClick")
+      return;
     setLinkMode(null);
     createDispatch({ type: "cancel_create" });
   };
