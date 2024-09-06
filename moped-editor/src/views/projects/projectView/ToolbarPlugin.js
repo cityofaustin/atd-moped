@@ -4,7 +4,6 @@ import {
   Box,
   ButtonGroup,
   Button,
-  Divider
 } from "@mui/material";
 import {
   Redo,
@@ -341,7 +340,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       >
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
           id === richTextAction.Divider ? (
-            <Divider orientation="vertical" flexItem />
+            <div className={classes.divider}/>
           ) : (
             <Button
               classes={{startIcon: classes.startIcon}}

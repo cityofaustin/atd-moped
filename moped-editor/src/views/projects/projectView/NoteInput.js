@@ -62,10 +62,18 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarButtons: {
     backgroundColor: theme.palette.primary.main,
+    '&:hover, &.Mui-focusVisible': {
+      backgroundColor: theme.palette.primary.main,
+    },
   },
   startIcon: {
     margin: 0,
     color: theme.palette.text.primary,
+  },
+  divider: {
+    '&:hover, &.Mui-focusVisible': {
+      backgroundColor: theme.palette.background.default,
+    },
   }
 }));
 
