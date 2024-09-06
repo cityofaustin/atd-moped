@@ -70,11 +70,6 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     color: theme.palette.text.primary,
   },
-  divider: {
-    '&:hover, &.Mui-focusVisible': {
-      backgroundColor: theme.palette.background.default,
-    },
-  }
 }));
 
 /**
@@ -248,7 +243,7 @@ const NoteInput = ({
               </div>
             )}
             <ProjectSaveButton
-              // disable save button if no text after removing html tags
+              // disable save button if no text
               disabled={!noteText}
               label={<>Save</>}
               loading={noteAddLoading}

@@ -340,7 +340,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       >
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
           id === richTextAction.Divider ? (
-            <div className={classes.divider}/>
+            <div />
           ) : (
             <Button
               classes={{startIcon: classes.startIcon}}
