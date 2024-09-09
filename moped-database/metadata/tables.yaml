@@ -1,6 +1,16 @@
 - table:
     name: component_arcgis_online_view
     schema: public
+  array_relationships:
+    - name: componentToExplodedGeometryComponent
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: project_component_id
+          insertion_order: null
+          remote_table:
+            name: exploded_component_arcgis_online_view
+            schema: public
   select_permissions:
     - role: moped-admin
       permission:
