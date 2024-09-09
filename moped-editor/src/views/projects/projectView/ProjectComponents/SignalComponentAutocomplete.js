@@ -6,6 +6,7 @@ import {
   getSignalOptionLabel,
   getSignalOptionSelected,
   SOCRATA_ENDPOINT,
+  SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
@@ -16,21 +17,30 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
- * @param {String} signalType - either PHB or TRAFFIC
+ * @param {String} signalType - either PHB, TRAFFIC or School Zone Beacon
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(
   ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
-    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+    console.log(signalType);
+    const socrataEndpoint =
+      signalType === "School Zone Beacon"
+        ? SOCRATA_ENDPOINT_SCHOOL_BEACONS
+        : SOCRATA_ENDPOINT;
+    const { features, loading, error } = useSocrataGeojson(socrataEndpoint);
+
+    console.log(features);
 
     // Filter returned results to the signal type chosen - PHB or TRAFFIC
     const featuresFilteredByType = useMemo(
       () =>
-        features?.filter(
-          (feature) =>
-            feature.properties.signal_type.toLowerCase() ===
-            signalType.toLowerCase()
-        ),
+        signalType === "School Zone Beacon"
+          ? features
+          : features?.filter(
+              (feature) =>
+                feature.properties.signal_type.toLowerCase() ===
+                signalType.toLowerCase()
+            ),
       [features, signalType]
     );
 

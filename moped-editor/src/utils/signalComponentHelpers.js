@@ -2,10 +2,16 @@ import React, { useEffect } from "react";
 import { TextField } from "@mui/material";
 
 /*
- * Socrata Endpoint
+ * Socrata Endpoint for Signals and PHBs
  */
 export const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
+
+/*
+* Socrata endpoint for school beacons
+*/
+export const SOCRATA_ENDPOINT_SCHOOL_BEACONS =
+"https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,zone_name,location,id&$order=school_zone_beacon_id asc&$limit=9999"
 
 /**
  * An array to use as the default value for
@@ -100,7 +106,7 @@ export const renderSignalInput = (
 };
 
 /**
- * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
+ * Gets the correct COMPONENT_DEFINITION property based on the presence of a signal feature
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Object[]} componentData - Array of moped_components from DB
