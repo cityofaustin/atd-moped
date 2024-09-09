@@ -49,7 +49,10 @@ const FiltersChips = ({
     return {
       filterLabel: fieldFilterConfig?.label,
       operatorLabel: fieldOperatorConfig?.label,
-      filterValue: isDateType ? formatDateType(filter.value) : filter.value,
+      filterValue:
+        isDateType && filter.value
+          ? formatDateType(filter.value)
+          : filter.value,
     };
   });
 
