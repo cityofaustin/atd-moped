@@ -13,6 +13,7 @@ import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
 import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
+import SchoolZoneBeaconComponentAutocomplete from "./SchoolBeaconComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
@@ -30,7 +31,7 @@ import {
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
-import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
+import { getSignalOptionLabel, getSchoolZoneBeaconOptionLabel } from "src/utils/signalComponentHelpers";
 import ComponentProperties from "./ComponentProperties";
 
 import * as yup from "yup";
@@ -117,6 +118,8 @@ const ComponentForm = ({
   const assetFeatureTable =
     component?.data?.asset_feature_layer?.internal_table;
   const isSignalComponent = assetFeatureTable === "feature_signals";
+  const componentSubtype = component?.data?.component_subtype;
+  const isSchoolZoneBeacon = componentSubtype === "School Zone Beacon"
   const componentTagsOptions = useComponentTagsOptions(optionsData);
 
   const workTypeOptions = useWorkTypeOptions(
@@ -174,7 +177,7 @@ const ComponentForm = ({
     comparisonVariable: "properties.id",
     valueToSet: signal
       ? // if the signal exists and the locationDescription is empty, set to option label
-        getSignalOptionLabel(signal)
+        isSchoolZoneBeacon ? getSchoolZoneBeaconOptionLabel(signal) : getSignalOptionLabel(signal)
       : "",
     setValue,
   });
@@ -216,6 +219,10 @@ const ComponentForm = ({
               control={control}
               shouldUnregister={true}
               render={({ field }) => (
+                isSchoolZoneBeacon ?
+                <SchoolZoneBeaconComponentAutocomplete
+                  {...field}
+                 / >:
                 <SignalComponentAutocomplete
                   {...field}
                   signalType={component?.data?.component_subtype}

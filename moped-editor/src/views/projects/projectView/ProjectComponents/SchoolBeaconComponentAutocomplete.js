@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect } from "react";
 import { CircularProgress, TextField } from "@mui/material";
 import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
-  getSignalOptionLabel,
-  getSignalOptionSelected,
-  SOCRATA_ENDPOINT,
+  getSchoolZoneBeaconOptionLabel,
+  getSchoolZoneBeaconOptionSelected,
+  SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
@@ -16,23 +16,12 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
- * @param {String} signalType - either PHB, TRAFFIC or School Zone Beacon
+ * @param {String} signalType - School Zone Beacon
  * @return {JSX.Element}
  */
-const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
-    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
-
-    // Filter returned results to the signal type chosen - PHB or TRAFFIC
-    const featuresFilteredByType = useMemo(
-      () =>
-        features?.filter(
-          (feature) =>
-            feature.properties.signal_type.toLowerCase() ===
-            signalType.toLowerCase()
-        ),
-      [features, signalType]
-    );
+const SchoolZoneBeaconComponentAutocomplete = React.forwardRef(
+  ({ classes, onChange, value, onOptionsLoaded }, ref) => {
+    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT_SCHOOL_BEACONS);
 
     // Let the parent component know that the options are ready to go
     useEffect(() => {
@@ -45,28 +34,28 @@ const SignalComponentAutocomplete = React.forwardRef(
       return <CircularProgress color="primary" size={20} />;
     } else if (error) {
       return (
-        <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+        <Alert severity="error">{`Unable to load school zone beacon list: ${error}`}</Alert>
       );
     }
 
     return (
       <Autocomplete
         className={classes}
-        id="signal-id"
+        id="school-zone-beacon-id"
         filterOptions={filterOptions}
-        isOptionEqualToValue={getSignalOptionSelected}
+        isOptionEqualToValue={getSchoolZoneBeaconOptionSelected}
         // this label formatting mirrors the Data Tracker formatting
-        getOptionLabel={getSignalOptionLabel}
+        getOptionLabel={getSchoolZoneBeaconOptionLabel}
         onChange={(_event, option) => onChange(option)}
         loading={loading}
-        options={featuresFilteredByType}
+        options={features}
         renderInput={(params) => (
           <TextField
             {...params}
             inputRef={ref}
             error={error}
             InputLabelProps={{ required: false }}
-            label="Signal"
+            label="School Zone Beacon"
             variant="outlined"
             size="small"
           />
@@ -77,4 +66,4 @@ const SignalComponentAutocomplete = React.forwardRef(
   }
 );
 
-export default SignalComponentAutocomplete;
+export default SchoolZoneBeaconComponentAutocomplete;

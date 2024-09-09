@@ -11,7 +11,7 @@ export const SOCRATA_ENDPOINT =
 * Socrata endpoint for school beacons
 */
 export const SOCRATA_ENDPOINT_SCHOOL_BEACONS =
-"https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,zone_name,location,id&$order=school_zone_beacon_id asc&$limit=9999"
+"https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,beacon_id,zone_name,location,id&$order=school_zone_beacon_id asc&$limit=9999"
 
 /**
  * An array to use as the default value for
@@ -195,3 +195,22 @@ export const generateProjectComponent = (
     },
   };
 };
+
+/**
+ * MUI autocomplete getOptionSelected function to which matches input signal value to
+ * select options.
+ */
+export const getSchoolZoneBeaconOptionSelected = (option, value) => {
+  const optionId = option?.properties?.id;
+  const valueId = value?.properties?.id;
+  // Socrata returns a string for the signal_id, but the value is a number
+  return optionId.toString() === valueId.toString();
+};
+
+/**
+ * MUI autocomplete getOptionLabel function to which formats the value rendered in
+ * the select option menu
+ */
+export const getSchoolZoneBeaconOptionLabel = (option) =>
+  // CHECK THIS this label formatting mirrors the Data Tracker formatting
+  `${option.properties.zone_name}: ${option.properties.beacon_name} ${option.properties.beacon_id}`;
