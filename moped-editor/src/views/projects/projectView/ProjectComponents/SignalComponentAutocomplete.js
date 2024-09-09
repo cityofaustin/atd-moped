@@ -16,7 +16,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
- * @param {String} signalType - either PHB, TRAFFIC or School Zone Beacon
+ * @param {String} signalType - either PHB or TRAFFIC
  * @return {JSX.Element}
  */
 const SignalComponentAutocomplete = React.forwardRef(

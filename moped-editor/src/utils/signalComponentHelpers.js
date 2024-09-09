@@ -8,10 +8,10 @@ export const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
 
 /*
-* Socrata endpoint for school beacons
-*/
+ * Socrata endpoint for school beacons
+ */
 export const SOCRATA_ENDPOINT_SCHOOL_BEACONS =
-"https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,beacon_id,zone_name,location,id&$order=school_zone_beacon_id asc&$limit=9999"
+  "https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,beacon_id,zone_name,location,id&$order=school_zone_beacon_id asc&$limit=9999";
 
 /**
  * An array to use as the default value for
@@ -56,7 +56,7 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
       knack_id: signal.properties.id,
       location_name: signal.properties.location_name,
       signal_type: signal.properties.signal_type, // make it say school beacon?
-      signal_id: signal.properties.signal_id,  // and then what here?
+      signal_id: signal.properties.signal_id, // and then what here?
     };
 
     return featureSignalsRecord;
