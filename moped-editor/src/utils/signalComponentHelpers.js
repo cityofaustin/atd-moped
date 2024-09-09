@@ -55,8 +55,8 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
       },
       knack_id: signal.properties.id,
       location_name: signal.properties.location_name,
-      signal_type: signal.properties.signal_type,
-      signal_id: signal.properties.signal_id,
+      signal_type: signal.properties.signal_type, // make it say school beacon?
+      signal_id: signal.properties.signal_id,  // and then what here?
     };
 
     return featureSignalsRecord;
