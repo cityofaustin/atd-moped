@@ -76,7 +76,6 @@ export const makeComponentInsertData = (projectId, component) => {
     );
     makeDrawnPointsInsertionData(drawnFeatures, drawnPointsToInsert);
   } else if (featureTable === "feature_signals") {
-    console.log("what to do here")
     features.forEach((feature) => {
       const signalRecord = knackSignalRecordToFeatureSignalsRecord(feature);
       signalFeaturesToInsert.push(signalRecord);
