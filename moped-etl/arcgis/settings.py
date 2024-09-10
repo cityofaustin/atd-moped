@@ -87,9 +87,11 @@ query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
 }
 """
 
+    # line_geometry
 EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
 query GetExplodedProjectsComponents($where: exploded_component_arcgis_online_view_bool_exp!) {
   exploded_component_arcgis_online_view(where: $where) {
+    geometry: exploded_geometry
     completion_date
     completion_end_date
     component_categories
@@ -122,7 +124,6 @@ query GetExplodedProjectsComponents($where: exploded_component_arcgis_online_vie
     knack_data_tracker_project_record_id
     length_feet_total
     length_miles_total
-    line_geometry
     parent_project_id
     parent_project_name
     parent_project_name_full
