@@ -185,8 +185,6 @@ def main(args):
 
     all_features = make_all_features(data, exploded_data)
 
-    return
-
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
