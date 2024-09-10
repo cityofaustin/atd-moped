@@ -204,8 +204,8 @@ SELECT
     get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
     project_development_status_date.result AS project_development_status_date,
     to_char(project_development_status_date.result, 'YYYY'::text)::integer AS project_development_status_date_calendar_year,
-    to_char(project_development_status_date.result, 'MON YYYY'::text) AS project_development_status_date_calendar_year_month,
-    to_char(project_development_status_date.result, 'MM'::text) AS project_development_status_date_calendar_year_month_numeric,
+    to_char(project_development_status_date.result, 'FMMonth YYYY'::text) AS project_development_status_date_calendar_year_month,
+    to_char(project_development_status_date.result, 'YYYY-MM'::text) AS project_development_status_date_calendar_year_month_numeric,
     date_part('quarter'::text, project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
     CASE
         WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN (to_char(project_development_status_date.result, 'YYYY'::text)::integer + 1)::text
