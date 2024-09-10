@@ -174,6 +174,7 @@ export const useCreateComponent = ({
   /**
    * Prepare signal component and feature data for component creation and call mutation/reset state
    */
+  // should this be updated or duplicated -- or maybe it just works as is
   const onSaveDraftSignalComponent = (signalComponent) => {
     const newComponentData = makeComponentInsertData(
       projectId,

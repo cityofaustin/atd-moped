@@ -10,7 +10,7 @@ const CreateComponentModal = ({
   onSaveDraftSignalComponent,
 }) => {
   const onSave = (formData) => {
-    const isSavingSignalFeature = Boolean(formData.signal);
+    const isSavingSignalFeature = Boolean(formData.signal || formData.schoolBeacon);
 
     let {
       component: {
@@ -66,7 +66,7 @@ const CreateComponentModal = ({
     if (isSavingSignalFeature) {
       const newComponentWithSignalFeature = {
         ...newComponent,
-        features: [formData.signal],
+        features: [formData.signal || formData.schoolBeacon],
       };
       onSaveDraftSignalComponent(newComponentWithSignalFeature);
     } else {

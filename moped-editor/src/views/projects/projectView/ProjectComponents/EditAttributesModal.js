@@ -77,6 +77,7 @@ const EditAttributesModal = ({
       : [];
 
     const signalFromForm = formData.signal;
+    // may have to update this too
     const { signalsToCreate, featureIdsToDelete } =
       getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
 

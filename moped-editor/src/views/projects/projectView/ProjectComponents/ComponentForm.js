@@ -125,7 +125,7 @@ const ComponentForm = ({
     "completionDate",
     "subcomponents",
     "signal",
-    "school_beacon",
+    "schoolBeacon",
   ]);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const assetFeatureTable =
@@ -135,8 +135,6 @@ const ComponentForm = ({
   const componentTagsOptions = useComponentTagsOptions(optionsData);
   const hasGeometry =
     (isSignalComponent && signal) || (isSchoolZoneBeacon && schoolBeacon);
-
-  console.log(signal, schoolBeacon);
 
   const workTypeOptions = useWorkTypeOptions(
     component?.value,
@@ -197,7 +195,7 @@ const ComponentForm = ({
   });
 
   useResetDependentFieldOnParentFieldChange({
-    parentValue: watch("school_beacon"),
+    parentValue: watch("schoolBeacon"),
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties.id",
     valueToSet: schoolBeacon

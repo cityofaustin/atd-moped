@@ -294,7 +294,7 @@ export const useUpdateComponent = ({
         intersections
       );
       makeDrawnPointsInsertionData(newDrawnPoints, drawnPointsToInsert);
-    } else if (featureTable === "feature_signals") {
+    } else if (featureTable === "feature_signals") { //breadcrumb
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
     }
 

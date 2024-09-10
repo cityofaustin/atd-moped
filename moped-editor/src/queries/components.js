@@ -149,7 +149,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       component_id
     }
   }
-`;
+`; // update
 
 export const GET_PROJECT_COMPONENTS = gql`
   ${PROJECT_COMPONENT_FIELDS}

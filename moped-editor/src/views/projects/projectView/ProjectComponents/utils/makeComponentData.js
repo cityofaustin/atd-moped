@@ -5,7 +5,7 @@ import {
   makePointFeatureInsertionData,
 } from "./makeFeatures";
 import { isDrawnDraftFeature } from "./features";
-import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
+import { knackSignalRecordToFeatureSignalsRecord, knackSchoolBeaconRecordToFeatureSchoolBeaconRecord } from "src/utils/signalComponentHelpers";
 
 /**
  * Take a component object and return an object that can be used to insert a component record
@@ -53,6 +53,7 @@ export const makeComponentInsertData = (projectId, component) => {
   const signalFeaturesToInsert = [];
   const drawnLinesToInsert = [];
   const drawnPointsToInsert = [];
+  const schoolBeaconFeaturesToInsert = [];
 
   const drawnFeatures = features.filter((feature) =>
     isDrawnDraftFeature(feature)
@@ -81,6 +82,12 @@ export const makeComponentInsertData = (projectId, component) => {
       signalFeaturesToInsert.push(signalRecord);
     });
   }
+  else if (featureTable === "feature_school_beacons") {
+    features.forEach((feature) => {
+      const signalRecord = knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(feature);
+      schoolBeaconFeaturesToInsert.push(signalRecord);
+    });
+  }
 
   return {
     description,
@@ -106,6 +113,7 @@ export const makeComponentInsertData = (projectId, component) => {
     feature_drawn_lines: { data: drawnLinesToInsert },
     feature_drawn_points: { data: drawnPointsToInsert },
     feature_signals: { data: signalFeaturesToInsert },
+    feature_school_beacons: {data: schoolBeaconFeaturesToInsert},
   };
 };
 

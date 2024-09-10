@@ -55,8 +55,8 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
       },
       knack_id: signal.properties.id,
       location_name: signal.properties.location_name,
-      signal_type: signal.properties.signal_type, // make it say school beacon?
-      signal_id: signal.properties.signal_id, // and then what here?
+      signal_type: signal.properties.signal_type,
+      signal_id: signal.properties.signal_id,
     };
 
     return featureSignalsRecord;
@@ -214,3 +214,30 @@ export const getSchoolZoneBeaconOptionSelected = (option, value) => {
 export const getSchoolZoneBeaconOptionLabel = (option) =>
   // CHECK THIS this label formatting mirrors the Data Tracker formatting
   `${option.properties.zone_name}: ${option.properties.beacon_name} ${option.properties.beacon_id}`;
+
+/**
+ * Sets required fields so that a Knack school zone beacon record can be inserted into the feature_school_beacons table
+ * @param {Object} schoolBeacon- A GeoJSON feature or a falsey object (e.g. "" from empty input)
+ * @return {Object} A geojson feature collection with the beacon feature or 0 features
+ */
+export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
+  schoolBeacon
+) => {
+  if (schoolBeacon && schoolBeacon?.properties && schoolBeacon?.geometry) {
+    const featureSchoolBeaconsRecord = {
+      // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+      geography: {
+        ...schoolBeacon.geometry,
+        type: "MultiPoint",
+        coordinates: [schoolBeacon.geometry.coordinates],
+      },
+      knack_id: schoolBeacon.properties.id,
+      location_name: `${schoolBeacon.properties.zone_name} ${schoolBeacon.properties.beacon_name}`,
+      beacon_id: schoolBeacon.properties.beacon_id,
+      zone_name: schoolBeacon.properties.zone_name,
+      beacon_name: schoolBeacon.properties.beacon_name,
+    };
+
+    return featureSchoolBeaconsRecord;
+  }
+};
