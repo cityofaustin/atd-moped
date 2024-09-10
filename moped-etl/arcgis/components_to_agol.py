@@ -129,40 +129,6 @@ def make_all_features(data, exploded_geometry):
             )
             all_features["combined"].append(line_feature)
 
-            project_component_id = feature["attributes"]["project_component_id"]
-
-            # Find the elements in exploded_geometry which match the project_component_id
-            matching_elements = [
-                element
-                for element in exploded_geometry
-                if element["project_component_id"] == project_component_id
-            ]
-
-            for component in matching_elements:
-
-                geometry_json = component.pop(
-                    "geometry"
-                )  # reminder, this is `pop()` on a dict, not an array
-
-                geometry = json.loads(
-                    geometry_json
-                )  # Decode JSON string into Python dictionary
-
-                if not geometry:
-                    continue
-                # esri_geometry_key = get_esri_geometry_key(geometry)
-                esri_geometry_key = "point"
-                feature = make_esri_feature(
-                    esri_geometry_key=esri_geometry_key,
-                    geometry=geometry,
-                    attributes=component,
-                )
-                feature["attributes"]["source_geometry_type"] = "point"
-
-                if not feature:
-                    continue
-
-                all_features["exploded"].append(feature)
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
@@ -173,10 +139,6 @@ def make_all_features(data, exploded_geometry):
 def main(args):
     logger.info("Getting token...")
     get_token()
-
-    exploded_geometry = transform_data(
-        make_hasura_sql_query(query=EXPLODED_GEOMETRY_SQL_QUERY)
-    )
 
     variables = (
         {"where": {}}
