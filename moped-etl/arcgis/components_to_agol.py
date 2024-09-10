@@ -80,7 +80,8 @@ def make_all_features(data, exploded_geometry):
 
     Args:
         data (dict): a list of component feature records
-        exploded_geometry (dict): a dictionary of exploded geometry data from the component_arcgis_online_view
+        exploded_geometry (dict): a dictionary of exploded geometry data from the component_arcgis_online_view. This is created
+            by taking the multi-point geometry from the component_arcgis_online_view and "exploding" it into individual points.
 
     Returns:
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
