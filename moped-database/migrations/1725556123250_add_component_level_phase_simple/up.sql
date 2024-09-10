@@ -204,12 +204,12 @@ SELECT
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
     project_development_status_date.result AS project_development_status_date,
-    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year,
-    to_char(project_development_status_date.result, 'FMMonth YYYY') AS project_development_status_date_calendar_year_month,
-    to_char(project_development_status_date.result, 'YYYY-MM') AS project_development_status_date_calendar_year_month_numeric,
-    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
-    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN (to_char(project_development_status_date.result, 'YYYY')::integer + 1)::text ELSE to_char(project_development_status_date.result, 'YYYY') END AS project_development_status_date_fiscal_year,
-    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN 1 ELSE extract(QUARTER FROM project_development_status_date.result) + 1 END::text AS project_development_status_date_fiscal_year_quarter,
+    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year, -- noqa
+    to_char(project_development_status_date.result, 'FMMonth YYYY') AS project_development_status_date_calendar_year_month, -- noqa
+    to_char(project_development_status_date.result, 'YYYY-MM') AS project_development_status_date_calendar_year_month_numeric, -- noqa
+    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter, -- noqa
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN (to_char(project_development_status_date.result, 'YYYY')::integer + 1)::text ELSE to_char(project_development_status_date.result, 'YYYY') END AS project_development_status_date_fiscal_year, -- noqa
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN 1 ELSE extract(QUARTER FROM project_development_status_date.result) + 1 END::text AS project_development_status_date_fiscal_year_quarter, -- noqa
     plv.added_by AS project_added_by
 FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
@@ -224,5 +224,5 @@ LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AT TIME ZONE 'US/Central' AS result) AS project_development_status_date ON true -- noqa: ST05
+LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AT TIME ZONE 'US/Central' AS result) AS project_development_status_date ON true -- noqa
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
