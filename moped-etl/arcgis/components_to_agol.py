@@ -55,6 +55,7 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     if not geometry:
         return None, None
 
+
     feature = {
         "attributes": attributes,
         "geometry": {
@@ -63,12 +64,14 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     }
     if (esri_geometry_key == "points") or (esri_geometry_key == "paths"):
         feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    elif esri_geometry_key == "point":
+        geometry = json.loads(geometry)
+        feature["geometry"]["y"] = geometry["coordinates"][1]
+        feature["geometry"]["x"] = geometry["coordinates"][0]
     else:
-        # geometry
-        # print("geometry:")
-        feature["geometry"]["y"] = geometry["coordinates"][0][1]
-        feature["geometry"]["x"] = geometry["coordinates"][0][0]
-        # quit()
+        feature["geometry"]["y"] = geometry["coordinates"][1]
+        feature["geometry"]["x"] = geometry["coordinates"][0]
+
     return feature
 
 
@@ -82,6 +85,10 @@ def make_all_features(data, exploded_geometry):
     Returns:
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
     """
+
+    # inspect_geometry = exploded_geometry[0]
+    # print(f"exploded_geometry: {exploded_geometry}")
+    # print(f"inspect_geometry: {inspect_geometry}")
 
     all_features = {"lines": [], "points": [], "combined": [], "exploded": []}
 
