@@ -79,6 +79,7 @@ const ProjectComponentsListItem = ({
 
   const lineRepresentation = component?.moped_components?.line_representation;
   const isSignal = isSignalComponent(component);
+  const isSchoolBeacon = component?.feature_school_beacons.length > 0;
   const isComponentMapped = getIsComponentMapped(component);
 
   return (
@@ -116,7 +117,7 @@ const ProjectComponentsListItem = ({
 
           <Tooltip
             title={
-              isSignal
+              isSignal || isSchoolBeacon
                 ? "Signal locations can only be changed by editing the component details"
                 : "Map"
             }
@@ -127,7 +128,7 @@ const ProjectComponentsListItem = ({
                 color="primary"
                 aria-label="map"
                 onClick={onEditMap}
-                disabled={isSignal}
+                disabled={isSignal || isSchoolBeacon}
               >
                 <EditLocationAltOutlinedIcon
                   color={isComponentMapped ? undefined : "error"}

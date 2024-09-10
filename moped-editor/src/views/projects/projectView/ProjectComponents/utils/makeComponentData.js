@@ -146,6 +146,7 @@ export const getFeatureChangesFromComponentForm = (
   const previousSignal = clickedComponent.feature_signals?.[0];
   const previousIntersectionFeatures = clickedComponent.feature_intersections;
   const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
+  console.log(signalFromForm);
 
   if (newSignalId) {
     // signal is selected in form
