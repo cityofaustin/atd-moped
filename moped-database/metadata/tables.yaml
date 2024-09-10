@@ -2161,6 +2161,15 @@
           remote_table:
             name: feature_intersections
             schema: public
+    - name: feature_school_beacons
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_school_beacons
+            schema: public
     - name: feature_signals
       using:
         manual_configuration:
