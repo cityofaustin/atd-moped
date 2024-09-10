@@ -136,6 +136,22 @@ def make_all_features(data, exploded_geometry):
             )
             all_features["combined"].append(line_feature)
 
+            project_component_id = feature["attributes"]["project_component_id"]
+            # Filter exploded_geometry to only include dicts with matching project_component_id
+            matching_exploded_geometry_records = [feature for feature in exploded_geometry if feature.get("project_component_id") == project_component_id]
+            for record in matching_exploded_geometry_records:
+                geometry = record.pop("geometry")
+                esri_geometry_key = 'point'
+
+                feature = make_esri_feature(
+                    esri_geometry_key='point',
+                    geometry=geometry,
+                    attributes=record,
+                )
+
+                feature["attributes"]["source_geometry_type"] = 'point' # it's unclear what this needs to be. 'point' seems the most correct.
+                all_features["exploded"].append(feature)
+
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
@@ -161,7 +177,15 @@ def main(args):
         variables=variables,
     )["component_arcgis_online_view"]
 
-    all_features = make_all_features(data, exploded_geometry)
+    exploded_data = make_hasura_request(
+        query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+        variables=variables,
+    )["exploded_component_arcgis_online_view"]
+        
+
+    all_features = make_all_features(data, exploded_data)
+
+    return
 
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
