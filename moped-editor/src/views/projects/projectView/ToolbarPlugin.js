@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Box,
@@ -8,14 +8,8 @@ import {
 import {
   Redo,
   Undo,
-  Highlight,
-  FormatAlignJustify,
-  FormatAlignLeft,
-  FormatAlignRight,
-  FormatAlignCenter,
   FormatBold,
   FormatItalic,
-  FormatStrikethrough,
   FormatUnderlined,
   FormatListBulleted,
   FormatListNumbered,
@@ -29,7 +23,6 @@ import {
   $isRangeSelection,
   CAN_REDO_COMMAND,
   CAN_UNDO_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
   REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
@@ -44,15 +37,9 @@ const richTextAction = {
   bold: "bold",
   italics: "italics",
   underline: "underline",
-  strikethrough: "strikethrough",
-  highlight: "highlight",
   number: "number",
   bullet: "bullet",
   link: "link",
-  left: "left",
-  center: "center",
-  right: "right",
-  justify: "justify",
   divider: "divider",
   undo: "undo",
   redo: "redo",
@@ -63,18 +50,7 @@ const RICH_TEXT_OPTIONS = [
   { id: richTextAction.bold, icon: <FormatBold />, label: "Bold" },
   { id: richTextAction.italics, icon: <FormatItalic />, label: "Italics" },
   { id: richTextAction.underline, icon: <FormatUnderlined />, label: "Underline" },
-  {
-    id: richTextAction.strikethrough,
-    icon: <FormatStrikethrough />,
-    label: "Strikethrough",
-  },
-  {
-    id: richTextAction.highlight,
-    icon: <Highlight />,
-    label: "Highlight",
-  },
   { id: richTextAction.divider },
-
   {
     id: richTextAction.number,
     icon: <FormatListNumbered />,
@@ -90,28 +66,6 @@ const RICH_TEXT_OPTIONS = [
     icon: <Link />,
     label: "Link",
   },
-  { id: richTextAction.divider },
-  {
-    id: richTextAction.left,
-    icon: <FormatAlignLeft />,
-    label: "Align Left",
-  },
-  {
-    id: richTextAction.center,
-    icon: <FormatAlignCenter />,
-    label: "Align Center",
-  },
-  {
-    id: richTextAction.right,
-    icon: <FormatAlignRight />,
-    label: "Align Right",
-  },
-  {
-    id: richTextAction.justify,
-    icon: <FormatAlignJustify />,
-    label: "Align Justify",
-  },
-
   { id: richTextAction.divider },
   {
     id: richTextAction.undo,
@@ -182,7 +136,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     return isLink;
   };
 
-  // to do: add url validation and figure out why links are not opening in a new tab
   const handleLinkUpdate = () => {
     const isLinkApplied = selectionMap["link"];
     isLinkApplied ?
@@ -206,25 +159,26 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     });
   };
 
-  useEffect(() => {
-    // to do: move this function outside of useEffect without causing warnings
-    const updateToolbar = () => {
-      const selection = $getSelection();
-      if ($isRangeSelection(selection)) {
-        const newSelectionMap = {
-          [richTextAction.bold]: selection.hasFormat("bold"),
-          [richTextAction.italics]: selection.hasFormat("italic"),
-          [richTextAction.underline]: selection.hasFormat("underline"),
-          [richTextAction.strikethrough]: selection.hasFormat("strikethrough"),
-          [richTextAction.highlight]: selection.hasFormat("highlight"),
-          [richTextAction.number]: checkListType(selection, "number"),
-          [richTextAction.bullet]: checkListType(selection, "bullet"),
-          [richTextAction.link]: checkLink(selection),
-        }
-        setSelectionMap(newSelectionMap)
+  const updateToolbar = useCallback(() => {
+    const selection = $getSelection();
+    if ($isRangeSelection(selection)) {
+      const newSelectionMap = {
+        [richTextAction.bold]: selection.hasFormat("bold"),
+        [richTextAction.italics]: selection.hasFormat("italic"),
+        [richTextAction.underline]: selection.hasFormat("underline"),
+        [richTextAction.number]: checkListType(selection, "number"),
+        [richTextAction.bullet]: checkListType(selection, "bullet"),
+        [richTextAction.link]: checkLink(selection),
       }
+      setSelectionMap(newSelectionMap)
     }
+  }, [setSelectionMap])
 
+  useEffect(() => {
+    // Update  toolbar and other UI elements when certain commands are sent or
+    // update listeners are triggered in editor
+    // More on update listeners: https://lexical.dev/docs/concepts/listeners
+    // More on commands: https://lexical.dev/docs/concepts/commands
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
@@ -261,7 +215,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         }),
         COMMAND_PRIORITY_LOW
       ))
-  }, [editor]);
+  }, [editor, updateToolbar]);
 
   const getSelectedButtonProps = (isSelected) =>
     isSelected
@@ -281,12 +235,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       case "underline":
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
         break;
-      case "strikethrough":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
-        break;
-      case "highlight":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "highlight");
-        break;
       case "number":
         handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
         break;
@@ -295,18 +243,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         break;
       case "link":
         handleLinkUpdate();
-        break;
-      case "left":
-        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-        break;
-      case "center":
-        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-        break;
-      case "right":
-        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-        break;
-      case "justify":
-        editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
         break;
       case "undo":
         editor.dispatchCommand(UNDO_COMMAND, undefined);
@@ -331,19 +267,18 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     <Box
       paddingTop="16px"
       display="flex"
-      justifyContent="center"
+      justifyContent="left"
     >
       <ButtonGroup
         size="xs"
         variant="ghost"
-        color="#444"
       >
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
-          id === richTextAction.Divider ? (
-            <div />
+          id === richTextAction.divider ? (
+            <Button disabled />
           ) : (
             <Button
-              classes={{startIcon: classes.startIcon}}
+              classes={{ startIcon: classes.startIcon }}
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}

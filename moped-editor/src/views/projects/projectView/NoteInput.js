@@ -8,6 +8,7 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
+  Paper
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
@@ -42,17 +43,14 @@ const useStyles = makeStyles((theme) => ({
   contentEditable: {
     width: "100%",
     padding: "16px 16px",
-    border: "4px solid",
-    borderRadius: "8px",
     fontSize: "1rem",
-    borderColor: theme.palette.primary.main,
     fontFamily: theme.typography.fontFamily,
     color: theme.palette.text.primary,
   },
   placeholder: {
     position: "absolute",
-    top: "36px",
-    paddingLeft: "20px"
+    top: "32px",
+    paddingLeft: "16px"
   },
   editorWrapper: {
     position: "relative"
@@ -68,7 +66,6 @@ const useStyles = makeStyles((theme) => ({
   },
   startIcon: {
     margin: 0,
-    color: theme.palette.text.primary,
   },
 }));
 
@@ -197,8 +194,12 @@ const NoteInput = ({
             <ToolbarPlugin noteAddSuccess={noteAddSuccess} classes={classes} />
             <Box className={classes.editorWrapper} pt={2}>
               <RichTextPlugin
-                contentEditable={<ContentEditable className={classes.contentEditable} />}
-                placeholder={<div className={classes.placeholder}>Enter some text...</div>}
+                contentEditable={
+                  <Paper elevation={2}>
+                    <ContentEditable className={classes.contentEditable} />
+                  </Paper>
+                }
+                placeholder={null}
                 ErrorBoundary={LexicalErrorBoundary}
               />
               <HistoryPlugin />
