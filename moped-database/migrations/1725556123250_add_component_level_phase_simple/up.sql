@@ -224,5 +224,5 @@ LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS result) AS project_development_status_date ON true -- noqa: ST05
+LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AT TIME ZONE 'US/Central' AS result) AS project_development_status_date ON true -- noqa: ST05
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
