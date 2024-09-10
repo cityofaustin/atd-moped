@@ -792,6 +792,120 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: feature_school_beacons
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        columns:
+          - beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+      comment: ""
+    - role: moped-editor
+      permission:
+        check: {}
+        columns:
+          - beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+      comment: ""
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+        filter: {}
+        check: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+        filter: {}
+        check: {}
+      comment: ""
+- table:
     name: feature_signals
     schema: public
   insert_permissions:

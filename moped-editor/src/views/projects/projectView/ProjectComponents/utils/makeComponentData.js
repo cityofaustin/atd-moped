@@ -116,7 +116,7 @@ export const makeComponentInsertData = (projectId, component) => {
  * or when the selected signal asset is changed to a different signal
  * asset.
  * @param {Object} signalFromForm - signal objected as returned by the signal
- * autoomplete form option (which is essentially a signalr ecord from
+ * autoomplete form option (which is essentially a signal record from
  *  socrata)
  * @param {Object} clickedComponent  - the moped_project_component record that is
  * currently being edited, including it's related feature data
