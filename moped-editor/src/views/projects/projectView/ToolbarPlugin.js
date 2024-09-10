@@ -30,7 +30,7 @@ import {
   COMMAND_PRIORITY_LOW
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND, $isListNode, $isListItemNode } from "@lexical/list";
+import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
 import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
 
 const richTextAction = {
@@ -93,25 +93,17 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   });
   const [selectionMap, setSelectionMap] = useState({});
 
+  // Iterate through selected node and parent nodes and returns any applicable list type
   const checkListType = (selection, listType) => {
     let hasListType = false;
     const selectedNodes = selection.getNodes();
-    selectedNodes.forEach((selectedNode) => {
-      const selectedNodeParent = selectedNode.getParent()
-      const selectedNodeGrandparent = selectedNodeParent?.getParent();
-      const selectedNodeGreatGrandparent = selectedNodeGrandparent?.getParent();
-      // Check for list formatting and confirm the list type
-      if ($isListNode(selectedNodeParent)) {
-        hasListType = selectedNodeParent.__listType === listType;
-      }
-      // Check for a list item and confirm the parent list type
-      if ($isListItemNode(selectedNodeParent)) {
-        hasListType = selectedNodeGrandparent.__listType === listType;
-      }
-      // to do: iterate through higher level nodes rather than do manual checks like this
-      if ($isListItemNode(selectedNodeGrandparent)) {
-        hasListType = selectedNodeGreatGrandparent.__listType === listType;
-      }
+    selectedNodes.forEach((node) => {
+      const nodeParents = node.getParents();
+      nodeParents.forEach((parent) => {
+        if (parent.__listType === listType) {
+          hasListType = true;
+        }
+      })
     })
     return hasListType;
   };
@@ -174,8 +166,52 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     }
   }, [setSelectionMap])
 
+  const getSelectedButtonProps = (isSelected) =>
+    isSelected
+      ? {
+        className: classes.toolbarButtons
+      }
+      : {};
+
+  const onAction = (id) => {
+    switch (id) {
+      case "bold":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+        break;
+      case "italics":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+        break;
+      case "underline":
+        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+        break;
+      case "number":
+        handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
+        break;
+      case "bullet":
+        handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
+        break;
+      case "link":
+        handleLinkUpdate();
+        break;
+      case "undo":
+        editor.dispatchCommand(UNDO_COMMAND, undefined);
+        break;
+      case "redo":
+        editor.dispatchCommand(REDO_COMMAND, undefined);
+        break;
+      case "clear":
+        clearFormatting();
+        break;
+      default:
+        break;
+    }
+  }
+  if (noteAddSuccess) {
+    noteAddSuccess && clearFormatting();
+  }
+
   useEffect(() => {
-    // Update  toolbar and other UI elements when certain commands are sent or
+    // Update toolbar and other UI elements when certain commands are sent or
     // update listeners are triggered in editor
     // More on update listeners: https://lexical.dev/docs/concepts/listeners
     // More on commands: https://lexical.dev/docs/concepts/commands
@@ -217,51 +253,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       ))
   }, [editor, updateToolbar]);
 
-  const getSelectedButtonProps = (isSelected) =>
-    isSelected
-      ? {
-        className: classes.toolbarButtons
-      }
-      : {};
-
-  const onAction = (id) => {
-    switch (id) {
-      case "bold":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-        break;
-      case "italics":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-        break;
-      case "underline":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-        break;
-      case "number":
-        handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
-        break;
-      case "bullet":
-        handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
-        break;
-      case "link":
-        handleLinkUpdate();
-        break;
-      case "undo":
-        editor.dispatchCommand(UNDO_COMMAND, undefined);
-        break;
-      case "redo":
-        editor.dispatchCommand(REDO_COMMAND, undefined);
-        break;
-      case "clear":
-        clearFormatting();
-        break;
-      default:
-        break;
-    }
-  }
-
-  // to do: wrap this in a useEffect hook
-  if (noteAddSuccess) {
-    noteAddSuccess && clearFormatting();
-  }
 
   return (
     <Box
