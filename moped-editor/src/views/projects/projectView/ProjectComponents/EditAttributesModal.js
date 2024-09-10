@@ -15,6 +15,7 @@ import {
   makeSubphaseFormFieldValue,
   makeTagFormFieldValues,
   makeWorkTypesFormFieldValues,
+  makeSchoolBeaconFormFieldValue,
 } from "./utils/form";
 
 const EditAttributesModal = ({
@@ -114,8 +115,7 @@ const EditAttributesModal = ({
   };
 
   const onClose = (event, reason) => {
-    if (reason && reason === "backdropClick")
-      return;
+    if (reason && reason === "backdropClick") return;
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
@@ -152,8 +152,11 @@ const EditAttributesModal = ({
           : "-",
         projectComponentId: clickedComponent.project_component_id,
         componentLength: clickedComponent.component_length,
+        schoolBeacon: makeSchoolBeaconFormFieldValue(clickedComponent),
       }
     : null;
+
+    console.log(initialFormValues)
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">

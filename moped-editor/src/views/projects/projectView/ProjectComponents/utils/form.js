@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from "react";
 import { Icon } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
+import { featureSchoolBeaconRecordToKnackSchoolBeaconRecord, featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
 import {
   RoomOutlined as RoomOutlinedIcon,
@@ -265,6 +265,23 @@ export const makePhaseFormFieldValue = (phase) => {
       ...phase,
     },
   };
+};
+
+/**
+ * Create the value for the signal autocomplete if the component is a signal component
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
+export const makeSchoolBeaconFormFieldValue = (component) => {
+  console.log(component.feature_school_beacons.length)
+  if (!(component.feature_school_beacons?.length > 0)) return null;
+
+  const componentSchoolBeacon = component?.feature_school_beacons?.[0];
+  console.log(componentSchoolBeacon)
+  const knackFormatSchoolBeaconOption =
+    featureSchoolBeaconRecordToKnackSchoolBeaconRecord(componentSchoolBeacon);
+
+  return knackFormatSchoolBeaconOption;
 };
 
 /**

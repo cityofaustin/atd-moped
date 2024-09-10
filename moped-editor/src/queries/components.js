@@ -148,8 +148,18 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       source_layer
       component_id
     }
+    feature_school_beacons(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      component_id
+      knack_id
+      location_name
+      beacon_id
+      zone_name
+      beacon_name
+    }
   }
-`; // update
+`;
 
 export const GET_PROJECT_COMPONENTS = gql`
   ${PROJECT_COMPONENT_FIELDS}

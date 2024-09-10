@@ -5,7 +5,10 @@ import {
   makePointFeatureInsertionData,
 } from "./makeFeatures";
 import { isDrawnDraftFeature } from "./features";
-import { knackSignalRecordToFeatureSignalsRecord, knackSchoolBeaconRecordToFeatureSchoolBeaconRecord } from "src/utils/signalComponentHelpers";
+import {
+  knackSignalRecordToFeatureSignalsRecord,
+  knackSchoolBeaconRecordToFeatureSchoolBeaconRecord,
+} from "src/utils/signalComponentHelpers";
 
 /**
  * Take a component object and return an object that can be used to insert a component record
@@ -81,10 +84,10 @@ export const makeComponentInsertData = (projectId, component) => {
       const signalRecord = knackSignalRecordToFeatureSignalsRecord(feature);
       signalFeaturesToInsert.push(signalRecord);
     });
-  }
-  else if (featureTable === "feature_school_beacons") {
+  } else if (featureTable === "feature_school_beacons") {
     features.forEach((feature) => {
-      const signalRecord = knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(feature);
+      const signalRecord =
+        knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(feature);
       schoolBeaconFeaturesToInsert.push(signalRecord);
     });
   }
@@ -113,21 +116,21 @@ export const makeComponentInsertData = (projectId, component) => {
     feature_drawn_lines: { data: drawnLinesToInsert },
     feature_drawn_points: { data: drawnPointsToInsert },
     feature_signals: { data: signalFeaturesToInsert },
-    feature_school_beacons: {data: schoolBeaconFeaturesToInsert},
+    feature_school_beacons: { data: schoolBeaconFeaturesToInsert },
   };
 };
 
 /**
- * Assembles feature data based on I/O from the component attribute form. 
- * It handles when a signal component changes to a non-signal component, 
+ * Assembles feature data based on I/O from the component attribute form.
+ * It handles when a signal component changes to a non-signal component,
  * when a selected signal asset is cleared from the from the form input,
  * or when the selected signal asset is changed to a different signal
  * asset.
  * @param {Object} signalFromForm - signal objected as returned by the signal
- * autoomplete form option (which is essentially a signal record from
+ * autocomplete form option (which is essentially a signal record from
  *  socrata)
  * @param {Object} clickedComponent  - the moped_project_component record that is
- * currently being edited, including it's related feature data
+ * currently being edited, including its related feature data
  * @returns {Object[]} signalsToCreate - an array of length 1 or 0 which optionally
  * contains the signal feature record to be inserted
  * @returns {Number[]} featureIdsToDelete - array of 0 or more feature record IDs

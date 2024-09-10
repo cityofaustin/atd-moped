@@ -241,3 +241,24 @@ export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
     return featureSchoolBeaconsRecord;
   }
 };
+
+/**
+ * Format a feature_signals table record to the format of options in the SignalComponentAutocomplete
+ * @param {Object} featureSignalsRecord - A feature_signals table record
+ * @return {Object} A record in the format of options in the SignalComponentAutocomplete
+ */
+export const featureSchoolBeaconRecordToKnackSchoolBeaconRecord = (
+  featureSchoolBeaconRecord
+) => {
+  const { geometry, ...restOfFeatureSchoolBeaconRecord } =
+    featureSchoolBeaconRecord;
+  const { knack_id } = restOfFeatureSchoolBeaconRecord;
+
+  const knackFormatSchoolBeaconOption = {
+    type: "Feature",
+    geometry: { ...geometry, coordinates: geometry.coordinates.flat() },
+    properties: { ...restOfFeatureSchoolBeaconRecord, id: knack_id },
+  };
+
+  return knackFormatSchoolBeaconOption;
+};
