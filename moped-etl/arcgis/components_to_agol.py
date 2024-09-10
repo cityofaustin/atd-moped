@@ -9,6 +9,7 @@ from datetime import datetime, timezone, timedelta
 from process.logging import get_logger
 from settings import (
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+    EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
     UPLOAD_CHUNK_SIZE,
 )
 from utils import (
