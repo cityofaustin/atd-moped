@@ -187,7 +187,7 @@ SELECT
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
-    to_char(plv.construction_start_date, 'YYYY-MM-DD'::text) AS construction_start_date,
+    to_char(plv.construction_start_date AT TIME ZONE 'US/Central', 'YYYY-MM-DD'::text) AS construction_start_date,
     plv.project_inspector,
     plv.project_designer,
     plv.project_tags,
