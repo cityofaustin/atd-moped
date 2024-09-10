@@ -204,12 +204,12 @@ SELECT
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
     project_development_status_date.result AS project_development_status_date,
-    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year, -- integer
-    to_char(project_development_status_date.result, 'MON YYYY') AS project_development_status_date_calendar_year_month, -- string
-    to_char(project_development_status_date.result, 'MM') AS project_development_status_date_calendar_year_month_numeric, -- string
-    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter, -- string
-    999 AS project_development_status_date_fiscal_year, --string
-    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter, -- string
+    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year,
+    to_char(project_development_status_date.result, 'MON YYYY') AS project_development_status_date_calendar_year_month,
+    to_char(project_development_status_date.result, 'MM') AS project_development_status_date_calendar_year_month_numeric,
+    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN (to_char(project_development_status_date.result, 'YYYY')::integer + 1)::text ELSE to_char(project_development_status_date.result, 'YYYY') END AS project_development_status_date_fiscal_year,
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN 1 ELSE extract(QUARTER FROM project_development_status_date.result) + 1 END::text AS project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
 FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
