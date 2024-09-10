@@ -132,9 +132,8 @@ earliest_active_or_construction_phase_date AS (
     LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
     WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
     GROUP BY mpp.project_id
-),
+)
 
-project_development_status_date AS (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))::timestamptz AS result)
 SELECT
     mpc.project_id,
     comp_geography.project_component_id,
@@ -205,12 +204,12 @@ SELECT
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
     project_development_status_date.result AS project_development_status_date,
-    to_char(project_development_status_date.result, 'YYYY') AS project_development_status_date_calendar_year,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
-    'placeholder text'::text AS project_development_status_date_calendar_year_quarter,
-    999 AS project_development_status_date_fiscal_year,
-    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
+    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year, -- integer
+    to_char(project_development_status_date.result, 'MON YYYY') AS project_development_status_date_calendar_year_month, -- string
+    to_char(project_development_status_date.result, 'MM') AS project_development_status_date_calendar_year_month_numeric, -- string
+    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter, -- string
+    999 AS project_development_status_date_fiscal_year, --string
+    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter, -- string
     plv.added_by AS project_added_by
 FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
@@ -225,5 +224,5 @@ LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
-INNER JOIN LATERAL project_development_status_date ON true
+LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS result) AS project_development_status_date ON true -- noqa: ST05
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
