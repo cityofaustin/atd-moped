@@ -18,7 +18,7 @@ The AGOL layers can be found here:
 1. Configure an `env_file` according to the `env_template` example. You can find the AGOL Scripts Publisher username and password in the API Secrets vault in the team password store.
 
 2. Create and activate a Python environment that meets the requirments in `requirements.txt`. Alternatively, you can use the provided Dockerfile.
- 
+
 3. Run the script
 
 If you want to fully replace the dataset:
@@ -26,7 +26,9 @@ If you want to fully replace the dataset:
 ```shell
 $ python components_to_agol.py -f
 ```
+
 Or, if you want to replace only data updated since a timestamp with time zone offset:
+
 ```shell
 $ python components_to_agol.py -d <timestamptz>
 ```
