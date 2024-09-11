@@ -86,10 +86,6 @@ def make_all_features(data, exploded_geometry):
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
     """
 
-    # inspect_geometry = exploded_geometry[0]
-    # print(f"exploded_geometry: {exploded_geometry}")
-    # print(f"inspect_geometry: {inspect_geometry}")
-
     all_features = {"lines": [], "points": [], "combined": [], "exploded": []}
 
     logger.info("Building Esri feature objects...")
