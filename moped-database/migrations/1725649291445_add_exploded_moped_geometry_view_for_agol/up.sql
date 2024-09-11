@@ -7,8 +7,6 @@ SELECT
     component_arcgis_online_view.geometry AS original_geometry,
     ST_ASGEOJSON(dump.geom) AS exploded_geometry, -- noqa: RF04
     component_arcgis_online_view.line_geometry,
-    component_arcgis_online_view.completion_date,
-    component_arcgis_online_view.completion_end_date,
     component_arcgis_online_view.component_categories,
     component_arcgis_online_view.component_description,
     component_arcgis_online_view.component_id,
@@ -86,4 +84,3 @@ FROM
     LATERAL ST_DUMP(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) AS dump -- noqa: RF04
 WHERE
     ST_GEOMETRYTYPE(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint';
-
