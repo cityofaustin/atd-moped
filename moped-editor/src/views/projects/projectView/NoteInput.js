@@ -28,7 +28,7 @@ import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
 import { LinkNode } from '@lexical/link';
 import { ListPlugin } from '@lexical/react/LexicalListPlugin';
 import { ListNode, ListItemNode } from '@lexical/list';
-import PlaygroundEditorTheme from "./PlaygroundEditorTheme";
+import EditorTheme from "./EditorTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -173,7 +173,7 @@ const NoteInput = ({
 
   const initialConfig = {
     namespace: 'MyEditor',
-    theme: PlaygroundEditorTheme,
+    theme: EditorTheme,
     nodes: [
       LinkNode,
       ListNode,
