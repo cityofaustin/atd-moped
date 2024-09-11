@@ -97,7 +97,7 @@ Before you begin, make sure you have the following installed on your system:
 
 ### Troubleshooting
 
-- **Logging in**: The SSO Button is expected to be disabled in the local environment. Use the external user sign-in option instead and request credentials from a team member.
+- **Logging in**: The SSO Button is expected to be disabled in the local environment. Use the external user sign-in option instead and request test credentials from a team member.
 
 ---
 
