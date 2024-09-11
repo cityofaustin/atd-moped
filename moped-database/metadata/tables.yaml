@@ -318,8 +318,6 @@
     - role: moped-admin
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
@@ -401,8 +399,6 @@
     - role: moped-editor
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
@@ -485,8 +481,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
