@@ -158,7 +158,6 @@ const ComponentForm = ({
   });
 
   useResetDependentFieldOnParentFieldChange({
-    //
     parentValue: watch("component"),
     dependentFieldName: "signal",
     comparisonVariable: "value",

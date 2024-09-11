@@ -4,7 +4,7 @@ import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
-import { getFeatureChangesFromComponentForm, getSchoolBeaconChangesFromComponentForm } from "./utils/makeComponentData";
+import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
 import {
