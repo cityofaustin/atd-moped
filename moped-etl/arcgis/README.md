@@ -1,4 +1,4 @@
-# ArcGIS ETL
+# Moped → ArcGIS Online ETL
 
 Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) platform
 
