@@ -13,7 +13,7 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import MaterialTable from "@material-table/core";
 
-import typography from "../../../theme/typography";
+import typography from "../../../../theme/typography";
 
 const columns = [
   {

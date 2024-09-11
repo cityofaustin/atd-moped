@@ -19,6 +19,7 @@ import {
 import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -132,7 +133,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{width: "100px"}}>
+            <div style={{ width: "100px" }}>
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit" }}
@@ -158,6 +159,10 @@ const ProjectWorkActivitiesTable = () => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [activityToDelete, setActivityToDelete] = useState(null);
+
   const { loading, error, data, refetch } = useQuery(WORK_ACTIVITY_QUERY, {
     variables: {
       projectId: projectId,
@@ -172,15 +177,21 @@ const ProjectWorkActivitiesTable = () => {
 
   const onClickAddActivity = () => setEditActivity({ project_id: projectId });
 
-  const onDeleteActivity = useCallback(
-    ({ id }) => {
-      window.confirm("Are you sure you want to delete this activity?") &&
-        deleteContract({ variables: { id } }).then(() => {
-          refetch();
+  const onDeleteActivity = useCallback(({ id }) => {
+    setActivityToDelete(id);
+    setIsDeleteConfirmationOpen(true);
+  }, []);
+
+  const handleDeleteConfirmed = useCallback(() => {
+    if (activityToDelete) {
+      deleteContract({ variables: { id: activityToDelete } })
+        .then(() => refetch())
+        .then(() => {
+          setActivityToDelete(null);
+          setIsDeleteConfirmationOpen(false);
         });
-    },
-    [deleteContract, refetch]
-  );
+    }
+  }, [activityToDelete, deleteContract, refetch]);
 
   const onSubmitCallback = () => {
     refetch().then(() => setEditActivity(null));
@@ -246,6 +257,12 @@ const ProjectWorkActivitiesTable = () => {
           onSubmitCallback={onSubmitCallback}
         />
       )}
+      <DeleteConfirmationModal
+        type="work activity"
+        submitDelete={handleDeleteConfirmed}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
+      />
     </ApolloErrorHandler>
   );
 };

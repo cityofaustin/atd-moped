@@ -2820,18 +2820,20 @@
     - role: moped-admin
       permission:
         columns:
+          - created_at
           - created_by_user_id
+          - dept_unit
+          - fund
+          - fund_dept_unit
+          - fund_name
           - funding_amount
+          - funding_description
           - funding_program_id
           - funding_source_id
           - funding_status_id
-          - project_id
-          - proj_funding_id
-          - dept_unit
-          - fund
-          - funding_description
-          - created_at
           - is_deleted
+          - proj_funding_id
+          - project_id
           - updated_at
           - updated_by_user_id
         filter: {}
@@ -2839,18 +2841,20 @@
     - role: moped-editor
       permission:
         columns:
+          - created_at
           - created_by_user_id
+          - dept_unit
+          - fund
+          - fund_dept_unit
+          - fund_name
           - funding_amount
+          - funding_description
           - funding_program_id
           - funding_source_id
           - funding_status_id
-          - project_id
-          - proj_funding_id
-          - dept_unit
-          - fund
-          - funding_description
-          - created_at
           - is_deleted
+          - proj_funding_id
+          - project_id
           - updated_at
           - updated_by_user_id
         filter: {}
@@ -2858,18 +2862,20 @@
     - role: moped-viewer
       permission:
         columns:
+          - created_at
           - created_by_user_id
+          - dept_unit
+          - fund
+          - fund_dept_unit
+          - fund_name
           - funding_amount
+          - funding_description
           - funding_program_id
           - funding_source_id
           - funding_status_id
-          - project_id
-          - proj_funding_id
-          - dept_unit
-          - fund
-          - funding_description
-          - created_at
           - is_deleted
+          - proj_funding_id
+          - project_id
           - updated_at
           - updated_by_user_id
         filter: {}
