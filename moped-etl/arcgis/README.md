@@ -2,9 +2,9 @@
 
 Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) platform
 
-## Publish components to ArcGIS Online (AGOL)
+## Publish components to AGOL
 
-The script `components_to_agol.py` is used to publish component record data to ArcGIS Online (AGOL). It replaces all records in the AGOL feature services with the latest component data in Moped.
+The script `components_to_agol.py` is used to publish component record data to AGOL. It replaces all records in the AGOL feature services with the latest component data in Moped.
 
 The data is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
 
