@@ -279,6 +279,7 @@ export const useUpdateComponent = ({
     const signals = [];
     const drawnLinesToInsert = [];
     const drawnPointsToInsert = [];
+    const schoolBeacons = [];
 
     if (featureTable === "feature_street_segments") {
       makeLineStringFeatureInsertionData(
@@ -294,8 +295,10 @@ export const useUpdateComponent = ({
         intersections
       );
       makeDrawnPointsInsertionData(newDrawnPoints, drawnPointsToInsert);
-    } else if (featureTable === "feature_signals") { //breadcrumb
+    } else if (featureTable === "feature_signals") {
       makePointFeatureInsertionData(featureTable, newFeaturesToInsert, signals);
+    } else if (featureTable === "feature_school_beacons") {
+      makePointFeatureInsertionData(featureTable, newFeaturesToInsert, schoolBeacons)
     }
 
     // Find the features to delete
@@ -385,6 +388,8 @@ export const useUpdateComponent = ({
       drawnPointsToInsert,
       editedComponentId
     );
+    console.log(schoolBeacons)
+    const schoolBeaconInserts = addComponentIdForUpdate(schoolBeacons, editedComponentId)
 
     updateComponentFeatures({
       variables: {
@@ -396,6 +401,7 @@ export const useUpdateComponent = ({
         drawnPoints: drawnPointInserts,
         drawnLinesDragUpdates,
         drawnPointsDragUpdates,
+        schoolBeacons: schoolBeaconInserts
       },
     })
       .then(() => {

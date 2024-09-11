@@ -4,7 +4,7 @@ import ComponentForm from "./ComponentForm";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { UPDATE_COMPONENT_ATTRIBUTES } from "src/queries/components";
-import { getFeatureChangesFromComponentForm } from "./utils/makeComponentData";
+import { getFeatureChangesFromComponentForm, getSchoolBeaconChangesFromComponentForm } from "./utils/makeComponentData";
 import { zoomMapToFeatureCollection } from "./utils/map";
 import { fitBoundsOptions } from "./mapSettings";
 import {
@@ -78,9 +78,13 @@ const EditAttributesModal = ({
       : [];
 
     const signalFromForm = formData.signal;
+    const schoolBeaconFromForm = formData.schoolBeacon;
     // may have to update this too
-    const { signalsToCreate, featureIdsToDelete } =
-      getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
+    const { signalsToCreate, schoolBeaconsToCreate, featureIdsToDelete } =
+      getFeatureChangesFromComponentForm(signalFromForm, schoolBeaconFromForm, clickedComponent);
+
+
+    console.log(schoolBeaconFromForm)
 
     updateComponentAttributes({
       variables: {
@@ -90,6 +94,7 @@ const EditAttributesModal = ({
         subcomponents: subcomponentsArray,
         workTypes: workTypesArray,
         signalsToCreate: signalsToCreate,
+        schoolBeaconsToCreate: schoolBeaconsToCreate,
         featureIdsToDelete: featureIdsToDelete,
         phaseId: phase?.value,
         subphaseId: subphase?.value,
@@ -100,7 +105,7 @@ const EditAttributesModal = ({
       },
     })
       .then(() => {
-        onSaveSuccess();
+        onSaveSuccess(); // update for beacons
         // Zoom to the new signal location if it was updated
         signalsToCreate.length > 0 &&
           zoomMapToFeatureCollection(
@@ -155,8 +160,6 @@ const EditAttributesModal = ({
         schoolBeacon: makeSchoolBeaconFormFieldValue(clickedComponent),
       }
     : null;
-
-    console.log(initialFormValues)
 
   return (
     <Dialog open={showDialog} onClose={onClose} fullWidth scroll="body">

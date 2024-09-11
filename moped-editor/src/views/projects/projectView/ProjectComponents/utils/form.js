@@ -273,11 +273,9 @@ export const makePhaseFormFieldValue = (phase) => {
  * @returns {Object} the field value
  */
 export const makeSchoolBeaconFormFieldValue = (component) => {
-  console.log(component.feature_school_beacons.length)
   if (!(component.feature_school_beacons?.length > 0)) return null;
 
   const componentSchoolBeacon = component?.feature_school_beacons?.[0];
-  console.log(componentSchoolBeacon)
   const knackFormatSchoolBeaconOption =
     featureSchoolBeaconRecordToKnackSchoolBeaconRecord(componentSchoolBeacon);
 

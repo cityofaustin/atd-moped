@@ -126,7 +126,7 @@ export const makeComponentInsertData = (projectId, component) => {
  * when a selected signal asset is cleared from the from the form input,
  * or when the selected signal asset is changed to a different signal
  * asset.
- * @param {Object} signalFromForm - signal objected as returned by the signal
+ * @param {Object} signalFromForm - signal object as returned by the signal
  * autocomplete form option (which is essentially a signal record from
  *  socrata)
  * @param {Object} clickedComponent  - the moped_project_component record that is
@@ -138,18 +138,23 @@ export const makeComponentInsertData = (projectId, component) => {
  */
 export const getFeatureChangesFromComponentForm = (
   signalFromForm,
+  schoolBeaconFromForm,
   clickedComponent
 ) => {
   let signalToCreate = null;
+  let schoolBeaconToCreate = null;
   const featureIdsToDelete = [];
   const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
   const previousSignal = clickedComponent.feature_signals?.[0];
+  const newSchoolBeaconKnackId = schoolBeaconFromForm.properties.knack_id;
+  const previousSchoolBeacon = clickedComponent.feature_school_beacons?.[0];
   const previousIntersectionFeatures = clickedComponent.feature_intersections;
   const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
-  console.log(signalFromForm);
 
+  console.log(newSchoolBeaconKnackId, previousSchoolBeacon);
+
+  // Was a Signal (PHB / Traffic) selected in the edit attribute form?
   if (newSignalId) {
-    // signal is selected in form
     if (previousSignal && newSignalId !== previousSignal?.signal_id) {
       // signal selection changed
       signalToCreate = knackSignalRecordToFeatureSignalsRecord(signalFromForm);
@@ -159,6 +164,36 @@ export const getFeatureChangesFromComponentForm = (
       // signal was previously blank
       signalToCreate = knackSignalRecordToFeatureSignalsRecord(signalFromForm);
       signalToCreate.component_id = clickedComponent.project_component_id;
+      // if there was a beacon that was switched to signal, we need to clear that beacon
+      // do that here
+    }
+    if (previousIntersectionFeatures) {
+      // delete all intersection features
+      featureIdsToDelete.push(...previousIntersectionFeatures.map((f) => f.id));
+    }
+    if (previousDrawnPointFeatures) {
+      // delete all drawn point features
+      featureIdsToDelete.push(...previousDrawnPointFeatures.map((f) => f.id));
+    }
+  } else if (newSchoolBeaconKnackId) {
+    if (
+      previousSchoolBeacon &&
+      newSchoolBeaconKnackId !== previousSchoolBeacon.id
+    ) {
+      // changed which Beacon was chosen
+      schoolBeaconToCreate =
+        knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(
+          schoolBeaconFromForm
+        );
+        console.log(schoolBeaconToCreate)
+      schoolBeaconToCreate.component_id = clickedComponent.project_component_id;
+      featureIdsToDelete.push(previousSchoolBeacon.id);
+    } else if (!previousSchoolBeacon) {
+      schoolBeaconToCreate =
+        knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(
+          schoolBeaconFromForm
+        );
+      schoolBeaconToCreate.component_id = clickedComponent.project_component_id;
     }
     if (previousIntersectionFeatures) {
       // delete all intersection features
@@ -171,10 +206,16 @@ export const getFeatureChangesFromComponentForm = (
   } else if (previousSignal) {
     // signal selection was cleared
     featureIdsToDelete.push(previousSignal.id);
+  } else if (previousSchoolBeacon) {
+    featureIdsToDelete.push(previousSchoolBeacon.id);
   }
-  // wrap signal in array to match hasura type
+
+  // wrap signal & school beacon in array to match hasura type
   // we do this because it's allowed to insert an empty array, but
   // but not a null object
   const signalsToCreate = signalToCreate ? [signalToCreate] : [];
-  return { signalsToCreate, featureIdsToDelete };
+  const schoolBeaconsToCreate = schoolBeaconToCreate
+    ? [schoolBeaconToCreate]
+    : [];
+  return { signalsToCreate, schoolBeaconsToCreate, featureIdsToDelete };
 };
