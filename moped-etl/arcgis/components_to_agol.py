@@ -55,7 +55,6 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     if not geometry:
         return None, None
 
-
     feature = {
         "attributes": attributes,
         "geometry": {
@@ -139,18 +138,24 @@ def make_all_features(data, exploded_geometry):
 
             project_component_id = feature["attributes"]["project_component_id"]
             # Filter exploded_geometry to only include dicts with matching project_component_id
-            matching_exploded_geometry_records = [feature for feature in exploded_geometry if feature.get("project_component_id") == project_component_id]
+            matching_exploded_geometry_records = [
+                feature
+                for feature in exploded_geometry
+                if feature.get("project_component_id") == project_component_id
+            ]
             for record in matching_exploded_geometry_records:
                 geometry = record.pop("geometry")
-                esri_geometry_key = 'point'
+                esri_geometry_key = "point"
 
                 feature = make_esri_feature(
-                    esri_geometry_key='point',
+                    esri_geometry_key="point",
                     geometry=geometry,
                     attributes=record,
                 )
 
-                feature["attributes"]["source_geometry_type"] = 'point' # it's unclear what this needs to be. 'point' seems the most correct.
+                # it's unclear what this needs to be. 'point' seems the most correct.
+                # please see lines 117-118 for where the 'point' choice was drawn from.
+                feature["attributes"]["source_geometry_type"] = "point"
                 all_features["exploded"].append(feature)
 
         else:
@@ -182,7 +187,6 @@ def main(args):
         query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
         variables=variables,
     )["exploded_component_arcgis_online_view"]
-        
 
     all_features = make_all_features(data, exploded_data)
 
