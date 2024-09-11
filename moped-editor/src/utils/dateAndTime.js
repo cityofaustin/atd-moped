@@ -114,3 +114,43 @@ export const formatRelativeDate = (timeStampTZString) => {
     return formatRelativeTime(millsElapsed, "day");
   }
 };
+
+/**
+ * A component that renders a formatted date string with primary display and optional secondary display
+ * @param {Object} props - The component props
+ * @param {string} props.date - The date to format, in a format parseable by new Date()
+ * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} props.primary - The format to use for the primary display
+ * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} [props.secondary] - The format to use for the secondary display, if any
+ * @returns {JSX.Element} A span element containing the formatted date string(s)
+ */
+export const FormattedDateString = ({ date, primary, secondary }) => {
+  const formatDate = (format) => {
+    switch (format) {
+      case 'relative':
+        return formatRelativeDate(date);
+      case 'absolute':
+        return new Date(date).toLocaleString();
+      case 'expanded':
+        return makeUSExpandedFormDateFromTimeStampTZ(date);
+      case 'short':
+        return formatDateType(date);
+      case 'time':
+        return makeHourAndMinutesFromTimeStampTZ(date);
+      case 'fullTime':
+        return makeFullTimeFromTimeStampTZ(date);
+      default:
+        return new Date(date).toLocaleString();
+    }
+  };
+
+  return (
+    <span>
+      <div>{formatDate(primary)}</div>
+      {secondary && (
+        <div style={{ fontSize: '0.8em', color: 'gray' }}>
+          {formatDate(secondary)}
+        </div>
+      )}
+    </span>
+  );
+};
