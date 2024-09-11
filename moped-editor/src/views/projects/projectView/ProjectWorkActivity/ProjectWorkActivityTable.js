@@ -22,6 +22,21 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { formatRelativeDate } from "src/utils/dateAndTime";
 
+const FormattedDateString = ({ date, primary, secondary, hover }) => {
+  const dateString = new Date(date).toLocaleString();
+  const relativeDateString = formatRelativeDate(date);
+
+  return (
+    <span title={hover === 'relative' ? relativeDateString : dateString}>
+      <div>{primary === 'relative' ? relativeDateString : dateString}</div>
+      {secondary && (
+        <div style={{ fontSize: '0.8em', color: 'gray' }}>
+          {secondary === 'relative' ? relativeDateString : dateString}
+        </div>
+      )}
+    </span>
+  );
+}
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -120,7 +135,14 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "updated_at",
         width: 150,
         defaultVisible: true,
-        valueGetter: (field) => (field ? formatRelativeDate(field) : null),
+        renderCell: ({ row }) => (
+          <FormattedDateString
+            date={row.updated_at}
+            primary="relative"
+            secondary="absolute"
+            hover="absolute"
+          />
+        ),
       },
       {
         headerName: "",
