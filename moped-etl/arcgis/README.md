@@ -20,28 +20,14 @@ The data for the first three layers listed above is sourced from a view, `compon
 
 The fourth layer is sourced from a derivative view, `exploded_component_arcgis_online_view`, which takes the previous view and explodes MultiPoint geometries into individual points.
 
-### Get it running
+## Running the Script
 
 1. Configure an `env_file` according to the `env_template` example. You can find the AGOL Scripts Publisher username and password in the API Secrets vault in the team password store.
 
-2. Create and activate a Python environment that meets the requirments in `requirements.txt`. Alternatively, you can use the provided Dockerfile.
+1. `docker compose build` to build the container.
 
-3. Run the script
-
-If you want to fully replace the dataset:
-
-```shell
-$ python components_to_agol.py -f
-```
-
-Or, if you want to replace only data updated since a timestamp with time zone offset:
-
-```shell
-$ python components_to_agol.py -d <timestamptz>
-```
-
-or, to mount your local copy to a Docker container
-
-```shell
-docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  atddocker/atd-moped-etl-arcgis:production python components_to_agol.py
-```
+1. Run the script via one or more of the following:
+   - `docker compose run arcgis -d` to start the script with the default interval of changes over the last week.
+   - `docker compose run arcgis -f` to start the script with a full refresh.
+   - `docker compose run arcgis -d <timestamptz>` to start the script with a refresh since the given timestamp.
+   - `docker compose run --entrypoint /bin/bash arcgis` to start a shell inside the container.
