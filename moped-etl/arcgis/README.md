@@ -4,14 +4,21 @@ Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) plat
 
 ## Publish components to AGOL
 
-The script `components_to_agol.py` is used to publish component record data to AGOL. It replaces all records in the AGOL feature services with the latest component data in Moped.
+The script `components_to_agol.py` is used to publish component record data to AGOL. It has two primary modes of operation:
 
-The data is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
+- Full refresh: This mode will delete all existing records in the AGOL feature layer and replace them with the current data from the Moped database.
+- Incremental refresh: This mode will only update records that have been modified since a given timestamp.
 
-The AGOL layers can be found here:
+The script is responsible for maintaining four layers in the AGOL in the [Moped Project Components](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2) feature service:
 
-- [Project component points](https://austin.maps.arcgis.com/home/item.html?id=997555f6e0904aa88eafe73f19ee65c0)
-- [Project component lines](https://austin.maps.arcgis.com/home/item.html?id=e8f03d2cec154cacae539b630bcaa70b)
+- [Moped Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=0): Components best represented as points, utilizing MultiPoint geometries
+- [Moped Lines](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=1): Components best represented represented as lines, using Line geometries
+- [MOPED CombinedGeometries](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=2) (SIC): All components, where points are transformed into a line ringing the location
+- [Moped Feature Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=3): Components best represented as points, but where MultiPoints are exploded into individual points. Note, the same component can be represented as multiple features, one for each point in the MultiPoint.
+
+The data for the first three layers listed above is sourced from a view, `component_arcgis_online_view` which defines all columns which are available to be processed.
+
+The fourth layer is sourced from a derivative view, `exploded_component_arcgis_online_view`, which takes the previous view and explodes MultiPoint geometries into individual points.
 
 ### Get it running
 
