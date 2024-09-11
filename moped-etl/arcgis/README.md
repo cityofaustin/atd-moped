@@ -1,6 +1,6 @@
-# ArcGIS ETLs
+# ArcGIS ETL
 
-Scripts which integrate Moped data with Esri ArcGIS
+Python script integration pushing Moped data to ESRI's ArcGIS Online (AGOL) platform
 
 ## Publish components to ArcGIS Online (AGOL)
 
