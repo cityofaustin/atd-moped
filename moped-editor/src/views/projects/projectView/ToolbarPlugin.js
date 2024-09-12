@@ -206,6 +206,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         break;
     }
   }
+
   if (noteAddSuccess) {
     noteAddSuccess && clearFormatting();
   }
@@ -264,11 +265,12 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         size="xs"
         variant="ghost"
       >
-        {RICH_TEXT_OPTIONS.map(({ id, label, icon }) =>
+        {RICH_TEXT_OPTIONS.map(({ id, label, icon }, key) =>
           id === richTextAction.divider ? (
-            <Button disabled />
+            <Button key={key} disabled />
           ) : (
             <Button
+              key={key}
               classes={{ startIcon: classes.startIcon }}
               aria-label={label}
               startIcon={icon}
