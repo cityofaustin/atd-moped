@@ -3,6 +3,7 @@ query UnsyncedProjects {
   moped_project(where: { knack_project_id: { _is_null: true }}) {
     project_id
     project_name
+    is_deleted
     current_phase_view {
       phase_name
     }
@@ -20,6 +21,7 @@ query UnsyncedProjects($project_id: Int) {
   moped_project(where: { project_id: { _eq: $project_id }, knack_project_id: { _is_null: true }}) {
     project_id
     project_name
+    is_deleted
     current_phase_view {
       phase_name
     }
@@ -37,6 +39,7 @@ query SyncedProjects($last_run_date: timestamptz) {
   moped_project(where: { knack_project_id: { _is_null: false }, updated_at: {_gt: $last_run_date} }) {
     project_id
     project_name
+    is_deleted
     current_phase_view {
       phase_name
     }
@@ -55,6 +58,7 @@ query SyncedProjects($last_run_date: timestamptz, $project_id: Int) {
   moped_project(where: { project_id: { _eq: $project_id }, knack_project_id: { _is_null: false }, updated_at: {_gt: $last_run_date} }) {
     project_id
     project_name
+    is_deleted
     current_phase_view {
       phase_name
     }
