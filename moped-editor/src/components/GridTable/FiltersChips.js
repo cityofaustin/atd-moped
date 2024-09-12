@@ -6,6 +6,7 @@ import {
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { formatDateType } from "src/utils/dateAndTime";
+import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -41,15 +42,16 @@ const FiltersChips = ({
   const filtersCount = Object.keys(filters).length;
 
   const filtersLabels = filters.map((filter) => {
-    const fieldFilterConfig = filtersConfig.fields.find(
-      (fieldConfig) => fieldConfig.name === filter.field
-    );
-    const fieldOperatorConfig = filtersConfig.operators[filter.operator];
+    const fieldFilterConfig = filtersConfig[filter.field];
+    const fieldOperatorConfig = FILTERS_COMMON_OPERATORS[filter.operator];
     const isDateType = fieldFilterConfig.type === "date";
     return {
       filterLabel: fieldFilterConfig?.label,
       operatorLabel: fieldOperatorConfig?.label,
-      filterValue: isDateType ? formatDateType(filter.value) : filter.value,
+      filterValue:
+        isDateType && filter.value
+          ? formatDateType(filter.value)
+          : filter.value,
     };
   });
 
