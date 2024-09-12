@@ -19,10 +19,8 @@ within an Airflow DAG. To test locally, we can use a local file.
 
 Make a copy of `env_template` and call it `env_file`. Fill in the values as follows:
 - HASURA_ secrets: these point to the local Moped Hasura instance
-- KNACK_ secrets: these point to the test Data Tracker app and be found in the `development`
-section of the 1Password entry called **Knack AMD Data Tracker**. They can also be
-found by navigating to the **API & Code** section within a test copy of Data Tracker app 
-in the Knack Builder.
+- KNACK_ secrets: these point to the test Data Tracker app and be found by navigating
+-  to the **API & Code** section within a test copy of Data Tracker app in the Knack Builder.
 - TEST_KNACK_SIGNAL_RECORD_ID: this is the Knack record ID of a signal in the test
 Data Tracker app. You can find one by going to the `signals` table in the Knack app
 and copying a unique signal ID from the URL that shows when you edit a row.
@@ -41,13 +39,16 @@ and test copies. The steps are as follows:
 2. Create a new project in Moped and set the environment variable called TEST_MOPED_PROJECT_ID to the
 Moped project ID
 3. Get a ISO 8601 timestamp (like `2024-01-22T22:53:57+0000` for example) for the current 
-UTC time and set the `--start` argument to that timestamp
-4. To execute the sync script, run the following command to build the image and then run the script  
-with your timestamp filled in:
+UTC time and set the `--start` argument to that timestamp. You can use:
+```js
+const dateObj = new Date();
+dateObj.toISOString();
+```
+4. To execute the sync script, run the following command to build the image:
 ```bash
 docker build -t atddocker/atd-moped-etl-data-tracker-sync .
 ```
-
+then run the script with your timestamp filled in:
 ```bash
 docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app atddocker/atd-moped-etl-data-tracker-sync python data_tracker_sync.py --date <your timestamp> --test
 ```
@@ -63,6 +64,17 @@ or through the Moped Editor
 11. Run the sync script again with the last timestamp that you used. You should see the script
 log an update of the Knack record that you created earlier. Check the row in the test
 Data Tracker app and you should see that the title has been updated with your edit
+
+#### Backfilling a new column
+
+When a new column is added to the Data Tracker `projects` table, we can update this script to query the new column from the Moped
+database and add the new data to the Knack payload that populates the Knack table. This will sync new Moped projects and updated
+Moped projects going forward, but we still need to backfill previously synced projects in the Knack table.
+
+When backfilling, you can modify the Knack payload prepared in `build_knack_project_from_moped_project` to include **only the field
+that needs backfilling** in order to avoid unwanted updates. Test on a test copy of the  Data Tracker app first and pass a date that 
+predates all Moped projects when invoking the script with the `-d` flag. You can then target the production app with a fresh snapshot 
+of the production database in your local Moped stack.
 
 #### Testing with Airflow
 
