@@ -146,11 +146,9 @@ def make_all_features(data, exploded_geometry):
                 feature = make_esri_feature(
                     esri_geometry_key="point",
                     geometry=geometry,
-                    attributes=record,
+                    attributes=component,
                 )
 
-                # it's unclear what this needs to be. 'point' seems the most correct.
-                # please see lines 117-118 for where the 'point' choice was drawn from.
                 feature["attributes"]["source_geometry_type"] = "point"
                 all_features["exploded"].append(feature)
 
