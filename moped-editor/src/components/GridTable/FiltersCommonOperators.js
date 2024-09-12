@@ -1,4 +1,4 @@
-export const FiltersCommonOperators = {
+export const FILTERS_COMMON_OPERATORS = {
   string_contains_case_insensitive: {
     operator: "_ilike",
     label: "contains",
