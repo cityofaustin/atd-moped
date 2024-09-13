@@ -12,7 +12,7 @@ The script `components_to_agol.py` is used to publish component record data to A
 The script is responsible for maintaining four layers in the AGOL in the [Moped Project Components](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2) feature service:
 
 - [Moped Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=0): Components best represented as points, utilizing MultiPoint geometries
-- [Moped Lines](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=1): Components best represented represented as lines, using Line geometries
+- [Moped Lines](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=1): Components best represented as lines, using Line geometries
 - [MOPED CombinedGeometries](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=2) (SIC): All components, where points are transformed into a line ringing the location
 - [Moped Feature Points](https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2&sublayer=3): Components best represented as points, but where MultiPoints are exploded into individual points. Note, the same component can be represented as multiple features, one for each point in the MultiPoint.
 
