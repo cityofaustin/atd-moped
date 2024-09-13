@@ -207,6 +207,8 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     }
   }
 
+  // Clear editor formatting when note is saved successfully. Prop is passed down from
+  // parent component so the toolbar will rerender on save
   if (noteAddSuccess) {
     noteAddSuccess && clearFormatting();
   }
