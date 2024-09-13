@@ -90,8 +90,6 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
   </RadioGroup>
 );
 
-// const theme = {};
-
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed.
 const onError = (error) => {
