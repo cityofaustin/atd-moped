@@ -146,12 +146,10 @@ export const getFeatureChangesFromComponentForm = (
   const featureIdsToDelete = [];
   const newSignalId = parseInt(signalFromForm?.properties?.signal_id);
   const previousSignal = clickedComponent.feature_signals?.[0];
-  const newSchoolBeaconKnackId = schoolBeaconFromForm.properties.id;
+  const newSchoolBeaconKnackId = schoolBeaconFromForm?.properties.id;
   const previousSchoolBeacon = clickedComponent.feature_school_beacons?.[0];
   const previousIntersectionFeatures = clickedComponent.feature_intersections;
   const previousDrawnPointFeatures = clickedComponent.feature_drawn_points;
-
-  console.log(schoolBeaconFromForm, newSchoolBeaconKnackId, previousSchoolBeacon);
 
   // Was a Signal (PHB / Traffic) selected in the edit attribute form?
   if (newSignalId) {
