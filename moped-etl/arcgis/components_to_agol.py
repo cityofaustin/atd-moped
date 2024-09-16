@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
-# docker run -it --rm  --network host --env-file env_file -v ${PWD}:/app  moped-agol /bin/bash
+# docker compose run arcgis;
 import argparse
 import logging
-from datetime import datetime, timezone
+import json
+from datetime import datetime, timezone, timedelta
 
 from process.logging import get_logger
 from settings import (
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+    EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
     UPLOAD_CHUNK_SIZE,
 )
 from utils import (
@@ -42,7 +44,7 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
     See: https://developers.arcgis.com/documentation/common-data-types/feature-object.htm
 
     Args:
-        esri_geometry_key (str): `paths` or `points`: see the `get_esri_geometry_key` docstring
+        esri_geometry_key (str): `paths` or `points`, `point`: see the `get_esri_geometry_key` docstring
         geometry (dict): A geojson geometry object, such as one returned from our
             component view in Moped
         attribute (dict): Any additional properties to be included as feature attributes
@@ -59,27 +61,41 @@ def make_esri_feature(*, esri_geometry_key, geometry, attributes):
             "spatialReference": {"wkid": 4326},
         },
     }
-    feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    if (esri_geometry_key == "points") or (esri_geometry_key == "paths"):
+        feature["geometry"][esri_geometry_key] = geometry["coordinates"]
+    elif esri_geometry_key == "point":
+        geometry = json.loads(geometry)
+        feature["geometry"]["y"] = geometry["coordinates"][1]
+        feature["geometry"]["x"] = geometry["coordinates"][0]
+    else:
+        feature["geometry"]["y"] = geometry["coordinates"][1]
+        feature["geometry"]["x"] = geometry["coordinates"][0]
+
     return feature
 
 
-def make_all_features(data):
+def make_all_features(data, exploded_geometry):
     """Take a list of component feature records and create Esri feature objects for lines, points, and combined layers in AGOL.
 
     Args:
         data (dict): a list of component feature records
+        exploded_geometry (dict): a dictionary of exploded geometry data from the component_arcgis_online_view. This is created
+            by taking the multi-point geometry from the component_arcgis_online_view and "exploding" it into individual points.
 
     Returns:
         dict: An object with lists of Esri feature objects for lines, points, and combined layers
     """
-    all_features = {"lines": [], "points": [], "combined": []}
+
+    all_features = {"lines": [], "points": [], "combined": [], "exploded": []}
 
     logger.info("Building Esri feature objects...")
     for component in data:
-        # extract geometry and line geometry from component data
-        # for line features, the line geometry is redundant/identical to geometry
-        # for point features, it is the buffered ring around the point as defined
-        # in the Moped component view
+
+        # Extract geometry and line geometry from component data.
+        # For line features, the line geometry is redundant/identical to geometry.
+        # For point features, it is the buffered ring around the point as defined
+        # in the Moped component view.
+
         geometry = component.pop("geometry")
         line_geometry = component.pop("line_geometry")
 
@@ -115,6 +131,27 @@ def make_all_features(data):
                 attributes=component,
             )
             all_features["combined"].append(line_feature)
+
+            project_component_id = feature["attributes"]["project_component_id"]
+            # Filter exploded_geometry to only include dicts with matching project_component_id
+            matching_exploded_geometry_records = [
+                feature
+                for feature in exploded_geometry
+                if feature.get("project_component_id") == project_component_id
+            ]
+            for record in matching_exploded_geometry_records:
+                geometry = record.pop("geometry")
+                esri_geometry_key = "point"
+
+                feature = make_esri_feature(
+                    esri_geometry_key="point",
+                    geometry=geometry,
+                    attributes=component,
+                )
+
+                feature["attributes"]["source_geometry_type"] = "point"
+                all_features["exploded"].append(feature)
+
         else:
             all_features["lines"].append(feature)
             all_features["combined"].append(feature)
@@ -140,10 +177,15 @@ def main(args):
         variables=variables,
     )["component_arcgis_online_view"]
 
-    all_features = make_all_features(data)
+    exploded_data = make_hasura_request(
+        query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
+        variables=variables,
+    )["exploded_component_arcgis_online_view"]
+
+    all_features = make_all_features(data, exploded_data)
 
     if args.full:
-        for feature_type in ["points", "lines", "combined"]:
+        for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
             features = all_features[feature_type]
 
@@ -166,7 +208,7 @@ def main(args):
         project_ids_for_feature_delete = list(set(project_ids))
 
         # Delete outdated feature from AGOL and add updated features
-        for feature_type in ["points", "lines", "combined"]:
+        for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
             logger.info(
                 f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
@@ -195,15 +237,17 @@ if __name__ == "__main__":
         "-d",
         "--date",
         type=str,
+        nargs="?",
+        const=(datetime.now(timezone.utc) - timedelta(days=7)).isoformat(),
         default=None,
-        help=f"ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update.",
+        help="ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update. Defaults to 7 days ago if -d is used without a value.",
     )
 
     parser.add_argument(
         "-f",
         "--full",
         action="store_true",
-        help=f"Delete and replace all project components.",
+        help="Delete and replace all project components.",
     )
 
     args = parser.parse_args()
@@ -212,6 +256,11 @@ if __name__ == "__main__":
     if args.date and args.full:
         raise Exception(
             "Please provide either the -d flag with ISO date string with TZ offset or the -f flag and not both."
+        )
+
+    if not args.date and not args.full:
+        raise Exception(
+            "Please provide either the -d flag with optional ISO date string with TZ offset or the -f flag."
         )
 
     if args.full:
