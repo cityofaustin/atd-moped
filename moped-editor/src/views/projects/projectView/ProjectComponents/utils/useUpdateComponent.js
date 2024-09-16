@@ -388,7 +388,6 @@ export const useUpdateComponent = ({
       drawnPointsToInsert,
       editedComponentId
     );
-    console.log(schoolBeacons)
     const schoolBeaconInserts = addComponentIdForUpdate(schoolBeacons, editedComponentId)
 
     updateComponentFeatures({
@@ -419,7 +418,7 @@ export const useUpdateComponent = ({
         });
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error);
       });
   };
 

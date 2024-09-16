@@ -79,15 +79,12 @@ const EditAttributesModal = ({
 
     const signalFromForm = formData.signal;
     const schoolBeaconFromForm = formData.schoolBeacon;
-    // may have to update this too
     const { signalsToCreate, schoolBeaconsToCreate, featureIdsToDelete } =
       getFeatureChangesFromComponentForm(
         signalFromForm,
         schoolBeaconFromForm,
         clickedComponent
       );
-
-    console.log(schoolBeaconFromForm);
 
     updateComponentAttributes({
       variables: {
@@ -108,7 +105,7 @@ const EditAttributesModal = ({
       },
     })
       .then(() => {
-        onSaveSuccess(); // update for beacons
+        onSaveSuccess();
         // Zoom to the new signal location if it was updated
         signalsToCreate.length > 0 &&
           zoomMapToFeatureCollection(
@@ -116,6 +113,7 @@ const EditAttributesModal = ({
             { type: "FeatureCollection", features: [signalFromForm] },
             fitBoundsOptions.zoomToClickedComponent
           );
+        // Or zoom to new beacon location
         schoolBeaconsToCreate.length > 0 &&
           zoomMapToFeatureCollection(
             mapRef,
