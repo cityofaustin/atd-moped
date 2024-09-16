@@ -268,7 +268,7 @@ export const makePhaseFormFieldValue = (phase) => {
 };
 
 /**
- * Create the value for the signal autocomplete if the component is a signal component
+ * Create the value for the school beacon autocomplete if the component is a school beacon component
  * @param {Object} component - The component record
  * @returns {Object} the field value
  */

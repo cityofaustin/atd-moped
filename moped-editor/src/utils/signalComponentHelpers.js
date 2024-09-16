@@ -197,14 +197,13 @@ export const generateProjectComponent = (
 };
 
 /**
- * MUI autocomplete getOptionSelected function to which matches input signal value to
+ * MUI autocomplete getOptionSelected function matches input school beacon value to
  * select options.
  */
 export const getSchoolZoneBeaconOptionSelected = (option, value) => {
   const optionId = option?.properties?.id;
   const valueId = value?.properties?.id;
-  // Socrata returns a string for the signal_id, but the value is a number
-  return optionId.toString() === valueId.toString();
+  return optionId === valueId;
 };
 
 /**
@@ -212,7 +211,6 @@ export const getSchoolZoneBeaconOptionSelected = (option, value) => {
  * the select option menu
  */
 export const getSchoolZoneBeaconOptionLabel = (option) =>
-  // CHECK THIS this label formatting mirrors the Data Tracker formatting
   `${option.properties.zone_name}: ${option.properties.beacon_name} ${option.properties.beacon_id}`;
 
 /**
@@ -243,7 +241,7 @@ export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
 };
 
 /**
- * Format a feature_signals table record to the format of options in the SignalComponentAutocomplete
+ * Format a feature_school_beacon table record to the format of options in the SignalComponentAutocomplete
  * @param {Object} featureSignalsRecord - A feature_signals table record
  * @return {Object} A record in the format of options in the SignalComponentAutocomplete
  */
