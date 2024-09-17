@@ -163,7 +163,9 @@ export const getFeatureChangesFromComponentForm = (
       signalToCreate = knackSignalRecordToFeatureSignalsRecord(signalFromForm);
       signalToCreate.component_id = clickedComponent.project_component_id;
       // if there was a beacon that was switched to signal, we need to clear that beacon
-      // do that here
+      if (previousSchoolBeacon) {
+        featureIdsToDelete.push(previousSchoolBeacon.id);
+      }
     }
     if (previousIntersectionFeatures) {
       // delete all intersection features
@@ -183,7 +185,6 @@ export const getFeatureChangesFromComponentForm = (
         knackSchoolBeaconRecordToFeatureSchoolBeaconRecord(
           schoolBeaconFromForm
         );
-        console.log(schoolBeaconToCreate)
       schoolBeaconToCreate.component_id = clickedComponent.project_component_id;
       featureIdsToDelete.push(previousSchoolBeacon.id);
     } else if (!previousSchoolBeacon) {
@@ -192,6 +193,10 @@ export const getFeatureChangesFromComponentForm = (
           schoolBeaconFromForm
         );
       schoolBeaconToCreate.component_id = clickedComponent.project_component_id;
+      // if there was a signal that switched to a beacon, delete the old signal
+      if (previousSignal) {
+        featureIdsToDelete.push(previousSignal.id);
+      }
     }
     if (previousIntersectionFeatures) {
       // delete all intersection features
@@ -205,6 +210,7 @@ export const getFeatureChangesFromComponentForm = (
     // signal selection was cleared
     featureIdsToDelete.push(previousSignal.id);
   } else if (previousSchoolBeacon) {
+    // beacon selection was cleared
     featureIdsToDelete.push(previousSchoolBeacon.id);
   }
 
