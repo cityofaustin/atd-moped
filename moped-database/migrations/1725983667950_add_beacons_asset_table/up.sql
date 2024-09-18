@@ -1,14 +1,14 @@
 CREATE TABLE public.feature_school_beacons (
     beacon_id text,
     knack_id text NOT NULL,
-    location_name text,
-    zone_name text,
-    beacon_name text,
+    location_name text NOT NULL,
+    zone_name text NOT NULL,
+    beacon_name text NOT NULL,
     geography geography('MULTIPOINT') NOT NULL,
     created_at timestamptz NOT NULL DEFAULT now(),
     created_by_user_id int4 NULL,
     updated_by_user_id int4 NULL,
-    updated_at timestamptz NULL
+    updated_at timestamptz DEFAULT now()
 ) inherits (features);
 
 
