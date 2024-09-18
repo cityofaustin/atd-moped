@@ -232,6 +232,7 @@ export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
       knack_id: schoolBeacon.properties.id,
       location_name: `${schoolBeacon.properties.zone_name} ${schoolBeacon.properties.beacon_name}`,
       beacon_id: schoolBeacon.properties.beacon_id,
+      school_zone_beacon_id: schoolBeacon.properties.school_zone_beacon_id,
       zone_name: schoolBeacon.properties.zone_name,
       beacon_name: schoolBeacon.properties.beacon_name,
     };

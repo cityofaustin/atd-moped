@@ -797,6 +797,7 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - component_id
           - geography
@@ -813,6 +814,7 @@
           updated_by_user_id: x-hasura-user-db-id
         columns:
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - component_id
           - geography
@@ -831,6 +833,7 @@
           - id
           - updated_by_user_id
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - knack_id
           - location_name
@@ -849,6 +852,7 @@
           - id
           - updated_by_user_id
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - knack_id
           - location_name
@@ -867,6 +871,7 @@
           - id
           - updated_by_user_id
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - knack_id
           - location_name
@@ -881,6 +886,7 @@
       permission:
         columns:
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - component_id
           - geography
@@ -897,6 +903,7 @@
       permission:
         columns:
           - beacon_id
+          - school_zone_beacon_id
           - beacon_name
           - component_id
           - geography

@@ -155,6 +155,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       knack_id
       location_name
       beacon_id
+      school_zone_beacon_id
       zone_name
       beacon_name
     }
