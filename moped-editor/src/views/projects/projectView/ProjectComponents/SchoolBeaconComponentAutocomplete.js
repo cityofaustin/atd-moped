@@ -10,13 +10,12 @@ import {
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
- * Material Autocomplete wrapper that enables selecting a traffic/phb signal record from a
+ * Material Autocomplete wrapper that enables selecting a school zone beacon record from a
  * Socrata dataset and setting it as a project component.
  * @param {Object} classes - MaterialUI style object
- * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
- * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
+ * @param {Function} onChange - callback function to run when the beacon is changed for React Hook Form
+ * @param {Object} value - the feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
- * @param {String} signalType - School Zone Beacon
  * @return {JSX.Element}
  */
 const SchoolZoneBeaconComponentAutocomplete = React.forwardRef(

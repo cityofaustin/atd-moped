@@ -118,7 +118,7 @@ const ProjectComponentsListItem = ({
           <Tooltip
             title={
               isSignal || isSchoolBeacon
-                ? "Signal locations can only be changed by editing the component details"
+                ? "Location can only be changed by editing the component details"
                 : "Map"
             }
           >
