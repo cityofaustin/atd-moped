@@ -99,7 +99,7 @@ export const useComponentOptionsWithoutSignals = (options) =>
  */
 export const useSubcomponentOptions = (componentId, optionsData) =>
   useMemo(() => {
-    if (!componentId || !optionsData) return [];
+    if ((!componentId && componentId !== 0) || !optionsData) return [];
 
     const subcomponents = optionsData.find(
       (option) => option.component_id === componentId
@@ -124,7 +124,7 @@ export const useSubcomponentOptions = (componentId, optionsData) =>
  */
 export const useWorkTypeOptions = (componentId, optionsData) =>
   useMemo(() => {
-    if (!componentId || !optionsData) return [];
+    if ((!componentId && componentId !== 0) || !optionsData) return [];
 
     const workTypes = optionsData.find(
       (option) => option.component_id === componentId
