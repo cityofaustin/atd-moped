@@ -23,7 +23,13 @@ const DateFieldEditComponent = React.forwardRef(
         value={value ? parseISO(value) : null}
         onChange={handleDateChange}
         InputProps={{ style: { minWidth: "100px" } }}
-        slotProps={{ actionBar: { actions: ["accept", "cancel", "clear"] } }}
+        slotProps={{
+          actionBar: { actions: ["accept", "cancel", "clear"] },
+          textField: {
+            helperText: "bad date",
+            error: true,
+          },
+        }}
         {...props}
       />
     );

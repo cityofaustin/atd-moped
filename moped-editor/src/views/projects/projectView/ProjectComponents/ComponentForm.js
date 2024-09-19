@@ -55,7 +55,16 @@ const validationSchema = yup.object().shape({
   phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
   tags: yup.array().optional(),
-  completionDate: yup.date().nullable().optional(),
+  completionDate: yup
+    .date()
+    .nullable()
+    .optional()
+    .when("phase", {
+      is: (phase) => !!phase,
+      then: yup
+        .date()
+        .required("Must enter phase completion date if a phase is selected"),
+    }),
   description: yup.string().nullable().optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
@@ -178,6 +187,8 @@ const ComponentForm = ({
       : "",
     setValue,
   });
+
+  console.log(errors);
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
