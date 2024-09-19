@@ -12,8 +12,7 @@ import {
 import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
-import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
-import SchoolZoneBeaconComponentAutocomplete from "./SchoolBeaconComponentAutocomplete";
+import KnackComponentAutocomplete from "./KnackComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
@@ -33,7 +32,11 @@ import ControlledAutocomplete from "../../../../components/forms/ControlledAutoc
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
   getSignalOptionLabel,
+  getSignalOptionSelected,
   getSchoolZoneBeaconOptionLabel,
+  SOCRATA_ENDPOINT,
+  getSchoolZoneBeaconOptionSelected,
+  SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
 import ComponentProperties from "./ComponentProperties";
 
@@ -240,9 +243,13 @@ const ComponentForm = ({
               control={control}
               shouldUnregister={true}
               render={({ field }) => (
-                <SignalComponentAutocomplete
+                <KnackComponentAutocomplete
                   {...field}
+                  componentLabel="Signal"
                   signalType={component?.data?.component_subtype}
+                  socrataEndpoint={SOCRATA_ENDPOINT}
+                  isOptionEqualToValue={getSignalOptionSelected}
+                  getOptionLabel={getSignalOptionLabel}
                 />
               )}
             />
@@ -256,7 +263,14 @@ const ComponentForm = ({
               control={control}
               shouldUnregister={true}
               render={({ field }) => (
-                <SchoolZoneBeaconComponentAutocomplete {...field} />
+                <KnackComponentAutocomplete
+                  {...field}
+                  componentLabel="School Zone Beacon"
+                  signalType={null}
+                  socrataEndpoint={SOCRATA_ENDPOINT_SCHOOL_BEACONS}
+                  isOptionEqualToValue={getSchoolZoneBeaconOptionSelected}
+                  getOptionLabel={getSchoolZoneBeaconOptionLabel}
+                />
               )}
             />
           </Grid>

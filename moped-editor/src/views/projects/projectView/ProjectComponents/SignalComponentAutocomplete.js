@@ -4,7 +4,7 @@ import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
 import {
   getSignalOptionLabel,
-  getSignalOptionSelected,
+  getSignalOptionSelected, 
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
