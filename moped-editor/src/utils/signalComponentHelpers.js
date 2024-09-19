@@ -64,9 +64,9 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
 };
 
 /**
- * Format a feature_signals table record to the format of options in the SignalComponentAutocomplete
+ * Format a feature_signals table record to the format of options in the KnackComponentAutocomplete
  * @param {Object} featureSignalsRecord - A feature_signals table record
- * @return {Object} A record in the format of options in the SignalComponentAutocomplete
+ * @return {Object} A record in the format of options in the KnackComponentAutocomplete
  */
 export const featureSignalsRecordToKnackSignalRecord = (
   featureSignalsRecord
@@ -242,9 +242,9 @@ export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
 };
 
 /**
- * Format a feature_school_beacon table record to the format of options in the SignalComponentAutocomplete
+ * Format a feature_school_beacon table record to the format of options in the KnackComponentAutocomplete
  * @param {Object} featureSignalsRecord - A feature_signals table record
- * @return {Object} A record in the format of options in the SignalComponentAutocomplete
+ * @return {Object} A record in the format of options in the KnackComponentAutocomplete
  */
 export const featureSchoolBeaconRecordToKnackSchoolBeaconRecord = (
   featureSchoolBeaconRecord
