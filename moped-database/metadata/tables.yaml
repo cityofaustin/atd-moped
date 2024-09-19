@@ -3439,6 +3439,9 @@
       request_transform:
         body:
           action: transform
+          // this transformation or the schema itself may need to be refactored
+          // as it does not provide a project id or personnel id to associate this
+          // table with moped_proj_personnel in the activity log
           template: |-
             {
               "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
