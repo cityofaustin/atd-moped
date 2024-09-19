@@ -49,29 +49,41 @@ const defaultFormValues = {
   srtsId: null,
 };
 
-const validationSchema = yup.object().shape({
-  component: yup.object().required(),
-  subcomponents: yup.array().optional(),
-  phase: yup.object().nullable().optional(),
-  subphase: yup.object().nullable().optional(),
-  tags: yup.array().optional(),
-  completionDate: yup
-    .date()
-    .nullable()
-    .optional()
-    .when("phase", {
-      is: (phase) => !!phase,
-      then: yup
-        .date()
-        .required("Must enter phase completion date if a phase is selected"),
-    }),
-  description: yup.string().nullable().optional(),
-  work_types: yup.array().of(yup.object()).min(1).required(),
-  // Signal field is required if the selected component inserts into the feature_signals table
-  signal: yup.object().nullable(),
-  srtsId: yup.string().nullable().optional(),
-  locationDescription: yup.string().nullable().optional(),
-});
+const validationSchema = yup.object().shape(
+  {
+    component: yup.object().required(),
+    subcomponents: yup.array().optional(),
+    phase: yup
+      .object()
+      .nullable()
+      .optional()
+      .when("completionDate", {
+        is: (completionDate) => completionDate !== null,
+        then: yup
+          .object()
+          .required("Enter a phase if a completion date is entered"),
+      }),
+    subphase: yup.object().nullable().optional(),
+    tags: yup.array().optional(),
+    completionDate: yup
+      .date()
+      .nullable()
+      .optional()
+      .when("phase", {
+        is: (phase) => phase !== null,
+        then: yup
+          .date()
+          .required("Enter completion date if a phase is selected"),
+      }),
+    description: yup.string().nullable().optional(),
+    work_types: yup.array().of(yup.object()).min(1).required(),
+    // Signal field is required if the selected component inserts into the feature_signals table
+    signal: yup.object().nullable(),
+    srtsId: yup.string().nullable().optional(),
+    locationDescription: yup.string().nullable().optional(),
+  },
+  [["phase", "completionDate"]]
+);
 
 const ComponentForm = ({
   formButtonText,
@@ -188,7 +200,7 @@ const ComponentForm = ({
     setValue,
   });
 
-  console.log(errors);
+  console.log({ phase, completionDate, errors });
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -368,6 +380,10 @@ const ComponentForm = ({
                       onChange={field.onChange}
                       variant="outlined"
                       label={"Completion date"}
+                      textFieldProps={{
+                        helperText: errors?.completionDate?.message,
+                        error: Boolean(errors?.completionDate),
+                      }}
                     />
                   );
                 }}
