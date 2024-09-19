@@ -200,7 +200,8 @@ const ComponentForm = ({
     setValue,
   });
 
-  console.log({ phase, completionDate, errors });
+  // TODO: Clear completion date error when phase is cleared
+  // TODO: Integrate phase simple = Complete logic
 
   return (
     <form onSubmit={handleSubmit(onSave)}>
@@ -354,6 +355,8 @@ const ComponentForm = ({
                 name="phase"
                 control={control}
                 autoFocus
+                error={errors?.phase}
+                helperText={errors?.phase?.message}
               />
             </Grid>
             {subphaseOptions.length !== 0 && (
