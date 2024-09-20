@@ -1,0 +1,5 @@
+DROP TRIGGER IF EXISTS update_feature_school_beacons_council_district ON feature_school_beacons;
+
+DROP TRIGGER IF EXISTS feature_school_beacons_parent_audit_log_trigger ON feature_school_beacons;
+
+DROP TRIGGER IF EXISTS set_feature_school_beacons_updated_at ON feature_school_beacons;
