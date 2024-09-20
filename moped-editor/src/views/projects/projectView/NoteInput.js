@@ -42,15 +42,10 @@ const useStyles = makeStyles((theme) => ({
   },
   contentEditable: {
     width: "100%",
-    padding: "16px 16px",
+    padding: theme.spacing(2),
     fontSize: "1rem",
     fontFamily: theme.typography.fontFamily,
     color: theme.palette.text.primary,
-  },
-  placeholder: {
-    position: "absolute",
-    top: "32px",
-    paddingLeft: "16px"
   },
   editorWrapper: {
     position: "relative"
@@ -107,7 +102,7 @@ const OnChangePlugin = ({ onChange }) => {
         onChange(htmlContent);
       });
     });
-  });
+  }, [editor, onChange]);
   return null;
 }
 

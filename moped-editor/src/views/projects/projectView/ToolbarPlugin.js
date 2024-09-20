@@ -109,12 +109,12 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   };
 
   // Checks for selected list formatting, removes if already applied or adds if not applied
-  const handleListUpdate = (command, listType) => {
+  const handleListUpdate = useCallback((command, listType) => {
     const isListApplied = selectionMap[listType];
     isListApplied ?
       editor.dispatchCommand(REMOVE_LIST_COMMAND) :
       editor.dispatchCommand(command);
-  };
+  }, [editor, selectionMap]);
 
   const checkLink = (selection) => {
     let isLink = false;
@@ -128,7 +128,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     return isLink;
   };
 
-  const handleLinkUpdate = () => {
+  const handleLinkUpdate = useCallback(() => {
     const isLinkApplied = selectionMap["link"];
     isLinkApplied ?
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
@@ -140,16 +140,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       }).catch(err => {
         console.error('Failed to read clipboard contents: ', err);
       })
-  };
-
-  const clearFormatting = () => {
-    const formatTypes = Object.keys(selectionMap);
-    formatTypes.forEach((formatType) => {
-      if (selectionMap[formatType]) {
-        onAction(formatType);
-      }
-    });
-  };
+  }, [editor, selectionMap]);
 
   const updateToolbar = useCallback(() => {
     const selection = $getSelection();
@@ -173,7 +164,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       }
       : {};
 
-  const onAction = (id) => {
+  const onAction = useCallback((id) => {
     switch (id) {
       case "bold":
         editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
@@ -200,18 +191,17 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         editor.dispatchCommand(REDO_COMMAND, undefined);
         break;
       case "clear":
-        clearFormatting();
+        const formatTypes = Object.keys(selectionMap);
+        formatTypes.forEach((formatType) => {
+          if (selectionMap[formatType]) {
+            onAction(formatType);
+          }
+        });
         break;
       default:
         break;
     }
-  }
-
-  // Clear editor formatting when note is saved successfully. Prop is passed down from
-  // parent component so the toolbar will rerender on save
-  if (noteAddSuccess) {
-    noteAddSuccess && clearFormatting();
-  }
+  }, [editor, handleLinkUpdate, handleListUpdate, selectionMap])
 
   useEffect(() => {
     // Update toolbar and other UI elements when certain commands are sent or
@@ -256,6 +246,13 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       ))
   }, [editor, updateToolbar]);
 
+  // Clear editor formatting when note is saved successfully. Prop is passed down from
+  // parent component so the toolbar will rerender on save
+  useEffect(() => {
+    if (noteAddSuccess) {
+      onAction("clear");
+    }
+  }, [noteAddSuccess, onAction]);
 
   return (
     <Box
