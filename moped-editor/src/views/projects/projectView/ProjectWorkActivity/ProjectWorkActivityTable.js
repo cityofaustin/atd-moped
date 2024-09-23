@@ -41,7 +41,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Contract #",
         field: "contract_number",
-        width: 125,
+        width: 150,
         defaultVisible: true,
       },
       {
