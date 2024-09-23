@@ -178,7 +178,7 @@ export const getFeatureChangesFromComponentForm = (
   } else if (newSchoolBeaconKnackId) {
     if (
       previousSchoolBeacon &&
-      newSchoolBeaconKnackId !== previousSchoolBeacon.id
+      newSchoolBeaconKnackId !== previousSchoolBeacon.knack_id
     ) {
       // changed which Beacon was chosen
       schoolBeaconToCreate =
