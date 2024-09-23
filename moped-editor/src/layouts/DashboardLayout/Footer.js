@@ -15,17 +15,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * Async function that updates the mostRecentTag state based on API call to Github "tag" endpoint
+ * Async function that retrieves most recent tag from an API call to Github "tag" endpoint
  */
-const getMostRecentGithubTags = async (setMostRecentTag) => {
+const getMostRecentGithubTags = async () => {
   const githubTagsApiEndpoint =
     "https://api.github.com/repos/cityofaustin/atd-moped/tags";
   const response = await fetch(githubTagsApiEndpoint);
   const data = await response.json();
   if (get(data, 0)) {
-    setMostRecentTag(data[0].name);
+    return data[0].name;
   } else {
-    setMostRecentTag(`v${pckg.version}`);
+    return `v${pckg.version}`;
   }
 };
 
@@ -34,8 +34,9 @@ const Footer = () => {
   const [mostRecentTag, setMostRecentTag] = useState(`v${pckg.version}`); // use default tag
 
   useEffect(() => {
-    getMostRecentGithubTags(setMostRecentTag);
-  }, [setMostRecentTag]);
+    const tag = getMostRecentGithubTags();
+    setMostRecentTag(tag);
+  }, []);
 
   return (
     <div className={classes.root}>
