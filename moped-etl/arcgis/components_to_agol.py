@@ -258,18 +258,17 @@ def main(args):
             for record in features:
                 id = record["attributes"]["project_id"]
 
-                if id == 3601 or id == 3608 or id == 129:
-                    status_update = record["attributes"]["project_status_update"]
+                status_update = record["attributes"]["project_status_update"]
 
-                    if has_html_tags(status_update):
-                        print(f"HTML tags found in project_id: {id}")
-                        if not is_valid_HTML_tag(status_update):
-                            print(f"Invalid HTML tag found in project_id: {id}")
-                            record["attributes"]["project_status_update"] = html.escape(
-                                status_update
-                            )
-                    else:
-                        print(f"No HTML tags found in project_id: {id}")
+                if has_html_tags(status_update):
+                    print(f"HTML tags found in project_id: {id}")
+                    if not is_valid_HTML_tag(status_update):
+                        print(f"Invalid HTML tag found in project_id: {id}")
+                        record["attributes"]["project_status_update"] = html.escape(
+                            status_update
+                        )
+                else:
+                    print(f"No HTML tags found in project_id: {id}")
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
