@@ -260,7 +260,7 @@ def main(args):
 
                 status_update = record["attributes"]["project_status_update"]
 
-                if has_html_tags(status_update):
+                if status_update != None and has_html_tags(status_update):
                     if not is_valid_HTML_tag(status_update):
                         logger.info(
                             f"Invalid HTML tag found in project_id: {id}. Escaping HTML..."
