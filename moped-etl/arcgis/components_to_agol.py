@@ -4,6 +4,9 @@
 import argparse
 import logging
 import json
+import urllib.parse
+from bs4 import BeautifulSoup
+from html.parser import HTMLParser
 from datetime import datetime, timezone, timedelta
 
 from process.logging import get_logger
@@ -21,6 +24,35 @@ from utils import (
     chunks,
     get_logger,
 )
+
+
+def has_html_tags(html_string_to_check):
+    """Identify if a string contains HTML tags.
+
+    See: https://pypi.org/project/beautifulsoup4/
+
+    Args:
+        html_string_to_check (str): A string to test for HTML tags
+
+    Returns:
+        bool: True if the string contains HTML tags, False otherwise
+    """
+    return bool(BeautifulSoup(html_string_to_check, "html.parser").find())
+
+
+def is_valid_HTML_tag(html_string_to_check):
+    """Identify if a string contains valid HTML.
+
+    See: https://pypi.org/project/beautifulsoup4/
+
+    Args:
+        html_string_to_check (str): A string that contains HTML to test for valid HTML.
+
+    Returns:
+        bool: True if the string contains valid HTML, False otherwise
+    """
+    soup = BeautifulSoup(html_string_to_check, "html.parser")
+    return html_string_to_check == str(soup)
 
 
 def get_esri_geometry_key(geometry):
@@ -221,6 +253,24 @@ def main(args):
                 delete_features_by_project_ids(feature_type, joined_project_ids)
 
             features = all_features[feature_type]
+
+            # Check project status updates for valid or invalid HTML; escape html if needed
+            for record in features:
+                id = record["attributes"]["project_id"]
+
+                if id == 3601 or id == 3608 or id == 129:
+                    status_update = record["attributes"]["project_status_update"]
+
+                    if has_html_tags(status_update):
+                        print(f"HTML tags found in project_id: {id}")
+                        if not is_valid_HTML_tag(status_update):
+                            print(f"Invalid HTML tag found in project_id: {id}")
+                            print(urllib.parse.quote_plus(status_update))
+                            record["attributes"]["project_status_update"] = (
+                                urllib.parse.quote_plus(status_update)
+                            )
+                    else:
+                        print(f"No HTML tags found in project_id: {id}")
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."

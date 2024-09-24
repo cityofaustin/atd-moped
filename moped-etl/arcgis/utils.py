@@ -76,6 +76,7 @@ def handle_arcgis_response(response_data):
         return
 
     if response_data.get("error"):
+        print(response_data)
         # sometimes there is an error in the root of the response object 👍
         raise ValueError(response_data["error"])
 
