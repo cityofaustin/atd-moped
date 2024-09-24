@@ -254,21 +254,20 @@ def main(args):
 
             features = all_features[feature_type]
 
-            # Check project status updates for valid or invalid HTML; escape html if needed
+            # Check project status updates for valid or invalid HTML; escape HTML if needed
             for record in features:
                 id = record["attributes"]["project_id"]
 
                 status_update = record["attributes"]["project_status_update"]
 
                 if has_html_tags(status_update):
-                    print(f"HTML tags found in project_id: {id}")
                     if not is_valid_HTML_tag(status_update):
-                        print(f"Invalid HTML tag found in project_id: {id}")
+                        logger.info(
+                            f"Invalid HTML tag found in project_id: {id}. Escaping HTML..."
+                        )
                         record["attributes"]["project_status_update"] = html.escape(
                             status_update
                         )
-                else:
-                    print(f"No HTML tags found in project_id: {id}")
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
