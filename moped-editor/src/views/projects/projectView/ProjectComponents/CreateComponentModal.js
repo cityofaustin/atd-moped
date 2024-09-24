@@ -10,7 +10,7 @@ const CreateComponentModal = ({
   onSaveDraftSignalComponent,
 }) => {
   const onSave = (formData) => {
-    const isSavingSignalFeature = Boolean(formData.signal || formData.schoolBeacon);
+    const isSavingKnackFeature = Boolean(formData.signal || formData.schoolBeacon);
 
     let {
       component: {
@@ -33,7 +33,7 @@ const CreateComponentModal = ({
       locationDescription,
     } = formData;
 
-    if (isSavingSignalFeature) {
+    if (isSavingKnackFeature) {
       // disgusting hacky override to set the internal table to the asset table
       // when an asset has been selected in the form
       internal_table =
@@ -61,9 +61,9 @@ const CreateComponentModal = ({
 
     const linkMode = newComponent.line_representation ? "lines" : "points";
 
-    // Signal components get their geometry from the Knack signal dataset so we save them
+    // Signal components and school beacon components get their geometry from Knack datasets so we save them
     // immediately. All other components are saved after the user selects or draws their geometry.
-    if (isSavingSignalFeature) {
+    if (isSavingKnackFeature) {
       const newComponentWithSignalFeature = {
         ...newComponent,
         features: [formData.signal || formData.schoolBeacon],
