@@ -84,15 +84,6 @@ const RICH_TEXT_OPTIONS = [
   },
 ];
 
-const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
-  const [editor] = useLexicalComposerContext();
-
-  const [disableMap, setDisableMap] = useState({
-    [richTextAction.undo]: true,
-    [richTextAction.redo]: true
-  });
-  const [selectionMap, setSelectionMap] = useState({});
-
   // Iterate through selected node and parent nodes and returns any applicable list type
   const checkListType = (selection, listType) => {
     let hasListType = false;
@@ -108,14 +99,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     return hasListType;
   };
 
-  // Checks for selected list formatting, removes if already applied or adds if not applied
-  const handleListUpdate = useCallback((command, listType) => {
-    const isListApplied = selectionMap[listType];
-    isListApplied ?
-      editor.dispatchCommand(REMOVE_LIST_COMMAND) :
-      editor.dispatchCommand(command);
-  }, [editor, selectionMap]);
-
   const checkLink = (selection) => {
     let isLink = false;
     const selectedNodes = selection.getNodes();
@@ -127,6 +110,23 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
     })
     return isLink;
   };
+
+const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
+  const [editor] = useLexicalComposerContext();
+
+  const [disableMap, setDisableMap] = useState({
+    [richTextAction.undo]: true,
+    [richTextAction.redo]: true
+  });
+  const [selectionMap, setSelectionMap] = useState({});
+
+  // Checks for selected list formatting, removes if already applied or adds if not applied
+  const handleListUpdate = useCallback((command, listType) => {
+    const isListApplied = selectionMap[listType];
+    isListApplied ?
+      editor.dispatchCommand(REMOVE_LIST_COMMAND) :
+      editor.dispatchCommand(command);
+  }, [editor, selectionMap]);
 
   const handleLinkUpdate = useCallback(() => {
     const isLinkApplied = selectionMap["link"];
@@ -155,7 +155,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       }
       setSelectionMap(newSelectionMap)
     }
-  }, [setSelectionMap])
+  }, []);
 
   const getSelectedButtonProps = (isSelected) =>
     isSelected
