@@ -4,10 +4,10 @@
 import argparse
 import logging
 import json
-import urllib.parse
-from bs4 import BeautifulSoup
-from html.parser import HTMLParser
+import html
 from datetime import datetime, timezone, timedelta
+
+from bs4 import BeautifulSoup
 
 from process.logging import get_logger
 from settings import (
@@ -265,9 +265,8 @@ def main(args):
                         print(f"HTML tags found in project_id: {id}")
                         if not is_valid_HTML_tag(status_update):
                             print(f"Invalid HTML tag found in project_id: {id}")
-                            print(urllib.parse.quote_plus(status_update))
-                            record["attributes"]["project_status_update"] = (
-                                urllib.parse.quote_plus(status_update)
+                            record["attributes"]["project_status_update"] = html.escape(
+                                status_update
                             )
                     else:
                         print(f"No HTML tags found in project_id: {id}")
