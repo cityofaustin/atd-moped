@@ -67,7 +67,7 @@ const KnackComponentAutocomplete = React.forwardRef(
     return (
       <Autocomplete
         className={classes}
-        id="knack-component-autocomplete-id"
+        id="knack-component-autocomplete"
         filterOptions={filterOptions}
         isOptionEqualToValue={isOptionEqualToValue}
         // this label formatting mirrors the Data Tracker formatting

@@ -17,6 +17,12 @@ ALTER TABLE feature_school_beacons
 ADD CONSTRAINT fk_feature_school_beacons_created_by FOREIGN KEY (created_by_user_id) REFERENCES moped_users(user_id),
 ADD CONSTRAINT fk_feature_school_beacons_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users(user_id);
 
+-- Adding comments for audit fields
+COMMENT ON COLUMN feature_school_beacons.created_at IS 'Timestamp of when the school beacon feature was created';
+COMMENT ON COLUMN feature_school_beacons.created_by_user_id IS 'User ID of the creator of the school beacon feature';
+COMMENT ON COLUMN feature_school_beacons.updated_by_user_id IS 'User ID of the last updater of the school beacon feature';
+COMMENT ON COLUMN feature_school_beacons.updated_at IS 'Timestamp of the last update of the school beacon feature';
+
 -- Adding comments for feature_school_beacons constraints
 COMMENT ON CONSTRAINT fk_feature_school_beacons_created_by ON feature_school_beacons IS 'Foreign key constraint linking created_by_user_id to moped_users table.';
 COMMENT ON CONSTRAINT fk_feature_school_beacons_updated_by ON feature_school_beacons IS 'Foreign key constraint linking updated_by_user_id to moped_users table.';
