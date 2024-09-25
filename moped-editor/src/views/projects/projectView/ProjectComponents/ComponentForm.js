@@ -367,7 +367,7 @@ const ComponentForm = ({
               </Grid>
             )}
             {(isPhaseNameSimpleComplete ||
-              initialFormValues.completionDate) && (
+              initialFormValues?.completionDate) && (
               <Grid item xs={12}>
                 <Controller
                   id="completion-date"

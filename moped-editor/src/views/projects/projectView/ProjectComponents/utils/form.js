@@ -394,7 +394,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
       return;
     }
 
-    setValue(dependentFieldName, valueToSet);
+    setValue(dependentFieldName, valueToSet, { shouldValidate: true });
     setPreviousParentValue(parentValue);
   }, [
     parentValue,
