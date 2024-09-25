@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1725649291445_add_exploded_moped_geometry_view_for_agol/up.sql
+-- Most recent migration: moped-database/migrations/1727279529178_update_component_agol_view_school_beacons/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
