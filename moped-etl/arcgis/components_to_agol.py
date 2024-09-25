@@ -55,6 +55,34 @@ def is_valid_HTML_tag(html_string_to_check):
     return html_string_to_check == str(soup)
 
 
+def handle_status_updates(features):
+    """Check project status updates for valid or invalid HTML; escape HTML if needed.
+    Project status updates can be plain text, valid HTML, or invalid HTML. If invalid HTML is found,
+    the content of the update is escaped to prevent it from being rejected by AGOL (504 or 400 error).
+
+    Args:
+        features (list): list of Esri feature objects
+
+    Returns:
+        list: list of Esri feature objects with status update HTML escaped if needed
+    """
+    for record in features:
+        id = record["attributes"]["project_id"]
+
+        status_update = record["attributes"]["project_status_update"]
+
+        if status_update != None and has_html_tags(status_update):
+            if not is_valid_HTML_tag(status_update):
+                logger.info(
+                    f"Invalid HTML tag found in project_id: {id}. Escaping HTML..."
+                )
+                record["attributes"]["project_status_update"] = html.escape(
+                    status_update
+                )
+
+    return features
+
+
 def get_esri_geometry_key(geometry):
     """Identify the name of the geometry property that will hold coordinate data in an
     Esri feature object.
@@ -219,7 +247,9 @@ def main(args):
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
-            features = all_features[feature_type]
+            features_of_type = all_features[feature_type]
+
+            features = handle_status_updates(features_of_type)
 
             logger.info("Deleting all existing features...")
             delete_all_features(feature_type)
@@ -252,22 +282,9 @@ def main(args):
                 logger.info(f"Deleting features with project ids {joined_project_ids}")
                 delete_features_by_project_ids(feature_type, joined_project_ids)
 
-            features = all_features[feature_type]
+            features_of_type = all_features[feature_type]
 
-            # Check project status updates for valid or invalid HTML; escape HTML if needed
-            for record in features:
-                id = record["attributes"]["project_id"]
-
-                status_update = record["attributes"]["project_status_update"]
-
-                if status_update != None and has_html_tags(status_update):
-                    if not is_valid_HTML_tag(status_update):
-                        logger.info(
-                            f"Invalid HTML tag found in project_id: {id}. Escaping HTML..."
-                        )
-                        record["attributes"]["project_status_update"] = html.escape(
-                            status_update
-                        )
+            features = handle_status_updates(features_of_type)
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
