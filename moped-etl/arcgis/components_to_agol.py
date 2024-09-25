@@ -6,6 +6,8 @@ import logging
 import json
 from datetime import datetime, timezone, timedelta
 
+from bs4 import BeautifulSoup
+
 from process.logging import get_logger
 from settings import (
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
@@ -21,6 +23,62 @@ from utils import (
     chunks,
     get_logger,
 )
+
+
+def has_html_tags(html_string_to_check):
+    """Identify if a string contains HTML tags.
+
+    See: https://pypi.org/project/beautifulsoup4/
+
+    Args:
+        html_string_to_check (str): A string to test for HTML tags
+
+    Returns:
+        bool: True if the string contains HTML tags, False otherwise
+    """
+    return bool(BeautifulSoup(html_string_to_check, "html.parser").find())
+
+
+def is_valid_HTML_tag(html_string_to_check):
+    """Identify if a string contains valid HTML.
+
+    See: https://pypi.org/project/beautifulsoup4/
+
+    Args:
+        html_string_to_check (str): A string that contains HTML to test for valid HTML.
+
+    Returns:
+        bool: True if the string contains valid HTML, False otherwise
+    """
+    soup = BeautifulSoup(html_string_to_check, "html.parser")
+    return html_string_to_check == str(soup)
+
+
+def handle_status_updates(features):
+    """Check project status updates for valid or invalid HTML; escape HTML if needed.
+    Project status updates can be plain text, valid HTML, or invalid HTML. If invalid HTML is found,
+    the content of the update is escaped to prevent it from being rejected by AGOL (504 or 400 error).
+
+    Args:
+        features (list): list of Esri feature objects
+
+    Returns:
+        list: list of Esri feature objects with status update HTML escaped if needed
+    """
+    for record in features:
+        id = record["attributes"]["project_id"]
+
+        status_update = record["attributes"]["project_status_update"]
+
+        if status_update != None and has_html_tags(status_update):
+            if not is_valid_HTML_tag(status_update):
+                logger.info(
+                    f"Invalid HTML tag found in project_id: {id}. Getting HTML text..."
+                )
+                html_text = BeautifulSoup(status_update, "html.parser").get_text()
+                record["attributes"]["project_status_update"] = html_text
+
+    return features
 
 
 def get_esri_geometry_key(geometry):
@@ -187,7 +245,8 @@ def main(args):
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
-            features = all_features[feature_type]
+            features_of_type = all_features[feature_type]
+            features = handle_status_updates(features_of_type)
 
             logger.info("Deleting all existing features...")
             delete_all_features(feature_type)
@@ -210,6 +269,9 @@ def main(args):
         # Delete outdated feature from AGOL and add updated features
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
+            features_of_type = all_features[feature_type]
+            features = handle_status_updates(features_of_type)
+
             logger.info(
                 f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
@@ -219,8 +281,6 @@ def main(args):
                 joined_project_ids = ", ".join(str(x) for x in delete_chunk)
                 logger.info(f"Deleting features with project ids {joined_project_ids}")
                 delete_features_by_project_ids(feature_type, joined_project_ids)
-
-            features = all_features[feature_type]
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
