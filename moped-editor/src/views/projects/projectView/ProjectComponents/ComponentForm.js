@@ -27,6 +27,7 @@ import {
   useResetDependentFieldOnParentFieldChange,
   getOptionLabel,
   isOptionEqualToValue,
+  isPhaseOptionSimpleComplete,
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
@@ -60,8 +61,12 @@ const validationSchema = yup.object().shape({
     .nullable()
     .optional()
     .when("phase", {
-      is: (phase) => phase !== null,
-      then: yup.date().required("Enter completion date if a phase is selected"),
+      is: (phase) => isPhaseOptionSimpleComplete(phase),
+      then: yup
+        .date()
+        .required(
+          "Required if a phase with phase name simple of Complete is selected"
+        ),
     }),
   description: yup.string().nullable().optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
@@ -121,8 +126,7 @@ const ComponentForm = ({
     "signal",
   ]);
 
-  const isPhaseNameSimpleComplete =
-    phase?.data?.phase_name_simple === "Complete";
+  const isPhaseNameSimpleComplete = isPhaseOptionSimpleComplete(phase);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const assetFeatureTable =
     component?.data?.asset_feature_layer?.internal_table;
@@ -367,7 +371,8 @@ const ComponentForm = ({
                 />
               </Grid>
             )}
-            {isPhaseNameSimpleComplete && (
+            {(isPhaseNameSimpleComplete ||
+              initialFormValues.completionDate) && (
               <Grid item xs={12}>
                 <Controller
                   id="completion-date"
