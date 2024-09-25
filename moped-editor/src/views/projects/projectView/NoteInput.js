@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.dark,
   },
   contentEditable: {
+    minHeight: "150px",
     width: "100%",
     padding: theme.spacing(2),
     fontSize: "1rem",

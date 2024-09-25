@@ -6,8 +6,6 @@ import {
   Button,
 } from "@mui/material";
 import {
-  Redo,
-  Undo,
   FormatBold,
   FormatItalic,
   FormatUnderlined,
@@ -21,12 +19,8 @@ import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext
 import {
   $getSelection,
   $isRangeSelection,
-  CAN_REDO_COMMAND,
-  CAN_UNDO_COMMAND,
   FORMAT_TEXT_COMMAND,
-  REDO_COMMAND,
   SELECTION_CHANGE_COMMAND,
-  UNDO_COMMAND,
   COMMAND_PRIORITY_LOW
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
@@ -41,8 +35,6 @@ const richTextAction = {
   bullet: "bullet",
   link: "link",
   divider: "divider",
-  undo: "undo",
-  redo: "redo",
   clear: "clear"
 }
 
@@ -67,16 +59,6 @@ const RICH_TEXT_OPTIONS = [
     label: "Link",
   },
   { id: richTextAction.divider },
-  {
-    id: richTextAction.undo,
-    icon: <Undo />,
-    label: "Undo",
-  },
-  {
-    id: richTextAction.redo,
-    icon: <Redo />,
-    label: "Redo",
-  },
   {
     id: richTextAction.clear,
     icon: <FormatClear />,
@@ -114,10 +96,6 @@ const RICH_TEXT_OPTIONS = [
 const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   const [editor] = useLexicalComposerContext();
 
-  const [disableMap, setDisableMap] = useState({
-    [richTextAction.undo]: true,
-    [richTextAction.redo]: true
-  });
   const [selectionMap, setSelectionMap] = useState({});
 
   // Checks for selected list formatting, removes if already applied or adds if not applied
@@ -129,17 +107,15 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   }, [editor, selectionMap]);
 
   const handleLinkUpdate = useCallback(() => {
-    const isLinkApplied = selectionMap["link"];
-    isLinkApplied ?
-      editor.dispatchCommand(TOGGLE_LINK_COMMAND, null)
-      :
-      navigator.clipboard.readText().then(val => {
-        editor.dispatchCommand(TOGGLE_LINK_COMMAND, {
-          url: val, target: "_blank"
-        })
-      }).catch(err => {
-        console.error('Failed to read clipboard contents: ', err);
-      })
+    editor.update(() => {
+      const isLinkApplied = selectionMap["link"];
+      const selection = $getSelection();
+      const textContent = selection.getTextContent();
+   
+      isLinkApplied
+        ? editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) // Remove link if already applied
+        : editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
+    });
   }, [editor, selectionMap]);
 
   const updateToolbar = useCallback(() => {
@@ -184,12 +160,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       case "link":
         handleLinkUpdate();
         break;
-      case "undo":
-        editor.dispatchCommand(UNDO_COMMAND, undefined);
-        break;
-      case "redo":
-        editor.dispatchCommand(REDO_COMMAND, undefined);
-        break;
       case "clear":
         const formatTypes = Object.keys(selectionMap);
         formatTypes.forEach((formatType) => {
@@ -221,33 +191,10 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
           return false;
         },
         COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand(
-        CAN_UNDO_COMMAND,
-        (payLoad) => {
-          setDisableMap((prevDisableMap) => ({
-            ...prevDisableMap,
-            undo: !payLoad
-          }))
-          return false;
-        },
-        COMMAND_PRIORITY_LOW
-      ),
-      editor.registerCommand(
-        CAN_REDO_COMMAND,
-        (payLoad => {
-          setDisableMap((prevDisableMap) => ({
-            ...prevDisableMap,
-            redo: !payLoad
-          }))
-          return false;
-        }),
-        COMMAND_PRIORITY_LOW
       ))
   }, [editor, updateToolbar]);
 
-  // Clear editor formatting when note is saved successfully. Prop is passed down from
-  // parent component so the toolbar will rerender on save
+  // Clear editor formatting when note is saved successfully
   useEffect(() => {
     if (noteAddSuccess) {
       onAction("clear");
@@ -274,7 +221,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
               aria-label={label}
               startIcon={icon}
               onClick={() => onAction(id)}
-              disabled={disableMap[id]}
               {...getSelectedButtonProps(selectionMap[id])}
             />
           )
