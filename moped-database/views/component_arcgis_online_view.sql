@@ -28,7 +28,6 @@ comp_geography AS (
         st_asgeojson(st_union(array_agg(feature_union.geography)))::json AS geometry,
         st_asgeojson(st_union(array_agg(feature_union.line_geography)))::json AS line_geometry,
         string_agg(DISTINCT feature_union.signal_id::text, ', '::text) AS signal_ids,
-        string_agg(DISTINCT feature_union.school_zone_beacon_id, ', '::text) AS school_zone_beacon_ids,
         sum(feature_union.length_feet) AS length_feet_total
     FROM (
         SELECT
@@ -37,8 +36,7 @@ comp_geography AS (
             feature_signals.geography::geometry AS geography,
             st_exteriorring(st_buffer(feature_signals.geography, 7::double precision)::geometry) AS line_geography,
             feature_signals.signal_id,
-            null::integer AS length_feet,
-            null::text AS school_zone_beacon_id
+            null::integer AS length_feet
         FROM feature_signals
         WHERE feature_signals.is_deleted = false
         UNION ALL
@@ -48,8 +46,7 @@ comp_geography AS (
             feature_street_segments.geography::geometry AS geography,
             feature_street_segments.geography::geometry AS line_geography,
             null::integer AS signal_id,
-            feature_street_segments.length_feet,
-            null::text AS school_zone_beacon_id
+            feature_street_segments.length_feet
         FROM feature_street_segments
         WHERE feature_street_segments.is_deleted = false
         UNION ALL
@@ -59,8 +56,7 @@ comp_geography AS (
             feature_intersections.geography::geometry AS geography,
             st_exteriorring(st_buffer(feature_intersections.geography, 7::double precision)::geometry) AS line_geography,
             null::integer AS signal_id,
-            null::integer AS length_feet,
-            null::text AS school_zone_beacon_id
+            null::integer AS length_feet
         FROM feature_intersections
         WHERE feature_intersections.is_deleted = false
         UNION ALL
@@ -70,8 +66,7 @@ comp_geography AS (
             feature_drawn_points.geography::geometry AS geography,
             st_exteriorring(st_buffer(feature_drawn_points.geography, 7::double precision)::geometry) AS line_geography,
             null::integer AS signal_id,
-            null::integer AS length_feet,
-            null::text AS school_zone_beacon_id
+            null::integer AS length_feet
         FROM feature_drawn_points
         WHERE feature_drawn_points.is_deleted = false
         UNION ALL
@@ -81,8 +76,7 @@ comp_geography AS (
             feature_drawn_lines.geography::geometry AS geography,
             feature_drawn_lines.geography::geometry AS line_geography,
             null::integer AS signal_id,
-            feature_drawn_lines.length_feet,
-            null::text AS school_zone_beacon_id
+            feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
         UNION ALL
@@ -92,8 +86,7 @@ comp_geography AS (
             feature_school_beacons.geography::geometry AS geography,
             st_exteriorring(st_buffer(feature_school_beacons.geography, 7::double precision)::geometry) AS line_geography,
             null::integer AS signal_id,
-            null::integer AS length_feet,
-            feature_school_beacons.school_zone_beacon_id
+            null::integer AS length_feet
         FROM feature_school_beacons
         WHERE feature_school_beacons.is_deleted = false
     ) feature_union
@@ -158,7 +151,6 @@ SELECT
     comp_geography.geometry,
     comp_geography.line_geometry,
     comp_geography.signal_ids,
-    comp_geography.school_zone_beacon_ids,
     council_districts.council_districts,
     council_districts.council_districts_searchable,
     NOT coalesce(council_districts.council_districts IS null OR council_districts.council_districts = ''::text, false) AS is_within_city_limits,
