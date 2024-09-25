@@ -353,8 +353,6 @@ const ComponentForm = ({
                 name="phase"
                 control={control}
                 autoFocus
-                error={errors?.phase}
-                helperText={errors?.phase?.message}
               />
             </Grid>
             {subphaseOptions.length !== 0 && (
