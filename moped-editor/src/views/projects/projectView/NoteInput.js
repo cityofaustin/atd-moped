@@ -8,26 +8,26 @@ import {
   Radio,
   RadioGroup,
   FormControlLabel,
-  Paper
+  Paper,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
 import ToolbarPlugin from "./ToolbarPlugin";
 
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { LexicalComposer } from '@lexical/react/LexicalComposer';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $generateHtmlFromNodes, $generateNodesFromDOM } from '@lexical/html';
-import { $getRoot } from 'lexical';
-import { $isRootTextContentEmpty } from '@lexical/text';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
-import { LinkNode } from '@lexical/link';
-import { ListPlugin } from '@lexical/react/LexicalListPlugin';
-import { ListNode, ListItemNode } from '@lexical/list';
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import { LexicalComposer } from "@lexical/react/LexicalComposer";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
+import { $getRoot } from "lexical";
+import { $isRootTextContentEmpty } from "@lexical/text";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { LinkNode } from "@lexical/link";
+import { ListPlugin } from "@lexical/react/LexicalListPlugin";
+import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "./EditorTheme";
 
 const useStyles = makeStyles((theme) => ({
@@ -49,14 +49,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
   editorWrapper: {
-    position: "relative"
+    position: "relative",
   },
   showButtonItem: {
     margin: theme.spacing(2),
   },
   toolbarButtons: {
     backgroundColor: theme.palette.primary.main,
-    '&:hover, &.Mui-focusVisible': {
+    "&:hover, &.Mui-focusVisible": {
       backgroundColor: theme.palette.primary.main,
     },
   },
@@ -90,7 +90,7 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
 // or throw them as needed.
 const onError = (error) => {
   console.error(error);
-}
+};
 
 // On change, return editor content as HTML
 const OnChangePlugin = ({ onChange }) => {
@@ -99,45 +99,50 @@ const OnChangePlugin = ({ onChange }) => {
     return editor.registerUpdateListener(({ editorState }) => {
       editorState.read(() => {
         const isEditorEmpty = $isRootTextContentEmpty();
-        const htmlContent = isEditorEmpty ? null : $generateHtmlFromNodes(editor, null);
+        const htmlContent = isEditorEmpty
+          ? null
+          : $generateHtmlFromNodes(editor, null);
         onChange(htmlContent);
       });
     });
   }, [editor, onChange]);
   return null;
-}
+};
 
 // On successful save, clear and refocus the editor
 const OnSavePlugin = ({ noteAddSuccess }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
-    noteAddSuccess && editor.update(() => {
-      const root = $getRoot();
-      root.clear();
-    });
+    noteAddSuccess &&
+      editor.update(() => {
+        const root = $getRoot();
+        root.clear();
+      });
     editor.focus();
   }, [noteAddSuccess, editor]);
   return null;
-}
+};
 
 // On edit, load the selected comment and refocus the editor
 const OnEditPlugin = ({ htmlContent, editingNote }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
-    const editorState = editor.getEditorState()
+    const editorState = editor.getEditorState();
     const nodeMap = editorState._nodeMap;
     const textArray = [...nodeMap.entries()][2];
     const isTextInEditor = !!textArray;
     const isTextinDatabase = !!htmlContent;
     // If user clicks edit and there is a stored note and a clear editor,
     // populate editor with stored note
-    editingNote && !isTextInEditor && isTextinDatabase &&
+    editingNote &&
+      !isTextInEditor &&
+      isTextinDatabase &&
       editor.update(() => {
         $getRoot()
           .getChildren()
           .forEach((n) => n.remove());
         const parser = new DOMParser();
-        const dom = parser.parseFromString(htmlContent, 'text/html');
+        const dom = parser.parseFromString(htmlContent, "text/html");
         const nodes = $generateNodesFromDOM(editor, dom);
         nodes.forEach((node) => {
           $getRoot().append(node);
@@ -146,7 +151,7 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
     editor.focus();
   }, [editingNote, htmlContent, editor]);
   return null;
-}
+};
 
 const NoteInput = ({
   noteText,
@@ -166,13 +171,9 @@ const NoteInput = ({
   const classes = useStyles();
 
   const initialConfig = {
-    namespace: 'MyEditor',
+    namespace: "MyEditor",
     theme: EditorTheme,
-    nodes: [
-      LinkNode,
-      ListNode,
-      ListItemNode
-    ],
+    nodes: [LinkNode, ListNode, ListItemNode],
     onError,
   };
 
@@ -184,7 +185,7 @@ const NoteInput = ({
     <Container>
       <Grid container direction="column" spacing={1}>
         <Grid item xs={12} sm={12}>
-          <LexicalComposer initialConfig={initialConfig} >
+          <LexicalComposer initialConfig={initialConfig}>
             <ToolbarPlugin noteAddSuccess={noteAddSuccess} classes={classes} />
             <Box className={classes.editorWrapper} pt={2}>
               <RichTextPlugin
