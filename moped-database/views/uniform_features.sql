@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1700515731002_add_audit_fields_to_unified_features_view/up.sql
+-- Most recent migration: moped-database/migrations/1727229291111_add_beacons_to_unified_features_view/up.sql
 
 CREATE OR REPLACE VIEW uniform_features AS SELECT
     feature_signals.id,
@@ -19,7 +19,7 @@ LEFT JOIN (
         array_agg(d.council_district_id) AS council_districts
     FROM features_council_districts d
     GROUP BY d.feature_id
-) districts ON districts.feature_id = feature_signals.id
+) districts ON feature_signals.id = districts.feature_id
 WHERE feature_signals.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -41,7 +41,7 @@ LEFT JOIN (
         array_agg(d.council_district_id) AS council_districts
     FROM features_council_districts d
     GROUP BY d.feature_id
-) districts ON districts.feature_id = feature_street_segments.id
+) districts ON feature_street_segments.id = districts.feature_id
 WHERE feature_street_segments.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -63,7 +63,7 @@ LEFT JOIN (
         array_agg(d.council_district_id) AS council_districts
     FROM features_council_districts d
     GROUP BY d.feature_id
-) districts ON districts.feature_id = feature_intersections.id
+) districts ON feature_intersections.id = districts.feature_id
 WHERE feature_intersections.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -85,7 +85,7 @@ LEFT JOIN (
         array_agg(d.council_district_id) AS council_districts
     FROM features_council_districts d
     GROUP BY d.feature_id
-) districts ON districts.feature_id = feature_drawn_points.id
+) districts ON feature_drawn_points.id = districts.feature_id
 WHERE feature_drawn_points.is_deleted = FALSE
 UNION ALL
 SELECT
@@ -107,5 +107,27 @@ LEFT JOIN (
         array_agg(d.council_district_id) AS council_districts
     FROM features_council_districts d
     GROUP BY d.feature_id
-) districts ON districts.feature_id = feature_drawn_lines.id
-WHERE feature_drawn_lines.is_deleted = FALSE;
+) districts ON feature_drawn_lines.id = districts.feature_id
+WHERE feature_drawn_lines.is_deleted = FALSE
+UNION ALL
+SELECT
+    feature_school_beacons.id,
+    feature_school_beacons.component_id,
+    'feature_school_beacons'::text AS "table",
+    json_build_object('school_zone_beacon_id', feature_school_beacons.school_zone_beacon_id, 'knack_id', feature_school_beacons.knack_id, 'location_name', feature_school_beacons.location_name, 'zone_name', feature_school_beacons.zone_name, 'beacon_name', feature_school_beacons.beacon_name) AS attributes,
+    feature_school_beacons.geography,
+    districts.council_districts,
+    NULL::integer AS length_feet,
+    feature_school_beacons.created_at,
+    feature_school_beacons.updated_at,
+    feature_school_beacons.created_by_user_id,
+    feature_school_beacons.updated_by_user_id
+FROM feature_school_beacons
+LEFT JOIN (
+    SELECT
+        d.feature_id,
+        array_agg(d.council_district_id) AS council_districts
+    FROM features_council_districts d
+    GROUP BY d.feature_id
+) districts ON feature_school_beacons.id = districts.feature_id
+WHERE feature_school_beacons.is_deleted = FALSE;
