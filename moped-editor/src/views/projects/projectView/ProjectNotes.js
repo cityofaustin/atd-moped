@@ -78,7 +78,7 @@ const useStyles = makeStyles((theme) => ({
     top: "0%",
     marginTop: "25px",
   },
-  editDeleteButtons: {
+  editButtons: {
     color: theme.palette.text.primary,
   },
   chip: {
@@ -364,6 +364,7 @@ const ProjectNotes = (props) => {
                           </ListItemAvatar>
                           <ListItemText
                             className={editableNote ? classes.editableNote : ""}
+                            secondaryTypographyProps={{className: classes.editButtons}}
                             primary={
                               <>
                                 <Typography
@@ -443,7 +444,7 @@ const ProjectNotes = (props) => {
                                     size="large"
                                   >
                                     <EditIcon
-                                      className={classes.editDeleteButtons}
+                                      className={classes.editButtons}
                                     />
                                   </IconButton>
                                 )}
@@ -457,7 +458,7 @@ const ProjectNotes = (props) => {
                                     size="large"
                                   >
                                     <DeleteIcon
-                                      className={classes.editDeleteButtons}
+                                      className={classes.editButtons}
                                     />
                                   </IconButton>
                                 )}
