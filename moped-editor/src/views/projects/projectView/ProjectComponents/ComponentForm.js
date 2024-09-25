@@ -201,9 +201,6 @@ const ComponentForm = ({
     setValue,
   });
 
-  // TODO: Clear completion date error when phase is cleared
-  // TODO: Integrate phase simple = Complete logic
-
   return (
     <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
