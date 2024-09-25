@@ -4,7 +4,6 @@
 import argparse
 import logging
 import json
-import html
 from datetime import datetime, timezone, timedelta
 
 from bs4 import BeautifulSoup
@@ -74,11 +73,10 @@ def handle_status_updates(features):
         if status_update != None and has_html_tags(status_update):
             if not is_valid_HTML_tag(status_update):
                 logger.info(
-                    f"Invalid HTML tag found in project_id: {id}. Escaping HTML..."
+                    f"Invalid HTML tag found in project_id: {id}. Getting HTML text..."
                 )
-                record["attributes"]["project_status_update"] = html.escape(
-                    status_update
-                )
+                html_text = BeautifulSoup(status_update, "html.parser").get_text()
+                record["attributes"]["project_status_update"] = html_text
 
     return features
 
@@ -248,7 +246,6 @@ def main(args):
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
             features_of_type = all_features[feature_type]
-
             features = handle_status_updates(features_of_type)
 
             logger.info("Deleting all existing features...")
@@ -272,6 +269,9 @@ def main(args):
         # Delete outdated feature from AGOL and add updated features
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
+            features_of_type = all_features[feature_type]
+            features = handle_status_updates(features_of_type)
+
             logger.info(
                 f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
@@ -281,10 +281,6 @@ def main(args):
                 joined_project_ids = ", ".join(str(x) for x in delete_chunk)
                 logger.info(f"Deleting features with project ids {joined_project_ids}")
                 delete_features_by_project_ids(feature_type, joined_project_ids)
-
-            features_of_type = all_features[feature_type]
-
-            features = handle_status_updates(features_of_type)
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
