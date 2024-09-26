@@ -383,6 +383,7 @@ const ComponentForm = ({
                         textFieldProps={{
                           helperText: errors?.completionDate?.message,
                           error: Boolean(errors?.completionDate),
+                          size: "small",
                         }}
                       />
                     );
