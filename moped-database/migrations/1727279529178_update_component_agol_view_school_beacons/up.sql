@@ -1,11 +1,13 @@
--- Most recent migration: moped-database/migrations/1727279529178_update_component_agol_view_school_beacons/up.sql
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 
-CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH
+work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -241,3 +243,19 @@ LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
 LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+
+CREATE VIEW exploded_component_arcgis_online_view AS
+SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    ST_GEOMETRYTYPE(dump.geom) AS geometry_type,
+    dump.path[1] AS point_index, -- ordinal value of the point in the MultiPoint geometry
+    component_arcgis_online_view.geometry AS original_geometry,
+    ST_ASGEOJSON(dump.geom) AS exploded_geometry, -- noqa: RF04
+    component_arcgis_online_view.project_updated_at
+FROM
+    component_arcgis_online_view,
+    LATERAL ST_DUMP(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) AS dump -- noqa: RF04
+WHERE
+    ST_GEOMETRYTYPE(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint';
