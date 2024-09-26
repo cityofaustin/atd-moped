@@ -34,13 +34,14 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
     moped_phases(order_by: { phase_order: asc }) {
       phase_name
       phase_id
+      phase_name_simple
       moped_subphases {
         subphase_id
         subphase_name
       }
     }
     moped_component_tags(
-      order_by: [{ type: asc }, {name: asc}]
+      order_by: [{ type: asc }, { name: asc }]
       where: { is_deleted: { _eq: false } }
     ) {
       name
@@ -104,6 +105,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     moped_phase {
       phase_id
       phase_name
+      phase_name_simple
       moped_subphases {
         subphase_id
         subphase_name
@@ -147,6 +149,17 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       geometry: geography
       source_layer
       component_id
+    }
+    feature_school_beacons(where: { is_deleted: { _eq: false } }) {
+      id
+      geometry: geography
+      component_id
+      knack_id
+      location_name
+      beacon_id
+      school_zone_beacon_id
+      zone_name
+      beacon_name
     }
   }
 `;
@@ -214,6 +227,7 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     $subcomponents: [moped_proj_components_subcomponents_insert_input!]!
     $workTypes: [moped_proj_component_work_types_insert_input!]!
     $signalsToCreate: [feature_signals_insert_input!]!
+    $schoolBeaconsToCreate: [feature_school_beacons_insert_input!]!
     $featureIdsToDelete: [Int!]!
     $phaseId: Int
     $subphaseId: Int
@@ -284,6 +298,9 @@ export const UPDATE_COMPONENT_ATTRIBUTES = gql`
     ) {
       affected_rows
     }
+    insert_feature_school_beacons(objects: $schoolBeaconsToCreate) {
+      affected_rows
+    }
     update_features(
       where: { id: { _in: $featureIdsToDelete } }
       _set: { is_deleted: true }
@@ -303,6 +320,7 @@ export const UPDATE_COMPONENT_FEATURES = gql`
     $drawnPoints: [feature_drawn_points_insert_input!]!
     $drawnLinesDragUpdates: [feature_drawn_lines_updates!]!
     $drawnPointsDragUpdates: [feature_drawn_points_updates!]!
+    $schoolBeacons: [feature_school_beacons_insert_input!]!
   ) {
     insert_feature_street_segments(objects: $streetSegments) {
       affected_rows
@@ -326,6 +344,9 @@ export const UPDATE_COMPONENT_FEATURES = gql`
       affected_rows
     }
     update_feature_drawn_points_many(updates: $drawnPointsDragUpdates) {
+      affected_rows
+    }
+    insert_feature_school_beacons(objects: $schoolBeacons) {
       affected_rows
     }
   }

@@ -41,12 +41,24 @@ export const formatPersonnelActivity = (change, userList) => {
     };
   }
 
-  // currently 'notes' is the only other editable field on this table
-  return {
+  // update the notes field
+  if (change.description[0].field === "notes")
+    return {
     changeIcon,
     changeText: [
       { text: "Updated team member notes for " },
       { text: userList[changeData.new.user_id], style: "boldText" },
     ],
   };
+
+  // the only other change that would be reflected here is adding or removing roles
+  else {
+    return {
+      changeIcon,
+      changeText: [
+        { text: "Updated personnel role for "},
+        { text: userList[changeData.new.user_id], style: "boldText"},
+      ]
+    }
+  }
 };

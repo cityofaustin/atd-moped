@@ -36,4 +36,5 @@ export const getIsComponentMapped = (component) =>
   component.feature_drawn_lines?.length > 0 ||
   component.feature_intersections?.length > 0 ||
   component.feature_signals?.length > 0 ||
-  component.feature_street_segments?.length > 0;
+  component.feature_street_segments?.length > 0 ||
+  component.feature_school_beacons?.length > 0;

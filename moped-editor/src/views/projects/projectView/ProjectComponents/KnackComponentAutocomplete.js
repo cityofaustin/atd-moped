@@ -2,11 +2,6 @@ import React, { useEffect, useMemo } from "react";
 import { CircularProgress, TextField } from "@mui/material";
 import { Autocomplete, Alert } from "@mui/material";
 import { useSocrataGeojson } from "src/utils/socrataHelpers";
-import {
-  getSignalOptionLabel,
-  getSignalOptionSelected,
-  SOCRATA_ENDPOINT,
-} from "src/utils/signalComponentHelpers";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
@@ -16,21 +11,41 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function} onChange - callback function to run when the signal is changed for React Hook Form
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
- * @param {String} signalType - either PHB or TRAFFIC
+ * @param {String} signalType - either PHB, TRAFFIC or null
+ * @param {String} socrataEndpoint - 
+ * @param {Function} isOptionEqualToValue - 
+ * @param {Function} getOptionLabel - 
+ * @param {String} componentLabel - 
  * @return {JSX.Element}
  */
-const SignalComponentAutocomplete = React.forwardRef(
-  ({ classes, onChange, value, onOptionsLoaded, signalType }, ref) => {
-    const { features, loading, error } = useSocrataGeojson(SOCRATA_ENDPOINT);
+const KnackComponentAutocomplete = React.forwardRef(
+  (
+    {
+      classes,
+      onChange,
+      value,
+      onOptionsLoaded,
+      signalType,
+      socrataEndpoint,
+      isOptionEqualToValue,
+      getOptionLabel,
+      componentLabel,
+    },
+    ref
+  ) => {
+    const { features, loading, error } = useSocrataGeojson(socrataEndpoint);
 
     // Filter returned results to the signal type chosen - PHB or TRAFFIC
+    // unless school beacons, then return all features
     const featuresFilteredByType = useMemo(
       () =>
-        features?.filter(
-          (feature) =>
-            feature.properties.signal_type.toLowerCase() ===
-            signalType.toLowerCase()
-        ),
+        signalType
+          ? features?.filter(
+              (feature) =>
+                feature.properties.signal_type.toLowerCase() ===
+                signalType.toLowerCase()
+            )
+          : features,
       [features, signalType]
     );
 
@@ -45,18 +60,18 @@ const SignalComponentAutocomplete = React.forwardRef(
       return <CircularProgress color="primary" size={20} />;
     } else if (error) {
       return (
-        <Alert severity="error">{`Unable to load signal list: ${error}`}</Alert>
+        <Alert severity="error">{`Unable to load ${componentLabel} list: ${error}`}</Alert>
       );
     }
 
     return (
       <Autocomplete
         className={classes}
-        id="signal-id"
+        id="knack-component-autocomplete"
         filterOptions={filterOptions}
-        isOptionEqualToValue={getSignalOptionSelected}
+        isOptionEqualToValue={isOptionEqualToValue}
         // this label formatting mirrors the Data Tracker formatting
-        getOptionLabel={getSignalOptionLabel}
+        getOptionLabel={getOptionLabel}
         onChange={(_event, option) => onChange(option)}
         loading={loading}
         options={featuresFilteredByType}
@@ -66,7 +81,7 @@ const SignalComponentAutocomplete = React.forwardRef(
             inputRef={ref}
             error={error}
             InputLabelProps={{ required: false }}
-            label="Signal"
+            label={componentLabel}
             variant="outlined"
             size="small"
           />
@@ -77,4 +92,4 @@ const SignalComponentAutocomplete = React.forwardRef(
   }
 );
 
-export default SignalComponentAutocomplete;
+export default KnackComponentAutocomplete;

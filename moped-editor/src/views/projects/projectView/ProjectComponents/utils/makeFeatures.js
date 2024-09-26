@@ -25,6 +25,9 @@ export const featureTableFieldMap = {
   feature_drawn_points: {
     // no columns to map
   },
+  feature_school_beacons: {
+    // Transform of signal records happens in knackSignalRecordToFeatureSignalsRecord
+  },
 };
 
 /**
