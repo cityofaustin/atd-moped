@@ -138,12 +138,14 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
       !isTextInEditor &&
       isTextinDatabase &&
       editor.update(() => {
+        // Remove any existing nodes from the EditorState to ensure there are no conflicts
         $getRoot()
           .getChildren()
-          .forEach((n) => n.remove());
+          .forEach((node) => node.remove());
         const parser = new DOMParser();
         const dom = parser.parseFromString(htmlContent, "text/html");
         const nodes = $generateNodesFromDOM(editor, dom);
+        // Append nodes serialized from html to EditorState
         nodes.forEach((node) => {
           $getRoot().append(node);
         });
@@ -151,6 +153,13 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
     editor.focus();
   }, [editingNote, htmlContent, editor]);
   return null;
+};
+
+const initialConfig = {
+  namespace: "MyEditor",
+  theme: EditorTheme,
+  nodes: [LinkNode, ListNode, ListItemNode],
+  onError,
 };
 
 const NoteInput = ({
@@ -169,13 +178,6 @@ const NoteInput = ({
   isStatusEditModal,
 }) => {
   const classes = useStyles();
-
-  const initialConfig = {
-    namespace: "MyEditor",
-    theme: EditorTheme,
-    nodes: [LinkNode, ListNode, ListItemNode],
-    onError,
-  };
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);
