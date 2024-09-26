@@ -1,11 +1,13 @@
--- Most recent migration: moped-database/migrations/1727279529178_update_component_agol_view_school_beacons/up.sql
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 
+-- Update arguments of get_project_development_status() and get_project_development_status_date() to consider component-level phase name simple
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -79,17 +81,7 @@ comp_geography AS (
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
-        UNION ALL
-        SELECT
-            feature_school_beacons.id,
-            feature_school_beacons.component_id,
-            feature_school_beacons.geography::geometry AS geography,
-            st_exteriorring(st_buffer(feature_school_beacons.geography, 7::double precision)::geometry) AS line_geography,
-            null::integer AS signal_id,
-            null::integer AS length_feet
-        FROM feature_school_beacons
-        WHERE feature_school_beacons.is_deleted = false
-    ) feature_union
+    ) AS feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -97,8 +89,8 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM moped_proj_components_subcomponents mpcs
-    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    FROM moped_proj_components_subcomponents AS mpcs
+    LEFT JOIN moped_subcomponents AS ms ON mpcs.subcomponent_id = ms.subcomponent_id
     WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
@@ -107,8 +99,8 @@ component_tags AS (
     SELECT
         mpct.project_component_id,
         string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
-    FROM moped_proj_component_tags mpct
-    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    FROM moped_proj_component_tags AS mpct
+    LEFT JOIN moped_component_tags AS mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
 ),
@@ -118,8 +110,8 @@ related_projects AS (
         pmp.project_id,
         concat_ws(', '::text, pmp.project_id, string_agg(cmp.project_id::text, ', '::text)) AS related_project_ids_with_self,
         concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
-    FROM moped_project pmp
-    LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
+    FROM moped_project AS pmp
+    LEFT JOIN moped_project AS cmp ON pmp.project_id = cmp.parent_project_id
     WHERE cmp.is_deleted = false
     GROUP BY pmp.project_id
 ),
@@ -128,7 +120,7 @@ latest_public_meeting_date AS (
     SELECT
         mpm.project_id,
         coalesce(max(mpm.date_actual), max(mpm.date_estimate)) AS latest
-    FROM moped_proj_milestones mpm
+    FROM moped_proj_milestones AS mpm
     WHERE mpm.milestone_id = 65 AND mpm.is_deleted = false
     GROUP BY mpm.project_id
 ),
@@ -137,8 +129,8 @@ earliest_active_or_construction_phase_date AS (
     SELECT
         mpp.project_id,
         min(mpp.phase_start) AS earliest
-    FROM moped_proj_phases mpp
-    LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
+    FROM moped_proj_phases AS mpp
+    LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
     WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
     GROUP BY mpp.project_id
 )
@@ -196,7 +188,7 @@ SELECT
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
-    to_char(timezone('US/Central'::text, plv.construction_start_date), 'YYYY-MM-DD'::text) AS construction_start_date,
+    to_char(plv.construction_start_date AT TIME ZONE 'US/Central', 'YYYY-MM-DD'::text) AS construction_start_date,
     plv.project_inspector,
     plv.project_designer,
     plv.project_tags,
@@ -213,31 +205,41 @@ SELECT
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
     get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
     project_development_status_date.result AS project_development_status_date,
-    to_char(project_development_status_date.result, 'YYYY'::text)::integer AS project_development_status_date_calendar_year,
-    to_char(project_development_status_date.result, 'FMMonth YYYY'::text) AS project_development_status_date_calendar_year_month,
-    to_char(project_development_status_date.result, 'YYYY-MM'::text) AS project_development_status_date_calendar_year_month_numeric,
-    date_part('quarter'::text, project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
-    CASE
-        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN (to_char(project_development_status_date.result, 'YYYY'::text)::integer + 1)::text
-        ELSE to_char(project_development_status_date.result, 'YYYY'::text)
-    END AS project_development_status_date_fiscal_year,
-    CASE
-        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN 1::double precision
-        ELSE date_part('quarter'::text, project_development_status_date.result) + 1::double precision
-    END::text AS project_development_status_date_fiscal_year_quarter,
+    to_char(project_development_status_date.result, 'YYYY')::integer AS project_development_status_date_calendar_year, -- noqa
+    to_char(project_development_status_date.result, 'FMMonth YYYY') AS project_development_status_date_calendar_year_month, -- noqa
+    to_char(project_development_status_date.result, 'YYYY-MM') AS project_development_status_date_calendar_year_month_numeric, -- noqa
+    extract(QUARTER FROM project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter, -- noqa
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN (to_char(project_development_status_date.result, 'YYYY')::integer + 1)::text ELSE to_char(project_development_status_date.result, 'YYYY') END AS project_development_status_date_fiscal_year, -- noqa
+    CASE WHEN extract(QUARTER FROM project_development_status_date.result) = 4 THEN 1 ELSE extract(QUARTER FROM project_development_status_date.result) + 1 END::text AS project_development_status_date_fiscal_year_quarter, -- noqa
     plv.added_by AS project_added_by
-FROM moped_proj_components mpc
+FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
-LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
-LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
-LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
-LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
-LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
-LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
-LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
+LEFT JOIN project_list_view AS plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
+LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
+LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
+LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
+LEFT JOIN LATERAL (SELECT get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AT TIME ZONE 'US/Central' AS result) AS project_development_status_date ON true -- noqa
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+-- create exploded view
+CREATE VIEW exploded_component_arcgis_online_view AS
+SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    ST_GEOMETRYTYPE(dump.geom) AS geometry_type,
+    dump.path[1] AS point_index, -- ordinal value of the point in the MultiPoint geometry
+    component_arcgis_online_view.geometry AS original_geometry,
+    ST_ASGEOJSON(dump.geom) AS exploded_geometry, -- noqa: RF04
+    component_arcgis_online_view.project_updated_at
+FROM
+    component_arcgis_online_view,
+    LATERAL ST_DUMP(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) AS dump -- noqa: RF04
+WHERE
+    ST_GEOMETRYTYPE(ST_GEOMFROMGEOJSON(component_arcgis_online_view.geometry)) = 'ST_MultiPoint';

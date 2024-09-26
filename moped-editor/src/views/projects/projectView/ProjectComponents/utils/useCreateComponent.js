@@ -172,7 +172,7 @@ export const useCreateComponent = ({
   };
 
   /**
-   * Prepare signal component and feature data for component creation and call mutation/reset state
+   * Prepare signal component / school beacon component and feature data for component creation and call mutation/reset state
    */
   const onSaveDraftSignalComponent = (signalComponent) => {
     const newComponentData = makeComponentInsertData(

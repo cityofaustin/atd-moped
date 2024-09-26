@@ -12,7 +12,7 @@ import {
 import DateFieldEditComponent from "../DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
-import SignalComponentAutocomplete from "./SignalComponentAutocomplete";
+import KnackComponentAutocomplete from "./KnackComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
@@ -31,7 +31,14 @@ import {
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
-import { getSignalOptionLabel } from "src/utils/signalComponentHelpers";
+import {
+  getSignalOptionLabel,
+  getSignalOptionSelected,
+  getSchoolZoneBeaconOptionLabel,
+  SOCRATA_ENDPOINT,
+  getSchoolZoneBeaconOptionSelected,
+  SOCRATA_ENDPOINT_SCHOOL_BEACONS,
+} from "src/utils/signalComponentHelpers";
 import ComponentProperties from "./ComponentProperties";
 
 import * as yup from "yup";
@@ -47,6 +54,7 @@ const defaultFormValues = {
   description: null,
   work_types: [DEFAULT_COMPONENT_WORK_TYPE_OPTION],
   signal: null,
+  schoolBeacon: null,
   srtsId: null,
 };
 
@@ -72,6 +80,7 @@ const validationSchema = yup.object().shape({
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().nullable(),
+  schoolBeacon: yup.object().nullable(),
   srtsId: yup.string().nullable().optional(),
   locationDescription: yup.string().nullable().optional(),
 });
@@ -118,12 +127,20 @@ const ComponentForm = ({
   );
 
   const phaseOptions = usePhaseOptions(optionsData);
-  const [component, phase, completionDate, subcomponents, signal] = watch([
+  const [
+    component,
+    phase,
+    completionDate,
+    subcomponents,
+    signal,
+    schoolBeacon,
+  ] = watch([
     "component",
     "phase",
     "completionDate",
     "subcomponents",
     "signal",
+    "schoolBeacon",
   ]);
 
   const isPhaseNameSimpleComplete = isPhaseOptionSimpleComplete(phase);
@@ -131,7 +148,10 @@ const ComponentForm = ({
   const assetFeatureTable =
     component?.data?.asset_feature_layer?.internal_table;
   const isSignalComponent = assetFeatureTable === "feature_signals";
+  const isSchoolZoneBeacon = assetFeatureTable === "feature_school_beacons";
   const componentTagsOptions = useComponentTagsOptions(optionsData);
+  const hasGeometry =
+    (isSignalComponent && signal) || (isSchoolZoneBeacon && schoolBeacon);
 
   const workTypeOptions = useWorkTypeOptions(
     component?.value,
@@ -194,9 +214,16 @@ const ComponentForm = ({
     parentValue: watch("signal"),
     dependentFieldName: "locationDescription",
     comparisonVariable: "properties.id",
-    valueToSet: signal
-      ? // if the signal exists and the locationDescription is empty, set to option label
-        getSignalOptionLabel(signal)
+    valueToSet: signal ? getSignalOptionLabel(signal) : "",
+    setValue,
+  });
+
+  useResetDependentFieldOnParentFieldChange({
+    parentValue: watch("schoolBeacon"),
+    dependentFieldName: "locationDescription",
+    comparisonVariable: "properties.id",
+    valueToSet: schoolBeacon
+      ? getSchoolZoneBeaconOptionLabel(schoolBeacon)
       : "",
     setValue,
   });
@@ -238,9 +265,33 @@ const ComponentForm = ({
               control={control}
               shouldUnregister={true}
               render={({ field }) => (
-                <SignalComponentAutocomplete
+                <KnackComponentAutocomplete
                   {...field}
+                  componentLabel="Signal"
                   signalType={component?.data?.component_subtype}
+                  socrataEndpoint={SOCRATA_ENDPOINT}
+                  isOptionEqualToValue={getSignalOptionSelected}
+                  getOptionLabel={getSignalOptionLabel}
+                />
+              )}
+            />
+          </Grid>
+        )}
+        {isSchoolZoneBeacon && (
+          <Grid item xs={12}>
+            <Controller
+              id="school_beacon"
+              name="schoolBeacon"
+              control={control}
+              shouldUnregister={true}
+              render={({ field }) => (
+                <KnackComponentAutocomplete
+                  {...field}
+                  componentLabel="School Zone Beacon"
+                  signalType={null}
+                  socrataEndpoint={SOCRATA_ENDPOINT_SCHOOL_BEACONS}
+                  isOptionEqualToValue={getSchoolZoneBeaconOptionSelected}
+                  getOptionLabel={getSchoolZoneBeaconOptionLabel}
                 />
               )}
             />
@@ -406,7 +457,7 @@ const ComponentForm = ({
             type="submit"
             disabled={!isDirty || areFormErrors}
           >
-            {isSignalComponent && signal ? "Save" : formButtonText}
+            {hasGeometry ? "Save" : formButtonText}
           </Button>
         </Grid>
       </Grid>

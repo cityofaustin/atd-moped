@@ -15,6 +15,7 @@ import {
   makeSubphaseFormFieldValue,
   makeTagFormFieldValues,
   makeWorkTypesFormFieldValues,
+  makeSchoolBeaconFormFieldValue,
 } from "./utils/form";
 
 const EditAttributesModal = ({
@@ -77,8 +78,13 @@ const EditAttributesModal = ({
       : [];
 
     const signalFromForm = formData.signal;
-    const { signalsToCreate, featureIdsToDelete } =
-      getFeatureChangesFromComponentForm(signalFromForm, clickedComponent);
+    const schoolBeaconFromForm = formData.schoolBeacon;
+    const { signalsToCreate, schoolBeaconsToCreate, featureIdsToDelete } =
+      getFeatureChangesFromComponentForm(
+        signalFromForm,
+        schoolBeaconFromForm,
+        clickedComponent
+      );
 
     updateComponentAttributes({
       variables: {
@@ -88,6 +94,7 @@ const EditAttributesModal = ({
         subcomponents: subcomponentsArray,
         workTypes: workTypesArray,
         signalsToCreate: signalsToCreate,
+        schoolBeaconsToCreate: schoolBeaconsToCreate,
         featureIdsToDelete: featureIdsToDelete,
         phaseId: phase?.value,
         subphaseId: subphase?.value,
@@ -106,6 +113,13 @@ const EditAttributesModal = ({
             { type: "FeatureCollection", features: [signalFromForm] },
             fitBoundsOptions.zoomToClickedComponent
           );
+        // Or zoom to new beacon location
+        schoolBeaconsToCreate.length > 0 &&
+          zoomMapToFeatureCollection(
+            mapRef,
+            { type: "FeatureCollection", features: [schoolBeaconFromForm] },
+            fitBoundsOptions.zoomToClickedComponent
+          );
       })
       .catch((error) => {
         console.error(error);
@@ -113,8 +127,7 @@ const EditAttributesModal = ({
   };
 
   const onClose = (event, reason) => {
-    if (reason && reason === "backdropClick")
-      return;
+    if (reason && reason === "backdropClick") return;
     editDispatch({ type: "cancel_attributes_edit" });
   };
 
@@ -151,6 +164,7 @@ const EditAttributesModal = ({
           : "-",
         projectComponentId: clickedComponent.project_component_id,
         componentLength: clickedComponent.component_length,
+        schoolBeacon: makeSchoolBeaconFormFieldValue(clickedComponent),
       }
     : null;
 
