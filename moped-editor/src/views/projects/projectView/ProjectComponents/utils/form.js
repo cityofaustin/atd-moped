@@ -141,6 +141,14 @@ export const useWorkTypeOptions = (componentId, optionsData) =>
   }, [componentId, optionsData]);
 
 /**
+ * Take a phase option record and check if it is has "Complete" for phase name simple
+ * @param {Object} phase Phase option chosen from the phase autocomplete or from the existing phase data
+ * @returns {Boolean} true if the phase's simple name is "Complete", false otherwise
+ */
+export const isPhaseOptionSimpleComplete = (phase) =>
+  Boolean(phase?.data?.phase_name_simple === "Complete");
+
+/**
  * Take the moped_phases records data response and create options for a MUI autocomplete
  * @param {Object} data Data returned with moped_phases records
  * @returns {Array} The options with value, label, and full data object to produce the phases options
@@ -386,7 +394,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
       return;
     }
 
-    setValue(dependentFieldName, valueToSet);
+    setValue(dependentFieldName, valueToSet, { shouldValidate: true });
     setPreviousParentValue(parentValue);
   }, [
     parentValue,

@@ -27,6 +27,7 @@ import {
   useResetDependentFieldOnParentFieldChange,
   getOptionLabel,
   isOptionEqualToValue,
+  isPhaseOptionSimpleComplete,
 } from "./utils/form";
 import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
@@ -55,7 +56,18 @@ const validationSchema = yup.object().shape({
   phase: yup.object().nullable().optional(),
   subphase: yup.object().nullable().optional(),
   tags: yup.array().optional(),
-  completionDate: yup.date().nullable().optional(),
+  completionDate: yup
+    .date()
+    .nullable()
+    .optional()
+    .when("phase", {
+      is: (phase) => isPhaseOptionSimpleComplete(phase),
+      then: yup
+        .date()
+        .required(
+          "Required if a phase with phase name simple of Complete is selected"
+        ),
+    }),
   description: yup.string().nullable().optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
@@ -113,6 +125,8 @@ const ComponentForm = ({
     "subcomponents",
     "signal",
   ]);
+
+  const isPhaseNameSimpleComplete = isPhaseOptionSimpleComplete(phase);
   const subphaseOptions = useSubphaseOptions(phase?.data.moped_subphases);
   const assetFeatureTable =
     component?.data?.asset_feature_layer?.internal_table;
@@ -137,6 +151,14 @@ const ComponentForm = ({
     dependentFieldName: "subphase",
     comparisonVariable: "value",
     valueToSet: defaultFormValues.subphase,
+    setValue,
+  });
+
+  useResetDependentFieldOnParentFieldChange({
+    parentValue: watch("phase"),
+    dependentFieldName: "completionDate",
+    comparisonVariable: "value",
+    valueToSet: defaultFormValues.completionDate,
     setValue,
   });
 
@@ -344,24 +366,31 @@ const ComponentForm = ({
                 />
               </Grid>
             )}
-            <Grid item xs={12}>
-              <Controller
-                id="completion-date"
-                name="completionDate"
-                control={control}
-                render={({ field }) => {
-                  return (
-                    <DateFieldEditComponent
-                      {...field}
-                      value={field.value}
-                      onChange={field.onChange}
-                      variant="outlined"
-                      label={"Completion date"}
-                    />
-                  );
-                }}
-              />
-            </Grid>
+            {(isPhaseNameSimpleComplete || completionDate) && (
+              <Grid item xs={12}>
+                <Controller
+                  id="completion-date"
+                  name="completionDate"
+                  control={control}
+                  render={({ field }) => {
+                    return (
+                      <DateFieldEditComponent
+                        {...field}
+                        value={field.value}
+                        onChange={field.onChange}
+                        variant="outlined"
+                        label={"Completion date"}
+                        textFieldProps={{
+                          helperText: errors?.completionDate?.message,
+                          error: Boolean(errors?.completionDate),
+                          size: "small",
+                        }}
+                      />
+                    );
+                  }}
+                />
+              </Grid>
+            )}
           </>
         )}
       </Grid>

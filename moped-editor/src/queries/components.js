@@ -34,13 +34,14 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
     moped_phases(order_by: { phase_order: asc }) {
       phase_name
       phase_id
+      phase_name_simple
       moped_subphases {
         subphase_id
         subphase_name
       }
     }
     moped_component_tags(
-      order_by: [{ type: asc }, {name: asc}]
+      order_by: [{ type: asc }, { name: asc }]
       where: { is_deleted: { _eq: false } }
     ) {
       name
@@ -104,6 +105,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
     moped_phase {
       phase_id
       phase_name
+      phase_name_simple
       moped_subphases {
         subphase_id
         subphase_name
