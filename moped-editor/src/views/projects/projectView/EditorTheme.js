@@ -11,8 +11,6 @@
  *
  */
 
-// import {EditorThemeClasses} from 'lexical';
-
 import './EditorTheme.css';
 
 const theme = {
