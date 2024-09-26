@@ -1,3 +1,4 @@
+// Generated with patch-package to fix our build when using Lexical with React v17
 diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
 index e465d8e..af64fc3 100644
 --- a/node_modules/react-scripts/config/webpack.config.js
