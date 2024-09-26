@@ -81,6 +81,7 @@ const RICH_TEXT_OPTIONS = [
     return hasListType;
   };
 
+  // Checks whether the selection includes a link
   const checkLink = (selection) => {
     let isLink = false;
     const selectedNodes = selection.getNodes();
