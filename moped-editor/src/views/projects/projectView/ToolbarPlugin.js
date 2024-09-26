@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import {
-  Box,
-  ButtonGroup,
-  Button,
-} from "@mui/material";
+import { Box, ButtonGroup, Button } from "@mui/material";
 import {
   FormatBold,
   FormatItalic,
@@ -12,7 +8,7 @@ import {
   FormatListBulleted,
   FormatListNumbered,
   Link,
-  FormatClear
+  FormatClear,
 } from "@mui/icons-material";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
@@ -21,10 +17,14 @@ import {
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
   SELECTION_CHANGE_COMMAND,
-  COMMAND_PRIORITY_LOW
+  COMMAND_PRIORITY_LOW,
 } from "lexical";
 import { mergeRegister } from "@lexical/utils";
-import { INSERT_ORDERED_LIST_COMMAND, INSERT_UNORDERED_LIST_COMMAND, REMOVE_LIST_COMMAND } from "@lexical/list";
+import {
+  INSERT_ORDERED_LIST_COMMAND,
+  INSERT_UNORDERED_LIST_COMMAND,
+  REMOVE_LIST_COMMAND,
+} from "@lexical/list";
 import { TOGGLE_LINK_COMMAND, $isLinkNode } from "@lexical/link";
 
 const richTextAction = {
@@ -35,13 +35,17 @@ const richTextAction = {
   bullet: "bullet",
   link: "link",
   divider: "divider",
-  clear: "clear"
-}
+  clear: "clear",
+};
 
 const RICH_TEXT_OPTIONS = [
   { id: richTextAction.bold, icon: <FormatBold />, label: "Bold" },
   { id: richTextAction.italics, icon: <FormatItalic />, label: "Italics" },
-  { id: richTextAction.underline, icon: <FormatUnderlined />, label: "Underline" },
+  {
+    id: richTextAction.underline,
+    icon: <FormatUnderlined />,
+    label: "Underline",
+  },
   { id: richTextAction.divider },
   {
     id: richTextAction.number,
@@ -66,33 +70,33 @@ const RICH_TEXT_OPTIONS = [
   },
 ];
 
-  // Iterate through selected node and parent nodes and returns any applicable list type
-  const checkListType = (selection, listType) => {
-    let hasListType = false;
-    const selectedNodes = selection.getNodes();
-    selectedNodes.forEach((node) => {
-      const nodeParents = node.getParents();
-      nodeParents.forEach((parent) => {
-        if (parent.__listType === listType) {
-          hasListType = true;
-        }
-      })
-    })
-    return hasListType;
-  };
-
-  // Checks whether the selection includes a link
-  const checkLink = (selection) => {
-    let isLink = false;
-    const selectedNodes = selection.getNodes();
-    selectedNodes.forEach((selectedNode) => {
-      const selectedNodeParent = selectedNode.getParent()
-      if ($isLinkNode(selectedNodeParent)) {
-        isLink = true
+// Iterate through selected node and parent nodes and returns any applicable list type
+const checkListType = (selection, listType) => {
+  let hasListType = false;
+  const selectedNodes = selection.getNodes();
+  selectedNodes.forEach((node) => {
+    const nodeParents = node.getParents();
+    nodeParents.forEach((parent) => {
+      if (parent.__listType === listType) {
+        hasListType = true;
       }
-    })
-    return isLink;
-  };
+    });
+  });
+  return hasListType;
+};
+
+// Checks whether the selection includes a link
+const checkLink = (selection) => {
+  let isLink = false;
+  const selectedNodes = selection.getNodes();
+  selectedNodes.forEach((selectedNode) => {
+    const selectedNodeParent = selectedNode.getParent();
+    if ($isLinkNode(selectedNodeParent)) {
+      isLink = true;
+    }
+  });
+  return isLink;
+};
 
 const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   const [editor] = useLexicalComposerContext();
@@ -100,19 +104,22 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   const [selectionMap, setSelectionMap] = useState({});
 
   // Checks for selected list formatting, removes if already applied or adds if not applied
-  const handleListUpdate = useCallback((command, listType) => {
-    const isListApplied = selectionMap[listType];
-    isListApplied ?
-      editor.dispatchCommand(REMOVE_LIST_COMMAND) :
-      editor.dispatchCommand(command);
-  }, [editor, selectionMap]);
+  const handleListUpdate = useCallback(
+    (command, listType) => {
+      const isListApplied = selectionMap[listType];
+      isListApplied
+        ? editor.dispatchCommand(REMOVE_LIST_COMMAND)
+        : editor.dispatchCommand(command);
+    },
+    [editor, selectionMap]
+  );
 
   const handleLinkUpdate = useCallback(() => {
     editor.update(() => {
       const isLinkApplied = selectionMap["link"];
       const selection = $getSelection();
       const textContent = selection.getTextContent();
-   
+
       isLinkApplied
         ? editor.dispatchCommand(TOGGLE_LINK_COMMAND, null) // Remove link if already applied
         : editor.dispatchCommand(TOGGLE_LINK_COMMAND, textContent); // Make selected text into a link
@@ -129,50 +136,53 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
         [richTextAction.number]: checkListType(selection, "number"),
         [richTextAction.bullet]: checkListType(selection, "bullet"),
         [richTextAction.link]: checkLink(selection),
-      }
-      setSelectionMap(newSelectionMap)
+      };
+      setSelectionMap(newSelectionMap);
     }
   }, []);
 
   const getSelectedButtonProps = (isSelected) =>
     isSelected
       ? {
-        className: classes.toolbarButtons
-      }
+          className: classes.toolbarButtons,
+        }
       : {};
 
-  const onAction = useCallback((id) => {
-    switch (id) {
-      case "bold":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
-        break;
-      case "italics":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
-        break;
-      case "underline":
-        editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
-        break;
-      case "number":
-        handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
-        break;
-      case "bullet":
-        handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
-        break;
-      case "link":
-        handleLinkUpdate();
-        break;
-      case "clear":
-        const formatTypes = Object.keys(selectionMap);
-        formatTypes.forEach((formatType) => {
-          if (selectionMap[formatType]) {
-            onAction(formatType);
-          }
-        });
-        break;
-      default:
-        break;
-    }
-  }, [editor, handleLinkUpdate, handleListUpdate, selectionMap])
+  const onAction = useCallback(
+    (id) => {
+      switch (id) {
+        case "bold":
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
+          break;
+        case "italics":
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
+          break;
+        case "underline":
+          editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
+          break;
+        case "number":
+          handleListUpdate(INSERT_ORDERED_LIST_COMMAND, "number");
+          break;
+        case "bullet":
+          handleListUpdate(INSERT_UNORDERED_LIST_COMMAND, "bullet");
+          break;
+        case "link":
+          handleLinkUpdate();
+          break;
+        case "clear":
+          const formatTypes = Object.keys(selectionMap);
+          formatTypes.forEach((formatType) => {
+            if (selectionMap[formatType]) {
+              onAction(formatType);
+            }
+          });
+          break;
+        default:
+          break;
+      }
+    },
+    [editor, handleLinkUpdate, handleListUpdate, selectionMap]
+  );
 
   useEffect(() => {
     // Update toolbar and other UI elements when certain commands are sent or
@@ -183,7 +193,7 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           updateToolbar();
-        })
+        });
       }),
       editor.registerCommand(
         SELECTION_CHANGE_COMMAND,
@@ -192,7 +202,8 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
           return false;
         },
         COMMAND_PRIORITY_LOW
-      ))
+      )
+    );
   }, [editor, updateToolbar]);
 
   // Clear editor formatting when note is saved successfully
@@ -203,15 +214,8 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
   }, [noteAddSuccess, onAction]);
 
   return (
-    <Box
-      paddingTop="16px"
-      display="flex"
-      justifyContent="left"
-    >
-      <ButtonGroup
-        size="xs"
-        variant="ghost"
-      >
+    <Box paddingTop="16px" display="flex" justifyContent="left">
+      <ButtonGroup size="xs" variant="ghost">
         {RICH_TEXT_OPTIONS.map(({ id, label, icon }, key) =>
           id === richTextAction.divider ? (
             <Button key={key} disabled />
@@ -229,6 +233,6 @@ const ToolbarPlugin = ({ noteAddSuccess, classes }) => {
       </ButtonGroup>
     </Box>
   );
-}
+};
 
 export default ToolbarPlugin;
