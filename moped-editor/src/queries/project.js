@@ -950,6 +950,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       funding_source_id
       funding_source_name
     }
+    moped_fund_programs {
+      funding_program_id
+      funding_program_name
+    }
     moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
