@@ -26,7 +26,7 @@ const theme = createTheme(adaptV4Theme({
     },
     text: {
       primary: "#212121",
-      secondary: "#848484",
+      secondary: "#666666",
       header: "#848484",
     },
     map: {
