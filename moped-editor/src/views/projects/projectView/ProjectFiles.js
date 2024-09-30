@@ -1,8 +1,7 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 
 import {
-  Button,
   CardContent,
   CircularProgress,
   Link,
@@ -17,15 +16,13 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
 import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar,
 } from "@material-table/core";
 import {
-  AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   DataGridPro,
   GridRowModes,
@@ -54,6 +51,8 @@ import {
   makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
+import ProjectFilesToolbar from "./ProjectWorkActivity/ProjectFilesToolbar";
+import DataGridTextField from "./DataGridTextField";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -82,24 +81,27 @@ const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
 const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
-const useColumns = ({classes, token}) =>
+const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveClick, handleCancelClick}) =>
   useMemo(() => {
     return [
       {
         headerName: "Name",
         field: "file_name",
         width: 150,
+        editable: true,
         // validate: (rowData) => {
         //   return rowData.file_name.length > 0 ? true : false;
         // },
         renderEditCell: (props) => (
-          <TextField
-            variant="standard"
-            id="file_name"
-            name="file_name"
-            value={props.value}
-            onChange={(e) => props.onChange(e.target.value.trim())}
+          <DataGridTextField 
             helperText="Required"
+            {...props}
+            // variant="standard"
+            // id="file_name"
+            // name="file_name"
+            // value={props.value}
+            // onChange={(e) => props.onChange(e.target.value.trim())}
+            // helperText="Required"
           />
         ),
       },
@@ -107,11 +109,11 @@ const useColumns = ({classes, token}) =>
         headerName: "File",
         field: "file_url",
         width: 275,
+        editable: true,
         // validate: (rowData) => {
         //   return rowData.file_name.length > 0 ? true : false;
         // },
         renderCell: ({row}) => {
-          console.log(row)
           if (row.file_key) {
             return (
               <Link
@@ -135,20 +137,25 @@ const useColumns = ({classes, token}) =>
             </Typography>
           );
         },
-        editComponent: (props) =>
+        renderEditCell: ({row}, props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
-          props.rowData.file_key ? (
-            <Typography>{cleanUpFileKey(props.rowData.file_key)}</Typography>
+          row.file_key ? (
+            <Typography>{cleanUpFileKey(row.file_key)}</Typography>
           ) : (
-            <TextField
-              variant="standard"
-              id="file_path"
-              name="file_path"
-              value={props.value}
-              onChange={(e) => props.onChange(e.target.value.trim())}
-              helperText="Required"
-              disabled={!!props.rowData.file_key}
+            <DataGridTextField 
+            helperText="Required"
+            disabled={!!row.file_key}
+            {...props} 
             />
+            // <TextField
+            //   variant="standard"
+            //   id="file_path"
+            //   name="file_path"
+            //   value={row.file_url}
+            //   // onChange={(e) => props.onChange(e.target.value.trim())}
+            //   helperText="Required"
+            //   disabled={!!row.file_key}
+            // />
           ),
       },
       {
@@ -176,21 +183,23 @@ const useColumns = ({classes, token}) =>
       {
         headerName: "Description",
         field: "file_description",
+        editable: true,
         width: 200,
-        editComponent: (props) => (
-          <TextField
-            variant="standard"
-            id="file_description"
-            name="file_description"
-            value={props?.value ?? ""}
-            onChange={(e) => props.onChange(e.target.value)}
+        renderEditCell: (props) => (
+          <DataGridTextField
+            {...props}
+            // variant="standard"
+            // id="file_description"
+            // name="file_description"
+            // value={props?.value ?? ""}
+            // onChange={(e) => props.onChange(e.target.value)}
           />
         ),
       },
       {
         headerName: "Uploaded by",
         field: "moped_user",
-        width: 200,
+        width: 150,
         renderCell: ({row}) => (
           <span>
             {row?.created_by_user_id
@@ -227,8 +236,55 @@ const useColumns = ({classes, token}) =>
           </span>
         ),
       },
+      {
+        headerName: "",
+        field: "edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
+        editable: false,
+        type: "actions",
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+          return [
+            <GridActionsCellItem
+              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              label="Delete"
+              // onClick={() => handleDeleteOpen(id)}
+              onClick={()=>console.log("hi")}
+              color="inherit"
+            />,
+          ];
+        },
+      },
     ];
-  }, [classes]);
+  }, [classes, token, rowModesModel, handleSaveClick, handleCancelClick, handleEditClick]);
 
 /**
  * Renders a list of file attachments for a project
@@ -236,11 +292,15 @@ const useColumns = ({classes, token}) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = (props) => {
+const ProjectFiles = () => {
+  const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
   const { user } = useUser();
   const token = getJwt(user);
+  // rows and rowModesModel used in DataGrid
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
 
   /**
    * @constant {boolean} dialogOpen - True to make the save dialog visible
@@ -297,12 +357,11 @@ const ProjectFiles = (props) => {
     fetchPolicy: "no-cache",
   });
 
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
-  const addActionRef = React.useRef();
-
+  useEffect(() => {
+    if (data && data.moped_project_files.length > 0) {
+      setRows(data.moped_project_files);
+    }
+  }, [data]);
   /**
    * Mutations
    */
@@ -318,15 +377,42 @@ const ProjectFiles = (props) => {
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    [rowModesModel]
+  );
+
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel]
+  );
+
+    // when a user cancels editing by clicking the X in the actions
+    const handleCancelClick = (id) => () => {
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      });
+    };
+
   const dataGridColumns = useColumns({
     classes,
-    token
-    // rowModesModel,
+    token,
+    rowModesModel,
     // handleDeleteOpen,
-    // handleSaveClick,
-    // handleCancelClick,
-    // handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
   });
+
 
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
@@ -475,7 +561,7 @@ const ProjectFiles = (props) => {
     },
   ];
 
-  console.log(data)
+
 
   return (
     <CardContent>
@@ -483,54 +569,6 @@ const ProjectFiles = (props) => {
         <MaterialTable
           columns={columns}
           data={data?.moped_project_files ?? null}
-          title={
-            <Typography variant="h2" color="primary">
-              Files
-            </Typography>
-          }
-          // Action component customized as described in this gh-issue:
-          // https://github.com/mbrn/material-table/issues/2133
-          components={{
-            EditRow: (props) => (
-              <MTableEditRow
-                {...props}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                    // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                  }
-                }}
-              />
-            ),
-            Action: (props) => {
-              // If isn't the add action
-              if (
-                typeof props.action === typeof Function ||
-                props.action.tooltip !== "Add"
-              ) {
-                return <MTableAction {...props} />;
-              } else {
-                return (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.uploadFileButton}
-                    startIcon={<AddCircleIcon />}
-                    ref={addActionRef}
-                    onClick={handleClickUploadFile}
-                  >
-                    Add file
-                  </Button>
-                );
-              }
-            },
-            Toolbar: (props) => (
-              // to have it align with table content
-              <div style={{ marginLeft: "-10px" }}>
-                <MTableToolbar {...props} />
-              </div>
-            ),
-          }}
           icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
           options={{
             ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
@@ -540,16 +578,6 @@ const ProjectFiles = (props) => {
             rowStyle: { fontFamily: typography.fontFamily },
             actionsColumnIndex: -1,
             idSynonym: "project_file_id",
-          }}
-          localization={{
-            header: {
-              actions: "",
-            },
-            body: {
-              emptyDataSourceMessage: (
-                <Typography variant="body1">No files to display</Typography>
-              ),
-            },
           }}
           editable={{
             onRowAdd: () => {
@@ -581,39 +609,31 @@ const ProjectFiles = (props) => {
           sx={dataGridProStyleOverrides}
           // apiRef={apiRef}
           // ref={apiRef}
-          // autoHeight
+          autoHeight
           columns={dataGridColumns}
-          rows={data?.moped_project_files }
+          rows={rows}
           getRowId={(row) => row.project_file_id}
-          // editMode="row"
-          // rowModesModel={rowModesModel}
-          // onRowModesModelChange={handleRowModesModelChange}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
           // processRowUpdate={processRowUpdate}
           // onProcessRowUpdateError={handleProcessUpdateError}
-          // disableRowSelectionOnClick
-          // toolbar
-          // density="comfortable"
-          // getRowHeight={() => "auto"}
-          // hideFooter
+          disableRowSelectionOnClick
+          toolbar
+          density="comfortable"
+          getRowHeight={() => "auto"}
+          hideFooter
           // onCellKeyDown={handleTabKeyDown}
-          // localeText={{ noRowsLabel: "No funding sources" }}
-          // initialState={{ pinnedColumns: { right: ["edit"] } }}
-          // slots={{
-          //   toolbar: ProjectFundingToolbar,
-          // }}
-          // slotProps={{
-          //   toolbar: {
-          //     onClick: handleAddRecordClick,
-          //     projectId: projectId,
-          //     eCaprisID: eCaprisID,
-          //     data: data,
-          //     refetch: refetch,
-          //     snackbarHandle: snackbarHandle,
-          //     classes: classes,
-          //     noWrapper: true,
-          //     setIsDialogOpen: setIsDialogOpen,
-          //   },
-          // }}
+          localeText={{ noRowsLabel: "No files to display" }}
+          initialState={{ pinnedColumns: { right: ["edit"] } }}
+          slots={{
+            toolbar: ProjectFilesToolbar,
+          }}
+          slotProps={{
+            toolbar: {
+              onClick: handleClickUploadFile,
+            },
+          }}
         />
       </ApolloErrorHandler>
       <FileUploadDialogSingle
