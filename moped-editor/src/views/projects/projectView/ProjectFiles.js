@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useParams } from "react-router-dom";
 
 import {
@@ -26,6 +26,14 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
+import {
+  DataGridPro,
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiRef,
+  gridColumnFieldsSelector,
+} from "@mui/x-data-grid-pro";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -47,7 +55,7 @@ import {
 } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   title: {
     padding: "0rem 0 2rem 0",
   },
@@ -66,6 +74,161 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px"
   },
 }));
+
+
+const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
+
+// remove the FilePond and s3 added path for display, ex:
+// 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
+const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
+
+const useColumns = ({classes, token}) =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "Name",
+        field: "file_name",
+        width: 150,
+        // validate: (rowData) => {
+        //   return rowData.file_name.length > 0 ? true : false;
+        // },
+        renderEditCell: (props) => (
+          <TextField
+            variant="standard"
+            id="file_name"
+            name="file_name"
+            value={props.value}
+            onChange={(e) => props.onChange(e.target.value.trim())}
+            helperText="Required"
+          />
+        ),
+      },
+      {
+        headerName: "File",
+        field: "file_url",
+        width: 275,
+        // validate: (rowData) => {
+        //   return rowData.file_name.length > 0 ? true : false;
+        // },
+        renderCell: ({row}) => {
+          console.log(row)
+          if (row.file_key) {
+            return (
+              <Link
+                className={classes.downloadLink}
+                onClick={() => downloadFileAttachment(row?.file_key, token)}
+              >
+                {cleanUpFileKey(row?.file_key)}
+              </Link>
+            );
+          }
+          return isValidUrl(row?.file_url) ? (
+            <ExternalLink
+              className={classes.downloadLink}
+              url={row?.file_url}
+              text={row?.file_url}
+            />
+          ) : (
+            // if the user provided file_url is not a valid url, just render the text
+            <Typography className={classes.codeStyle}>
+              {row?.file_url}
+            </Typography>
+          );
+        },
+        editComponent: (props) =>
+          // users cannot edit the file_key, since its provided by the FilePond upload interface
+          props.rowData.file_key ? (
+            <Typography>{cleanUpFileKey(props.rowData.file_key)}</Typography>
+          ) : (
+            <TextField
+              variant="standard"
+              id="file_path"
+              name="file_path"
+              value={props.value}
+              onChange={(e) => props.onChange(e.target.value.trim())}
+              helperText="Required"
+              disabled={!!props.rowData.file_key}
+            />
+          ),
+      },
+      {
+        headerName: "Type",
+        field: "file_type",
+        renderCell: ({value}) => <span>{fileTypes[value]}</span>,
+        editComponent: (props) => (
+          <FormControl variant="standard">
+            <Select
+              variant="standard"
+              id="file_description"
+              name="file_description"
+              value={props?.value}
+              onChange={(e) => props.onChange(e.target.value)}
+            >
+              <MenuItem value={1}>Funding</MenuItem>
+              <MenuItem value={2}>Plans</MenuItem>
+              <MenuItem value={3}>Estimates</MenuItem>
+              <MenuItem value={4}>Other</MenuItem>
+            </Select>
+            <FormHelperText>Required</FormHelperText>
+          </FormControl>
+        ),
+      },
+      {
+        headerName: "Description",
+        field: "file_description",
+        width: 200,
+        editComponent: (props) => (
+          <TextField
+            variant="standard"
+            id="file_description"
+            name="file_description"
+            value={props?.value ?? ""}
+            onChange={(e) => props.onChange(e.target.value)}
+          />
+        ),
+      },
+      {
+        headerName: "Uploaded by",
+        field: "moped_user",
+        width: 200,
+        renderCell: ({row}) => (
+          <span>
+            {row?.created_by_user_id
+              ? row?.moped_user?.first_name +
+                " " +
+                row?.moped_user?.last_name
+              : "N/A"}
+          </span>
+        ),
+      },
+      {
+        headerName: "Date uploaded",
+        field: "created_at",
+        width: 200,
+        // customSort: (a, b) =>
+        //   new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
+        renderCell: ({value}) => (
+          <span>
+            {value
+              ? `${formatTimeStampTZType(
+                  value
+                )}, ${makeFullTimeFromTimeStampTZ(value)}`
+              : "N/A"}
+          </span>
+        ),
+      },
+      {
+        headerName: "File size",
+        field: "file_size",
+        // customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
+        renderCell: ({row}) => (
+          <span>
+            {row.file_key ? humanReadableFileSize(row?.file_size ?? 0) : ""}
+          </span>
+        ),
+      },
+    ];
+  }, [classes]);
 
 /**
  * Renders a list of file attachments for a project
@@ -155,14 +318,19 @@ const ProjectFiles = (props) => {
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
+  const dataGridColumns = useColumns({
+    classes,
+    token
+    // rowModesModel,
+    // handleDeleteOpen,
+    // handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+  });
+
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
 
-  const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
-
-  // remove the FilePond and s3 added path for display, ex:
-  // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-  const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
   /**
    * Column configuration for <MaterialTable>
@@ -307,6 +475,8 @@ const ProjectFiles = (props) => {
     },
   ];
 
+  console.log(data)
+
   return (
     <CardContent>
       <ApolloErrorHandler errors={error}>
@@ -406,6 +576,44 @@ const ProjectFiles = (props) => {
                 refetch();
               }),
           }}
+        />
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          // apiRef={apiRef}
+          // ref={apiRef}
+          // autoHeight
+          columns={dataGridColumns}
+          rows={data?.moped_project_files }
+          getRowId={(row) => row.project_file_id}
+          // editMode="row"
+          // rowModesModel={rowModesModel}
+          // onRowModesModelChange={handleRowModesModelChange}
+          // processRowUpdate={processRowUpdate}
+          // onProcessRowUpdateError={handleProcessUpdateError}
+          // disableRowSelectionOnClick
+          // toolbar
+          // density="comfortable"
+          // getRowHeight={() => "auto"}
+          // hideFooter
+          // onCellKeyDown={handleTabKeyDown}
+          // localeText={{ noRowsLabel: "No funding sources" }}
+          // initialState={{ pinnedColumns: { right: ["edit"] } }}
+          // slots={{
+          //   toolbar: ProjectFundingToolbar,
+          // }}
+          // slotProps={{
+          //   toolbar: {
+          //     onClick: handleAddRecordClick,
+          //     projectId: projectId,
+          //     eCaprisID: eCaprisID,
+          //     data: data,
+          //     refetch: refetch,
+          //     snackbarHandle: snackbarHandle,
+          //     classes: classes,
+          //     noWrapper: true,
+          //     setIsDialogOpen: setIsDialogOpen,
+          //   },
+          // }}
         />
       </ApolloErrorHandler>
       <FileUploadDialogSingle
