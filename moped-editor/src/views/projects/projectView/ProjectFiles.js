@@ -15,8 +15,7 @@ import {
 
 import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
-import MaterialTable, {
-} from "@material-table/core";
+import MaterialTable from "@material-table/core";
 import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
@@ -51,7 +50,7 @@ import {
   makeFullTimeFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
-import ProjectFilesToolbar from "./ProjectWorkActivity/ProjectFilesToolbar";
+import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
 
 const useStyles = makeStyles(() => ({
@@ -70,10 +69,9 @@ const useStyles = makeStyles(() => ({
     display: "inline-block",
     paddingLeft: "4px",
     paddingRight: "4px",
-    fontSize: "14px"
+    fontSize: "14px",
   },
 }));
-
 
 const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 
@@ -81,7 +79,14 @@ const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
 const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
-const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveClick, handleCancelClick}) =>
+const useColumns = ({
+  classes,
+  token,
+  rowModesModel,
+  handleEditClick,
+  handleSaveClick,
+  handleCancelClick,
+}) =>
   useMemo(() => {
     return [
       {
@@ -93,7 +98,7 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
         //   return rowData.file_name.length > 0 ? true : false;
         // },
         renderEditCell: (props) => (
-          <DataGridTextField 
+          <DataGridTextField
             helperText="Required"
             {...props}
             // variant="standard"
@@ -113,7 +118,7 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
         // validate: (rowData) => {
         //   return rowData.file_name.length > 0 ? true : false;
         // },
-        renderCell: ({row}) => {
+        renderCell: ({ row }) => {
           if (row.file_key) {
             return (
               <Link
@@ -137,15 +142,15 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
             </Typography>
           );
         },
-        renderEditCell: ({row}, props) =>
+        renderEditCell: ({ row }, props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
           row.file_key ? (
             <Typography>{cleanUpFileKey(row.file_key)}</Typography>
           ) : (
-            <DataGridTextField 
-            helperText="Required"
-            disabled={!!row.file_key}
-            {...props} 
+            <DataGridTextField
+              helperText="Required"
+              disabled={!!row.file_key}
+              {...props}
             />
             // <TextField
             //   variant="standard"
@@ -161,7 +166,7 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
       {
         headerName: "Type",
         field: "file_type",
-        renderCell: ({value}) => <span>{fileTypes[value]}</span>,
+        renderCell: ({ value }) => <span>{fileTypes[value]}</span>,
         editComponent: (props) => (
           <FormControl variant="standard">
             <Select
@@ -200,12 +205,10 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
         headerName: "Uploaded by",
         field: "moped_user",
         width: 150,
-        renderCell: ({row}) => (
+        renderCell: ({ row }) => (
           <span>
             {row?.created_by_user_id
-              ? row?.moped_user?.first_name +
-                " " +
-                row?.moped_user?.last_name
+              ? row?.moped_user?.first_name + " " + row?.moped_user?.last_name
               : "N/A"}
           </span>
         ),
@@ -216,12 +219,12 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
         width: 200,
         // customSort: (a, b) =>
         //   new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
-        renderCell: ({value}) => (
+        renderCell: ({ value }) => (
           <span>
             {value
-              ? `${formatTimeStampTZType(
+              ? `${formatTimeStampTZType(value)}, ${makeFullTimeFromTimeStampTZ(
                   value
-                )}, ${makeFullTimeFromTimeStampTZ(value)}`
+                )}`
               : "N/A"}
           </span>
         ),
@@ -230,7 +233,7 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
         headerName: "File size",
         field: "file_size",
         // customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
-        renderCell: ({row}) => (
+        renderCell: ({ row }) => (
           <span>
             {row.file_key ? humanReadableFileSize(row?.file_size ?? 0) : ""}
           </span>
@@ -277,14 +280,21 @@ const useColumns = ({classes, token, rowModesModel, handleEditClick, handleSaveC
               icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
               label="Delete"
               // onClick={() => handleDeleteOpen(id)}
-              onClick={()=>console.log("hi")}
+              onClick={() => console.log("hi")}
               color="inherit"
             />,
           ];
         },
       },
     ];
-  }, [classes, token, rowModesModel, handleSaveClick, handleCancelClick, handleEditClick]);
+  }, [
+    classes,
+    token,
+    rowModesModel,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
+  ]);
 
 /**
  * Renders a list of file attachments for a project
@@ -395,13 +405,13 @@ const ProjectFiles = () => {
     [rowModesModel]
   );
 
-    // when a user cancels editing by clicking the X in the actions
-    const handleCancelClick = (id) => () => {
-      setRowModesModel({
-        ...rowModesModel,
-        [id]: { mode: GridRowModes.View, ignoreModifications: true },
-      });
-    };
+  // when a user cancels editing by clicking the X in the actions
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
 
   const dataGridColumns = useColumns({
     classes,
@@ -413,10 +423,8 @@ const ProjectFiles = () => {
     handleEditClick,
   });
 
-
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
-
 
   /**
    * Column configuration for <MaterialTable>
@@ -561,8 +569,6 @@ const ProjectFiles = () => {
     },
   ];
 
-
-
   return (
     <CardContent>
       <ApolloErrorHandler errors={error}>
@@ -607,8 +613,8 @@ const ProjectFiles = () => {
         />
         <DataGridPro
           sx={dataGridProStyleOverrides}
-          // apiRef={apiRef}
-          // ref={apiRef}
+          apiRef={apiRef}
+          ref={apiRef}
           autoHeight
           columns={dataGridColumns}
           rows={rows}
