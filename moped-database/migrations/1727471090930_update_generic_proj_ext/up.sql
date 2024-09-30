@@ -4,7 +4,16 @@ WHERE component_name = 'Project Extent - Generic' AND line_representation = true
 
 -- Insert new point component for generic project extent
 INSERT INTO moped_components (component_name, line_representation, feature_layer_id)
-VALUES ('Project Extent - Generic', false, 5);
+SELECT
+    'Project Extent - Generic',
+    false,
+    5
+WHERE NOT EXISTS (
+        SELECT *
+        FROM
+            moped_components
+        WHERE (component_name, line_representation, feature_layer_id) = ('Project Extent - Generic', false, 5)
+    );
 
 -- Insert same work types for generic project extent point as exist for generic project extent line
 WITH inserts_todo AS (
