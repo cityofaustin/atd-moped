@@ -9,7 +9,7 @@ VALUES ('Project Extent - Generic', false, 5);
 -- Insert same work types for generic project extent point as exist for generic project extent line
 WITH inserts_todo AS (
     SELECT
-        mcwt.id AS work_type_id,
+        mcwt.work_type_id AS work_type_id,
         mc.component_id AS component_id
     FROM
         moped_component_work_types AS mcwt,
