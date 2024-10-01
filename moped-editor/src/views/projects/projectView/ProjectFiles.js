@@ -92,11 +92,13 @@ const useColumns = ({
       {
         headerName: "Name",
         field: "file_name",
-        width: 150,
+        width: 175,
         editable: true,
-        // validate: (rowData) => {
-        //   return rowData.file_name.length > 0 ? true : false;
-        // },
+        // validate input
+        preProcessEditCellProps: (params) => {
+          const hasError = params.props.value.trim().length < 1;
+          return { ...params.props, error: hasError };
+        },
         renderEditCell: (props) => (
           <DataGridTextField
             helperText="Required"
@@ -113,11 +115,13 @@ const useColumns = ({
       {
         headerName: "File",
         field: "file_url",
-        width: 275,
+        width: 200,
         editable: true,
-        // validate: (rowData) => {
-        //   return rowData.file_name.length > 0 ? true : false;
-        // },
+        // validate input
+        preProcessEditCellProps: (params) => {
+          const hasError = params.props.value.trim().length < 1;
+          return {...params.props, error:hasError}
+        },
         renderCell: ({ row }) => {
           if (row.file_key) {
             return (
@@ -372,17 +376,13 @@ const ProjectFiles = () => {
       setRows(data.moped_project_files);
     }
   }, [data]);
-  /**
-   * Mutations
-   */
+
   const [updateProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_UPDATE
   );
-
   const [deleteProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_DELETE
   );
-
   const [createProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
@@ -436,7 +436,6 @@ const ProjectFiles = () => {
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
     const updateProjectFileData = updatedRow;
-    console.log(updateProjectFileData);
 
     const hasRowChanged = !isEqual(updatedRow, originalRow);
 
@@ -478,149 +477,6 @@ const ProjectFiles = () => {
 
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
-
-  /**
-   * Column configuration for <MaterialTable>
-   */
-  const columns = [
-    {
-      title: "Name",
-      field: "file_name",
-      validate: (rowData) => {
-        return rowData.file_name.length > 0 ? true : false;
-      },
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="file_name"
-          name="file_name"
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value.trim())}
-          helperText="Required"
-        />
-      ),
-    },
-    {
-      title: "File",
-      field: "file_url",
-      validate: (rowData) => {
-        return rowData.file_name.length > 0 ? true : false;
-      },
-      render: (record) => {
-        if (record.file_key) {
-          return (
-            <Link
-              className={classes.downloadLink}
-              onClick={() => downloadFileAttachment(record?.file_key, token)}
-            >
-              {cleanUpFileKey(record?.file_key)}
-            </Link>
-          );
-        }
-        return isValidUrl(record?.file_url) ? (
-          <ExternalLink
-            className={classes.downloadLink}
-            url={record?.file_url}
-            text={record?.file_url}
-          />
-        ) : (
-          // if the user provided file_url is not a valid url, just render the text
-          <Typography className={classes.codeStyle}>
-            {record?.file_url}
-          </Typography>
-        );
-      },
-      editComponent: (props) =>
-        // users cannot edit the file_key, since its provided by the FilePond upload interface
-        props.rowData.file_key ? (
-          <Typography>{cleanUpFileKey(props.rowData.file_key)}</Typography>
-        ) : (
-          <TextField
-            variant="standard"
-            id="file_path"
-            name="file_path"
-            value={props.value}
-            onChange={(e) => props.onChange(e.target.value.trim())}
-            helperText="Required"
-            disabled={!!props.rowData.file_key}
-          />
-        ),
-    },
-    {
-      title: "Type",
-      field: "file_type",
-      render: (record) => <span>{fileTypes[record?.file_type]}</span>,
-      editComponent: (props) => (
-        <FormControl variant="standard">
-          <Select
-            variant="standard"
-            id="file_description"
-            name="file_description"
-            value={props?.value}
-            onChange={(e) => props.onChange(e.target.value)}
-          >
-            <MenuItem value={1}>Funding</MenuItem>
-            <MenuItem value={2}>Plans</MenuItem>
-            <MenuItem value={3}>Estimates</MenuItem>
-            <MenuItem value={4}>Other</MenuItem>
-          </Select>
-          <FormHelperText>Required</FormHelperText>
-        </FormControl>
-      ),
-    },
-    {
-      title: "Description",
-      field: "file_description",
-      render: (record) => <span>{record?.file_description}</span>,
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="file_description"
-          name="file_description"
-          value={props?.value ?? ""}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Uploaded by",
-      cellStyle: { fontFamily: typography.fontFamily },
-      render: (record) => (
-        <span>
-          {record?.created_by_user_id
-            ? record?.moped_user?.first_name +
-              " " +
-              record?.moped_user?.last_name
-            : "N/A"}
-        </span>
-      ),
-    },
-    {
-      title: "Date uploaded",
-      cellStyle: { fontFamily: typography.fontFamily },
-      customSort: (a, b) =>
-        new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
-      render: (record) => (
-        <span>
-          {record?.created_at
-            ? `${formatTimeStampTZType(
-                record.created_at
-              )}, ${makeFullTimeFromTimeStampTZ(record.created_at)}`
-            : "N/A"}
-        </span>
-      ),
-    },
-    {
-      title: "File size",
-      cellStyle: { fontFamily: typography.fontFamily },
-      customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
-      render: (record) => (
-        <span>
-          {record.file_key ? humanReadableFileSize(record?.file_size ?? 0) : ""}
-        </span>
-      ),
-    },
-  ];
 
   return (
     <CardContent>

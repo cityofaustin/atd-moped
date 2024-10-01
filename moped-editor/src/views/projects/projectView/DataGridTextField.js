@@ -8,7 +8,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} field - name of field
  * @return {JSX.Element}
  */
-const DataGridTextField = ({ id, value, field, hasFocus, helperText }) => {
+const DataGridTextField = ({ id, value, field, hasFocus, helperText, error }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -39,6 +39,7 @@ const DataGridTextField = ({ id, value, field, hasFocus, helperText }) => {
       value={value ?? ""}
       onChange={handleChange}
       helperText={!!helperText && helperText}
+      error={error}
     />
   );
 };
