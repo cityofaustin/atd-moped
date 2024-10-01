@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import isEqual from "lodash/isEqual";
 
 import {
   CardContent,
@@ -15,7 +16,6 @@ import {
 
 import makeStyles from "@mui/styles/makeStyles";
 import typography from "../../../theme/typography";
-import MaterialTable from "@material-table/core";
 import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
@@ -44,7 +44,6 @@ import {
 } from "../../../queries/project";
 import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
 import {
   formatTimeStampTZType,
   makeFullTimeFromTimeStampTZ,
@@ -434,6 +433,39 @@ const ProjectFiles = () => {
     [rows, deleteProjectFileAttachment, refetch]
   );
 
+  // saves row update, either editing an existing row or saving a new row
+  const processRowUpdate = (updatedRow, originalRow) => {
+    const updateProjectFileData = updatedRow;
+    console.log(updateProjectFileData);
+
+    const hasRowChanged = !isEqual(updatedRow, originalRow);
+
+    if (!hasRowChanged) {
+      return Promise.resolve(updatedRow);
+    } else {
+      return (
+        updateProjectFileAttachment({
+          variables: {
+            fileId: updatedRow.project_file_id,
+            fileType: updatedRow.file_type,
+            fileName: updatedRow.file_name || null,
+            fileDescription: updatedRow.file_description.trim() || null,
+            fileUrl: updatedRow.file_url || null,
+          },
+        })
+          .then(() => refetch())
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
+          .catch((error) => console.error(error))
+      );
+    }
+  };
+
+  const handleProcessUpdateError = (error) => {
+    console.error(error);
+  };
+
   const dataGridColumns = useColumns({
     classes,
     token,
@@ -593,37 +625,6 @@ const ProjectFiles = () => {
   return (
     <CardContent>
       <ApolloErrorHandler errors={error}>
-        <MaterialTable
-          columns={columns}
-          data={data?.moped_project_files ?? null}
-          icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
-          options={{
-            ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
-              paging: false,
-            }),
-            search: false,
-            rowStyle: { fontFamily: typography.fontFamily },
-            actionsColumnIndex: -1,
-            idSynonym: "project_file_id",
-          }}
-          editable={{
-            onRowAdd: () => {
-              handleClickUploadFile();
-            },
-            onRowUpdate: (newData, oldData) =>
-              updateProjectFileAttachment({
-                variables: {
-                  fileId: newData.project_file_id,
-                  fileType: newData.file_type,
-                  fileName: newData.file_name || null,
-                  fileDescription: newData.file_description.trim() || null,
-                  fileUrl: newData.file_url || null,
-                },
-              }).then(() => {
-                refetch();
-              }),
-          }}
-        />
         <DataGridPro
           sx={dataGridProStyleOverrides}
           apiRef={apiRef}
@@ -635,8 +636,8 @@ const ProjectFiles = () => {
           editMode="row"
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
-          // processRowUpdate={processRowUpdate}
-          // onProcessRowUpdateError={handleProcessUpdateError}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessUpdateError}
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
