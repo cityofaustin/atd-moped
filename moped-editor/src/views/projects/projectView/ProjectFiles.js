@@ -2,16 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 
-import {
-  CardContent,
-  CircularProgress,
-  Link,
-  Typography,
-  FormControl,
-  Select,
-  MenuItem,
-  FormHelperText,
-} from "@mui/material";
+import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 import {
@@ -25,7 +16,6 @@ import {
   GridRowModes,
   GridActionsCellItem,
   useGridApiRef,
-  gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
