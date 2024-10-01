@@ -20,7 +20,6 @@ funding_sources_lookup AS (
     SELECT
         mpf.project_id,
         string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
-        string_agg(DISTINCT mfp.funding_program_name, ', '::text ORDER BY mfp.funding_program_name) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
