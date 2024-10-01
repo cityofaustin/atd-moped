@@ -6,7 +6,6 @@ import {
   CardContent,
   CircularProgress,
   Link,
-  TextField,
   Typography,
   FormControl,
   Select,
@@ -15,7 +14,6 @@ import {
 } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
-import typography from "../../../theme/typography";
 import {
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
@@ -100,16 +98,7 @@ const useColumns = ({
           return { ...params.props, error: hasError };
         },
         renderEditCell: (props) => (
-          <DataGridTextField
-            helperText="Required"
-            {...props}
-            // variant="standard"
-            // id="file_name"
-            // name="file_name"
-            // value={props.value}
-            // onChange={(e) => props.onChange(e.target.value.trim())}
-            // helperText="Required"
-          />
+          <DataGridTextField helperText="Required" {...props} />
         ),
       },
       {
@@ -120,7 +109,7 @@ const useColumns = ({
         // validate input
         preProcessEditCellProps: (params) => {
           const hasError = params.props.value.trim().length < 1;
-          return {...params.props, error:hasError}
+          return { ...params.props, error: hasError };
         },
         renderCell: ({ row }) => {
           if (row.file_key) {
@@ -146,25 +135,16 @@ const useColumns = ({
             </Typography>
           );
         },
-        renderEditCell: ({ row }, props) =>
+        renderEditCell: (props) =>
           // users cannot edit the file_key, since its provided by the FilePond upload interface
-          row.file_key ? (
-            <Typography>{cleanUpFileKey(row.file_key)}</Typography>
+          props.row.file_key ? (
+            <Typography>{cleanUpFileKey(props.row.file_key)}</Typography>
           ) : (
             <DataGridTextField
               helperText="Required"
-              disabled={!!row.file_key}
+              disabled={!!props.row.file_key}
               {...props}
             />
-            // <TextField
-            //   variant="standard"
-            //   id="file_path"
-            //   name="file_path"
-            //   value={row.file_url}
-            //   // onChange={(e) => props.onChange(e.target.value.trim())}
-            //   helperText="Required"
-            //   disabled={!!row.file_key}
-            // />
           ),
       },
       {
@@ -194,16 +174,7 @@ const useColumns = ({
         field: "file_description",
         editable: true,
         width: 200,
-        renderEditCell: (props) => (
-          <DataGridTextField
-            {...props}
-            // variant="standard"
-            // id="file_description"
-            // name="file_description"
-            // value={props?.value ?? ""}
-            // onChange={(e) => props.onChange(e.target.value)}
-          />
-        ),
+        renderEditCell: (props) => <DataGridTextField {...props} />,
       },
       {
         headerName: "Uploaded by",
@@ -435,8 +406,6 @@ const ProjectFiles = () => {
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
-    const updateProjectFileData = updatedRow;
-
     const hasRowChanged = !isEqual(updatedRow, originalRow);
 
     if (!hasRowChanged) {
