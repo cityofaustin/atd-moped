@@ -49,6 +49,7 @@ import {
 import { isValidUrl } from "src/utils/urls";
 import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
+import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -150,24 +151,10 @@ const useColumns = ({
       {
         headerName: "Type",
         field: "file_type",
+        editable: true,
+        width: 150,
         renderCell: ({ value }) => <span>{fileTypes[value]}</span>,
-        editComponent: (props) => (
-          <FormControl variant="standard">
-            <Select
-              variant="standard"
-              id="file_description"
-              name="file_description"
-              value={props?.value}
-              onChange={(e) => props.onChange(e.target.value)}
-            >
-              <MenuItem value={1}>Funding</MenuItem>
-              <MenuItem value={2}>Plans</MenuItem>
-              <MenuItem value={3}>Estimates</MenuItem>
-              <MenuItem value={4}>Other</MenuItem>
-            </Select>
-            <FormHelperText>Required</FormHelperText>
-          </FormControl>
-        ),
+        renderEditCell: (props) => <ProjectFilesTypeSelect {...props} />,
       },
       {
         headerName: "Description",
