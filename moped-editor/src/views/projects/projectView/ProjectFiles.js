@@ -86,6 +86,7 @@ const useColumns = ({
   handleEditClick,
   handleSaveClick,
   handleCancelClick,
+  handleDeleteClick,
 }) =>
   useMemo(() => {
     return [
@@ -279,8 +280,7 @@ const useColumns = ({
             <GridActionsCellItem
               icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
               label="Delete"
-              // onClick={() => handleDeleteOpen(id)}
-              onClick={() => console.log("hi")}
+              onClick={handleDeleteClick(id)}
               color="inherit"
             />,
           ];
@@ -294,6 +294,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    handleDeleteClick,
   ]);
 
 /**
@@ -413,11 +414,31 @@ const ProjectFiles = () => {
     });
   };
 
+  // handles row delete
+  const handleDeleteClick = useCallback(
+    (id) => () => {
+      // remove row from rows in state
+      setRows(rows.filter((row) => row.project_file_id !== id));
+
+      deleteProjectFileAttachment({
+        variables: {
+          fileId: id,
+        },
+      })
+        .then(() => refetch())
+        // .then(() => setIsDeleteConfirmationOpen(false))
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    [rows, deleteProjectFileAttachment, refetch]
+  );
+
   const dataGridColumns = useColumns({
     classes,
     token,
     rowModesModel,
-    // handleDeleteOpen,
+    handleDeleteClick, // update to handle delete open
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
@@ -597,14 +618,6 @@ const ProjectFiles = () => {
                   fileName: newData.file_name || null,
                   fileDescription: newData.file_description.trim() || null,
                   fileUrl: newData.file_url || null,
-                },
-              }).then(() => {
-                refetch();
-              }),
-            onRowDelete: (oldData) =>
-              deleteProjectFileAttachment({
-                variables: {
-                  fileId: oldData.project_file_id,
                 },
               }).then(() => {
                 refetch();
