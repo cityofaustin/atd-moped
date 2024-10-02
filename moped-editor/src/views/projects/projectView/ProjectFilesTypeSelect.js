@@ -6,6 +6,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {Integer} id - Data Grid row id
  * @param {String} value - field value
  * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
  * @return {JSX.Element}
  */
 const ProjectFilesTypeSelect = ({ id, value, field, hasFocus }) => {
@@ -45,19 +46,6 @@ const ProjectFilesTypeSelect = ({ id, value, field, hasFocus }) => {
       </Select>
       <FormHelperText>Required</FormHelperText>
     </FormControl>
-
-    // <TextField
-    //   variant="standard"
-    //   style={{ width: "inherit", paddingTop: "inherit" }}
-    //   id={field}
-    //   inputRef={ref}
-    //   name={field}
-    //   type="text"
-    //   value={value ?? ""}
-    //   onChange={handleChange}
-    //   helperText={!!helperText && helperText}
-    //   error={error}
-    // />
   );
 };
 
