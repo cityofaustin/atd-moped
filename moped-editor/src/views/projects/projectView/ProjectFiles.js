@@ -40,6 +40,7 @@ import { isValidUrl } from "src/utils/urls";
 import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -77,7 +78,7 @@ const useColumns = ({
   handleEditClick,
   handleSaveClick,
   handleCancelClick,
-  handleDeleteClick,
+  handleDeleteOpen,
 }) =>
   useMemo(() => {
     return [
@@ -231,7 +232,7 @@ const useColumns = ({
             <GridActionsCellItem
               icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
               label="Delete"
-              onClick={handleDeleteClick(id)}
+              onClick={() => handleDeleteOpen(id)}
               color="inherit"
             />,
           ];
@@ -245,7 +246,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    handleDeleteClick,
+    handleDeleteOpen,
   ]);
 
 /**
@@ -263,11 +264,10 @@ const ProjectFiles = () => {
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
-  /**
-   * @constant {boolean} dialogOpen - True to make the save dialog visible
-   * @function setDialogOpen - Changes the state of the dialogOpen constant
-   */
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
@@ -283,6 +283,11 @@ const ProjectFiles = () => {
   const handleClickCloseUploadFile = () => {
     setDialogOpen(false);
   };
+
+  const handleDeleteOpen = useCallback((id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  }, []);
 
   /**
    * Persists the file data into the database
@@ -373,7 +378,7 @@ const ProjectFiles = () => {
         },
       })
         .then(() => refetch())
-        // .then(() => setIsDeleteConfirmationOpen(false))
+        .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
           console.error(error);
         });
@@ -415,7 +420,7 @@ const ProjectFiles = () => {
     classes,
     token,
     rowModesModel,
-    handleDeleteClick, // update to handle delete open
+    handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
@@ -464,6 +469,12 @@ const ProjectFiles = () => {
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}
         projectId={projectId}
+      />
+      <DeleteConfirmationModal
+        type={"file"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
     </CardContent>
   );
