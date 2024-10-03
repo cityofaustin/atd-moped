@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.header,
+    color: theme.palette.text.secondary,
   },
   selectedTab: {
     minWidth: "160px",

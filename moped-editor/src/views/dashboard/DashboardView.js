@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBar: {
     backgroundColor: theme.palette.background.paper,
-    color: theme.palette.text.header,
+    color: theme.palette.text.secondary,
   },
   cardWrapper: {
     marginTop: theme.spacing(3),
