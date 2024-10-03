@@ -222,9 +222,12 @@ def main(args):
     get_token()
 
     variables = (
-        {"where": {}}
+        {"project_where": {}, "component_where": {}}
         if args.full
-        else {"where": {"project_updated_at": {"_gt": args.date}}}
+        else {
+            "project_where": {"updated_at": {"_gt": args.date}},
+            "component_where": {"project_updated_at": {"_gt": args.date}},
+        }
     )
 
     logger.info(
@@ -237,7 +240,7 @@ def main(args):
 
     exploded_data = make_hasura_request(
         query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-        variables=variables,
+        variables={"where": variables["component_where"]},
     )["exploded_component_arcgis_online_view"]
 
     all_features = make_all_features(data, exploded_data)

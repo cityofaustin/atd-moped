@@ -4,7 +4,10 @@ LAYER_IDS = {"points": 0, "lines": 1, "combined": 2, "exploded": 3}
 
 COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
 query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
-  component_arcgis_online_view(where: $where) {
+  moped_project(where: $projectWhere) {
+    project_id
+  }
+  component_arcgis_online_view(where: $componentWhere) {
     component_categories
     component_description
     component_id
