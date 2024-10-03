@@ -219,7 +219,7 @@ def make_all_features(data, exploded_geometry):
 
 def main(args):
     logger.info("Getting token...")
-    get_token()
+    # get_token()
 
     variables = (
         {"project_where": {}, "component_where": {}}
@@ -236,14 +236,16 @@ def main(args):
     data = make_hasura_request(
         query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
         variables=variables,
-    )["component_arcgis_online_view"]
+    )
+    components_data = data["component_arcgis_online_view"]
+    projects_data = data["moped_project"]
 
     exploded_data = make_hasura_request(
         query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
         variables={"where": variables["component_where"]},
     )["exploded_component_arcgis_online_view"]
 
-    all_features = make_all_features(data, exploded_data)
+    all_features = make_all_features(components_data, exploded_data)
 
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
@@ -262,35 +264,36 @@ def main(args):
                 add_features(feature_type, feature_chunk)
     else:
         # Get unique project IDs that need to have features deleted & replaced
-        project_ids = []
+        project_ids_for_delete = [project["project_id"] for project in projects_data]
+        print(project_ids_for_replace)
+        print(project_ids_for_delete)
+        print(len(all_features["points"]))
 
-        for component in data:
-            project_ids.append(component["project_id"])
-
-        project_ids_for_feature_delete = list(set(project_ids))
+        # TODO get all project IDs to delete
+        # TODO find the difference so we can delete the remaining rows at the end (the missed deletes)
 
         # Delete outdated feature from AGOL and add updated features
-        for feature_type in ["points", "lines", "combined", "exploded"]:
-            logger.info(f"Processing {feature_type} features...")
-            features_of_type = all_features[feature_type]
-            features = handle_status_updates(features_of_type)
+        # for feature_type in ["points", "lines", "combined", "exploded"]:
+        #     logger.info(f"Processing {feature_type} features...")
+        #     features_of_type = all_features[feature_type]
+        #     features = handle_status_updates(features_of_type)
 
-            logger.info(
-                f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
-            )
-            for delete_chunk in chunks(
-                project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
-            ):
-                joined_project_ids = ", ".join(str(x) for x in delete_chunk)
-                logger.info(f"Deleting features with project ids {joined_project_ids}")
-                delete_features_by_project_ids(feature_type, joined_project_ids)
+        #     logger.info(
+        #         f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+        #     )
+        #     for delete_chunk in chunks(
+        #         project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
+        #     ):
+        #         joined_project_ids = ", ".join(str(x) for x in delete_chunk)
+        #         logger.info(f"Deleting features with project ids {joined_project_ids}")
+        #         delete_features_by_project_ids(feature_type, joined_project_ids)
 
-            logger.info(
-                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-            )
-            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-                logger.info("Uploading chunk....")
-                add_features(feature_type, feature_chunk)
+        #     logger.info(
+        #         f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+        #     )
+        #     for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+        #         logger.info("Uploading chunk....")
+        #         add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
