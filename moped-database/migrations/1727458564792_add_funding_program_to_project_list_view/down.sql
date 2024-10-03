@@ -1,9 +1,7 @@
--- Could not auto-generate a down migration.
--- Please write an appropriate down migration for the SQL below:
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
 DROP VIEW IF EXISTS component_arcgis_online_view;
 DROP VIEW IF EXISTS project_list_view;
---
+
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -25,6 +23,7 @@ funding_sources_lookup AS (
             CASE
                 WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                 WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
+                WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                 ELSE null::text
             END, ', '::text ORDER BY (
                 CASE
@@ -287,7 +286,6 @@ LEFT JOIN LATERAL (
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
 GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
-
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
