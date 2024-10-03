@@ -219,7 +219,7 @@ def make_all_features(data, exploded_geometry):
 
 def main(args):
     logger.info("Getting token...")
-    # get_token()
+    get_token()
 
     variables = (
         {"project_where": {}, "component_where": {}}
@@ -263,37 +263,29 @@ def main(args):
                 logger.info("Uploading chunk....")
                 add_features(feature_type, feature_chunk)
     else:
-        # Get unique project IDs that need to have features deleted & replaced
+        # Get project IDs have been updated (including soft-deleted projects) for deletes
         project_ids_for_delete = [project["project_id"] for project in projects_data]
-        print(project_ids_for_replace)
-        print(project_ids_for_delete)
-        print(len(all_features["points"]))
-
-        # TODO get all project IDs to delete
-        # TODO find the difference so we can delete the remaining rows at the end (the missed deletes)
 
         # Delete outdated feature from AGOL and add updated features
-        # for feature_type in ["points", "lines", "combined", "exploded"]:
-        #     logger.info(f"Processing {feature_type} features...")
-        #     features_of_type = all_features[feature_type]
-        #     features = handle_status_updates(features_of_type)
+        for feature_type in ["points", "lines", "combined", "exploded"]:
+            logger.info(f"Processing {feature_type} features...")
+            features_of_type = all_features[feature_type]
+            features = handle_status_updates(features_of_type)
 
-        #     logger.info(
-        #         f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
-        #     )
-        #     for delete_chunk in chunks(
-        #         project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
-        #     ):
-        #         joined_project_ids = ", ".join(str(x) for x in delete_chunk)
-        #         logger.info(f"Deleting features with project ids {joined_project_ids}")
-        #         delete_features_by_project_ids(feature_type, joined_project_ids)
+            logger.info(
+                f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+            )
+            for delete_chunk in chunks(project_ids_for_delete, UPLOAD_CHUNK_SIZE):
+                joined_project_ids = ", ".join(str(x) for x in delete_chunk)
+                logger.info(f"Deleting features with project ids {joined_project_ids}")
+                delete_features_by_project_ids(feature_type, joined_project_ids)
 
-        #     logger.info(
-        #         f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
-        #     )
-        #     for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
-        #         logger.info("Uploading chunk....")
-        #         add_features(feature_type, feature_chunk)
+            logger.info(
+                f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
+            )
+            for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
+                logger.info("Uploading chunk....")
+                add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
