@@ -386,7 +386,7 @@ const ProjectFiles = () => {
     [rows, deleteProjectFileAttachment, refetch]
   );
 
-  // saves row update, either editing an existing row or saving a new row
+  // saves row update after editing an existing row
   const processRowUpdate = (updatedRow, originalRow) => {
     const hasRowChanged = !isEqual(updatedRow, originalRow);
 
