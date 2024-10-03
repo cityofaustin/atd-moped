@@ -450,7 +450,6 @@ const ProjectFiles = () => {
           density="comfortable"
           getRowHeight={() => "auto"}
           hideFooter
-          // onCellKeyDown={handleTabKeyDown}
           localeText={{ noRowsLabel: "No files to display" }}
           initialState={{ pinnedColumns: { right: ["edit"] } }}
           slots={{
