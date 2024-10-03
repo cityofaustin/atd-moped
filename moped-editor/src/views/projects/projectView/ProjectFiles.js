@@ -147,7 +147,7 @@ const useColumns = ({
         field: "file_type",
         editable: true,
         width: 150,
-        renderCell: ({ value }) => <span>{fileTypes[value]}</span>,
+        valueGetter: (value) => fileTypes[value],
         renderEditCell: (props) => <ProjectFilesTypeSelect {...props} />,
       },
       {
@@ -161,6 +161,8 @@ const useColumns = ({
         headerName: "Uploaded by",
         field: "moped_user",
         width: 150,
+        // including valueGetter so the sort function knows what value to sort on
+        valueGetter: (value) => value?.first_name + " " + value?.last_name,
         renderCell: ({ row }) => (
           <span>
             {row?.created_by_user_id
