@@ -50,6 +50,9 @@ const useStyles = makeStyles(() => ({
   },
   downloadLink: {
     cursor: "pointer",
+    overflow: "hidden",
+    display: "block",
+    textOverflow: "ellipsis",
   },
   codeStyle: {
     backgroundColor: "#eee",
@@ -115,7 +118,7 @@ const useColumns = ({
           }
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
-              className={classes.downloadLink}
+              linkProps={{ className: classes.downloadLink }}
               url={row?.file_url}
               text={row?.file_url}
             />
@@ -169,8 +172,6 @@ const useColumns = ({
         headerName: "Date uploaded",
         field: "created_at",
         width: 200,
-        // customSort: (a, b) =>
-        //   new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
         renderCell: ({ value }) => (
           <span>
             {value
@@ -184,7 +185,6 @@ const useColumns = ({
       {
         headerName: "File size",
         field: "file_size",
-        // customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
         renderCell: ({ row }) => (
           <span>
             {row.file_key ? humanReadableFileSize(row?.file_size ?? 0) : ""}
