@@ -89,7 +89,7 @@ const useColumns = ({
         editable: true,
         // validate input
         preProcessEditCellProps: (params) => {
-          const hasError = params.props.value.trim().length < 1;
+          const hasError = !params.props.value || params.props.value.trim().length < 1;
           return { ...params.props, error: hasError };
         },
         renderEditCell: (props) => (
@@ -103,7 +103,7 @@ const useColumns = ({
         editable: true,
         // validate input
         preProcessEditCellProps: (params) => {
-          const hasError = params.props.value.trim().length < 1;
+          const hasError = !params.props.value || params.props.value.trim().length < 1;
           return { ...params.props, error: hasError };
         },
         renderCell: ({ row }) => {
