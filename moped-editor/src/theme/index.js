@@ -42,6 +42,16 @@ const theme = createTheme(adaptV4Theme({
   },
   shadows,
   typography,
+  overrides: {
+    MuiInputBase: {
+      input: {
+        "&::placeholder": {
+          color: "#666666",
+          opacity: 1,
+        },
+      },
+    },
+  },
 }));
 
 export default theme;
