@@ -80,7 +80,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
         }
       }
       // If we would like to return results that do not contain a particular string, we should return null values as well
-      if (gqlOperator.includes("_nilike") && envelope) {
+      if (gqlOperator.includes("_nilike")) {
         whereString = `_or: [ { ${whereString} }, { ${field}: { ${`_is_null`}: true } }]`
       }
       return whereString;
