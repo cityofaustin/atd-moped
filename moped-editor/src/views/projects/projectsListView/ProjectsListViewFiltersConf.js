@@ -283,6 +283,23 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_is_not_null",
     ],
   },
+  funding_program_names: {
+    name: "funding_program_names",
+    label: "Funding programs",
+    placeholder: "Funding program",
+    type: "string",
+    lookup: {
+      table_name: "moped_fund_programs",
+      getOptionLabel: (option) => option.funding_program_name,
+      operators: ["string_contains_case_insensitive"],
+    },
+    defaultOperator: "string_contains_case_insensitive",
+    operators: [
+      "string_contains_case_insensitive",
+      "string_is_null",
+      "string_is_not_null",
+    ],
+  },
   project_status_update: {
     name: "project_status_update",
     label: "Status update",

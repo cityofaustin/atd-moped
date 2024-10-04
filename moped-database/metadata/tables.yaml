@@ -5505,6 +5505,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5557,6 +5558,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5609,6 +5611,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
