@@ -16,6 +16,7 @@ import {
   GridRowModes,
   GridActionsCellItem,
   useGridApiRef,
+  gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
@@ -147,7 +148,15 @@ const useColumns = ({
         field: "file_type",
         editable: true,
         width: 150,
-        valueGetter: (value) => fileTypes[value],
+        valueFormatter: (value) => fileTypes[value],
+        sortComparator: (v1, v2, param1, param2) => {
+          return gridStringOrNumberComparator(
+            fileTypes[v1],
+            fileTypes[v2],
+            param1,
+            param2
+          );
+        },
         renderEditCell: (props) => <ProjectFilesTypeSelect {...props} />,
       },
       {
