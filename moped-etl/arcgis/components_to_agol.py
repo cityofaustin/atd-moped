@@ -220,6 +220,7 @@ def main(args):
     logger.info("Getting token...")
     get_token()
 
+    # Pass filters to the GraphQL query: none if full replace OR include a date filter for incremental updates
     variables = (
         {"project_where": {}, "component_where": {}}
         if args.full
