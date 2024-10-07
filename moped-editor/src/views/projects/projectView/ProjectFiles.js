@@ -391,24 +391,30 @@ const ProjectFiles = () => {
   // saves row update after editing an existing row
   const processRowUpdate = (updatedRow, originalRow) => {
     const hasRowChanged = !isEqual(updatedRow, originalRow);
+    const updateProjectFilesData = updatedRow;
 
     if (!hasRowChanged) {
       return Promise.resolve(updatedRow);
     } else {
+      updateProjectFilesData.file_description =
+        !updateProjectFilesData.file_description ||
+        updateProjectFilesData.file_description.trim() === ""
+          ? null
+          : updateProjectFilesData.file_description;
       return (
         updateProjectFileAttachment({
           variables: {
-            fileId: updatedRow.project_file_id,
-            fileType: updatedRow.file_type,
-            fileName: updatedRow.file_name || null,
-            fileDescription: updatedRow.file_description.trim() || null,
-            fileUrl: updatedRow.file_url || null,
+            fileId: updateProjectFilesData.project_file_id,
+            fileType: updateProjectFilesData.file_type,
+            fileName: updateProjectFilesData.file_name || null,
+            fileDescription: updateProjectFilesData.file_description,
+            fileUrl: updateProjectFilesData.file_url || null,
           },
         })
           .then(() => refetch())
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => updatedRow)
+          .then(() => updateProjectFilesData)
           .catch((error) => console.error(error))
       );
     }
