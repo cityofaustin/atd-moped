@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tab: {
     textTransform: "capitalize",
-    color: theme.palette.text.header,
+    color: theme.palette.text.secondary,
     fontSize: "1.2em",
     minWidth: "75px",
     height: "64px",
