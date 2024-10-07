@@ -80,6 +80,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleDeleteOpen,
+  validateFileInput,
 }) =>
   useMemo(() => {
     return [
@@ -90,7 +91,8 @@ const useColumns = ({
         editable: true,
         // validate input
         preProcessEditCellProps: (params) => {
-          const hasError = !params.props.value || params.props.value.trim().length < 1;
+          const hasError =
+            !params.props.value || params.props.value.trim().length < 1;
           return { ...params.props, error: hasError };
         },
         renderEditCell: (props) => (
@@ -102,11 +104,7 @@ const useColumns = ({
         field: "file_url",
         width: 200,
         editable: true,
-        // validate input
-        preProcessEditCellProps: (params) => {
-          const hasError = !params.props.value || params.props.value.trim().length < 1;
-          return { ...params.props, error: hasError };
-        },
+        preProcessEditCellProps: validateFileInput,
         renderCell: ({ row }) => {
           if (row.file_key) {
             return (
@@ -258,6 +256,7 @@ const useColumns = ({
     handleCancelClick,
     handleEditClick,
     handleDeleteOpen,
+    validateFileInput,
   ]);
 
 /**
@@ -433,6 +432,18 @@ const ProjectFiles = () => {
     console.error(error);
   };
 
+  // Validate the input for the file url or file Key field
+  const validateFileInput = (params) => {
+    // if the file is uploaded to s3, then there is a file_key and users cannot edit it
+    if (params.row.file_key) {
+      return { ...params.props, error: false };
+    }
+    // if there is no file_key, then the file_url (the input's value) cannot be blank
+    const hasError =
+      !params.props.value || params.props.value.trim().length < 1;
+    return { ...params.props, error: hasError };
+  };
+
   const dataGridColumns = useColumns({
     classes,
     token,
@@ -441,6 +452,7 @@ const ProjectFiles = () => {
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    validateFileInput,
   });
 
   // If no data or loading show progress circle
