@@ -682,7 +682,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
     $fileId: Int!
     $fileName: String!
     $fileType: Int!
-    $fileDescription: String!
+    $fileDescription: String
     $fileUrl: String
   ) {
     update_moped_project_files(
