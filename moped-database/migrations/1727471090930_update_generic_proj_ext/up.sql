@@ -15,11 +15,6 @@ WHERE NOT EXISTS (
         WHERE (component_name, line_representation, feature_layer_id) = ('Project Extent - Generic', false, 5)
     );
 
--- Restore point type component if it was previously soft-deleted
-UPDATE moped_components
-SET is_deleted = false
-WHERE component_name = 'Project Extent - Generic' AND line_representation = false;
-
 -- Insert same work types for generic project extent point as exist for generic project extent line
 WITH inserts_todo AS (
     SELECT
