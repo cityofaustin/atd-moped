@@ -30,7 +30,7 @@ const ProjectFilesTypeSelect = ({ id, value, field, hasFocus }) => {
   };
 
   return (
-    <FormControl variant="standard" sx={{ paddingTop: "8px" }}>
+    <FormControl variant="standard" sx={{ paddingTop: "8px", width: "90%" }}>
       <Select
         variant="standard"
         id={field}
