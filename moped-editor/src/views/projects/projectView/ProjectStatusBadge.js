@@ -83,7 +83,7 @@ export const styleMapping = {
   },
   post_construction: {
     color: white,
-    background: backgroundColors.success,
+    background: backgroundColors.info,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   potential: {
