@@ -404,7 +404,7 @@ const ComponentForm = ({
                 name="phase"
                 control={control}
                 autoFocus
-                sOptionEqualToValue={isOptionEqualToValue}
+                isOptionEqualToValue={isOptionEqualToValue}
               />
             </Grid>
             {subphaseOptions.length !== 0 && (
