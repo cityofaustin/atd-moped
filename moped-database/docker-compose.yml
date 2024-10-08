@@ -2,7 +2,6 @@
 services:
     hasura:
         image: hasura/graphql-engine:v2.43.0
-        restart: always
         depends_on:
             - moped-pgsql
         expose:
