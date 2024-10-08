@@ -59,7 +59,8 @@ const useStyles = makeStyles(() => ({
   codeStyle: {
     backgroundColor: "#eee",
     fontFamily: "monospace",
-    display: "inline-block",
+    display: "block",
+    wordWrap: "break-word",
     paddingLeft: "4px",
     paddingRight: "4px",
     fontSize: "14px",
