@@ -36,6 +36,7 @@ export const SUMMARY_QUERY = gql`
       project_website
       parent_project_id
       interim_project_id
+      substantial_completion_date
       is_deleted
       moped_project {
         project_name

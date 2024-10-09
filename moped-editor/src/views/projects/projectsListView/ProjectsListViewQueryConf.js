@@ -249,6 +249,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
+    substantial_completion_date: {
+      type: "date",
+      sortable: true,
+      defaultHidden: false,
+      showInTable: true,
+    },
     project_inspector: {
       type: "string",
       sortable: true,
