@@ -1,7 +1,10 @@
 import { useMemo, useEffect, useState } from "react";
 import { Icon } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { featureSchoolBeaconRecordToKnackSchoolBeaconRecord, featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
+import {
+  featureSchoolBeaconRecordToKnackSchoolBeaconRecord,
+  featureSignalsRecordToKnackSignalRecord,
+} from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
 import {
   RoomOutlined as RoomOutlinedIcon,
