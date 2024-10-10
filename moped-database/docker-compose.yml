@@ -2,7 +2,6 @@
 services:
     hasura:
         image: hasura/graphql-engine:v2.43.0
-        restart: always
         depends_on:
             - moped-pgsql
         expose:
@@ -21,6 +20,7 @@ services:
             - 'HASURA_GRAPHQL_JWT_SECRET={"type":"RS256","jwk_url": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_U2dzkxfTv/.well-known/jwks.json","claims_format": "stringified_json"}'
             - HASURA_GRAPHQL_ADMIN_SECRET=hasurapassword
             - ACTIVITY_LOG_API_SECRET=hasurapassword
+            - HASURA_GRAPHQL_NO_OF_RETRIES=30
         command: ["graphql-engine", "serve",  "--enable-console"]
 
 
