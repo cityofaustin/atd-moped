@@ -88,7 +88,7 @@ const useColumns = ({
       {
         headerName: "Name",
         field: "file_name",
-        width: 175,
+        width: 200,
         editable: true,
         // validate input
         preProcessEditCellProps: (params) => {
@@ -196,6 +196,7 @@ const useColumns = ({
       {
         headerName: "File size",
         field: "file_size",
+        width: 75,
         renderCell: ({ row }) => (
           <span>
             {row.file_key ? humanReadableFileSize(row?.file_size ?? 0) : ""}
