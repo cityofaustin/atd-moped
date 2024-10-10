@@ -6,9 +6,19 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {Integer} id - Data Grid row id
  * @param {String} value - field value
  * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {String} helperText - optional helper text
+ * @param {Boolean} error - toggles error style in textfield
  * @return {JSX.Element}
  */
-const DataGridTextField = ({ id, value, field, hasFocus }) => {
+const DataGridTextField = ({
+  id,
+  value,
+  field,
+  hasFocus,
+  helperText,
+  error,
+}) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -38,6 +48,8 @@ const DataGridTextField = ({ id, value, field, hasFocus }) => {
       type="text"
       value={value ?? ""}
       onChange={handleChange}
+      helperText={!!helperText && helperText}
+      error={error}
     />
   );
 };
