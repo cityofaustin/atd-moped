@@ -982,6 +982,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       phase_id
       phase_name
     }
+    moped_components(order_by: { component_name_full: asc }) {
+      component_id
+      component_name_full
+    }
   }
 `;
 

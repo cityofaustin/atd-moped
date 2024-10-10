@@ -14,7 +14,7 @@ export const FILTERS_COMMON_OPERATORS = {
   },
   string_contains_not_case_insensitive: {
     operator: "_nilike",
-    label: "contains not",
+    label: "does not contain",
     description: "String is NOT contained in field (case-insensitive)",
     envelope: "%{VALUE}%",
     type: "string",
