@@ -33,10 +33,7 @@ import {
 } from "../../../queries/project";
 import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
-import {
-  formatTimeStampTZType,
-  makeFullTimeFromTimeStampTZ,
-} from "src/utils/dateAndTime";
+import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
 import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
@@ -184,13 +181,7 @@ const useColumns = ({
         field: "created_at",
         width: 200,
         renderCell: ({ value }) => (
-          <span>
-            {value
-              ? `${formatTimeStampTZType(value)}, ${makeFullTimeFromTimeStampTZ(
-                  value
-                )}`
-              : "N/A"}
-          </span>
+          <FormattedDateString date={value} primary="relative" secondary="absolute" />
         ),
       },
       {
