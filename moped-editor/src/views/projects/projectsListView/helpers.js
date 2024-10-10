@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { NavLink as RouterLink, useLocation } from "react-router-dom";
 import Link from "@mui/material/Link";
 import parse from "html-react-parser";
-import { formatDateType, FormattedDateString, formatTimeStampTZType } from "src/utils/dateAndTime";
+import { formatDateType, FormattedDateString } from "src/utils/dateAndTime";
 import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../../../components/RenderSignalLink";
@@ -246,7 +246,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Modified",
         description: "Date record was last modified",
         field: "updated_at",
-        width: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.medium,
         renderCell: ({ row }) => (
           <FormattedDateString
             date={row.updated_at}
