@@ -26,8 +26,7 @@ const theme = createTheme(adaptV4Theme({
     },
     text: {
       primary: "#212121",
-      secondary: "#848484",
-      header: "#848484",
+      secondary: "#666666",
     },
     map: {
       transparent: "rgba(0,0,0,0)",
@@ -43,6 +42,16 @@ const theme = createTheme(adaptV4Theme({
   },
   shadows,
   typography,
+  overrides: {
+    MuiInputBase: {
+      input: {
+        "&::placeholder": {
+          color: "#666666",
+          opacity: 1,
+        },
+      },
+    },
+  },
 }));
 
 export default theme;

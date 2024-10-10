@@ -31,6 +31,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -45,6 +46,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -59,6 +61,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -73,6 +76,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -105,12 +109,14 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.type_name,
       operators: [
         "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
       ],
     },
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -152,6 +158,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_blank",
@@ -166,11 +173,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_users",
       getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
-      operators: ["string_contains_case_insensitive"],
+      operators: [
+        "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
+      ],
     },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_null",
@@ -195,6 +206,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_null",
@@ -219,6 +231,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_null",
@@ -235,6 +248,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.entity_name,
       operators: [
         "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
         "string_equals_case_insensitive",
         "string_does_not_equal_case_insensitive",
       ],
@@ -242,6 +256,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_begins_with_case_insensitive",
@@ -258,6 +273,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_equals_case_insensitive",
@@ -274,6 +290,27 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_fund_sources",
       getOptionLabel: (option) => option.funding_source_name,
+      operators: [
+        "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive"
+      ],
+    },
+    defaultOperator: "string_contains_case_insensitive",
+    operators: [
+      "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
+      "string_is_null",
+      "string_is_not_null",
+    ],
+  },
+  funding_program_names: {
+    name: "funding_program_names",
+    label: "Funding programs",
+    placeholder: "Funding program",
+    type: "string",
+    lookup: {
+      table_name: "moped_fund_programs",
+      getOptionLabel: (option) => option.funding_program_name,
       operators: ["string_contains_case_insensitive"],
     },
     defaultOperator: "string_contains_case_insensitive",
@@ -291,6 +328,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_equals_case_insensitive",
@@ -339,12 +377,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
       operators: [
         "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
         "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
       ],
     },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_is_null",
@@ -361,12 +402,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => `${option.first_name} ${option.last_name}`,
       operators: [
         "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
         "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
       ],
     },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_is_null",
@@ -381,6 +425,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_equals_case_insensitive",
@@ -397,6 +442,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_equals_case_insensitive",
@@ -413,11 +459,15 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     lookup: {
       table_name: "moped_tags",
       getOptionLabel: (option) => option.name,
-      operators: ["string_contains_case_insensitive"],
+      operators: [
+        "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
+      ],
     },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_null",
@@ -442,6 +492,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
     ],
@@ -464,6 +515,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_equals_case_insensitive",
       "string_does_not_equal_case_insensitive",
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_begins_with_case_insensitive",
       "string_ends_with_case_insensitive",
       "string_is_null",
@@ -498,9 +550,18 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Components",
     placeholder: "component",
     type: "string",
+    lookup: {
+      table_name: "moped_components",
+      getOptionLabel: (option) => `${option.component_name_full}`,
+      operators: [
+        "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive"
+      ],
+    },
     defaultOperator: "string_contains_case_insensitive",
     operators: [
       "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
       "string_is_null",
       "string_is_not_null",
     ],

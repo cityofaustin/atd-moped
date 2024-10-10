@@ -654,6 +654,7 @@ export const PROJECT_ACTIVITY_LOG_DETAILS = gql`
 export const PROJECT_FILE_ATTACHMENTS = gql`
   query MopedProjectFiles($projectId: Int!) {
     moped_project_files(
+      order_by: { created_at: desc }
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       project_file_id
@@ -682,7 +683,7 @@ export const PROJECT_FILE_ATTACHMENTS_UPDATE = gql`
     $fileId: Int!
     $fileName: String!
     $fileType: Int!
-    $fileDescription: String!
+    $fileDescription: String
     $fileUrl: String
   ) {
     update_moped_project_files(
@@ -950,6 +951,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       funding_source_id
       funding_source_name
     }
+    moped_fund_programs {
+      funding_program_id
+      funding_program_name
+    }
     moped_types(order_by: { type_name: asc }) {
       type_id
       type_name
@@ -977,6 +982,10 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_phases(order_by: { phase_name: asc }) {
       phase_id
       phase_name
+    }
+    moped_components(order_by: { component_name_full: asc }) {
+      component_id
+      component_name_full
     }
   }
 `;

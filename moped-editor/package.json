@@ -2,7 +2,7 @@
   "name": "atd-moped-editor",
   "author": "ATD Data & Technology Services",
   "license": "CC0-1.0",
-  "version": "2.20.0",
+  "version": "2.21.0",
   "homepage": "/moped",
   "private": false,
   "repository": {
@@ -71,7 +71,7 @@
     "axios": "^0.28.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
-    "dompurify": "^2.4.7",
+    "dompurify": "^2.5.4",
     "env-cmd": "^10.1.0",
     "filepond": "^3.9.0",
     "filepond-plugin-file-validate-size": "^2.2.8",

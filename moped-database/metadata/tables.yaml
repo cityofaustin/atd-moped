@@ -432,13 +432,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_drawn_lines
       definition:
@@ -583,13 +576,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_drawn_points
       definition:
@@ -734,13 +720,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_intersections
       definition:
@@ -1103,13 +1082,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_signals
       definition:
@@ -1292,13 +1264,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_street_segments
       definition:
@@ -5505,6 +5470,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5557,6 +5523,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5609,6 +5576,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
