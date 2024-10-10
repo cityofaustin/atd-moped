@@ -265,7 +265,7 @@ def main(args):
                 if not args.test:
                     add_features(feature_type, feature_chunk)
     else:
-        # Get project IDs have been updated (including soft-deleted projects) for deletes
+        # Get project IDs that have been updated (including soft-deleted projects) for deletes
         project_ids_for_delete = [project["project_id"] for project in projects_data]
 
         # Delete outdated feature from AGOL and add updated features
