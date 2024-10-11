@@ -145,9 +145,7 @@ const ProjectsListViewTable = () => {
   });
 
   const data = useCurrentData(projectListViewData);
-
-  console.log(data);
-
+  
   const {
     handleExportButtonClick,
     handleRadioSelect,
