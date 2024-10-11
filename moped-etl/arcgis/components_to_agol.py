@@ -1,14 +1,13 @@
 #!/usr/bin/env python
 """Copies all Moped component records to ArcGIS Online (AGOL)"""
 # docker compose run arcgis;
-import argparse
 import logging
 import json
-from datetime import datetime, timezone, timedelta
 
 from bs4 import BeautifulSoup
 
 from process.logging import get_logger
+from cli import get_cli_args
 from settings import (
     COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
     EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
@@ -221,10 +220,14 @@ def main(args):
     logger.info("Getting token...")
     get_token()
 
+    # Pass filters to the GraphQL query: none if full replace OR include a date filter for incremental updates
     variables = (
-        {"where": {}}
+        {"project_where": {}, "component_where": {}}
         if args.full
-        else {"where": {"project_updated_at": {"_gt": args.date}}}
+        else {
+            "project_where": {"updated_at": {"_gt": args.date}},
+            "component_where": {"project_updated_at": {"_gt": args.date}},
+        }
     )
 
     logger.info(
@@ -233,14 +236,16 @@ def main(args):
     data = make_hasura_request(
         query=COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
         variables=variables,
-    )["component_arcgis_online_view"]
+    )
+    components_data = data["component_arcgis_online_view"]
+    projects_data = data["moped_project"]
 
     exploded_data = make_hasura_request(
         query=EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE,
-        variables=variables,
+        variables={"where": variables["component_where"]},
     )["exploded_component_arcgis_online_view"]
 
-    all_features = make_all_features(data, exploded_data)
+    all_features = make_all_features(components_data, exploded_data)
 
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
@@ -249,22 +254,19 @@ def main(args):
             features = handle_status_updates(features_of_type)
 
             logger.info("Deleting all existing features...")
-            delete_all_features(feature_type)
+            if not args.test:
+                delete_all_features(feature_type)
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
             for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                 logger.info("Uploading chunk....")
-                add_features(feature_type, feature_chunk)
+                if not args.test:
+                    add_features(feature_type, feature_chunk)
     else:
-        # Get unique project IDs that need to have features deleted & replaced
-        project_ids = []
-
-        for component in data:
-            project_ids.append(component["project_id"])
-
-        project_ids_for_feature_delete = list(set(project_ids))
+        # Get project IDs that have been updated (including soft-deleted projects) for deletes
+        project_ids_for_delete = [project["project_id"] for project in projects_data]
 
         # Delete outdated feature from AGOL and add updated features
         for feature_type in ["points", "lines", "combined", "exploded"]:
@@ -273,44 +275,25 @@ def main(args):
             features = handle_status_updates(features_of_type)
 
             logger.info(
-                f"Deleting all {len(all_features[feature_type])} existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
+                f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
-            for delete_chunk in chunks(
-                project_ids_for_feature_delete, UPLOAD_CHUNK_SIZE
-            ):
+            for delete_chunk in chunks(project_ids_for_delete, UPLOAD_CHUNK_SIZE):
                 joined_project_ids = ", ".join(str(x) for x in delete_chunk)
                 logger.info(f"Deleting features with project ids {joined_project_ids}")
-                delete_features_by_project_ids(feature_type, joined_project_ids)
+                if not args.test:
+                    delete_features_by_project_ids(feature_type, joined_project_ids)
 
             logger.info(
                 f"Uploading {len(features)} features in chunks of {UPLOAD_CHUNK_SIZE}..."
             )
             for feature_chunk in chunks(features, UPLOAD_CHUNK_SIZE):
                 logger.info("Uploading chunk....")
-                add_features(feature_type, feature_chunk)
+                if not args.test:
+                    add_features(feature_type, feature_chunk)
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-
-    parser.add_argument(
-        "-d",
-        "--date",
-        type=str,
-        nargs="?",
-        const=(datetime.now(timezone.utc) - timedelta(days=7)).isoformat(),
-        default=None,
-        help="ISO date string with TZ offset (ex. 2024-06-28T00:06:16.360805+00:00) of latest updated_at value to find project records to update. Defaults to 7 days ago if -d is used without a value.",
-    )
-
-    parser.add_argument(
-        "-f",
-        "--full",
-        action="store_true",
-        help="Delete and replace all project components.",
-    )
-
-    args = parser.parse_args()
+    args = get_cli_args()
     logger = get_logger(name="components-to-agol", level=logging.INFO)
 
     if args.date and args.full:

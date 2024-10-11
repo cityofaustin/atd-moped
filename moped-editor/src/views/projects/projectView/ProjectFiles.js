@@ -1,31 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useParams } from "react-router-dom";
+import isEqual from "lodash/isEqual";
 
-import {
-  Button,
-  CardContent,
-  CircularProgress,
-  Link,
-  TextField,
-  Typography,
-  FormControl,
-  Select,
-  MenuItem,
-  FormHelperText,
-} from "@mui/material";
+import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
-import typography from "../../../theme/typography";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar,
-} from "@material-table/core";
 import {
-  AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  DataGridPro,
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiRef,
+  gridStringOrNumberComparator,
+} from "@mui/x-data-grid-pro";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -40,14 +33,14 @@ import {
 } from "../../../queries/project";
 import { getJwt, useUser } from "../../../auth/user";
 import downloadFileAttachment from "../../../utils/downloadFileAttachment";
-import { PAGING_DEFAULT_COUNT } from "../../../constants/tables";
-import {
-  formatTimeStampTZType,
-  makeFullTimeFromTimeStampTZ,
-} from "src/utils/dateAndTime";
+import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
+import ProjectFilesToolbar from "./ProjectFilesToolbar";
+import DataGridTextField from "./DataGridTextField";
+import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   title: {
     padding: "0rem 0 2rem 0",
   },
@@ -56,16 +49,208 @@ const useStyles = makeStyles((theme) => ({
   },
   downloadLink: {
     cursor: "pointer",
+    overflow: "hidden",
+    display: "block",
+    textOverflow: "ellipsis",
   },
   codeStyle: {
     backgroundColor: "#eee",
     fontFamily: "monospace",
-    display: "inline-block",
+    display: "block",
+    wordWrap: "break-word",
     paddingLeft: "4px",
     paddingRight: "4px",
-    fontSize: "14px"
+    fontSize: "14px",
   },
 }));
+
+const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
+
+// remove the FilePond and s3 added path for display, ex:
+// 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
+const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
+
+const useColumns = ({
+  classes,
+  token,
+  rowModesModel,
+  handleEditClick,
+  handleSaveClick,
+  handleCancelClick,
+  handleDeleteOpen,
+  validateFileInput,
+}) =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "Name",
+        field: "file_name",
+        width: 200,
+        editable: true,
+        // validate input
+        preProcessEditCellProps: (params) => {
+          const hasError =
+            !params.props.value || params.props.value.trim().length < 1;
+          return { ...params.props, error: hasError };
+        },
+        renderEditCell: (props) => (
+          <DataGridTextField helperText="Required" {...props} />
+        ),
+      },
+      {
+        headerName: "File",
+        field: "file_url",
+        width: 200,
+        editable: true,
+        preProcessEditCellProps: validateFileInput,
+        renderCell: ({ row }) => {
+          if (row.file_key) {
+            return (
+              <Link
+                className={classes.downloadLink}
+                onClick={() => downloadFileAttachment(row?.file_key, token)}
+              >
+                {cleanUpFileKey(row?.file_key)}
+              </Link>
+            );
+          }
+          return isValidUrl(row?.file_url) ? (
+            <ExternalLink
+              linkProps={{ className: classes.downloadLink }}
+              url={row?.file_url}
+              text={row?.file_url}
+            />
+          ) : (
+            // if the user provided file_url is not a valid url, just render the text
+            <Typography className={classes.codeStyle}>
+              {row?.file_url}
+            </Typography>
+          );
+        },
+        renderEditCell: (props) =>
+          // users cannot edit the file_key, since its provided by the FilePond upload interface
+          props.row.file_key ? (
+            <Typography>{cleanUpFileKey(props.row.file_key)}</Typography>
+          ) : (
+            <DataGridTextField
+              helperText="Required"
+              disabled={!!props.row.file_key}
+              {...props}
+            />
+          ),
+      },
+      {
+        headerName: "Type",
+        field: "file_type",
+        editable: true,
+        width: 150,
+        valueFormatter: (value) => fileTypes[value],
+        sortComparator: (v1, v2, param1, param2) => {
+          return gridStringOrNumberComparator(
+            fileTypes[v1],
+            fileTypes[v2],
+            param1,
+            param2
+          );
+        },
+        renderEditCell: (props) => <ProjectFilesTypeSelect {...props} />,
+      },
+      {
+        headerName: "Description",
+        field: "file_description",
+        editable: true,
+        width: 200,
+        renderEditCell: (props) => <DataGridTextField {...props} />,
+      },
+      {
+        headerName: "Uploaded by",
+        field: "moped_user",
+        width: 150,
+        // including valueGetter so the sort function knows what value to sort on
+        valueGetter: (value) => value?.first_name + " " + value?.last_name,
+        renderCell: ({ row }) => (
+          <span>
+            {row?.created_by_user_id
+              ? row?.moped_user?.first_name + " " + row?.moped_user?.last_name
+              : "N/A"}
+          </span>
+        ),
+      },
+      {
+        headerName: "Date uploaded",
+        field: "created_at",
+        width: 200,
+        renderCell: ({ value }) => (
+          <FormattedDateString date={value} primary="relative" secondary="absolute" />
+        ),
+      },
+      {
+        headerName: "File size",
+        field: "file_size",
+        width: 75,
+        renderCell: ({ row }) => (
+          <span>
+            {row.file_key ? humanReadableFileSize(row?.file_size ?? 0) : ""}
+          </span>
+        ),
+      },
+      {
+        headerName: "",
+        field: "edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
+        editable: false,
+        type: "actions",
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                label="Cancel"
+                className="textPrimary"
+                onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+          return [
+            <GridActionsCellItem
+              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              label="Edit"
+              className="textPrimary"
+              onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              label="Delete"
+              onClick={() => handleDeleteOpen(id)}
+              color="inherit"
+            />,
+          ];
+        },
+      },
+    ];
+  }, [
+    classes,
+    token,
+    rowModesModel,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
+    handleDeleteOpen,
+    validateFileInput,
+  ]);
 
 /**
  * Renders a list of file attachments for a project
@@ -73,16 +258,19 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = (props) => {
+const ProjectFiles = () => {
+  const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
   const { user } = useUser();
   const token = getJwt(user);
+  // rows and rowModesModel used in DataGrid
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
-  /**
-   * @constant {boolean} dialogOpen - True to make the save dialog visible
-   * @function setDialogOpen - Changes the state of the dialogOpen constant
-   */
   const [dialogOpen, setDialogOpen] = useState(false);
 
   /**
@@ -98,6 +286,11 @@ const ProjectFiles = (props) => {
   const handleClickCloseUploadFile = () => {
     setDialogOpen(false);
   };
+
+  const handleDeleteOpen = useCallback((id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  }, []);
 
   /**
    * Persists the file data into the database
@@ -134,277 +327,160 @@ const ProjectFiles = (props) => {
     fetchPolicy: "no-cache",
   });
 
-  /** addAction Ref - mutable ref object used to access add action button
-   * imperatively.
-   * @type {object} addActionRef
-   * */
-  const addActionRef = React.useRef();
+  useEffect(() => {
+    if (data && data.moped_project_files.length > 0) {
+      setRows(data.moped_project_files);
+    }
+  }, [data]);
 
-  /**
-   * Mutations
-   */
   const [updateProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_UPDATE
   );
-
   const [deleteProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_DELETE
   );
-
   const [createProjectFileAttachment] = useMutation(
     PROJECT_FILE_ATTACHMENTS_CREATE
   );
 
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    [rowModesModel]
+  );
+
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel]
+  );
+
+  // when a user cancels editing by clicking the X in the actions
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
+  // handles row delete
+  const handleDeleteClick = useCallback(
+    (id) => () => {
+      // remove row from rows in state
+      setRows(rows.filter((row) => row.project_file_id !== id));
+
+      deleteProjectFileAttachment({
+        variables: {
+          fileId: id,
+        },
+      })
+        .then(() => refetch())
+        .then(() => setIsDeleteConfirmationOpen(false))
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+    [rows, deleteProjectFileAttachment, refetch]
+  );
+
+  // saves row update after editing an existing row
+  const processRowUpdate = (updatedRow, originalRow) => {
+    const hasRowChanged = !isEqual(updatedRow, originalRow);
+    const updateProjectFilesData = updatedRow;
+
+    if (!hasRowChanged) {
+      return Promise.resolve(updatedRow);
+    } else {
+      updateProjectFilesData.file_description =
+        !updateProjectFilesData.file_description ||
+        updateProjectFilesData.file_description.trim() === ""
+          ? null
+          : updateProjectFilesData.file_description;
+      return (
+        updateProjectFileAttachment({
+          variables: {
+            fileId: updateProjectFilesData.project_file_id,
+            fileType: updateProjectFilesData.file_type,
+            fileName: updateProjectFilesData.file_name || null,
+            fileDescription: updateProjectFilesData.file_description,
+            fileUrl: updateProjectFilesData.file_url || null,
+          },
+        })
+          .then(() => refetch())
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updateProjectFilesData)
+          .catch((error) => console.error(error))
+      );
+    }
+  };
+
+  const handleProcessUpdateError = (error) => {
+    console.error(error);
+  };
+
+  // Validate the input for the file url or file Key field
+  const validateFileInput = (params) => {
+    // if the file is uploaded to s3, then there is a file_key and users cannot edit it
+    if (params.row.file_key) {
+      return { ...params.props, error: false };
+    }
+    // if there is no file_key, then the file_url (the input's value) cannot be blank
+    const hasError =
+      !params.props.value || params.props.value.trim().length < 1;
+    return { ...params.props, error: hasError };
+  };
+
+  const dataGridColumns = useColumns({
+    classes,
+    token,
+    rowModesModel,
+    handleDeleteOpen,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
+    validateFileInput,
+  });
+
   // If no data or loading show progress circle
   if (loading || !data) return <CircularProgress />;
-
-  const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
-
-  // remove the FilePond and s3 added path for display, ex:
-  // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
-  const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
-
-  /**
-   * Column configuration for <MaterialTable>
-   */
-  const columns = [
-    {
-      title: "Name",
-      field: "file_name",
-      validate: (rowData) => {
-        return rowData.file_name.length > 0 ? true : false;
-      },
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="file_name"
-          name="file_name"
-          value={props.value}
-          onChange={(e) => props.onChange(e.target.value.trim())}
-          helperText="Required"
-        />
-      ),
-    },
-    {
-      title: "File",
-      field: "file_url",
-      validate: (rowData) => {
-        return rowData.file_name.length > 0 ? true : false;
-      },
-      render: (record) => {
-        if (record.file_key) {
-          return (
-            <Link
-              className={classes.downloadLink}
-              onClick={() => downloadFileAttachment(record?.file_key, token)}
-            >
-              {cleanUpFileKey(record?.file_key)}
-            </Link>
-          );
-        }
-        return isValidUrl(record?.file_url) ? (
-          <ExternalLink
-            className={classes.downloadLink}
-            url={record?.file_url}
-            text={record?.file_url}
-          />
-        ) : (
-          // if the user provided file_url is not a valid url, just render the text
-          <Typography className={classes.codeStyle}>
-            {record?.file_url}
-          </Typography>
-        );
-      },
-      editComponent: (props) =>
-        // users cannot edit the file_key, since its provided by the FilePond upload interface
-        props.rowData.file_key ? (
-          <Typography>{cleanUpFileKey(props.rowData.file_key)}</Typography>
-        ) : (
-          <TextField
-            variant="standard"
-            id="file_path"
-            name="file_path"
-            value={props.value}
-            onChange={(e) => props.onChange(e.target.value.trim())}
-            helperText="Required"
-            disabled={!!props.rowData.file_key}
-          />
-        ),
-    },
-    {
-      title: "Type",
-      field: "file_type",
-      render: (record) => <span>{fileTypes[record?.file_type]}</span>,
-      editComponent: (props) => (
-        <FormControl variant="standard">
-          <Select
-            variant="standard"
-            id="file_description"
-            name="file_description"
-            value={props?.value}
-            onChange={(e) => props.onChange(e.target.value)}
-          >
-            <MenuItem value={1}>Funding</MenuItem>
-            <MenuItem value={2}>Plans</MenuItem>
-            <MenuItem value={3}>Estimates</MenuItem>
-            <MenuItem value={4}>Other</MenuItem>
-          </Select>
-          <FormHelperText>Required</FormHelperText>
-        </FormControl>
-      ),
-    },
-    {
-      title: "Description",
-      field: "file_description",
-      render: (record) => <span>{record?.file_description}</span>,
-      editComponent: (props) => (
-        <TextField
-          variant="standard"
-          id="file_description"
-          name="file_description"
-          value={props?.value ?? ""}
-          onChange={(e) => props.onChange(e.target.value)}
-        />
-      ),
-    },
-    {
-      title: "Uploaded by",
-      cellStyle: { fontFamily: typography.fontFamily },
-      render: (record) => (
-        <span>
-          {record?.created_by_user_id
-            ? record?.moped_user?.first_name +
-              " " +
-              record?.moped_user?.last_name
-            : "N/A"}
-        </span>
-      ),
-    },
-    {
-      title: "Date uploaded",
-      cellStyle: { fontFamily: typography.fontFamily },
-      customSort: (a, b) =>
-        new Date(a?.created_at ?? 0) - new Date(b?.created_at ?? 0),
-      render: (record) => (
-        <span>
-          {record?.created_at
-            ? `${formatTimeStampTZType(
-                record.created_at
-              )}, ${makeFullTimeFromTimeStampTZ(record.created_at)}`
-            : "N/A"}
-        </span>
-      ),
-    },
-    {
-      title: "File size",
-      cellStyle: { fontFamily: typography.fontFamily },
-      customSort: (a, b) => (a?.file_size ?? 0) - (b?.file_size ?? 0),
-      render: (record) => (
-        <span>
-          {record.file_key ? humanReadableFileSize(record?.file_size ?? 0) : ""}
-        </span>
-      ),
-    },
-  ];
 
   return (
     <CardContent>
       <ApolloErrorHandler errors={error}>
-        <MaterialTable
-          columns={columns}
-          data={data?.moped_project_files ?? null}
-          title={
-            <Typography variant="h2" color="primary">
-              Files
-            </Typography>
-          }
-          // Action component customized as described in this gh-issue:
-          // https://github.com/mbrn/material-table/issues/2133
-          components={{
-            EditRow: (props) => (
-              <MTableEditRow
-                {...props}
-                onKeyDown={(e) => {
-                  if (e.keyCode === 13) {
-                    // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                    // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                  }
-                }}
-              />
-            ),
-            Action: (props) => {
-              // If isn't the add action
-              if (
-                typeof props.action === typeof Function ||
-                props.action.tooltip !== "Add"
-              ) {
-                return <MTableAction {...props} />;
-              } else {
-                return (
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    className={classes.uploadFileButton}
-                    startIcon={<AddCircleIcon />}
-                    ref={addActionRef}
-                    onClick={handleClickUploadFile}
-                  >
-                    Add file
-                  </Button>
-                );
-              }
-            },
-            Toolbar: (props) => (
-              // to have it align with table content
-              <div style={{ marginLeft: "-10px" }}>
-                <MTableToolbar {...props} />
-              </div>
-            ),
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          apiRef={apiRef}
+          ref={apiRef}
+          autoHeight
+          columns={dataGridColumns}
+          rows={rows}
+          getRowId={(row) => row.project_file_id}
+          editMode="row"
+          rowModesModel={rowModesModel}
+          onRowModesModelChange={handleRowModesModelChange}
+          processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={handleProcessUpdateError}
+          disableRowSelectionOnClick
+          toolbar
+          density="comfortable"
+          getRowHeight={() => "auto"}
+          hideFooter
+          localeText={{ noRowsLabel: "No files to display" }}
+          initialState={{ pinnedColumns: { right: ["edit"] } }}
+          slots={{
+            toolbar: ProjectFilesToolbar,
           }}
-          icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
-          options={{
-            ...(data.moped_project_files.length < PAGING_DEFAULT_COUNT + 1 && {
-              paging: false,
-            }),
-            search: false,
-            rowStyle: { fontFamily: typography.fontFamily },
-            actionsColumnIndex: -1,
-            idSynonym: "project_file_id",
-          }}
-          localization={{
-            header: {
-              actions: "",
+          slotProps={{
+            toolbar: {
+              onClick: handleClickUploadFile,
             },
-            body: {
-              emptyDataSourceMessage: (
-                <Typography variant="body1">No files to display</Typography>
-              ),
-            },
-          }}
-          editable={{
-            onRowAdd: () => {
-              handleClickUploadFile();
-            },
-            onRowUpdate: (newData, oldData) =>
-              updateProjectFileAttachment({
-                variables: {
-                  fileId: newData.project_file_id,
-                  fileType: newData.file_type,
-                  fileName: newData.file_name || null,
-                  fileDescription: newData.file_description.trim() || null,
-                  fileUrl: newData.file_url || null,
-                },
-              }).then(() => {
-                refetch();
-              }),
-            onRowDelete: (oldData) =>
-              deleteProjectFileAttachment({
-                variables: {
-                  fileId: oldData.project_file_id,
-                },
-              }).then(() => {
-                refetch();
-              }),
           }}
         />
       </ApolloErrorHandler>
@@ -414,6 +490,12 @@ const ProjectFiles = (props) => {
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}
         projectId={projectId}
+      />
+      <DeleteConfirmationModal
+        type={"file"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
     </CardContent>
   );
