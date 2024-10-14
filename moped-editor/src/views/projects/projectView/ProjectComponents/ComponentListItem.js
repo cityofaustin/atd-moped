@@ -26,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemText: {
     marginLeft: theme.spacing(1),
+    flexGrow: 1, 
+    marginRight: '48px',
   },
   additionalListItemText: {
     display: "block",
@@ -61,23 +63,25 @@ export default function ComponentListItem({
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
-        <ListItemText
-          className={classes.listItemText}
-          primary={primary}
-          secondary={
-            <>
-              <>{secondary}</>
-              <span className={classes.additionalListItemText}>
-                {additionalListItemText}
-              </span>
-            </>
-          }
-        />
-        <ListItemSecondaryAction>
-          <IconButton color="primary" onClick={onZoomClick} size="large">
-            <ZoomInIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
+        <Box display="flex" alignItems="center" width="100%">
+          <ListItemText
+            className={classes.listItemText}
+            primary={primary}
+            secondary={
+              <>
+                <>{secondary}</>
+                <span className={classes.additionalListItemText}>
+                  {additionalListItemText}
+                </span>
+              </>
+            }
+          />
+          <ListItemSecondaryAction>
+            <IconButton color="primary" onClick={onZoomClick} size="large">
+              <ZoomInIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </Box>
       </ListItemButton>
       <Collapse in={isExpanded}>
         {isExpanded ? (
