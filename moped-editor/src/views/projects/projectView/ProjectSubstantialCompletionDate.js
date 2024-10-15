@@ -33,10 +33,10 @@ const ProjectSubstantialCompletionDate = ({ completionDate }) => {
       >
         <Tooltip placement="bottom-start" title={completionDateTooltipText}>
           <Typography className={classes.fieldLabelText} component="span">
-            {/* If there is no input, render a "-" */}
-            {(!completionDate || completionDate.length === 0) && <span>-</span>}
-            {/* i dont think we need the span do we*/}
-            <span>{formatDateType(completionDate)}</span>
+            {
+              // If there is no input, render a "-"
+              completionDate ? formatDateType(completionDate) : "-"
+            }
           </Typography>
         </Tooltip>
       </Box>
