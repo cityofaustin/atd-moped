@@ -160,7 +160,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
 
-  const { data: completionDateData } = useQuery(
+  const { data: completionDateData, refetch: refetchCompletionDate } = useQuery(
     GET_PROJECT_SUBSTANTIAL_COMPLETION_DATE,
     {
       variables: { projectId: Number(projectId) },
@@ -177,9 +177,10 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
           refetchQueries: ["ProjectSummary"],
         }).then(() => {
           refetch();
+          refetchCompletionDate();
         });
     },
-    [deletePhase, refetch]
+    [deletePhase, refetch, refetchCompletionDate]
   );
 
   const columns = useColumns({
@@ -201,7 +202,9 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
     completionDateData?.project_list_view[0]["substantial_completion_date"];
 
   const onSubmitCallback = () => {
-    refetch().then(() => setEditPhase(null));
+    refetchCompletionDate().then(() =>
+      refetch().then(() => setEditPhase(null))
+    );
   };
 
   return (
