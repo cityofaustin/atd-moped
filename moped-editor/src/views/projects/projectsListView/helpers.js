@@ -316,7 +316,7 @@ export const useColumns = ({ hiddenColumns }) => {
         headerName: "Substantial completion date",
         field: "substantial_completion_date",
         valueFormatter: (value) => value && formatDateType(value),
-        width: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Construction start",
