@@ -69,6 +69,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   },
   substantial_completion_date: {
     label: "Substantial completion date",
+    filter: formatTimeStampTZType,
   },
   construction_start_date: {
     label: "Construction start",
