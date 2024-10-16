@@ -1,6 +1,7 @@
 import { Box, Typography, Tooltip } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { formatDateType } from "src/utils/dateAndTime";
+import { substantialCompletionDateTooltipText } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
   fieldLabel: {
@@ -16,9 +17,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const completionDateTooltipText =
-  "The earliest confirmed start date of a project phase that has a simple phase name of Complete (Complete or Post-construction)";
-
 const ProjectSubstantialCompletionDate = ({ completionDate }) => {
   const classes = useStyles();
   return (
@@ -31,7 +29,10 @@ const ProjectSubstantialCompletionDate = ({ completionDate }) => {
         justifyContent="flex-start"
         className={classes.fieldBox}
       >
-        <Tooltip placement="bottom-start" title={completionDateTooltipText}>
+        <Tooltip
+          placement="bottom-start"
+          title={substantialCompletionDateTooltipText}
+        >
           <Typography className={classes.fieldLabelText} component="span">
             {
               // If there is no input, render a "-"
