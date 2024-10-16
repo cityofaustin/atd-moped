@@ -20,7 +20,7 @@ For resources and updates, see the [Mobility Project Database project index](htt
 
 ![Post-it notes of users' desired Moped functionality and outcomes](https://user-images.githubusercontent.com/1463708/62583080-58614e80-b874-11e9-850d-2a8bda07c0fc.jpeg)
 
-## Getting Started for Developers
+## Quick start
 
 Welcome to the 🛵 Moped codebase! Below is a step-by-step guide to help you get started by setting up the Moped environment.
 
@@ -99,6 +99,20 @@ Before you begin, make sure you have the following installed on your system:
 
 - **Logging in**: The SSO Button is expected to be disabled in the local environment. Use the external user sign-in option instead and request test credentials from a team member.
 
----
+## Learn more
+
+- [Database](./moped-database/README.md) - the database that powers the Vision Zero suite
+- [Editor](./moped-editor/README.md) - web application which enables City staff to browse and edit crash data
+- [ArcGIS Moped Database Viewer](https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee) - GIS map application that includes Moped Project Data as a layer (requires ArcGIS Online permissions)
+- [API](./moped-api/README.md) - serverless Flask API, handling data operations and API requests
+- [auth](./moped-auth/README.md) - manages authentication using AWS Cognito, including JWT token generation and validation for secure access control
+- [etl](./moped-etl/README.md) - integration scripts for ArcGIS & Knack Data Tracker
+- [toolbox](./moped-toolbox/README.md) - collection of utilities and scripts designed for ad-hoc maintenance tasks
+
+## License
+
+As a work of the City of Austin, this project is in the public domain within the United States.
+
+Additionally, we waive copyright and related rights of the work worldwide through the [CC0 1.0 Universal public domain dedication](https://creativecommons.org/publicdomain/zero/1.0/).
 
 Built by [Data & Technology Services](https://austinmobility.io/) at [Austin Transportation & Public Works](https://www.austintexas.gov/department/transportation-public-works)
