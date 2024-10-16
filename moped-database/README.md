@@ -156,6 +156,10 @@ Format (ie, clean up all my indention and fix things you can fix automatically):
 
 `sqlfluff format --config ../../.sqlfluff project_list_view.sql`
 
+## How to connect the database with Postgres GUI tools (example: TablePlus, DBeaver, P etc)
+
+_Here are some docs in Gitbook that explain [How to connect the database with Postgres GUI tools](https://atd-dts.gitbook.io/moped-documentation/dev-guides/how-tos/connecting-with-postgres-gui)_
+
 ## Read the docs
 
 More documentation is available in the [MOPED Technical Docs](https://atd-dts.gitbook.io/moped-documentation/dev-guides/hasura)
