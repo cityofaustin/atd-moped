@@ -86,6 +86,8 @@ $ ./hasura-cluster stop
 
 ### Using production data
 
+_Here are some docs in Gitbook that explain [How to load production data into a local instance](https://atd-dts.gitbook.io/moped-documentation/dev-guides/how-tos/how-to-load-production-data-into-a-local-instance)_
+
 Configure your environment:
 
 1. Copy the env_template file into env and fill in your credentials:
