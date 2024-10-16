@@ -37,9 +37,10 @@ import {
   handleApplyValidation,
   isFilterNullType,
   shouldRenderAutocompleteInput,
-  useMakeFilterState
+  useMakeFilterState,
+  useCreateAutocompleteOptions,
 } from "./helpers";
-import { FiltersCommonOperators } from "./FiltersCommonOperators";
+import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 
 /**
  * The styling for the filter components
@@ -153,6 +154,8 @@ const Filters = ({
   /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
 
+  const autocompleteOptionsMap = useCreateAutocompleteOptions(filtersConfig, data);
+
   /**
    * Handles the click event on the field drop-down menu
    * @param {string} filterIndex - filterParameters index to modify
@@ -162,10 +165,8 @@ const Filters = ({
     // Clone state
     const filtersNewState = [...filterParameters];
 
-    // Find the field we need to gather options from
-    const fieldDetails = filtersConfig.fields.find(
-      (filter) => filter.name === field
-    );
+    // Field specific config
+    const fieldDetails = filtersConfig[field];
 
     // Update the field and operator values or handle when the clear X icon is clicked
     if (fieldDetails) {
@@ -381,9 +382,7 @@ const Filters = ({
         const { field: fieldName, operator, value } = filter;
 
         /* Get field configuration and values need for inputs */
-        const fieldConfig = filtersConfig.fields.find(
-          (field) => field.name === fieldName
-        );
+        const fieldConfig = filtersConfig[fieldName];
         const { label, type } = fieldConfig ?? {};
         const operators = fieldConfig?.operators ?? [];
 
@@ -391,19 +390,10 @@ const Filters = ({
         const {
           table_name: lookupTable,
           operators: lookupOperators,
-          getOptionLabel,
         } = fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
-
-        /* Use option formatter and dedupe items to handle cases like same team member name options
-         * See https://github.com/mui/material-ui/issues/26492
-         **/
-        const options = data?.[lookupTable]
-          ? data[lookupTable].map((option) => getOptionLabel(option))
-          : [];
-        const dedupedOptions = [...new Set(options)];
 
         return (
           <Grow in={true} key={`filter-grow-${filterIndex}`}>
@@ -423,7 +413,7 @@ const Filters = ({
                   <Autocomplete
                     value={label || null}
                     id={`filter-field-select-${filterIndex}`}
-                    options={filtersConfig.fields}
+                    options={Object.values(filtersConfig)}
                     getOptionLabel={(f) =>
                       Object.hasOwn(f, "label") ? f.label : f
                     }
@@ -479,7 +469,7 @@ const Filters = ({
                     data-testid="operator-select"
                   >
                     {operators.map((operator, operatorIndex) => {
-                      const label = FiltersCommonOperators[operator]?.label;
+                      const label = FILTERS_COMMON_OPERATORS[operator]?.label;
                       return (
                         <MenuItem
                           value={operator}
@@ -511,7 +501,7 @@ const Filters = ({
                     ) ? (
                       <Autocomplete
                         value={value || null}
-                        options={dedupedOptions}
+                        options={autocompleteOptionsMap[fieldName]}
                         disabled={!filterParameters[filterIndex].operator}
                         onChange={(e, value) => {
                           handleSearchValueChange(filterIndex, value);

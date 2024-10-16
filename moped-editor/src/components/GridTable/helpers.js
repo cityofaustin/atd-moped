@@ -99,9 +99,7 @@ export const handleApplyValidation = (filterParameters, filtersConfig) => {
   if (filterParameters) {
     filterParameters.forEach((filter) => {
       const { field: fieldName, value, operator } = filter;
-      const fieldConfig = filtersConfig.fields.find(
-        (field) => field.name === fieldName
-      );
+      const fieldConfig = filtersConfig[fieldName];
       const type = fieldConfig?.type;
 
       if (fieldName === null) {
@@ -168,3 +166,33 @@ export const useMakeFilterState = ({
     }
     return isEmptyFilterNeeded ? [generateEmptyFilter()] : [];
   }, [searchParams, advancedSearchFilterParamName, isEmptyFilterNeeded]);
+
+/**
+ *  Use option formatter and dedupe items to handle cases like same team member name options
+ * See https://github.com/mui/material-ui/issues/26492
+ * @param {Object} filtersConfig - Configuration for the filters
+ * @param {Array} data - raw lookup tables
+ * @return {Array} of deduped and formatted lookup table data
+ */
+export const useCreateAutocompleteOptions = (filtersConfig, data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    let dedupedOptions = {};
+    Object.keys(filtersConfig).forEach((fieldName) => {
+      const fieldConfig = filtersConfig[fieldName];
+      if (fieldConfig.lookup) {
+        const { table_name: lookupTable, getOptionLabel } =
+          fieldConfig?.lookup ?? {};
+        const options = data[lookupTable]
+          ? data[lookupTable].map((option) => getOptionLabel(option))
+          : [];
+        dedupedOptions = {
+          ...dedupedOptions,
+          [fieldConfig.name]: [...new Set(options)],
+        };
+      }
+    });
+    return dedupedOptions;
+  }, [filtersConfig, data]);

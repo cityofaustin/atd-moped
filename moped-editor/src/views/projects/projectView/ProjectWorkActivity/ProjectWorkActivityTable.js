@@ -20,6 +20,7 @@ import { currencyFormatter } from "src/utils/numberFormatters";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import { FormattedDateString } from "src/utils/dateAndTime";
 
 /** Hook that provides memoized column settings */
 const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
@@ -72,14 +73,18 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
       {
         headerName: "Work Order Link",
         field: "work_order_url",
-        width: 150,
+        width: 175,
         defaultVisible: true,
         renderCell: ({ row }) =>
           row.work_order_url ? (
             <Link
               href={row.work_order_url}
               target={"_blank"}
-              sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "block",
+              }}
             >
               {row.work_order_url}
             </Link>
@@ -118,8 +123,13 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
         field: "updated_at",
         width: 150,
         defaultVisible: true,
-        type: "date",
-        valueGetter: (field) => (field ? new Date(field) : null),
+        renderCell: ({ row }) => (
+          <FormattedDateString
+            date={row.updated_at}
+            primary="relative"
+            secondary="absolute"
+          />
+        ),
       },
       {
         headerName: "",

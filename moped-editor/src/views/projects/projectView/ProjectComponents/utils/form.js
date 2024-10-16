@@ -1,7 +1,10 @@
 import { useMemo, useEffect, useState } from "react";
 import { Icon } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import { featureSignalsRecordToKnackSignalRecord } from "src/utils/signalComponentHelpers";
+import {
+  featureSchoolBeaconRecordToKnackSchoolBeaconRecord,
+  featureSignalsRecordToKnackSignalRecord,
+} from "src/utils/signalComponentHelpers";
 import { isSignalComponent } from "./componentList";
 import {
   RoomOutlined as RoomOutlinedIcon,
@@ -99,7 +102,7 @@ export const useComponentOptionsWithoutSignals = (options) =>
  */
 export const useSubcomponentOptions = (componentId, optionsData) =>
   useMemo(() => {
-    if (!componentId || !optionsData) return [];
+    if ((!componentId && componentId !== 0) || !optionsData) return [];
 
     const subcomponents = optionsData.find(
       (option) => option.component_id === componentId
@@ -124,7 +127,7 @@ export const useSubcomponentOptions = (componentId, optionsData) =>
  */
 export const useWorkTypeOptions = (componentId, optionsData) =>
   useMemo(() => {
-    if (!componentId || !optionsData) return [];
+    if ((!componentId && componentId !== 0) || !optionsData) return [];
 
     const workTypes = optionsData.find(
       (option) => option.component_id === componentId
@@ -139,6 +142,14 @@ export const useWorkTypeOptions = (componentId, optionsData) =>
 
     return options;
   }, [componentId, optionsData]);
+
+/**
+ * Take a phase option record and check if it is has "Complete" for phase name simple
+ * @param {Object} phase Phase option chosen from the phase autocomplete or from the existing phase data
+ * @returns {Boolean} true if the phase's simple name is "Complete", false otherwise
+ */
+export const isPhaseOptionSimpleComplete = (phase) =>
+  Boolean(phase?.data?.phase_name_simple === "Complete");
 
 /**
  * Take the moped_phases records data response and create options for a MUI autocomplete
@@ -268,6 +279,21 @@ export const makePhaseFormFieldValue = (phase) => {
 };
 
 /**
+ * Create the value for the school beacon autocomplete if the component is a school beacon component
+ * @param {Object} component - The component record
+ * @returns {Object} the field value
+ */
+export const makeSchoolBeaconFormFieldValue = (component) => {
+  if (!(component.feature_school_beacons?.length > 0)) return null;
+
+  const componentSchoolBeacon = component?.feature_school_beacons?.[0];
+  const knackFormatSchoolBeaconOption =
+    featureSchoolBeaconRecordToKnackSchoolBeaconRecord(componentSchoolBeacon);
+
+  return knackFormatSchoolBeaconOption;
+};
+
+/**
  * Create the value for the subphase autocomplete
  * @param {Object} subphase - The component subphase record
  * @returns {Object} the field value
@@ -386,7 +412,7 @@ export const useResetDependentFieldOnParentFieldChange = ({
       return;
     }
 
-    setValue(dependentFieldName, valueToSet);
+    setValue(dependentFieldName, valueToSet, { shouldValidate: true });
     setPreviousParentValue(parentValue);
   }, [
     parentValue,

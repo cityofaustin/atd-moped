@@ -2,7 +2,6 @@
  * The Query configuration for the ProjectsListView component
  * @constant
  * @type {object}
- * @augments PROJECT_LIST_VIEW_FILTERS_CONFIG
  * @default
  */
 export const PROJECT_LIST_VIEW_QUERY_CONFIG = {

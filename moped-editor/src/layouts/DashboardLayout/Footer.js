@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Typography } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import ExternalLink from "../../components/ExternalLink";
-import { get } from "lodash";
 
 var pckg = require("../../../package.json");
 
-
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     paddingTop: theme.spacing(1),
     paddingLeft: theme.spacing(4),
@@ -17,26 +15,6 @@ const useStyles = makeStyles(theme => ({
 
 const Footer = () => {
   const classes = useStyles();
-  const [mostRecentTag, setMostRecentTag] = useState(`v${pckg.version}`); // use default tag
-
-  useEffect(() => {
-    getMostRecentGithubTags();
-  });
-
-  /**
-   * Async function that updates the mostRecentTag state based on API callto Github "tag" endpoint
-   */
-  const getMostRecentGithubTags = async () => {
-    const githubTagsApiEndpoint =
-      "https://api.github.com/repos/cityofaustin/atd-moped/tags";
-    const response = await fetch(githubTagsApiEndpoint);
-    const data = await response.json();
-    if (get(data, 0)) {
-      setMostRecentTag(data[0].name);
-    } else {
-      setMostRecentTag(`v${pckg.version}`)
-    }
-  };
 
   return (
     <div className={classes.root}>
@@ -44,7 +22,7 @@ const Footer = () => {
         Moped{" "}
         <ExternalLink
           text={`v${pckg.version}`}
-          url={`https://github.com/cityofaustin/atd-moped/releases/tag/${mostRecentTag}`}
+          url="https://github.com/cityofaustin/atd-moped/releases/latest"
           linkColor="inherit"
         />
       </Typography>

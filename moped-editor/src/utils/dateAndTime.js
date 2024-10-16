@@ -1,3 +1,5 @@
+import theme from "src/theme";
+
 /**
  * Format date from the DB in YYYY-MM-DD format into human-readable locale date
  * in MM/DD/YYYY format
@@ -113,4 +115,56 @@ export const formatRelativeDate = (timeStampTZString) => {
   } else {
     return formatRelativeTime(millsElapsed, "day");
   }
+};
+
+/**
+ * Formats a date according to the specified format
+ * @param {string|Date} date - The date to format, either as a string or Date object
+ * @param {string} format - The format to use. Can be one of:
+ *   - 'relative': Returns a relative time string (e.g., "1 year from now", "364 days from now", "Just now")
+ *   - 'absolute': Returns the date in local string format (e.g., "10/31/2024, 2:30:45 PM")
+ *   - 'expanded': Returns the date in US expanded form (e.g., "October 31, 2024")
+ *   - 'short': Returns the date in short format (e.g., "10/31/24")
+ *   - 'time': Returns the hour and minutes (e.g., "2:30 PM")
+ *   - 'fullTime': Returns the full time including seconds (e.g., "2:30:45 PM")
+ * @returns {string} The formatted date string
+ */
+  const formatDate = (date, format) => {
+    switch (format) {
+      case 'relative':
+        return formatRelativeDate(date);
+      case 'absolute':
+        return new Date(date).toLocaleString();
+      case 'expanded':
+        return makeUSExpandedFormDateFromTimeStampTZ(date);
+      case 'short':
+        return formatDateType(date);
+      case 'time':
+        return makeHourAndMinutesFromTimeStampTZ(date);
+      case 'fullTime':
+        return makeFullTimeFromTimeStampTZ(date);
+      default:
+        return new Date(date).toLocaleString();
+    }
+  };
+
+/**
+ * A component that renders a formatted date string with primary display and optional secondary display
+ * @param {Object} props - The component props
+ * @param {string} props.date - The date to format, in a format parseable by new Date()
+ * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} props.primary - The format to use for the primary display
+ * @param {('relative'|'absolute'|'expanded'|'short'|'time'|'fullTime')} [props.secondary] - The format to use for the secondary display, if any
+ * @returns {JSX.Element} A span element containing the formatted date string(s)
+ */
+export const FormattedDateString = ({ date, primary, secondary }) => {
+  return (
+    <span>
+      <div>{formatDate(date, primary)}</div>
+      {secondary && (
+        <div style={{ fontSize: '0.8em', color: theme.palette.text.secondary }}>
+          {formatDate(date, secondary)}
+        </div>
+      )}
+    </span>
+  );
 };

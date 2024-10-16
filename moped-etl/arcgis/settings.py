@@ -1,12 +1,13 @@
 UPLOAD_CHUNK_SIZE = 100
 
-LAYER_IDS = {"points": 0, "lines": 1, "combined": 2}
+LAYER_IDS = {"points": 0, "lines": 1, "combined": 2, "exploded": 3}
 
 COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
-query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
-  component_arcgis_online_view(where: $where) {
-    completion_date
-    completion_end_date
+query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_where: component_arcgis_online_view_bool_exp!) {
+  moped_project(where: $project_where) {
+    project_id
+  }
+  component_arcgis_online_view(where: $component_where) {
     component_categories
     component_description
     component_id
@@ -83,6 +84,16 @@ query GetProjectsComponents($where: component_arcgis_online_view_bool_exp!) {
     task_order_names
     type_name
     workgroup_contractors
+  }
+}
+"""
+
+# line_geometry
+EXPLODED_COMPONENTS_QUERY_BY_LAST_UPDATE_DATE = """
+query GetExplodedProjectsComponents($where: exploded_component_arcgis_online_view_bool_exp!) {
+  exploded_component_arcgis_online_view(where: $where) {
+    geometry: exploded_geometry
+    project_component_id
   }
 }
 """

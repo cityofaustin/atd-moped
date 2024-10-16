@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "../ProjectsListViewFiltersConf";
-import { FiltersCommonOperators } from "src/components/GridTable/FiltersCommonOperators";
+import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
 import { parseGqlString } from "src/utils/gridTableHelpers";
 import { addDays, parseISO, format } from "date-fns";
 import { useMakeFilterState } from "src/components/GridTable/helpers";
@@ -21,13 +21,11 @@ const makeAdvancedSearchWhereFilters = (filters) =>
       let { field, value, operator } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
-      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG.fields.find(
-        (fieldConfig) => fieldConfig.name === field
-      );
+      const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field];
       const { type } = filterConfigForField;
 
       // Use operator name to get the GraphQL operator config for that operator
-      const operatorConfig = FiltersCommonOperators[operator];
+      const operatorConfig = FILTERS_COMMON_OPERATORS[operator];
       let {
         envelope,
         specialNullValue,
@@ -65,6 +63,11 @@ const makeAdvancedSearchWhereFilters = (filters) =>
         }
       }
       let whereString = `${field}: { ${gqlOperator}: ${value} }`;
+      // If we would like to return results that do not contain a particular string ('_nilike'), we should return null values as well
+      if (gqlOperator.includes("_nilike")) {
+        const whereStringWithNullValues = `_or: [ { ${whereString} }, { ${field}: { ${`_is_null`}: true } }]`;
+        whereString = whereStringWithNullValues;
+      }
       // If we are filtering on a date there are some exceptions we need to handle bc the date/timestampz conversion
       if (type === "date" && !gqlOperator.includes("is_null")) {
         const nextDay = JSON.stringify(

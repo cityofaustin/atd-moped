@@ -5,8 +5,6 @@
     - role: moped-admin
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
@@ -88,8 +86,6 @@
     - role: moped-editor
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
@@ -171,8 +167,6 @@
     - role: moped-viewer
       permission:
         columns:
-          - completion_date
-          - completion_end_date
           - component_categories
           - component_description
           - component_id
@@ -308,6 +302,35 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: exploded_component_arcgis_online_view
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - project_component_id
+          - exploded_geometry
+          - project_updated_at
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - project_component_id
+          - exploded_geometry
+          - project_updated_at
+        filter: {}
+        allow_aggregations: true
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - project_component_id
+          - exploded_geometry
+          - project_updated_at
+        filter: {}
+      comment: ""
+- table:
     name: feature_drawn_lines
     schema: public
   insert_permissions:
@@ -409,13 +432,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_drawn_lines
       definition:
@@ -560,13 +576,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_drawn_points
       definition:
@@ -711,13 +720,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_intersections
       definition:
@@ -791,6 +793,182 @@
           - id
         filter: {}
         allow_aggregations: true
+- table:
+    name: feature_school_beacons
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
+        columns:
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+      comment: ""
+    - role: moped-editor
+      permission:
+        check: {}
+        set:
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
+        columns:
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+      comment: ""
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - component_id
+          - created_by_user_id
+          - id
+          - updated_by_user_id
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - knack_id
+          - location_name
+          - zone_name
+          - created_at
+          - updated_at
+          - geography
+        filter: {}
+      comment: ""
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+        filter: {}
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - beacon_id
+          - school_zone_beacon_id
+          - beacon_name
+          - component_id
+          - geography
+          - is_deleted
+          - knack_id
+          - location_name
+          - zone_name
+        filter: {}
+        check: {}
+        set:
+          updated_by_user_id: x-hasura-user-db-id
+      comment: ""
+  event_triggers:
+    - name: activity_log_feature_school_beacons
+      definition:
+        enable_manual: false
+        insert:
+          columns: '*'
+        update:
+          columns: '*'
+      retry_conf:
+        interval_sec: 10
+        num_retries: 0
+        timeout_sec: 60
+      webhook_from_env: HASURA_ENDPOINT
+      headers:
+        - name: x-hasura-admin-secret
+          value_from_env: ACTIVITY_LOG_API_SECRET
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+              "variables": {
+                "object": {
+                  "record_id": {{ $body.event.data.new.id }},
+                  "record_type":  {{ $body.table.name }},
+                  "activity_id": {{ $body.id }},
+                  "record_data": {"event": {{ $body.event }}},
+                  "description": [{"newSchema": "true"}],
+                  "operation_type": {{ $body.event.op }},
+                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                }
+              }
+            }
+        method: POST
+        query_params: {}
+        template_engine: Kriti
+        version: 2
+      cleanup_config:
+        batch_size: 10000
+        clean_invocation_logs: false
+        clear_older_than: 168
+        paused: true
+        schedule: 0 0 * * *
+        timeout: 60
 - table:
     name: feature_signals
     schema: public
@@ -904,13 +1082,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_signals
       definition:
@@ -1093,13 +1264,6 @@
         check: {}
         set:
           updated_by_user_id: x-hasura-user-db-id
-  delete_permissions:
-    - role: moped-admin
-      permission:
-        filter: {}
-    - role: moped-editor
-      permission:
-        filter: {}
   event_triggers:
     - name: activity_log_feature_street_segments
       definition:
@@ -2046,6 +2210,15 @@
           insertion_order: null
           remote_table:
             name: feature_intersections
+            schema: public
+    - name: feature_school_beacons
+      using:
+        manual_configuration:
+          column_mapping:
+            project_component_id: component_id
+          insertion_order: null
+          remote_table:
+            name: feature_school_beacons
             schema: public
     - name: feature_signals
       using:
@@ -5297,6 +5470,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5349,6 +5523,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id
@@ -5401,6 +5576,7 @@
           - current_phase_simple
           - date_added
           - ecapris_subproject_id
+          - funding_program_names
           - funding_source_and_program_names
           - funding_source_name
           - interim_project_id

@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1719872865109_add_work_plan_category/up.sql
+-- Most recent migration: moped-database/migrations/1727458564792_add_funding_program_to_project_list_view/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -79,6 +79,16 @@ comp_geography AS (
             feature_drawn_lines.length_feet
         FROM feature_drawn_lines
         WHERE feature_drawn_lines.is_deleted = false
+        UNION ALL
+        SELECT
+            feature_school_beacons.id,
+            feature_school_beacons.component_id,
+            feature_school_beacons.geography::geometry AS geography,
+            st_exteriorring(st_buffer(feature_school_beacons.geography, 7::double precision)::geometry) AS line_geography,
+            null::integer AS signal_id,
+            null::integer AS length_feet
+        FROM feature_school_beacons
+        WHERE feature_school_beacons.is_deleted = false
     ) feature_union
     GROUP BY feature_union.component_id
 ),
@@ -155,7 +165,6 @@ SELECT
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
-    mpc.completion_date,
     coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
     plv.substantial_completion_date_estimated,
     mpc.srts_id,
@@ -187,8 +196,7 @@ SELECT
     plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
-    plv.construction_start_date,
-    plv.completion_end_date,
+    to_char(timezone('US/Central'::text, plv.construction_start_date), 'YYYY-MM-DD'::text) AS construction_start_date,
     plv.project_inspector,
     plv.project_designer,
     plv.project_tags,
@@ -203,14 +211,20 @@ SELECT
     plv.knack_project_id AS knack_data_tracker_project_record_id,
     plv.project_url,
     (plv.project_url || '?tab=map&project_component_id='::text) || mpc.project_component_id::text AS component_url,
-    get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple) AS project_development_status,
-    get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, current_phase.phase_name_simple)::text AS project_development_status_date,
-    9999 AS project_development_status_date_calendar_year,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month,
-    'placeholder text'::text AS project_development_status_date_calendar_year_month_numeric,
-    'placeholder text'::text AS project_development_status_date_calendar_year_quarter,
-    999 AS project_development_status_date_fiscal_year,
-    'placeholder text'::text AS project_development_status_date_fiscal_year_quarter,
+    get_project_development_status(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple)) AS project_development_status,
+    project_development_status_date.result AS project_development_status_date,
+    to_char(project_development_status_date.result, 'YYYY'::text)::integer AS project_development_status_date_calendar_year,
+    to_char(project_development_status_date.result, 'FMMonth YYYY'::text) AS project_development_status_date_calendar_year_month,
+    to_char(project_development_status_date.result, 'YYYY-MM'::text) AS project_development_status_date_calendar_year_month_numeric,
+    date_part('quarter'::text, project_development_status_date.result)::text AS project_development_status_date_calendar_year_quarter,
+    CASE
+        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN (to_char(project_development_status_date.result, 'YYYY'::text)::integer + 1)::text
+        ELSE to_char(project_development_status_date.result, 'YYYY'::text)
+    END AS project_development_status_date_fiscal_year,
+    CASE
+        WHEN date_part('quarter'::text, project_development_status_date.result) = 4::double precision THEN 1::double precision
+        ELSE date_part('quarter'::text, project_development_status_date.result) + 1::double precision
+    END::text AS project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
 FROM moped_proj_components mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
@@ -225,4 +239,5 @@ LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
+LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;

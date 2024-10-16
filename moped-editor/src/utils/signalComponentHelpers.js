@@ -2,10 +2,16 @@ import React, { useEffect } from "react";
 import { TextField } from "@mui/material";
 
 /*
- * Socrata Endpoint
+ * Socrata Endpoint for Signals and PHBs
  */
 export const SOCRATA_ENDPOINT =
   "https://data.austintexas.gov/resource/p53x-x73x.geojson?$select=signal_id,location_name,location,signal_type,id&$order=signal_id asc&$limit=9999";
+
+/*
+ * Socrata endpoint for school beacons
+ */
+export const SOCRATA_ENDPOINT_SCHOOL_BEACONS =
+  "https://data.austintexas.gov/resource/mzsm-hucz.geojson?$select=school_zone_beacon_id,beacon_name,beacon_id,zone_name,location,id,location_name&$order=school_zone_beacon_id asc&$limit=9999";
 
 /**
  * An array to use as the default value for
@@ -58,9 +64,9 @@ export const knackSignalRecordToFeatureSignalsRecord = (signal) => {
 };
 
 /**
- * Format a feature_signals table record to the format of options in the SignalComponentAutocomplete
+ * Format a feature_signals table record to the format of options in the KnackComponentAutocomplete
  * @param {Object} featureSignalsRecord - A feature_signals table record
- * @return {Object} A record in the format of options in the SignalComponentAutocomplete
+ * @return {Object} A record in the format of options in the KnackComponentAutocomplete
  */
 export const featureSignalsRecordToKnackSignalRecord = (
   featureSignalsRecord
@@ -100,7 +106,7 @@ export const renderSignalInput = (
 };
 
 /**
- * Get's the correct COMPONENT_DEFIINITION property based on the presence of a signal feature
+ * Gets the correct COMPONENT_DEFINITION property based on the presence of a signal feature
  * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
  * @param {Object} signalRecord - The signal record to be inserted into a project and its component
  * @param {Object[]} componentData - Array of moped_components from DB
@@ -188,4 +194,70 @@ export const generateProjectComponent = (
       data: DEFAULT_SIGNAL_WORK_TYPE,
     },
   };
+};
+
+/**
+ * MUI autocomplete getOptionSelected function matches input school beacon value to
+ * select options.
+ */
+export const getSchoolZoneBeaconOptionSelected = (option, value) => {
+  const optionId = option?.properties?.id;
+  const valueId = value?.properties?.id;
+  return optionId === valueId;
+};
+
+/**
+ * MUI autocomplete getOptionLabel function to which formats the value rendered in
+ * the select option menu
+ */
+export const getSchoolZoneBeaconOptionLabel = (option) =>
+  `${option.properties.zone_name}: ${option.properties.beacon_name} ${option.properties.beacon_id}`;
+
+/**
+ * Sets required fields so that a Knack school zone beacon record can be inserted into the feature_school_beacons table
+ * @param {Object} schoolBeacon- A GeoJSON feature or a falsey object (e.g. "" from empty input)
+ * @return {Object} A geojson feature collection with the beacon feature or 0 features
+ */
+export const knackSchoolBeaconRecordToFeatureSchoolBeaconRecord = (
+  schoolBeacon
+) => {
+  if (schoolBeacon && schoolBeacon?.properties && schoolBeacon?.geometry) {
+    const featureSchoolBeaconsRecord = {
+      // MultiPoint coordinates are an array of arrays, so we wrap the coordinates
+      geography: {
+        ...schoolBeacon.geometry,
+        type: "MultiPoint",
+        coordinates: [schoolBeacon.geometry.coordinates],
+      },
+      knack_id: schoolBeacon.properties.id,
+      location_name: schoolBeacon.properties.location_name,
+      beacon_id: schoolBeacon.properties.beacon_id,
+      school_zone_beacon_id: schoolBeacon.properties.school_zone_beacon_id,
+      zone_name: schoolBeacon.properties.zone_name,
+      beacon_name: schoolBeacon.properties.beacon_name,
+    };
+
+    return featureSchoolBeaconsRecord;
+  }
+};
+
+/**
+ * Format a feature_school_beacon table record to the format of options in the KnackComponentAutocomplete
+ * @param {Object} featureSignalsRecord - A feature_signals table record
+ * @return {Object} A record in the format of options in the KnackComponentAutocomplete
+ */
+export const featureSchoolBeaconRecordToKnackSchoolBeaconRecord = (
+  featureSchoolBeaconRecord
+) => {
+  const { geometry, ...restOfFeatureSchoolBeaconRecord } =
+    featureSchoolBeaconRecord;
+  const { knack_id } = restOfFeatureSchoolBeaconRecord;
+
+  const knackFormatSchoolBeaconOption = {
+    type: "Feature",
+    geometry: { ...geometry, coordinates: geometry.coordinates.flat() },
+    properties: { ...restOfFeatureSchoolBeaconRecord, id: knack_id },
+  };
+
+  return knackFormatSchoolBeaconOption;
 };

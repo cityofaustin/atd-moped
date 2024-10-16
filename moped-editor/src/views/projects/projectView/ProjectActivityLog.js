@@ -21,7 +21,7 @@ import { Alert } from "@mui/material";
 import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
 import CDNAvatar from "../../../components/CDN/Avatar";
 import typography from "src/theme/typography";
-import { formatRelativeDate } from "src/utils/dateAndTime";
+import { FormattedDateString } from "src/utils/dateAndTime";
 import { getUserFullName, getInitials } from "../../../utils/userNames";
 import ProjectActivityEntry from "./ProjectActivityEntry";
 
@@ -285,16 +285,11 @@ const ProjectActivityLog = () => {
                         className={classes.tableCell}
                         style={{ whiteSpace: "nowrap" }}
                       >
-                        <span>
-                          {change.created_at
-                            ? formatRelativeDate(change.created_at)
-                            : ""}
-                        </span>
-                        <span className={classes.mutedDate}>
-                          {change.created_at
-                            ? new Date(change.created_at).toLocaleString()
-                            : ""}
-                        </span>
+                        <FormattedDateString
+                          date={change.created_at}
+                          primary="relative"
+                          secondary="absolute"
+                        />
                       </TableCell>
                     </TableRow>
                   );

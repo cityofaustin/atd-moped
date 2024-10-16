@@ -1,3 +1,4 @@
 env_file
 .git%
 __pycache__
+*.json
