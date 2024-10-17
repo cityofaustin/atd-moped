@@ -71,10 +71,6 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
     label: "Construction start",
     filter: formatTimeStampTZType,
   },
-  completion_end_date: {
-    label: "Completion date",
-    filter: formatTimeStampTZType,
-  },
   project_inspector: {
     label: "Inspector",
   },

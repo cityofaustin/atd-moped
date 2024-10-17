@@ -1,5 +1,3 @@
--- Most recent migration: moped-database/migrations/1729197757693_remove_completion_date_from_project_list_view/up.sql
-
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
         mpp.project_id,
@@ -219,6 +217,11 @@ SELECT
         FROM moped_proj_phases phases
         WHERE true AND phases.project_id = mp.project_id AND phases.phase_id = 9 AND phases.is_deleted = false
     ) AS construction_start_date,
+    (
+        SELECT max(phases.phase_end) AS max
+        FROM moped_proj_phases phases
+        WHERE true AND phases.project_id = mp.project_id AND phases.phase_id = 11 AND phases.is_deleted = false
+    ) AS completion_end_date,
     mcpd.min_phase_date AS substantial_completion_date,
     CASE
         WHEN mcpd.min_phase_date IS NOT null THEN null::timestamp with time zone
