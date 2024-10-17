@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1727458564792_add_funding_program_to_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/1729115885040_remove_funding_source/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -191,7 +191,6 @@ SELECT
     plv.interim_project_id,
     plv.project_partners,
     plv.task_order_names,
-    plv.funding_source_name,
     plv.funding_source_and_program_names AS funding_sources,
     plv.type_name,
     plv.project_status_update,
