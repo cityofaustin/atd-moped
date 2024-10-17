@@ -27,7 +27,6 @@
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
-          - funding_source_name
           - funding_sources
           - geometry
           - interim_project_component_id
@@ -108,7 +107,6 @@
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
-          - funding_source_name
           - funding_sources
           - geometry
           - interim_project_component_id
@@ -189,7 +187,6 @@
           - current_phase_name_simple
           - ecapris_subproject_id
           - feature_ids
-          - funding_source_name
           - funding_sources
           - geometry
           - interim_project_component_id
