@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 // Material
 import {
@@ -18,6 +18,16 @@ import MaterialTable, {
   MTableToolbar,
 } from "@material-table/core";
 import typography from "../../../theme/typography";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
+import {
+  DataGridPro,
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiRef,
+  // gridStringOrNumberComparator,
+} from "@mui/x-data-grid-pro";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 // Query
 import {
@@ -37,6 +47,175 @@ import ToggleEditComponent from "./ToggleEditComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import MilestoneTemplateModal from "./MilestoneTemplateModal";
 
+const useColumns = ({
+  // classes,
+  data,
+  rowModesModel,
+  // handleEditClick,
+  // handleSaveClick,
+  // handleCancelClick,
+  // handleDeleteOpen,
+  // validateFileInput,
+}) =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "Milestone",
+        field: "milestone_id",
+        renderCell: ({ row }) => row.moped_milestone.milestone_name,
+        // validate: (milestone) => !!milestone.milestone_id,
+        // editComponent: (props) => (
+        //   <FormControl variant="standard" style={{ width: "100%" }}>
+        //     <Autocomplete
+        //       id={"milestone_name"}
+        //       name={"milestone_name"}
+        //       options={Object.keys(milestoneNameLookup)}
+        //       getOptionLabel={(option) => milestoneNameLookup[option]}
+        //       isOptionEqualToValue={(option, value) => option === value}
+        //       value={props.value}
+        //       onChange={(event, value) => props.onChange(value)}
+        //       renderInput={(params) => (
+        //         <TextField variant="standard" {...params} />
+        //       )}
+        //     />
+        //     <FormHelperText>Required</FormHelperText>
+        //   </FormControl>
+        // ),
+        // width: "25%",
+      },
+      {
+        headerName: "Description",
+        field: "description",
+        // width: 200,
+        editable: true,
+      },
+      {
+        headerName: "Related phase",
+        field: "moped_milestone",
+        // editable: "never",
+        // cellStyle: {
+        //   fontFamily: typography.fontFamily,
+        //   fontSize: "14px",
+        // },
+        // customSort: (a, b) => {
+        //   const aPhaseName =
+        //     phaseNameLookup(data)[a.moped_milestone.related_phase_id];
+        //   const bPhaseName =
+        //     phaseNameLookup(data)[b.moped_milestone.related_phase_id];
+        //   if (aPhaseName > bPhaseName) {
+        //     return 1;
+        //   }
+        //   if (aPhaseName < bPhaseName) {
+        //     return -1;
+        //   }
+        //   return 0;
+        // },
+        // render: (milestone) =>
+        //   phaseNameLookup(data)[milestone.moped_milestone.related_phase_id] ?? "",
+        valueFormatter: (value) => {
+          console.log(value.related_phase_id);
+          return (phaseNameLookup(data)[value.related_phase_id] ?? "")
+        }
+        // width: "14%",
+      },
+      {
+        headerName: "Completion estimate",
+        field: "date_estimate",
+        // render: (rowData) =>
+        //   rowData.date_estimate
+        //     ? format(parseISO(rowData.date_estimate), "MM/dd/yyyy")
+        //     : undefined,
+        // editComponent: (props) => (
+        //   <DateFieldEditComponent
+        //     {...props}
+        //     name="date_estimate"
+        //     label="Completion estimate"
+        //   />
+        // ),
+        // width: "13%",
+      },
+      {
+        headerName: "Date completed",
+        field: "date_actual",
+        // render: (rowData) =>
+        //   rowData.date_actual
+        //     ? format(parseISO(rowData.date_actual), "MM/dd/yyyy")
+        //     : undefined,
+        // editComponent: (props) => (
+        //   <DateFieldEditComponent
+        //     {...props}
+        //     name="date_actual"
+        //     label="Date (actual)"
+        //   />
+        // ),
+        // width: "13%",
+      },
+      {
+        headerName: "Complete",
+        field: "completed",
+        // lookup: { true: "Yes", false: "No" },
+        // editComponent: (props) => (
+        //   <ToggleEditComponent {...props} name="completed" />
+        // ),
+        // width: "10%",
+      },
+      {
+        headerName: "",
+        field: "edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
+        editable: false,
+        type: "actions",
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                //onClick={handleSaveClick(id)}
+              />,
+              <GridActionsCellItem
+                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                label="Cancel"
+                className="textPrimary"
+                //onClick={handleCancelClick(id)}
+                color="inherit"
+              />,
+            ];
+          }
+          return [
+            <GridActionsCellItem
+              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              label="Edit"
+              className="textPrimary"
+              //onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            <GridActionsCellItem
+              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              label="Delete"
+              //onClick={() => handleDeleteOpen(id)}
+              color="inherit"
+            />,
+          ];
+        },
+      },
+    ];
+  }, [
+    // classes,
+    data,
+    rowModesModel,
+    // handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+    // handleDeleteOpen,
+    // validateFileInput,
+  ]);
 /**
  * ProjectMilestones Component - Renders Project Milestone table
  * @return {JSX.Element}
@@ -44,6 +223,7 @@ import MilestoneTemplateModal from "./MilestoneTemplateModal";
  */
 const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const apiRef = useGridApiRef();
 
   // Mutations
   const [updateProjectMilestone] = useMutation(
@@ -51,6 +231,27 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   );
   const [deleteProjectMilestone] = useMutation(DELETE_PROJECT_MILESTONE);
   const [addProjectMilestone] = useMutation(ADD_PROJECT_MILESTONE);
+
+  // rows and rowModesModel used in DataGrid
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
+
+  useEffect(() => {
+    if (data && data.moped_proj_milestones.length > 0) {
+      setRows(data.moped_proj_milestones);
+    }
+  }, [data]);
+
+  const dataGridColumns = useColumns({
+    // classes,
+    data,
+    rowModesModel,
+    // handleDeleteOpen,
+    // handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+    // validateFileInput,
+  });
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -310,6 +511,35 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
             ),
           },
         }}
+      />
+      <DataGridPro
+        sx={dataGridProStyleOverrides}
+        apiRef={apiRef}
+        ref={apiRef}
+        autoHeight
+        columns={dataGridColumns}
+        rows={rows}
+        getRowId={(row) => row.project_milestone_id}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        // onRowModesModelChange={handleRowModesModelChange}
+        // processRowUpdate={processRowUpdate}
+        // onProcessRowUpdateError={handleProcessUpdateError}
+        disableRowSelectionOnClick
+        toolbar
+        density="comfortable"
+        getRowHeight={() => "auto"}
+        hideFooter
+        // localeText={{ noRowsLabel: "No files to display" }}
+        // initialState={{ pinnedColumns: { right: ["edit"] } }}
+        // slots={{
+        //   toolbar: ProjectFilesToolbar,
+        // }}
+        // slotProps={{
+        //   toolbar: {
+        //     onClick: handleClickUploadFile,
+        //   },
+        // }}
       />
       <MilestoneTemplateModal
         isDialogOpen={isDialogOpen}
