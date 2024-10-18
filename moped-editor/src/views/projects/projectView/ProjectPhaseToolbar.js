@@ -6,7 +6,7 @@ import ProjectSubstantialCompletionDate from "./ProjectSubstantialCompletionDate
 const ProjectPhaseToolbar = ({ addAction, setIsDialogOpen, completionDate }) => (
   <Box display="flex" justifyContent="space-between" sx={{ margin: "1em" }}>
     <div>
-      <Typography variant="h2" color="primary" style={{ paddingTop: "1em" }}>
+      <Typography variant="h2" color="primary">
         Phases
       </Typography>
       <ProjectSubstantialCompletionDate completionDate={completionDate} />

@@ -1025,12 +1025,3 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
     }
   }
 `;
-
-export const GET_PROJECT_SUBSTANTIAL_COMPLETION_DATE = gql`
-  query MopedProjectCompletionDate($projectId: Int) {
-    project_list_view(where: { project_id: { _eq: $projectId } }) {
-      substantial_completion_date
-      project_id
-    }
-  }
-`;
