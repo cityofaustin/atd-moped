@@ -325,6 +325,10 @@ export const TIMELINE_QUERY = gql`
         related_phase_id
       }
     }
+    project_list_view(where: { project_id: { _eq: $projectId } }) {
+      substantial_completion_date
+      project_id
+    }
   }
 `;
 
