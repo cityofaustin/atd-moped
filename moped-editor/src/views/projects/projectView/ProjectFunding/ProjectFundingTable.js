@@ -73,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
-    margin: "8px 0",
   },
   fieldBox: {
     maxWidth: "10rem",
