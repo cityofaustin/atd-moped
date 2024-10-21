@@ -354,8 +354,8 @@ const ProjectNotes = (props) => {
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
-                    const editableNote = true;
-                    // userSessionData.user_id === item.created_by_user_id;
+                    const editableNote =
+                      userSessionData.user_id === item.created_by_user_id;
                     return (
                       <React.Fragment key={item.project_note_id}>
                         <ListItem alignItems="flex-start">
