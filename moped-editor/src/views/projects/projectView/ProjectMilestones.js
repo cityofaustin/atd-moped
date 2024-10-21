@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
 
-// Material
 import {
   CircularProgress,
   TextField,
@@ -28,6 +27,7 @@ import {
   // gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 
 // Query
 import {
@@ -55,7 +55,6 @@ const useColumns = ({
   // handleSaveClick,
   // handleCancelClick,
   // handleDeleteOpen,
-  // validateFileInput,
 }) =>
   useMemo(() => {
     return [
@@ -63,7 +62,8 @@ const useColumns = ({
         headerName: "Milestone",
         field: "milestone_id",
         renderCell: ({ row }) => row.moped_milestone.milestone_name,
-        // validate: (milestone) => !!milestone.milestone_id,
+        // input validation:
+        preProcessEditCellProps: (milestone) => !!milestone.milestone_id,
         // editComponent: (props) => (
         //   <FormControl variant="standard" style={{ width: "100%" }}>
         //     <Autocomplete
@@ -81,18 +81,18 @@ const useColumns = ({
         //     <FormHelperText>Required</FormHelperText>
         //   </FormControl>
         // ),
-        // width: "25%",
+        width: 175,
       },
       {
         headerName: "Description",
         field: "description",
-        // width: 200,
+        width: 200,
         editable: true,
       },
       {
         headerName: "Related phase",
         field: "moped_milestone",
-        // editable: "never",
+        editable: false,
         // cellStyle: {
         //   fontFamily: typography.fontFamily,
         //   fontSize: "14px",
@@ -110,21 +110,16 @@ const useColumns = ({
         //   }
         //   return 0;
         // },
-        // render: (milestone) =>
-        //   phaseNameLookup(data)[milestone.moped_milestone.related_phase_id] ?? "",
-        valueFormatter: (value) => {
-          console.log(value.related_phase_id);
-          return (phaseNameLookup(data)[value.related_phase_id] ?? "")
-        }
-        // width: "14%",
+        valueGetter: (value) => {
+          return phaseNameLookup(data)[value.related_phase_id] ?? "";
+        },
+        width: 150,
       },
       {
         headerName: "Completion estimate",
         field: "date_estimate",
-        // render: (rowData) =>
-        //   rowData.date_estimate
-        //     ? format(parseISO(rowData.date_estimate), "MM/dd/yyyy")
-        //     : undefined,
+        valueFormatter: (value) =>
+          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
         // editComponent: (props) => (
         //   <DateFieldEditComponent
         //     {...props}
@@ -132,15 +127,13 @@ const useColumns = ({
         //     label="Completion estimate"
         //   />
         // ),
-        // width: "13%",
+        width: 175,
       },
       {
         headerName: "Date completed",
         field: "date_actual",
-        // render: (rowData) =>
-        //   rowData.date_actual
-        //     ? format(parseISO(rowData.date_actual), "MM/dd/yyyy")
-        //     : undefined,
+        valueFormatter: (value) =>
+          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
         // editComponent: (props) => (
         //   <DateFieldEditComponent
         //     {...props}
@@ -148,16 +141,18 @@ const useColumns = ({
         //     label="Date (actual)"
         //   />
         // ),
-        // width: "13%",
+        width: 175,
       },
       {
         headerName: "Complete",
         field: "completed",
+        valueFormatter: (value) =>  (!!value  ? "Yes" : "No"), 
         // lookup: { true: "Yes", false: "No" },
         // editComponent: (props) => (
         //   <ToggleEditComponent {...props} name="completed" />
         // ),
         // width: "10%",
+        width: 150,
       },
       {
         headerName: "",
@@ -214,7 +209,6 @@ const useColumns = ({
     // handleCancelClick,
     // handleEditClick,
     // handleDeleteOpen,
-    // validateFileInput,
   ]);
 /**
  * ProjectMilestones Component - Renders Project Milestone table
@@ -241,6 +235,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       setRows(data.moped_proj_milestones);
     }
   }, [data]);
+
+  const onClickAddMilestone = () => console.log("hi"); // setEditPhase({ project_id: projectId });
 
   const dataGridColumns = useColumns({
     // classes,
@@ -530,16 +526,17 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         density="comfortable"
         getRowHeight={() => "auto"}
         hideFooter
-        // localeText={{ noRowsLabel: "No files to display" }}
-        // initialState={{ pinnedColumns: { right: ["edit"] } }}
-        // slots={{
-        //   toolbar: ProjectFilesToolbar,
-        // }}
-        // slotProps={{
-        //   toolbar: {
-        //     onClick: handleClickUploadFile,
-        //   },
-        // }}
+        localeText={{ noRowsLabel: "No project milestones to display" }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
+        slots={{
+          toolbar: ProjectMilestoneToolbar,
+        }}
+        slotProps={{
+          toolbar: {
+            addAction: onClickAddMilestone,
+            setIsDialogOpen: setIsDialogOpen,
+          },
+        }}
       />
       <MilestoneTemplateModal
         isDialogOpen={isDialogOpen}
