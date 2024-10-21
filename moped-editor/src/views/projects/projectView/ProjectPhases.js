@@ -98,7 +98,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
       {
         headerName: "Description",
         field: "phase_description",
-        width: 350,
+        width: 300,
       },
       {
         headerName: "Current",
@@ -117,11 +117,12 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
         headerName: "",
         field: "_edit",
         sortable: false,
+        width: 100,
         renderCell: ({ row }) => {
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div>
+            <div style={{display: "flex"}}>
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit" }}
@@ -207,6 +208,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         getRowHeight={() => "auto"}
         hideFooter
         localeText={{ noRowsLabel: "No phases" }}
+        initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}
         slots={{
           toolbar: ProjectPhaseToolbar,
