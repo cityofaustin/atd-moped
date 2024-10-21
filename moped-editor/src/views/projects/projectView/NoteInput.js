@@ -148,10 +148,11 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
         console.log(nodes);
         // Append nodes serialized from html to EditorState
         nodes.forEach((node) => {
-          // If this is a TextNode, this note was created as non-rich text. We need to wrap with a paragraph
+          // If this is a TextNode, this note was created as non-rich text. We need to wrap with a paragraph node.
           const isTextNode = $isTextNode(node);
 
           if (isTextNode) {
+            // Create empty ParagraphNode, append TextNode, and then append ParagraphNode to root.
             const p = $createParagraphNode();
             p.append(node);
 
