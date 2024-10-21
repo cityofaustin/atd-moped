@@ -22,7 +22,7 @@ import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $generateHtmlFromNodes, $generateNodesFromDOM } from "@lexical/html";
-import { $getRoot } from "lexical";
+import { $createParagraphNode, $getRoot, $isTextNode } from "lexical";
 import { $isRootTextContentEmpty } from "@lexical/text";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
@@ -145,9 +145,20 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
         const parser = new DOMParser();
         const dom = parser.parseFromString(htmlContent, "text/html");
         const nodes = $generateNodesFromDOM(editor, dom);
+        console.log(nodes);
         // Append nodes serialized from html to EditorState
         nodes.forEach((node) => {
-          $getRoot().append(node);
+          // If this is a TextNode, this note was created as non-rich text. We need to wrap with a paragraph
+          const isTextNode = $isTextNode(node);
+
+          if (isTextNode) {
+            const p = $createParagraphNode();
+            p.append(node);
+
+            $getRoot().append(p);
+          } else {
+            $getRoot().append(node);
+          }
         });
       });
     editor.focus();
