@@ -91,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
   },
+  toolbarTitle: {
+    marginBottom: theme.spacing(1)
+  }
 }));
 
 // memoized hook to concatanate fund dept and unit ids into an fdu string
