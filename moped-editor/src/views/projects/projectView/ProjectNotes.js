@@ -354,8 +354,8 @@ const ProjectNotes = (props) => {
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
-                    const editableNote =
-                      userSessionData.user_id === item.created_by_user_id;
+                    const editableNote = true;
+                    // userSessionData.user_id === item.created_by_user_id;
                     return (
                       <React.Fragment key={item.project_note_id}>
                         <ListItem alignItems="flex-start">
@@ -364,7 +364,9 @@ const ProjectNotes = (props) => {
                           </ListItemAvatar>
                           <ListItemText
                             className={editableNote ? classes.editableNote : ""}
-                            secondaryTypographyProps={{className: classes.editButtons}}
+                            secondaryTypographyProps={{
+                              className: classes.editButtons,
+                            }}
                             primary={
                               <>
                                 <Typography
@@ -443,9 +445,7 @@ const ProjectNotes = (props) => {
                                     onClick={() => editNote(i, item)}
                                     size="large"
                                   >
-                                    <EditIcon
-                                      className={classes.editButtons}
-                                    />
+                                    <EditIcon className={classes.editButtons} />
                                   </IconButton>
                                 )}
                                 {!editingNote && (
