@@ -101,8 +101,8 @@ Before you begin, make sure you have the following installed on your system:
 
 ## Learn more
 
-- [Database](./moped-database/README.md) - the database that powers the Vision Zero suite
-- [Editor](./moped-editor/README.md) - web application which enables City staff to browse and edit crash data
+- [Database](./moped-database/README.md) - the database that powers the Mobility Project Database suite
+- [Editor](./moped-editor/README.md) - web application which enables City staff to browse and edit mobility project data
 - [ArcGIS Moped Database Viewer](https://austin.maps.arcgis.com/apps/webappviewer/index.html?id=404d31d56b57491abe53ccfd718fcaee) - GIS map application that includes Moped Project Data as a layer (requires ArcGIS Online permissions)
 - [API](./moped-api/README.md) - serverless Flask API, handling data operations and API requests
 - [auth](./moped-auth/README.md) - manages authentication using AWS Cognito, including JWT token generation and validation for secure access control
