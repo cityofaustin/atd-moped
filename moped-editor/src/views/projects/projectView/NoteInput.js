@@ -145,7 +145,6 @@ const OnEditPlugin = ({ htmlContent, editingNote }) => {
         const parser = new DOMParser();
         const dom = parser.parseFromString(htmlContent, "text/html");
         const nodes = $generateNodesFromDOM(editor, dom);
-        console.log(nodes);
         // Append nodes serialized from html to EditorState
         nodes.forEach((node) => {
           // If this is a TextNode, this note was created as non-rich text. We need to wrap with a paragraph node.
