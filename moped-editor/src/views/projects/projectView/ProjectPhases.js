@@ -8,8 +8,8 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   CheckCircleOutline,
 } from "@mui/icons-material";
-import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
-import PhaseTemplateModal from "./PhaseTemplateModal";
+import ProjectPhaseToolbar from "./ProjectPhase/ProjectPhaseToolbar";
+import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhaseDateConfirmationPopover";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";

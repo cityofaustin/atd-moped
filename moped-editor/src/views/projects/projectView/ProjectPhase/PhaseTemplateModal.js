@@ -16,9 +16,9 @@ import {
 import { Autocomplete } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
-import { returnArterialManagementPhaseTemplate } from "../../../utils/timelineTemplates";
+import { returnArterialManagementPhaseTemplate } from "../../../../utils/timelineTemplates";
 
-import { ADD_PROJECT_PHASE } from "../../../queries/project";
+import { ADD_PROJECT_PHASE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 
 const templateChoices = ["Arterial Management"];
