@@ -45,7 +45,7 @@ import { phaseNameLookup } from "src/utils/timelineTableHelpers";
 import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
-import MilestoneTemplateModal from "./MilestoneTemplateModal";
+import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 
 const useColumns = ({
   // classes,

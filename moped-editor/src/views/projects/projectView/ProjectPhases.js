@@ -10,8 +10,8 @@ import {
 } from "@mui/icons-material";
 import ProjectPhaseToolbar from "./ProjectPhase/ProjectPhaseToolbar";
 import PhaseTemplateModal from "./ProjectPhase/PhaseTemplateModal";
-import ProjectPhaseDialog from "./ProjectPhaseDialog";
-import ProjectPhaseDateConfirmationPopover from "./ProjectPhaseDateConfirmationPopover";
+import ProjectPhaseDialog from "./ProjectPhase/ProjectPhaseDialog";
+import ProjectPhaseDateConfirmationPopover from "./ProjectPhase/ProjectPhaseDateConfirmationPopover";
 import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseIDs,
