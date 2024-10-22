@@ -28,6 +28,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
+import { v4 as uuidv4 } from "uuid";
 
 // Query
 import {
@@ -61,7 +62,7 @@ const useColumns = ({
       {
         headerName: "Milestone",
         field: "milestone_id",
-        renderCell: ({ row }) => row.moped_milestone.milestone_name,
+        renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
         preProcessEditCellProps: (milestone) => !!milestone.milestone_id,
         // editComponent: (props) => (
@@ -111,7 +112,7 @@ const useColumns = ({
         //   return 0;
         // },
         valueGetter: (value) => {
-          return phaseNameLookup(data)[value.related_phase_id] ?? "";
+          return phaseNameLookup(data)[value?.related_phase_id] ?? "";
         },
         width: 150,
       },
@@ -205,9 +206,9 @@ const useColumns = ({
     // classes,
     data,
     rowModesModel,
-    // handleSaveClick,
-    // handleCancelClick,
-    // handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
     // handleDeleteOpen,
   ]);
 /**
@@ -260,9 +261,37 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
+    const editedRow = rows.find((row) => row.project_milestone_id === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
   };
 
-  const onClickAddMilestone = () => console.log("hi"); // this needs to be like in the funding table. 
+
+ // adds a blank row to the table and updates the row modes model
+ const onClickAddMilestone = () => {
+  // use a random id to keep track of row in row modes model and data grid rows
+  // before the record is added to the db
+  const id = uuidv4();
+  setRows((oldRows) => [
+    {
+      id,
+      milestone_id: null,
+      description: null,
+      moped_milestone: null,
+      date_actual: null,
+      date_estimate: null,
+      completed: false,
+      isNew: true,
+      project_milestone_id: id,
+    },
+    ...oldRows,
+  ]);
+  setRowModesModel((oldModel) => ({
+    ...oldModel,
+    [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
+  }));
+};
 
   const dataGridColumns = useColumns({
     // classes,
