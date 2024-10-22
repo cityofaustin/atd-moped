@@ -6,15 +6,6 @@ import {
   FormControl,
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import makeStyles from "@mui/styles/makeStyles";
-import CustomPopper from "src/components/CustomPopper";
-
-const useStyles = makeStyles((theme) => ({
-  fundSelectStyle: {
-    width: "190px",
-    alignContent: "center",
-  },
-}));
 
 const MilestoneAutocompleteComponent = ({
   id,
@@ -23,7 +14,6 @@ const MilestoneAutocompleteComponent = ({
   hasFocus,
   milestoneNameLookup,
 }) => {
-  const classes = useStyles();
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -42,7 +32,10 @@ const MilestoneAutocompleteComponent = ({
   };
 
   return (
-    <FormControl variant="standard" style={{ width: "100%" }}>
+    <FormControl
+      variant="standard"
+      style={{ width: "100%", marginLeft: "10px" }}
+    >
       <Autocomplete
         id={"milestone_name"}
         name={"milestone_name"}

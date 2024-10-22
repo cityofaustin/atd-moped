@@ -75,7 +75,7 @@ const useColumns = ({
             milestoneNameLookup={milestoneNameLookup}
           />
         ),
-        width: 175,
+        width: 250,
       },
       {
         headerName: "Description",
