@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import isEqual from "lodash/isEqual";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   CircularProgress,
@@ -28,7 +30,6 @@ import {
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
-import { v4 as uuidv4 } from "uuid";
 
 // Query
 import {
@@ -147,7 +148,7 @@ const useColumns = ({
       {
         headerName: "Complete",
         field: "completed",
-        valueFormatter: (value) =>  (!!value  ? "Yes" : "No"), 
+        valueFormatter: (value) => (!!value ? "Yes" : "No"),
         // lookup: { true: "Yes", false: "No" },
         // editComponent: (props) => (
         //   <ToggleEditComponent {...props} name="completed" />
@@ -267,31 +268,105 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     }
   };
 
+  // adds a blank row to the table and updates the row modes model
+  const onClickAddMilestone = () => {
+    // use a random id to keep track of row in row modes model and data grid rows
+    // before the record is added to the db
+    const id = uuidv4();
+    setRows((oldRows) => [
+      {
+        id,
+        milestone_id: 26, //null, FOR TESTING
+        description: null,
+        date_actual: null,
+        date_estimate: null,
+        completed: false,
+        isNew: true,
+        project_milestone_id: id,
+      },
+      ...oldRows,
+    ]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
+    }));
+  };
 
- // adds a blank row to the table and updates the row modes model
- const onClickAddMilestone = () => {
-  // use a random id to keep track of row in row modes model and data grid rows
-  // before the record is added to the db
-  const id = uuidv4();
-  setRows((oldRows) => [
-    {
-      id,
-      milestone_id: null,
-      description: null,
-      moped_milestone: null,
-      date_actual: null,
-      date_estimate: null,
-      completed: false,
-      isNew: true,
-      project_milestone_id: id,
-    },
-    ...oldRows,
-  ]);
-  setRowModesModel((oldModel) => ({
-    ...oldModel,
-    [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
-  }));
-};
+  // saves row update, either editing an existing row or saving a new row
+  const processRowUpdate = (updatedRow, originalRow) => {
+    const updatedMilestoneData = updatedRow;
+    console.log(updatedRow);
+    // Remove unneeded variables
+    delete updatedMilestoneData.__typename;
+
+    // // preventing empty strings from being saved
+    // updatedMilestoneData.funding_amount =
+    //   updatedMilestoneData.funding_amount || null;
+    updatedMilestoneData.description =
+      !updatedMilestoneData.description ||
+      updatedMilestoneData.description.trim() === ""
+        ? null
+        : updatedMilestoneData.description;
+
+    if (updatedRow.isNew) {
+      delete updatedMilestoneData.isNew;
+      delete updatedMilestoneData.id;
+      delete updatedMilestoneData.project_milestone_id;
+
+      console.log(updatedMilestoneData, projectId)
+
+      return (
+        addProjectMilestone({
+          variables: {
+            objects: {
+              ...updatedMilestoneData,
+              project_id: projectId,
+            },
+          },
+        })
+          .then((response) => {
+            console.log(response)
+            // replace the temporary row id with the id from the record creation
+            const record_id =
+              response.data.insert_moped_proj_milestones.returning[0]
+                .project_milestone_id;
+            updatedRow.project_milestone_id = record_id;
+          })
+          .then(() => refetch())
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
+          .catch((error) => {
+            console.error(error.message);
+          })
+      );
+    } else {
+      // Remove __typename since we removed it from updatedRow and check if the row has changed
+      delete originalRow.__typename;
+      const hasRowChanged = !isEqual(updatedRow, originalRow);
+
+      if (!hasRowChanged) {
+        return Promise.resolve(updatedRow);
+      } else {
+        return (
+          updateProjectMilestone({
+            variables: updatedMilestoneData,
+          })
+            .then(() => refetch())
+            // from the data grid docs:
+            // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+            .then(() => updatedRow)
+            .catch((error) => {
+              console.error(error.message);
+            })
+        );
+      }
+    }
+  };
+
+  const handleProcessUpdateError = (error) => {
+    console.error(error.message);
+  };
 
   const dataGridColumns = useColumns({
     // classes,
@@ -573,8 +648,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        // processRowUpdate={processRowUpdate}
-        // onProcessRowUpdateError={handleProcessUpdateError}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessUpdateError}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
