@@ -7,6 +7,7 @@ import ExternalLink from "../../../components/ExternalLink";
 import ProjectStatusBadge from "../projectView/ProjectStatusBadge";
 import RenderSignalLink from "../../../components/RenderSignalLink";
 import { PROJECT_LIST_VIEW_QUERY_CONFIG } from "./ProjectsListViewQueryConf";
+import { substantialCompletionDateTooltipText } from "../../../constants/projects";
 import theme from "src/theme";
 
 export const filterNullValues = (value) => {
@@ -315,7 +316,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Substantial completion date",
         field: "substantial_completion_date",
-        description: "The earliest confirmed start date of a project phase that has a simple phase name of Complete (Complete or Post-construction)",
+        description: substantialCompletionDateTooltipText,
         valueFormatter: (value) => value && formatDateType(value),
         width: COLUMN_WIDTHS.medium,
       },
