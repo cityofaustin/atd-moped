@@ -187,6 +187,9 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
 
   const subphaseNameLookup = useSubphaseNameLookup(data?.moped_subphases || []);
 
+  const completionDate =
+    data?.project_list_view[0]["substantial_completion_date"];
+
   const onSubmitCallback = () => {
     refetch().then(() => setEditPhase(null));
   };
@@ -212,6 +215,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
           toolbar: {
             addAction: onClickAddPhase,
             setIsDialogOpen: setIsTemplateDialogOpen,
+            completionDate: completionDate,
           },
         }}
       />
