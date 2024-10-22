@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 
 import {
   CircularProgress,
@@ -51,9 +51,9 @@ const useColumns = ({
   // classes,
   data,
   rowModesModel,
-  // handleEditClick,
-  // handleSaveClick,
-  // handleCancelClick,
+  handleEditClick,
+  handleSaveClick,
+  handleCancelClick,
   // handleDeleteOpen,
 }) =>
   useMemo(() => {
@@ -172,13 +172,13 @@ const useColumns = ({
                 sx={{
                   color: "primary.main",
                 }}
-                //onClick={handleSaveClick(id)}
+                onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
                 icon={<CloseIcon sx={{ fontSize: "24px" }} />}
                 label="Cancel"
                 className="textPrimary"
-                //onClick={handleCancelClick(id)}
+                onClick={handleCancelClick(id)}
                 color="inherit"
               />,
             ];
@@ -188,7 +188,7 @@ const useColumns = ({
               icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
               label="Edit"
               className="textPrimary"
-              //onClick={handleEditClick(id)}
+              onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
@@ -236,17 +236,42 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     }
   }, [data]);
 
-  const onClickAddMilestone = () => console.log("hi"); // setEditPhase({ project_id: projectId });
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
+
+  const handleEditClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+    },
+    [rowModesModel]
+  );
+
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel]
+  );
+
+  // when a user cancels editing by clicking the X in the actions
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+  };
+
+  const onClickAddMilestone = () => console.log("hi"); // this needs to be like in the funding table. 
 
   const dataGridColumns = useColumns({
     // classes,
     data,
     rowModesModel,
     // handleDeleteOpen,
-    // handleSaveClick,
-    // handleCancelClick,
-    // handleEditClick,
-    // validateFileInput,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
   });
 
   // If the query is loading or data object is undefined,
@@ -518,7 +543,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         getRowId={(row) => row.project_milestone_id}
         editMode="row"
         rowModesModel={rowModesModel}
-        // onRowModesModelChange={handleRowModesModelChange}
+        onRowModesModelChange={handleRowModesModelChange}
         // processRowUpdate={processRowUpdate}
         // onProcessRowUpdateError={handleProcessUpdateError}
         disableRowSelectionOnClick
