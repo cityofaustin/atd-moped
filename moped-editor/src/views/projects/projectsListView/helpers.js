@@ -317,7 +317,7 @@ export const useColumns = ({ hiddenColumns }) => {
         field: "substantial_completion_date",
         description: "The earliest confirmed start date of a project phase that has a simple phase name of Complete (Complete or Post-construction)",
         valueFormatter: (value) => value && formatDateType(value),
-        width: COLUMN_WIDTHS.small,
+        width: COLUMN_WIDTHS.medium,
       },
       {
         headerName: "Construction start",
