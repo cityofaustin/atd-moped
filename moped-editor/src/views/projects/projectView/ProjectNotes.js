@@ -364,7 +364,9 @@ const ProjectNotes = (props) => {
                           </ListItemAvatar>
                           <ListItemText
                             className={editableNote ? classes.editableNote : ""}
-                            secondaryTypographyProps={{className: classes.editButtons}}
+                            secondaryTypographyProps={{
+                              className: classes.editButtons,
+                            }}
                             primary={
                               <>
                                 <Typography
@@ -443,9 +445,7 @@ const ProjectNotes = (props) => {
                                     onClick={() => editNote(i, item)}
                                     size="large"
                                   >
-                                    <EditIcon
-                                      className={classes.editButtons}
-                                    />
+                                    <EditIcon className={classes.editButtons} />
                                   </IconButton>
                                 )}
                                 {!editingNote && (
