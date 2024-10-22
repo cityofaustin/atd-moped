@@ -1,12 +1,21 @@
 import { Box, Typography } from "@mui/material";
 import ButtonDropdownMenu from "src/components/ButtonDropdownMenu";
 import ProjectSubstantialCompletionDate from "./ProjectSubstantialCompletionDate";
+import theme from "src/theme";
 
 /** Custom toolbar title that resembles material table titles  */
-const ProjectPhaseToolbar = ({ addAction, setIsDialogOpen, completionDate }) => (
+const ProjectPhaseToolbar = ({
+  addAction,
+  setIsDialogOpen,
+  completionDate,
+}) => (
   <Box display="flex" justifyContent="space-between" sx={{ margin: "1em" }}>
     <div>
-      <Typography variant="h2" color="primary" style={{ paddingTop: "1em" }}>
+      <Typography
+        variant="h2"
+        color="primary"
+        sx={{ marginBottom: theme.spacing(1) }}
+      >
         Phases
       </Typography>
       <ProjectSubstantialCompletionDate completionDate={completionDate} />

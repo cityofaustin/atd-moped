@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { CircularProgress, Box, IconButton } from "@mui/material";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import { green } from "@mui/material/colors";
@@ -12,10 +12,7 @@ import ProjectPhaseToolbar from "./ProjectPhaseToolbar";
 import PhaseTemplateModal from "./PhaseTemplateModal";
 import ProjectPhaseDialog from "./ProjectPhaseDialog";
 import ProjectPhaseDateConfirmationPopover from "./ProjectPhaseDateConfirmationPopover";
-import {
-  DELETE_PROJECT_PHASE,
-  GET_PROJECT_SUBSTANTIAL_COMPLETION_DATE,
-} from "src/queries/project";
+import { DELETE_PROJECT_PHASE } from "src/queries/project";
 import {
   useCurrentProjectPhaseIDs,
   useCurrentPhaseIds,
@@ -160,13 +157,6 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
 
-  const { data: completionDateData, refetch: refetchCompletionDate } = useQuery(
-    GET_PROJECT_SUBSTANTIAL_COMPLETION_DATE,
-    {
-      variables: { projectId: Number(projectId) },
-    }
-  );
-
   const onClickAddPhase = () => setEditPhase({ project_id: projectId });
 
   const onDeletePhase = useCallback(
@@ -177,10 +167,9 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
           refetchQueries: ["ProjectSummary"],
         }).then(() => {
           refetch();
-          refetchCompletionDate();
         });
     },
-    [deletePhase, refetch, refetchCompletionDate]
+    [deletePhase, refetch]
   );
 
   const columns = useColumns({
@@ -199,12 +188,10 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   const subphaseNameLookup = useSubphaseNameLookup(data?.moped_subphases || []);
 
   const completionDate =
-    completionDateData?.project_list_view[0]["substantial_completion_date"];
+    data?.project_list_view[0]["substantial_completion_date"];
 
   const onSubmitCallback = () => {
-    refetchCompletionDate().then(() =>
-      refetch().then(() => setEditPhase(null))
-    );
+    refetch().then(() => setEditPhase(null));
   };
 
   return (
