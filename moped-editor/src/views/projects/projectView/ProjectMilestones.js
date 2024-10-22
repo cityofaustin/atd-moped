@@ -48,6 +48,7 @@ import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
+import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 
 const useColumns = ({
   // classes,
@@ -57,6 +58,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   // handleDeleteOpen,
+  milestoneNameLookup,
 }) =>
   useMemo(() => {
     return [
@@ -66,23 +68,13 @@ const useColumns = ({
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
         preProcessEditCellProps: (milestone) => !!milestone.milestone_id,
-        // editComponent: (props) => (
-        //   <FormControl variant="standard" style={{ width: "100%" }}>
-        //     <Autocomplete
-        //       id={"milestone_name"}
-        //       name={"milestone_name"}
-        //       options={Object.keys(milestoneNameLookup)}
-        //       getOptionLabel={(option) => milestoneNameLookup[option]}
-        //       isOptionEqualToValue={(option, value) => option === value}
-        //       value={props.value}
-        //       onChange={(event, value) => props.onChange(value)}
-        //       renderInput={(params) => (
-        //         <TextField variant="standard" {...params} />
-        //       )}
-        //     />
-        //     <FormHelperText>Required</FormHelperText>
-        //   </FormControl>
-        // ),
+        editable: true,
+        renderEditCell: (props) => (
+          <MilestoneAutocompleteComponent
+            {...props}
+            milestoneNameLookup={milestoneNameLookup}
+          />
+        ),
         width: 175,
       },
       {
@@ -211,6 +203,7 @@ const useColumns = ({
     handleCancelClick,
     handleEditClick,
     // handleDeleteOpen,
+    milestoneNameLookup,
   ]);
 /**
  * ProjectMilestones Component - Renders Project Milestone table
@@ -299,9 +292,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     // Remove unneeded variables
     delete updatedMilestoneData.__typename;
 
-    // // preventing empty strings from being saved
-    // updatedMilestoneData.funding_amount =
-    //   updatedMilestoneData.funding_amount || null;
+    // preventing empty strings from being saved
     updatedMilestoneData.description =
       !updatedMilestoneData.description ||
       updatedMilestoneData.description.trim() === ""
@@ -313,7 +304,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       delete updatedMilestoneData.id;
       delete updatedMilestoneData.project_milestone_id;
 
-      console.log(updatedMilestoneData, projectId)
+      console.log(updatedMilestoneData, projectId);
 
       return (
         addProjectMilestone({
@@ -325,7 +316,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           },
         })
           .then((response) => {
-            console.log(response)
+            console.log(response);
             // replace the temporary row id with the id from the record creation
             const record_id =
               response.data.insert_moped_proj_milestones.returning[0]
@@ -368,20 +359,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     console.error(error.message);
   };
 
-  const dataGridColumns = useColumns({
-    // classes,
-    data,
-    rowModesModel,
-    // handleDeleteOpen,
-    handleSaveClick,
-    handleCancelClick,
-    handleEditClick,
-  });
-
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
-  if (loading || !data) return <CircularProgress />;
-
   /**
    * Milestone table lookup object formatted into the shape that <Autocomplete> expects.
    * Ex: { 1: "Award", 2: "Bid", ...}
@@ -393,6 +370,21 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       }),
     {}
   );
+
+  const dataGridColumns = useColumns({
+    // classes,
+    data,
+    rowModesModel,
+    // handleDeleteOpen,
+    handleSaveClick,
+    handleCancelClick,
+    handleEditClick,
+    milestoneNameLookup,
+  });
+
+  // If the query is loading or data object is undefined,
+  // stop here and just render the spinner.
+  if (loading || !data) return <CircularProgress />;
 
   // Hide Milestone template dialog
   const handleTemplateModalClose = () => {
