@@ -138,7 +138,7 @@ which contains the connection information for the local cluster. Notice the form
 
 #### Views
 
-To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](/views/README.md).
+To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](./views/README.md).
 
 ### SQL Formatting
 
