@@ -117,7 +117,7 @@ const useColumns = ({
         editable: true,
         valueFormatter: (value) => (!!value ? "Yes" : "No"),
         renderEditCell: (props) => (
-          <ToggleEditComponent {...props} name="completed" />
+          <ToggleEditComponent {...props} />
         ),
         width: 150,
       },

@@ -4,11 +4,14 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
  * ToggleEditComponent - renders a toggle for True/False edit fields in DataGrid
- * @param {object} props -
+ * @param {string} value - the current value
+ * @param {Integer} id - Data Grid row id
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
  * @return {JSX.Element}
  * @constructor
  */
-const ToggleEditComponent = ({ id, value, field, hasFocus, name }) => {
+const ToggleEditComponent = ({ id, value, field, hasFocus }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -33,7 +36,7 @@ const ToggleEditComponent = ({ id, value, field, hasFocus, name }) => {
           checked={value ?? false}
           onChange={handleChange}
           color="primary"
-          name={name}
+          name={field}
           inputProps={{ "aria-label": "primary checkbox" }}
           inputRef={ref}
         />

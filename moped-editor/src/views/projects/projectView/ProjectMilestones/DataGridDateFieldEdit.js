@@ -12,7 +12,6 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @return {JSX.Element}
  * @constructor
  */
-
 const DataGridDateFieldEdit = ({
   value,
   hasFocus,
