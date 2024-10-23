@@ -5,16 +5,15 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
  * DataGridDateFieldEdit - renders a Date type Calendar select for use in DataGrid
- * @param {object} props - Values passed through Material Table `editComponent`
- * @param {function} props.onChange - callback function to update the value
- * @param {string} props.value - the current value
- * @param {object} props.textFieldProps - additional props to pass to the picker's TextField
+ * @param {string} value - the current value
+ * @param {Integer} id - Data Grid row id
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
  * @return {JSX.Element}
  * @constructor
  */
 
 const DataGridDateFieldEdit = ({
-  onChange,
   value,
   hasFocus,
   id,
