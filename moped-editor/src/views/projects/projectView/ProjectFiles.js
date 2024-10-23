@@ -426,6 +426,7 @@ const ProjectFiles = () => {
   };
 
   // Validate the input for the file url or file Key field
+  // returns Object: ...params.props and if there is an error
   const validateFileInput = (params) => {
     // if the file is uploaded to s3, then there is a file_key and users cannot edit it
     if (params.row.file_key) {
