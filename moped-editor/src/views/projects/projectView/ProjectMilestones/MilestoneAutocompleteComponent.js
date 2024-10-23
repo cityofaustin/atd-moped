@@ -13,6 +13,7 @@ const MilestoneAutocompleteComponent = ({
   field,
   hasFocus,
   milestoneNameLookup,
+  error,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -34,7 +35,7 @@ const MilestoneAutocompleteComponent = ({
   return (
     <FormControl
       variant="standard"
-      style={{ width: "100%", marginLeft: "10px" }}
+      style={{ width: "100%", marginLeft: "10px", marginRight: "10px" }}
     >
       <Autocomplete
         id={"milestone_name"}
@@ -45,7 +46,7 @@ const MilestoneAutocompleteComponent = ({
         value={value}
         onChange={handleChange}
         renderInput={(params) => (
-          <TextField variant="standard" {...params} inputRef={ref} />
+          <TextField variant="standard" {...params} inputRef={ref} error={error} />
         )}
       />
       <FormHelperText>Required</FormHelperText>

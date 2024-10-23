@@ -30,6 +30,7 @@ import {
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
+import DataGridTextField from "./DataGridTextField";
 
 // Query
 import {
@@ -67,7 +68,7 @@ const useColumns = ({
         field: "milestone_id",
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
-        preProcessEditCellProps: (milestone) => !!milestone.milestone_id,
+        preProcessEditCellProps: (params) => ({ ...params.props, error: !params.props.value }),
         editable: true,
         renderEditCell: (props) => (
           <MilestoneAutocompleteComponent
@@ -82,28 +83,12 @@ const useColumns = ({
         field: "description",
         width: 200,
         editable: true,
+        renderEditCell: (props) => <DataGridTextField {...props} />,
       },
       {
         headerName: "Related phase",
         field: "moped_milestone",
-        editable: false,
-        // cellStyle: {
-        //   fontFamily: typography.fontFamily,
-        //   fontSize: "14px",
-        // },
-        // customSort: (a, b) => {
-        //   const aPhaseName =
-        //     phaseNameLookup(data)[a.moped_milestone.related_phase_id];
-        //   const bPhaseName =
-        //     phaseNameLookup(data)[b.moped_milestone.related_phase_id];
-        //   if (aPhaseName > bPhaseName) {
-        //     return 1;
-        //   }
-        //   if (aPhaseName < bPhaseName) {
-        //     return -1;
-        //   }
-        //   return 0;
-        // },
+        editable: false, // would it be cool for this to update when someone edits the milestone
         valueGetter: (value) => {
           return phaseNameLookup(data)[value?.related_phase_id] ?? "";
         },
@@ -140,11 +125,12 @@ const useColumns = ({
       {
         headerName: "Complete",
         field: "completed",
+        editable: true,
         valueFormatter: (value) => (!!value ? "Yes" : "No"),
         // lookup: { true: "Yes", false: "No" },
-        // editComponent: (props) => (
-        //   <ToggleEditComponent {...props} name="completed" />
-        // ),
+        renderEditCell: (props) => (
+          <ToggleEditComponent {...props} name="completed" />
+        ),
         // width: "10%",
         width: 150,
       },
@@ -269,7 +255,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     setRows((oldRows) => [
       {
         id,
-        milestone_id: 26, //null, FOR TESTING
+        milestone_id: null,
         description: null,
         date_actual: null,
         date_estimate: null,
@@ -316,7 +302,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           },
         })
           .then((response) => {
-            console.log(response);
             // replace the temporary row id with the id from the record creation
             const record_id =
               response.data.insert_moped_proj_milestones.returning[0]
