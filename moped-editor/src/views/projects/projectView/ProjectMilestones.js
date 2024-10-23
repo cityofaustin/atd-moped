@@ -2,23 +2,11 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  CircularProgress,
-  TextField,
-  Typography,
-  FormControl,
-  FormHelperText,
-} from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import {
   EditOutlined as EditOutlinedIcon,
   DeleteOutline as DeleteOutlineIcon,
 } from "@mui/icons-material";
-import MaterialTable, {
-  MTableEditRow,
-  MTableAction,
-  MTableToolbar,
-} from "@material-table/core";
-import typography from "../../../theme/typography";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import {
@@ -41,13 +29,10 @@ import {
 import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
-import Autocomplete from "@mui/material/Autocomplete";
 
 // Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
-import DateFieldEditComponent from "./DateFieldEditComponent";
 import ToggleEditComponent from "./ToggleEditComponent";
-import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
@@ -133,11 +118,9 @@ const useColumns = ({
         field: "completed",
         editable: true,
         valueFormatter: (value) => (!!value ? "Yes" : "No"),
-        // lookup: { true: "Yes", false: "No" },
         renderEditCell: (props) => (
           <ToggleEditComponent {...props} name="completed" />
         ),
-        // width: "10%",
         width: 150,
       },
       {
@@ -381,108 +364,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const handleTemplateModalClose = () => {
     setIsDialogOpen(false);
   };
-
-  /**
-   * Column configuration for <MaterialTable> Milestones table
-   */
-  const milestoneColumns = [
-    {
-      title: "Milestone",
-      field: "milestone_id",
-      render: (milestone) => milestone.moped_milestone.milestone_name,
-      validate: (milestone) => !!milestone.milestone_id,
-      editComponent: (props) => (
-        <FormControl variant="standard" style={{ width: "100%" }}>
-          <Autocomplete
-            id={"milestone_name"}
-            name={"milestone_name"}
-            options={Object.keys(milestoneNameLookup)}
-            getOptionLabel={(option) => milestoneNameLookup[option]}
-            isOptionEqualToValue={(option, value) => option === value}
-            value={props.value}
-            onChange={(event, value) => props.onChange(value)}
-            renderInput={(params) => (
-              <TextField variant="standard" {...params} />
-            )}
-          />
-          <FormHelperText>Required</FormHelperText>
-        </FormControl>
-      ),
-      width: "25%",
-    },
-    {
-      title: "Description",
-      field: "description",
-      render: (milestone) => milestone.description,
-      width: "25%",
-    },
-    {
-      title: "Related phase",
-      field: "moped_milestone",
-      editable: "never",
-      cellStyle: {
-        fontFamily: typography.fontFamily,
-        fontSize: "14px",
-      },
-      customSort: (a, b) => {
-        const aPhaseName =
-          phaseNameLookup(data)[a.moped_milestone.related_phase_id];
-        const bPhaseName =
-          phaseNameLookup(data)[b.moped_milestone.related_phase_id];
-        if (aPhaseName > bPhaseName) {
-          return 1;
-        }
-        if (aPhaseName < bPhaseName) {
-          return -1;
-        }
-        return 0;
-      },
-      render: (milestone) =>
-        phaseNameLookup(data)[milestone.moped_milestone.related_phase_id] ?? "",
-      width: "14%",
-    },
-    {
-      title: "Completion estimate",
-      field: "date_estimate",
-      render: (rowData) =>
-        rowData.date_estimate
-          ? format(parseISO(rowData.date_estimate), "MM/dd/yyyy")
-          : undefined,
-      editComponent: (props) => (
-        <DateFieldEditComponent
-          {...props}
-          name="date_estimate"
-          label="Completion estimate"
-        />
-      ),
-      width: "13%",
-    },
-    {
-      title: "Date completed",
-      field: "date_actual",
-      render: (rowData) =>
-        rowData.date_actual
-          ? format(parseISO(rowData.date_actual), "MM/dd/yyyy")
-          : undefined,
-      editComponent: (props) => (
-        <DateFieldEditComponent
-          {...props}
-          name="date_actual"
-          label="Date (actual)"
-        />
-      ),
-      width: "13%",
-    },
-    {
-      title: "Complete",
-      field: "completed",
-      lookup: { true: "Yes", false: "No" },
-      editComponent: (props) => (
-        <ToggleEditComponent {...props} name="completed" />
-      ),
-      width: "10%",
-    },
-  ];
 
   return (
     <>
