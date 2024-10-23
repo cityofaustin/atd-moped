@@ -1,6 +1,5 @@
 import React from "react";
 import { Grid, Switch } from "@mui/material";
-import { handleKeyEvent } from "../../../utils/materialTableHelpers";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
@@ -36,7 +35,6 @@ const ToggleEditComponent = ({ id, value, field, hasFocus, name }) => {
           color="primary"
           name={name}
           inputProps={{ "aria-label": "primary checkbox" }}
-          //  onKeyDown={(e) => handleKeyEvent(e)}
           inputRef={ref}
         />
       </Grid>

@@ -50,6 +50,7 @@ import ToggleEditComponent from "./ToggleEditComponent";
 import ButtonDropdownMenu from "../../../components/ButtonDropdownMenu";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
+import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 
 const useColumns = ({
   // classes,
@@ -68,7 +69,10 @@ const useColumns = ({
         field: "milestone_id",
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
-        preProcessEditCellProps: (params) => ({ ...params.props, error: !params.props.value }),
+        preProcessEditCellProps: (params) => ({
+          ...params.props,
+          error: !params.props.value,
+        }),
         editable: true,
         renderEditCell: (props) => (
           <MilestoneAutocompleteComponent
@@ -97,29 +101,31 @@ const useColumns = ({
       {
         headerName: "Completion estimate",
         field: "date_estimate",
+        editable: true,
         valueFormatter: (value) =>
           value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
-        // editComponent: (props) => (
-        //   <DateFieldEditComponent
-        //     {...props}
-        //     name="date_estimate"
-        //     label="Completion estimate"
-        //   />
-        // ),
+        renderEditCell: (props) => (
+          <DataGridDateFieldEdit
+            {...props}
+            name="date_estimate"
+            label="Completion estimate"
+          />
+        ),
         width: 175,
       },
       {
         headerName: "Date completed",
         field: "date_actual",
+        editable: true,
         valueFormatter: (value) =>
           value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
-        // editComponent: (props) => (
-        //   <DateFieldEditComponent
-        //     {...props}
-        //     name="date_actual"
-        //     label="Date (actual)"
-        //   />
-        // ),
+        renderEditCell: (props) => (
+          <DataGridDateFieldEdit
+            {...props}
+            name="date_actual"
+            label="Date (actual)"
+          />
+        ),
         width: 175,
       },
       {
@@ -480,140 +486,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
 
   return (
     <>
-      <MaterialTable
-        columns={milestoneColumns}
-        data={data.moped_proj_milestones}
-        icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
-        components={{
-          EditRow: (props) => (
-            <MTableEditRow
-              {...props}
-              onKeyDown={(e) => {
-                if (e.keyCode === 13) {
-                  // Bypass default MaterialTable behavior of submitting the entire form when a user hits enter
-                  // See https://github.com/mbrn/material-table/pull/2008#issuecomment-662529834
-                }
-              }}
-            />
-          ),
-          Action: (props) => {
-            // If isn't the add action
-            if (
-              typeof props.action === typeof Function ||
-              props.action.tooltip !== "Add"
-            ) {
-              return <MTableAction {...props} />;
-            } else {
-              return (
-                <ButtonDropdownMenu
-                  addAction={props.action.onClick}
-                  openActionDialog={setIsDialogOpen}
-                  parentButtonText="Add milestone"
-                  firstOptionText="New milestone"
-                  secondOptionText="From template"
-                  secondOptionIcon
-                />
-              );
-            }
-          },
-          Toolbar: (props) => (
-            // to have it align with table content
-            <div style={{ marginLeft: "-10px" }}>
-              <MTableToolbar {...props} />
-            </div>
-          ),
-        }}
-        editable={{
-          onRowAdd: (newData) => {
-            // Merge input fields with required fields default data.
-            const newMilestoneObject = {
-              project_id: projectId,
-              completed: false,
-              ...newData,
-            };
-
-            // Coerce empty strings to null
-            Object.keys(newMilestoneObject).forEach((key) => {
-              if (newMilestoneObject[key] === "") {
-                newMilestoneObject[key] = null;
-              }
-            });
-
-            // Execute insert mutation
-            return addProjectMilestone({
-              variables: {
-                objects: [newMilestoneObject],
-              },
-            }).then(() => {
-              // Refetch data
-              refetch();
-            });
-          },
-          onRowUpdate: (newData, oldData) => {
-            const updatedMilestoneObject = {
-              ...oldData,
-              ...newData,
-            };
-
-            // Coerce empty strings to null
-            Object.keys(updatedMilestoneObject).forEach((key) => {
-              if (updatedMilestoneObject[key] === "") {
-                updatedMilestoneObject[key] = null;
-              }
-            });
-
-            // Remove extraneous fields given by MaterialTable that
-            // Hasura doesn't need
-            delete updatedMilestoneObject.tableData;
-            delete updatedMilestoneObject.project_id;
-            delete updatedMilestoneObject.__typename;
-
-            // Execute update mutation
-            return updateProjectMilestone({
-              variables: updatedMilestoneObject,
-            }).then(() => {
-              // Refetch data
-              refetch();
-            });
-          },
-          onRowDelete: (oldData) => {
-            // Execute delete mutation
-            return deleteProjectMilestone({
-              variables: {
-                project_milestone_id: oldData.project_milestone_id,
-              },
-            }).then(() => {
-              // Refetch data
-              refetch();
-            });
-          },
-        }}
-        title={
-          <Typography variant="h2" color="primary">
-            Milestones
-          </Typography>
-        }
-        options={{
-          paging: false,
-          search: false,
-          rowStyle: { fontFamily: typography.fontFamily },
-          actionsColumnIndex: -1,
-          addRowPosition: "first",
-          idSynonym: "project_milestone_id",
-        }}
-        localization={{
-          header: {
-            actions: "",
-          },
-          body: {
-            emptyDataSourceMessage: (
-              <Typography variant="body1">
-                No project milestones to display
-              </Typography>
-            ),
-          },
-        }}
-      />
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
