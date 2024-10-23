@@ -951,11 +951,11 @@ export const UPDATE_PROJECT_NAMES_QUERY = gql`
 
 export const LOOKUP_TABLES_QUERY = gql`
   query ProjectLookups {
-    moped_fund_sources {
+    moped_fund_sources(order_by: { funding_source_name: asc }) {
       funding_source_id
       funding_source_name
     }
-    moped_fund_programs {
+    moped_fund_programs(order_by: { funding_program_name: asc }) {
       funding_program_id
       funding_program_name
     }
