@@ -367,21 +367,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "date_is_null",
     ],
   },
-  completion_end_date: {
-    name: "completion_end_date",
-    label: "Completion date",
-    placeholder: "Completion date",
-    type: "date",
-    defaultOperator: "date_equals",
-    operators: [
-      "date_equals",
-      "date_greater_than",
-      "date_greater_than_equal_to",
-      "date_less_than",
-      "date_less_than_equal_to",
-      "date_is_null",
-    ],
-  },
   project_designer: {
     name: "project_designer",
     label: "Designers",

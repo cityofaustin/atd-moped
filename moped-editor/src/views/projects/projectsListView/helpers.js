@@ -327,12 +327,6 @@ export const useColumns = ({ hiddenColumns }) => {
         width: COLUMN_WIDTHS.small,
       },
       {
-        headerName: "Completion date",
-        field: "completion_end_date",
-        valueFormatter: (value) => value && formatDateType(value),
-        width: COLUMN_WIDTHS.small,
-      },
-      {
         headerName: "Designer",
         field: "project_designer",
         width: COLUMN_WIDTHS.small,

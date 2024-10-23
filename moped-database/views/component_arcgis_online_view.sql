@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1727458564792_add_funding_program_to_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/1729197757693_remove_completion_date_from_project_list_view/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT

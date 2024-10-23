@@ -6,7 +6,6 @@ the column must return a scalar - no objects or arrays."""
 PROJECT_LIST_KEYS = [
     "project_id",
     "project_description",
-    "completion_end_date",
     "construction_start_date",
     "current_phase",
     "date_added",

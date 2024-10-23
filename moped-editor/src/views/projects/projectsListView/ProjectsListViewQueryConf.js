@@ -249,12 +249,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-    completion_end_date: {
-      type: "date",
-      sortable: true,
-      defaultHidden: true,
-      showInTable: true,
-    },
     project_inspector: {
       type: "string",
       sortable: true,
