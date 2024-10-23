@@ -292,7 +292,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => option.funding_source_name,
       operators: [
         "string_contains_case_insensitive",
-        "string_contains_not_case_insensitive"
+        "string_contains_not_case_insensitive",
       ],
     },
     defaultOperator: "string_contains_case_insensitive",
@@ -337,10 +337,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_is_not_null",
     ],
   },
-  construction_start_date: {
-    name: "construction_start_date",
-    label: "Construction start",
-    placeholder: "Construction start",
+  substantial_completion_date: {
+    name: "substantial_completion_date",
+    label: "Substantial completion date",
+    placeholder: "Substantial completion date",
     type: "date",
     defaultOperator: "date_equals",
     operators: [
@@ -352,10 +352,10 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "date_is_null",
     ],
   },
-  completion_end_date: {
-    name: "completion_end_date",
-    label: "Completion date",
-    placeholder: "Completion date",
+  construction_start_date: {
+    name: "construction_start_date",
+    label: "Construction start",
+    placeholder: "Construction start",
     type: "date",
     defaultOperator: "date_equals",
     operators: [
@@ -555,7 +555,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       getOptionLabel: (option) => `${option.component_name_full}`,
       operators: [
         "string_contains_case_insensitive",
-        "string_contains_not_case_insensitive"
+        "string_contains_not_case_insensitive",
       ],
     },
     defaultOperator: "string_contains_case_insensitive",

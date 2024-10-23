@@ -73,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     color: theme.palette.text.secondary,
     fontSize: ".8rem",
-    margin: "8px 0",
   },
   fieldBox: {
     maxWidth: "10rem",
@@ -92,6 +91,9 @@ const useStyles = makeStyles((theme) => ({
       cursor: "pointer",
     },
   },
+  toolbarTitle: {
+    marginBottom: theme.spacing(1)
+  }
 }));
 
 // memoized hook to concatanate fund dept and unit ids into an fdu string
