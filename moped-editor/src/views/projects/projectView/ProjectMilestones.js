@@ -35,8 +35,22 @@ import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocom
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
+const useMilestoneNameLookup = (data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    console.log("hihi")
+    return data.moped_milestones.reduce(
+      (obj, item) =>
+        Object.assign(obj, {
+          [item.milestone_id]: item.milestone_name,
+        }),
+      {}
+    );
+  }, [data]);
+
 const useColumns = ({
-  // classes,
   data,
   rowModesModel,
   handleEditClick,
@@ -116,9 +130,7 @@ const useColumns = ({
         field: "completed",
         editable: true,
         valueFormatter: (value) => (!!value ? "Yes" : "No"),
-        renderEditCell: (props) => (
-          <ToggleEditComponent {...props} />
-        ),
+        renderEditCell: (props) => <ToggleEditComponent {...props} />,
         width: 150,
       },
       {
@@ -169,7 +181,6 @@ const useColumns = ({
       },
     ];
   }, [
-    // classes,
     data,
     rowModesModel,
     handleSaveClick,
@@ -178,6 +189,7 @@ const useColumns = ({
     handleDeleteOpen,
     milestoneNameLookup,
   ]);
+
 /**
  * ProjectMilestones Component - Renders Project Milestone table
  * @return {JSX.Element}
@@ -206,6 +218,8 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       setRows(data.moped_proj_milestones);
     }
   }, [data]);
+
+  const milestoneNameLookup = useMilestoneNameLookup(data);
 
   const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
@@ -269,7 +283,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
     const updatedMilestoneData = updatedRow;
-    console.log(updatedRow);
     // Remove unneeded variables
     delete updatedMilestoneData.__typename;
 
@@ -358,20 +371,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     [rows, deleteProjectMilestone, refetch]
   );
 
-  /**
-   * Milestone table lookup object formatted into the shape that <Autocomplete> expects.
-   * Ex: { 1: "Award", 2: "Bid", ...}
-   */
-  const milestoneNameLookup = data.moped_milestones.reduce(
-    (obj, item) =>
-      Object.assign(obj, {
-        [item.milestone_id]: item.milestone_name,
-      }),
-    {}
-  );
-
   const dataGridColumns = useColumns({
-    // classes,
     data,
     rowModesModel,
     handleDeleteOpen,
