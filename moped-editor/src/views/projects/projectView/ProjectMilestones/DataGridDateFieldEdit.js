@@ -39,7 +39,7 @@ const DataGridDateFieldEdit = ({
 
   return (
     <MobileDatePicker
-      ref={ref}
+      inputRef={ref}
       format="MM/dd/yyyy"
       value={value ? parseISO(value) : null}
       onChange={handleChange}
