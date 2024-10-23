@@ -14,13 +14,11 @@ import {
   GridRowModes,
   GridActionsCellItem,
   useGridApiRef,
-  // gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "./DataGridTextField";
 
-// Query
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
   DELETE_PROJECT_MILESTONE,
@@ -30,12 +28,12 @@ import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
-// Helpers
 import { phaseNameLookup } from "src/utils/timelineTableHelpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 const useColumns = ({
   // classes,
@@ -44,7 +42,7 @@ const useColumns = ({
   handleEditClick,
   handleSaveClick,
   handleCancelClick,
-  // handleDeleteOpen,
+  handleDeleteOpen,
   milestoneNameLookup,
 }) =>
   useMemo(() => {
@@ -163,7 +161,7 @@ const useColumns = ({
             <GridActionsCellItem
               icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
               label="Delete"
-              //onClick={() => handleDeleteOpen(id)}
+              onClick={() => handleDeleteOpen(id)}
               color="inherit"
             />,
           ];
@@ -177,7 +175,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    // handleDeleteOpen,
+    handleDeleteOpen,
     milestoneNameLookup,
   ]);
 /**
@@ -199,12 +197,20 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
       setRows(data.moped_proj_milestones);
     }
   }, [data]);
+
+  const handleDeleteOpen = useCallback((id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  }, []);
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -279,8 +285,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       delete updatedMilestoneData.id;
       delete updatedMilestoneData.project_milestone_id;
 
-      console.log(updatedMilestoneData, projectId);
-
       return (
         addProjectMilestone({
           variables: {
@@ -333,6 +337,27 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     console.error(error.message);
   };
 
+  // handles row delete
+  const handleDeleteClick = useCallback(
+    (id) => () => {
+      // remove row from rows in state
+      setRows(rows.filter((row) => row.project_milestone_id !== id));
+
+      deleteProjectMilestone({
+        variables: {
+          project_milestone_id: id,
+        },
+      })
+        .then(() => refetch())
+        .then(() => setIsDeleteConfirmationOpen(false))
+        .catch((error) => {
+          console.error(error);
+        });
+    },
+
+    [rows, deleteProjectMilestone, refetch]
+  );
+
   /**
    * Milestone table lookup object formatted into the shape that <Autocomplete> expects.
    * Ex: { 1: "Award", 2: "Bid", ...}
@@ -349,7 +374,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     // classes,
     data,
     rowModesModel,
-    // handleDeleteOpen,
+    handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
@@ -404,6 +429,12 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         selectedMilestones={data.moped_proj_milestones}
         projectId={projectId}
         refetch={refetch}
+      />
+      <DeleteConfirmationModal
+        type={"milestone"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
     </>
   );
