@@ -20,9 +20,10 @@ import {
   useSubphaseNameLookup,
 } from "./ProjectPhase/helpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 
 /** Hook that provides memoized column settings */
-const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
+const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
   useMemo(() => {
     return [
       {
@@ -133,7 +134,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
                 aria-label="delete"
                 sx={{ color: "inherit" }}
                 onClick={() =>
-                  onDeletePhase({ project_phase_id: row.project_phase_id })
+                  handleDeleteOpen({ project_phase_id: row.project_phase_id })
                 }
               >
                 <DeleteOutlineIcon />
@@ -143,7 +144,7 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
         },
       },
     ];
-  }, [deleteInProgress, onDeletePhase, setEditPhase]);
+  }, [deleteInProgress, handleDeleteOpen, setEditPhase]);
 
 /**
  * ProjectPhases Component - renders Project Phase table
@@ -153,29 +154,36 @@ const useColumns = ({ deleteInProgress, onDeletePhase, setEditPhase }) =>
 const ProjectPhases = ({ projectId, data, refetch }) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const [deletePhase, { loading: deleteInProgress }] =
     useMutation(DELETE_PROJECT_PHASE);
 
   const onClickAddPhase = () => setEditPhase({ project_id: projectId });
 
-  const onDeletePhase = useCallback(
-    ({ project_phase_id }) => {
-      window.confirm("Are you sure you want to delete this phase?") &&
-        deletePhase({
-          variables: { project_phase_id },
-          refetchQueries: ["ProjectSummary"],
-        }).then(() => {
-          refetch();
-        });
+  const handleDeleteOpen = useCallback(({ project_phase_id }) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(project_phase_id);
+  }, []);
+
+  const handleDeleteClick = useCallback(
+    (id) => () => {
+      deletePhase({
+        variables: { project_phase_id: id },
+        refetchQueries: ["ProjectSummary"],
+      })
+        .then(() => refetch())
+        .then(() => setIsDeleteConfirmationOpen(false));
     },
-    [deletePhase, refetch]
+    [deleteInProgress, refetch]
   );
 
   const columns = useColumns({
     setEditPhase,
     deleteInProgress,
-    onDeletePhase,
+    handleDeleteOpen,
   });
 
   const currentProjectPhaseIds = useCurrentProjectPhaseIDs(
@@ -238,6 +246,12 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         subphaseNameLookup={subphaseNameLookup}
         projectId={projectId}
         refetch={refetch}
+      />
+      <DeleteConfirmationModal
+        type={"project phase"}
+        submitDelete={handleDeleteClick(deleteConfirmationId)}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
     </>
   );
