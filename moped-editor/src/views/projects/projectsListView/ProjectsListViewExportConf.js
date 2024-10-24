@@ -67,12 +67,12 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_status_update: {
     label: "Status Update",
   },
-  construction_start_date: {
-    label: "Construction start",
+  substantial_completion_date: {
+    label: "Substantial completion date",
     filter: formatTimeStampTZType,
   },
-  completion_end_date: {
-    label: "Completion date",
+  construction_start_date: {
+    label: "Construction start",
     filter: formatTimeStampTZType,
   },
   project_inspector: {
