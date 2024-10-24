@@ -177,7 +177,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         .then(() => refetch())
         .then(() => setIsDeleteConfirmationOpen(false));
     },
-    [deleteInProgress, refetch]
+    [deletePhase, refetch]
   );
 
   const columns = useColumns({
