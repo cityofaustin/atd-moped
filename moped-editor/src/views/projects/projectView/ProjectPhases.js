@@ -248,7 +248,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         refetch={refetch}
       />
       <DeleteConfirmationModal
-        type={"project phase"}
+        type={"phase"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
