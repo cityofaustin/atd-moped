@@ -18,6 +18,7 @@ import {
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "./DataGridTextField";
+import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -40,11 +41,24 @@ const useMilestoneNameLookup = (data) =>
     if (!data) {
       return {};
     }
-    console.log("hihi")
     return data.moped_milestones.reduce(
       (obj, item) =>
         Object.assign(obj, {
           [item.milestone_id]: item.milestone_name,
+        }),
+      {}
+    );
+  }, [data]);
+
+const useMilestoneRelatedPhaseLookup = (data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_milestones.reduce(
+      (obj, item) =>
+        Object.assign(obj, {
+          [item.milestone_id]: item.related_phase_id,
         }),
       {}
     );
@@ -58,6 +72,7 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   milestoneNameLookup,
+  relatedPhaseLookup,
 }) =>
   useMemo(() => {
     return [
@@ -89,11 +104,19 @@ const useColumns = ({
       {
         headerName: "Related phase",
         field: "moped_milestone",
-        editable: false, // would it be cool for this to update when someone edits the milestone
-        valueGetter: (value) => {
+        editable: true, // this is to be able to use the renderEditCell option to update the related phase during editing
+        // the input field is always disbled
+        valueFormatter: (value) => {
           return phaseNameLookup(data)[value?.related_phase_id] ?? "";
         },
         width: 150,
+        renderEditCell: (props) => (
+          <RelatedPhaseTextField
+            {...props}
+            phaseNameLookupData={phaseNameLookup(data)}
+            relatedPhaseLookup={relatedPhaseLookup}
+          />
+        ),
       },
       {
         headerName: "Completion estimate",
@@ -188,6 +211,7 @@ const useColumns = ({
     handleEditClick,
     handleDeleteOpen,
     milestoneNameLookup,
+    relatedPhaseLookup
   ]);
 
 /**
@@ -220,6 +244,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
+  const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
 
   const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
@@ -379,6 +404,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     handleCancelClick,
     handleEditClick,
     milestoneNameLookup,
+    relatedPhaseLookup,
   });
 
   // If the query is loading or data object is undefined,
