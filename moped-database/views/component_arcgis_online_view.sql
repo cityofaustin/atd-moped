@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1729197757694_remove_funding_source/up.sql
+-- Most recent migration: moped-database/migrations/1729197757695_add_agol_geometry_type/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -160,6 +160,10 @@ SELECT
     mc.component_subtype,
     mc.component_name_full,
     'placeholder text'::text AS component_categories,
+    CASE
+        WHEN mc.line_representation = true THEN 'Line'::text
+        ELSE 'Point'::text
+    END AS geometry_type,
     subcomponents.subcomponents AS component_subcomponents,
     work_types.work_types AS component_work_types,
     component_tags.component_tags,
