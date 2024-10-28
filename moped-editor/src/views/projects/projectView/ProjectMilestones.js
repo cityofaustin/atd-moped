@@ -40,7 +40,6 @@ const useMilestoneNameLookup = (data) =>
     if (!data) {
       return {};
     }
-    console.log("hihi")
     return data.moped_milestones.reduce(
       (obj, item) =>
         Object.assign(obj, {
