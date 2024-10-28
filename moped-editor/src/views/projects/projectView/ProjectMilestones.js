@@ -14,7 +14,6 @@ import {
   GridRowModes,
   GridActionsCellItem,
   useGridApiRef,
-  gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
@@ -108,7 +107,7 @@ const useColumns = ({
         headerName: "Related phase",
         field: "moped_milestone",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
-        // during editing -- the input field is always disbled
+        // during editing -- the input field is always disabled
         valueFormatter: (value) =>
           phaseNameLookup(data)[value?.related_phase_id] ?? "",
         width: 150,
@@ -418,8 +417,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     }
   };
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
   if (loading || !data) return <CircularProgress />;
 
   // Hide Milestone template dialog
