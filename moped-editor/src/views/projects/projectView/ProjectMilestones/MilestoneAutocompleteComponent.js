@@ -14,6 +14,7 @@ const MilestoneAutocompleteComponent = ({
   hasFocus,
   milestoneNameLookup,
   error,
+  relatedPhaseLookup
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -25,11 +26,17 @@ const MilestoneAutocompleteComponent = ({
   }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
+    console.log(relatedPhaseLookup[newValue])
     apiRef.current.setEditCellValue({
       id,
       field,
       value: newValue ?? null,
     });
+    apiRef.current.setEditCellValue({
+      id,
+      field: "moped_milestone",
+      value: {related_phase_id: relatedPhaseLookup[newValue] }
+    })
   };
 
   return (

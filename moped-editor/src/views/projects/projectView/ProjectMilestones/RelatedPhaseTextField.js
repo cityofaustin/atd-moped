@@ -1,5 +1,6 @@
 import React from "react";
-import { TextField } from "@mui/material";
+import { Button, TextField } from "@mui/material";
+import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
  * @param {Integer} id - Data Grid row id
@@ -12,6 +13,7 @@ import { TextField } from "@mui/material";
  */
 const RelatedPhaseTextField = ({
   value,
+  id,
   field,
   hasFocus,
   helperText,
@@ -20,15 +22,23 @@ const RelatedPhaseTextField = ({
   ...props
 }) => {
   const ref = React.useRef(null);
+  const apiRef = useGridApiContext();
+
 
   React.useEffect(() => {
     if (hasFocus) {
+      apiRef.current.setCellFocus(id, "date_estimate");
       ref.current.focus();
     }
   }, [hasFocus]);
 
-const relatedPhaseId = props.relatedPhaseLookup[props.row.milestone_id]
+
+//   const relatedPhaseId = props.relatedPhaseLookup[props.row.milestone_id];
+  console.log(value)
+
   return (
+    // <Button ref={ref} disableRipple disableFocusRipple>{phaseNameLookupData[value.related_phase_id]} </Button>
+
     <TextField
       variant="standard"
       style={{ width: "90%", paddingTop: "inherit" }}
@@ -36,7 +46,7 @@ const relatedPhaseId = props.relatedPhaseLookup[props.row.milestone_id]
       inputRef={ref}
       name={field}
       type="text"
-      value={phaseNameLookupData[relatedPhaseId] ?? ""}
+      value={phaseNameLookupData[value.related_phase_id]}
       error={error}
       disabled
     />

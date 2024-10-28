@@ -91,6 +91,7 @@ const useColumns = ({
           <MilestoneAutocompleteComponent
             {...props}
             milestoneNameLookup={milestoneNameLookup}
+            relatedPhaseLookup={relatedPhaseLookup}
           />
         ),
         width: 250,
@@ -108,6 +109,7 @@ const useColumns = ({
         editable: true, // this is to be able to use the renderEditCell option to update the related phase during editing
         // the input field is always disbled
         valueFormatter: (value) => {
+          console.log(value)
           return phaseNameLookup(data)[value?.related_phase_id] ?? "";
         },
         width: 150,
@@ -115,7 +117,7 @@ const useColumns = ({
           <RelatedPhaseTextField
             {...props}
             phaseNameLookupData={phaseNameLookup(data)}
-            relatedPhaseLookup={relatedPhaseLookup}
+            // relatedPhaseLookup={relatedPhaseLookup}
           />
         ),
       },
@@ -408,41 +410,45 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     relatedPhaseLookup,
   });
 
-  // const handleTabKeyDown = React.useCallback(
-  //   (params, event) => {
-  //     if (params.cellMode === GridRowModes.Edit) {
-  //       if (event.key === "Tab") {
-  //         const columnFields = gridColumnFieldsSelector(apiRef).filter(
-  //           (field) =>  (apiRef.current.isCellEditable(
-  //               apiRef.current.getCellParams(params.id, field)
-  //             ) 
-  //         ));
+  const handleTabKeyDown = React.useCallback(
+    (params, event) => {
+      if (params.cellMode === GridRowModes.Edit) {
+        if (event.key === "Tab") {
+          // const columnFields = gridColumnFieldsSelector(apiRef).filter(
+          //   (field) =>  (apiRef.current.isCellEditable(
+          //       apiRef.current.getCellParams(params.id, field)
+          //     ) 
+          // ));
 
-  //         // Always prevent going to the next element in the tab sequence because the focus is
-  //         // handled manually to support edit components rendered inside Portals
-  //         event.preventDefault();
+          // Always prevent going to the next element in the tab sequence because the focus is
+          // handled manually to support edit components rendered inside Portals
+          event.preventDefault();
 
-  //         console.log(columnFields)
+          const columnFields = ['milestone_id', 'description',  'date_estimate', 'date_actual', 'completed']
 
-  //         const index = columnFields.findIndex(
-  //           (field) => field === params.field
-  //         );
-  //         const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
-  //           params.id
-  //         );
-  //         const nextFieldToFocus =
-  //           columnFields[event.shiftKey ? index - 1 : index + 1];
+          const index = columnFields.findIndex(
+            (field) => field === params.field
+          );
+          const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
+            params.id
+          );
 
-  //         console.log(params, nextFieldToFocus)
+          console.log(index)
+          const nextFieldToFocus =
+            columnFields[event.shiftKey ? index - 1 : index + 1];
+          console.log(nextFieldToFocus)
 
-  //         apiRef.current.setCellFocus(params.id, nextFieldToFocus);
-  //         // if the column is not visible, bring it into view
-  //         apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
-  //       }
-  //     }
-  //   },
-  //   [apiRef]
-  // );
+          console.log(params, nextFieldToFocus)
+
+          apiRef.current.setCellFocus(params.id, nextFieldToFocus);
+          console.log(apiRef.current)
+          // if the column is not visible, bring it into view
+          apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
+        }
+      }
+    },
+    [apiRef]
+  );
 
 
   // If the query is loading or data object is undefined,
@@ -469,7 +475,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={handleProcessUpdateError}
-        // onCellKeyDown={handleTabKeyDown}
+        onCellKeyDown={handleTabKeyDown}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
