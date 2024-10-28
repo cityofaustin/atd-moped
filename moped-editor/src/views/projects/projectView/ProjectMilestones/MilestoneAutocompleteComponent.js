@@ -44,9 +44,15 @@ const MilestoneAutocompleteComponent = ({
         getOptionLabel={(option) => milestoneNameLookup[option]}
         isOptionEqualToValue={(option, value) => option === String(value)}
         value={value}
+        sx={{ paddingTop: "8px" }}
         onChange={handleChange}
         renderInput={(params) => (
-          <TextField variant="standard" {...params} inputRef={ref} error={error} />
+          <TextField
+            variant="standard"
+            {...params}
+            inputRef={ref}
+            error={error}
+          />
         )}
       />
       <FormHelperText>Required</FormHelperText>
