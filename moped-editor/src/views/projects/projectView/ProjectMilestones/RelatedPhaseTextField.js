@@ -27,16 +27,11 @@ const RelatedPhaseTextField = ({
     }
   }, [hasFocus]);
 
-
-console.log(props)
-console.log(phaseNameLookupData[null])
-// console.log(relatedPhaseLookup)
-
 const relatedPhaseId = props.relatedPhaseLookup[props.row.milestone_id]
   return (
     <TextField
       variant="standard"
-      style={{ width: "inherit", paddingTop: "inherit" }}
+      style={{ width: "90%", paddingTop: "inherit" }}
       id={field}
       inputRef={ref}
       name={field}
