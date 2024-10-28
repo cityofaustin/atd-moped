@@ -7,6 +7,17 @@ import {
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
+
+/**
+ * @param {Integer} id - Data Grid row id (same as record id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Boolean} error - toggles error style in textfield
+ * @param {Object} milestoneNameLookup - maps milestone id to milestone name
+ * @param {Object} relatedPhaseLookup - maps milestone id to related phase id
+ * @return {JSX.Element}
+ */
 const MilestoneAutocompleteComponent = ({
   id,
   value,
@@ -14,7 +25,7 @@ const MilestoneAutocompleteComponent = ({
   hasFocus,
   milestoneNameLookup,
   error,
-  relatedPhaseLookup
+  relatedPhaseLookup,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -26,17 +37,17 @@ const MilestoneAutocompleteComponent = ({
   }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
-    console.log(relatedPhaseLookup[newValue])
     apiRef.current.setEditCellValue({
       id,
       field,
       value: newValue ?? null,
     });
+    // Also update the moped_milestone field aka the Related Phase
     apiRef.current.setEditCellValue({
       id,
       field: "moped_milestone",
-      value: {related_phase_id: relatedPhaseLookup[newValue] }
-    })
+      value: { related_phase_id: relatedPhaseLookup[newValue] },
+    });
   };
 
   return (

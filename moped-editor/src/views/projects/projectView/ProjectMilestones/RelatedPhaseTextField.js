@@ -7,7 +7,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {String} value - field value
  * @param {String} field - name of field
  * @param {Boolean} hasFocus - does this field have focus
- * @param {Array} phaseNameLookupData
+ * @param {Object} phaseNameLookupData - maps phase id to phase name
  * @param {Boolean} usingShiftKey - is the shift key being pressed during tabbing
  * @return {JSX.Element}
  */
@@ -22,6 +22,8 @@ const RelatedPhaseTextField = ({
   const ref = React.useRef(null);
   const apiRef = useGridApiContext();
 
+  // Because this field not editable, it cannot be focused and if a user is tabbing across the cells
+  // the focus should be forwarded to the next one in the row
   React.useEffect(() => {
     if (hasFocus) {
       if (usingShiftKey) {
@@ -31,7 +33,7 @@ const RelatedPhaseTextField = ({
       }
       ref.current.focus();
     }
-  }, [hasFocus]);
+  }, [apiRef, hasFocus, id, usingShiftKey]);
 
   return (
     <TextField

@@ -107,11 +107,10 @@ const useColumns = ({
       {
         headerName: "Related phase",
         field: "moped_milestone",
-        editable: true, // this is to be able to use the renderEditCell option to update the related phase during editing
-        // the input field is always disbled
-        valueFormatter: (value) => {
-          return phaseNameLookup(data)[value?.related_phase_id] ?? "";
-        },
+        editable: true, // this is to be able to use the renderEditCell option to update the related phase
+        // during editing -- the input field is always disbled
+        valueFormatter: (value) =>
+          phaseNameLookup(data)[value?.related_phase_id] ?? "",
         width: 150,
         renderEditCell: (props) => (
           <RelatedPhaseTextField
