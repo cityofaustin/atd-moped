@@ -74,6 +74,7 @@ const useColumns = ({
   handleDeleteOpen,
   milestoneNameLookup,
   relatedPhaseLookup,
+  usingShiftKey,
 }) =>
   useMemo(() => {
     return [
@@ -109,7 +110,6 @@ const useColumns = ({
         editable: true, // this is to be able to use the renderEditCell option to update the related phase during editing
         // the input field is always disbled
         valueFormatter: (value) => {
-          console.log(value)
           return phaseNameLookup(data)[value?.related_phase_id] ?? "";
         },
         width: 150,
@@ -117,7 +117,7 @@ const useColumns = ({
           <RelatedPhaseTextField
             {...props}
             phaseNameLookupData={phaseNameLookup(data)}
-            // relatedPhaseLookup={relatedPhaseLookup}
+            usingShiftKey={usingShiftKey}
           />
         ),
       },
@@ -214,7 +214,8 @@ const useColumns = ({
     handleEditClick,
     handleDeleteOpen,
     milestoneNameLookup,
-    relatedPhaseLookup
+    relatedPhaseLookup,
+    usingShiftKey,
   ]);
 
 /**
@@ -239,6 +240,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
@@ -408,48 +410,14 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     handleEditClick,
     milestoneNameLookup,
     relatedPhaseLookup,
+    usingShiftKey,
   });
 
-  const handleTabKeyDown = React.useCallback(
-    (params, event) => {
-      if (params.cellMode === GridRowModes.Edit) {
-        if (event.key === "Tab") {
-          // const columnFields = gridColumnFieldsSelector(apiRef).filter(
-          //   (field) =>  (apiRef.current.isCellEditable(
-          //       apiRef.current.getCellParams(params.id, field)
-          //     ) 
-          // ));
-
-          // Always prevent going to the next element in the tab sequence because the focus is
-          // handled manually to support edit components rendered inside Portals
-          event.preventDefault();
-
-          const columnFields = ['milestone_id', 'description',  'date_estimate', 'date_actual', 'completed']
-
-          const index = columnFields.findIndex(
-            (field) => field === params.field
-          );
-          const rowIndex = apiRef.current.getRowIndexRelativeToVisibleRows(
-            params.id
-          );
-
-          console.log(index)
-          const nextFieldToFocus =
-            columnFields[event.shiftKey ? index - 1 : index + 1];
-          console.log(nextFieldToFocus)
-
-          console.log(params, nextFieldToFocus)
-
-          apiRef.current.setCellFocus(params.id, nextFieldToFocus);
-          console.log(apiRef.current)
-          // if the column is not visible, bring it into view
-          apiRef.current.scrollToIndexes({ rowIndex, colIndex: index + 1 });
-        }
-      }
-    },
-    [apiRef]
-  );
-
+  const checkIfShiftKey = (params, event) => {
+    if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
+      setUsingShiftKey(event.shiftKey);
+    }
+  };
 
   // If the query is loading or data object is undefined,
   // stop here and just render the spinner.
@@ -475,7 +443,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={handleProcessUpdateError}
-        onCellKeyDown={handleTabKeyDown}
+        onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
