@@ -28,7 +28,7 @@ import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
-import { phaseNameLookup } from "src/utils/timelineTableHelpers";
+import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
@@ -50,13 +50,13 @@ const useMilestoneNameLookup = (data) =>
   }, [data]);
 
 const useColumns = ({
-  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
   handleCancelClick,
   handleDeleteOpen,
   milestoneNameLookup,
+  phaseNameLookup,
 }) =>
   useMemo(() => {
     return [
@@ -90,7 +90,7 @@ const useColumns = ({
         field: "moped_milestone",
         editable: false, // would it be cool for this to update when someone edits the milestone
         valueGetter: (value) => {
-          return phaseNameLookup(data)[value?.related_phase_id] ?? "";
+          return phaseNameLookup[value?.related_phase_id] ?? "";
         },
         width: 150,
       },
@@ -180,13 +180,13 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
     handleDeleteOpen,
     milestoneNameLookup,
+    phaseNameLookup,
   ]);
 
 /**
@@ -219,6 +219,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
+  const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
@@ -371,13 +372,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   );
 
   const dataGridColumns = useColumns({
-    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
     milestoneNameLookup,
+    phaseNameLookup,
   });
 
   // If the query is loading or data object is undefined,
