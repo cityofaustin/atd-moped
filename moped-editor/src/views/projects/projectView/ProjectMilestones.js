@@ -99,7 +99,7 @@ const useColumns = ({
         field: "date_estimate",
         editable: true,
         valueFormatter: (value) =>
-          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
+          value ? format(parseISO(value), "MM/dd/yyyy") : null,
         renderEditCell: (props) => (
           <DataGridDateFieldEdit
             {...props}
@@ -114,7 +114,7 @@ const useColumns = ({
         field: "date_actual",
         editable: true,
         valueFormatter: (value) =>
-          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
+          value ? format(parseISO(value), "MM/dd/yyyy") : null,
         renderEditCell: (props) => (
           <DataGridDateFieldEdit
             {...props}
@@ -276,7 +276,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "milestone_id" },
     }));
   };
 
