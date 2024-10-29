@@ -2,6 +2,7 @@ import React from "react";
 import { MobileDatePicker } from "@mui/x-date-pickers";
 import { parseISO, format } from "date-fns";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import theme from "src/theme";
 
 /**
  * DataGridDateFieldEdit - renders a Date type Calendar select for use in DataGrid
@@ -12,13 +13,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @return {JSX.Element}
  * @constructor
  */
-const DataGridDateFieldEdit = ({
-  value,
-  hasFocus,
-  id,
-  field,
-  ...props
-}) => {
+const DataGridDateFieldEdit = ({ value, hasFocus, id, field, ...props }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -39,6 +34,7 @@ const DataGridDateFieldEdit = ({
 
   return (
     <MobileDatePicker
+      sx={{ padding: theme.spacing(1) }}
       inputRef={ref}
       format="MM/dd/yyyy"
       value={value ? parseISO(value) : null}
