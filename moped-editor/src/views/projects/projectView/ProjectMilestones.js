@@ -29,7 +29,7 @@ import { useMutation } from "@apollo/client";
 import { format } from "date-fns";
 import parseISO from "date-fns/parseISO";
 
-import { phaseNameLookup } from "src/utils/timelineTableHelpers";
+import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
@@ -65,7 +65,6 @@ const useMilestoneRelatedPhaseLookup = (data) =>
   }, [data]);
 
 const useColumns = ({
-  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -74,6 +73,7 @@ const useColumns = ({
   milestoneNameLookup,
   relatedPhaseLookup,
   usingShiftKey,
+  phaseNameLookup,
 }) =>
   useMemo(() => {
     return [
@@ -108,8 +108,9 @@ const useColumns = ({
         field: "moped_milestone",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
-        valueFormatter: (value) =>
-          phaseNameLookup(data)[value?.related_phase_id] ?? "",
+        valueGetter: (value) => {
+          return phaseNameLookup[value?.related_phase_id] ?? "";
+        },
         width: 150,
         renderEditCell: (props) => (
           <RelatedPhaseTextField
@@ -124,7 +125,7 @@ const useColumns = ({
         field: "date_estimate",
         editable: true,
         valueFormatter: (value) =>
-          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
+          value ? format(parseISO(value), "MM/dd/yyyy") : null,
         renderEditCell: (props) => (
           <DataGridDateFieldEdit
             {...props}
@@ -132,14 +133,14 @@ const useColumns = ({
             label="Completion estimate"
           />
         ),
-        width: 175,
+        width: 180,
       },
       {
         headerName: "Date completed",
         field: "date_actual",
         editable: true,
         valueFormatter: (value) =>
-          value ? format(parseISO(value), "MM/dd/yyyy") : undefined,
+          value ? format(parseISO(value), "MM/dd/yyyy") : null,
         renderEditCell: (props) => (
           <DataGridDateFieldEdit
             {...props}
@@ -147,7 +148,7 @@ const useColumns = ({
             label="Date (actual)"
           />
         ),
-        width: 175,
+        width: 180,
       },
       {
         headerName: "Complete",
@@ -205,7 +206,6 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -214,6 +214,7 @@ const useColumns = ({
     milestoneNameLookup,
     relatedPhaseLookup,
     usingShiftKey,
+    phaseNameLookup,
   ]);
 
 /**
@@ -248,6 +249,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
   const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
+  const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
@@ -304,7 +306,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "milestone_id" },
     }));
   };
 
@@ -400,7 +402,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   );
 
   const dataGridColumns = useColumns({
-    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -409,6 +410,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     milestoneNameLookup,
     relatedPhaseLookup,
     usingShiftKey,
+    phaseNameLookup,
   });
 
   const checkIfShiftKey = (params, event) => {
