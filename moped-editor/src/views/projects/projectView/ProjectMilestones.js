@@ -115,7 +115,7 @@ const useColumns = ({
         renderEditCell: (props) => (
           <RelatedPhaseTextField
             {...props}
-            phaseNameLookupData={phaseNameLookup(data)}
+            phaseNameLookupData={phaseNameLookup}
             usingShiftKey={usingShiftKey}
           />
         ),
