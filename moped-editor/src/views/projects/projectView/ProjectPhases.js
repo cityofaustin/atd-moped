@@ -194,6 +194,11 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
     refetch().then(() => setEditPhase(null));
   };
 
+  // Open activity edit modal when double clicking in a cell
+  const doubleClickListener = (params) => {
+    setEditPhase(params.row);
+  };
+
   return (
     <>
       <DataGridPro
@@ -208,6 +213,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         hideFooter
         localeText={{ noRowsLabel: "No phases" }}
         rows={data?.moped_proj_phases || []}
+        onCellDoubleClick={doubleClickListener}
         slots={{
           toolbar: ProjectPhaseToolbar,
         }}
