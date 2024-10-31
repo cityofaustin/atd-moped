@@ -23,3 +23,10 @@ COMMENT ON COLUMN moped_user_saved_views.updated_at IS 'Timestamp of the last up
 -- Adding comments for moped_user_saved_views constraints
 COMMENT ON CONSTRAINT fk_moped_user_saved_views_created_by ON moped_user_saved_views IS 'Foreign key constraint linking created_by_user_id to moped_users table.';
 COMMENT ON CONSTRAINT fk_moped_user_saved_views_updated_by ON moped_user_saved_views IS 'Foreign key constraint linking updated_by_user_id to moped_users table.';
+
+CREATE TRIGGER set_moped_user_saved_views_updated_at
+BEFORE INSERT OR UPDATE ON moped_user_saved_views
+FOR EACH ROW
+EXECUTE FUNCTION public.set_updated_at();
+
+COMMENT ON TRIGGER set_moped_user_saved_views_updated_at ON public.moped_user_saved_views IS 'Trigger to set updated_at timestamp for each insert or update on moped_user_saved_views';
