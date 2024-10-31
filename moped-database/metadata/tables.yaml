@@ -5186,6 +5186,9 @@
       permission:
         filter: {}
 - table:
+    name: moped_user_saved_views
+    schema: public
+- table:
     name: moped_users
     schema: public
   object_relationships:
