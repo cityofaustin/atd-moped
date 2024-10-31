@@ -19,6 +19,7 @@ import {
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -181,7 +182,11 @@ const useColumns = ({
         field: "created_at",
         width: 200,
         renderCell: ({ value }) => (
-          <FormattedDateString date={value} primary="relative" secondary="absolute" />
+          <FormattedDateString
+            date={value}
+            primary="relative"
+            secondary="absolute"
+          />
         ),
       },
       {
@@ -207,7 +212,7 @@ const useColumns = ({
           if (isInEditMode) {
             return [
               <GridActionsCellItem
-                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
                 label="Save"
                 sx={{
                   color: "primary.main",
@@ -215,7 +220,7 @@ const useColumns = ({
                 onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
-                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
                 label="Cancel"
                 className="textPrimary"
                 onClick={handleCancelClick(id)}
@@ -225,14 +230,14 @@ const useColumns = ({
           }
           return [
             <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
               label="Edit"
               className="textPrimary"
               onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
               label="Delete"
               onClick={() => handleDeleteOpen(id)}
               color="inherit"
