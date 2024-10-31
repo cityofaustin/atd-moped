@@ -43,7 +43,7 @@ const RelatedPhaseTextField = ({
       inputRef={ref}
       name={field}
       type="text"
-      value={phaseNameLookupData[value.related_phase_id] || " "}
+      value={phaseNameLookupData[value?.related_phase_id] || " "}
       disabled
     />
   );
