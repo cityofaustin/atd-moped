@@ -12,6 +12,7 @@ import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
+import ProjectStatusBadge from "../ProjectStatusBadge";
 import {
   useComponentListItemText,
   getIsComponentMapped,
@@ -26,8 +27,8 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemText: {
     marginLeft: theme.spacing(1),
-    flexGrow: 1, 
-    marginRight: '48px',
+    flexGrow: 1,
+    marginRight: "48px",
   },
   additionalListItemText: {
     display: "block",
@@ -83,6 +84,16 @@ export default function ComponentListItem({
           </ListItemSecondaryAction>
         </Box>
       </ListItemButton>
+      {!!component.moped_phase && (
+        <Box width="100%">
+          <ProjectStatusBadge
+            phaseName={component.moped_phase?.phase_name}
+            // phaseKey={component.moped_phase.phase_key}
+            condensed
+            clickable
+          />{" "}
+        </Box>
+      )}
       <Collapse in={isExpanded}>
         {isExpanded ? (
           <List component="div" disablePadding dense>
