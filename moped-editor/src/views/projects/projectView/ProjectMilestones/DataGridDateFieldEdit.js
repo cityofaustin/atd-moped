@@ -34,7 +34,7 @@ const DataGridDateFieldEdit = ({ value, hasFocus, id, field, ...props }) => {
 
   return (
     <MobileDatePicker
-      sx={{ padding: theme.spacing(1) }}
+      sx={{ mx: theme.spacing(1) }}
       inputRef={ref}
       format="MM/dd/yyyy"
       value={value ? parseISO(value) : null}
