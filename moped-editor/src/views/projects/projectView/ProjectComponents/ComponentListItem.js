@@ -90,7 +90,6 @@ export default function ComponentListItem({
                 phaseName={component.moped_phase?.phase_name}
                 phaseKey={component.moped_phase?.phase_key}
                 condensed
-                clickable
               />
             </Box>
           )}

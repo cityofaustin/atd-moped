@@ -213,10 +213,6 @@ const ProjectWorkActivitiesTable = () => {
     setEditActivity,
   });
 
-  // Open activity edit modal when double clicking in a cell
-  const doubleClickListener = (params) => {
-    setEditActivity(params.row);
-  };
 
   /**
    * Initialize which columns should be visible - must be memoized to safely
@@ -263,7 +259,6 @@ const ProjectWorkActivitiesTable = () => {
           slotProps={{
             toolbar: { onClick: onClickAddActivity },
           }}
-          onCellDoubleClick={doubleClickListener}
         />
       </Box>
       {editActivity && (
