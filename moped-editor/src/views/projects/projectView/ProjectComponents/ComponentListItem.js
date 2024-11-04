@@ -85,10 +85,10 @@ export default function ComponentListItem({
             </ListItemSecondaryAction>
           </Box>
           {!!component.moped_phase && (
-            <Box width="100%" sx={{ py: 0.5 }}>
+            <Box width="100%" sx={isExpanded ? { pt: 0.5 } : { py: 0.5 }}>
               <ProjectStatusBadge
                 phaseName={component.moped_phase?.phase_name}
-                // phaseKey={component.moped_phase.phase_key}
+                phaseKey={component.moped_phase?.phase_key}
                 condensed
                 clickable
               />
