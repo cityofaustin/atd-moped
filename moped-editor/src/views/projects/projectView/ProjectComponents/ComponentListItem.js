@@ -10,6 +10,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
+import { Grid, Chip } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
 import ProjectStatusBadge from "../ProjectStatusBadge";
@@ -107,6 +108,23 @@ export default function ComponentListItem({
                 />
               </ListItem>
             )}
+            <Grid container spacing={1}>
+              {component.moped_proj_component_work_types.map((element) => (
+                <Grid item key={element.id}>
+                  <Chip
+                    label={element.moped_work_type.name}
+                    sx={{
+                      height: "auto",
+                      // minHeight: theme.spacing(4),
+                      "& .MuiChip-label": {
+                        display: "block",
+                        whiteSpace: "normal",
+                      },
+                    }}
+                  />
+                </Grid>
+              ))}
+            </Grid>
             {component.description && (
               <ListItem className={classes.nested}>
                 <ListItemText secondary={component.description} />
