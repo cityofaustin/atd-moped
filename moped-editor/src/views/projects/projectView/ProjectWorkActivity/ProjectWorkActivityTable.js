@@ -213,7 +213,6 @@ const ProjectWorkActivitiesTable = () => {
     setEditActivity,
   });
 
-
   /**
    * Initialize which columns should be visible - must be memoized to safely
    * be used with useHiddenColumnsSettings hook
