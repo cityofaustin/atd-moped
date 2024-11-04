@@ -64,36 +64,38 @@ export default function ComponentListItem({
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
-        <Box display="flex" alignItems="center" width="100%">
-          <ListItemText
-            className={classes.listItemText}
-            primary={primary}
-            secondary={
-              <>
-                <>{secondary}</>
-                <span className={classes.additionalListItemText}>
-                  {additionalListItemText}
-                </span>
-              </>
-            }
-          />
-          <ListItemSecondaryAction>
-            <IconButton color="primary" onClick={onZoomClick} size="large">
-              <ZoomInIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
+        <Box>
+          <Box display="flex" alignItems="center" width="100%">
+            <ListItemText
+              className={classes.listItemText}
+              primary={primary}
+              secondary={
+                <>
+                  <>{secondary}</>
+                  <span className={classes.additionalListItemText}>
+                    {additionalListItemText}
+                  </span>
+                </>
+              }
+            />
+            <ListItemSecondaryAction>
+              <IconButton color="primary" onClick={onZoomClick} size="large">
+                <ZoomInIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </Box>
+          {!!component.moped_phase && (
+            <Box width="100%" sx={{ py: 0.5 }}>
+              <ProjectStatusBadge
+                phaseName={component.moped_phase?.phase_name}
+                // phaseKey={component.moped_phase.phase_key}
+                condensed
+                clickable
+              />
+            </Box>
+          )}
         </Box>
       </ListItemButton>
-      {!!component.moped_phase && (
-        <Box width="100%">
-          <ProjectStatusBadge
-            phaseName={component.moped_phase?.phase_name}
-            // phaseKey={component.moped_phase.phase_key}
-            condensed
-            clickable
-          />{" "}
-        </Box>
-      )}
       <Collapse in={isExpanded}>
         {isExpanded ? (
           <List component="div" disablePadding dense>
