@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useState, useMemo } from "react";
-import { Box, Icon, Link } from '@mui/material';
+import { useState, useMemo, useEffect } from "react";
+import { Box, Icon, Link, CircularProgress } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { DataGridPro, GridRowModes, GridActionsCellItem, useGridApiContext } from '@mui/x-data-grid-pro';
 import { useQuery, useMutation } from "@apollo/client";
 import theme from "src/theme";
+import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import { 
   TEAM_QUERY, 
   UPDATE_PROJECT_PERSONNEL, 
@@ -17,7 +18,6 @@ import ProjectTeamToolbar from './ProjectTeamToolbar';
 
 import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
-import { defaultEditColumnIconStyle } from 'src/styles/dataGridProStylesOverrides';
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -39,20 +39,26 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
 
 
   const [editTeamMember, setEditTeamMember] = useState(null);
+  const [deleteTeamMemberId, setDeleteTeamMemberId] = useState(null);
   const [deleteTeamMember, { loading: deleteInProgress }] = useMutation(DELETE_PROJECT_PERSONNEL);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
 
+  useEffect(() => {
+    if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
+      // Set the rows but add the workgroup name to the row data 
+      // instead of being nested under moped_user.
+      setRows(data.moped_project_by_pk.moped_proj_personnel.map(personnel => ({
+        ...personnel,
+        moped_workgroup: personnel.moped_user.moped_workgroup
+      })));
+    } else {
+      setRows([]); // Reset rows when no data is available
+    }
+  }, [data]);
 
-  console.log(data.moped_project_by_pk.moped_proj_personnel);
-
-  // Set the rows but add the workgroup name to the row data 
-  // instead of being nested under moped_user.
-  const rows = data.moped_project_by_pk.moped_proj_personnel.map(personnel => ({
-    ...personnel,
-    moped_workgroup: personnel.moped_user.moped_workgroup
-  }));
+  
 
   const onClickAddTeamMember = () => {
     console.log('add team member'); 
@@ -64,7 +70,24 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     return setEditTeamMember({ project_personnel_id: projectPersonnelId });
   }
 
+  const handleEditClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
+  };
+
+  const handleSaveClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleCancelClick = (id) => () => {
+    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+  };
+
+  const handleDeleteOpen = (id) => {
+    setDeleteTeamMemberId(id);
+  };
+
   const useColumns = ({
+    data,
     rowModesModel,
     handleEditClick,
     handleSaveClick,
@@ -160,7 +183,7 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     }
       ]
     },
-    [rowModesModel, handleEditClick, handleSaveClick, handleCancelClick, handleDeleteOpen]
+    [data, rowModesModel, handleEditClick, handleSaveClick, handleCancelClick, handleDeleteOpen]
   );
 
   const dataGridColumns = useColumns({
@@ -170,6 +193,8 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     handleCancelClick,
     handleDeleteOpen,
   });
+
+  if (loading || !data) return <CircularProgress />;
 
   return (
     <Box sx={{ height: 520, width: '100%' }}>
