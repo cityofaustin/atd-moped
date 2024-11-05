@@ -1,19 +1,23 @@
 import * as React from 'react';
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Box, Icon, Link } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
-import { DataGridPro } from '@mui/x-data-grid-pro';
-import { useDemoData } from '@mui/x-data-grid-generator';
-import { useGridApiContext } from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes, GridActionsCellItem, useGridApiContext } from '@mui/x-data-grid-pro';
 import { useQuery, useMutation } from "@apollo/client";
 import theme from "src/theme";
-import { TEAM_QUERY, DELETE_PROJECT_PERSONNEL } from "src/queries/project";
+import { 
+  TEAM_QUERY, 
+  UPDATE_PROJECT_PERSONNEL, 
+  INSERT_PROJECT_PERSONNEL, 
+  DELETE_PROJECT_PERSONNEL 
+} from "src/queries/project";
 import dataGridProStyleOverrides from 'src/styles/dataGridProStylesOverrides';
 import ProjectTeamToolbar from './ProjectTeamToolbar';
 
+import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
-
+import { defaultEditColumnIconStyle } from 'src/styles/dataGridProStylesOverrides';
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -55,8 +59,20 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     return setEditTeamMember({ project_id: projectId });
   }
 
+  const onClickEditTeamMember = (projectPersonnelId) => {
+    console.log('edit team member', projectPersonnelId);
+    return setEditTeamMember({ project_personnel_id: projectPersonnelId });
+  }
 
-  const columns = [
+  const useColumns = ({
+    rowModesModel,
+    handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleDeleteOpen,
+  }) => 
+    useMemo(() => {
+      return [
     { 
       field: 'moped_user', 
       headerName: 'Name', 
@@ -73,7 +89,8 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     },
     { 
       field: 'moped_proj_personnel_roles', 
-      headerName: (
+      headerName: 'Role',
+      renderHeader: () => (
         <span>
           Role{" "}
           <Link
@@ -95,14 +112,71 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
       }
     },
     { field: 'notes', headerName: 'Notes', width: 150 },
-  ];
+    { 
+      headerName: '', 
+      field: 'edit', 
+      hideable: false,
+      filterable: false,
+      sortable: false,
+      editable: false,
+      type: "actions",
+      getActions: ({ id }) => {
+        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+        if (isInEditMode) {
+          return [
+            <GridActionsCellItem
+              icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
+              label="Save"
+              sx={{
+                color: "primary.main",
+              }}
+              onClick={handleSaveClick(id)}
+            />,
+            <GridActionsCellItem
+              icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
+              label="Cancel"
+              className="textPrimary"
+              onClick={handleCancelClick(id)}
+              color="inherit"
+            />,
+          ];
+        }
+        return [
+          <GridActionsCellItem
+            icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
+            label="Edit"
+            className="textPrimary"
+            onClick={handleEditClick(id)}
+            color="inherit"
+          />,
+          <GridActionsCellItem
+            icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
+            label="Delete"
+            onClick={() => handleDeleteOpen(id)}
+            color="inherit"
+          />,
+        ];
+      },
+    }
+      ]
+    },
+    [rowModesModel, handleEditClick, handleSaveClick, handleCancelClick, handleDeleteOpen]
+  );
+
+  const dataGridColumns = useColumns({
+    rowModesModel,
+    handleEditClick,
+    handleSaveClick,
+    handleCancelClick,
+    handleDeleteOpen,
+  });
 
   return (
     <Box sx={{ height: 520, width: '100%' }}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         autoHeight
-        columns={columns}
+        columns={dataGridColumns}
         rows={rows}
         density="comfortable"
         getRowId={(row) => row.project_personnel_id} // Use project_personnel_id as the unique id
