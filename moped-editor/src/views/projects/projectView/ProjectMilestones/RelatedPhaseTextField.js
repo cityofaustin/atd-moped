@@ -1,6 +1,17 @@
 import React from "react";
 import { TextField } from "@mui/material";
+import { makeStyles } from "@mui/styles";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+
+const useStyles = makeStyles((theme) => ({
+  readOnlyInput: {
+    width: "90%",
+    paddingTop: "inherit",
+    "& .Mui-disabled:before": {
+      borderBottom: "none",
+    },
+  },
+}));
 
 /**
  * @param {Integer} id - Data Grid row id
@@ -21,6 +32,7 @@ const RelatedPhaseTextField = ({
 }) => {
   const ref = React.useRef(null);
   const apiRef = useGridApiContext();
+  const classes = useStyles();
 
   // Because this field not editable, it cannot be focused and if a user is tabbing across the cells
   // the focus should be forwarded to the next one in the row
@@ -38,13 +50,14 @@ const RelatedPhaseTextField = ({
   return (
     <TextField
       variant="standard"
-      style={{ width: "90%", paddingTop: "inherit" }}
+      className={classes.readOnlyInput}
       id={field}
       inputRef={ref}
       name={field}
       type="text"
       value={phaseNameLookupData[value?.related_phase_id] || " "}
       disabled
+      // inputProps={{ readOnly: true, disableUnderline: true, textcolor:"#eee" }}
     />
   );
 };
