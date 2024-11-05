@@ -327,6 +327,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       delete updatedMilestoneData.isNew;
       delete updatedMilestoneData.id;
       delete updatedMilestoneData.project_milestone_id;
+      delete updatedMilestoneData.moped_milestone;
 
       return (
         addProjectMilestone({
