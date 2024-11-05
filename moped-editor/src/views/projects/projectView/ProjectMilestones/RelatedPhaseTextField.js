@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
   readOnlyInput: {
     width: "90%",
     paddingTop: "inherit",
+    paddingLeft: "9px",
     "& .Mui-disabled:before": {
       borderBottom: "none",
     },
