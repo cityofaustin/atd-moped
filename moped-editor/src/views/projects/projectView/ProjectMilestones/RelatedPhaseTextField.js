@@ -8,9 +8,6 @@ const useStyles = makeStyles((theme) => ({
     width: "90%",
     paddingTop: "inherit",
     paddingLeft: "9px",
-    "& .Mui-disabled:before": {
-      borderBottom: "none",
-    },
   },
 }));
 
@@ -57,8 +54,7 @@ const RelatedPhaseTextField = ({
       name={field}
       type="text"
       value={phaseNameLookupData[value?.related_phase_id] || " "}
-      disabled
-      // inputProps={{ readOnly: true, disableUnderline: true, textcolor:"#eee" }}
+      InputProps={{ readOnly: true, disableUnderline: true }}
     />
   );
 };
