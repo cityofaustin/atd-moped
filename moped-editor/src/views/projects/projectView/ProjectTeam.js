@@ -1,6 +1,6 @@
 import React from "react";
 import ProjectTeamTable from "./ProjectTeamTable";
-import ProjectTeamTableDataGridPro from "./ProjectTeamTableDataGridPro";
+import ProjectTeamTableDataGridPro from "./ProjectTeam/ProjectTeamTableDataGridPro";
 import { useParams } from "react-router-dom";
 
 import { CardContent, Grid } from "@mui/material";
