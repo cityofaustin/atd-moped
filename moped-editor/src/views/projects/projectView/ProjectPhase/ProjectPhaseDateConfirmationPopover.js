@@ -6,7 +6,7 @@ import { Popover, Typography } from "@mui/material";
  * @param {boolean} isEnabled - if the popover should be enabled/active
  * @param {string} dataType - the date type that we be included in popover text. expecting `start` or `end`
  */
-const DateConfirmationPopover = ({ children, isEnabled, dateType }) => {
+const ProjectPhaseDateConfirmationPopover = ({ children, isEnabled, dateType }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handlePopoverOpen = (event) => {
@@ -46,4 +46,4 @@ const DateConfirmationPopover = ({ children, isEnabled, dateType }) => {
   );
 };
 
-export default DateConfirmationPopover;
+export default ProjectPhaseDateConfirmationPopover;

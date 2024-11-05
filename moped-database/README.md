@@ -86,6 +86,8 @@ $ ./hasura-cluster stop
 
 ### Using production data
 
+_Here are some docs in Gitbook that explain [How to load production data into a local instance](https://atd-dts.gitbook.io/moped-documentation/dev-guides/how-tos/how-to-load-production-data-into-a-local-instance)_
+
 Configure your environment:
 
 1. Copy the env_template file into env and fill in your credentials:
@@ -136,7 +138,7 @@ which contains the connection information for the local cluster. Notice the form
 
 #### Views
 
-To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](/views/README.md).
+To version control database views, SQL files are stored in `/views/` and the steps to modify a view and create a migration are available [here](./views/README.md).
 
 ### SQL Formatting
 
@@ -153,6 +155,10 @@ Lint (ie, tell me what i'm doing wrong):
 Format (ie, clean up all my indention and fix things you can fix automatically):
 
 `sqlfluff format --config ../../.sqlfluff project_list_view.sql`
+
+## How to connect the database with Postgres GUI tools (example: TablePlus, DBeaver, P etc)
+
+_Here are some docs in Gitbook that explain [How to connect the database with Postgres GUI tools](https://atd-dts.gitbook.io/moped-documentation/dev-guides/how-tos/connecting-with-postgres-gui)_
 
 ## Read the docs
 
