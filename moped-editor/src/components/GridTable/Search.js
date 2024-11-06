@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { useSearchParams } from "react-router-dom";
-import { Box, Button, Grid, Paper, Popper } from "@mui/material";
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Popper,
+  ClickAwayListener,
+} from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Hidden from "@mui/material/Hidden";
@@ -238,18 +245,20 @@ const Search = ({
         placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
-        <Paper className={classes.advancedSearchPaper}>
-          <Filters
-            setFilters={setFilters}
-            handleAdvancedSearchClose={handleAdvancedSearchClose}
-            filtersConfig={filtersConfig}
-            resetSimpleSearch={resetSimpleSearch}
-            isOr={isOr}
-            setIsOr={setIsOr}
-            setSearchParams={setSearchParams}
-            searchParams={searchParams}
-          />
-        </Paper>
+        <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
+          <Paper className={classes.advancedSearchPaper}>
+            <Filters
+              setFilters={setFilters}
+              handleAdvancedSearchClose={handleAdvancedSearchClose}
+              filtersConfig={filtersConfig}
+              resetSimpleSearch={resetSimpleSearch}
+              isOr={isOr}
+              setIsOr={setIsOr}
+              setSearchParams={setSearchParams}
+              searchParams={searchParams}
+            />
+          </Paper>
+        </ClickAwayListener>
       </Popper>
     </div>
   );
