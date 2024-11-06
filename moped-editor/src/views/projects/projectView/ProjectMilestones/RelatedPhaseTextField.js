@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
   readOnlyInput: {
     width: "90%",
     paddingTop: "inherit",
-    paddingLeft: "9px",
+    paddingLeft: theme.spacing(1),
   },
 }));
 
