@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   listItemText: {
     marginLeft: theme.spacing(1),
     flexGrow: 1,
-    marginRight: "48px",
+    marginRight: theme.spacing(6),
   },
   additionalListItemText: {
     display: "block",
