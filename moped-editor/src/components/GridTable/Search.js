@@ -246,18 +246,16 @@ const Search = ({
         className={classes.advancedSearchRoot}
       >
         <Paper className={classes.advancedSearchPaper}>
-          <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
-            <Filters
-              setFilters={setFilters}
-              handleAdvancedSearchClose={handleAdvancedSearchClose}
-              filtersConfig={filtersConfig}
-              resetSimpleSearch={resetSimpleSearch}
-              isOr={isOr}
-              setIsOr={setIsOr}
-              setSearchParams={setSearchParams}
-              searchParams={searchParams}
-            />
-          </ClickAwayListener>
+          <Filters
+            setFilters={setFilters}
+            handleAdvancedSearchClose={handleAdvancedSearchClose}
+            filtersConfig={filtersConfig}
+            resetSimpleSearch={resetSimpleSearch}
+            isOr={isOr}
+            setIsOr={setIsOr}
+            setSearchParams={setSearchParams}
+            searchParams={searchParams}
+          />
         </Paper>
       </Popper>
     </div>
