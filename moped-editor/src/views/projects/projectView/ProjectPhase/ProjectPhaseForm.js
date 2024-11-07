@@ -21,9 +21,9 @@ import {
   useDefaultValues,
   useSubphases,
   useCurrentPhaseIdsToClear,
-} from "./ProjectPhase/helpers";
+} from "./helpers";
 import { getSessionDatabaseData } from "src/auth/user";
-import { useResetDependentFieldOnParentFieldChange } from "./ProjectComponents/utils/form";
+import { useResetDependentFieldOnParentFieldChange } from "../ProjectComponents/utils/form";
 import {
   UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE,
   ADD_PROJECT_PHASE_AND_STATUS_UPDATE,

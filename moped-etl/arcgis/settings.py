@@ -32,6 +32,7 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     feature_ids
     funding_sources
     geometry
+    geometry_type
     interim_project_component_id
     interim_project_id
     is_within_city_limits

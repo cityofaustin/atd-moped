@@ -29,6 +29,7 @@
           - feature_ids
           - funding_sources
           - geometry
+          - geometry_type
           - interim_project_component_id
           - interim_project_id
           - is_within_city_limits
@@ -109,6 +110,7 @@
           - feature_ids
           - funding_sources
           - geometry
+          - geometry_type
           - interim_project_component_id
           - interim_project_id
           - is_within_city_limits
@@ -189,6 +191,7 @@
           - feature_ids
           - funding_sources
           - geometry
+          - geometry_type
           - interim_project_component_id
           - interim_project_id
           - is_within_city_limits
