@@ -15,7 +15,6 @@ ADD CONSTRAINT fk_moped_user_saved_views_created_by FOREIGN KEY (created_by_user
 ADD CONSTRAINT fk_moped_user_saved_views_updated_by FOREIGN KEY (updated_by_user_id) REFERENCES moped_users (user_id);
 
 -- Adding comments for audit fields
--- TO DO: add comments to all fields
 COMMENT ON COLUMN moped_user_saved_views.description IS 'Description entered by the creator of the view';
 COMMENT ON COLUMN moped_user_saved_views.url IS 'URL string associated with the view (may break if database fields or operators are changed)';
 COMMENT ON COLUMN moped_user_saved_views.query_filters IS 'JSON blob of filters that make up the query';
