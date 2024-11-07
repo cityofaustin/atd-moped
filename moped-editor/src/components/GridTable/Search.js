@@ -245,8 +245,8 @@ const Search = ({
         placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
-        <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
-          <Paper className={classes.advancedSearchPaper}>
+        <Paper className={classes.advancedSearchPaper}>
+          <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
             <Filters
               setFilters={setFilters}
               handleAdvancedSearchClose={handleAdvancedSearchClose}
@@ -257,8 +257,8 @@ const Search = ({
               setSearchParams={setSearchParams}
               searchParams={searchParams}
             />
-          </Paper>
-        </ClickAwayListener>
+          </ClickAwayListener>
+        </Paper>
       </Popper>
     </div>
   );
