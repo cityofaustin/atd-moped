@@ -3,7 +3,10 @@ import { gql } from "@apollo/client";
 export const SUBPROJECT_QUERY = gql`
   query SubprojectSummary($projectId: Int) {
     subprojects: moped_project(
-      where: { parent_project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
+      where: {
+        parent_project_id: { _eq: $projectId }
+        is_deleted: { _eq: false }
+      }
     ) {
       project_name
       project_name_full
