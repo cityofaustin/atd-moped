@@ -123,7 +123,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
           return deleteInProgress ? (
             <CircularProgress color="primary" size={20} />
           ) : (
-            <div style={{display: "flex"}}>
+            <div style={{ display: "flex" }}>
               <IconButton
                 aria-label="edit"
                 sx={{ color: "inherit" }}
@@ -203,6 +203,11 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
     refetch().then(() => setEditPhase(null));
   };
 
+  // Open activity edit modal when double clicking in a cell
+  const doubleClickListener = (params) => {
+    setEditPhase(params.row);
+  };
+
   return (
     <>
       <DataGridPro
@@ -218,6 +223,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         localeText={{ noRowsLabel: "No phases" }}
         initialState={{ pinnedColumns: { right: ["_edit"] } }}
         rows={data?.moped_proj_phases || []}
+        onCellDoubleClick={doubleClickListener}
         slots={{
           toolbar: ProjectPhaseToolbar,
         }}
