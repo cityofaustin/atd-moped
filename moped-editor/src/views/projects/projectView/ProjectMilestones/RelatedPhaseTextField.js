@@ -36,6 +36,7 @@ const RelatedPhaseTextField = ({
   // the focus should be forwarded to the next one in the row
   React.useEffect(() => {
     if (hasFocus) {
+      // Check if shift key is pressed, and user is trying to tab "backwards"
       if (usingShiftKey) {
         apiRef.current.setCellFocus(id, "description");
       } else {
