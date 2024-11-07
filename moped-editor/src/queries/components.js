@@ -106,6 +106,7 @@ export const PROJECT_COMPONENT_FIELDS = gql`
       phase_id
       phase_name
       phase_name_simple
+      phase_key
       moped_subphases {
         subphase_id
         subphase_name

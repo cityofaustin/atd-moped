@@ -20,9 +20,9 @@ import {
   returnAMDSignalInfrastructureMilestoneTemplate,
   returnAMDInspectionOnlyMilestoneTemplate,
   returnPDDMilestoneTemplate,
-} from "../../../utils/timelineTemplates";
+} from "../../../../utils/timelineTemplates";
 
-import { ADD_PROJECT_MILESTONE } from "../../../queries/project";
+import { ADD_PROJECT_MILESTONE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
 
 const templateChoices = [
