@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
 import {
@@ -9,13 +9,21 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   AddCircle as AddCircleIcon,
   DeleteOutline as DeleteOutlineIcon,
   EditOutlined as EditOutlinedIcon,
 } from "@mui/icons-material";
-import { DataGridPro } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GridRowModes,
+  GridActionsCellItem,
+  useGridApiContext,
+} from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import { v4 as uuidv4 } from "uuid";
 import SubprojectsToolbar from "./SubprojectsToolbar";
 import Autocomplete from "@mui/material/Autocomplete";
 // import MaterialTable, {
@@ -33,6 +41,167 @@ import {
 } from "../../../../queries/subprojects";
 import typography from "../../../../theme/typography";
 
+const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
+  const apiRef = useGridApiContext();
+  const ref = React.useRef(null);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
+
+  const handleChange = (event, newValue) => {
+    apiRef.current.setEditCellValue({
+      id,
+      field,
+      value: newValue ? newValue : null,
+    });
+  };
+
+  return (
+    <FormControl variant="standard" style={{ width: "100%" }}>
+      <Autocomplete
+        id="project_name"
+        name="project_name"
+        options={data?.subprojectOptions}
+        getOptionLabel={(option) =>
+          `${option.project_id} - ${option.project_name_full}`
+        }
+        value={value || null}
+        onChange={handleChange}
+        renderInput={(params) => <TextField variant="standard" {...params} />}
+      />
+      <FormHelperText>Required</FormHelperText>
+    </FormControl>
+  );
+};
+/** Hook that provides memoized column settings */
+const useColumns = ({
+  data,
+  rowModesModel,
+  handleDeleteOpen,
+  handleSaveClick,
+  handleCancelClick,
+  handleEditClick,
+}) =>
+  useMemo(() => {
+    console.log(data);
+    return [
+      {
+        headerName: "ID",
+        field: "project_id",
+        editable: false,
+        width: 50,
+      },
+      {
+        headerName: "Full name",
+        field: "project_name_full",
+        editable: true,
+        width: 350,
+        renderEditCell: (props) => (
+          <SubprojectLookupComponent {...props}></SubprojectLookupComponent>
+        ),
+        // validate: (entry) => !!entry.project_name_full,
+        // render: (entry) => (
+        //   <RenderFieldLink
+        //     projectId={entry.project_id}
+        //     value={entry.project_name_full}
+        //   />
+        // ),
+        // editComponent: (props) => (
+        //   <FormControl variant="standard" style={{ width: "100%" }}>
+        //     <Autocomplete
+        //       id="project_name"
+        //       name="project_name"
+        //       options={data.subprojectOptions}
+        //       getOptionLabel={(option) =>
+        //         `${option.project_id} - ${option.project_name_full}`
+        //       }
+        //       value={props.value || null}
+        //       onChange={(event, value) => props.onChange(value)}
+        //       renderInput={(params) => (
+        //         <TextField variant="standard" {...params} />
+        //       )}
+        //     />
+        //     <FormHelperText>Required</FormHelperText>
+        //   </FormControl>
+        // ),
+      },
+      {
+        headerName: "Status",
+        field: "status",
+        editable: false,
+        width: 200,
+        // customSort: (a, b) =>
+        //   a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
+        //   b.moped_proj_phases?.[0]?.moped_phase?.phase_name
+        //     ? -1
+        //     : 1,
+        // render: (entry) => (
+        //   <ProjectStatusBadge
+        //     phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+        //     phaseKey={entry.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+        //     condensed
+        //   />
+        // ),
+      },
+      {
+        headerName: "",
+        field: "edit",
+        hideable: false,
+        filterable: false,
+        sortable: false,
+        editable: false,
+        type: "actions",
+        getActions: ({ id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          if (isInEditMode) {
+            return [
+              <GridActionsCellItem
+                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                label="Save"
+                sx={{
+                  color: "primary.main",
+                }}
+                onClick={handleSaveClick(id)}
+              />,
+              // <GridActionsCellItem
+              //   icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+              //   label="Cancel"
+              //   className="textPrimary"
+              //   onClick={handleCancelClick(id)}
+              //   color="inherit"
+              // />,
+            ];
+          }
+          // return [
+          //   <GridActionsCellItem
+          //     icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+          //     label="Edit"
+          //     className="textPrimary"
+          //     onClick={handleEditClick(id)}
+          //     color="inherit"
+          //   />,
+          //   <GridActionsCellItem
+          //     icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+          //     label="Delete"
+          //     onClick={() => handleDeleteOpen(id)}
+          //     color="inherit"
+          //   />,
+          // ];
+        },
+      },
+    ];
+  }, [
+    data,
+    rowModesModel,
+    // handleDeleteOpen,
+    handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+  ]);
+
 const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   const addActionRef = React.useRef();
 
@@ -44,76 +213,94 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
 
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
+
+  useEffect(() => {
+    if (data && data.subprojects.length > 0) {
+      setRows(data.subprojects);
+    }
+  }, [data]);
+
   if (error) console.error(error);
-  if (loading || !data) return <CircularProgress />;
+  if (loading || !data);
 
-  const columns = [
-    {
-      headerName: "ID",
-      field: "project_id",
-      editable: "never",
-      width: 50,
-    },
-    {
-      headerName: "Full name",
-      field: "project_name_full",
-      width: 350,
-      // validate: (entry) => !!entry.project_name_full,
-      // render: (entry) => (
-      //   <RenderFieldLink
-      //     projectId={entry.project_id}
-      //     value={entry.project_name_full}
-      //   />
-      // ),
-      // editComponent: (props) => (
-      //   <FormControl variant="standard" style={{ width: "100%" }}>
-      //     <Autocomplete
-      //       id="project_name"
-      //       name="project_name"
-      //       options={data.subprojectOptions}
-      //       getOptionLabel={(option) =>
-      //         `${option.project_id} - ${option.project_name_full}`
-      //       }
-      //       value={props.value || null}
-      //       onChange={(event, value) => props.onChange(value)}
-      //       renderInput={(params) => (
-      //         <TextField variant="standard" {...params} />
-      //       )}
-      //     />
-      //     <FormHelperText>Required</FormHelperText>
-      //   </FormControl>
-      // ),
-    },
-    {
-      headerName: "Status",
-      field: "status",
-      editable: "never",
-      width: 200,
-      // customSort: (a, b) =>
-      //   a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
-      //   b.moped_proj_phases?.[0]?.moped_phase?.phase_name
-      //     ? -1
-      //     : 1,
-      // render: (entry) => (
-      //   <ProjectStatusBadge
-      //     phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-      //     phaseKey={entry.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-      //     condensed
-      //   />
-      // ),
-    },
-  ];
+  const handleAddSubprojectClick = () => {
+    // use a random id to keep track of row in row modes model and data grid rows
+    // before the record is added to the db
+    const id = uuidv4();
+    setRows((oldRows) => [
+      {
+        id,
+        project_id: id,
+        project_name_full: null,
+        status: null,
+        isNew: true,
+      },
+      ...oldRows,
+    ]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "project_name_full" },
+    }));
+  };
 
-  console.log(data.subprojects);
+  const handleSaveClick = useCallback(
+    (id) => () => {
+      setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
+    },
+    [rowModesModel]
+  );
+
+  const processRowUpdate = (updatedRow) => {
+    // const updatedSubprojectData = updatedRow;
+
+    // delete updatedSubprojectData.isNew;
+    // delete updatedSubprojectData.id;
+
+    // updateProjectSubproject({
+    //   variables: {
+    //     objects: {
+    //       ...updatedSubprojectData,
+    //     },
+    //   },
+    // });
+
+    const childProjectId = updatedRow?.project_name_full?.project_id;
+    return updateProjectSubproject({
+      variables: {
+        parentProjectId: projectId,
+        childProjectId: childProjectId,
+      },
+    })
+      .then(() => {
+        refetch();
+        refetchSummaryData(); // Refresh subprojects in summary map
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const dataGridColumns = useColumns({
+    data,
+    rowModesModel,
+    // handleDeleteOpen,
+    handleSaveClick,
+    // handleCancelClick,
+    // handleEditClick,
+  });
 
   return (
     <ApolloErrorHandler errors={error}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
-        columns={columns}
-        rows={data.subprojects ?? []}
+        columns={dataGridColumns}
+        rows={rows}
         getRowId={(row) => row.project_id}
+        rowModesModel={rowModesModel}
         slots={{ toolbar: SubprojectsToolbar }}
+        slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
+        editMode="row"
+        processRowUpdate={processRowUpdate}
         hideFooter
         // data={data.subprojects ?? []}
         // columns={columns}
@@ -178,20 +365,20 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         // }}
         // icons={{ Delete: DeleteOutlineIcon, Edit: EditOutlinedIcon }}
         // editable={{
-        //   onRowAdd: (newData) => {
-        //     const childProjectId = newData?.project_name_full?.project_id;
-        //     return updateProjectSubproject({
-        //       variables: {
-        //         parentProjectId: projectId,
-        //         childProjectId: childProjectId,
-        //       },
+        // onRowAdd: (newData) => {
+        //   const childProjectId = newData?.project_name_full?.project_id;
+        //   return updateProjectSubproject({
+        //     variables: {
+        //       parentProjectId: projectId,
+        //       childProjectId: childProjectId,
+        //     },
+        //   })
+        //     .then(() => {
+        //       refetch();
+        //       refetchSummaryData(); // Refresh subprojects in summary map
         //     })
-        //       .then(() => {
-        //         refetch();
-        //         refetchSummaryData(); // Refresh subprojects in summary map
-        //       })
-        //       .catch((error) => console.error(error));
-        //   },
+        //     .catch((error) => console.error(error));
+        // },
         //   onRowDelete: (newData) => {
         //     const childProjectId = newData?.project_id;
         //     return deleteProjectSubproject({
