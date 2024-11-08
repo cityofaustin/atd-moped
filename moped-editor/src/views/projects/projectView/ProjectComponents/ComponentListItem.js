@@ -34,6 +34,16 @@ const useStyles = makeStyles((theme) => ({
   additionalListItemText: {
     display: "block",
   },
+  workTypeChip: {
+    height: "auto",
+    "& .MuiChip-label": {
+      display: "block",
+      whiteSpace: "normal",
+    },
+  },
+  workTypeGroup: {
+    paddingLeft: theme.spacing(4),
+  },
 }));
 
 export default function ComponentListItem({
@@ -108,19 +118,12 @@ export default function ComponentListItem({
                 />
               </ListItem>
             )}
-            <Grid container spacing={1}>
+            <Grid container spacing={0.5} className={classes.workTypeGroup}>
               {component.moped_proj_component_work_types.map((element) => (
                 <Grid item key={element.id}>
                   <Chip
                     label={element.moped_work_type.name}
-                    sx={{
-                      height: "auto",
-                      // minHeight: theme.spacing(4),
-                      "& .MuiChip-label": {
-                        display: "block",
-                        whiteSpace: "normal",
-                      },
-                    }}
+                    className={classes.workTypeChip}
                   />
                 </Grid>
               ))}
