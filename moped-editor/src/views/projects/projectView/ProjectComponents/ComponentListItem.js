@@ -35,11 +35,14 @@ const useStyles = makeStyles((theme) => ({
     display: "block",
   },
   workTypeChip: {
-    height: "auto",
     "& .MuiChip-label": {
       display: "block",
       whiteSpace: "normal",
     },
+    fontWeight: "500",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
   },
   workTypeGroup: {
     paddingLeft: theme.spacing(4),
