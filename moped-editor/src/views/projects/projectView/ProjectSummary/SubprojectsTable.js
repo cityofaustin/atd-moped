@@ -33,6 +33,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import RenderFieldLink from "../../../../components/RenderFieldLink";
+import SubprojectLookupComponent from "./SubprojectLookupComponent";
 
 import {
   SUBPROJECT_QUERY,
@@ -41,41 +42,6 @@ import {
 } from "../../../../queries/subprojects";
 import typography from "../../../../theme/typography";
 
-const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
-  const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
-
-  React.useEffect(() => {
-    if (hasFocus) {
-      ref.current.focus();
-    }
-  }, [hasFocus]);
-
-  const handleChange = (event, newValue) => {
-    apiRef.current.setEditCellValue({
-      id,
-      field,
-      value: newValue ? newValue : null,
-    });
-  };
-
-  return (
-    <FormControl variant="standard" style={{ width: "100%" }}>
-      <Autocomplete
-        id="project_name"
-        name="project_name"
-        options={data?.subprojectOptions}
-        getOptionLabel={(option) =>
-          `${option.project_id} - ${option.project_name_full}`
-        }
-        value={value || null}
-        onChange={handleChange}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
-      />
-      <FormHelperText>Required</FormHelperText>
-    </FormControl>
-  );
-};
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
@@ -100,7 +66,7 @@ const useColumns = ({
         editable: true,
         width: 350,
         renderEditCell: (props) => (
-          <SubprojectLookupComponent {...props}></SubprojectLookupComponent>
+          <SubprojectLookupComponent {...props} data={data} />
         ),
         // validate: (entry) => !!entry.project_name_full,
         // render: (entry) => (
@@ -133,17 +99,24 @@ const useColumns = ({
         field: "status",
         editable: false,
         width: 200,
+        renderCell: ({ value }) => {
+          <ProjectStatusBadge
+            phaseName={value?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+            phaseKey={value?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+            condensed
+          />;
+        },
         // customSort: (a, b) =>
         //   a.moped_proj_phases?.[0]?.moped_phase?.phase_name <
         //   b.moped_proj_phases?.[0]?.moped_phase?.phase_name
         //     ? -1
         //     : 1,
         // render: (entry) => (
-        //   <ProjectStatusBadge
-        //     phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-        //     phaseKey={entry.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-        //     condensed
-        //   />
+        // <ProjectStatusBadge
+        //   phaseName={entry.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+        //   phaseKey={entry.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+        //   condensed
+        // />
         // ),
       },
       {
@@ -175,21 +148,21 @@ const useColumns = ({
               // />,
             ];
           }
-          // return [
-          //   <GridActionsCellItem
-          //     icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
-          //     label="Edit"
-          //     className="textPrimary"
-          //     onClick={handleEditClick(id)}
-          //     color="inherit"
-          //   />,
-          //   <GridActionsCellItem
-          //     icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
-          //     label="Delete"
-          //     onClick={() => handleDeleteOpen(id)}
-          //     color="inherit"
-          //   />,
-          // ];
+          return [
+            <GridActionsCellItem
+              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              label="Edit"
+              className="textPrimary"
+              // onClick={handleEditClick(id)}
+              color="inherit"
+            />,
+            // <GridActionsCellItem
+            //   icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+            //   label="Delete"
+            //   onClick={() => handleDeleteOpen(id)}
+            //   color="inherit"
+            // />,
+          ];
         },
       },
     ];
@@ -203,8 +176,6 @@ const useColumns = ({
   ]);
 
 const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
-  const addActionRef = React.useRef();
-
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
@@ -226,6 +197,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   if (loading || !data);
 
   const handleAddSubprojectClick = () => {
+    console.log("subproject clicked");
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
     const id = uuidv4();
@@ -251,6 +223,10 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     },
     [rowModesModel]
   );
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
 
   const processRowUpdate = (updatedRow) => {
     // const updatedSubprojectData = updatedRow;
@@ -297,6 +273,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         rows={rows}
         getRowId={(row) => row.project_id}
         rowModesModel={rowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
         slots={{ toolbar: SubprojectsToolbar }}
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
