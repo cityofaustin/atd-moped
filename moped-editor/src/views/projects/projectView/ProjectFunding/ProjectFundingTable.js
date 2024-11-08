@@ -43,6 +43,7 @@ import FundAutocompleteComponent from "./FundAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "./utils/helpers";
+import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -92,8 +93,8 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   toolbarTitle: {
-    marginBottom: theme.spacing(1)
-  }
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 // memoized hook to concatanate fund dept and unit ids into an fdu string
@@ -231,7 +232,7 @@ const useColumns = ({
           if (isInEditMode) {
             return [
               <GridActionsCellItem
-                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
                 label="Save"
                 sx={{
                   color: "primary.main",
@@ -239,7 +240,7 @@ const useColumns = ({
                 onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
-                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
                 label="Cancel"
                 className="textPrimary"
                 onClick={handleCancelClick(id)}
@@ -249,14 +250,14 @@ const useColumns = ({
           }
           return [
             <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={{ fontSize: "24px" }} />}
+              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
               label="Edit"
               className="textPrimary"
               onClick={handleEditClick(id)}
               color="inherit"
             />,
             <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
               label="Delete"
               onClick={() => handleDeleteOpen(id)}
               color="inherit"
@@ -578,6 +579,7 @@ const ProjectFundingTable = () => {
       severity: "error",
     });
   };
+
   const dataGridColumns = useColumns({
     data,
     rowModesModel,

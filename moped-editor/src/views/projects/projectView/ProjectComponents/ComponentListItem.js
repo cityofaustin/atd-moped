@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   listItemText: {
     marginLeft: theme.spacing(1),
     flexGrow: 1,
-    marginRight: "48px",
+    marginRight: theme.spacing(6),
   },
   additionalListItemText: {
     display: "block",
@@ -86,7 +86,7 @@ export default function ComponentListItem({
             </ListItemSecondaryAction>
           </Box>
           {!!component.moped_phase && (
-            <Box width="100%" sx={isExpanded ? { pt: 0.5 } : { py: 0.5 }}>
+            <Box width="100%" sx={{ my: 0.5, ml: 1 }}>
               <ProjectStatusBadge
                 phaseName={component.moped_phase?.phase_name}
                 phaseKey={component.moped_phase?.phase_key}
