@@ -286,16 +286,19 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     // Get the new role IDs from the updated row
     const newRoleIds = updatedRow.roleIds || [];
 
+    // Extract user_id properly - handle both string and object cases
+    const userId = typeof updatedRow.moped_user === 'string' 
+      ? parseInt(updatedRow.moped_user) 
+      : updatedRow.moped_user?.user_id;
+
     // Format the data according to the mutation's expected structure
     const variables = {
       id: updatedRow.project_personnel_id,
       updatePersonnelObject: {
         notes: updatedRow.notes,
-        user_id: updatedRow.moped_user?.user_id,
+        user_id: userId,
       },
-      // IDs of roles to be deleted (roles that were in original but not in new)
       deleteIds: originalRoleIds,
-      // New role assignments
       addRolesObjects: newRoleIds.map(roleId => ({
         project_role_id: roleId,
         project_personnel_id: updatedRow.project_personnel_id
