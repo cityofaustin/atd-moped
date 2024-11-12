@@ -121,16 +121,18 @@ export default function ComponentListItem({
                 />
               </ListItem>
             )}
-            <Grid container spacing={0.5} className={classes.workTypeGroup}>
-              {component.moped_proj_component_work_types.map((element) => (
-                <Grid item key={element.id}>
-                  <Chip
-                    label={element.moped_work_type.name}
-                    className={classes.workTypeChip}
-                  />
-                </Grid>
-              ))}
-            </Grid>
+            <ListItem className={classes.workTypeGroup}>
+              <Grid container spacing={0.5}>
+                {component.moped_proj_component_work_types.map((element) => (
+                  <Grid item key={element.id}>
+                    <Chip
+                      label={element.moped_work_type.name}
+                      className={classes.workTypeChip}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </ListItem>
             {component.description && (
               <ListItem className={classes.nested}>
                 <ListItemText secondary={component.description} />
