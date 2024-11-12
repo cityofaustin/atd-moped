@@ -32,7 +32,6 @@ const useColumns = ({
   handleCancelClick,
 }) =>
   useMemo(() => {
-    console.log(data);
     return [
       {
         headerName: "ID",
@@ -52,7 +51,7 @@ const useColumns = ({
       {
         headerName: "Status",
         field: "status",
-        editable: false,
+        editable: true,
         width: 200,
         renderCell: ({ row }) => (
           <ProjectStatusBadge
@@ -61,6 +60,7 @@ const useColumns = ({
             condensed
           />
         ),
+        renderEditCell: () => <div></div>,
       },
       {
         headerName: "",
@@ -135,7 +135,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   if (loading || !data);
 
   const handleAddSubprojectClick = () => {
-    console.log("subproject clicked");
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
     const id = uuidv4();
@@ -179,22 +178,23 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   }, []);
 
   // handles row delete
-  const handleDeleteClick = useCallback(
-    (id) => () => {
-      const childProjectId = id;
-      return deleteProjectSubproject({
-        variables: {
-          childProjectId: childProjectId,
-        },
+  const handleDeleteClick = (id) => () => {
+    const childProjectId = id;
+    // remove row from rows in state
+    setRows(rows.filter((row) => row.project_id !== id));
+
+    deleteProjectSubproject({
+      variables: {
+        childProjectId: childProjectId,
+      },
+    })
+      .then(() => {
+        refetch();
+        refetchSummaryData(); // Refresh subprojects in summary map
       })
-        .then(() => {
-          refetch();
-          refetchSummaryData(); // Refresh subprojects in summary map
-        })
-        .catch((error) => console.error(error));
-    },
-    [deleteProjectSubproject, refetch, refetchSummaryData]
-  );
+      .then(() => setIsDeleteConfirmationOpen(false))
+      .catch((error) => console.error(error));
+  };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -229,6 +229,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         sx={dataGridProStyleOverrides}
         columns={dataGridColumns}
         rows={rows}
+        autoHeight
         getRowId={(row) => row.project_id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
@@ -237,6 +238,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         editMode="row"
         processRowUpdate={processRowUpdate}
         hideFooter
+        disableRowSelectionOnClick
+        localeText={{ noRowsLabel: "No subprojects to display" }}
       />
       <DeleteConfirmationModal
         type={"funding source"}
