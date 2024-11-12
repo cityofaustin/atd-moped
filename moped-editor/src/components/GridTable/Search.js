@@ -7,7 +7,6 @@ import {
   Grid,
   Paper,
   Popper,
-  ClickAwayListener,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
@@ -245,20 +244,18 @@ const Search = ({
         placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
-        <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
-          <Paper className={classes.advancedSearchPaper}>
-            <Filters
-              setFilters={setFilters}
-              handleAdvancedSearchClose={handleAdvancedSearchClose}
-              filtersConfig={filtersConfig}
-              resetSimpleSearch={resetSimpleSearch}
-              isOr={isOr}
-              setIsOr={setIsOr}
-              setSearchParams={setSearchParams}
-              searchParams={searchParams}
-            />
-          </Paper>
-        </ClickAwayListener>
+        <Paper className={classes.advancedSearchPaper}>
+          <Filters
+            setFilters={setFilters}
+            handleAdvancedSearchClose={handleAdvancedSearchClose}
+            filtersConfig={filtersConfig}
+            resetSimpleSearch={resetSimpleSearch}
+            isOr={isOr}
+            setIsOr={setIsOr}
+            setSearchParams={setSearchParams}
+            searchParams={searchParams}
+          />
+        </Paper>
       </Popper>
     </div>
   );
