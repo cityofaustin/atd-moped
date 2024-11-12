@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { Box, Icon, Link, CircularProgress } from '@mui/material';
+import isEqual from "lodash/isEqual";
+import { Box, Icon, Link, CircularProgress, TextField, Autocomplete } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { DataGridPro, GridRowModes, GridActionsCellItem, useGridApiRef } from '@mui/x-data-grid-pro';
@@ -15,13 +16,16 @@ import {
 } from "src/queries/project";
 import dataGridProStyleOverrides from 'src/styles/dataGridProStylesOverrides';
 import ProjectTeamToolbar from './ProjectTeamToolbar';
+import ProjectTeamRoleMultiselect from './ProjectTeamRoleMultiselect';
 
 import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
 import { useUser } from 'src/auth/user';
 
 import LookupAutocompleteComponent from 'src/components/DataGridPro/LookupAutocompleteComponent';
+import TeamAutocompleteComponent from './TeamAutocompleteComponent';
 import DataGridTextField from 'src/components/DataGridPro/DataGridTextField';
+import ApolloErrorHandler from 'src/components/ApolloErrorHandler';
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -34,137 +38,165 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-  const useColumns = ({
-    data,
-    rowModesModel,
-    handleEditClick,
-    handleSaveClick,
-    handleCancelClick,
-    handleDeleteOpen,
-    classes
-  }) => 
-    useMemo(() => {
-      return [
-    { 
-      headerName: 'Name', 
-      field: 'moped_user', 
-      width: 200,
-      editable: true,
-      valueGetter: (user) => {
-        return user ? `${user.first_name} ${user.last_name}` : '';
-      },
-      renderEditCell: (props) => (
-        <LookupAutocompleteComponent
+const useTeamNameLookup = (data) => 
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_users.reduce((obj, item) => {
+      obj[item.user_id] = `${item.first_name} ${item.last_name}`;
+      return obj;
+    }, {});
+  }, [data]);
+
+const useRoleNameLookup = (data) => 
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_project_roles.reduce((obj, item) => {
+      obj[item.project_role_id] = item.project_role_name;
+      return obj;
+    }, {});
+  }, [data]);
+
+const useColumns = ({
+  data,
+  rowModesModel,
+  handleEditClick,
+  handleSaveClick,
+  handleCancelClick,
+  handleDeleteOpen,
+  classes,
+  teamNameLookup,
+  roleNameLookup
+}) => 
+  useMemo(() => {
+    return [
+  { 
+    headerName: 'Name', 
+    field: 'moped_user', 
+    width: 200,
+    editable: true,
+    valueGetter: (user) => {
+      return user ? `${user.first_name} ${user.last_name}` : '';
+    },
+    renderEditCell: (props) => (
+      <TeamAutocompleteComponent
+        {...props}
+        name={"user"}
+        nameLookup={teamNameLookup}
+      />
+    )
+    },
+  { 
+    headerName: 'Workgroup', 
+    field: 'moped_workgroup',
+    width: 200,
+    valueGetter: (workgroup) => workgroup?.workgroup_name,
+  },
+  { 
+    headerName: 'Role',
+    field: 'moped_proj_personnel_roles', 
+    width: 200,
+    editable: true,
+    renderHeader: () => (
+      <span>
+        Role{" "}
+        <Link
+          href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Icon className={classes.infoIcon}>info_outline</Icon>
+        </Link>
+      </span>
+    ),
+    valueGetter: (roles) => {
+      if (roles.length === 0) {
+        return '';
+      }
+      const roleNames = roles.map(role => role.moped_project_role.project_role_name);
+      return roleNames.join(', ');
+    },
+    renderEditCell: (props) => {
+      console.log('render edit cell', props);
+      return (
+        <ProjectTeamRoleMultiselect
           {...props}
-          name={"moped_user"}
-          lookupTable={data["moped_users"]}
+          value={props.row.roleIds || []}
+          roles={data.moped_project_roles}
         />
-      )
-     },
-    { 
-      headerName: 'Workgroup', 
-      field: 'moped_workgroup',
-      width: 200,
-      valueGetter: (workgroup) => workgroup?.workgroup_name,
-    },
-    { 
-      headerName: 'Role',
-      field: 'moped_proj_personnel_roles', 
-      width: 200,
-      editable: true,
-      renderHeader: () => (
-        <span>
-          Role{" "}
-          <Link
-            href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Icon className={classes.infoIcon}>info_outline</Icon>
-          </Link>
-        </span>
-      ),
-      valueGetter: (roles) => {
-        if (roles.length === 0) {
-          return '';
-        }
-        const roleNames = roles.map(role => role.moped_project_role.project_role_name);
-        return roleNames.join(', ');
-      },
-      renderEditCell: (props) => (
-        <LookupAutocompleteComponent
-          {...props}
-          name={"moped_project_role"}
-          lookupTable={data["moped_project_roles"]}
-        />
-      )
-    },
-    { 
-      headerName: 'Notes', 
-      field: 'notes', 
-      width: 200, 
-      editable: true, 
-      renderEditCell: (props) => <DataGridTextField {...props} /> 
-    },
-    { 
-      headerName: '', 
-      field: 'edit', 
-      hideable: false,
-      filterable: false,
-      sortable: false,
-      editable: false,
-      type: "actions",
-      getActions: ({ id }) => {
-        const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-        if (isInEditMode) {
-          return [
-            <GridActionsCellItem
-              icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-              label="Save"
-              sx={{
-                color: "primary.main",
-              }}
-              onClick={handleSaveClick(id)}
-            />,
-            <GridActionsCellItem
-              icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-              label="Cancel"
-              className="textPrimary"
-              onClick={handleCancelClick(id)}
-              color="inherit"
-            />,
-          ];
-        }
+      );
+    }
+  },
+  { 
+    headerName: 'Notes', 
+    field: 'notes', 
+    width: 200, 
+    editable: true, 
+    renderEditCell: (props) => <DataGridTextField {...props} /> 
+  },
+  { 
+    headerName: '', 
+    field: 'edit', 
+    hideable: false,
+    filterable: false,
+    sortable: false,
+    editable: false,
+    type: "actions",
+    getActions: ({ id }) => {
+      const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+      if (isInEditMode) {
         return [
           <GridActionsCellItem
-            icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-            label="Edit"
-            className="textPrimary"
-            onClick={handleEditClick(id)}
-            color="inherit"
+            icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
+            label="Save"
+            sx={{
+              color: "primary.main",
+            }}
+            onClick={handleSaveClick(id)}
           />,
           <GridActionsCellItem
-            icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-            label="Delete"
-            onClick={() => handleDeleteOpen(id)}
+            icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
+            label="Cancel"
+            className="textPrimary"
+            onClick={handleCancelClick(id, 'project_personnel_id')}
             color="inherit"
           />,
         ];
-      },
-    }
-      ]
+      }
+      return [
+        <GridActionsCellItem
+          icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
+          label="Edit"
+          className="textPrimary"
+          onClick={handleEditClick(id)}
+          color="inherit"
+        />,
+        <GridActionsCellItem
+          icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
+          label="Delete"
+          onClick={() => handleDeleteOpen(id)}
+          color="inherit"
+        />,
+      ];
     },
-    [
-      data, 
-      rowModesModel, 
-      handleEditClick, 
-      handleSaveClick, 
-      handleCancelClick, 
-      handleDeleteOpen,
-      classes
+  }
     ]
-  );
-
+  },
+  [
+    data, 
+    rowModesModel, 
+    handleEditClick, 
+    handleSaveClick, 
+    handleCancelClick, 
+    handleDeleteOpen,
+    classes,
+    teamNameLookup,
+    roleNameLookup
+  ]
+);
 
 const ProjectTeamTableDataGridPro = ({ projectId }) => {
   const apiRef = useGridApiRef();
@@ -199,8 +231,8 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     }
   }, [data]);
 
-  
-
+  const teamNameLookup = useTeamNameLookup(data);
+  const roleNameLookup = useRoleNameLookup(data);
   const onClickAddTeamMember = () => {
     console.log('add team member'); 
     return setEditTeamMember({ project_id: projectId });
@@ -221,19 +253,50 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   }, [rowModesModel]);
 
-  const handleCancelClick = useCallback((id) => () => {
-    console.log('cancel click', id);
-    setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
-  }, [rowModesModel]);
+  const handleCancelClick = (id, tableId) => () => {
+    setRowModesModel({
+      ...rowModesModel,
+      [id]: { mode: GridRowModes.View, ignoreModifications: true },
+    });
+    const editedRow = rows.find((row) => row[tableId] === id);
+    if (editedRow.isNew) {
+      setRows(rows.filter((row) => row.id !== id));
+    }
+  };
 
   const handleDeleteOpen = useCallback((id) => {
     console.log('delete open', id);
     setDeleteTeamMemberId(id);
   }, [deleteTeamMemberId]);
 
-  const processRowUpdate = useCallback((newRow, oldRow) => {
-    console.log('process row update', newRow, oldRow);
-    return newRow;
+  const processRowUpdate = useCallback((updatedRow, originalRow) => {
+    console.log('process row update', updatedRow, originalRow);
+    const updatedRowData = { ...updatedRow }; 
+    delete updatedRowData.__typename;
+
+    // tk: handle empty strings
+    // tk: handle if the row is new
+
+    const hasRowChanged = !isEqual(updatedRow, originalRow);
+    if (!hasRowChanged) {
+      return Promise.resolve(updatedRow);
+    } else {
+      console.log('updatedRowData', updatedRowData);
+      return updateProjectPersonnel({ variables: updatedRowData })
+        .then(() => refetch())
+        .then(() => updatedRow)
+        .catch((error) => {
+          console.error(error.message);
+        });
+    }
+  }, []);
+
+  const handleProcessUpdateError = useCallback((error) => {
+    console.log('process row update error', error);
+  }, []);
+
+  const handleTabKeyDown = useCallback((params, event) => {
+    console.log('tab key down', params, event);
   }, []);
 
 
@@ -244,26 +307,41 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     handleSaveClick,
     handleCancelClick,
     handleDeleteOpen,
-    classes
+    classes,
+    teamNameLookup,
+    roleNameLookup
   });
 
   if (loading || !data) return <CircularProgress />;
 
+  console.log('dataGridColumns', dataGridColumns);
+  console.log('rows', rows);
+  console.log('data', data);
+
   return (
-    <Box sx={{ height: 520, width: '100%' }}>
+    <ApolloErrorHandler errors={error}>
+      <Box sx={{ height: 520, width: '100%' }}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
+        ref={apiRef}
         autoHeight
         columns={dataGridColumns}
         rows={rows}
-        density="comfortable"
-        getRowId={(row) => row.project_personnel_id} // Use project_personnel_id as the unique id
+        getRowId={(row) => row.project_personnel_id}
+        editMode="row"
+        rowModesModel={rowModesModel}
+        onRowModesModelChange={setRowModesModel}
+        processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessUpdateError}
         disableRowSelectionOnClick
-        disableColumnMenu
+        toolbar
+        density="comfortable"
         getRowHeight={() => 'auto'}
         hideFooter
+        onCellKeyDown={handleTabKeyDown}
         localeText={{ noRowsLabel: 'No team members found' }}
+        disableColumnMenu
         loading={loading}
         slots={{
           toolbar: ProjectTeamToolbar,
@@ -275,7 +353,8 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
           },
         }}
       />
-    </Box>
+      </Box>
+    </ApolloErrorHandler>
   );
 };
 

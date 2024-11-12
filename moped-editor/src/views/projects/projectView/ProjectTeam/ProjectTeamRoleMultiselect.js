@@ -11,6 +11,8 @@ import {
   Typography,
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
+import { useGridApiContext } from "@mui/x-data-grid-pro";
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -24,22 +26,39 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
+
+
+
+const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
+  const [selectedValues, setSelectedValues] = React.useState(Array.isArray(value) ? value : []);
   const classes = useStyles();
+  const apiRef = useGridApiContext();
+  const ref = React.useRef(null);
+
+  const handleChange = (event) => {
+    const newValue = event.target.value;
+    setSelectedValues(newValue);
+    apiRef.current.setEditCellValue({
+      id,
+      field,
+      value: newValue,
+    });
+  };
+
   return (
     <FormControl variant="standard" className={classes.formControl}>
       <Select
         variant="standard"
         style={{ minWidth: "8em" }}
         labelId="team-role-multiselect-label"
-        id="team-role-multiselect"
+        id={String(id)}
         multiple
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={selectedValues}
+        onChange={handleChange}
         input={<Input id="select-multiple" />}
         renderValue={() => {
           const selectedRoles = roles.filter((role) =>
-            value.includes(role.project_role_id)
+            selectedValues.includes(role.project_role_id)
           );
           return selectedRoles.map(({ project_role_name }) => (
             <Typography key={project_role_name}>{project_role_name}</Typography>
@@ -59,9 +78,8 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
             project_role_name,
             project_role_description,
           }) => {
-            const isChecked = value.includes(project_role_id);
+            const isChecked = selectedValues.includes(project_role_id);
             return (
-              // ListItemClasses
               <MenuItem key={project_role_id} value={project_role_id}>
                 <Checkbox checked={isChecked} color={"primary"} />
                 <ListItemText
