@@ -44,9 +44,6 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "2rem",
     height: "1.75rem",
   },
-  workTypeGroup: {
-    paddingLeft: theme.spacing(4),
-  },
 }));
 
 export default function ComponentListItem({
@@ -121,7 +118,7 @@ export default function ComponentListItem({
                 />
               </ListItem>
             )}
-            <ListItem className={classes.workTypeGroup}>
+            <ListItem className={classes.nested}>
               <Grid container spacing={0.5}>
                 {component.moped_proj_component_work_types.map((element) => (
                   <Grid item key={element.id}>
