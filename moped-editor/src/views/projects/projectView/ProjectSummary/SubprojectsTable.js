@@ -51,16 +51,20 @@ const useColumns = ({
       {
         headerName: "Status",
         field: "status",
-        editable: true,
+        editable: false,
         width: 200,
-        renderCell: ({ row }) => (
-          <ProjectStatusBadge
-            phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-            phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-            condensed
-          />
-        ),
-        renderEditCell: () => <div></div>,
+        renderCell: ({ row, id }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          return [
+            !isInEditMode && (
+              <ProjectStatusBadge
+                phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+                phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+                condensed
+              />
+            ),
+          ];
+        },
       },
       {
         headerName: "",
