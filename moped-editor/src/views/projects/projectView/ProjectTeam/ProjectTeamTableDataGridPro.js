@@ -112,12 +112,18 @@ const useColumns = ({
         </Link>
       </span>
     ),
-    valueGetter: (roles) => {
-      if (roles.length === 0) {
-        return '';
-      }
-      const roleNames = roles.map(role => role.moped_project_role.project_role_name);
-      return roleNames.join(', ');
+    valueGetter: (params) => {
+      const roles = params.value || [];
+      // Add null check and filter out deleted roles
+      if (!Array.isArray(roles)) return '';
+      
+      const activeRoles = roles.filter(role => !role.is_deleted);
+      if (activeRoles.length === 0) return '';
+      
+      return activeRoles
+        .map(role => role.moped_project_role?.project_role_name)
+        .filter(Boolean) // Remove any undefined values
+        .join(', ');
     },
     renderEditCell: (props) => {
       console.log('render edit cell', props);
@@ -271,25 +277,45 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
 
   const processRowUpdate = useCallback((updatedRow, originalRow) => {
     console.log('process row update', updatedRow, originalRow);
-    const updatedRowData = { ...updatedRow }; 
-    delete updatedRowData.__typename;
+    
+    // Get the original role IDs
+    const originalRoleIds = originalRow.moped_proj_personnel_roles
+      .filter(role => !role.is_deleted)
+      .map(role => role.id);
 
-    // tk: handle empty strings
-    // tk: handle if the row is new
+    // Get the new role IDs from the updated row
+    const newRoleIds = updatedRow.roleIds || [];
+
+    // Format the data according to the mutation's expected structure
+    const variables = {
+      id: updatedRow.project_personnel_id,
+      updatePersonnelObject: {
+        notes: updatedRow.notes,
+        user_id: updatedRow.moped_user?.user_id,
+      },
+      // IDs of roles to be deleted (roles that were in original but not in new)
+      deleteIds: originalRoleIds,
+      // New role assignments
+      addRolesObjects: newRoleIds.map(roleId => ({
+        project_role_id: roleId,
+        project_personnel_id: updatedRow.project_personnel_id
+      }))
+    };
 
     const hasRowChanged = !isEqual(updatedRow, originalRow);
     if (!hasRowChanged) {
       return Promise.resolve(updatedRow);
     } else {
-      console.log('updatedRowData', updatedRowData);
-      return updateProjectPersonnel({ variables: updatedRowData })
+      console.log('mutation variables:', variables);
+      return updateProjectPersonnel({ variables })
         .then(() => refetch())
         .then(() => updatedRow)
         .catch((error) => {
           console.error(error.message);
+          throw error; // Re-throw the error to be handled by handleProcessRowUpdateError
         });
     }
-  }, []);
+  }, [updateProjectPersonnel, refetch]);
 
   const handleProcessUpdateError = useCallback((error) => {
     console.log('process row update error', error);
@@ -313,10 +339,6 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
   });
 
   if (loading || !data) return <CircularProgress />;
-
-  console.log('dataGridColumns', dataGridColumns);
-  console.log('rows', rows);
-  console.log('data', data);
 
   return (
     <ApolloErrorHandler errors={error}>
