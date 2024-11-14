@@ -15,13 +15,23 @@ export const advancedSearchIsOrParamName = "isOr";
  * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
-const makeAdvancedSearchWhereFilters = (filters) =>
+const makeAdvancedSearchWhereFilters = (filters, searchParams) =>
   Object.keys(filters)
     .map((filter) => {
       let { field, value, operator } = filters[filter];
 
       // Use field name to get the filter config and GraphQL operator config for that field
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field];
+
+      if (!filterConfigForField) {
+        const savedViewId = searchParams.get("savedViewId");
+        throw new Error(
+          `Field ${field} in this url no longer exists. ${
+            savedViewId ? `(Saved view ID: ${savedViewId})` : ""
+          }`
+        );
+      }
+
       const { type } = filterConfigForField;
 
       // Use operator name to get the GraphQL operator config for that operator
@@ -110,7 +120,10 @@ export const useAdvancedSearch = () => {
   const [filters, setFilters] = useState(initialFilterState);
 
   const advancedSearchWhereString = useMemo(() => {
-    const advancedFilters = makeAdvancedSearchWhereFilters(filters);
+    const advancedFilters = makeAdvancedSearchWhereFilters(
+      filters,
+      searchParams
+    );
     if (advancedFilters.length === 0) return null;
 
     const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
