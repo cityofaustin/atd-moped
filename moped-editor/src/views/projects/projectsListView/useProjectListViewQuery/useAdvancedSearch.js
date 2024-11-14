@@ -5,6 +5,7 @@ import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommon
 import { parseGqlString } from "src/utils/gridTableHelpers";
 import { addDays, parseISO, format } from "date-fns";
 import { useMakeFilterState } from "src/components/GridTable/helpers";
+import { throwFallbackComponentError } from "src/utils/errorHandling";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
@@ -15,7 +16,7 @@ export const advancedSearchIsOrParamName = "isOr";
  * @param {Object} filters - Stores filters assigned random id and nests column, operator, and value
  * @return Object
  */
-const makeAdvancedSearchWhereFilters = (filters, searchParams) =>
+const makeAdvancedSearchWhereFilters = (filters) =>
   Object.keys(filters)
     .map((filter) => {
       let { field, value, operator } = filters[filter];
@@ -24,11 +25,8 @@ const makeAdvancedSearchWhereFilters = (filters, searchParams) =>
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field];
 
       if (!filterConfigForField) {
-        const savedViewId = searchParams.get("savedViewId");
-        throw new Error(
-          `Field ${field} in this url no longer exists. ${
-            savedViewId ? `(Saved view ID: ${savedViewId})` : ""
-          }`
+        throwFallbackComponentError(
+          `Field ${field} in this url no longer exists in the project list.`
         );
       }
 
