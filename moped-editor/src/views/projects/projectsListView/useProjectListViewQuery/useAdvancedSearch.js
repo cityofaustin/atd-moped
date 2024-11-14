@@ -118,10 +118,7 @@ export const useAdvancedSearch = () => {
   const [filters, setFilters] = useState(initialFilterState);
 
   const advancedSearchWhereString = useMemo(() => {
-    const advancedFilters = makeAdvancedSearchWhereFilters(
-      filters,
-      searchParams
-    );
+    const advancedFilters = makeAdvancedSearchWhereFilters(filters);
     if (advancedFilters.length === 0) return null;
 
     const bracketedFilters = advancedFilters.map((filter) => `{ ${filter} }`);
