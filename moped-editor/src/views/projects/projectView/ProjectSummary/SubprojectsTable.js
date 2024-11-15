@@ -257,7 +257,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}
-        onRowEditStart={(event) => {
+        onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}
       />
