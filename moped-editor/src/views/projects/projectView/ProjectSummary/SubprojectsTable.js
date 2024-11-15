@@ -41,7 +41,8 @@ const useColumns = ({
         width: 75,
         renderCell: ({ id, value }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          return [!isInEditMode && <div>{value}</div>]; // don't render anything if we are in edit mode
+          // don't render anything if we are in edit mode because it will display the temp id
+          return [!isInEditMode && <div>{value}</div>];
         },
       },
       {
@@ -61,7 +62,8 @@ const useColumns = ({
         renderCell: ({ row, id }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           return [
-            !isInEditMode && ( //don't render anything if we are in edit mode
+            // don't render anything if we are in edit mode
+            !isInEditMode && (
               <ProjectStatusBadge
                 phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
                 phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
@@ -256,6 +258,9 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}
+        onRowEditStart={(event) => {
+          event.defaultMuiPrevented = true; // disable editing rows
+        }}
       />
       <DeleteConfirmationModal
         type={"funding source"}
