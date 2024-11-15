@@ -5,9 +5,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
   const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
-
-  console.log(hasFocus, ref, ref.current, "Test");
+  // const ref = React.useRef(null);
 
   // React.useEffect(() => {
   //   if (hasFocus) {
