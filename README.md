@@ -14,7 +14,6 @@
 
 - Production: [https://mobility.austin.gov/moped/](https://mobility.austin.gov/moped/)
 - Staging: [https://moped.austinmobility.io/moped/](https://moped.austinmobility.io/moped/)
-- Test: [https://moped-test.austinmobility.io/moped/](https://moped-test.austinmobility.io/moped/)
 
 For resources and updates, see the [Mobility Project Database project index](https://github.com/cityofaustin/atd-data-tech/issues/307).
 
