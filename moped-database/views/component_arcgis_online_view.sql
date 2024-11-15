@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1729197757695_add_agol_geometry_type/up.sql
+-- Most recent migration: moped-database/migrations/1730931541883_update_agol_view_geometry/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -25,7 +25,7 @@ comp_geography AS (
     SELECT
         feature_union.component_id AS project_component_id,
         string_agg(DISTINCT feature_union.id::text, ', '::text) AS feature_ids,
-        st_asgeojson(st_union(array_agg(feature_union.geography)))::json AS geometry,
+        st_asgeojson(st_multi(st_union(array_agg(feature_union.geography))))::json AS geometry,
         st_asgeojson(st_union(array_agg(feature_union.line_geography)))::json AS line_geometry,
         string_agg(DISTINCT feature_union.signal_id::text, ', '::text) AS signal_ids,
         sum(feature_union.length_feet) AS length_feet_total
