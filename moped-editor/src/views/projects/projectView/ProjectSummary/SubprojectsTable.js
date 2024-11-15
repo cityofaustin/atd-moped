@@ -3,6 +3,7 @@ import { useQuery, useMutation } from "@apollo/client";
 
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import { CircularProgress } from "@mui/material";
 import { DeleteOutline as DeleteOutlineIcon } from "@mui/icons-material";
 import {
   DataGridPro,
@@ -38,6 +39,10 @@ const useColumns = ({
         field: "project_id",
         editable: false,
         width: 75,
+        renderCell: ({ id, value }) => {
+          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
+          return [!isInEditMode && <div>{value}</div>]; // don't render anything if we are in edit mode
+        },
       },
       {
         headerName: "Full name",
@@ -56,7 +61,7 @@ const useColumns = ({
         renderCell: ({ row, id }) => {
           const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
           return [
-            !isInEditMode && (
+            !isInEditMode && ( //don't render anything if we are in edit mode
               <ProjectStatusBadge
                 phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
                 phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
@@ -123,6 +128,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   const [updateProjectSubproject] = useMutation(UPDATE_PROJECT_SUBPROJECT);
   const [deleteProjectSubproject] = useMutation(DELETE_PROJECT_SUBPROJECT);
 
+  // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -136,7 +142,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   }, [data]);
 
   if (error) console.error(error);
-  if (loading || !data);
 
   const handleAddSubprojectClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
@@ -206,17 +211,22 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
 
   const processRowUpdate = (updatedRow) => {
     const childProjectId = updatedRow?.project_name_full?.project_id;
-    return updateProjectSubproject({
-      variables: {
-        parentProjectId: projectId,
-        childProjectId: childProjectId,
-      },
-    })
-      .then(() => {
-        refetch();
-        refetchSummaryData(); // Refresh subprojects in summary map
+    return (
+      updateProjectSubproject({
+        variables: {
+          parentProjectId: projectId,
+          childProjectId: childProjectId,
+        },
       })
-      .catch((error) => console.error(error));
+        .then(() => {
+          refetch();
+          refetchSummaryData(); // Refresh subprojects in summary map
+        })
+        // from the data grid docs:
+        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+        .then(() => updatedRow)
+        .catch((error) => console.error(error))
+    );
   };
 
   const dataGridColumns = useColumns({
@@ -226,6 +236,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     handleSaveClick,
     handleCancelClick,
   });
+
+  if (loading || !data) return <CircularProgress />;
 
   return (
     <ApolloErrorHandler errors={error}>
