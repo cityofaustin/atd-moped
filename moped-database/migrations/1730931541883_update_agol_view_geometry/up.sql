@@ -1,3 +1,4 @@
+-- SELECT * FROM moped_project LIMIT 1;
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
 DROP VIEW IF EXISTS component_arcgis_online_view;
 
@@ -142,9 +143,7 @@ earliest_active_or_construction_phase_date AS (
     LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
     WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
     GROUP BY mpp.project_id
-),
-
-project_development_status_date AS (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result)
+)
 
 SELECT
     mpc.project_id,
@@ -245,5 +244,17 @@ LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
 LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
 LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL project_development_status_date ON true
+LEFT JOIN LATERAL ( SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, COALESCE(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, COALESCE(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    st_geometrytype(dump.geom) AS geometry_type,
+    dump.path[1] AS point_index,
+    component_arcgis_online_view.geometry AS original_geometry,
+    st_asgeojson(dump.geom) AS exploded_geometry,
+    component_arcgis_online_view.project_updated_at
+FROM component_arcgis_online_view,
+    LATERAL st_dump(st_geomfromgeojson(component_arcgis_online_view.geometry)) dump (path, geom)
+WHERE st_geometrytype(st_geomfromgeojson(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;
