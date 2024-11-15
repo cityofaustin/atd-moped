@@ -39,11 +39,9 @@ const useColumns = ({
         field: "project_id",
         editable: false,
         width: 75,
-        renderCell: ({ id, value }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          // don't render anything if we are in edit mode because it will display the temp id
-          return [!isInEditMode && <div>{value}</div>];
-        },
+        renderCell: ({ row }) =>
+          // prevents temp id from rendering when in edit mode
+          row.project_name_full && row.project_id,
       },
       {
         headerName: "Full name",
@@ -59,19 +57,15 @@ const useColumns = ({
         field: "status",
         editable: false,
         width: 200,
-        renderCell: ({ row, id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          return [
-            // don't render anything if we are in edit mode
-            !isInEditMode && (
-              <ProjectStatusBadge
-                phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
-                phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
-                condensed
-              />
-            ),
-          ];
-        },
+        renderCell: ({ row }) =>
+          // only render a badge once we exit edit mode and there is a phase
+          row.moped_proj_phases && (
+            <ProjectStatusBadge
+              phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
+              phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
+              condensed
+            />
+          ),
       },
       {
         headerName: "",
@@ -213,6 +207,11 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
 
   const processRowUpdate = (updatedRow) => {
     const childProjectId = updatedRow?.project_name_full?.project_id;
+
+    delete updatedRow.isNew;
+    updatedRow.id = null;
+    updatedRow.project_id = null;
+
     return (
       updateProjectSubproject({
         variables: {
