@@ -26,7 +26,7 @@ comp_geography AS (
         feature_union.component_id AS project_component_id,
         string_agg(DISTINCT feature_union.id::text, ', '::text) AS feature_ids,
         st_asgeojson(st_multi(st_union(array_agg(feature_union.geography))))::json AS geometry,
-        st_asgeojson(st_union(array_agg(feature_union.line_geography)))::json AS line_geometry,
+        st_asgeojson(st_multi(st_union(array_agg(feature_union.line_geography))))::json AS line_geometry,
         string_agg(DISTINCT feature_union.signal_id::text, ', '::text) AS signal_ids,
         sum(feature_union.length_feet) AS length_feet_total
     FROM (
