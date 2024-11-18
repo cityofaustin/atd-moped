@@ -54,9 +54,11 @@ const useColumns = ({
       },
       {
         headerName: "Status",
-        field: "status",
+        field: "moped_proj_phases",
         editable: false,
         width: 200,
+        // valueGetter allows us to derive from a nested field which will be used for sorting/filtering
+        valueGetter: (value) => value?.[0]?.moped_phase?.phase_name,
         renderCell: ({ row }) =>
           // only render a badge once we exit edit mode and there is a phase
           row.moped_proj_phases && (
