@@ -67,7 +67,7 @@ const ButtonDropdownMenu = ({
     setAnchorEl(null);
   };
 
-  const useActionDialog = () => {
+  const handleActionDialog = () => {
     openActionDialog(true)
     setAnchorEl(null)
   }
@@ -106,7 +106,7 @@ const ButtonDropdownMenu = ({
           </ListItemIcon>
           {firstOptionText}
         </MenuItem>
-        <MenuItem onClick={useActionDialog}>
+        <MenuItem onClick={handleActionDialog}>
           <ListItemIcon>
             {secondOptionIcon ? (
               <PlaylistAddIcon fontSize="small" />
