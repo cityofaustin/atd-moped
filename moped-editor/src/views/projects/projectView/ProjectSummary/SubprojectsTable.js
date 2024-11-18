@@ -267,7 +267,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         }}
       />
       <DeleteConfirmationModal
-        type={"funding source"}
+        type={"subproject"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
