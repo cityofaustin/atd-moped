@@ -3,16 +3,24 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { FormControl, FormHelperText, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
+/** Component for subproject lookup dropdown
+ * @param {Integer} id - Data Grid row id (same as project id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Object} data - data object with subproject options
+ * @return {JSX.Element}
+ */
+
 const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
   const apiRef = useGridApiContext();
-  // const ref = React.useRef(null);
+  const ref = React.useRef(null);
 
-  // React.useEffect(() => {
-  //   if (hasFocus) {
-  //     ref.current.focus();
-  //     console.log("we are focusing");
-  //   }
-  // }, [hasFocus]);
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
