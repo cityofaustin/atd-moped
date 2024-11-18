@@ -1,4 +1,4 @@
--- add bike share station component type (point) to moped_components table if it doesn't already exist
+-- add Signage - All Way Stop type (point) to moped_components table if it doesn't already exist
 INSERT INTO moped_components (component_name, component_subtype, line_representation, feature_layer_id)
 SELECT
     'Signage',
@@ -12,7 +12,7 @@ WHERE NOT EXISTS (
         WHERE (component_name, component_subtype, line_representation, feature_layer_id) = ('Signage', 'All Way Stop', FALSE, 5)
     );
 
--- insert new, mod, and replacement work types for bike share station in moped_component_work_types table
+-- insert new work type for Signage - All Way Stop in moped_component_work_types table
 WITH inserts_todo AS (
     SELECT
         mwt.id AS work_type_id,
