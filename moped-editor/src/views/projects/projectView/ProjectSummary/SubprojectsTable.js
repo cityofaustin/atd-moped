@@ -62,12 +62,14 @@ const useColumns = ({
           value?.[0]?.moped_phase?.phase_name || "Unknown",
         renderCell: ({ row }) =>
           // only render a badge once we exit edit mode and there is a phase
-          row.moped_proj_phases && (
+          row.moped_proj_phases ? (
             <ProjectStatusBadge
               phaseName={row?.moped_proj_phases?.[0]?.moped_phase?.phase_name}
               phaseKey={row?.moped_proj_phases?.[0]?.moped_phase?.phase_key}
               condensed
             />
+          ) : (
+            <div />
           ),
       },
       {
