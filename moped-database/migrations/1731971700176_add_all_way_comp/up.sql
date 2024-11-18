@@ -2,14 +2,14 @@
 INSERT INTO moped_components (component_name, component_subtype, line_representation, feature_layer_id)
 SELECT
     'Signage',
-    'All Way',
+    'All Way Stop',
     FALSE,
     5
 WHERE NOT EXISTS (
         SELECT *
         FROM
             moped_components
-        WHERE (component_name, component_subtype, line_representation, feature_layer_id) = ('Signage', 'All Way', FALSE, 5)
+        WHERE (component_name, component_subtype, line_representation, feature_layer_id) = ('Signage', 'All Way Stop', FALSE, 5)
     );
 
 -- insert new, mod, and replacement work types for bike share station in moped_component_work_types table
@@ -25,7 +25,7 @@ WITH inserts_todo AS (
             'New'
         )
         AND mc.component_name = 'Signage'
-        AND mc.component_subtype = 'All Way'
+        AND mc.component_subtype = 'All Way Stop'
 )
 
 INSERT INTO moped_component_work_types (work_type_id, component_id)
