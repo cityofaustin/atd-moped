@@ -10,8 +10,9 @@ import {
   GridRowModes,
   GridActionsCellItem,
 } from "@mui/x-data-grid-pro";
-import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { v4 as uuidv4 } from "uuid";
+
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
@@ -136,22 +137,27 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
+  // sets the data grid row data when query data is fetched
   useEffect(() => {
     if (data && data.subprojects.length > 0) {
-      setRows(data.subprojects);
+      const rowsWithId = data.subprojects.map((row) => {
+        return { ...row, id: row.project_id };
+      });
+      setRows(rowsWithId);
     }
   }, [data]);
 
   if (error) console.error(error);
 
+  // adds a blank row to the table and updates the row modes model
   const handleAddSubprojectClick = () => {
     // use a random id to keep track of row in row modes model and data grid rows
     // before the record is added to the db
     const id = uuidv4();
     setRows((oldRows) => [
       {
-        id,
-        project_id: id,
+        id: id,
+        project_id: null,
         project_name_full: null,
         status: null,
         isNew: true,
@@ -164,6 +170,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     }));
   };
 
+  // handles saving the new row by clicking the check icon
   const handleSaveClick = useCallback(
     (id) => () => {
       setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
@@ -171,17 +178,22 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     [rowModesModel]
   );
 
-  const handleCancelClick = (id) => () => {
-    setRowModesModel({
-      ...rowModesModel,
-      [id]: { mode: GridRowModes.View, ignoreModifications: true },
-    });
-    const editedRow = rows.find((row) => row.project_id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
-  };
+  // handles canceling adding a new row by clicking the X icon
+  const handleCancelClick = useCallback(
+    (id) => () => {
+      setRowModesModel({
+        ...rowModesModel,
+        [id]: { mode: GridRowModes.View, ignoreModifications: true },
+      });
+      const editedRow = rows.find((row) => row.id === id);
+      if (editedRow.isNew) {
+        setRows(rows.filter((row) => row.id !== id));
+      }
+    },
+    [rowModesModel, rows]
+  );
 
+  // open the delete confirmation modal
   const handleDeleteOpen = useCallback((id) => {
     setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
@@ -210,30 +222,36 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     setRowModesModel(newRowModesModel);
   };
 
-  const processRowUpdate = (updatedRow) => {
-    const childProjectId = updatedRow?.project_name_full?.project_id;
-
-    delete updatedRow.isNew;
-    updatedRow.id = null;
-    updatedRow.project_id = null;
-
-    return (
-      updateProjectSubproject({
-        variables: {
-          parentProjectId: projectId,
-          childProjectId: childProjectId,
-        },
-      })
-        .then(() => {
-          refetch();
-          refetchSummaryData(); // Refresh subprojects in summary map
-        })
-        // from the data grid docs:
-        // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-        .then(() => updatedRow)
-        .catch((error) => console.error(error))
-    );
+  const handleProcessUpdateError = (error) => {
+    console.error(error.message);
   };
+
+  // handles insert mutation triggered by row mode switching from edit to view
+  const processRowUpdate = useCallback(
+    (updatedRow) => {
+      const childProjectId = updatedRow?.project_name_full?.project_id;
+
+      delete updatedRow.isNew;
+
+      return (
+        updateProjectSubproject({
+          variables: {
+            parentProjectId: projectId,
+            childProjectId: childProjectId,
+          },
+        })
+          .then(() => {
+            refetch();
+            refetchSummaryData(); // Refresh subprojects in summary map
+          })
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
+          .catch((error) => console.error(error))
+      );
+    },
+    [projectId, refetch, refetchSummaryData, updateProjectSubproject]
+  );
 
   const dataGridColumns = useColumns({
     data,
@@ -252,13 +270,14 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         columns={dataGridColumns}
         rows={rows}
         autoHeight
-        getRowId={(row) => row.project_id}
+        getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         slots={{ toolbar: SubprojectsToolbar }}
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={handleProcessUpdateError}
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}
