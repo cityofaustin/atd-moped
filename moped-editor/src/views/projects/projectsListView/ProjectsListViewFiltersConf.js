@@ -571,6 +571,14 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     label: "Council districts",
     placeholder: "District",
     type: "array",
+    lookup: {
+      table_name: "layer_council_district",
+      getOptionLabel: (option) => `${option.council_district}`,
+      operators: [
+        "council_districts_array_contains",
+        "council_districts_array_is",
+      ],
+    },
     defaultOperator: "council_districts_array_contains",
     operators: [
       "council_districts_array_contains",

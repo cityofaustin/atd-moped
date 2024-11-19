@@ -992,6 +992,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       component_id
       component_name_full
     }
+    layer_council_district {
+      id
+      council_district
+    }
   }
 `;
 
