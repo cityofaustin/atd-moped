@@ -573,7 +573,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     type: "array",
     lookup: {
       table_name: "layer_council_district",
-      getOptionLabel: (option) => `${option.council_district}`,
+      getOptionLabel: (option) => String(option.council_district),
       operators: [
         "council_districts_array_contains",
         "council_districts_array_is",
