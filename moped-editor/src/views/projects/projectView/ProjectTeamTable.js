@@ -365,14 +365,16 @@ const ProjectTeamTable = ({ projectId }) => {
               newData,
               oldData,
             });
-            return updateProjectPersonnel({
-              variables: {
+            const variables = {
                 updatePersonnelObject: payload,
                 id: project_personnel_id,
-                deleteIds: roleIdsToDelete,
-                addRolesObjects: rolesToAdd,
-              },
-            }).then(() => refetch());
+              deleteIds: roleIdsToDelete,
+              addRolesObjects: rolesToAdd,
+            }
+
+            console.log('variables', variables);
+
+            return updateProjectPersonnel({ variables }).then(() => refetch());
           },
           onRowDelete: (oldData) => {
             const id = oldData.project_personnel_id;

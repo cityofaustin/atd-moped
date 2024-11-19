@@ -31,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   const [selectedValues, setSelectedValues] = React.useState(Array.isArray(value) ? value : []);
+  console.log('selectedValues', selectedValues);
   const classes = useStyles();
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
-import { Box, Icon, Link, CircularProgress, TextField, Autocomplete } from '@mui/material';
+import { Box, Icon, Link, CircularProgress, Typography, TextField } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
 import { DataGridPro, GridRowModes, GridActionsCellItem, useGridApiRef } from '@mui/x-data-grid-pro';
@@ -112,21 +112,20 @@ const useColumns = ({
         </Link>
       </span>
     ),
-    valueGetter: (params) => {
-      const roles = params.value || [];
-      // Add null check and filter out deleted roles
-      if (!Array.isArray(roles)) return '';
+    renderCell: (params) => {
+      // Filter out deleted roles and map to Typography components
+      const roleElements = params.row.moped_proj_personnel_roles
+        .filter(role => !role.is_deleted)
+        .map(role => (
+          <Typography key={role.moped_project_role?.project_role_id}>
+            {role.moped_project_role?.project_role_name}
+          </Typography>
+        ));
       
-      const activeRoles = roles.filter(role => !role.is_deleted);
-      if (activeRoles.length === 0) return '';
-      
-      return activeRoles
-        .map(role => role.moped_project_role?.project_role_name)
-        .filter(Boolean) // Remove any undefined values
-        .join(', ');
+      return <Box>{roleElements}</Box>;
     },
     renderEditCell: (props) => {
-      console.log('render edit cell', props);
+      console.log('renderEditCell value', props.row);
       return (
         <ProjectTeamRoleMultiselect
           {...props}
@@ -276,48 +275,90 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
   }, [deleteTeamMemberId]);
 
   const processRowUpdate = useCallback((updatedRow, originalRow) => {
-    console.log('process row update', updatedRow, originalRow);
+    console.log('process row update:', 'updatedRow', updatedRow, 'originalRow', originalRow);
     
+    // Ensure project_personnel_id is an integer
+    const personnelId = parseInt(updatedRow.project_personnel_id);
+    console.log('personnelId', personnelId);
+    if (!personnelId) {
+      console.error('Invalid project_personnel_id:', updatedRow.project_personnel_id);
+      throw new Error('Invalid project_personnel_id');
+    }
+
+    // Extract user_id properly
+    let userId;
+    if (updatedRow.moped_user?.user_id) {
+      // Case: New selection from autocomplete
+      userId = parseInt(updatedRow.moped_user.user_id);
+    } else if (originalRow.moped_user?.user_id) {
+      // Case: No change to user
+      userId = parseInt(originalRow.moped_user.user_id);
+    } else {
+      console.error('Invalid user data:', updatedRow.moped_user);
+      throw new Error('Invalid user data');
+    }
+    console.log('userId', userId);
+
+    // Check if the roles have changed
+    const haveRolesChanged = !isEqual(updatedRow.moped_proj_personnel_roles, originalRow.moped_proj_personnel_roles);
+    console.log('haveRolesChanged', haveRolesChanged);
+
+    let rolesToAdd = [];  
+    let originalRoleIds = [];
+    let newRoleIds = [];
+
+    if (haveRolesChanged) {
     // Get the original role IDs
-    const originalRoleIds = originalRow.moped_proj_personnel_roles
-      .filter(role => !role.is_deleted)
-      .map(role => role.id);
+      const originalRoleIds = (originalRow.moped_proj_personnel_roles || [])
+        .filter(role => !role.is_deleted)
+        .map(role => role.id); // Get the junction table IDs for deletion
+      console.log('originalRoleIds', originalRoleIds);
 
-    // Get the new role IDs from the updated row
-    const newRoleIds = updatedRow.roleIds || [];
+      // Get the new role IDs from roleIds
+      newRoleIds = (updatedRow.moped_proj_personnel_roles || []);
+      console.log('newRoleIds', newRoleIds);
 
-    // Extract user_id properly - handle both string and object cases
-    const userId = typeof updatedRow.moped_user === 'string' 
-      ? parseInt(updatedRow.moped_user) 
-      : updatedRow.moped_user?.user_id;
+      // Get the existing role IDs for comparison
+      const existingRoleIds = originalRow.moped_proj_personnel_roles
+        .map(role => role.project_role_id);
+      console.log('existingRoleIds', existingRoleIds);
 
-    // Format the data according to the mutation's expected structure
+      // Only add roles that don't already exist
+      rolesToAdd = newRoleIds.filter(id => !existingRoleIds.includes(id));
+      console.log('rolesToAdd', rolesToAdd);
+    }
+
+    // get notes
+    const notes = updatedRow.notes;
+    console.log('notes', notes);
+
     const variables = {
-      id: updatedRow.project_personnel_id,
+      id: personnelId,
       updatePersonnelObject: {
         notes: updatedRow.notes,
-        user_id: userId,
+        user_id: userId
       },
       deleteIds: originalRoleIds,
       addRolesObjects: newRoleIds.map(roleId => ({
         project_role_id: roleId,
-        project_personnel_id: updatedRow.project_personnel_id
+        project_personnel_id: personnelId
       }))
     };
+
+    console.log('Mutation variables:', variables);
 
     const hasRowChanged = !isEqual(updatedRow, originalRow);
     if (!hasRowChanged) {
       return Promise.resolve(updatedRow);
-    } else {
-      console.log('mutation variables:', variables);
-      return updateProjectPersonnel({ variables })
-        .then(() => refetch())
-        .then(() => updatedRow)
-        .catch((error) => {
-          console.error(error.message);
-          throw error; // Re-throw the error to be handled by handleProcessRowUpdateError
-        });
     }
+
+    return updateProjectPersonnel({ variables })
+      .then(() => refetch())
+      .then(() => updatedRow)
+      .catch((error) => {
+        console.error('Mutation error:', error);
+        throw error;
+      });
   }, [updateProjectPersonnel, refetch]);
 
   const handleProcessUpdateError = useCallback((error) => {
@@ -325,7 +366,7 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
   }, []);
 
   const handleTabKeyDown = useCallback((params, event) => {
-    console.log('tab key down', params, event);
+    // console.log('tab key down', params, event);
   }, []);
 
 
