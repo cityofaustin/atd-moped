@@ -129,7 +129,7 @@ const useColumns = ({
       return (
         <ProjectTeamRoleMultiselect
           {...props}
-          value={props.row.roleIds || []}
+          value={props.row.moped_proj_personnel_roles || []}
           roles={data.moped_project_roles}
         />
       );
