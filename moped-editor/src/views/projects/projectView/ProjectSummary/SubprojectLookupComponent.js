@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { FormControl, FormHelperText, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
@@ -14,9 +14,9 @@ import Autocomplete from "@mui/material/Autocomplete";
 
 const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
   const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
+  const ref = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (hasFocus) {
       ref.current.focus();
     }
@@ -41,7 +41,9 @@ const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
         }
         value={value || null}
         onChange={handleChange}
-        renderInput={(params) => <TextField variant="standard" {...params} />}
+        renderInput={(params) => (
+          <TextField variant="standard" {...params} inputRef={ref} />
+        )}
       />
       <FormHelperText>Required</FormHelperText>
     </FormControl>
