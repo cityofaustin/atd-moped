@@ -125,7 +125,7 @@ const useColumns = ({
       return <Box>{roleElements}</Box>;
     },
     renderEditCell: (props) => {
-      console.log('renderEditCell value', props.row);
+      console.log('renderEditCell props value', props);
       return (
         <ProjectTeamRoleMultiselect
           {...props}
@@ -238,6 +238,82 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
 
   const teamNameLookup = useTeamNameLookup(data);
   const roleNameLookup = useRoleNameLookup(data);
+
+  /**
+ * Construct a moped_project_personnel object that can be passed to an insert mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
+ */
+const getNewPersonnelPayload = ({
+  newData: {
+    moped_user: { user_id },
+    notes,
+    roleIds,
+  },
+  projectId: project_id,
+}) => {
+  const payload = { notes, project_id, user_id };
+  const personnelRoles = roleIds.map((roleId) => ({
+    project_role_id: roleId,
+  }));
+  payload["moped_proj_personnel_roles"] = { data: personnelRoles };
+  return payload;
+};
+
+/**
+ * Construct a moped_project_personnel object that can be passed to an update mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Ojbect} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ *  is handled separately
+ */
+const getEditPersonnelPayload = (newData) => {
+  // and the new values
+  console.log('getEditPersonnelPayload', newData);
+  const {
+    moped_user: { user_id },
+    notes,
+  } = newData;
+  return { user_id, notes };
+};
+
+/**
+ * Constructs payload objects for adding and removing moped_proj_personnel_roles
+ * @param {Object} newData - a table row object with the new values
+ * @param {Object} oldData - a table row object with the old values
+ * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
+ *  personnel role objects to delete
+ */
+const getEditRolesPayload = (newData, oldData) => {
+  console.log('getEditRolesPayload', newData, oldData);
+
+  const { project_personnel_id } = oldData;
+
+  // get an array of moped_proj_personnel_roles IDs to delete
+  const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
+    .filter((projRole) => {
+      const roleId = projRole.moped_project_role.project_role_id;
+      return !newData.roleIds.includes(roleId);
+    })
+    .map((projRole) => projRole.id);
+
+  // contruct an array of new moped_proj_personnel_roles objects
+  const existingRoleIds = oldData.moped_proj_personnel_roles.map(
+    ({ moped_project_role }) => moped_project_role.project_role_id
+  );
+  const roleIdsToAdd = newData.roleIds.filter(
+    (roleId) => !existingRoleIds.includes(roleId)
+  );
+  const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
+    project_personnel_id,
+    project_role_id: newRoleId,
+  }));
+  console.log('rolesToAddPayload', rolesToAddPayload);
+  console.log('projRoleIdsToDelete', projRoleIdsToDelete);
+  return [rolesToAddPayload, projRoleIdsToDelete];
+};
+
   const onClickAddTeamMember = () => {
     console.log('add team member'); 
     return setEditTeamMember({ project_id: projectId });
@@ -299,34 +375,22 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     }
     console.log('userId', userId);
 
+    // Update roleIds to be in sync with moped_proj_personnel_roles
+    console.log('updatedRow.moped_proj_personnel_roles', updatedRow.moped_proj_personnel_roles);
+    updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
+      (role) => role.project_role_id
+    );
+    console.log('Updated roleIds:', updatedRow.roleIds);
+
     // Check if the roles have changed
     const haveRolesChanged = !isEqual(updatedRow.moped_proj_personnel_roles, originalRow.moped_proj_personnel_roles);
     console.log('haveRolesChanged', haveRolesChanged);
 
-    let rolesToAdd = [];  
-    let originalRoleIds = [];
-    let newRoleIds = [];
+    const payload = getEditPersonnelPayload(updatedRow);
+    const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload(updatedRow, originalRow);
 
-    if (haveRolesChanged) {
-    // Get the original role IDs
-      const originalRoleIds = (originalRow.moped_proj_personnel_roles || [])
-        .filter(role => !role.is_deleted)
-        .map(role => role.id); // Get the junction table IDs for deletion
-      console.log('originalRoleIds', originalRoleIds);
-
-      // Get the new role IDs from roleIds
-      newRoleIds = (updatedRow.moped_proj_personnel_roles || []);
-      console.log('newRoleIds', newRoleIds);
-
-      // Get the existing role IDs for comparison
-      const existingRoleIds = originalRow.moped_proj_personnel_roles
-        .map(role => role.project_role_id);
-      console.log('existingRoleIds', existingRoleIds);
-
-      // Only add roles that don't already exist
-      rolesToAdd = newRoleIds.filter(id => !existingRoleIds.includes(id));
-      console.log('rolesToAdd', rolesToAdd);
-    }
+    console.log('rolesToAdd', rolesToAdd);
+    console.log('roleIdsToDelete', roleIdsToDelete);
 
     // get notes
     const notes = updatedRow.notes;
@@ -334,15 +398,9 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
 
     const variables = {
       id: personnelId,
-      updatePersonnelObject: {
-        notes: updatedRow.notes,
-        user_id: userId
-      },
-      deleteIds: originalRoleIds,
-      addRolesObjects: newRoleIds.map(roleId => ({
-        project_role_id: roleId,
-        project_personnel_id: personnelId
-      }))
+      updatePersonnelObject: payload,
+      deleteIds: roleIdsToDelete,
+      addRolesObjects: rolesToAdd
     };
 
     console.log('Mutation variables:', variables);

@@ -30,20 +30,18 @@ const useStyles = makeStyles((theme) => ({
 
 
 const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
-  console.log('value', value);
   const rolesArray = value.map((role) => role.project_role_id);
-  console.log('rolesArray', rolesArray);
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
-
-  
 
   const classes = useStyles();
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
   const handleChange = (event) => {
-    const newValue = event.target.value;
-    setSelectedValues(newValue);
+    const valueIds = event.target.value;
+    const newValue = roles.filter((role) => valueIds.includes(role.project_role_id));
+    const rolesArray = newValue.map((role) => role.project_role_id);
+    setSelectedValues(rolesArray);
     apiRef.current.setEditCellValue({
       id,
       field,
