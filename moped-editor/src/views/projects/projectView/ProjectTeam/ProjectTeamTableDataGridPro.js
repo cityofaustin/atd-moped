@@ -81,14 +81,17 @@ const useColumns = ({
     valueGetter: (user) => {
       return user ? `${user.first_name} ${user.last_name}` : '';
     },
-    renderEditCell: (props) => (
+    renderEditCell: (props) => {
+      return(
       <TeamAutocompleteComponent
         {...props}
         name={"user"}
+        value={props.row.moped_user}
         nameLookup={teamNameLookup}
-      />
-    )
-    },
+        />
+      );
+    }
+  },
   { 
     headerName: 'Workgroup', 
     field: 'moped_workgroup',
@@ -125,7 +128,6 @@ const useColumns = ({
       return <Box>{roleElements}</Box>;
     },
     renderEditCell: (props) => {
-      console.log('renderEditCell props value', props);
       return (
         <ProjectTeamRoleMultiselect
           {...props}
@@ -350,12 +352,12 @@ const getEditRolesPayload = (newData, oldData) => {
     setDeleteTeamMemberId(id);
   }, [deleteTeamMemberId]);
 
-  const processRowUpdate = useCallback((updatedRow, originalRow) => {
-    console.log('process row update:', 'updatedRow', updatedRow, 'originalRow', originalRow);
+  const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
+    console.log('process row update:', 'updatedRow', updatedRow, 'originalRow', originalRow, 'params', params);
     
     // Ensure project_personnel_id is an integer
     const personnelId = parseInt(updatedRow.project_personnel_id);
-    console.log('personnelId', personnelId);
+
     if (!personnelId) {
       console.error('Invalid project_personnel_id:', updatedRow.project_personnel_id);
       throw new Error('Invalid project_personnel_id');
@@ -363,34 +365,39 @@ const getEditRolesPayload = (newData, oldData) => {
 
     // Extract user_id properly
     let userId;
-    if (updatedRow.moped_user?.user_id) {
-      // Case: New selection from autocomplete
-      userId = parseInt(updatedRow.moped_user.user_id);
-    } else if (originalRow.moped_user?.user_id) {
-      // Case: No change to user
-      userId = parseInt(originalRow.moped_user.user_id);
+    const userObject = data.moped_users.find(user => {
+      if (typeof updatedRow.moped_user === 'string') {
+        return `${user.first_name} ${user.last_name}` === updatedRow.moped_user;
+      } else {
+        return user.user_id === updatedRow.moped_user.user_id;
+      }
+    });
+
+    if (userObject) {
+      userId = userObject.user_id;
+      updatedRow.moped_user = userObject; // Update with full user object
     } else {
       console.error('Invalid user data:', updatedRow.moped_user);
       throw new Error('Invalid user data');
     }
-    console.log('userId', userId);
+
 
     // Update roleIds to be in sync with moped_proj_personnel_roles
-    console.log('updatedRow.moped_proj_personnel_roles', updatedRow.moped_proj_personnel_roles);
     updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
       (role) => role.project_role_id
     );
-    console.log('Updated roleIds:', updatedRow.roleIds);
 
-    // Check if the roles have changed
-    const haveRolesChanged = !isEqual(updatedRow.moped_proj_personnel_roles, originalRow.moped_proj_personnel_roles);
-    console.log('haveRolesChanged', haveRolesChanged);
+    // // Check if the roles have changed
+    // const haveRolesChanged = !isEqual(updatedRow.moped_proj_personnel_roles, originalRow.moped_proj_personnel_roles);
 
     const payload = getEditPersonnelPayload(updatedRow);
     const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload(updatedRow, originalRow);
 
-    console.log('rolesToAdd', rolesToAdd);
-    console.log('roleIdsToDelete', roleIdsToDelete);
+    // get update name
+    payload.user_id = userId;
+
+    const fullMopedUserObject = data.moped_users.find(user => user.user_id === userId);
+    updatedRow.moped_user = fullMopedUserObject;
 
     // get notes
     const notes = updatedRow.notes;
@@ -456,7 +463,7 @@ const getEditRolesPayload = (newData, oldData) => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        processRowUpdate={processRowUpdate}
+        processRowUpdate={(updatedRow, originalRow, params) => processRowUpdate(updatedRow, originalRow, params, data)}
         onProcessRowUpdateError={handleProcessUpdateError}
         disableRowSelectionOnClick
         toolbar

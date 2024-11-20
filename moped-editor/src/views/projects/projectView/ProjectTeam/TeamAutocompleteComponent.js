@@ -26,29 +26,25 @@ const TeamAutocompleteComponent = ({
   }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
+    const personnelValue = nameLookup[newValue];
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: newValue ?? null,  
+      value: personnelValue ?? null,  
     });
   };
 
   const options = Object.keys(nameLookup);
 
   const isOptionEqualToValue = (option, value) => {
-    if (option === value) {
+
+    const keyForValue = Object.keys(nameLookup).find(key => nameLookup[key] === value);
+
+    if (option === keyForValue) {
       return true;
+    } else {
+      return false;
     }
-    
-    if (nameLookup[option] === value) {
-      return true;
-    }
-    
-    if (String(option) === String(value)) {
-      return true;
-    }
-    
-    return false;
   };
 
   const getOptionLabel = (option) => {
@@ -72,12 +68,7 @@ const TeamAutocompleteComponent = ({
         value={value}
         sx={{ paddingTop: "8px" }}
         onChange={(event, newValue) => {
-          handleChange(event, newValue ? {
-            user_id: newValue.user_id,
-            first_name: newValue.first_name,
-            last_name: newValue.last_name,
-            // Include other necessary user fields
-          } : null);
+          handleChange(event, newValue);
         }}
         renderInput={(params) => (
           <TextField
