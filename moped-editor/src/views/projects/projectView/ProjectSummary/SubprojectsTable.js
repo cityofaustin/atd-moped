@@ -140,14 +140,16 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   // sets the data grid row data when query data is fetched
   useEffect(() => {
     if (data && data.subprojects.length > 0) {
-      const rowsWithId = data.subprojects.map((row) => {
-        return { ...row, id: row.project_id };
-      });
-      setRows(rowsWithId);
+      // const rowsWithId = data.subprojects.map((row) => {
+      //   return { ...row, id: row.project_id };
+      // });
+      setRows(data.subprojects);
     }
   }, [data]);
 
   if (error) console.error(error);
+
+  console.log(rows, "rows");
 
   // adds a blank row to the table and updates the row modes model
   const handleAddSubprojectClick = () => {
@@ -156,8 +158,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     const id = uuidv4();
     setRows((oldRows) => [
       {
-        id: id,
-        project_id: null,
+        id,
+        project_id: id,
         project_name_full: null,
         status: null,
         isNew: true,
@@ -232,6 +234,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       const childProjectId = updatedRow?.project_name_full?.project_id;
 
       delete updatedRow.isNew;
+      // updatedRow.id = null;
+      // updatedRow.project_id = null;
 
       return (
         updateProjectSubproject({
@@ -270,7 +274,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         columns={dataGridColumns}
         rows={rows}
         autoHeight
-        getRowId={(row) => row.id}
+        getRowId={(row) => row.project_id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         slots={{ toolbar: SubprojectsToolbar }}
