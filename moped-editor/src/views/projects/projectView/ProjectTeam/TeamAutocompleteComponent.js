@@ -37,10 +37,16 @@ const TeamAutocompleteComponent = ({
   const options = Object.keys(nameLookup);
 
   const isOptionEqualToValue = (option, value) => {
+    // if the value is a number, use the idFromValue nameLookup to find if option is equal to Value
+    // If the value is an object, use the user_id to find if option is equal to Value
+    let idFromValue;
+    if (typeof value === 'string') {
+      idFromValue = Object.keys(nameLookup).find(key => nameLookup[key] === value);
+    } else if (typeof value === 'object') {
+      idFromValue = value.user_id
+    }
 
-    const keyForValue = Object.keys(nameLookup).find(key => nameLookup[key] === value);
-
-    if (option === keyForValue) {
+    if (Number(option) === Number(idFromValue)) {
       return true;
     } else {
       return false;
