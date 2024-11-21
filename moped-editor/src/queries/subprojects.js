@@ -31,6 +31,12 @@ export const SUBPROJECT_QUERY = gql`
     ) {
       project_id
       project_name_full
+      moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
+        moped_phase {
+          phase_name
+          phase_key
+        }
+      }
     }
   }
 `;
