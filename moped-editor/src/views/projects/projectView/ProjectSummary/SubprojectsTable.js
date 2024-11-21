@@ -18,6 +18,7 @@ import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import SubprojectLookupComponent from "./SubprojectLookupComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import RenderFieldLink from "src/components/RenderFieldLink";
 
 import {
   SUBPROJECT_QUERY,
@@ -46,6 +47,12 @@ const useColumns = ({
         field: "project_name_full",
         editable: true,
         width: 250,
+        renderCell: ({ row }) => (
+          <RenderFieldLink
+            projectId={row?.project_id}
+            value={row?.project_name_full}
+          />
+        ),
         renderEditCell: (props) => (
           <SubprojectLookupComponent {...props} data={data} />
         ),
