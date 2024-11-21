@@ -10,6 +10,7 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
+import { Grid, Chip } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
 import ProjectStatusBadge from "../ProjectStatusBadge";
@@ -32,6 +33,16 @@ const useStyles = makeStyles((theme) => ({
   },
   additionalListItemText: {
     display: "block",
+  },
+  workTypeChip: {
+    "& .MuiChip-label": {
+      display: "block",
+      whiteSpace: "normal",
+    },
+    fontWeight: "500",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
   },
 }));
 
@@ -105,6 +116,20 @@ export default function ComponentListItem({
                     <Alert severity="error">Component is not mapped</Alert>
                   }
                 />
+              </ListItem>
+            )}
+            {component.moped_proj_component_work_types.length > 0 && (
+              <ListItem className={classes.nested}>
+                <Grid container spacing={0.5}>
+                  {component.moped_proj_component_work_types.map((element) => (
+                    <Grid item key={element.id}>
+                      <Chip
+                        label={element.moped_work_type.name}
+                        className={classes.workTypeChip}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               </ListItem>
             )}
             {component.description && (
