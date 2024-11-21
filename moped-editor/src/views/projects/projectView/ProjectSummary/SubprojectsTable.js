@@ -140,6 +140,8 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   // sets the data grid row data when query data is fetched
   useEffect(() => {
     if (data && data.subprojects.length > 0) {
+      // because we actually render the project_id in the table we run into issues with using
+      // it as the datagrid row id, so we want to make a separate id value to do that
       const rowsWithId = data.subprojects.map((row) => {
         return { ...row, id: row.project_id };
       });
@@ -148,8 +150,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   }, [data]);
 
   if (error) console.error(error);
-
-  console.log(rows, "rows");
 
   // adds a blank row to the table and updates the row modes model
   const handleAddSubprojectClick = () => {
@@ -233,9 +233,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     (updatedRow) => {
       const childProjectId = updatedRow?.project_name_full?.project_id;
 
-      // delete updatedRow.isNew;
-      // updatedRow.id = null;
-      // updatedRow.project_id = null;
       updatedRow.project_name_full = null;
 
       return (
@@ -245,13 +242,13 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             childProjectId: childProjectId,
           },
         })
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => updatedRow)
           .then(() => {
             refetch();
             refetchSummaryData(); // Refresh subprojects in summary map
           })
-          // from the data grid docs:
-          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => updatedRow)
           .catch((error) => console.error(error))
       );
     },
