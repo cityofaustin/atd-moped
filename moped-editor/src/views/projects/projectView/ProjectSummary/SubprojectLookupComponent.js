@@ -26,6 +26,7 @@ const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
     apiRef.current.setEditCellValue({
       id,
       field,
+      // this will be an object containing the project id, name, and status for the project selected
       value: newValue ? newValue : null,
     });
   };
