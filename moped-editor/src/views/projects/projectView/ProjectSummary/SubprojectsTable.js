@@ -40,9 +40,6 @@ const useColumns = ({
         field: "project_id",
         editable: false,
         width: 75,
-        renderCell: ({ row }) =>
-          // prevents temp id from rendering when in edit mode
-          row.project_name_full && row.project_id,
       },
       {
         headerName: "Full name",
@@ -141,15 +138,13 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   useEffect(() => {
     if (data && data.subprojects.length > 0) {
       // because we actually render the project_id in the table we run into issues with using
-      // it as the datagrid row id, so we want to make a separate id value to do that
+      // it as the datagrid row id, so we want to make a separate id value for that
       const rowsWithId = data.subprojects.map((row) => {
         return { ...row, id: row.project_id };
       });
       setRows(rowsWithId);
     }
   }, [data]);
-
-  if (error) console.error(error);
 
   // adds a blank row to the table and updates the row modes model
   const handleAddSubprojectClick = () => {
@@ -230,10 +225,14 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
 
   // handles insert mutation triggered by row mode switching from edit to view
   const processRowUpdate = useCallback(
-    (updatedRow) => {
-      const childProjectId = updatedRow?.project_name_full?.project_id;
-
-      updatedRow.project_name_full = null;
+    (newRow) => {
+      const childProjectId = newRow?.project_name_full?.project_id;
+      // newRow.project_name_full is an object containing the id, name, and phase for the project selected by the
+      // lookup component, we will use it for setting all of the newRow fields needed to update the datagrid internal state
+      newRow.project_id = newRow.project_name_full.project_id;
+      newRow.moped_proj_phases = newRow.project_name_full.moped_proj_phases;
+      newRow.project_name_full = newRow.project_name_full.project_name_full;
+      newRow.isNew = false;
 
       return (
         updateProjectSubproject({
@@ -242,13 +241,13 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             childProjectId: childProjectId,
           },
         })
-          // from the data grid docs:
-          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => updatedRow)
           .then(() => {
             refetch();
             refetchSummaryData(); // Refresh subprojects in summary map
           })
+          // from the data grid docs:
+          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+          .then(() => newRow)
           .catch((error) => console.error(error))
       );
     },
