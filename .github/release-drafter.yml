@@ -1,4 +1,6 @@
 template: |
+  $PREVIOUS_TAG
+
   ## What’s changed
 
   ### New features
@@ -6,7 +8,5 @@ template: |
   ### Enhancements
 
   ### Bug fixes / Tech debt
-
-
 
   $CHANGES

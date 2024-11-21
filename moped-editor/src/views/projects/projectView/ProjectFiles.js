@@ -48,7 +48,7 @@ const useStyles = makeStyles(() => ({
   uploadFileButton: {
     float: "right",
   },
-  downloadLink: {
+  ellipsisOverflow: {
     cursor: "pointer",
     overflow: "hidden",
     display: "block",
@@ -88,6 +88,11 @@ const useColumns = ({
         field: "file_name",
         width: 200,
         editable: true,
+        renderCell: ({ row }) => (
+          <Typography className={classes.ellipsisOverflow}>
+            {row?.file_name}
+          </Typography>
+        ),
         // validate input
         preProcessEditCellProps: (params) => {
           const hasError =
@@ -108,7 +113,7 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
-                className={classes.downloadLink}
+                className={classes.ellipsisOverflow}
                 onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
@@ -117,7 +122,7 @@ const useColumns = ({
           }
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
-              linkProps={{ className: classes.downloadLink }}
+              linkProps={{ className: classes.ellipsisOverflow }}
               url={row?.file_url}
               text={row?.file_url}
             />
