@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
+import { v4 as uuidv4 } from "uuid";
+
 import { Box, Icon, Link, CircularProgress, Typography, TextField } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 
@@ -215,7 +217,7 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
     fetchPolicy: "no-cache",
   });
 
-  const [addProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
+  const [insertProjectPersonnel] = useMutation(INSERT_PROJECT_PERSONNEL);
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
   const [deleteProjectPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
 
@@ -245,7 +247,7 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
  * Construct a moped_project_personnel object that can be passed to an insert mutation
  * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
  * @param {integer} projectId - the project ID
- * @return {Ojbect} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
+ * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
  */
 const getNewPersonnelPayload = ({
   newData: {
@@ -267,7 +269,7 @@ const getNewPersonnelPayload = ({
  * Construct a moped_project_personnel object that can be passed to an update mutation
  * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
  * @param {integer} projectId - the project ID
- * @return {Ojbect} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
  *  is handled separately
  */
 const getEditPersonnelPayload = (newData) => {
@@ -318,7 +320,24 @@ const getEditRolesPayload = (newData, oldData) => {
 
   const onClickAddTeamMember = () => {
     console.log('add team member'); 
-    return setEditTeamMember({ project_id: projectId });
+    const id = uuidv4();
+    setRows((oldRows) => [
+      {
+        id,
+        name: null,
+        moped_workgroup: null,
+        moped_proj_personnel_roles: [],
+        notes: null,
+        isNew: true,
+        roleIds: [],
+        project_personnel_id: id,
+      },  
+      ...oldRows,
+    ]);
+    setRowModesModel((oldModel) => ({
+      ...oldModel,
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "project_personnel_id" },
+    }));
   }
 
   const onClickEditTeamMember = (projectPersonnelId) => {
@@ -356,17 +375,9 @@ const getEditRolesPayload = (newData, oldData) => {
   }, [deleteTeamMemberId]);
 
   const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
-    console.log('process row update:', 'updatedRow', updatedRow, 'originalRow', originalRow, 'params', params);
-    
-    // Ensure project_personnel_id is an integer
-    const personnelId = parseInt(updatedRow.project_personnel_id);
 
-    if (!personnelId) {
-      console.error('Invalid project_personnel_id:', updatedRow.project_personnel_id);
-      throw new Error('Invalid project_personnel_id');
-    }
+    console.log('updatedRow.isNew', updatedRow.isNew);
 
-    // Extract user_id properly
     let userId;
     const userObject = data.moped_users.find(user => {
       if (typeof updatedRow.moped_user === 'string') {
@@ -383,6 +394,31 @@ const getEditRolesPayload = (newData, oldData) => {
       console.error('Invalid user data:', updatedRow.moped_user);
       throw new Error('Invalid user data');
     }
+
+    if (updatedRow.isNew) {
+      const payload = getNewPersonnelPayload({ newData: updatedRow, projectId });
+
+      return insertProjectPersonnel({
+        variables: {
+          object: payload,
+        },
+      })
+      .then(() => refetch())
+      .then(() => updatedRow)
+      .catch((error) => {
+        console.error('Mutation error:', error);
+        throw error;
+      });
+    } else {
+          // Ensure project_personnel_id is an integer
+    const personnelId = parseInt(updatedRow.project_personnel_id);
+
+    if (!personnelId) {
+      console.error('Invalid project_personnel_id:', updatedRow.project_personnel_id);
+      throw new Error('Invalid project_personnel_id');
+    }
+
+
 
 
     // Update roleIds to be in sync with moped_proj_personnel_roles
@@ -427,6 +463,7 @@ const getEditRolesPayload = (newData, oldData) => {
         console.error('Mutation error:', error);
         throw error;
       });
+    } 
   }, [updateProjectPersonnel, refetch]);
 
   const handleProcessUpdateError = useCallback((error) => {
