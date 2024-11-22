@@ -178,10 +178,6 @@ def make_all_features(data, exploded_geometry):
         if esri_geometry_key == "points":
             all_features["points"].append(feature)
             # create the point -> line feature
-            if line_geometry["type"] == "LineString":
-                # if we're converting a single point to a line, we need to convert that line geom to
-                # a multi-line geometry
-                line_geometry["coordinates"] = [line_geometry["coordinates"]]
             line_feature = make_esri_feature(
                 esri_geometry_key="paths",
                 geometry=line_geometry,

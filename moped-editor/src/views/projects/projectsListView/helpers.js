@@ -277,8 +277,8 @@ export const useColumns = ({ hiddenColumns }) => {
           if (row.task_orders && row?.task_orders.length > 0) {
             return (
               <div>
-                {row.task_orders.map((taskOrder) => (
-                  <span key={taskOrder.task_order} style={{ display: "block" }}>
+                {row.task_orders.map((taskOrder, i) => (
+                  <span key={i} style={{ display: "block" }}>
                     {taskOrder.task_order}
                   </span>
                 ))}
