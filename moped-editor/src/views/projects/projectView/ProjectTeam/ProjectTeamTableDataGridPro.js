@@ -350,6 +350,9 @@ const getEditRolesPayload = (newData, oldData) => {
   const handleDeleteOpen = useCallback((id) => {
     console.log('delete open', id);
     setDeleteTeamMemberId(id);
+    return deleteProjectPersonnel({
+      variables: { id },
+    }).then(() => refetch()); 
   }, [deleteTeamMemberId]);
 
   const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
