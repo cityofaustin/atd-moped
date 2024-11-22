@@ -233,30 +233,32 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   // handles insert mutation triggered by row mode switching from edit to view
   const processRowUpdate = useCallback(
     (newRow) => {
-      const childProjectId = newRow?.project_name_full?.project_id;
-      // newRow.project_name_full is an object containing the id, name, and phase for the project selected by the
-      // lookup component, we will use it for setting all of the newRow fields needed to update the datagrid internal state
-      newRow.project_id = newRow.project_name_full.project_id;
-      newRow.moped_proj_phases = newRow.project_name_full.moped_proj_phases;
-      newRow.project_name_full = newRow.project_name_full.project_name_full;
-      newRow.isNew = false;
+      if (newRow.project_name_full) {
+        const childProjectId = newRow?.project_name_full?.project_id;
+        // newRow.project_name_full is an object containing the id, name, and phase for the project selected by the
+        // lookup component, we will use it for setting all of the newRow fields needed to update the datagrid internal state
+        newRow.project_id = newRow.project_name_full.project_id;
+        newRow.moped_proj_phases = newRow.project_name_full.moped_proj_phases;
+        newRow.project_name_full = newRow.project_name_full.project_name_full;
+        newRow.isNew = false;
 
-      return (
-        updateProjectSubproject({
-          variables: {
-            parentProjectId: projectId,
-            childProjectId: childProjectId,
-          },
-        })
-          .then(() => {
-            refetch();
-            refetchSummaryData(); // Refresh subprojects in summary map
+        return (
+          updateProjectSubproject({
+            variables: {
+              parentProjectId: projectId,
+              childProjectId: childProjectId,
+            },
           })
-          // from the data grid docs:
-          // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
-          .then(() => newRow)
-          .catch((error) => console.error(error))
-      );
+            .then(() => {
+              refetch();
+              refetchSummaryData(); // Refresh subprojects in summary map
+            })
+            // from the data grid docs:
+            // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
+            .then(() => newRow)
+            .catch((error) => console.error(error))
+        );
+      }
     },
     [projectId, refetch, refetchSummaryData, updateProjectSubproject]
   );
