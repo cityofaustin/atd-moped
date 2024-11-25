@@ -443,43 +443,6 @@ const Filters = ({
                   fullWidth
                   className={classes.formControl}
                 >
-                  {/* <InputLabel
-                    id={`filter-operator-select-${filterIndex}-label`}
-                  >
-                    Operator
-                  </InputLabel> */}
-                  {/* <Select
-                    variant="standard"
-                    fullWidth
-                    disabled={operators.length === 0}
-                    labelId={`filter-operator-select-${filterIndex}-label`}
-                    id={`filter-operator-select-${filterIndex}`}
-                    value={operator || ""}
-                    onChange={(e) =>
-                      handleFilterOperatorChange(
-                        filterIndex,
-                        e.target.value,
-                        lookupTable,
-                        lookupOperators
-                      )
-                    }
-                    label="field"
-                    data-testid="operator-select"
-                  >
-                    {operators.map((operator, operatorIndex) => {
-                      const label = FILTERS_COMMON_OPERATORS[operator]?.label;
-                      return (
-                        <MenuItem
-                          value={operator}
-                          key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                          id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                          data-testid={label}
-                        >
-                          {label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select> */}
                   <Autocomplete
                     value={operator || null}
                     options={operators}
