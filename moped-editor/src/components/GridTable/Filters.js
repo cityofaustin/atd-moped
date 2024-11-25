@@ -5,10 +5,7 @@ import { useQuery } from "@apollo/client";
 import {
   Button,
   TextField,
-  InputLabel,
-  Select,
   FormControl,
-  MenuItem,
   Grid,
   Hidden,
   Icon,
@@ -126,8 +123,6 @@ const Filters = ({
    */
   const classes = useStyles();
 
-  console.log(Object.values(filtersConfig), "values filter config");
-
   const { loading, error, data } = useQuery(LOOKUP_TABLES_QUERY);
 
   if (error) console.error(error);
@@ -160,8 +155,6 @@ const Filters = ({
     filtersConfig,
     data
   );
-
-  console.log(autocompleteOptionsMap, "auto complete options");
 
   /**
    * Handles the click event on the field drop-down menu
@@ -393,8 +386,6 @@ const Filters = ({
         const { label, type } = fieldConfig ?? {};
         const operators = fieldConfig?.operators ?? [];
 
-        console.log(operators, "operators");
-
         /* If the field uses a lookup table, get the table and field names  */
         const { table_name: lookupTable, operators: lookupOperators } =
           fieldConfig?.lookup ?? {};
@@ -490,16 +481,16 @@ const Filters = ({
                     })}
                   </Select> */}
                   <Autocomplete
-                    value={operator || ""}
+                    value={operator || null}
                     options={operators}
                     disabled={operators.length === 0}
                     getOptionLabel={(operator) =>
-                      operator ? FILTERS_COMMON_OPERATORS[operator]?.label : ""
+                      FILTERS_COMMON_OPERATORS[operator]?.label || ""
                     }
-                    onChange={(e) =>
+                    onChange={(e, value) =>
                       handleFilterOperatorChange(
                         filterIndex,
-                        e.target.value,
+                        value,
                         lookupTable,
                         lookupOperators
                       )
