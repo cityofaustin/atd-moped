@@ -445,6 +445,7 @@ const Filters = ({
                 >
                   <Autocomplete
                     value={operator || null}
+                    id={`filter-operator-select-${filterIndex}`}
                     options={operators}
                     disabled={operators.length === 0}
                     getOptionLabel={(operator) =>
