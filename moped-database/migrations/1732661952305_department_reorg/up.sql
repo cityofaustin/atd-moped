@@ -68,3 +68,17 @@ WHERE
 ALTER TABLE moped_entity
 ADD CONSTRAINT moped_entity_department_id_fkey FOREIGN KEY ("department_id")
 REFERENCES moped_department ("department_id");
+
+-- Add foreign key constraints to entity table workgroup_id column
+ALTER TABLE moped_entity
+ADD CONSTRAINT moped_entity_workgroup_id_fkey FOREIGN KEY ("workgroup_id")
+REFERENCES moped_workgroup ("workgroup_id");
+
+-- Add foreign key constraints to department and entity tables for organization_id columns
+ALTER TABLE moped_entity
+ADD CONSTRAINT moped_entity_organization_id_fkey FOREIGN KEY ("organization_id")
+REFERENCES moped_organization ("organization_id");
+
+ALTER TABLE moped_department
+ADD CONSTRAINT moped_entity_organization_id_fkey FOREIGN KEY ("organization_id")
+REFERENCES moped_organization ("organization_id");
