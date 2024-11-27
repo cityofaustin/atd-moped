@@ -1,5 +1,6 @@
 -- Add soft deletes to department table
 ALTER TABLE moped_department ADD is_deleted boolean DEFAULT FALSE;
+COMMENT ON COLUMN moped_department.is_deleted IS 'Indicates soft deletion';
 
 INSERT INTO "public"."moped_department" ("department_name", "department_abbreviation", "organization_id") VALUES
 ('Austin Transportation and Public Works', 'TPW', 1);
@@ -34,3 +35,36 @@ SET
     department_id = (SELECT id FROM new_department_row)
 WHERE
     department_id IN (SELECT ids FROM department_todos);
+
+-- Find existing entity records that are associated with the departments that are merging
+-- and update them to the new department row called Austin Transportation and Public Works
+WITH department_todos AS (
+    SELECT department_id AS ids
+    FROM
+        moped_department
+    WHERE
+        department_name IN (
+            'Austin Transportation',
+            'Public Works'
+        )
+),
+
+new_department_row AS (
+    SELECT department_id AS id
+    FROM
+        moped_department
+    WHERE
+        department_name = 'Austin Transportation and Public Works'
+)
+
+UPDATE
+moped_entity
+SET
+    department_id = (SELECT id FROM new_department_row)
+WHERE
+    department_id IN (SELECT ids FROM department_todos);
+
+-- Add foreign key constraints to entity table department_id column; moped_workgroup already has this constraint
+ALTER TABLE moped_entity
+ADD CONSTRAINT moped_entity_department_id_fkey FOREIGN KEY ("department_id")
+REFERENCES moped_department ("department_id");
