@@ -82,3 +82,6 @@ REFERENCES moped_organization ("organization_id");
 ALTER TABLE moped_department
 ADD CONSTRAINT moped_entity_organization_id_fkey FOREIGN KEY ("organization_id")
 REFERENCES moped_organization ("organization_id");
+
+-- Remove row with 0 for id and 'None' for name; we're not using it and null is more appropriate for entities and workgroups with no department
+DELETE FROM moped_department WHERE department_id = 0;
