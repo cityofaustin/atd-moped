@@ -46,7 +46,6 @@ const SubprojectLookupComponent = ({ id, value, field, hasFocus, data }) => {
           <TextField variant="standard" {...params} inputRef={ref} />
         )}
       />
-      <FormHelperText>Required</FormHelperText>
     </FormControl>
   );
 };
