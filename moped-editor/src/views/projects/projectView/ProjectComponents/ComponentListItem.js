@@ -10,8 +10,10 @@ import ListItemSecondaryAction from "@mui/material/ListItemSecondaryAction";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import IconButton from "@mui/material/IconButton";
 import ListItemText from "@mui/material/ListItemText";
+import { Grid, Chip } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { COLORS } from "./mapStyleSettings";
+import ProjectStatusBadge from "../ProjectStatusBadge";
 import {
   useComponentListItemText,
   getIsComponentMapped,
@@ -26,11 +28,21 @@ const useStyles = makeStyles((theme) => ({
   },
   listItemText: {
     marginLeft: theme.spacing(1),
-    flexGrow: 1, 
-    marginRight: '48px',
+    flexGrow: 1,
+    marginRight: theme.spacing(6),
   },
   additionalListItemText: {
     display: "block",
+  },
+  workTypeChip: {
+    "& .MuiChip-label": {
+      display: "block",
+      whiteSpace: "normal",
+    },
+    fontWeight: "500",
+    fontSize: "12px",
+    borderRadius: "2rem",
+    height: "1.75rem",
   },
 }));
 
@@ -63,24 +75,35 @@ export default function ComponentListItem({
         ref={component._ref}
       >
         {isComponentMapped ? Icon : <ErrorOutlineIcon color="error" />}
-        <Box display="flex" alignItems="center" width="100%">
-          <ListItemText
-            className={classes.listItemText}
-            primary={primary}
-            secondary={
-              <>
-                <>{secondary}</>
-                <span className={classes.additionalListItemText}>
-                  {additionalListItemText}
-                </span>
-              </>
-            }
-          />
-          <ListItemSecondaryAction>
-            <IconButton color="primary" onClick={onZoomClick} size="large">
-              <ZoomInIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
+        <Box>
+          <Box display="flex" alignItems="center" width="100%">
+            <ListItemText
+              className={classes.listItemText}
+              primary={primary}
+              secondary={
+                <>
+                  <>{secondary}</>
+                  <span className={classes.additionalListItemText}>
+                    {additionalListItemText}
+                  </span>
+                </>
+              }
+            />
+            <ListItemSecondaryAction>
+              <IconButton color="primary" onClick={onZoomClick} size="large">
+                <ZoomInIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
+          </Box>
+          {!!component.moped_phase && (
+            <Box width="100%" sx={{ my: 0.5, ml: 1 }}>
+              <ProjectStatusBadge
+                phaseName={component.moped_phase?.phase_name}
+                phaseKey={component.moped_phase?.phase_key}
+                condensed
+              />
+            </Box>
+          )}
         </Box>
       </ListItemButton>
       <Collapse in={isExpanded}>
@@ -93,6 +116,20 @@ export default function ComponentListItem({
                     <Alert severity="error">Component is not mapped</Alert>
                   }
                 />
+              </ListItem>
+            )}
+            {component.moped_proj_component_work_types.length > 0 && (
+              <ListItem className={classes.nested}>
+                <Grid container spacing={0.5}>
+                  {component.moped_proj_component_work_types.map((element) => (
+                    <Grid item key={element.id}>
+                      <Chip
+                        label={element.moped_work_type.name}
+                        className={classes.workTypeChip}
+                      />
+                    </Grid>
+                  ))}
+                </Grid>
               </ListItem>
             )}
             {component.description && (

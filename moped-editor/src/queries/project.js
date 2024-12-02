@@ -308,6 +308,7 @@ export const TIMELINE_QUERY = gql`
     moped_milestones(where: { is_deleted: { _eq: false } }) {
       milestone_id
       milestone_name
+      related_phase_id
     }
     moped_proj_milestones(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -990,6 +991,10 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_components(order_by: { component_name_full: asc }) {
       component_id
       component_name_full
+    }
+    layer_council_district {
+      id
+      council_district
     }
   }
 `;

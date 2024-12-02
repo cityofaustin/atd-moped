@@ -19,6 +19,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "./DataGridTextField";
+import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -50,6 +51,20 @@ const useMilestoneNameLookup = (data) =>
     );
   }, [data]);
 
+const useMilestoneRelatedPhaseLookup = (data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_milestones.reduce(
+      (obj, item) =>
+        Object.assign(obj, {
+          [item.milestone_id]: item.related_phase_id,
+        }),
+      {}
+    );
+  }, [data]);
+
 const useColumns = ({
   rowModesModel,
   handleEditClick,
@@ -57,6 +72,8 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   milestoneNameLookup,
+  relatedPhaseLookup,
+  usingShiftKey,
   phaseNameLookup,
 }) =>
   useMemo(() => {
@@ -75,6 +92,7 @@ const useColumns = ({
           <MilestoneAutocompleteComponent
             {...props}
             milestoneNameLookup={milestoneNameLookup}
+            relatedPhaseLookup={relatedPhaseLookup}
           />
         ),
         width: 250,
@@ -89,11 +107,19 @@ const useColumns = ({
       {
         headerName: "Related phase",
         field: "moped_milestone",
-        editable: false, // would it be cool for this to update when someone edits the milestone
-        valueGetter: (value) => {
+        editable: true, // this is to be able to use the renderEditCell option to update the related phase
+        // during editing -- the input field is always disabled
+        valueFormatter: (value) => {
           return phaseNameLookup[value?.related_phase_id] ?? "";
         },
         width: 150,
+        renderEditCell: (props) => (
+          <RelatedPhaseTextField
+            {...props}
+            phaseNameLookupData={phaseNameLookup}
+            usingShiftKey={usingShiftKey}
+          />
+        ),
       },
       {
         headerName: "Completion estimate",
@@ -187,6 +213,8 @@ const useColumns = ({
     handleEditClick,
     handleDeleteOpen,
     milestoneNameLookup,
+    relatedPhaseLookup,
+    usingShiftKey,
     phaseNameLookup,
   ]);
 
@@ -212,6 +240,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   useEffect(() => {
     if (data && data.moped_proj_milestones.length > 0) {
@@ -220,6 +249,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
+  const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback((id) => {
@@ -298,6 +328,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
       delete updatedMilestoneData.isNew;
       delete updatedMilestoneData.id;
       delete updatedMilestoneData.project_milestone_id;
+      delete updatedMilestoneData.moped_milestone;
 
       return (
         addProjectMilestone({
@@ -379,11 +410,17 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
     handleCancelClick,
     handleEditClick,
     milestoneNameLookup,
+    relatedPhaseLookup,
+    usingShiftKey,
     phaseNameLookup,
   });
 
-  // If the query is loading or data object is undefined,
-  // stop here and just render the spinner.
+  const checkIfShiftKey = (params, event) => {
+    if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
+      setUsingShiftKey(event.shiftKey);
+    }
+  };
+
   if (loading || !data) return <CircularProgress />;
 
   // Hide Milestone template dialog
@@ -406,6 +443,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
         onProcessRowUpdateError={handleProcessUpdateError}
+        onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
