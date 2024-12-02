@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import { FormControl, FormHelperText, TextField } from "@mui/material";
+import { FormControl, TextField } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 
 /** Component for subproject lookup dropdown
