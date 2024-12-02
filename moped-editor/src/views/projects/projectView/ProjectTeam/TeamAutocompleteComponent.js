@@ -71,7 +71,7 @@ const TeamAutocompleteComponent = ({
         options={options}
         getOptionLabel={getOptionLabel}
         isOptionEqualToValue={(option, value) => isOptionEqualToValue(option, value)}
-        value={value}
+        value={value || null}
         sx={{ paddingTop: "8px" }}
         onChange={(event, newValue) => {
           handleChange(event, newValue);
