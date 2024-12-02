@@ -5,10 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Box, Icon, Link, CircularProgress, Typography, TextField } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
+import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
 import { DataGridPro, GridRowModes, GridActionsCellItem, useGridApiRef } from '@mui/x-data-grid-pro';
 import { useQuery, useMutation } from "@apollo/client";
-import theme from "src/theme";
+import ApolloErrorHandler from 'src/components/ApolloErrorHandler';
+
 import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import { 
   TEAM_QUERY, 
@@ -19,24 +21,20 @@ import {
 import dataGridProStyleOverrides from 'src/styles/dataGridProStylesOverrides';
 import ProjectTeamToolbar from './ProjectTeamToolbar';
 import ProjectTeamRoleMultiselect from './ProjectTeamRoleMultiselect';
-
-import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
-
-import { useUser } from 'src/auth/user';
-
-import LookupAutocompleteComponent from 'src/components/DataGridPro/LookupAutocompleteComponent';
 import TeamAutocompleteComponent from './TeamAutocompleteComponent';
 import DataGridTextField from 'src/components/DataGridPro/DataGridTextField';
-import ApolloErrorHandler from 'src/components/ApolloErrorHandler';
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
-    fontSize: "1.25rem",
+    fontSize: "1rem",
     verticalAlign: "sub",
     color: theme.palette.text.primary,
     "&:hover": {
       color: theme.palette.primary.main,
     },
+  },
+  roleHeader: {
+    fontWeight: 500,
   },
 }));
 
@@ -78,7 +76,7 @@ const useColumns = ({
   { 
     headerName: 'Name', 
     field: 'moped_user', 
-    width: 200,
+    width: 250,
     editable: true,
     valueGetter: (user) => {
       return user ? `${user.first_name} ${user.last_name}` : '';
@@ -106,7 +104,7 @@ const useColumns = ({
     width: 200,
     editable: true,
     renderHeader: () => (
-      <span>
+      <div className={classes.roleHeader}>
         Role{" "}
         <Link
           href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
@@ -115,14 +113,14 @@ const useColumns = ({
         >
           <Icon className={classes.infoIcon}>info_outline</Icon>
         </Link>
-      </span>
+      </div>
     ),
     renderCell: (params) => {
       // Filter out deleted roles and map to Typography components
       const roleElements = params.row.moped_proj_personnel_roles
         .filter(role => !role.is_deleted)
         .map(role => (
-          <Typography key={role.moped_project_role?.project_role_id}>
+          <Typography key={role.moped_project_role?.project_role_id} sx={{ fontSize: "0.875rem" }}>
             {role.moped_project_role?.project_role_name}
           </Typography>
         ));
@@ -137,6 +135,11 @@ const useColumns = ({
           roles={data.moped_project_roles}
         />
       );
+    },
+    preProcessEditCellProps: (params) => {
+      // Enforce required field
+      const hasError = !params.props.value || params.props.value.length === 0;
+      return { ...params.props, error: hasError };
     }
   },
   { 
@@ -207,10 +210,9 @@ const useColumns = ({
   ]
 );
 
-const ProjectTeamTableDataGridPro = ({ projectId }) => {
+const ProjectTeamTable = ({ projectId }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
-  const { user } = useUser();
 
   const { loading, error, data, refetch } = useQuery(TEAM_QUERY, {
     variables: { projectId },
@@ -221,11 +223,9 @@ const ProjectTeamTableDataGridPro = ({ projectId }) => {
   const [updateProjectPersonnel] = useMutation(UPDATE_PROJECT_PERSONNEL);
   const [deleteProjectPersonnel] = useMutation(DELETE_PROJECT_PERSONNEL);
 
-  const [editTeamMember, setEditTeamMember] = useState(null);
-  const [deleteTeamMemberId, setDeleteTeamMemberId] = useState(null);
-
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [deleteTeamMemberId, setDeleteTeamMemberId] = useState(null);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -273,8 +273,6 @@ const getNewPersonnelPayload = ({
  *  is handled separately
  */
 const getEditPersonnelPayload = (newData) => {
-  // and the new values
-  console.log('getEditPersonnelPayload', newData);
   const {
     moped_user: { user_id },
     notes,
@@ -290,8 +288,6 @@ const getEditPersonnelPayload = (newData) => {
  *  personnel role objects to delete
  */
 const getEditRolesPayload = (newData, oldData) => {
-  console.log('getEditRolesPayload', newData, oldData);
-
   const { project_personnel_id } = oldData;
 
   // get an array of moped_proj_personnel_roles IDs to delete
@@ -302,7 +298,7 @@ const getEditRolesPayload = (newData, oldData) => {
     })
     .map((projRole) => projRole.id);
 
-  // contruct an array of new moped_proj_personnel_roles objects
+  // construct an array of new moped_proj_personnel_roles objects
   const existingRoleIds = oldData.moped_proj_personnel_roles.map(
     ({ moped_project_role }) => moped_project_role.project_role_id
   );
@@ -313,13 +309,10 @@ const getEditRolesPayload = (newData, oldData) => {
     project_personnel_id,
     project_role_id: newRoleId,
   }));
-  console.log('rolesToAddPayload', rolesToAddPayload);
-  console.log('projRoleIdsToDelete', projRoleIdsToDelete);
   return [rolesToAddPayload, projRoleIdsToDelete];
 };
 
   const onClickAddTeamMember = () => {
-    console.log('add team member'); 
     const id = uuidv4();
     setRows((oldRows) => [
       {
@@ -340,18 +333,11 @@ const getEditRolesPayload = (newData, oldData) => {
     }));
   }
 
-  const onClickEditTeamMember = (projectPersonnelId) => {
-    console.log('edit team member', projectPersonnelId);
-    return setEditTeamMember({ project_personnel_id: projectPersonnelId });
-  }
-
   const handleEditClick = useCallback((id) => () => {
-    console.log('edit click', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.Edit } });
   }, [rowModesModel]);
 
   const handleSaveClick = useCallback((id) => () => {
-    console.log('save click', id);
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   }, [rowModesModel]);
 
@@ -367,7 +353,6 @@ const getEditRolesPayload = (newData, oldData) => {
   };
 
   const handleDeleteOpen = useCallback((id) => {
-    console.log('delete open', id);
     setDeleteTeamMemberId(id);
     return deleteProjectPersonnel({
       variables: { id },
@@ -375,9 +360,6 @@ const getEditRolesPayload = (newData, oldData) => {
   }, [deleteTeamMemberId]);
 
   const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
-
-    console.log('updatedRow.isNew', updatedRow.isNew);
-
     let userId;
     const userObject = data.moped_users.find(user => {
       if (typeof updatedRow.moped_user === 'string') {
@@ -440,7 +422,6 @@ const getEditRolesPayload = (newData, oldData) => {
 
     // get notes
     const notes = updatedRow.notes;
-    console.log('notes', notes);
 
     const variables = {
       id: personnelId,
@@ -448,8 +429,6 @@ const getEditRolesPayload = (newData, oldData) => {
       deleteIds: roleIdsToDelete,
       addRolesObjects: rolesToAdd
     };
-
-    console.log('Mutation variables:', variables);
 
     const hasRowChanged = !isEqual(updatedRow, originalRow);
     if (!hasRowChanged) {
@@ -467,13 +446,8 @@ const getEditRolesPayload = (newData, oldData) => {
   }, [updateProjectPersonnel, refetch]);
 
   const handleProcessUpdateError = useCallback((error) => {
-    console.log('process row update error', error);
+    console.error('process row update error', error);
   }, []);
-
-  const handleTabKeyDown = useCallback((params, event) => {
-    // console.log('tab key down', params, event);
-  }, []);
-
 
   const dataGridColumns = useColumns({
     data,
@@ -510,13 +484,13 @@ const getEditRolesPayload = (newData, oldData) => {
         density="comfortable"
         getRowHeight={() => 'auto'}
         hideFooter
-        onCellKeyDown={handleTabKeyDown}
         localeText={{ noRowsLabel: 'No team members found' }}
         disableColumnMenu
         loading={loading}
         slots={{
           toolbar: ProjectTeamToolbar,
         }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
         slotProps={{
           toolbar: {
             addAction: onClickAddTeamMember,
@@ -529,4 +503,4 @@ const getEditRolesPayload = (newData, oldData) => {
   );
 };
 
-export default ProjectTeamTableDataGridPro;
+export default ProjectTeamTable;

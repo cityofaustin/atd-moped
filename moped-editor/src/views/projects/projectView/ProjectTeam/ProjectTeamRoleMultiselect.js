@@ -26,16 +26,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-
 const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   const rolesArray = value.map((role) => role.project_role_id);
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
 
   const classes = useStyles();
   const apiRef = useGridApiContext();
-  const ref = React.useRef(null);
 
   const handleChange = (event) => {
     const valueIds = event.target.value;
