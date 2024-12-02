@@ -1,5 +1,5 @@
 import React from "react";
-import ProjectTeamTableDataGridPro from "./ProjectTeamTable";
+import ProjectTeamTable from "./ProjectTeamTable";
 import { useParams } from "react-router-dom";
 
 import { CardContent, Grid } from "@mui/material";
@@ -11,7 +11,7 @@ const ProjectTeam = () => {
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ProjectTeamTableDataGridPro projectId={projectId} />
+          <ProjectTeamTable projectId={projectId} />
         </Grid>
       </Grid>
     </CardContent>
