@@ -19,6 +19,7 @@ import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import SubprojectLookupComponent from "./SubprojectLookupComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import RenderFieldLink from "src/components/RenderFieldLink";
+import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 import {
   SUBPROJECT_QUERY,
@@ -90,7 +91,7 @@ const useColumns = ({
           if (isInEditMode) {
             return [
               <GridActionsCellItem
-                icon={<CheckIcon sx={{ fontSize: "24px" }} />}
+                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
                 label="Save"
                 sx={{
                   color: "primary.main",
@@ -98,7 +99,7 @@ const useColumns = ({
                 onClick={handleSaveClick(id)}
               />,
               <GridActionsCellItem
-                icon={<CloseIcon sx={{ fontSize: "24px" }} />}
+                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
                 label="Cancel"
                 className="textPrimary"
                 onClick={handleCancelClick(id)}
@@ -108,7 +109,7 @@ const useColumns = ({
           }
           return [
             <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={{ fontSize: "24px" }} />}
+              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
               label="Delete"
               onClick={() => handleDeleteOpen(id)}
               color="inherit"
@@ -291,6 +292,7 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}
+        initialState={{ pinnedColumns: { right: ["edit"] } }}
         onRowEditStart={(params, event) => {
           event.defaultMuiPrevented = true; // disable editing rows
         }}
