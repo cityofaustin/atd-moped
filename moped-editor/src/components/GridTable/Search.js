@@ -245,6 +245,9 @@ const Search = ({
         placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
+        {/* FYI: you cannot use a Select component inside the click away listener
+        as discussed in this thread https://github.com/mui/material-ui/issues/25578 
+        so we have opted to use Autocompletes instead*/}
         <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
           <Paper className={classes.advancedSearchPaper}>
             <Filters
