@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1729197757693_remove_completion_date_from_project_list_view/up.sql
+-- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -165,6 +165,17 @@ min_estimated_phase_dates AS (
         min(min_dates.min_date) AS min_phase_date
     FROM min_dates
     GROUP BY min_dates.project_id
+),
+
+project_component_work_types AS (
+    SELECT
+        mpc.project_id,
+        string_agg(DISTINCT mwt.name, ', '::text ORDER BY mwt.name) AS component_work_type_names
+    FROM moped_proj_components mpc
+    LEFT JOIN moped_proj_component_work_types mpcwt ON mpcwt.project_component_id = mpc.project_component_id
+    LEFT JOIN moped_work_types mwt ON mwt.id = mpcwt.work_type_id
+    WHERE true AND mpc.is_deleted = false AND mpcwt.is_deleted = false
+    GROUP BY mpc.project_id
 )
 
 SELECT
@@ -252,7 +263,8 @@ SELECT
     concat(added_by_user.first_name, ' ', added_by_user.last_name) AS added_by,
     mpcs.components,
     districts.project_council_districts,
-    districts.project_and_child_project_council_districts
+    districts.project_and_child_project_council_districts,
+    pcwt.component_work_type_names
 FROM moped_project mp
 LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup fsl ON mp.project_id = fsl.project_id
@@ -270,6 +282,7 @@ LEFT JOIN moped_proj_components_subtypes mpcs ON mp.project_id = mpcs.project_id
 LEFT JOIN project_district_association districts ON mp.project_id = districts.project_id
 LEFT JOIN min_confirmed_phase_dates mcpd ON mp.project_id = mcpd.project_id
 LEFT JOIN min_estimated_phase_dates mepd ON mp.project_id = mepd.project_id
+LEFT JOIN project_component_work_types pcwt ON mp.project_id = pcwt.project_id
 LEFT JOIN LATERAL (
     SELECT
         mpn.project_note,
@@ -280,4 +293,4 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
