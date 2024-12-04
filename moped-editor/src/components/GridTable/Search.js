@@ -7,6 +7,7 @@ import {
   Grid,
   Paper,
   Popper,
+  ClickAwayListener,
 } from "@mui/material";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
@@ -244,18 +245,23 @@ const Search = ({
         placement={"bottom"}
         className={classes.advancedSearchRoot}
       >
-        <Paper className={classes.advancedSearchPaper}>
-          <Filters
-            setFilters={setFilters}
-            handleAdvancedSearchClose={handleAdvancedSearchClose}
-            filtersConfig={filtersConfig}
-            resetSimpleSearch={resetSimpleSearch}
-            isOr={isOr}
-            setIsOr={setIsOr}
-            setSearchParams={setSearchParams}
-            searchParams={searchParams}
-          />
-        </Paper>
+        {/* FYI: you cannot use a Select component inside the click away listener
+        as discussed in this thread https://github.com/mui/material-ui/issues/25578 
+        so we have opted to use Autocompletes instead*/}
+        <ClickAwayListener onClickAway={handleAdvancedSearchClose}>
+          <Paper className={classes.advancedSearchPaper}>
+            <Filters
+              setFilters={setFilters}
+              handleAdvancedSearchClose={handleAdvancedSearchClose}
+              filtersConfig={filtersConfig}
+              resetSimpleSearch={resetSimpleSearch}
+              isOr={isOr}
+              setIsOr={setIsOr}
+              setSearchParams={setSearchParams}
+              searchParams={searchParams}
+            />
+          </Paper>
+        </ClickAwayListener>
       </Popper>
     </div>
   );
