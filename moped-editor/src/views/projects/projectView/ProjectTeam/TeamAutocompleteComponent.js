@@ -6,6 +6,7 @@ import {
   FormControl,
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import { useTheme } from "@mui/material/styles";
 
 const TeamAutocompleteComponent = ({
   id,
@@ -16,6 +17,7 @@ const TeamAutocompleteComponent = ({
   error,
   name,
 }) => {
+  const theme = useTheme();
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -63,7 +65,7 @@ const TeamAutocompleteComponent = ({
   return (
     <FormControl
       variant="standard"
-      style={{ width: "100%", marginLeft: "10px", marginRight: "10px" }}
+      sx={{ width: "100%", mx: theme.spacing(1) }}
     >
       <Autocomplete
         id={name}

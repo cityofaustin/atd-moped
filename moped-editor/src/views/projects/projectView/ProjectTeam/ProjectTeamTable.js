@@ -3,7 +3,7 @@ import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
-import { Box, Icon, Link, CircularProgress, Typography, TextField } from '@mui/material';
+import { Box, Icon, Link, CircularProgress, Typography } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { EditOutlined as EditOutlinedIcon, DeleteOutline as DeleteOutlineIcon, Check as CheckIcon, Close as CloseIcon } from '@mui/icons-material';
 
@@ -465,7 +465,6 @@ const getEditRolesPayload = (newData, oldData) => {
 
   return (
     <ApolloErrorHandler errors={error}>
-      <Box sx={{ height: 520, width: '100%' }}>
       <DataGridPro
         sx={dataGridProStyleOverrides}
         apiRef={apiRef}
@@ -498,7 +497,6 @@ const getEditRolesPayload = (newData, oldData) => {
           },
         }}
       />
-      </Box>
     </ApolloErrorHandler>
   );
 };
