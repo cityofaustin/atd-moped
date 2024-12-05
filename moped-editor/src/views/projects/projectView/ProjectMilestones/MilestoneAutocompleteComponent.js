@@ -7,7 +7,6 @@ import {
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
-
 /**
  * @param {Integer} id - Data Grid row id (same as record id)
  * @param {String} value - field value

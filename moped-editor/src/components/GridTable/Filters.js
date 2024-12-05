@@ -5,10 +5,7 @@ import { useQuery } from "@apollo/client";
 import {
   Button,
   TextField,
-  InputLabel,
-  Select,
   FormControl,
-  MenuItem,
   Grid,
   Hidden,
   Icon,
@@ -154,7 +151,10 @@ const Filters = ({
   /* Some features like all/any radios require more than one filter to appear */
   const areMoreThanOneFilters = filterParameters.length > 1;
 
-  const autocompleteOptionsMap = useCreateAutocompleteOptions(filtersConfig, data);
+  const autocompleteOptionsMap = useCreateAutocompleteOptions(
+    filtersConfig,
+    data
+  );
 
   /**
    * Handles the click event on the field drop-down menu
@@ -387,10 +387,8 @@ const Filters = ({
         const operators = fieldConfig?.operators ?? [];
 
         /* If the field uses a lookup table, get the table and field names  */
-        const {
-          table_name: lookupTable,
-          operators: lookupOperators,
-        } = fieldConfig?.lookup ?? {};
+        const { table_name: lookupTable, operators: lookupOperators } =
+          fieldConfig?.lookup ?? {};
 
         /* Check filter row validity */
         const isValidInput = checkIsValidInput(filter, type);
@@ -445,43 +443,30 @@ const Filters = ({
                   fullWidth
                   className={classes.formControl}
                 >
-                  <InputLabel
-                    id={`filter-operator-select-${filterIndex}-label`}
-                  >
-                    Operator
-                  </InputLabel>
-                  <Select
-                    variant="standard"
-                    fullWidth
-                    disabled={operators.length === 0}
-                    labelId={`filter-operator-select-${filterIndex}-label`}
+                  <Autocomplete
+                    value={operator || null}
                     id={`filter-operator-select-${filterIndex}`}
-                    value={operator || ""}
-                    onChange={(e) =>
+                    options={operators}
+                    disabled={operators.length === 0}
+                    getOptionLabel={(operator) =>
+                      FILTERS_COMMON_OPERATORS[operator]?.label || ""
+                    }
+                    onChange={(e, value) =>
                       handleFilterOperatorChange(
                         filterIndex,
-                        e.target.value,
+                        value,
                         lookupTable,
                         lookupOperators
                       )
                     }
-                    label="field"
-                    data-testid="operator-select"
-                  >
-                    {operators.map((operator, operatorIndex) => {
-                      const label = FILTERS_COMMON_OPERATORS[operator]?.label;
-                      return (
-                        <MenuItem
-                          value={operator}
-                          key={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                          id={`filter-operator-select-item-${filterIndex}-${operatorIndex}`}
-                          data-testid={label}
-                        >
-                          {label}
-                        </MenuItem>
-                      );
-                    })}
-                  </Select>
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant="standard"
+                        label={"Operator"}
+                      />
+                    )}
+                  />
                 </FormControl>
               </Grid>
 
