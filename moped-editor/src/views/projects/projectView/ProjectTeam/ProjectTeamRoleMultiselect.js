@@ -10,21 +10,9 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
-  },
-  infoIcon: {
-    color: theme.palette.action.disabled,
-  },
-}));
+import theme from "src/theme";
 
 const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   const rolesArray = React.useMemo(
@@ -33,7 +21,6 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   );
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
 
-  const classes = useStyles();
   const apiRef = useGridApiContext();
 
   const handleChange = (event) => {
@@ -49,10 +36,13 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   };
 
   return (
-    <FormControl variant="standard" className={classes.formControl}>
+    <FormControl
+      variant="standard"
+      sx={{ margin: theme.spacing(1) }}
+    >
       <Select
         variant="standard"
-        style={{ minWidth: "8em" }}
+        sx={{ minWidth: theme.spacing(10) }}
         labelId="team-role-multiselect-label"
         id={String(id)}
         multiple
