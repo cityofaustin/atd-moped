@@ -146,7 +146,7 @@ const useColumns = ({
     field: 'notes', 
     width: 200, 
     editable: true, 
-    renderEditCell: (props) => <DataGridTextField {...props} /> 
+    renderEditCell: (props) => <DataGridTextField {...props} multiline /> 
   },
   { 
     headerName: '', 

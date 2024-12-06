@@ -18,6 +18,7 @@ const DataGridTextField = ({
   hasFocus,
   helperText,
   error,
+  multiline = false,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -50,6 +51,7 @@ const DataGridTextField = ({
       onChange={handleChange}
       helperText={!!helperText && helperText}
       error={error}
+      multiline={multiline}
     />
   );
 };
