@@ -42,7 +42,7 @@ import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
 import MapView from "./ProjectComponents/index";
 import ProjectFunding from "./ProjectFunding";
-import ProjectTeam from "./ProjectTeam";
+import ProjectTeam from "./ProjectTeam/ProjectTeam";
 import ProjectTimeline from "./ProjectTimeline";
 import ProjectNotes from "./ProjectNotes";
 import ProjectFiles from "./ProjectFiles";
