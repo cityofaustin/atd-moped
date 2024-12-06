@@ -204,8 +204,7 @@ const useColumns = ({
     handleCancelClick, 
     handleDeleteOpen,
     classes,
-    teamNameLookup,
-    roleNameLookup
+    teamNameLookup
   ]
 );
 
@@ -224,7 +223,6 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
-  const [deleteTeamMemberId, setDeleteTeamMemberId] = useState(null);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -354,11 +352,10 @@ const getEditRolesPayload = (newData, oldData) => {
   }, [rowModesModel, rows]);
 
   const handleDeleteOpen = useCallback((id) => {
-    setDeleteTeamMemberId(id);
     return deleteProjectPersonnel({
       variables: { id },
     }).then(() => refetch()); 
-  }, [deleteTeamMemberId]);
+  }, [deleteProjectPersonnel, refetch]);
 
   const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
     let userId;
@@ -401,9 +398,6 @@ const getEditRolesPayload = (newData, oldData) => {
       throw new Error('Invalid project_personnel_id');
     }
 
-
-
-
     // Update roleIds to be in sync with moped_proj_personnel_roles
     updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
       (role) => role.project_role_id
@@ -417,9 +411,6 @@ const getEditRolesPayload = (newData, oldData) => {
 
     const fullMopedUserObject = data.moped_users.find(user => user.user_id === userId);
     updatedRow.moped_user = fullMopedUserObject;
-
-    // get notes
-    const notes = updatedRow.notes;
 
     const variables = {
       id: personnelId,
@@ -436,12 +427,12 @@ const getEditRolesPayload = (newData, oldData) => {
     return updateProjectPersonnel({ variables })
       .then(() => refetch())
       .then(() => updatedRow)
-      .catch((error) => {
-        console.error('Mutation error:', error);
-        throw error;
-      });
+        .catch((error) => {
+          console.error('Mutation error:', error);
+          throw error;
+        });
     } 
-  }, [updateProjectPersonnel, refetch]);
+  }, [updateProjectPersonnel, insertProjectPersonnel, projectId, refetch]);
 
   const handleProcessUpdateError = useCallback((error) => {
     console.error('process row update error', error);
