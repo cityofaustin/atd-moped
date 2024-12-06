@@ -27,7 +27,10 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
-  const rolesArray = value.map((role) => role.project_role_id);
+  const rolesArray = React.useMemo(
+    () => value.map((role) => role.project_role_id),
+    [value]
+  );
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
 
   const classes = useStyles();
