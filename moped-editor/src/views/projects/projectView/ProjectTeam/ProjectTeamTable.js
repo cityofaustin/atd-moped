@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
@@ -343,7 +342,7 @@ const getEditRolesPayload = (newData, oldData) => {
     setRowModesModel({ ...rowModesModel, [id]: { mode: GridRowModes.View } });
   }, [rowModesModel]);
 
-  const handleCancelClick = (id, tableId) => () => {
+  const handleCancelClick = useCallback((id, tableId) => () => {
     setRowModesModel({
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
@@ -352,7 +351,7 @@ const getEditRolesPayload = (newData, oldData) => {
     if (editedRow.isNew) {
       setRows(rows.filter((row) => row.id !== id));
     }
-  };
+  }, [rowModesModel, rows]);
 
   const handleDeleteOpen = useCallback((id) => {
     setDeleteTeamMemberId(id);
@@ -460,6 +459,16 @@ const getEditRolesPayload = (newData, oldData) => {
     roleNameLookup
   });
 
+  const processRowUpdateMemoized = useCallback(
+    (updatedRow, originalRow, params) => processRowUpdate(updatedRow, originalRow, params, data),
+    [processRowUpdate, data]
+  );
+
+  const getRowIdMemoized = useCallback(
+    (row) => row.project_personnel_id,
+    []
+  );
+
   if (loading || !data) return <CircularProgress />;
 
   return (
@@ -471,11 +480,11 @@ const getEditRolesPayload = (newData, oldData) => {
         autoHeight
         columns={dataGridColumns}
         rows={rows}
-        getRowId={(row) => row.project_personnel_id}
+        getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
-        processRowUpdate={(updatedRow, originalRow, params) => processRowUpdate(updatedRow, originalRow, params, data)}
+        processRowUpdate={processRowUpdateMemoized}
         onProcessRowUpdateError={handleProcessUpdateError}
         disableRowSelectionOnClick
         toolbar
