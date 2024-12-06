@@ -249,19 +249,21 @@ const ProjectTeamTable = ({ projectId }) => {
  * @param {integer} projectId - the project ID
  * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
  */
+
 const getNewPersonnelPayload = ({
   newData: {
     moped_user: { user_id },
     notes,
-    roleIds,
+    moped_proj_personnel_roles
   },
   projectId: project_id,
 }) => {
   const payload = { notes, project_id, user_id };
-  const personnelRoles = roleIds.map((roleId) => ({
-    project_role_id: roleId,
+  const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
+    project_role_id: roles.project_role_id,
   }));
-  payload["moped_proj_personnel_roles"] = { data: personnelRoles };
+
+  payload.moped_proj_personnel_roles = { data: personnelRoles };
   return payload;
 };
 
@@ -407,9 +409,6 @@ const getEditRolesPayload = (newData, oldData) => {
     updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
       (role) => role.project_role_id
     );
-
-    // // Check if the roles have changed
-    // const haveRolesChanged = !isEqual(updatedRow.moped_proj_personnel_roles, originalRow.moped_proj_personnel_roles);
 
     const payload = getEditPersonnelPayload(updatedRow);
     const [rolesToAdd, roleIdsToDelete] = getEditRolesPayload(updatedRow, originalRow);
