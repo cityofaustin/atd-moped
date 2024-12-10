@@ -82,12 +82,12 @@ const useColumns = ({
         renderCell: ({ id }) => (
           <DataGridActions
             id={id}
-            requiredField={"project_name_full"}
+            requiredFields={["project_name_full"]}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
             handleSaveClick={handleSaveClick}
-          ></DataGridActions>
+          />
         ),
       },
     ];
