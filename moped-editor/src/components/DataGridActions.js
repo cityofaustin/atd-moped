@@ -6,25 +6,34 @@ import {
 } from "@mui/x-data-grid-pro";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
-import { DeleteOutline as DeleteOutlineIcon } from "@mui/icons-material";
+import {
+  EditOutlined as EditOutlinedIcon,
+  DeleteOutline as DeleteOutlineIcon,
+} from "@mui/icons-material";
 
 import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 const DataGridActions = ({
   id,
-  requiredField,
+  requiredFields,
   rowModesModel,
   handleCancelClick,
   handleDeleteOpen,
   handleSaveClick,
+  handleEditClick,
 }) => {
   const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
 
   const apiRef = useGridApiContext();
 
-  const hasRequiredField = useGridSelector(apiRef, () => {
+  const hasRequiredFields = useGridSelector(apiRef, () => {
     const editState = apiRef.current.state.editRows;
-    return !!editState[id]?.[requiredField]?.value;
+    for (const field of requiredFields) {
+      if (!editState[id]?.[field]?.value) {
+        return false;
+      }
+    }
+    return true;
   });
   if (isInEditMode) {
     return [
@@ -35,7 +44,7 @@ const DataGridActions = ({
           color: "primary.main",
         }}
         onClick={handleSaveClick(id)}
-        disabled={!hasRequiredField}
+        disabled={!hasRequiredFields}
       />,
       <GridActionsCellItem
         icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
@@ -47,6 +56,15 @@ const DataGridActions = ({
     ];
   }
   return [
+    handleEditClick && (
+      <GridActionsCellItem
+        icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
+        label="Edit"
+        className="textPrimary"
+        onClick={handleEditClick(id)}
+        color="inherit"
+      />
+    ),
     <GridActionsCellItem
       icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
       label="Delete"
