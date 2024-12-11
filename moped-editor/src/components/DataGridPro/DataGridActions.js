@@ -37,7 +37,12 @@ const DataGridActions = ({
 
   const apiRef = useGridApiContext();
 
-  // check if all the required fields are filled out
+  /**
+   * To make our row re-render while still in edit mode we need the useGridSelector hook
+   * which establishes a reactive binding with the grid state and allows us to enable the save button
+   * if we have all the required fields.
+   * For reference https://mui.com/x/react-data-grid/state/#access-the-state
+   */
   const hasRequiredFields = useGridSelector(apiRef, () => {
     const editState = apiRef.current.state.editRows;
     for (const field of requiredFields) {
