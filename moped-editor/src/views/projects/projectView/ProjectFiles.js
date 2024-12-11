@@ -6,20 +6,12 @@ import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 import {
-  DeleteOutline as DeleteOutlineIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import {
   DataGridPro,
   GridRowModes,
-  GridActionsCellItem,
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -40,6 +32,7 @@ import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -212,43 +205,17 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            requiredFields={["file_name", "file_url", "file_type"]}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+            handleEditClick={handleEditClick}
+          />
+        ),
       },
     ];
   }, [

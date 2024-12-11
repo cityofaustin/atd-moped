@@ -24,7 +24,7 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import DataGridActions from "src/components/DataGridActions";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
