@@ -5,9 +5,9 @@ import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import { v4 as uuidv4 } from "uuid";
 
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
-import DataGridActions from "src/components/DataGridActions";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import SubprojectLookupComponent from "./SubprojectLookupComponent";
