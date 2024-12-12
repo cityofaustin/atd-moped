@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Autocomplete,
-  TextField,
-  FormHelperText,
-  FormControl,
-} from "@mui/material";
+import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 /**
@@ -68,11 +63,11 @@ const MilestoneAutocompleteComponent = ({
             variant="standard"
             {...params}
             inputRef={ref}
-            error={error}
+            error={error || !value}
+            helperText="Required"
           />
         )}
       />
-      <FormHelperText>Required</FormHelperText>
     </FormControl>
   );
 };
