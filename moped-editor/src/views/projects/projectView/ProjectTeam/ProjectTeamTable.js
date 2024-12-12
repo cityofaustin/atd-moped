@@ -359,6 +359,7 @@ const getEditRolesPayload = (newData, oldData) => {
 
   const processRowUpdate = useCallback((updatedRow, originalRow, params, data) => {
     let userId;
+
     const userObject = data.moped_users.find(user => {
       if (typeof updatedRow.moped_user === 'string') {
         return `${user.first_name} ${user.last_name}` === updatedRow.moped_user;
@@ -373,6 +374,24 @@ const getEditRolesPayload = (newData, oldData) => {
     } else {
       console.error('Invalid user data:', updatedRow.moped_user);
       throw new Error('Invalid user data');
+    }
+
+    // normalize the updatedRow and originalRow
+    const normalizedUpdatedRow = {
+      ...updatedRow,
+      roleIds: updatedRow.moped_proj_personnel_roles.map(role => role.project_role_id),
+      moped_user: updatedRow.moped_user?.user_id || null
+    };
+    const normalizedOriginalRow = {
+      ...originalRow,
+      roleIds: originalRow.moped_proj_personnel_roles.map(role => role.project_role_id),
+      moped_user: originalRow.moped_user?.user_id || null
+    };
+
+    // Check if the row has changed, including the roles array
+    const hasRowChanged = !isEqual(normalizedUpdatedRow, normalizedOriginalRow) 
+    if (!hasRowChanged) {
+      return Promise.resolve(updatedRow);
     }
 
     if (updatedRow.isNew) {
@@ -418,11 +437,6 @@ const getEditRolesPayload = (newData, oldData) => {
       deleteIds: roleIdsToDelete,
       addRolesObjects: rolesToAdd
     };
-
-    const hasRowChanged = !isEqual(updatedRow, originalRow);
-    if (!hasRowChanged) {
-      return Promise.resolve(updatedRow);
-    }
 
     return updateProjectPersonnel({ variables })
       .then(() => refetch())
