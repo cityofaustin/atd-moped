@@ -20,6 +20,8 @@ import {
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
 
+const requiredFields = ["project_name_full"];
+
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
@@ -82,7 +84,7 @@ const useColumns = ({
         renderCell: ({ id }) => (
           <DataGridActions
             id={id}
-            requiredFields={["project_name_full"]}
+            requiredFields={requiredFields}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
@@ -172,10 +174,13 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   );
 
   // open the delete confirmation modal
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   // handles row delete
   const handleDeleteClick = (id) => () => {

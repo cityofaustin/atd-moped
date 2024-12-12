@@ -54,6 +54,8 @@ const useMilestoneRelatedPhaseLookup = (data) =>
     );
   }, [data]);
 
+const requiredFields = ["milestone_id"];
+
 const useColumns = ({
   rowModesModel,
   handleEditClick,
@@ -159,7 +161,7 @@ const useColumns = ({
         renderCell: ({ id }) => (
           <DataGridActions
             id={id}
-            requiredFields={["milestone_id"]}
+            requiredFields={requiredFields}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
@@ -215,10 +217,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
