@@ -32,7 +32,7 @@ const TeamAutocompleteComponent = ({
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: personnelValue ?? null,  
+      value: personnelValue ?? null,
     });
   };
 
@@ -42,10 +42,12 @@ const TeamAutocompleteComponent = ({
     // if the value is a number, use the idFromValue nameLookup to find if option is equal to Value
     // If the value is an object, use the user_id to find if option is equal to Value
     let idFromValue;
-    if (typeof value === 'string') {
-      idFromValue = Object.keys(nameLookup).find(key => nameLookup[key] === value);
-    } else if (typeof value === 'object') {
-      idFromValue = value.user_id
+    if (typeof value === "string") {
+      idFromValue = Object.keys(nameLookup).find(
+        (key) => nameLookup[key] === value
+      );
+    } else if (typeof value === "object") {
+      idFromValue = value.user_id;
     }
 
     if (Number(option) === Number(idFromValue)) {
@@ -56,10 +58,10 @@ const TeamAutocompleteComponent = ({
   };
 
   const getOptionLabel = (option) => {
-    if (typeof option === 'string' && !nameLookup[option]) {
+    if (typeof option === "string" && !nameLookup[option]) {
       return option;
     }
-    return nameLookup[option] || '';
+    return nameLookup[option] || "";
   };
 
   return (
@@ -72,7 +74,9 @@ const TeamAutocompleteComponent = ({
         name={name}
         options={options}
         getOptionLabel={getOptionLabel}
-        isOptionEqualToValue={(option, value) => isOptionEqualToValue(option, value)}
+        isOptionEqualToValue={(option, value) =>
+          isOptionEqualToValue(option, value)
+        }
         value={value || null}
         sx={{ paddingTop: "8px" }}
         onChange={(event, newValue) => {

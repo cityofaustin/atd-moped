@@ -25,7 +25,9 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
 
   const handleChange = (event) => {
     const valueIds = event.target.value;
-    const newValue = roles.filter((role) => valueIds.includes(role.project_role_id));
+    const newValue = roles.filter((role) =>
+      valueIds.includes(role.project_role_id)
+    );
     const rolesArray = newValue.map((role) => role.project_role_id);
     setSelectedValues(rolesArray);
     apiRef.current.setEditCellValue({
@@ -36,10 +38,7 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
   };
 
   return (
-    <FormControl
-      variant="standard"
-      sx={{ margin: theme.spacing(1) }}
-    >
+    <FormControl variant="standard" sx={{ margin: theme.spacing(1) }}>
       <Select
         variant="standard"
         sx={{ minWidth: theme.spacing(10) }}
@@ -64,7 +63,8 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
           PaperProps: { style: { width: "50%" } },
           anchorOrigin: { vertical: "bottom", horizontal: "center" },
           transformOrigin: { vertical: "top", horizontal: "center" },
-        }}>
+        }}
+      >
         {roles.map(
           ({
             project_role_id,
