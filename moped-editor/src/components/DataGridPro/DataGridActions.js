@@ -14,7 +14,7 @@ import {
 import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 /** Component for Data Grid table action buttons
- * @param {Integer} id - Data Grid row id (same as project id)
+ * @param {Number} id - Data Grid row id (same as project id)
  * @param {Array} requiredFields - fields that are required in order to save row
  * @param {Object} rowModesModel - row modes state from data grid
  * @param {Function} handleCancelClick - handles cancel button click
@@ -26,7 +26,7 @@ import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 const DataGridActions = ({
   id,
-  requiredFields,
+  requiredFields = [],
   rowModesModel,
   handleCancelClick,
   handleDeleteOpen,
@@ -87,7 +87,7 @@ const DataGridActions = ({
     <GridActionsCellItem
       icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
       label="Delete"
-      onClick={() => handleDeleteOpen(id)}
+      onClick={handleDeleteOpen(id)}
       color="inherit"
     />,
   ];
