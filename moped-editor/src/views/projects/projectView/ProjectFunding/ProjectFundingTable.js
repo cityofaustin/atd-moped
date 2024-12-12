@@ -223,7 +223,6 @@ const useColumns = ({
         renderCell: ({ id }) => (
           <DataGridActions
             id={id}
-            requiredFields={[]}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
@@ -289,10 +288,13 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 
