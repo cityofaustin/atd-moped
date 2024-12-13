@@ -15,8 +15,14 @@ CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
 funding_sources_lookup AS (
     SELECT
         mpf.project_id,
-        string_agg(DISTINCT mfs.funding_source_name, ', '::text ORDER BY mfs.funding_source_name) AS funding_source_name,
-        string_agg(DISTINCT mfp.funding_program_name, ', '::text ORDER BY mfp.funding_program_name) AS funding_program_names,
+        string_agg(
+            DISTINCT mfs.funding_source_name, ', '::text
+            ORDER BY mfs.funding_source_name
+        ) AS funding_source_name,
+        string_agg(
+            DISTINCT mfp.funding_program_name, ', '::text
+            ORDER BY mfp.funding_program_name
+        ) AS funding_program_names,
         string_agg(
             DISTINCT
             CASE
@@ -24,7 +30,8 @@ funding_sources_lookup AS (
                 WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
                 WHEN mfp.funding_program_name IS NOT null THEN mfp.funding_program_name
                 ELSE null::text
-            END, ', '::text ORDER BY (
+            END, ', '::text
+            ORDER BY (
                 CASE
                     WHEN mfs.funding_source_name IS NOT null AND mfp.funding_program_name IS NOT null THEN concat(mfs.funding_source_name, ' - ', mfp.funding_program_name)
                     WHEN mfs.funding_source_name IS NOT null THEN mfs.funding_source_name
@@ -170,7 +177,10 @@ min_estimated_phase_dates AS (
 project_component_work_types AS (
     SELECT
         mpc.project_id,
-        string_agg(DISTINCT mwt.name, ', '::text ORDER BY mwt.name) AS component_work_type_names
+        string_agg(
+            DISTINCT mwt.name, ', '::text
+            ORDER BY mwt.name
+        ) AS component_work_type_names
     FROM moped_proj_components mpc
     LEFT JOIN moped_proj_component_work_types mpcwt ON mpcwt.project_component_id = mpc.project_component_id
     LEFT JOIN moped_work_types mwt ON mwt.id = mpcwt.work_type_id
