@@ -5,6 +5,7 @@ import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommon
 import { parseGqlString } from "src/utils/gridTableHelpers";
 import { addDays, parseISO, format } from "date-fns";
 import { useMakeFilterState } from "src/components/GridTable/helpers";
+import { throwFallbackComponentError } from "src/utils/errorHandling";
 
 /* Names of advanced search URL parameters */
 export const advancedSearchFilterParamName = "filters";
@@ -22,6 +23,13 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       // Use field name to get the filter config and GraphQL operator config for that field
       const filterConfigForField = PROJECT_LIST_VIEW_FILTERS_CONFIG[field];
+
+      if (!filterConfigForField) {
+        throwFallbackComponentError(
+          `Field ${field} in this url no longer exists in the project list.`
+        );
+      }
+
       const { type } = filterConfigForField;
 
       // Use operator name to get the GraphQL operator config for that operator

@@ -6,20 +6,12 @@ import { CardContent, CircularProgress, Link, Typography } from "@mui/material";
 
 import makeStyles from "@mui/styles/makeStyles";
 import {
-  DeleteOutline as DeleteOutlineIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import {
   DataGridPro,
   GridRowModes,
-  GridActionsCellItem,
   useGridApiRef,
   gridStringOrNumberComparator,
 } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import { useMutation, useQuery } from "@apollo/client";
 
 import humanReadableFileSize from "../../../utils/humanReadableFileSize";
@@ -40,6 +32,7 @@ import ProjectFilesToolbar from "./ProjectFilesToolbar";
 import DataGridTextField from "./DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -48,7 +41,7 @@ const useStyles = makeStyles(() => ({
   uploadFileButton: {
     float: "right",
   },
-  downloadLink: {
+  ellipsisOverflow: {
     cursor: "pointer",
     overflow: "hidden",
     display: "block",
@@ -71,6 +64,8 @@ const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
 const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
+const requiredFields = ["file_name", "file_url", "file_type"];
+
 const useColumns = ({
   classes,
   token,
@@ -88,6 +83,11 @@ const useColumns = ({
         field: "file_name",
         width: 200,
         editable: true,
+        renderCell: ({ row }) => (
+          <Typography className={classes.ellipsisOverflow}>
+            {row?.file_name}
+          </Typography>
+        ),
         // validate input
         preProcessEditCellProps: (params) => {
           const hasError =
@@ -108,7 +108,7 @@ const useColumns = ({
           if (row.file_key) {
             return (
               <Link
-                className={classes.downloadLink}
+                className={classes.ellipsisOverflow}
                 onClick={() => downloadFileAttachment(row?.file_key, token)}
               >
                 {cleanUpFileKey(row?.file_key)}
@@ -117,7 +117,7 @@ const useColumns = ({
           }
           return isValidUrl(row?.file_url) ? (
             <ExternalLink
-              linkProps={{ className: classes.downloadLink }}
+              linkProps={{ className: classes.ellipsisOverflow }}
               url={row?.file_url}
               text={row?.file_url}
             />
@@ -207,43 +207,17 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            requiredFields={requiredFields}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+            handleEditClick={handleEditClick}
+          />
+        ),
       },
     ];
   }, [
@@ -292,10 +266,13 @@ const ProjectFiles = () => {
     setDialogOpen(false);
   };
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   /**
    * Persists the file data into the database

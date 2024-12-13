@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1729197757695_add_agol_geometry_type/up.sql
+-- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
