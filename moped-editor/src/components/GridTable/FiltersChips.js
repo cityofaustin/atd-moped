@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Chip, Grid } from "@mui/material";
+import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   advancedSearchFilterParamName,
@@ -18,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Roboto",
     fontSize: ".9rem",
     color: theme.palette.text.secondary,
+  },
+  saveViewButton: {
+    margin: theme.spacing(0.5),
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -111,6 +115,15 @@ const FiltersChips = ({
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
+          <Grid>
+            <Button
+              variant="outlined"
+              color="primary"
+              className={classes.saveViewButton}
+            >
+              SAVE VIEW
+            </Button>
+          </Grid>
           {filtersCount > 1 && (
             <Grid item>
               <Chip
