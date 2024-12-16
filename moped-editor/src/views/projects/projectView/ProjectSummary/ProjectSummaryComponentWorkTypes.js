@@ -10,6 +10,11 @@ import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/P
  * @constructor
  */
 const ProjectSummaryComponentWorkTypes = ({ classes, data }) => {
+  const componentWorkTypes =
+    data?.project_list_view?.[0]?.component_work_type_names;
+  /* component_work_type_names is a comma-separated list in the database view */
+  const componentWorkTypesArray = componentWorkTypes?.split(", ") ?? [];
+
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>
@@ -21,9 +26,7 @@ const ProjectSummaryComponentWorkTypes = ({ classes, data }) => {
         className={classes.fieldBox}
       >
         <ProjectSummaryLabel
-          text={data?.project_list_view?.[0]?.component_work_type_names.split(
-            ", "
-          )}
+          text={componentWorkTypesArray}
           className={classes.fieldLabelTextNoHover}
         />
       </Box>
