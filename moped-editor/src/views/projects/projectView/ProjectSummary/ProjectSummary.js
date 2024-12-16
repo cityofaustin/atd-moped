@@ -5,6 +5,8 @@ import ProjectSummaryMap from "./ProjectSummaryMap";
 import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
 
 import { Grid, CardContent, CircularProgress } from "@mui/material";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
@@ -20,6 +22,7 @@ import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 import ProjectSummaryCouncilDistricts from "./ProjectSummaryCouncilDistricts";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
@@ -234,6 +237,25 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <Grid item xs={12} className={classes.fieldGridItem}>
+                  <Typography className={classes.fieldLabel}>
+                    Component work types
+                  </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="flex-start"
+                    className={classes.fieldBox}
+                  >
+                    <ProjectSummaryLabel
+                      text={data?.project_list_view?.[0]?.component_work_type_names.split(
+                        ", "
+                      )}
+                      className={classes.fieldLabelTextNoHover}
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+              <Grid item xs={12}>
                 <ProjectSummaryAutocomplete
                   field="Public process"
                   idColumn={"id"}
@@ -288,8 +310,6 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 <ProjectSummaryWorkOrders
                   classes={classes}
                   project={data?.moped_project?.[0]}
-                  refetch={refetch}
-                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
             </Grid>
