@@ -125,6 +125,32 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "string_is_not_null",
     ],
   },
+  component_work_type_names: {
+    name: "component_work_type_names",
+    label: "Work types",
+    type: "string",
+    defaultOperator: "string_contains_case_insensitive",
+    lookup: {
+      table_name: "moped_work_types",
+      getOptionLabel: (option) => option.name,
+      operators: [
+        "string_contains_case_insensitive",
+        "string_contains_not_case_insensitive",
+        "string_equals_case_insensitive",
+        "string_does_not_equal_case_insensitive",
+      ],
+    },
+    operators: [
+      "string_contains_case_insensitive",
+      "string_contains_not_case_insensitive",
+      "string_equals_case_insensitive",
+      "string_does_not_equal_case_insensitive",
+      "string_begins_with_case_insensitive",
+      "string_ends_with_case_insensitive",
+      "string_is_null",
+      "string_is_not_null",
+    ],
+  },
   updated_at: {
     name: "updated_at",
     label: "Modified",
