@@ -42,12 +42,19 @@ const workTypeHandler = (workTypes) =>
     <div key={workType.moped_work_type.id}>{workType.moped_work_type.name}</div>
   ));
 
-const statusBadgeHandler = (phaseName) => {
-  const phaseKey = phaseName.toLowerCase().replace(/[\s/-]/g, "_");
-  return (
-    <ProjectStatusBadge phaseKey={phaseKey} phaseName={phaseName} condensed />
-  );
-};
+/**
+ * Uses phase name and phase key from row object to render status badge
+ * @param {string} phaseName - phase name
+ * @param {Object} row a single Moped record object as returned from Hasura
+ * @returns ProjectStatusBadge component
+ */
+const statusBadgeHandler = (phaseName, row) => (
+  <ProjectStatusBadge
+    phaseKey={row.phase_key}
+    phaseName={phaseName}
+    condensed
+  />
+);
 
 /**
  * Definitions for data tables.
