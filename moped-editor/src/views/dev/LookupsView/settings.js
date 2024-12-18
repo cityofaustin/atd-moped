@@ -1,3 +1,5 @@
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+
 /**
  * Parses an array of phase-subphases into an array of subphase names
  * @param {Object[]} subphases - array of moped_subphases objects
@@ -39,6 +41,13 @@ const workTypeHandler = (workTypes) =>
   workTypes.map((workType) => (
     <div key={workType.moped_work_type.id}>{workType.moped_work_type.name}</div>
   ));
+
+const statusBadgeHandler = (phaseName) => {
+  const phaseKey = phaseName.toLowerCase().replace(/[\s/-]/g, "_");
+  return (
+    <ProjectStatusBadge phaseKey={phaseKey} phaseName={phaseName} condensed />
+  );
+};
 
 /**
  * Definitions for data tables.
@@ -167,6 +176,7 @@ export const SETTINGS = [
       {
         key: "phase_name",
         label: "Phase name",
+        handler: statusBadgeHandler,
       },
       {
         key: "phase_name_simple",
