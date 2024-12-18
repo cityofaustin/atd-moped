@@ -5557,6 +5557,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
@@ -5609,6 +5610,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
@@ -5661,6 +5663,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
