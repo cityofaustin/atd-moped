@@ -116,6 +116,6 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
     label: "Council districts",
   },
   component_work_type_names: {
-    label: "Work types",
+    label: "Component work types",
   },
 };
