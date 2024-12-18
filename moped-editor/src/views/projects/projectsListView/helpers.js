@@ -295,7 +295,7 @@ export const useColumns = ({ hiddenColumns }) => {
         width: COLUMN_WIDTHS.medium,
       },
       {
-        headerName: "Work Types",
+        headerName: "Component work types",
         field: "component_work_type_names",
         renderCell: ({ row }) =>
           renderSplitListDisplayBlock(row, "component_work_type_names"),

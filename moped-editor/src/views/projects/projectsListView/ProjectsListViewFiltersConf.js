@@ -127,7 +127,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
   },
   component_work_type_names: {
     name: "component_work_type_names",
-    label: "Work types",
+    label: "Component work types",
     type: "string",
     defaultOperator: "string_contains_case_insensitive",
     lookup: {
