@@ -10,36 +10,47 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import { useGridApiContext } from "@mui/x-data-grid-pro";
 
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-  },
-  noLabel: {
-    marginTop: theme.spacing(3),
-  },
-  infoIcon: {
-    color: theme.palette.action.disabled,
-  },
-}));
+import theme from "src/theme";
 
-const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
-  const classes = useStyles();
+const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
+  const rolesArray = React.useMemo(
+    () => value.map((role) => role.project_role_id),
+    [value]
+  );
+  const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
+
+  const apiRef = useGridApiContext();
+
+  const handleChange = (event) => {
+    const valueIds = event.target.value;
+    const newValue = roles.filter((role) =>
+      valueIds.includes(role.project_role_id)
+    );
+    const rolesArray = newValue.map((role) => role.project_role_id);
+    setSelectedValues(rolesArray);
+    apiRef.current.setEditCellValue({
+      id,
+      field,
+      value: newValue,
+    });
+  };
+
   return (
-    <FormControl variant="standard" className={classes.formControl}>
+    <FormControl variant="standard" sx={{ margin: theme.spacing(1) }}>
       <Select
         variant="standard"
-        style={{ minWidth: "8em" }}
+        sx={{ minWidth: theme.spacing(10) }}
         labelId="team-role-multiselect-label"
-        id="team-role-multiselect"
+        id={String(id)}
         multiple
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
+        value={selectedValues}
+        onChange={handleChange}
         input={<Input id="select-multiple" />}
         renderValue={() => {
           const selectedRoles = roles.filter((role) =>
-            value.includes(role.project_role_id)
+            selectedValues.includes(role.project_role_id)
           );
           return selectedRoles.map(({ project_role_name }) => (
             <Typography key={project_role_name}>{project_role_name}</Typography>
@@ -52,16 +63,16 @@ const ProjectTeamRoleMultiselect = ({ roles, value, onChange }) => {
           PaperProps: { style: { width: "50%" } },
           anchorOrigin: { vertical: "bottom", horizontal: "center" },
           transformOrigin: { vertical: "top", horizontal: "center" },
-        }}>
+        }}
+      >
         {roles.map(
           ({
             project_role_id,
             project_role_name,
             project_role_description,
           }) => {
-            const isChecked = value.includes(project_role_id);
+            const isChecked = selectedValues.includes(project_role_id);
             return (
-              // ListItemClasses
               <MenuItem key={project_role_id} value={project_role_id}>
                 <Checkbox checked={isChecked} color={"primary"} />
                 <ListItemText
