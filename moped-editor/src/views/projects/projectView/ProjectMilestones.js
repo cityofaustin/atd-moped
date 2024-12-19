@@ -3,20 +3,8 @@ import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
 import { CircularProgress } from "@mui/material";
-import {
-  EditOutlined as EditOutlinedIcon,
-  DeleteOutline as DeleteOutlineIcon,
-} from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  DataGridPro,
-  GridRowModes,
-  GridActionsCellItem,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "./DataGridTextField";
 import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
@@ -36,6 +24,7 @@ import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
 import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -64,6 +53,8 @@ const useMilestoneRelatedPhaseLookup = (data) =>
       {}
     );
   }, [data]);
+
+const requiredFields = ["milestone_id"];
 
 const useColumns = ({
   rowModesModel,
@@ -167,43 +158,17 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            requiredFields={requiredFields}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+            handleEditClick={handleEditClick}
+          />
+        ),
       },
     ];
   }, [
@@ -252,10 +217,13 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
   const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);

@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1730931541883_update_agol_view_geometry/up.sql
+-- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
