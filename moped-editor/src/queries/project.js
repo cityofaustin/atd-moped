@@ -151,6 +151,10 @@ export const SUMMARY_QUERY = gql`
         ...projectComponentFields
       }
     }
+    project_list_view(where: { project_id: { _eq: $projectId } }) {
+      component_work_type_names
+      project_id
+    }
   }
 `;
 
@@ -995,6 +999,13 @@ export const LOOKUP_TABLES_QUERY = gql`
     layer_council_district {
       id
       council_district
+    }
+    moped_work_types(
+      order_by: { name: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
+      id
+      name
     }
   }
 `;

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Grid, Box, Typography, Icon, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
-import { Autocomplete } from '@mui/material';
+import { Autocomplete } from "@mui/material";
 
 import { useMutation } from "@apollo/client";
 

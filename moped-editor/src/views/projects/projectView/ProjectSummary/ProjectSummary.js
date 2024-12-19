@@ -20,6 +20,7 @@ import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
 import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
 import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
 import ProjectSummaryCouncilDistricts from "./ProjectSummaryCouncilDistricts";
+import ProjectSummaryComponentWorkTypes from "./ProjectSummaryComponentWorkTypes";
 
 import SubprojectsTable from "./SubprojectsTable";
 import TagsSection from "./TagsSection";
@@ -234,6 +235,12 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 />
               </Grid>
               <Grid item xs={12}>
+                <ProjectSummaryComponentWorkTypes
+                  data={data}
+                  classes={classes}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <ProjectSummaryAutocomplete
                   field="Public process"
                   idColumn={"id"}
@@ -288,8 +295,6 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 <ProjectSummaryWorkOrders
                   classes={classes}
                   project={data?.moped_project?.[0]}
-                  refetch={refetch}
-                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
             </Grid>

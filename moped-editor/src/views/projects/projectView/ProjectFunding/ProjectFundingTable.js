@@ -5,17 +5,10 @@ import isEqual from "lodash/isEqual";
 
 // Material
 import { Alert, CircularProgress, Snackbar, Box } from "@mui/material";
-import {
-  DeleteOutline as DeleteOutlineIcon,
-  EditOutlined as EditOutlinedIcon,
-} from "@mui/icons-material";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
   GridRowModes,
-  GridActionsCellItem,
   useGridApiRef,
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
@@ -42,8 +35,8 @@ import LookupAutocompleteComponent from "./LookupAutocompleteComponent";
 import FundAutocompleteComponent from "./FundAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
-import { getLookupValueByID } from "./utils/helpers";
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
+import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -227,43 +220,16 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+            handleEditClick={handleEditClick}
+          />
+        ),
       },
     ];
   }, [
@@ -322,10 +288,13 @@ const ProjectFundingTable = () => {
     refetch();
   };
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   const fdusArray = useFdusArray(data?.moped_proj_funding);
 

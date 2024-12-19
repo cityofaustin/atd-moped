@@ -1,17 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useQuery, useMutation } from "@apollo/client";
 
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import { CircularProgress } from "@mui/material";
-import { DeleteOutline as DeleteOutlineIcon } from "@mui/icons-material";
-import {
-  DataGridPro,
-  GridRowModes,
-  GridActionsCellItem,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
 import { v4 as uuidv4 } from "uuid";
 
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
@@ -19,13 +13,14 @@ import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
 import SubprojectLookupComponent from "./SubprojectLookupComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import RenderFieldLink from "src/components/RenderFieldLink";
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 
 import {
   SUBPROJECT_QUERY,
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
+
+const requiredFields = ["project_name_full"];
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
@@ -86,36 +81,16 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id)}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            requiredFields={requiredFields}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+          />
+        ),
       },
     ];
   }, [
@@ -199,10 +174,13 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
   );
 
   // open the delete confirmation modal
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   // handles row delete
   const handleDeleteClick = (id) => () => {

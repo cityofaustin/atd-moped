@@ -5189,6 +5189,102 @@
       permission:
         filter: {}
 - table:
+    name: moped_user_saved_views
+    schema: public
+  insert_permissions:
+    - role: moped-admin
+      permission:
+        check: {}
+        set:
+          created_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-x-hasura-user-db-id
+        columns:
+          - description
+          - is_deleted
+          - query_filters
+          - url
+      comment: ""
+    - role: moped-editor
+      permission:
+        check: {}
+        set:
+          created_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-x-hasura-user-db-id
+        columns:
+          - description
+          - is_deleted
+          - query_filters
+          - url
+      comment: ""
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - query_filters
+          - description
+          - url
+          - updated_at
+          - created_at
+          - created_by_user_id
+          - updated_by_user_id
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - query_filters
+          - description
+          - url
+          - updated_at
+          - created_at
+          - created_by_user_id
+          - updated_by_user_id
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - is_deleted
+          - id
+          - query_filters
+          - description
+          - url
+          - updated_at
+          - created_at
+          - created_by_user_id
+          - updated_by_user_id
+        filter: {}
+      comment: ""
+  update_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - description
+          - is_deleted
+          - query_filters
+          - url
+        filter: {}
+        check: null
+        set:
+          updated_by_user_id: x-hasura-x-hasura-user-db-id
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - description
+          - is_deleted
+          - query_filters
+          - url
+        filter: {}
+        check: null
+        set:
+          updated_by_user_id: x-hasura-x-hasura-user-db-id
+      comment: ""
+- table:
     name: moped_users
     schema: public
   object_relationships:
@@ -5461,6 +5557,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
@@ -5513,6 +5610,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
@@ -5565,6 +5663,7 @@
         columns:
           - added_by
           - children_project_ids
+          - component_work_type_names
           - components
           - construction_start_date
           - contract_numbers
