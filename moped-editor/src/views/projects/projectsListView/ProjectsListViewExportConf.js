@@ -115,4 +115,7 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
   project_and_child_project_council_districts: {
     label: "Council districts",
   },
+  component_work_type_names: {
+    label: "Component work types",
+  },
 };

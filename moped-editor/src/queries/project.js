@@ -1000,6 +1000,13 @@ export const LOOKUP_TABLES_QUERY = gql`
       id
       council_district
     }
+    moped_work_types(
+      order_by: { name: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
+      id
+      name
+    }
   }
 `;
 
