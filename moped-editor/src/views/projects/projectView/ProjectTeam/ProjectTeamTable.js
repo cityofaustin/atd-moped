@@ -342,7 +342,7 @@ const ProjectTeamTable = ({ projectId }) => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "project_personnel_id" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "moped_user" },
     }));
   };
 
