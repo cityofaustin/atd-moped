@@ -35,7 +35,7 @@ import LookupAutocompleteComponent from "./LookupAutocompleteComponent";
 import FundAutocompleteComponent from "./FundAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
-import { getLookupValueByID } from "./utils/helpers";
+import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useStyles = makeStyles((theme) => ({

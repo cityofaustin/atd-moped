@@ -2,7 +2,7 @@ import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import makeStyles from "@mui/styles/makeStyles";
-import { getLookupValueByID } from "./utils/helpers";
+import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import CustomPopper from "src/components/CustomPopper";
 
 const useStyles = makeStyles((theme) => ({
