@@ -32,6 +32,7 @@ import ProjectTeamToolbar from "./ProjectTeamToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
+import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -235,6 +236,9 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const [rows, setRows] = useState([]);
   const [rowModesModel, setRowModesModel] = useState({});
+  const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
+    useState(false);
+  const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -374,14 +378,10 @@ const ProjectTeamTable = ({ projectId }) => {
     [rowModesModel, rows]
   );
 
-  const handleDeleteOpen = useCallback(
-    (id) => {
-      return deleteProjectPersonnel({
-        variables: { id },
-      }).then(() => refetch());
-    },
-    [deleteProjectPersonnel, refetch]
-  );
+  const handleDeleteOpen = useCallback((id) => {
+    setIsDeleteConfirmationOpen(true);
+    setDeleteConfirmationId(id);
+  }, []);
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow, params, data) => {
@@ -556,6 +556,19 @@ const ProjectTeamTable = ({ projectId }) => {
             classes: classes,
           },
         }}
+      />
+      <DeleteConfirmationModal
+        type="team member"
+        submitDelete={() => {
+          deleteProjectPersonnel({
+            variables: { id: deleteConfirmationId },
+          }).then(() => {
+            refetch();
+            setIsDeleteConfirmationOpen(false);
+          });
+        }}
+        isDeleteConfirmationOpen={isDeleteConfirmationOpen}
+        setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
     </ApolloErrorHandler>
   );
