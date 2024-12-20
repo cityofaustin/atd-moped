@@ -5466,25 +5466,28 @@
     - role: moped-admin
       permission:
         columns:
+          - date_added
+          - is_deleted
           - workgroup_id
           - workgroup_name
-          - date_added
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
+          - date_added
+          - is_deleted
           - workgroup_id
           - workgroup_name
-          - date_added
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
-          - workgroup_name
-          - workgroup_id
           - date_added
+          - is_deleted
+          - workgroup_id
+          - workgroup_name
         filter: {}
         allow_aggregations: true
 - table:
