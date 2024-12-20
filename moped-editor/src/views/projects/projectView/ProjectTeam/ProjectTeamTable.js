@@ -4,23 +4,11 @@ import { v4 as uuidv4 } from "uuid";
 
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import {
-  EditOutlined as EditOutlinedIcon,
-  DeleteOutline as DeleteOutlineIcon,
-  Check as CheckIcon,
-  Close as CloseIcon,
-} from "@mui/icons-material";
 
-import {
-  DataGridPro,
-  GridRowModes,
-  GridActionsCellItem,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
-import { defaultEditColumnIconStyle } from "src/utils/dataGridHelpers";
 import {
   TEAM_QUERY,
   UPDATE_PROJECT_PERSONNEL,
@@ -31,6 +19,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectTeamToolbar from "./ProjectTeamToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
 import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
+import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 
@@ -69,6 +58,8 @@ const useRoleNameLookup = (data) =>
       return obj;
     }, {});
   }, [data]);
+
+const requiredFields = ["moped_user", "moped_proj_personnel_roles"];
 
 const useColumns = ({
   data,
@@ -171,43 +162,17 @@ const useColumns = ({
         sortable: false,
         editable: false,
         type: "actions",
-        getActions: ({ id }) => {
-          const isInEditMode = rowModesModel[id]?.mode === GridRowModes.Edit;
-          if (isInEditMode) {
-            return [
-              <GridActionsCellItem
-                icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
-                label="Save"
-                sx={{
-                  color: "primary.main",
-                }}
-                onClick={handleSaveClick(id)}
-              />,
-              <GridActionsCellItem
-                icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
-                label="Cancel"
-                className="textPrimary"
-                onClick={handleCancelClick(id, "project_personnel_id")}
-                color="inherit"
-              />,
-            ];
-          }
-          return [
-            <GridActionsCellItem
-              icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
-              label="Edit"
-              className="textPrimary"
-              onClick={handleEditClick(id)}
-              color="inherit"
-            />,
-            <GridActionsCellItem
-              icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
-              label="Delete"
-              onClick={() => handleDeleteOpen(id)}
-              color="inherit"
-            />,
-          ];
-        },
+        renderCell: ({ id }) => (
+          <DataGridActions
+            id={id}
+            requiredFields={requiredFields}
+            rowModesModel={rowModesModel}
+            handleCancelClick={handleCancelClick}
+            handleDeleteOpen={handleDeleteOpen}
+            handleSaveClick={handleSaveClick}
+            handleEditClick={handleEditClick}
+          />
+        ),
       },
     ];
   }, [
