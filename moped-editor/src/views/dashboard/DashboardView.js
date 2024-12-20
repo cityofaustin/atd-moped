@@ -202,7 +202,7 @@ const DashboardView = () => {
         <DashboardTimelineModal
           table="phases"
           projectId={entry.project_id}
-          projectName={entry.project.project_name}
+          projectName={entry.project.project_name_full}
           dashboardRefetch={refetch}
         >
           <ProjectStatusBadge
@@ -222,7 +222,7 @@ const DashboardView = () => {
       render: (entry) => (
         <DashboardStatusModal
           projectId={entry.project_id}
-          projectName={entry.project.project_name}
+          projectName={entry.project.project_name_full}
           currentPhaseId={entry.current_phase_id}
           modalParent="dashboard"
           statusUpdate={entry.status_update}
@@ -241,7 +241,7 @@ const DashboardView = () => {
         <DashboardTimelineModal
           table="milestones"
           projectId={entry.project_id}
-          projectName={entry.project.project_name}
+          projectName={entry.project.project_name_full}
           dashboardRefetch={refetch}
         >
           <MilestoneProgressMeter

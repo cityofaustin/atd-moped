@@ -319,6 +319,12 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
+   component_work_type_names: {
+      type: "array",
+      sortable: true,
+      defaultHidden: true,
+      showInTable: true,
+    },
   },
 };
 

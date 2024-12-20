@@ -14,7 +14,7 @@ import CircularProgress from "@mui/material/CircularProgress";
  * @returns { JSX } an MUI TableCell component with the row/column value
  */
 const WrappedTableCell = ({ row, column: { key, handler } }) => {
-  return <TableCell>{handler ? handler(row[key]) : row[key]}</TableCell>;
+  return <TableCell>{handler ? handler(row[key], row) : row[key]}</TableCell>;
 };
 
 /**
