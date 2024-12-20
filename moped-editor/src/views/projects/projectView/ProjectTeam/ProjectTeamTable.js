@@ -92,6 +92,12 @@ const useColumns = ({
             />
           );
         },
+        preProcessEditCellProps: (params) => {
+          // Enforce required field
+          const hasError =
+            !params.props.value || params.props.value.length === 0;
+          return { ...params.props, error: hasError };
+        },
       },
       {
         headerName: "Workgroup",

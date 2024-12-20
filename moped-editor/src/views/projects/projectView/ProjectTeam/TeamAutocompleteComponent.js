@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  Autocomplete,
-  TextField,
-  FormHelperText,
-  FormControl,
-} from "@mui/material";
+import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
@@ -88,10 +83,10 @@ const TeamAutocompleteComponent = ({
             {...params}
             inputRef={ref}
             error={error}
+            helperText="Required"
           />
         )}
       />
-      <FormHelperText>Required</FormHelperText>
     </FormControl>
   );
 };
