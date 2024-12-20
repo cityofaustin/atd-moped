@@ -330,12 +330,12 @@ const ProjectTeamTable = ({ projectId }) => {
   );
 
   const handleCancelClick = useCallback(
-    (id, tableId) => () => {
+    (id) => () => {
       setRowModesModel({
         ...rowModesModel,
         [id]: { mode: GridRowModes.View, ignoreModifications: true },
       });
-      const editedRow = rows.find((row) => row[tableId] === id);
+      const editedRow = rows.find((row) => row.project_personnel_id === id);
       if (editedRow.isNew) {
         setRows(rows.filter((row) => row.id !== id));
       }
@@ -343,14 +343,19 @@ const ProjectTeamTable = ({ projectId }) => {
     [rowModesModel, rows]
   );
 
-  const handleDeleteOpen = useCallback((id) => {
-    setIsDeleteConfirmationOpen(true);
-    setDeleteConfirmationId(id);
-  }, []);
+  const handleDeleteOpen = useCallback(
+    (id) => () => {
+      setIsDeleteConfirmationOpen(true);
+      setDeleteConfirmationId(id);
+    },
+    []
+  );
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow, params, data) => {
       let userId;
+
+      console.log({ updatedRow, originalRow, params });
 
       const userObject = data.moped_users.find((user) => {
         if (typeof updatedRow.moped_user === "string") {
