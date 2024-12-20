@@ -89,6 +89,7 @@ const useColumns = ({
               name={"user"}
               value={props.row.moped_user}
               nameLookup={teamNameLookup}
+              error={props.error}
             />
           );
         },
@@ -143,6 +144,7 @@ const useColumns = ({
               {...props}
               value={props.row.moped_proj_personnel_roles || []}
               roles={data.moped_project_roles}
+              error={props.error}
             />
           );
         },
