@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -15,6 +15,10 @@ import MaterialTable from "@material-table/core";
 
 import typography from "../../../../theme/typography";
 
+// DataGrid
+import { DataGridPro, useGridApiRef } from "@mui/x-data-grid-pro";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+
 const columns = [
   {
     field: "fdu",
@@ -27,6 +31,25 @@ const columns = [
     cellStyle: { padding: "12px" },
   },
 ];
+
+const useColumns = () =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "FDU",
+        field: "fdu",
+        // renderCell: ({ row }) => row.moped_milestone?.milestone_name,
+        editable: false,
+        width: 250,
+      },
+      {
+        headerName: "Unit name",
+        field: "unit_long_name",
+        width: 200,
+        editable: false,
+      },
+    ];
+  }, []);
 
 const SubprojectFundingModal = ({
   isDialogOpen,
@@ -97,6 +120,11 @@ const SubprojectFundingModal = ({
     setSelectedFdus([]);
   };
 
+  // DataGrid
+  const apiRef = useGridApiRef();
+  const dataGridColumns = useColumns();
+  const [rows, setRows] = useState([]);
+
   return (
     <Dialog
       open={isDialogOpen}
@@ -141,6 +169,22 @@ const SubprojectFundingModal = ({
             showSelectAllCheckbox: false,
           }}
           onSelectionChange={(rows) => setSelectedFdus(rows)}
+        />
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          apiRef={apiRef}
+          ref={apiRef}
+          autoHeight
+          columns={dataGridColumns}
+          rows={rows}
+          getRowId={(row) => row.sub_project_id}
+          disableRowSelectionOnClick
+          toolbar
+          density="comfortable"
+          getRowHeight={() => "auto"}
+          hideFooter
+          localeText={{ noRowsLabel: "No subprojects to display" }}
+          // initialState={{ pinnedColumns: { left: ["select"] } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
