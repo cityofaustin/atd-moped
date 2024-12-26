@@ -73,7 +73,7 @@ const TeamAutocompleteComponent = ({
           isOptionEqualToValue(option, value)
         }
         value={value || null}
-        sx={{ paddingTop: "8px" }}
+        sx={{ paddingTop: theme.spacing(1) }}
         onChange={(event, newValue) => {
           handleChange(event, newValue);
         }}
