@@ -63,7 +63,7 @@ const MilestoneAutocompleteComponent = ({
             variant="standard"
             {...params}
             inputRef={ref}
-            error={error || !value}
+            error={error}
             helperText="Required"
           />
         )}

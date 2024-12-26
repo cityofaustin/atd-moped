@@ -84,6 +84,7 @@ const useColumns = ({
             {...props}
             milestoneNameLookup={milestoneNameLookup}
             relatedPhaseLookup={relatedPhaseLookup}
+            error={props.error}
           />
         ),
         width: 250,
