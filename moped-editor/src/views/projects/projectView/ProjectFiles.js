@@ -29,7 +29,7 @@ import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
 import ProjectFilesToolbar from "./ProjectFilesToolbar";
-import DataGridTextField from "./DataGridTextField";
+import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
