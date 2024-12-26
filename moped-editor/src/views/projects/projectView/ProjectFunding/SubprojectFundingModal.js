@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -124,6 +124,12 @@ const SubprojectFundingModal = ({
   const apiRef = useGridApiRef();
   const dataGridColumns = useColumns();
   const [rows, setRows] = useState([]);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setRows(data);
+    }
+  }, [data]);
 
   return (
     <Dialog
