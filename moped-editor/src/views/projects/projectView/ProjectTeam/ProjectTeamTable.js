@@ -363,8 +363,6 @@ const ProjectTeamTable = ({ projectId }) => {
     (updatedRow, originalRow, params, data) => {
       let userId;
 
-      console.log({ updatedRow, originalRow, params });
-
       const userObject = data.moped_users.find((user) => {
         if (typeof updatedRow.moped_user === "string") {
           return (

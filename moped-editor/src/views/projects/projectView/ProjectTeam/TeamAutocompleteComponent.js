@@ -3,6 +3,16 @@ import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
+/**
+ * @param {Integer} id - Data Grid row id (same as record id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Object} nameLookup - maps user id to user name
+ * @param {Boolean} error - toggles error style in textfield
+ * @param {Object} name - name of the field
+ * @return {JSX.Element}
+ */
 const TeamAutocompleteComponent = ({
   id,
   value,

@@ -1,6 +1,7 @@
 import React from "react";
 import { TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
+import theme from "src/theme";
 
 /**
  * @param {Integer} id - Data Grid row id
@@ -42,7 +43,7 @@ const DataGridTextField = ({
   return (
     <TextField
       variant="standard"
-      style={{ width: "inherit", paddingTop: "inherit" }}
+      sx={{ width: "100%", mx: theme.spacing(1) }}
       id={field}
       inputRef={ref}
       name={field}
