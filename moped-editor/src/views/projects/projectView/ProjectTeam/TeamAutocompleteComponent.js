@@ -70,10 +70,7 @@ const TeamAutocompleteComponent = ({
   };
 
   return (
-    <FormControl
-      variant="standard"
-      sx={{ width: "100%", mx: theme.spacing(1) }}
-    >
+    <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete
         id={name}
         name={name}

@@ -1,7 +1,6 @@
 import React from "react";
 import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import theme from "src/theme";
 
 /**
  * @param {Integer} id - Data Grid row id (same as record id)
@@ -46,10 +45,7 @@ const MilestoneAutocompleteComponent = ({
   };
 
   return (
-    <FormControl
-      variant="standard"
-      sx={{ width: "100%", mx: theme.spacing(1) }}
-    >
+    <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete
         id={"milestone_name"}
         name={"milestone_name"}
