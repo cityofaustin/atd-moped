@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -7,15 +7,13 @@ import {
   DialogContent,
   IconButton,
 } from "@mui/material";
-import {
-  DataGridPro,
-  GRID_CHECKBOX_SELECTION_COL_DEF,
-  useGridApiRef,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+
+const PAGE_SIZE = 10;
 
 const useColumns = () =>
   useMemo(() => {
@@ -55,11 +53,9 @@ const SubprojectFundingModal = ({
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
   // DataGrid
-  const apiRef = useGridApiRef();
   const dataGridColumns = useColumns();
 
-  // TODO: Previous component hide pagination if less than 11 rows
-  const handleAddFunding = () => {
+  const handleAddFunding = useCallback(() => {
     const newFunds = [];
     // format record to match generic records added
     selectedFdus.forEach((fdu) => {
@@ -104,14 +100,24 @@ const SubprojectFundingModal = ({
         });
       });
     setSelectedFdus([]);
-  };
+  }, [
+    addProjectFunding,
+    handleDialogClose,
+    projectId,
+    refetch,
+    selectedFdus,
+    setSnackbarState,
+  ]);
 
-  const handleRowSelection = (selectedRows) => {
-    const selectedFduRecords = selectedRows.map((fdu) =>
-      filteredData.find((record) => record.fdu === fdu)
-    );
-    setSelectedFdus(selectedFduRecords);
-  };
+  const handleRowSelection = useCallback(
+    (selectedRows) => {
+      const selectedFduRecords = selectedRows.map((fdu) =>
+        filteredData.find((record) => record.fdu === fdu)
+      );
+      setSelectedFdus(selectedFduRecords);
+    },
+    [filteredData]
+  );
 
   return (
     <Dialog
@@ -136,16 +142,20 @@ const SubprojectFundingModal = ({
       <DialogContent>
         <DataGridPro
           sx={dataGridProStyleOverrides}
-          apiRef={apiRef}
-          ref={apiRef}
           autoHeight
           columns={dataGridColumns}
+          disableColumnMenu
           rows={filteredData}
           getRowId={(row) => row.fdu}
-          toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
-          hideFooter
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: PAGE_SIZE, page: 0 },
+            },
+          }}
+          pagination
+          pageSizeOptions={[PAGE_SIZE]}
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
