@@ -78,6 +78,7 @@ export const TABLE_LOOKUPS_QUERY = gql`
     moped_fund_status(where: { funding_status_id: { _neq: 0 } }) {
       funding_status_name
       funding_status_id
+      funding_status_description
     }
   }
 `;
