@@ -6,40 +6,16 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Typography,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import AddCircle from "@mui/icons-material/AddCircle";
-import { useSocrataJson } from "src/utils/socrataHelpers";
-import MaterialTable from "@material-table/core";
-
-import typography from "../../../../theme/typography";
-
-// DataGrid
 import {
   DataGridPro,
   GRID_CHECKBOX_SELECTION_COL_DEF,
   useGridApiRef,
 } from "@mui/x-data-grid-pro";
-
+import CloseIcon from "@mui/icons-material/Close";
+import AddCircle from "@mui/icons-material/AddCircle";
+import { useSocrataJson } from "src/utils/socrataHelpers";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-
-const columns = [
-  {
-    ...GRID_CHECKBOX_SELECTION_COL_DEF,
-    width: 100,
-  },
-  {
-    field: "fdu",
-    title: "FDU",
-    cellStyle: { padding: "12px" },
-  },
-  {
-    field: "unit_long_name",
-    title: "Unit name",
-    cellStyle: { padding: "12px" },
-  },
-];
 
 const useColumns = () =>
   useMemo(() => {
@@ -47,7 +23,6 @@ const useColumns = () =>
       {
         headerName: "FDU",
         field: "fdu",
-        // renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         editable: false,
         width: 250,
       },
@@ -70,11 +45,6 @@ const SubprojectFundingModal = ({
   setSnackbarState,
   refetch,
 }) => {
-  const typographyStyle = {
-    fontFamily: typography.fontFamily,
-    fontSize: "14px",
-  };
-
   const { data } = useSocrataJson(
     `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
   );
@@ -89,8 +59,6 @@ const SubprojectFundingModal = ({
   const dataGridColumns = useColumns();
 
   // TODO: Previous component hide pagination if less than 11 rows
-  // TODO: Add checkbox column to select rows
-  // TODO: Disable button if no rows selected using DataGridPro
   const handleAddFunding = () => {
     const newFunds = [];
     // format record to match generic records added
@@ -166,30 +134,6 @@ const SubprojectFundingModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <MaterialTable
-          columns={columns}
-          data={filteredData}
-          localization={{
-            body: {
-              emptyDataSourceMessage: (
-                <Typography>No FDUs available</Typography>
-              ),
-            },
-          }}
-          options={{
-            ...(filteredData.length < 11 && {
-              paging: false,
-            }),
-            search: false,
-            toolbar: false,
-            tableLayout: "fixed",
-            selection: true,
-            rowStyle: typographyStyle,
-            pageSize: 10,
-            showSelectAllCheckbox: false,
-          }}
-          onSelectionChange={(rows) => setSelectedFdus(rows)}
-        />
         <DataGridPro
           sx={dataGridProStyleOverrides}
           apiRef={apiRef}
@@ -198,7 +142,6 @@ const SubprojectFundingModal = ({
           columns={dataGridColumns}
           rows={filteredData}
           getRowId={(row) => row.fdu}
-          // disableRowSelectionOnClick
           toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
@@ -206,7 +149,6 @@ const SubprojectFundingModal = ({
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
-          // initialState={{ pinnedColumns: { left: ["select"] } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
