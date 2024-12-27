@@ -161,7 +161,7 @@ const useColumns = ({
         field: "file_description",
         editable: true,
         width: 200,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Uploaded by",

@@ -156,7 +156,7 @@ const useColumns = ({
         field: "funding_description",
         width: 200,
         editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Status",
