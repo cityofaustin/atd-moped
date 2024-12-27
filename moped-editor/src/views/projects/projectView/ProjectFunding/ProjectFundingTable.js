@@ -626,9 +626,9 @@ const ProjectFundingTable = () => {
         eCaprisID={eCaprisID}
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
-        userId={userId}
         projectId={projectId}
         setSnackbarState={setSnackbarState}
+        refetch={refetch}
       />
     </ApolloErrorHandler>
   );

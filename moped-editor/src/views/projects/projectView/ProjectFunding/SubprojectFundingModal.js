@@ -57,9 +57,9 @@ const SubprojectFundingModal = ({
   eCaprisID,
   fdusArray,
   addProjectFunding,
-  userId,
   projectId,
   setSnackbarState,
+  refetch,
 }) => {
   const typographyStyle = {
     fontFamily: typography.fontFamily,
@@ -105,7 +105,9 @@ const SubprojectFundingModal = ({
         objects: newFunds,
       },
     })
-      .then(() => handleDialogClose())
+      .then(() => {
+        refetch().then(() => handleDialogClose());
+      })
       .catch((error) => {
         setSnackbarState({
           open: true,
@@ -123,13 +125,6 @@ const SubprojectFundingModal = ({
   // DataGrid
   const apiRef = useGridApiRef();
   const dataGridColumns = useColumns();
-  const [rows, setRows] = useState([]);
-
-  useEffect(() => {
-    if (data && data.length > 0) {
-      setRows(data);
-    }
-  }, [data]);
 
   return (
     <Dialog
@@ -182,14 +177,15 @@ const SubprojectFundingModal = ({
           ref={apiRef}
           autoHeight
           columns={dataGridColumns}
-          rows={rows}
-          getRowId={(row) => row.sub_project_id}
+          rows={filteredData}
+          getRowId={(row) => row.fdu}
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
+          rowCount={1}
           hideFooter
-          localeText={{ noRowsLabel: "No subprojects to display" }}
+          localeText={{ noRowsLabel: "No FDUs available" }}
           // initialState={{ pinnedColumns: { left: ["select"] } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
