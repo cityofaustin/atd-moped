@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -16,10 +16,19 @@ import MaterialTable from "@material-table/core";
 import typography from "../../../../theme/typography";
 
 // DataGrid
-import { DataGridPro, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GRID_CHECKBOX_SELECTION_COL_DEF,
+  useGridApiRef,
+} from "@mui/x-data-grid-pro";
+
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
 const columns = [
+  {
+    ...GRID_CHECKBOX_SELECTION_COL_DEF,
+    width: 100,
+  },
   {
     field: "fdu",
     title: "FDU",
@@ -75,6 +84,13 @@ const SubprojectFundingModal = ({
   // Filter the list of fdus to remove one(s) already on funding sources table
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
+  // DataGrid
+  const apiRef = useGridApiRef();
+  const dataGridColumns = useColumns();
+
+  // TODO: Previous component hide pagination if less than 11 rows
+  // TODO: Add checkbox column to select rows
+  // TODO: Disable button if no rows selected using DataGridPro
   const handleAddFunding = () => {
     const newFunds = [];
     // format record to match generic records added
@@ -122,9 +138,12 @@ const SubprojectFundingModal = ({
     setSelectedFdus([]);
   };
 
-  // DataGrid
-  const apiRef = useGridApiRef();
-  const dataGridColumns = useColumns();
+  const handleRowSelection = (selectedRows) => {
+    const selectedFduRecords = selectedRows.map((fdu) =>
+      filteredData.find((record) => record.fdu === fdu)
+    );
+    setSelectedFdus(selectedFduRecords);
+  };
 
   return (
     <Dialog
@@ -179,13 +198,14 @@ const SubprojectFundingModal = ({
           columns={dataGridColumns}
           rows={filteredData}
           getRowId={(row) => row.fdu}
-          disableRowSelectionOnClick
+          // disableRowSelectionOnClick
           toolbar
           density="comfortable"
           getRowHeight={() => "auto"}
-          rowCount={1}
           hideFooter
           localeText={{ noRowsLabel: "No FDUs available" }}
+          checkboxSelection
+          onRowSelectionModelChange={handleRowSelection}
           // initialState={{ pinnedColumns: { left: ["select"] } }}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>

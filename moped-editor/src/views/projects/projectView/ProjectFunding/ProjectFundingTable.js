@@ -24,7 +24,6 @@ import {
   DELETE_PROJECT_FUNDING,
 } from "../../../../queries/funding";
 
-import { getDatabaseId, useUser } from "../../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import DataGridTextField from "../DataGridTextField";
@@ -245,12 +244,6 @@ const ProjectFundingTable = () => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
-  /**
-   * User Hook
-   * @type {object} CognitoUserSession
-   */
-  const { user } = useUser();
-
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -335,8 +328,6 @@ const ProjectFundingTable = () => {
     },
     [apiRef]
   );
-
-  const userId = getDatabaseId(user);
 
   /**
    * Wrapper around snackbar state setter
