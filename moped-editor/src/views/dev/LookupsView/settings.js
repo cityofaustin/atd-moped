@@ -122,6 +122,24 @@ export const SETTINGS = [
     ],
   },
   {
+    key: "moped_fund_status",
+    label: "Fund Status",
+    columns: [
+      {
+        key: "funding_status_id",
+        label: "Status ID",
+      },
+      {
+        key: "funding_status_name",
+        label: "Name",
+      },
+      {
+        key: "funding_status_description",
+        label: "Description",
+      },
+    ],
+  },
+  {
     key: "moped_milestones",
     label: "Milestones",
     columns: [
@@ -220,24 +238,6 @@ export const SETTINGS = [
       {
         key: "slug",
         label: "Slug",
-      },
-    ],
-  },
-  {
-    key: "moped_fund_status",
-    label: "Fund Status",
-    columns: [
-      {
-        key: "funding_status_id",
-        label: "Status ID",
-      },
-      {
-        key: "funding_status_name",
-        label: "Name",
-      },
-      {
-        key: "funding_status_description",
-        label: "Description",
       },
     ],
   },

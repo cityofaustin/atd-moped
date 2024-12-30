@@ -8,7 +8,7 @@ SET "funding_status_description" = CASE "funding_status_name"
     WHEN 'Tentative' THEN 'In conversation about possible funding commitment'
     WHEN 'Confirmed' THEN 'Commitment to funding'
     WHEN 'Available' THEN 'Funding is available, e.g. private developer'
-    WHEN 'Funding setup requested' THEN NULL
+    WHEN 'Funding setup requested' THEN 'Requested that funding be set up in eCAPRIS'
     WHEN 'Set up' THEN 'Funding has been set up in eCAPRIS; has FDU'
     ELSE "funding_status_description"
 END;
