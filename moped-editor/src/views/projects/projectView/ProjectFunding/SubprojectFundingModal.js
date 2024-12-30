@@ -46,13 +46,11 @@ const SubprojectFundingModal = ({
   const { data } = useSocrataJson(
     `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
   );
-
-  const [selectedFdus, setSelectedFdus] = useState([]);
-
   // Filter the list of fdus to remove one(s) already on funding sources table
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
-  // DataGrid
+  const [selectedFdus, setSelectedFdus] = useState([]);
+
   const dataGridColumns = useColumns();
 
   const handleAddFunding = useCallback(() => {
