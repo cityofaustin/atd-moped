@@ -21,14 +21,14 @@ const useColumns = () =>
       {
         headerName: "FDU",
         field: "fdu",
-        editable: false,
-        width: 250,
+        display: "flex",
+        flex: 1,
       },
       {
         headerName: "Unit name",
         field: "unit_long_name",
-        width: 200,
-        editable: false,
+        display: "flex",
+        flex: 2,
       },
     ];
   }, []);
@@ -156,6 +156,7 @@ const SubprojectFundingModal = ({
           }}
           pagination
           pageSizeOptions={[PAGE_SIZE]}
+          hideFooter={filteredData.length < PAGE_SIZE}
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
