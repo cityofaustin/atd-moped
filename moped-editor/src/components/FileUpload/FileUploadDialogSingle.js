@@ -189,6 +189,7 @@ const FileUploadDialogSingle = (props) => {
               value={undefined}
               onChange={handleFileNameChange}
               fullWidth
+              helperText={"Required"}
             />
 
             <FormControl>
@@ -244,7 +245,7 @@ const FileUploadDialogSingle = (props) => {
                 value={undefined}
                 onChange={handleExternalLinkChange}
                 fullWidth
-                helperText={"Enter URL or network location"}
+                helperText={"Required. Enter URL or network location"}
               />
             ) : (
               <FileUpload

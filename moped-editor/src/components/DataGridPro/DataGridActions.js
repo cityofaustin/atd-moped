@@ -47,8 +47,8 @@ const DataGridActions = ({
     const editState = apiRef.current.state.editRows;
 
     for (const field of requiredFields) {
-      const hasError = editState[id]?.[field]?.error;
-      const hasValue = editState[id]?.[field]?.value;
+      const hasError = Boolean(editState[id]?.[field]?.error);
+      const hasValue = Boolean(editState[id]?.[field]?.value);
 
       if (hasError || !hasValue) {
         return false;
