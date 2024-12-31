@@ -154,7 +154,6 @@ const SubprojectFundingModal = ({
           }}
           pagination
           pageSizeOptions={[PAGE_SIZE]}
-          hideFooter={filteredData.length < PAGE_SIZE}
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
