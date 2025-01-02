@@ -76,5 +76,13 @@ export const TABLE_LOOKUPS_QUERY = gql`
       project_role_name
       project_role_description
     }
+    moped_fund_status(
+      # Filter out the "Archived" status
+      where: { funding_status_id: { _neq: 0 } }
+    ) {
+      funding_status_name
+      funding_status_id
+      funding_status_description
+    }
   }
 `;
