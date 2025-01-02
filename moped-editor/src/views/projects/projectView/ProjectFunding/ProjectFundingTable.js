@@ -27,7 +27,7 @@ import {
 import { getDatabaseId, useUser } from "../../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
-import DataGridTextField from "../DataGridTextField";
+import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import LookupSelectComponent from "../../../../components/LookupSelectComponent";
@@ -156,7 +156,7 @@ const useColumns = ({
         field: "funding_description",
         width: 200,
         editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Status",
