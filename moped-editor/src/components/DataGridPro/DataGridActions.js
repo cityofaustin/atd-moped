@@ -45,8 +45,12 @@ const DataGridActions = ({
    */
   const hasRequiredFields = useGridSelector(apiRef, () => {
     const editState = apiRef.current.state.editRows;
+
     for (const field of requiredFields) {
-      if (!editState[id]?.[field]?.value) {
+      const hasError = Boolean(editState[id]?.[field]?.error);
+      const hasValue = Boolean(editState[id]?.[field]?.value);
+
+      if (hasError || !hasValue) {
         return false;
       }
     }
@@ -58,6 +62,7 @@ const DataGridActions = ({
       <GridActionsCellItem
         icon={<CheckIcon sx={defaultEditColumnIconStyle} />}
         label="Save"
+        key="save"
         sx={{
           color: "primary.main",
         }}
@@ -67,6 +72,7 @@ const DataGridActions = ({
       <GridActionsCellItem
         icon={<CloseIcon sx={defaultEditColumnIconStyle} />}
         label="Cancel"
+        key="cancel"
         className="textPrimary"
         onClick={handleCancelClick(id)}
         color="inherit"
@@ -79,6 +85,7 @@ const DataGridActions = ({
       <GridActionsCellItem
         icon={<EditOutlinedIcon sx={defaultEditColumnIconStyle} />}
         label="Edit"
+        key="edit"
         className="textPrimary"
         onClick={handleEditClick(id)}
         color="inherit"
@@ -87,6 +94,7 @@ const DataGridActions = ({
     <GridActionsCellItem
       icon={<DeleteOutlineIcon sx={defaultEditColumnIconStyle} />}
       label="Delete"
+      key="delete"
       onClick={handleDeleteOpen(id)}
       color="inherit"
     />,

@@ -1,13 +1,18 @@
 import React from "react";
-import {
-  Autocomplete,
-  TextField,
-  FormHelperText,
-  FormControl,
-} from "@mui/material";
+import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
+/**
+ * @param {Integer} id - Data Grid row id (same as record id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Object} nameLookup - maps user id to user name
+ * @param {Boolean} error - toggles error style in textfield
+ * @param {Object} name - name of the field
+ * @return {JSX.Element}
+ */
 const TeamAutocompleteComponent = ({
   id,
   value,
@@ -65,10 +70,7 @@ const TeamAutocompleteComponent = ({
   };
 
   return (
-    <FormControl
-      variant="standard"
-      sx={{ width: "100%", mx: theme.spacing(1) }}
-    >
+    <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete
         id={name}
         name={name}
@@ -78,7 +80,7 @@ const TeamAutocompleteComponent = ({
           isOptionEqualToValue(option, value)
         }
         value={value || null}
-        sx={{ paddingTop: "8px" }}
+        sx={{ paddingTop: theme.spacing(1) }}
         onChange={(event, newValue) => {
           handleChange(event, newValue);
         }}
@@ -88,10 +90,10 @@ const TeamAutocompleteComponent = ({
             {...params}
             inputRef={ref}
             error={error}
+            helperText="Required"
           />
         )}
       />
-      <FormHelperText>Required</FormHelperText>
     </FormControl>
   );
 };

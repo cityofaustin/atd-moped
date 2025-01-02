@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   Button,
   Box,
@@ -6,27 +6,32 @@ import {
   DialogTitle,
   DialogContent,
   IconButton,
-  Typography,
 } from "@mui/material";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import CloseIcon from "@mui/icons-material/Close";
 import AddCircle from "@mui/icons-material/AddCircle";
 import { useSocrataJson } from "src/utils/socrataHelpers";
-import MaterialTable from "@material-table/core";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 
-import typography from "../../../../theme/typography";
+const PAGE_SIZE = 10;
 
-const columns = [
-  {
-    field: "fdu",
-    title: "FDU",
-    cellStyle: { padding: "12px" },
-  },
-  {
-    field: "unit_long_name",
-    title: "Unit name",
-    cellStyle: { padding: "12px" },
-  },
-];
+const useColumns = () =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "FDU",
+        field: "fdu",
+        display: "flex",
+        flex: 1,
+      },
+      {
+        headerName: "Unit name",
+        field: "unit_long_name",
+        display: "flex",
+        flex: 2,
+      },
+    ];
+  }, []);
 
 const SubprojectFundingModal = ({
   isDialogOpen,
@@ -34,25 +39,21 @@ const SubprojectFundingModal = ({
   eCaprisID,
   fdusArray,
   addProjectFunding,
-  userId,
   projectId,
   setSnackbarState,
+  refetch,
 }) => {
-  const typographyStyle = {
-    fontFamily: typography.fontFamily,
-    fontSize: "14px",
-  };
-
   const { data } = useSocrataJson(
     `https://data.austintexas.gov/resource/jega-nqf6.json?dept_unit_status=Active&sp_number_txt=${eCaprisID}&$limit=9999`
   );
-
-  const [selectedFdus, setSelectedFdus] = useState([]);
-
   // Filter the list of fdus to remove one(s) already on funding sources table
   const filteredData = data.filter((fdu) => !fdusArray.includes(fdu.fdu));
 
-  const handleAddFunding = () => {
+  const [selectedFdus, setSelectedFdus] = useState([]);
+
+  const dataGridColumns = useColumns();
+
+  const handleAddFunding = useCallback(() => {
     const newFunds = [];
     // format record to match generic records added
     selectedFdus.forEach((fdu) => {
@@ -82,7 +83,9 @@ const SubprojectFundingModal = ({
         objects: newFunds,
       },
     })
-      .then(() => handleDialogClose())
+      .then(() => {
+        refetch().then(() => handleDialogClose());
+      })
       .catch((error) => {
         setSnackbarState({
           open: true,
@@ -95,7 +98,24 @@ const SubprojectFundingModal = ({
         });
       });
     setSelectedFdus([]);
-  };
+  }, [
+    addProjectFunding,
+    handleDialogClose,
+    projectId,
+    refetch,
+    selectedFdus,
+    setSnackbarState,
+  ]);
+
+  const handleRowSelection = useCallback(
+    (selectedRows) => {
+      const selectedFduRecords = selectedRows.map((fdu) =>
+        filteredData.find((record) => record.fdu === fdu)
+      );
+      setSelectedFdus(selectedFduRecords);
+    },
+    [filteredData]
+  );
 
   return (
     <Dialog
@@ -118,29 +138,25 @@ const SubprojectFundingModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <MaterialTable
-          columns={columns}
-          data={filteredData}
-          localization={{
-            body: {
-              emptyDataSourceMessage: (
-                <Typography>No FDUs available</Typography>
-              ),
+        <DataGridPro
+          sx={dataGridProStyleOverrides}
+          autoHeight
+          columns={dataGridColumns}
+          disableColumnMenu
+          rows={filteredData}
+          getRowId={(row) => row.fdu}
+          density="comfortable"
+          getRowHeight={() => "auto"}
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: PAGE_SIZE, page: 0 },
             },
           }}
-          options={{
-            ...(filteredData.length < 11 && {
-              paging: false,
-            }),
-            search: false,
-            toolbar: false,
-            tableLayout: "fixed",
-            selection: true,
-            rowStyle: typographyStyle,
-            pageSize: 10,
-            showSelectAllCheckbox: false,
-          }}
-          onSelectionChange={(rows) => setSelectedFdus(rows)}
+          pagination
+          pageSizeOptions={[PAGE_SIZE]}
+          localeText={{ noRowsLabel: "No FDUs available" }}
+          checkboxSelection
+          onRowSelectionModelChange={handleRowSelection}
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button

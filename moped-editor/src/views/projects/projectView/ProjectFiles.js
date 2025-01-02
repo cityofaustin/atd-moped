@@ -29,7 +29,7 @@ import downloadFileAttachment from "../../../utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
 import ProjectFilesToolbar from "./ProjectFilesToolbar";
-import DataGridTextField from "./DataGridTextField";
+import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -64,7 +64,7 @@ const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
 const cleanUpFileKey = (str) => str.replace(/^(?:[^_]*_){3}/g, "");
 
-const requiredFields = ["file_name", "file_url", "file_type"];
+const requiredFields = ["file_name", "file_type"];
 
 const useColumns = ({
   classes,
@@ -161,7 +161,7 @@ const useColumns = ({
         field: "file_description",
         editable: true,
         width: 200,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Uploaded by",

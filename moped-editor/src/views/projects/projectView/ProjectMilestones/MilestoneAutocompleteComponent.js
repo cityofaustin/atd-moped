@@ -45,10 +45,7 @@ const MilestoneAutocompleteComponent = ({
   };
 
   return (
-    <FormControl
-      variant="standard"
-      style={{ width: "100%", marginLeft: "10px", marginRight: "10px" }}
-    >
+    <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete
         id={"milestone_name"}
         name={"milestone_name"}
@@ -63,7 +60,7 @@ const MilestoneAutocompleteComponent = ({
             variant="standard"
             {...params}
             inputRef={ref}
-            error={error || !value}
+            error={error}
             helperText="Required"
           />
         )}

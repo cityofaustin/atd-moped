@@ -24,10 +24,9 @@ import {
   DELETE_PROJECT_FUNDING,
 } from "../../../../queries/funding";
 
-import { getDatabaseId, useUser } from "../../../../auth/user";
 import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
-import DataGridTextField from "../DataGridTextField";
+import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import LookupSelectComponent from "../../../../components/LookupSelectComponent";
@@ -156,7 +155,7 @@ const useColumns = ({
         field: "funding_description",
         width: 200,
         editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Status",
@@ -245,12 +244,6 @@ const ProjectFundingTable = () => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
-  /**
-   * User Hook
-   * @type {object} CognitoUserSession
-   */
-  const { user } = useUser();
-
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -335,8 +328,6 @@ const ProjectFundingTable = () => {
     },
     [apiRef]
   );
-
-  const userId = getDatabaseId(user);
 
   /**
    * Wrapper around snackbar state setter
@@ -626,9 +617,9 @@ const ProjectFundingTable = () => {
         eCaprisID={eCaprisID}
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
-        userId={userId}
         projectId={projectId}
         setSnackbarState={setSnackbarState}
+        refetch={refetch}
       />
     </ApolloErrorHandler>
   );

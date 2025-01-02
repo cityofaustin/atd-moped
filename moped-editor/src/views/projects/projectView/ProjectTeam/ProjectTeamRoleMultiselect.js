@@ -14,7 +14,7 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 import theme from "src/theme";
 
-const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
+const ProjectTeamRoleMultiselect = ({ id, field, roles, value, error }) => {
   const rolesArray = React.useMemo(
     () => value.map((role) => role.project_role_id),
     [value]
@@ -45,6 +45,7 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
         labelId="team-role-multiselect-label"
         id={String(id)}
         multiple
+        error={error}
         value={selectedValues}
         onChange={handleChange}
         input={<Input id="select-multiple" />}
@@ -88,7 +89,7 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value }) => {
           }
         )}
       </Select>
-      <FormHelperText>Required</FormHelperText>
+      <FormHelperText error={error}>Required</FormHelperText>
     </FormControl>
   );
 };
