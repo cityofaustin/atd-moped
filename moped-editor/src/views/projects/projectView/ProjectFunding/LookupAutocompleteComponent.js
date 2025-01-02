@@ -1,17 +1,8 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import makeStyles from "@mui/styles/makeStyles";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import CustomPopper from "src/components/CustomPopper";
-
-const useStyles = makeStyles((theme) => ({
-  autocompleteLookupInput: {
-    minWidth: "200px",
-    alignContent: "center",
-    padding: theme.spacing(1),
-  },
-}));
 
 /**
  * Component for dropdown select using a lookup table as options
@@ -31,7 +22,6 @@ const LookupAutocompleteComponent = ({
   name,
   lookupTable,
 }) => {
-  const classes = useStyles();
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -51,7 +41,7 @@ const LookupAutocompleteComponent = ({
 
   return (
     <Autocomplete
-      className={classes.autocompleteLookupInput}
+      sx={{ width: "100%", mx: 1 }}
       value={
         // if we are editing, the autocomplete has the value provided by the material table, which is the record id
         // need to get its corresponding text value

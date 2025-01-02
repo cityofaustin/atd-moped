@@ -6,7 +6,7 @@ import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
-import DataGridTextField from "./DataGridTextField";
+import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
 
 import {
@@ -84,6 +84,7 @@ const useColumns = ({
             {...props}
             milestoneNameLookup={milestoneNameLookup}
             relatedPhaseLookup={relatedPhaseLookup}
+            error={props.error}
           />
         ),
         width: 250,
@@ -93,7 +94,7 @@ const useColumns = ({
         field: "description",
         width: 200,
         editable: true,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
+        renderEditCell: (props) => <DataGridTextField {...props} multiline />,
       },
       {
         headerName: "Related phase",
