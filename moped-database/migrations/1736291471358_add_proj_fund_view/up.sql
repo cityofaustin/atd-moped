@@ -4,7 +4,6 @@ SELECT
     mpf.proj_funding_id,
     mpf.funding_amount,
     mpf.funding_description,
-    mpf.fund_name,
     mpf.fund_dept_unit,
     mpf.created_at,
     mpf.updated_at,
