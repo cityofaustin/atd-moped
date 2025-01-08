@@ -598,6 +598,7 @@ const ProjectFundingTable = () => {
       <DataGridErrorSnackbar
         snackbarState={snackbarState}
         setSnackbarState={setSnackbarState}
+        DEFAULT_SNACKBAR_STATE={DEFAULT_SNACKBAR_STATE}
       />
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}

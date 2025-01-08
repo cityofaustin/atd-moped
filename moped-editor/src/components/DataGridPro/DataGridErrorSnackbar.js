@@ -2,7 +2,7 @@ import React from "react";
 
 import { Snackbar, Alert } from "@mui/material";
 
-const DataGridErrorSnackbar = ({ snackbarState, setSnackbarState }) => {
+const DataGridErrorSnackbar = ({ snackbarState, setSnackbarState, DEFAULT_SNACKBAR_STATE }) => {
   /**
    * Return Snackbar state to default, closed state
    */
