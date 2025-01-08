@@ -84,6 +84,15 @@ const SubprojectFundingModal = ({
       },
     })
       .then(() => {
+        setSnackbarState({
+          open: true,
+          message: (
+            <span>
+              yeehaw
+            </span>
+          ),
+          severity: "success",
+        });
         refetch().then(() => handleDialogClose());
       })
       .catch((error) => {

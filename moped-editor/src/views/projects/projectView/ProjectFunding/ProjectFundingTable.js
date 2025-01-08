@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Alert, CircularProgress, Snackbar, Box } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
@@ -36,6 +36,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import DataGridErrorSnackbar from "src/components/DataGridPro/DataGridErrorSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -267,7 +268,7 @@ const ProjectFundingTable = () => {
     message: null,
     severity: "success",
   };
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [snackbarState, setSnackbarState] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -341,13 +342,6 @@ const ProjectFundingTable = () => {
       message: message,
       severity: severity,
     });
-  };
-
-  /**
-   * Return Snackbar state to default, closed state
-   */
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -601,16 +595,10 @@ const ProjectFundingTable = () => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
+      <DataGridErrorSnackbar
+        snackbarState={snackbarState}
+        setSnackbarState={setSnackbarState}
+      />
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleSubprojectDialogClose}
