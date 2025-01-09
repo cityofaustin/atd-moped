@@ -9,6 +9,12 @@ ALTER COLUMN is_deleted SET NOT NULL;
 ALTER TABLE moped_entity
 ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE NOT NULL;
 
+
+-- Soft delete the old entities
+UPDATE moped_entity
+SET is_deleted = TRUE
+WHERE name IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD');
+
 -- Insert new COA TPW Sidewalks and Urban Trails entity with appropriate department_id, workgroup_id, and organization_id
 WITH
 workgroup_todo AS (
@@ -47,8 +53,20 @@ FROM
     workgroup_todo AS w,
     organization_todo AS o;
 
+-- Insert new row for COA TPW with appropriate department_id and organization_id (no associated workgroup)
+WITH organization_todo AS (
+    SELECT organization_id FROM moped_organization WHERE organization_name = 'City of Austin'
+),
 
--- Create new rows:
--- 2. COA TPW
---    department_id is id that matches Austin Transportation and Public Works in moped_department table
---    workgroup_id is NULL
+department_todo AS (
+    SELECT department_id FROM moped_department WHERE department_name = 'Austin Transportation and Public Works'
+)
+
+INSERT INTO moped_entity (entity_name, department_id, workgroup_id, organization_id, is_deleted)
+SELECT
+    'COA TPW' AS entity_name,
+    d.department_id,
+    NULL AS workgroup_id,
+    o.organization_id,
+    FALSE AS is_deleted
+FROM department_todo AS d, organization_todo AS o;
