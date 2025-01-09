@@ -36,8 +36,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import DataGridErrorSnackbar from "src/components/DataGridPro/DataGridErrorSnackbar";
-
+import DataGridSnackbar from "src/components/DataGridPro/DataGridSnackbar";
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
@@ -241,7 +240,8 @@ const useColumns = ({
     handleEditClick,
   ]);
 
-const ProjectFundingTable = () => {
+const ProjectFundingTable = ( snackbarHandle ) => {
+  console.log(snackbarHandle);
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -268,7 +268,9 @@ const ProjectFundingTable = () => {
     message: null,
     severity: "success",
   };
-  const [snackbarState, setSnackbarState] = useState({});
+  const [snackbarState, setSnackbarState] = useState({
+    DEFAULT_SNACKBAR_STATE,
+  });
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -330,19 +332,6 @@ const ProjectFundingTable = () => {
     [apiRef]
   );
 
-  /**
-   * Wrapper around snackbar state setter
-   * @param {boolean} open - The new state of open
-   * @param {String} message - The message for the snackbar
-   * @param {String} severity - The severity color of the snackbar
-   */
-  const snackbarHandle = (open = true, message, severity = "success") => {
-    setSnackbarState({
-      open: open,
-      message: message,
-      severity: severity,
-    });
-  };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
@@ -595,10 +584,9 @@ const ProjectFundingTable = () => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-      <DataGridErrorSnackbar
+      <DataGridSnackbar
         snackbarState={snackbarState}
-        setSnackbarState={setSnackbarState}
-        DEFAULT_SNACKBAR_STATE={DEFAULT_SNACKBAR_STATE}
+        snackbarHandle={snackbarHandle}
       />
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}

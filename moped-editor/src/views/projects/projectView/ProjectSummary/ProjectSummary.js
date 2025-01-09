@@ -8,7 +8,7 @@ import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
+import DataGridSnackbar from "../../../../components/DataGridPro/DataGridSnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle }) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -133,25 +133,13 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
   const childProjectGeography = data?.childProjects
     .filter((project) => project.project_geography.length > 0)
     .map((project) => project.project_geography[0]);
-  /**
-   * Updates the state of snackbar state
-   * @param {String|JSX.Element} message - The message to be displayed
-   * @param {String} severity - Usually "success" or "error"
-   */
-  const snackbarHandle = (open = true, message, severity = "success") => {
-    setSnackbarState({
-      open: open,
-      message: message,
-      severity: severity,
-    });
-  };
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
   return (
     <ApolloErrorHandler errors={error}>
-      <ProjectSummarySnackbar
+      <DataGridSnackbar
         snackbarState={snackbarState}
         snackbarHandle={snackbarHandle}
       />

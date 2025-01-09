@@ -156,6 +156,20 @@ const DEFAULT_SNACKBAR_STATE = {
 };
 
 /**
+ * Wrapper around snackbar state setter
+ * @param {boolean} open - The new state of open
+ * @param {String} message - The message for the snackbar
+ * @param {String} severity - The severity color of the snackbar
+ */
+const snackbarHandle = (open = true, message, severity = "success") => {
+  setSnackbarState({
+    open: open,
+    message: message,
+    severity: severity,
+  });
+};
+
+/**
  * Get the index of the currently active tab
  * @param {*} tabName - a `tab` name from the url search string
  * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
@@ -564,6 +578,7 @@ const ProjectView = () => {
                             }
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
+                            snackbarHandle={snackbarHandle}
                           />
                         </TabPanel>
                       );
