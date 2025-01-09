@@ -269,7 +269,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
     message: null,
     severity: "success",
   };
-  const [snackbarState, setSnackbarState] = useState({DEFAULT_SNACKBAR_STATE});
+  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
