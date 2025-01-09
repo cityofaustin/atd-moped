@@ -124,6 +124,7 @@ const useStyles = makeStyles((theme) => ({
  * @constructor
  */
 const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle }) => {
+  console.log(snackbarHandle);
   const { projectId } = useParams();
   const classes = useStyles();
 

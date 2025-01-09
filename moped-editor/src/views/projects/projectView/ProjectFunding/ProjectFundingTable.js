@@ -37,6 +37,7 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridSnackbar from "src/components/DataGridPro/DataGridSnackbar";
+
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
@@ -268,9 +269,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
     message: null,
     severity: "success",
   };
-  const [snackbarState, setSnackbarState] = useState({
-    DEFAULT_SNACKBAR_STATE,
-  });
+  const [snackbarState, setSnackbarState] = useState({DEFAULT_SNACKBAR_STATE});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
