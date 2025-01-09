@@ -8,7 +8,6 @@ import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
-// import DataGridSnackbar from "../../../../components/DataGridPro/DataGridSnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
@@ -138,10 +137,6 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbar
 
   return (
     <ApolloErrorHandler errors={error}>
-      {/* <DataGridSnackbar
-        snackbarState={snackbarState}
-        snackbarHandle={snackbarHandle}
-      /> */}
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
