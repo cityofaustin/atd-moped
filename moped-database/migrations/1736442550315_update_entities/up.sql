@@ -70,3 +70,14 @@ SELECT
     o.organization_id,
     FALSE AS is_deleted
 FROM department_todo AS d, organization_todo AS o;
+
+-- Find any records (except the soft-deleted above) that have either ATD or PWD in them and replace with TPW
+UPDATE moped_entity
+SET
+    entity_name = REPLACE(REPLACE(entity_name, 'ATD', 'TPW'), 'PWD', 'TPW')
+WHERE
+    (
+        entity_name LIKE '%ATD%'
+        OR entity_name LIKE '%PWD%'
+    )
+    AND (entity_name NOT IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD'));
