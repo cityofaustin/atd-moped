@@ -240,7 +240,7 @@ const useColumns = ({
     handleEditClick,
   ]);
 
-const ProjectFundingTable = ( snackbarHandle ) => {
+const ProjectFundingTable = ({ snackbarHandle }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -385,16 +385,11 @@ const ProjectFundingTable = ( snackbarHandle ) => {
           .then(() => refetch())
           .then(() => setIsDeleteConfirmationOpen(false))
           .catch((error) => {
-            snackbarHandle({
-              open: true,
-              message: (
-                <span>
-                  There was a problem deleting funding. Error message:{" "}
-                  {error.message}
-                </span>
-              ),
-              severity: "error",
-            });
+            snackbarHandle(
+              true,
+              `There was a problem deleting funding. Error message: ${error.message}`,
+              "error"
+            );
           });
       }
     },
@@ -457,16 +452,11 @@ const ProjectFundingTable = ( snackbarHandle ) => {
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            snackbarHandle({
-              open: true,
-              message: (
-                <span>
-                  There was a problem adding funding. Error message:{" "}
-                  {error.message}
-                </span>
-              ),
-              severity: "error",
-            });
+            snackbarHandle(
+              true,
+              `There was a problem adding funding. Error message: ${error.message}`,
+              "error"
+            );
           })
       );
     } else {
@@ -486,16 +476,11 @@ const ProjectFundingTable = ( snackbarHandle ) => {
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              snackbarHandle({
-                open: true,
-                message: (
-                  <span>
-                    There was a problem updating funding. Error message:{" "}
-                    {error.message}
-                  </span>
-                ),
-                severity: "error",
-              });
+              snackbarHandle(
+                true,
+                `There was a problem updating funding. Error message: ${error.message}`,
+                "error"
+              );
             })
         );
       }
@@ -503,15 +488,11 @@ const ProjectFundingTable = ( snackbarHandle ) => {
   };
 
   const handleProcessUpdateError = (error) => {
-    snackbarHandle({
-      open: true,
-      message: (
-        <span>
-          There was a problem updating funding. Error message: {error.message}
-        </span>
-      ),
-      severity: "error",
-    });
+    snackbarHandle(
+      true,
+      `There was a problem updating funding. Error message: ${error.message}`,
+      "error"
+    );
   };
 
   const dataGridColumns = useColumns({

@@ -32,11 +32,9 @@ import {
   Fade,
   ListItemIcon,
   ListItemText,
-  Snackbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -467,6 +465,7 @@ const ProjectView = () => {
                               setIsEditing={setIsEditing}
                               updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
+                              snackbarHandle={snackbarHandle}
                             />
                           </Box>
                         </Grid>

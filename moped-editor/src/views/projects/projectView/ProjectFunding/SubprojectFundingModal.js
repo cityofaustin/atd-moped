@@ -40,7 +40,7 @@ const SubprojectFundingModal = ({
   fdusArray,
   addProjectFunding,
   projectId,
-  setSnackbarState,
+  snackbarHandle,
   refetch,
 }) => {
   const { data } = useSocrataJson(
@@ -84,27 +84,14 @@ const SubprojectFundingModal = ({
       },
     })
       .then(() => {
-        setSnackbarState({
-          open: true,
-          message: (
-            <span>
-              yeehaw
-            </span>
-          ),
-          severity: "success",
-        });
         refetch().then(() => handleDialogClose());
       })
       .catch((error) => {
-        setSnackbarState({
-          open: true,
-          message: (
-            <span>
-              There was a problem adding funding. Error message: {error.message}
-            </span>
-          ),
-          severity: "error",
-        });
+        snackbarHandle(
+          true,
+          `There was a problem adding funding. Error message: ${error.message}`,
+          "error"
+        );
       });
     setSelectedFdus([]);
   }, [
@@ -113,7 +100,7 @@ const SubprojectFundingModal = ({
     projectId,
     refetch,
     selectedFdus,
-    setSnackbarState,
+    snackbarHandle,
   ]);
 
   const handleRowSelection = useCallback(

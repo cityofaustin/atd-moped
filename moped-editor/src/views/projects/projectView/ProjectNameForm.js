@@ -21,8 +21,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ProjectNameForm = ({
-  setSnackbarState,
-  DEFAULT_SNACKBAR_STATE,
   props,
 }) => {
   const classes = useStyles();
@@ -61,27 +59,15 @@ const ProjectNameForm = ({
       })
         .then((res) => {
           // if the mutation is successful, show a success snackbar
-          setSnackbarState({
-            open: true,
-            message: <span>Success! The project names have been updated!</span>,
-            severity: "success",
-          });
+          props.snackbarHandle(true, "Success! The project names have been updated!", "success");
         })
         .catch((error) => {
           // and if it fails, show an error snackbar
-          setSnackbarState({
-            open: true,
-            message: (
-              <span>Error. The project names have not been updated.</span>
-            ),
-            severity: "error",
-          });
+          props.snackbarHandle(true, "Error. The project names have not been updated.", "error");
         })
         .finally(() => {
-          // return to the view mode, clear the snackbar after 3 seconds,
-          // and alert the parent component of the change
+          // return to the view mode and alert the parent component of the change
           props.setIsEditing(false);
-          setTimeout(() => setSnackbarState(DEFAULT_SNACKBAR_STATE), 3000);
           props.updatedCallback();
         });
     }
