@@ -13,7 +13,7 @@ ADD COLUMN is_deleted BOOLEAN DEFAULT FALSE NOT NULL;
 -- Soft delete the old entities
 UPDATE moped_entity
 SET is_deleted = TRUE
-WHERE name IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD');
+WHERE entity_name IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD');
 
 -- Insert new COA TPW Sidewalks and Urban Trails entity with appropriate department_id, workgroup_id, and organization_id
 WITH
@@ -81,12 +81,6 @@ WHERE
         OR entity_name LIKE '%PWD%'
     )
     AND (entity_name NOT IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD'));
-
--- TODO: Update project sponsors with new entity values
--- Replace any sponsor_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
--- Replace any sponsor_id values that match COA ATD or COA PWD with the entity id of the new COA TPW row
--- Replace any project_lead_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
--- Replace any project_lead_id values that match COA ATD or COA PWD with the entity id of the new COA TPW row
 
 -- UPDATE PROJECT SPONSORS
 
@@ -250,7 +244,7 @@ new_entity_row AS (
 )
 
 UPDATE
-moped_project
+moped_proj_partners
 SET
     entity_id = (SELECT id FROM new_entity_row)
 WHERE
