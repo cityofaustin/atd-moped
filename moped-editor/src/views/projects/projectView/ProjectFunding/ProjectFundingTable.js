@@ -36,7 +36,6 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import DataGridSnackbar from "src/components/DataGridPro/DataGridSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -242,7 +241,6 @@ const useColumns = ({
   ]);
 
 const ProjectFundingTable = ( snackbarHandle ) => {
-  console.log(snackbarHandle);
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -264,12 +262,6 @@ const ProjectFundingTable = ( snackbarHandle ) => {
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: null,
-    severity: "success",
-  };
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -393,7 +385,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
           .then(() => refetch())
           .then(() => setIsDeleteConfirmationOpen(false))
           .catch((error) => {
-            setSnackbarState({
+            snackbarHandle({
               open: true,
               message: (
                 <span>
@@ -465,7 +457,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            setSnackbarState({
+            snackbarHandle({
               open: true,
               message: (
                 <span>
@@ -494,7 +486,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              setSnackbarState({
+              snackbarHandle({
                 open: true,
                 message: (
                   <span>
@@ -511,7 +503,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
   };
 
   const handleProcessUpdateError = (error) => {
-    setSnackbarState({
+    snackbarHandle({
       open: true,
       message: (
         <span>
@@ -583,10 +575,6 @@ const ProjectFundingTable = ( snackbarHandle ) => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-      <DataGridSnackbar
-        snackbarState={snackbarState}
-        snackbarHandle={snackbarHandle}
-      />
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleSubprojectDialogClose}
@@ -594,7 +582,7 @@ const ProjectFundingTable = ( snackbarHandle ) => {
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
         projectId={projectId}
-        setSnackbarState={setSnackbarState}
+        snackbarHandle={snackbarHandle}
         refetch={refetch}
       />
     </ApolloErrorHandler>

@@ -150,12 +150,6 @@ const TABS = [
   },
 ];
 
-const DEFAULT_SNACKBAR_STATE = {
-  open: false,
-  message: "Default State",
-  severity: "warning",
-};
-
 /**
  * Get the index of the currently active tab
  * @param {*} tabName - a `tab` name from the url search string
