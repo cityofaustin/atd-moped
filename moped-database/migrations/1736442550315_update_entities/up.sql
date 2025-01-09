@@ -17,7 +17,7 @@ WHERE name IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', '
 
 -- Insert new COA TPW Sidewalks and Urban Trails entity with appropriate department_id, workgroup_id, and organization_id
 WITH
-workgroup_todo AS (
+workgroup AS (
     SELECT workgroup_id
     FROM
         moped_workgroup
@@ -25,7 +25,7 @@ workgroup_todo AS (
         workgroup_name = 'Sidewalks and Urban Trails'
 ),
 
-organization_todo AS (
+organization AS (
     SELECT organization_id
     FROM
         moped_organization
@@ -33,7 +33,7 @@ organization_todo AS (
         organization_name = 'City of Austin'
 ),
 
-department_todo AS (
+department AS (
     SELECT department_id
     FROM
         moped_department
@@ -49,16 +49,16 @@ SELECT
     w.workgroup_id,
     o.organization_id
 FROM
-    department_todo AS d,
-    workgroup_todo AS w,
-    organization_todo AS o;
+    department AS d,
+    workgroup AS w,
+    organization AS o;
 
 -- Insert new row for COA TPW with appropriate department_id and organization_id (no associated workgroup)
-WITH organization_todo AS (
+WITH organization AS (
     SELECT organization_id FROM moped_organization WHERE organization_name = 'City of Austin'
 ),
 
-department_todo AS (
+department AS (
     SELECT department_id FROM moped_department WHERE department_name = 'Austin Transportation and Public Works'
 )
 
@@ -69,7 +69,7 @@ SELECT
     NULL AS workgroup_id,
     o.organization_id,
     FALSE AS is_deleted
-FROM department_todo AS d, organization_todo AS o;
+FROM department AS d, organization AS o;
 
 -- Find any records (except the soft-deleted above) that have either ATD or PWD in them and replace with TPW
 UPDATE moped_entity
@@ -81,3 +81,74 @@ WHERE
         OR entity_name LIKE '%PWD%'
     )
     AND (entity_name NOT IN ('COA PWD Sidewalks & Special Projects', 'COA PWD Urban Trails', 'COA ATD', 'COA PWD'));
+
+-- TODO: Update project sponsors with new entity values
+-- Replace any sponsor_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
+-- Replace any sponsor_id values that match COA ATD or COA PWD with the entity id of the new COA TPW row
+-- Replace any project_lead_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
+-- Replace any project_lead_id values that match COA ATD or COA PWD with the entity id of the new COA TPW row
+
+-- UPDATE PROJECT SPONSORS
+
+-- Find and update projects that need sponsor to be updated to COA TPW Sidewalks and Urban Trails
+WITH project_sponsor_todos AS (
+    SELECT entity_id AS ids
+    FROM
+        moped_entity
+    WHERE
+        entity_name IN (
+            'COA PWD Sidewalks & Special Projects',
+            'COA PWD Urban Trails'
+        )
+),
+
+new_entity_row AS (
+    SELECT entity_id AS id
+    FROM
+        moped_entity
+    WHERE
+        entity_name = 'COA TPW Sidewalks and Urban Trails'
+)
+
+UPDATE
+moped_project
+SET
+    project_sponsor = (SELECT id FROM new_entity_row)
+WHERE
+    project_sponsor IN (SELECT ids FROM project_sponsor_todos);
+
+-- Find and update projects that need sponsor to be updated to COA TPW
+WITH project_sponsor_todos AS (
+    SELECT entity_id AS ids
+    FROM
+        moped_entity
+    WHERE
+        entity_name IN (
+            'COA ATD',
+            'COA PWD'
+        )
+),
+
+new_entity_row AS (
+    SELECT entity_id AS id
+    FROM
+        moped_entity
+    WHERE
+        entity_name = 'COA TPW'
+)
+
+UPDATE
+moped_project
+SET
+    project_sponsor = (SELECT id FROM new_entity_row)
+WHERE
+    project_sponsor IN (SELECT ids FROM project_sponsor_todos);
+
+-- UPDATE PROJECT LEADS
+
+
+-- TODO: UPDATE PROJECT PARTNERS
+-- Replace any entity_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
+-- Replace any entity_id values that match COA ATD or COA PWD with the entity id of the new COA TPW
+
+-- TODO: Filter soft-deleted entities in the app
