@@ -123,12 +123,10 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle, snackbarState }) => {
   console.log(snackbarHandle);
   const { projectId } = useParams();
   const classes = useStyles();
-
-  const [snackbarState, setSnackbarState] = useState(false);
 
   /* Not all child components have components and geography data */
   const childProjectGeography = data?.childProjects

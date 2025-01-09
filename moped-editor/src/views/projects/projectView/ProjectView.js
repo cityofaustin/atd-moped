@@ -161,8 +161,8 @@ const DEFAULT_SNACKBAR_STATE = {
  * @param {String} message - The message for the snackbar
  * @param {String} severity - The severity color of the snackbar
  */
-const snackbarHandle = (open = true, message, severity = "success") => {
-  setSnackbarState({
+const snackbarHandle = (open = true, message, severity = "success", setDataGridSnackbarState) => {
+  setDataGridSnackbarState({
     open: open,
     message: message,
     severity: severity,
@@ -213,6 +213,7 @@ const ProjectView = () => {
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
   const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [dataGridSnackbarState, setDataGridSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
@@ -579,6 +580,7 @@ const ProjectView = () => {
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
                             snackbarHandle={snackbarHandle}
+                            snackbarState={dataGridSnackbarState}
                           />
                         </TabPanel>
                       );
