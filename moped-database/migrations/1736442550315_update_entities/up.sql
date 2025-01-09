@@ -45,13 +45,13 @@ INSERT INTO
 moped_entity (entity_name, department_id, workgroup_id, organization_id)
 SELECT
     'COA TPW Sidewalks and Urban Trails' AS entity_name,
-    d.department_id,
-    w.workgroup_id,
-    o.organization_id
+    department.department_id,
+    workgroup.workgroup_id,
+    organization.organization_id
 FROM
-    department AS d,
-    workgroup AS w,
-    organization AS o;
+    department,
+    workgroup,
+    organization;
 
 -- Insert new row for COA TPW with appropriate department_id and organization_id (no associated workgroup)
 WITH organization AS (
@@ -65,11 +65,11 @@ department AS (
 INSERT INTO moped_entity (entity_name, department_id, workgroup_id, organization_id, is_deleted)
 SELECT
     'COA TPW' AS entity_name,
-    d.department_id,
+    department.department_id,
     NULL AS workgroup_id,
-    o.organization_id,
+    organization.organization_id,
     FALSE AS is_deleted
-FROM department AS d, organization AS o;
+FROM department, organization;
 
 -- Find any records (except the soft-deleted above) that have either ATD or PWD in them and replace with TPW
 UPDATE moped_entity
