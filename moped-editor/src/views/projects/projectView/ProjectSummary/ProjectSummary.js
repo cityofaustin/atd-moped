@@ -8,7 +8,7 @@ import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
-import DataGridSnackbar from "../../../../components/DataGridPro/DataGridSnackbar";
+// import DataGridSnackbar from "../../../../components/DataGridPro/DataGridSnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle, snackbarState }) => {
+const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle }) => {
   console.log(snackbarHandle);
   const { projectId } = useParams();
   const classes = useStyles();
@@ -138,10 +138,10 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbar
 
   return (
     <ApolloErrorHandler errors={error}>
-      <DataGridSnackbar
+      {/* <DataGridSnackbar
         snackbarState={snackbarState}
         snackbarHandle={snackbarHandle}
-      />
+      /> */}
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>

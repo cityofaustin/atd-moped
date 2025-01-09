@@ -67,6 +67,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
+import DataGridSnackbar from "src/components/DataGridPro/DataGridSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -156,20 +157,6 @@ const DEFAULT_SNACKBAR_STATE = {
 };
 
 /**
- * Wrapper around snackbar state setter
- * @param {boolean} open - The new state of open
- * @param {String} message - The message for the snackbar
- * @param {String} severity - The severity color of the snackbar
- */
-const snackbarHandle = (open = true, message, severity = "success", setDataGridSnackbarState) => {
-  setDataGridSnackbarState({
-    open: open,
-    message: message,
-    severity: severity,
-  });
-};
-
-/**
  * Get the index of the currently active tab
  * @param {*} tabName - a `tab` name from the url search string
  * @returns {integer} - the TAB index of the currently active tab, falling back to `0`
@@ -212,8 +199,8 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
-  const [dataGridSnackbarState, setDataGridSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+  const [snackbarState, setSnackbarState] = useState(false);
+
   const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
@@ -221,8 +208,18 @@ const ProjectView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
+  /**
+   * Wrapper around snackbar state setter
+   * @param {boolean} open - The new state of open
+   * @param {String} message - The message for the snackbar
+   * @param {String} severity - The severity color of the snackbar
+   */
+  const snackbarHandle = (open = true, message, severity = "success") => {
+    setSnackbarState({
+      open: open,
+      message: message,
+      severity: severity,
+    });
   };
 
   /**
@@ -580,7 +577,6 @@ const ProjectView = () => {
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
                             snackbarHandle={snackbarHandle}
-                            snackbarState={dataGridSnackbarState}
                           />
                         </TabPanel>
                       );
@@ -644,17 +640,10 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-        autoHideDuration={5000}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
+      <DataGridSnackbar
+        snackbarState={snackbarState}
+        snackbarHandle={snackbarHandle}
+      />
     </ApolloErrorHandler>
   );
 };
