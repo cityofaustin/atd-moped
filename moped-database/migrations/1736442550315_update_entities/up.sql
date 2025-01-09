@@ -146,6 +146,61 @@ WHERE
 
 -- UPDATE PROJECT LEADS
 
+-- Find and update projects that need lead to be updated to COA TPW Sidewalks and Urban Trails
+WITH project_sponsor_todos AS (
+    SELECT entity_id AS ids
+    FROM
+        moped_entity
+    WHERE
+        entity_name IN (
+            'COA PWD Sidewalks & Special Projects',
+            'COA PWD Urban Trails'
+        )
+),
+
+new_entity_row AS (
+    SELECT entity_id AS id
+    FROM
+        moped_entity
+    WHERE
+        entity_name = 'COA TPW Sidewalks and Urban Trails'
+)
+
+UPDATE
+moped_project
+SET
+    project_lead_id = (SELECT id FROM new_entity_row)
+WHERE
+    project_lead_id IN (SELECT ids FROM project_sponsor_todos);
+
+-- Find and update projects that need lead to be updated to COA TPW
+WITH project_sponsor_todos AS (
+    SELECT entity_id AS ids
+    FROM
+        moped_entity
+    WHERE
+        entity_name IN (
+            'COA ATD',
+            'COA PWD'
+        )
+),
+
+new_entity_row AS (
+    SELECT entity_id AS id
+    FROM
+        moped_entity
+    WHERE
+        entity_name = 'COA TPW'
+)
+
+UPDATE
+moped_project
+SET
+    project_lead_id = (SELECT id FROM new_entity_row)
+WHERE
+    project_lead_id IN (SELECT ids FROM project_sponsor_todos);
+
+
 
 -- TODO: UPDATE PROJECT PARTNERS
 -- Replace any entity_id values that match COA PWD Sidewalks & Special Projects or COA PWD Urban Trails with the entity id of the new COA TPW Sidewalks and Urban Trails row
