@@ -189,7 +189,13 @@ const useColumns = ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
+const ProjectMilestones = ({
+  projectId,
+  loading,
+  data,
+  refetch,
+  snackbarHandle,
+}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const apiRef = useGridApiRef();
 
@@ -315,12 +321,19 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
                 .project_milestone_id;
             updatedRow.project_milestone_id = record_id;
           })
-          .then(() => refetch())
+          .then(() => {
+            snackbarHandle(true, "Project milestone added.", "success");
+            refetch();
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            console.error(error.message);
+            snackbarHandle(
+              true,
+              `Failed to add project description: ${error.message}`,
+              "error"
+            );
           })
       );
     } else {
@@ -335,12 +348,19 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           updateProjectMilestone({
             variables: updatedMilestoneData,
           })
-            .then(() => refetch())
+            .then(() => {
+              snackbarHandle(true, "Project milestone updated.", "success");
+              refetch();
+            })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              console.error(error.message);
+              snackbarHandle(
+                true,
+                `Failed to update project description: ${error.message}`,
+                "error"
+              );
             })
         );
       }
@@ -362,10 +382,17 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           project_milestone_id: id,
         },
       })
-        .then(() => refetch())
+        .then(() => {
+          snackbarHandle(true, "Project milestone deleted.", "success");
+          refetch();
+        })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
-          console.error(error);
+          snackbarHandle(
+            true,
+            `Failed to delete project description: ${error.message}`,
+            "error"
+          );
         });
     },
 

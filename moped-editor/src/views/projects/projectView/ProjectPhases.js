@@ -152,7 +152,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectPhases = ({ projectId, data, refetch }) => {
+const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
