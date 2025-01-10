@@ -194,7 +194,7 @@ const useColumns = ({
     teamNameLookup,
   ]);
 
-const ProjectTeamTable = ({ projectId }) => {
+const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -417,11 +417,14 @@ const ProjectTeamTable = ({ projectId }) => {
             object: payload,
           },
         })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            snackbarHandle(true, "Team member added", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
             console.error("Mutation error:", error);
-            throw error;
+            snackbarHandle(true, `Team member not added: ${error}`, "error");
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -462,11 +465,14 @@ const ProjectTeamTable = ({ projectId }) => {
         };
 
         return updateProjectPersonnel({ variables })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            snackbarHandle(true, "Team member updated", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
             console.error("Mutation error:", error);
-            throw error;
+            snackbarHandle(true, `Team member not updated: ${error}`, "error");
           });
       }
     },
@@ -475,6 +481,7 @@ const ProjectTeamTable = ({ projectId }) => {
 
   const handleProcessUpdateError = useCallback((error) => {
     console.error("process row update error", error);
+    snackbarHandle(true, `Process for update error: ${error}`, "error");
   }, []);
 
   const dataGridColumns = useColumns({
@@ -538,10 +545,20 @@ const ProjectTeamTable = ({ projectId }) => {
         submitDelete={() => {
           deleteProjectPersonnel({
             variables: { id: deleteConfirmationId },
-          }).then(() => {
-            refetch();
-            setIsDeleteConfirmationOpen(false);
-          });
+          })
+            .then(() => {
+              refetch();
+              snackbarHandle(true, "Team member removed", "success");
+              setIsDeleteConfirmationOpen(false);
+            })
+            .catch((error) => {
+              console.error("Mutation error:", error);
+              snackbarHandle(
+                true,
+                `Team member not removed: ${error}`,
+                "error"
+              );
+            });
         }}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
