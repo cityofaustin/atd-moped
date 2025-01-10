@@ -464,6 +464,7 @@ const ProjectMilestones = ({
         selectedMilestones={data.moped_proj_milestones}
         projectId={projectId}
         refetch={refetch}
+        snackbarHandle={snackbarHandle}
       />
       <DeleteConfirmationModal
         type={"milestone"}

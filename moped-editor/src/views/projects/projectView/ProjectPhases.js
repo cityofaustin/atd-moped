@@ -175,8 +175,18 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
         variables: { project_phase_id: id },
         refetchQueries: ["ProjectSummary"],
       })
-        .then(() => refetch())
-        .then(() => setIsDeleteConfirmationOpen(false));
+        .then(() => {
+          snackbarHandle(true, "Project phase deleted.", "success");
+          refetch();
+        })
+        .then(() => setIsDeleteConfirmationOpen(false))
+        .catch((error) => {
+          snackbarHandle(
+            true,
+            `Failed to delete project phase: ${error.message}`,
+            "error"
+          );
+        });
     },
     [deletePhase, refetch]
   );
@@ -244,6 +254,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
           currentProjectPhaseIds={currentProjectPhaseIds}
           currentPhaseIds={currentPhaseIds}
           projectId={projectId}
+          snackbarHandle={snackbarHandle}
         />
       )}
       <PhaseTemplateModal
@@ -254,6 +265,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
         subphaseNameLookup={subphaseNameLookup}
         projectId={projectId}
         refetch={refetch}
+        snackbarHandle={snackbarHandle}
       />
       <DeleteConfirmationModal
         type={"phase"}
