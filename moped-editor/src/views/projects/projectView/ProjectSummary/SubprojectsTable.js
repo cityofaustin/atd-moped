@@ -251,7 +251,7 @@ const SubprojectsTable = ({
         );
       }
     },
-    [projectId, refetch, refetchSummaryData, updateProjectSubproject]
+    [projectId, refetch, refetchSummaryData, updateProjectSubproject, snackbarHandle]
   );
 
   const dataGridColumns = useColumns({

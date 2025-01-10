@@ -376,7 +376,7 @@ const ProjectFiles = ({ snackbarHandle }) => {
           snackbarHandle(true, `Error deleting file: ${error}`, "error");
         });
     },
-    [rows, deleteProjectFileAttachment, refetch]
+    [rows, deleteProjectFileAttachment, refetch, snackbarHandle]
   );
 
   // saves row update after editing an existing row

@@ -476,13 +476,22 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
           });
       }
     },
-    [updateProjectPersonnel, insertProjectPersonnel, projectId, refetch]
+    [
+      updateProjectPersonnel,
+      insertProjectPersonnel,
+      projectId,
+      refetch,
+      snackbarHandle,
+    ]
   );
 
-  const handleProcessUpdateError = useCallback((error) => {
-    console.error("process row update error", error);
-    snackbarHandle(true, `Process for update error: ${error}`, "error");
-  }, []);
+  const handleProcessUpdateError = useCallback(
+    (error) => {
+      console.error("process row update error", error);
+      snackbarHandle(true, `Process for update error: ${error}`, "error");
+    },
+    [snackbarHandle]
+  );
 
   const dataGridColumns = useColumns({
     data,
