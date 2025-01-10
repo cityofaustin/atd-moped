@@ -179,6 +179,7 @@ export const onSubmitPhase = ({
   phaseData,
   noteData,
   mutate,
+  isNewPhase,
   currentPhaseIdsToClear,
   currentPhaseIds,
   onSubmitCallback,
@@ -216,5 +217,5 @@ export const onSubmitPhase = ({
   mutate({
     variables,
     refetchQueries: ["ProjectSummary"],
-  }).then(() => onSubmitCallback());
+  }).then(() => onSubmitCallback(isNewPhase));
 };

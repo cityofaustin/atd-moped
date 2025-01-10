@@ -176,8 +176,8 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
         refetchQueries: ["ProjectSummary"],
       })
         .then(() => {
-          snackbarHandle(true, "Project phase deleted.", "success");
           refetch();
+          snackbarHandle(true, "Project phase deleted.", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
@@ -209,8 +209,13 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
   const completionDate =
     data?.project_list_view[0]["substantial_completion_date"];
 
-  const onSubmitCallback = () => {
-    refetch().then(() => setEditPhase(null));
+  const onSubmitCallback = (isNewPhase) => {
+    refetch().then(() => {
+      isNewPhase
+        ? snackbarHandle(true, "Project phase added.", "success")
+        : snackbarHandle(true, "Project phase updated.", "success");
+      setEditPhase(null);
+    });
   };
 
   // Open activity edit modal when double clicking in a cell

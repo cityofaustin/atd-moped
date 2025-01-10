@@ -93,6 +93,7 @@ const ProjectPhaseForm = ({
       phaseData,
       noteData,
       mutate,
+      isNewPhase,
       currentPhaseIdsToClear,
       currentPhaseIds,
       onSubmitCallback,
@@ -161,14 +162,6 @@ const ProjectPhaseForm = ({
       setValue("is_current_phase", isCurrentPhase, { shouldDirty: true });
     }
   };
-
-  console.log(isNewPhase);
-  console.log(mutationState.data);
-
-  // if (mutationState.data?.insert_moped_proj_phases?.returning.length) {
-  //   snackbarHandle(true, "Project phase added.", "success")
-  //   return;
-  // }
 
   if (mutationState.error) {
     console.error(mutationState.error);
