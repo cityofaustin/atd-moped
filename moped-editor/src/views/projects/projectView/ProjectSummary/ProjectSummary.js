@@ -300,6 +300,7 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbar
                   <SubprojectsTable
                     projectId={projectId}
                     refetchSummaryData={refetch}
+                    snackbarHandle={snackbarHandle}
                   />
                 )}
               </Grid>

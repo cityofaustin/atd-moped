@@ -101,7 +101,11 @@ const useColumns = ({
     handleCancelClick,
   ]);
 
-const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
+const SubprojectsTable = ({
+  projectId = null,
+  refetchSummaryData,
+  snackbarHandle,
+}) => {
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
@@ -195,10 +199,14 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
     })
       .then(() => {
         refetch();
+        snackbarHandle(true, "Subproject removed", "success");
         refetchSummaryData(); // Refresh subprojects in summary map
       })
       .then(() => setIsDeleteConfirmationOpen(false))
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        console.error(error);
+        snackbarHandle(true, `Subproject not removed: ${error}`, "error");
+      });
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
@@ -230,12 +238,16 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
           })
             .then(() => {
               refetch();
+              snackbarHandle(true, "Subproject added", "success");
               refetchSummaryData(); // Refresh subprojects in summary map
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => newRow)
-            .catch((error) => console.error(error))
+            .catch((error) => {
+              console.error(error);
+              snackbarHandle(true, `Subproject not added: ${error}`, "error");
+            })
         );
       }
     },

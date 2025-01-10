@@ -237,7 +237,7 @@ const useColumns = ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = () => {
+const ProjectFiles = ({ snackbarHandle }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
@@ -293,9 +293,13 @@ const ProjectFiles = () => {
       },
     })
       .then(() => {
+        snackbarHandle(true, "File saved", "success");
         setDialogOpen(false);
       })
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        console.error(error);
+        snackbarHandle(true, `Error saving file: ${error}`, "error");
+      })
       .finally(() => {
         refetch();
       });
@@ -363,9 +367,13 @@ const ProjectFiles = () => {
         },
       })
         .then(() => refetch())
-        .then(() => setIsDeleteConfirmationOpen(false))
+        .then(() => {
+          setIsDeleteConfirmationOpen(false);
+          snackbarHandle(true, "File deleted", "success");
+        })
         .catch((error) => {
           console.error(error);
+          snackbarHandle(true, `Error deleting file: ${error}`, "error");
         });
     },
     [rows, deleteProjectFileAttachment, refetch]
@@ -394,11 +402,17 @@ const ProjectFiles = () => {
             fileUrl: updateProjectFilesData.file_url || null,
           },
         })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            snackbarHandle(true, "File updated", "success");
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
-          .catch((error) => console.error(error))
+          .catch((error) => {
+            console.error(error);
+            snackbarHandle(true, `Error updating file: ${error}`, "error");
+          })
       );
     }
   };
