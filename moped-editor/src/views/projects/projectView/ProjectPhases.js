@@ -188,7 +188,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
           );
         });
     },
-    [deletePhase, refetch]
+    [deletePhase, refetch, snackbarHandle]
   );
 
   const columns = useColumns({

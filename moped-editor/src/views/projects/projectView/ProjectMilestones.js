@@ -396,7 +396,7 @@ const ProjectMilestones = ({
         });
     },
 
-    [rows, deleteProjectMilestone, refetch]
+    [rows, deleteProjectMilestone, refetch, snackbarHandle]
   );
 
   const dataGridColumns = useColumns({

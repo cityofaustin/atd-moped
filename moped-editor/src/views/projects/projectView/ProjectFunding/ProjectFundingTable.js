@@ -393,7 +393,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           });
       }
     },
-    [rows, deleteProjectFunding, refetch]
+    [rows, deleteProjectFunding, refetch, snackbarHandle]
   );
 
   // when a user cancels editing by clicking the X in the actions
