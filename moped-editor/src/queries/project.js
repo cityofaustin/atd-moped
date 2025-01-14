@@ -62,13 +62,6 @@ export const SUMMARY_QUERY = gql`
         }
         created_at
       }
-      moped_project_types(where: { is_deleted: { _eq: false } }) {
-        id
-        moped_type {
-          type_name
-          type_id
-        }
-      }
       moped_entity {
         entity_name
         entity_id
