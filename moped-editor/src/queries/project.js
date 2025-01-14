@@ -116,10 +116,6 @@ export const SUMMARY_QUERY = gql`
       id
       name
     }
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
-    }
     moped_user_followed_projects(
       where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }
     ) {
@@ -154,15 +150,6 @@ export const SUMMARY_QUERY = gql`
     project_list_view(where: { project_id: { _eq: $projectId } }) {
       component_work_type_names
       project_id
-    }
-  }
-`;
-
-export const TYPES_QUERY = gql`
-  query TypeQuery {
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
     }
   }
 `;
@@ -963,10 +950,6 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_fund_programs(order_by: { funding_program_name: asc }) {
       funding_program_id
       funding_program_name
-    }
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
     }
     moped_entity(order_by: { entity_id: asc }) {
       entity_id
