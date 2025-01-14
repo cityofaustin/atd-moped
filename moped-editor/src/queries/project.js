@@ -13,9 +13,6 @@ export const ADD_PROJECT = gql`
         phase_id
         is_current_phase
       }
-      moped_project_types {
-        project_type_id
-      }
     }
   }
 `;
@@ -823,23 +820,6 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
       _set: { project_description: $description }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-export const PROJECT_UPDATE_TYPES = gql`
-  mutation UpdateMopedProjectTypes(
-    $types: [moped_project_types_insert_input!]!
-    $deleteList: [Int!]!
-  ) {
-    insert_moped_project_types(objects: $types) {
-      affected_rows
-    }
-    update_moped_project_types(
-      where: { id: { _in: $deleteList } }
-      _set: { is_deleted: true }
     ) {
       affected_rows
     }
