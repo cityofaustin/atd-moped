@@ -19,6 +19,7 @@ const ProjectFunding = ({ snackbarHandle }) => {
         <Grid item xs={12}>
           <ProjectWorkActivitiesTable
             projectId={projectId}
+            snackbarHandle={snackbarHandle}
           />
         </Grid>
       </Grid>

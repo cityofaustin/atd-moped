@@ -165,7 +165,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
 
-const ProjectWorkActivitiesTable = () => {
+const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
@@ -199,6 +199,13 @@ const ProjectWorkActivitiesTable = () => {
         .then(() => {
           setActivityToDelete(null);
           setIsDeleteConfirmationOpen(false);
+        })
+        .catch((error) => {
+          snackbarHandle(
+            true,
+            `There was a problem deleting work activity. Error message: ${error.message}`,
+            "error"
+          );
         });
     }
   }, [activityToDelete, deleteContract, refetch]);
