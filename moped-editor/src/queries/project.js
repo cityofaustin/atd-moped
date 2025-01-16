@@ -98,7 +98,10 @@ export const SUMMARY_QUERY = gql`
       phase_name
       phase_order
     }
-    moped_entity(order_by: { entity_name: asc }) {
+    moped_entity(
+      order_by: { entity_name: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
       entity_id
       entity_name
     }
@@ -924,7 +927,10 @@ export const LOOKUP_TABLES_QUERY = gql`
       funding_program_id
       funding_program_name
     }
-    moped_entity(order_by: { entity_id: asc }) {
+    moped_entity(
+      order_by: { entity_id: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
       entity_id
       entity_name
     }
