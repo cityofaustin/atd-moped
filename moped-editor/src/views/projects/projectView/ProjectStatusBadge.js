@@ -77,8 +77,8 @@ export const styleMapping = {
     icon: PlayCircleOutlineOutlinedIcon,
   },
   construction: {
-    color: white,
-    background: backgroundColors.success,
+    color: primary,
+    background: backgroundColors.warning,
     icon: PlayCircleOutlineOutlinedIcon,
   },
   post_construction: {
@@ -88,7 +88,7 @@ export const styleMapping = {
   },
   potential: {
     color: primary,
-    background: backgroundColors.warning,
+    background: backgroundColors.default,
     icon: RemoveCircleOutlineOutlinedIcon,
   },
   canceled: {
