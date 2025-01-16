@@ -13,7 +13,6 @@ import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
 import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
-import ProjectSummaryProjectTypes from "./ProjectSummaryProjectTypes";
 import ProjectSummaryDataTrackerSignals from "./ProjectSummaryDataTrackerSignals";
 import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
 import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
@@ -223,15 +222,6 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                   classes={classes}
                   snackbarHandle={snackbarHandle}
                   tooltipText="Other internal or external workgroups participating in the project"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <ProjectSummaryProjectTypes
-                  projectId={projectId}
-                  data={data}
-                  refetch={refetch}
-                  classes={classes}
-                  snackbarHandle={snackbarHandle}
                 />
               </Grid>
               <Grid item xs={12}>

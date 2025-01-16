@@ -13,9 +13,6 @@ export const ADD_PROJECT = gql`
         phase_id
         is_current_phase
       }
-      moped_project_types {
-        project_type_id
-      }
     }
   }
 `;
@@ -65,13 +62,6 @@ export const SUMMARY_QUERY = gql`
         }
         created_at
       }
-      moped_project_types(where: { is_deleted: { _eq: false } }) {
-        id
-        moped_type {
-          type_name
-          type_id
-        }
-      }
       moped_entity {
         entity_name
         entity_id
@@ -119,10 +109,6 @@ export const SUMMARY_QUERY = gql`
       id
       name
     }
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
-    }
     moped_user_followed_projects(
       where: { project_id: { _eq: $projectId }, user_id: { _eq: $userId } }
     ) {
@@ -157,15 +143,6 @@ export const SUMMARY_QUERY = gql`
     project_list_view(where: { project_id: { _eq: $projectId } }) {
       component_work_type_names
       project_id
-    }
-  }
-`;
-
-export const TYPES_QUERY = gql`
-  query TypeQuery {
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
     }
   }
 `;
@@ -207,7 +184,7 @@ export const TEAM_QUERY = gql`
     }
     moped_project_roles(
       order_by: { project_role_name: asc }
-      where: { project_role_id: { _gt: 0 }, active_role: { _eq: true } }
+      where: { active_role: { _eq: true } }
     ) {
       project_role_id
       project_role_name
@@ -845,23 +822,6 @@ export const PROJECT_UPDATE_DESCRIPTION = gql`
   }
 `;
 
-export const PROJECT_UPDATE_TYPES = gql`
-  mutation UpdateMopedProjectTypes(
-    $types: [moped_project_types_insert_input!]!
-    $deleteList: [Int!]!
-  ) {
-    insert_moped_project_types(objects: $types) {
-      affected_rows
-    }
-    update_moped_project_types(
-      where: { id: { _in: $deleteList } }
-      _set: { is_deleted: true }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
 export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
     update_moped_project(
@@ -966,10 +926,6 @@ export const LOOKUP_TABLES_QUERY = gql`
     moped_fund_programs(order_by: { funding_program_name: asc }) {
       funding_program_id
       funding_program_name
-    }
-    moped_types(order_by: { type_name: asc }) {
-      type_id
-      type_name
     }
     moped_entity(
       order_by: { entity_id: asc }
