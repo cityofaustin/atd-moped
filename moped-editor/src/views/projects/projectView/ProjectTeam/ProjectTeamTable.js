@@ -115,7 +115,7 @@ const useColumns = ({
           <div className={classes.roleHeader}>
             Role{" "}
             <Link
-              href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
+              href="dev/lookups#moped-project_roles"
               target="_blank"
               rel="noopener noreferrer"
             >
