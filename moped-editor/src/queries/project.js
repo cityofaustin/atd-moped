@@ -181,7 +181,7 @@ export const TEAM_QUERY = gql`
     }
     moped_project_roles(
       order_by: { project_role_name: asc }
-      where: { project_role_id: { _gt: 0 }, active_role: { _eq: true } }
+      where: { active_role: { _eq: true } }
     ) {
       project_role_id
       project_role_name
