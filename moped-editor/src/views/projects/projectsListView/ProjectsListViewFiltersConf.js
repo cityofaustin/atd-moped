@@ -98,33 +98,6 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
       "number_less_than_equal_to",
     ],
   },
-  type_name: {
-    name: "type_name",
-    label: "Type",
-    placeholder: "Enter Project type",
-    type: "string",
-    defaultOperator: "string_contains_case_insensitive",
-    lookup: {
-      table_name: "moped_types",
-      getOptionLabel: (option) => option.type_name,
-      operators: [
-        "string_contains_case_insensitive",
-        "string_contains_not_case_insensitive",
-        "string_equals_case_insensitive",
-        "string_does_not_equal_case_insensitive",
-      ],
-    },
-    operators: [
-      "string_contains_case_insensitive",
-      "string_contains_not_case_insensitive",
-      "string_equals_case_insensitive",
-      "string_does_not_equal_case_insensitive",
-      "string_begins_with_case_insensitive",
-      "string_ends_with_case_insensitive",
-      "string_is_null",
-      "string_is_not_null",
-    ],
-  },
   component_work_type_names: {
     name: "component_work_type_names",
     label: "Component work types",
