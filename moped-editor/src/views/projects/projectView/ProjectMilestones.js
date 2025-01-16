@@ -322,8 +322,8 @@ const ProjectMilestones = ({
             updatedRow.project_milestone_id = record_id;
           })
           .then(() => {
-            snackbarHandle(true, "Project milestone added.", "success");
             refetch();
+            snackbarHandle(true, "Project milestone added.", "success");
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
@@ -349,8 +349,8 @@ const ProjectMilestones = ({
             variables: updatedMilestoneData,
           })
             .then(() => {
-              snackbarHandle(true, "Project milestone updated.", "success");
               refetch();
+              snackbarHandle(true, "Project milestone updated.", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
@@ -383,8 +383,8 @@ const ProjectMilestones = ({
         },
       })
         .then(() => {
-          snackbarHandle(true, "Project milestone deleted.", "success");
           refetch();
+          snackbarHandle(true, "Project milestone deleted.", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
