@@ -68,7 +68,7 @@ const PhaseTemplateModal = ({
   refetch,
   phaseNameLookup,
   subphaseNameLookup,
-  snackbarHandle
+  snackbarHandle,
 }) => {
   const [template, setTemplate] = useState(null);
   const [phasesToAdd, setPhasesToAdd] = useState([]);
@@ -112,12 +112,8 @@ const PhaseTemplateModal = ({
       },
     })
       .then(() => {
-        snackbarHandle(
-          true,
-          "Project phases added from template.",
-          "success"
-        );
         refetch();
+        snackbarHandle(true, "Project phases added from template.", "success");
       })
       .catch((error) => {
         snackbarHandle(
