@@ -487,13 +487,13 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
     }
   };
 
-  const handleProcessUpdateError = (error) => {
-    snackbarHandle(
-      true,
-      `There was a problem updating funding. Error message: ${error.message}`,
-      "error"
-    );
-  };
+  // const handleProcessUpdateError = (error) => {
+  //   snackbarHandle(
+  //     true,
+  //     `There was a problem updating funding. Error message: ${error.message}`,
+  //     "error"
+  //   );
+  // };
 
   const dataGridColumns = useColumns({
     data,
@@ -523,7 +523,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={handleProcessUpdateError}
+          // onProcessRowUpdateError={handleProcessUpdateError}
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
