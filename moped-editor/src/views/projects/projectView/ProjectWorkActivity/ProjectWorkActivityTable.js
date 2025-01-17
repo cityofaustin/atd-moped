@@ -214,6 +214,8 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
     refetch().then(() => setEditActivity(null));
   };
 
+  console.log("build");
+
   const columns = useColumns({
     deleteInProgress,
     onDeleteActivity,
