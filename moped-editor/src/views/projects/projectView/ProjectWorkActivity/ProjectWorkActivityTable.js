@@ -208,7 +208,7 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
           );
         });
     }
-  }, [activityToDelete, deleteContract, refetch]);
+  }, [activityToDelete, deleteContract, refetch, snackbarHandle]);
 
   const onSubmitCallback = () => {
     refetch().then(() => setEditActivity(null));
