@@ -323,7 +323,6 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
     [apiRef]
   );
 
-
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
@@ -383,7 +382,10 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           },
         })
           .then(() => refetch())
-          .then(() => setIsDeleteConfirmationOpen(false))
+          .then(() => {
+            setIsDeleteConfirmationOpen(false);
+            snackbarHandle(true, "Funding source deleted", "success");
+          })
           .catch((error) => {
             snackbarHandle(
               true,
@@ -447,7 +449,10 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
                 .proj_funding_id;
             updatedRow.proj_funding_id = record_id;
           })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            snackbarHandle(true, "Funding source added", "success");
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
@@ -471,7 +476,10 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           updateProjectFunding({
             variables: updateProjectFundingData,
           })
-            .then(() => refetch())
+            .then(() => {
+              refetch();
+              snackbarHandle(true, "Funding source updated", "success");
+            })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
