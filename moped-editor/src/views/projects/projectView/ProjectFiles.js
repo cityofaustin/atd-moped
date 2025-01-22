@@ -460,7 +460,8 @@ const ProjectFiles = ({ snackbarHandle }) => {
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => {
-            snackbarHandle(true, error, "error");
+            snackbarHandle(true, `Error updating table: ${error}`, "error");
+            console.error(error);
           }}
           disableRowSelectionOnClick
           toolbar
