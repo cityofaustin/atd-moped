@@ -389,8 +389,9 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           .catch((error) => {
             snackbarHandle(
               true,
-              `There was a problem deleting funding. Error message: ${error.message}`,
-              "error"
+              "Error deleting funding source",
+              "error",
+              error
             );
           });
       }
@@ -459,8 +460,9 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           .catch((error) => {
             snackbarHandle(
               true,
-              `There was a problem adding funding. Error message: ${error.message}`,
-              "error"
+              "Error deleting funding source",
+              "error",
+              error
             );
           })
       );
@@ -486,8 +488,9 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
             .catch((error) => {
               snackbarHandle(
                 true,
-                `There was a problem updating funding. Error message: ${error.message}`,
-                "error"
+                "Error updating funding source",
+                "error",
+                error
               );
             })
         );
@@ -523,6 +526,9 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={(error) =>
+            snackbarHandle(true, "Error updating table", "error", error)
+          }
           disableRowSelectionOnClick
           toolbar
           density="comfortable"

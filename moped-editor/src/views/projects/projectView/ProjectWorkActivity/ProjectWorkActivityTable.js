@@ -199,12 +199,14 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
         .then(() => {
           setActivityToDelete(null);
           setIsDeleteConfirmationOpen(false);
+          snackbarHandle(true, "Work activity deleted", success)
         })
         .catch((error) => {
           snackbarHandle(
             true,
-            `There was a problem deleting work activity. Error message: ${error.message}`,
-            "error"
+            "Error deleting work activity",
+            "error",
+            error
           );
         });
     }
@@ -278,6 +280,7 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
           activity={editActivity}
           onClose={() => setEditActivity(null)}
           onSubmitCallback={onSubmitCallback}
+          snackbarHandle={snackbarHandle}
         />
       )}
       <DeleteConfirmationModal

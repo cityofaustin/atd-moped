@@ -33,7 +33,11 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
+const ProjectWorkActivitiesForm = ({
+  activity,
+  onSubmitCallback,
+  snackbarHandle,
+}) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -88,15 +92,11 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
-    console.error(errorStatuses || errorTaskOrders || mutationState.error);
-    return (
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Alert severity="error">
-            Something went wrong. Refresh the page to try again.
-          </Alert>
-        </Grid>
-      </Grid>
+    snackbarHandle(
+      true,
+      "Error updating work activity",
+      "error",
+      errorStatuses || errorTaskOrders || mutationState.error
     );
   } else if (loadingStatuses || loadingTaskOrders) {
     return (
@@ -163,7 +163,9 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
               valueHandler={(value) => value || null}
             />
             {formErrors?.workgroup_contractor && (
-              <FormHelperText>{formErrors.workgroup_contractor.message}</FormHelperText>
+              <FormHelperText>
+                {formErrors.workgroup_contractor.message}
+              </FormHelperText>
             )}
           </FormControl>
         </Grid>
