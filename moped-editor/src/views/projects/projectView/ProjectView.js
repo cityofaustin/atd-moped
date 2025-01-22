@@ -216,9 +216,9 @@ const ProjectView = () => {
           severity: "error",
         })
       : setSnackbarState({
-          open: true,
+          open: open,
           message: message,
-          severity: "error",
+          severity: severity,
         });
     console.log(open);
     console.log(message);
