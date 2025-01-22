@@ -207,21 +207,19 @@ const ProjectView = () => {
    * @param {String} severity - The severity color of the snackbar
    */
   const snackbarHandle = (open, message, severity, error) => {
-    if (error) {
-      if (message) {
-        setSnackbarState({
-          open: open,
-          message: message,
-          severity: severity,
-        });
-      } else {
-        setSnackbarState({
+    // if there is an error without an accompanying message,
+    // render generic error message. otherwise, render custom message
+    !message && error
+      ? setSnackbarState({
           open: true,
           message: `Error updating table: ${error}`,
           severity: "error",
+        })
+      : setSnackbarState({
+          open: true,
+          message: message,
+          severity: "error",
         });
-      }
-    }
     console.log(open);
     console.log(message);
     console.log(severity);
