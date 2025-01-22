@@ -293,13 +293,13 @@ const ProjectFiles = ({ snackbarHandle }) => {
       },
     })
       .then(() => {
-        snackbarHandle(true, "File saved", "success");
         setDialogOpen(false);
+        snackbarHandle(true, "File saved", "success");
       })
-      .catch((error) => {
-        snackbarHandle(true, `Error saving file: ${error}`, "error");
-        console.error(error);
-      })
+      // .catch((error) => {
+      //   snackbarHandle(true, `Error saving file: ${error}`, "error");
+      //   console.error(error);
+      // })
       .finally(() => {
         refetch();
       });
@@ -371,10 +371,10 @@ const ProjectFiles = ({ snackbarHandle }) => {
           setIsDeleteConfirmationOpen(false);
           snackbarHandle(true, "File deleted", "success");
         })
-        .catch((error) => {
-          snackbarHandle(true, `Error deleting file: ${error}`, "error");
-          console.error(error);
-        });
+        // .catch((error) => {
+        //   snackbarHandle(true, `Error deleting file: ${error}`, "error");
+        //   console.error(error);
+        // });
     },
     [rows, deleteProjectFileAttachment, refetch, snackbarHandle]
   );
@@ -409,10 +409,10 @@ const ProjectFiles = ({ snackbarHandle }) => {
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
-          .catch((error) => {
-            snackbarHandle(true, `Error updating file: ${error}`, "error");
-            console.error(error);
-          })
+          // .catch((error) => {
+          //   snackbarHandle(true, `Error updating file: ${error}`, "error");
+          //   console.error(error);
+          // })
       );
     }
   };
@@ -460,8 +460,7 @@ const ProjectFiles = ({ snackbarHandle }) => {
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => {
-            snackbarHandle(true, `Error updating table: ${error}`, "error");
-            console.error(error);
+            snackbarHandle(true, error, "error");
           }}
           disableRowSelectionOnClick
           toolbar

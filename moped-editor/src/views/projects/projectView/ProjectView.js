@@ -205,13 +205,27 @@ const ProjectView = () => {
    * @param {boolean} open - The new state of open
    * @param {String} message - The message for the snackbar
    * @param {String} severity - The severity color of the snackbar
+   * @param {String} error - The error message to pass through to the console
+
    */
-  const snackbarHandle = (open = true, message, severity = "success") => {
-    setSnackbarState({
-      open: open,
-      message: message,
-      severity: severity,
-    });
+  const snackbarHandle = (
+    open = true,
+    message,
+    severity = "success",
+    error
+  ) => {
+    message
+      ? setSnackbarState({
+          open: open,
+          message: message,
+          severity: severity,
+        })
+      : setSnackbarState({
+          open: open,
+          message: `Error updating table: ${error}`,
+          severity: severity,
+        });
+    console.error(error);
   };
 
   /**
