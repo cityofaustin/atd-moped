@@ -297,7 +297,7 @@ const ProjectFiles = ({ snackbarHandle }) => {
         snackbarHandle(true, "File saved", "success");
       })
       .catch((error) => {
-        snackbarHandle(true, `Error saving file: ${error}`, "error", error);
+        snackbarHandle(true, "Error saving file", "error", error);
       })
       .finally(() => {
         refetch();
@@ -371,7 +371,7 @@ const ProjectFiles = ({ snackbarHandle }) => {
           snackbarHandle(true, "File deleted", "success");
         })
         .catch((error) => {
-          snackbarHandle(true, `Error deleting file: ${error}`, "error", error);
+          snackbarHandle(true, "Error deleting file", "error", error);
         });
     },
     [rows, deleteProjectFileAttachment, refetch, snackbarHandle]
@@ -407,14 +407,14 @@ const ProjectFiles = ({ snackbarHandle }) => {
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
-          // .catch((error) => {
-          //   snackbarHandle(
-          //     true,
-          //     `Error updating file: ${error}`,
-          //     "error",
-          //     error
-          //   );
-          // })
+        // .catch((error) => {
+        //   snackbarHandle(
+        //     true,
+        //     "Error updating file",
+        //     "error",
+        //     error
+        //   );
+        // })
       );
     }
   };
@@ -461,7 +461,9 @@ const ProjectFiles = ({ snackbarHandle }) => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) => snackbarHandle(error)}
+          onProcessRowUpdateError={(error) =>
+            snackbarHandle(true, "Error updating table", "error", error)
+          }
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
