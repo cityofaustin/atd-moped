@@ -208,18 +208,21 @@ const ProjectView = () => {
    * @param {Object} error - The error to be displayed and logged
    */
   const snackbarHandle = (open, message, severity, error) => {
-    // if there is an error without an accompanying message,
-    // render generic error message. otherwise, render custom message
-
-    setSnackbarState({
-      open: open,
-      message: `${message}: ${error}`,
-      severity: severity,
-    });
-    console.log(open);
-    console.log(message);
-    console.log(severity);
-    console.error(error);
+    // if there is an error, render error message,
+    // otherwise, render success message
+    if (error) {
+      setSnackbarState({
+        open: open,
+        message: `${message}: ${error}`,
+        severity: severity,
+      });
+    } else {
+      setSnackbarState({
+        open: open,
+        message: message,
+        severity: severity,
+      });
+    }
   };
 
   /**

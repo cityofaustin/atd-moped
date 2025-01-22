@@ -407,9 +407,9 @@ const ProjectFiles = ({ snackbarHandle }) => {
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
-          .catch((error) => {
-            snackbarHandle(true, "Error updating file", "error", error);
-          })
+          // .catch((error) => {
+          //   snackbarHandle(true, "Error updating file", "error", error);
+          // })
       );
     }
   };
