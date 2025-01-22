@@ -206,12 +206,16 @@ const ProjectView = () => {
    * @param {String} message - The message for the snackbar
    * @param {String} severity - The severity color of the snackbar
    */
-  const snackbarHandle = (open, message, severity) => {
+  const snackbarHandle = ({open, message, severity, error}) => {
     setSnackbarState({
       open: open,
       message: message,
       severity: severity,
     });
+    console.log(open);
+    console.log(message);
+    console.log(severity);
+    console.error(error);
   };
 
   /**

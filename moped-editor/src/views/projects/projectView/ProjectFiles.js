@@ -372,8 +372,8 @@ const ProjectFiles = ({ snackbarHandle }) => {
           snackbarHandle(true, "File deleted", "success");
         })
         .catch((error) => {
-          snackbarHandle(true, `Error deleting file: ${error}`, "error");
-          console.error(error);
+          snackbarHandle(true, `Error deleting file: ${error}`, "error", error);
+          // console.error(error);
         });
     },
     [rows, deleteProjectFileAttachment, refetch, snackbarHandle]
