@@ -267,7 +267,10 @@ const ProjectNotes = (props) => {
     if (!loading && data) {
       setDisplayNotes(data.moped_proj_notes);
     }
-  }, [loading, data]);
+    if (error) {
+      props.snackbarHandle(true, "Error loading notes", "error", error);
+    }
+  }, [loading, data, error]);
 
   /**
    * Whenever filterNoteType changes, filter the notes being displayed
@@ -285,8 +288,6 @@ const ProjectNotes = (props) => {
       setDisplayNotes(filteredNotes);
     }
   }, [filterNoteType, mopedProjNotes]);
-
-  if (error) return console.log(error);
 
   /**
    * Defines the NoteTypeButton with a toggle style-change behavior.
@@ -353,7 +354,7 @@ const ProjectNotes = (props) => {
         {/*Now the notes*/}
         <Grid item xs={12}>
           <Card>
-            {loading || !displayNotes ? (
+            {error || loading || !displayNotes ? (
               <CircularProgress />
             ) : displayNotes.length > 0 ? (
               <List className={classes.root}>
