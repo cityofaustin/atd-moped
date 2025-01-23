@@ -113,13 +113,14 @@ const PhaseTemplateModal = ({
     })
       .then(() => {
         refetch();
-        snackbarHandle(true, "Project phases added from template.", "success");
+        snackbarHandle(true, "Project phases added from template", "success");
       })
       .catch((error) => {
         snackbarHandle(
           true,
-          `Failed to add project phases from template: ${error.message}`,
-          "error"
+          "Error adding projerct phases from template",
+          "error",
+          error
         );
       });
     closeDialog();

@@ -177,14 +177,15 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Project phase deleted.", "success");
+          snackbarHandle(true, "Project phase deleted", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
           snackbarHandle(
             true,
-            `Failed to delete project phase: ${error.message}`,
-            "error"
+            "Error deleting project phase",
+            "error",
+            error
           );
         });
     },
@@ -212,8 +213,8 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
   const onSubmitCallback = (isNewPhase) => {
     refetch().then(() => {
       isNewPhase
-        ? snackbarHandle(true, "Project phase added.", "success")
-        : snackbarHandle(true, "Project phase updated.", "success");
+        ? snackbarHandle(true, "Project phase added", "success")
+        : snackbarHandle(true, "Project phase updated", "success");
       setEditPhase(null);
     });
   };
@@ -249,6 +250,9 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
             completionDate: completionDate,
           },
         }}
+        onProcessRowUpdateError={(error) =>
+          snackbarHandle(true, "Error updating table", "error", error)
+        }
       />
       {editPhase && (
         <ProjectPhaseDialog

@@ -119,15 +119,16 @@ const MilestoneTemplateModal = ({
         refetch();
         snackbarHandle(
           true,
-          "Project milestones added from template.",
+          "Project milestones added from template",
           "success"
         );
       })
       .catch((error) => {
         snackbarHandle(
           true,
-          `Failed to add project milestones from template: ${error.message}`,
-          "error"
+          "Error adding project milestones from template",
+          "error",
+          error
         );
       });
     closeDialog();

@@ -423,8 +423,7 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
           })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            snackbarHandle(true, `Team member not added: ${error}`, "error");
+            snackbarHandle(true, "Error adding team member", "error", error);
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -471,8 +470,7 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
           })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            snackbarHandle(true, `Team member not updated: ${error}`, "error");
+            snackbarHandle(true, "Error updating team member", "error", error);
           });
       }
     },
@@ -483,14 +481,6 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
       refetch,
       snackbarHandle,
     ]
-  );
-
-  const handleProcessUpdateError = useCallback(
-    (error) => {
-      console.error("process row update error", error);
-      snackbarHandle(true, `Process for update error: ${error}`, "error");
-    },
-    [snackbarHandle]
   );
 
   const dataGridColumns = useColumns({
@@ -529,7 +519,9 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
-        onProcessRowUpdateError={handleProcessUpdateError}
+        onProcessRowUpdateError={(error) =>
+          snackbarHandle(true, "Error updating table", "error", error)
+        }
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
@@ -557,15 +549,15 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
           })
             .then(() => {
               refetch();
-              snackbarHandle(true, "Team member removed", "success");
               setIsDeleteConfirmationOpen(false);
+              snackbarHandle(true, "Team member removed", "success");
             })
             .catch((error) => {
-              console.error("Mutation error:", error);
               snackbarHandle(
                 true,
-                `Team member not removed: ${error}`,
-                "error"
+                "Error removing team member",
+                "error",
+                error
               );
             });
         }}

@@ -323,7 +323,7 @@ const ProjectMilestones = ({
           })
           .then(() => {
             refetch();
-            snackbarHandle(true, "Project milestone added.", "success");
+            snackbarHandle(true, "Project milestone added", "success");
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
@@ -331,8 +331,9 @@ const ProjectMilestones = ({
           .catch((error) => {
             snackbarHandle(
               true,
-              `Failed to add project description: ${error.message}`,
-              "error"
+              "Error adding project milestone",
+              "error",
+              error
             );
           })
       );
@@ -350,7 +351,7 @@ const ProjectMilestones = ({
           })
             .then(() => {
               refetch();
-              snackbarHandle(true, "Project milestone updated.", "success");
+              snackbarHandle(true, "Project milestone updated", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
@@ -358,17 +359,14 @@ const ProjectMilestones = ({
             .catch((error) => {
               snackbarHandle(
                 true,
-                `Failed to update project description: ${error.message}`,
-                "error"
+                "Error updating project milestone",
+                "error",
+                error
               );
             })
         );
       }
     }
-  };
-
-  const handleProcessUpdateError = (error) => {
-    console.error(error.message);
   };
 
   // handles row delete
@@ -384,14 +382,15 @@ const ProjectMilestones = ({
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Project milestone deleted.", "success");
+          snackbarHandle(true, "Project milestone deleted", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
           snackbarHandle(
             true,
-            `Failed to delete project description: ${error.message}`,
-            "error"
+            "Error deleting project milestone",
+            "error",
+            error
           );
         });
     },
@@ -438,7 +437,9 @@ const ProjectMilestones = ({
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessUpdateError}
+        onProcessRowUpdateError={(error) =>
+          snackbarHandle(true, "Error updating table", "error", error)
+        }
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
