@@ -389,14 +389,28 @@ const ProjectView = () => {
             user_id: userId,
           },
         },
-      }).then(() => refetch());
+      })
+        .then(() => {
+          refetch();
+          snackbarHandle(true, "Poject followed", "success");
+        })
+        .catch((error) => {
+          snackbarHandle(true, "Error following project", "error", error);
+        });
     } else {
       unfollowProject({
         variables: {
           project_id: projectId,
           user_id: userId,
         },
-      }).then(() => refetch());
+      })
+        .then(() => {
+          refetch();
+          snackbarHandle(true, "Poject followed", "success");
+        })
+        .catch((error) => {
+          snackbarHandle(true, "Error unfollowing project", "error", error);
+        });
     }
   };
 

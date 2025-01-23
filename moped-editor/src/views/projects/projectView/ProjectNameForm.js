@@ -59,12 +59,12 @@ const ProjectNameForm = ({ props }) => {
           // return to the view mode and alert the parent component of the change
           props.setIsEditing(false);
           props.updatedCallback();
-          props.snackbarHandle(true, "Project names updated", "success");
+          props.snackbarHandle(true, "Project name(s) updated", "success");
         })
         .catch((error) => {
           props.snackbarHandle(
             true,
-            "Error updating project names",
+            "Error updating project name(s)",
             "error",
             error
           );
