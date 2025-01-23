@@ -97,6 +97,7 @@ const ProjectPhaseForm = ({
       currentPhaseIdsToClear,
       currentPhaseIds,
       onSubmitCallback,
+      snackbarHandle
     });
   };
 
@@ -164,7 +165,6 @@ const ProjectPhaseForm = ({
   };
 
   if (mutationState.error) {
-    console.error(mutationState.error);
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>

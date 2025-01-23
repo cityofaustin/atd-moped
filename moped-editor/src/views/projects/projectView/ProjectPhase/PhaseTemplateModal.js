@@ -118,7 +118,7 @@ const PhaseTemplateModal = ({
       .catch((error) => {
         snackbarHandle(
           true,
-          "Error adding projerct phases from template",
+          "Error adding project phases from template",
           "error",
           error
         );

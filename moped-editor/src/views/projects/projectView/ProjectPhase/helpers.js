@@ -183,6 +183,7 @@ export const onSubmitPhase = ({
   currentPhaseIdsToClear,
   currentPhaseIds,
   onSubmitCallback,
+  snackbarHandle
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
@@ -217,5 +218,11 @@ export const onSubmitPhase = ({
   mutate({
     variables,
     refetchQueries: ["ProjectSummary"],
-  }).then(() => onSubmitCallback(isNewPhase));
+  })
+    .then(() => onSubmitCallback(isNewPhase))
+    .catch((error) => {
+      isNewPhase
+        ? snackbarHandle(true, "Error adding project phase", "error", error)
+        : snackbarHandle(true, "Error updating project phase", "error", error);
+    });
 };

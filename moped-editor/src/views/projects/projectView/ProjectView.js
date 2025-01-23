@@ -406,7 +406,7 @@ const ProjectView = () => {
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Poject followed", "success");
+          snackbarHandle(true, "Poject unfollowed", "success");
         })
         .catch((error) => {
           snackbarHandle(true, "Error unfollowing project", "error", error);

@@ -181,12 +181,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
-          snackbarHandle(
-            true,
-            "Error deleting project phase",
-            "error",
-            error
-          );
+          snackbarHandle(true, "Error deleting project phase", "error", error);
         });
     },
     [deletePhase, refetch, snackbarHandle]

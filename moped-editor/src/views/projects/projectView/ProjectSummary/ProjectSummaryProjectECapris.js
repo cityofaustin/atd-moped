@@ -114,18 +114,19 @@ const ProjectSummaryProjectECapris = ({
         setEditMode(false);
         snackbarHandle(
           true,
-          "Project eCAPRIS Subproject ID updated!",
+          "eCAPRIS Subproject ID updated",
           "success"
         );
       })
       .then(() => refetch())
-      .catch((err) => {
+      .catch((error) => {
+        handleProjectECaprisClose();
         snackbarHandle(
           true,
-          "Failed to update eCAPRIS Subproject ID: " + String(err),
-          "error"
+          `Error updating eCAPRIS Subproject ID`,
+          "error",
+          error
         );
-        handleProjectECaprisClose();
       });
 
     setEditMode(false);

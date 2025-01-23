@@ -63,16 +63,12 @@ const ProjectSummaryProjectWebsite = ({
         setWebsite(websiteToSubmit);
         setEditMode(false);
         refetch();
-        snackbarHandle(true, "Project website updated!", "success");
+        snackbarHandle(true, "Project website updated", "success");
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update project website: " + String(err),
-          "error"
-        );
+      .catch((error) => {
         handleProjectWebsiteClose();
         setEditMode(false);
+        snackbarHandle(true, `Error updating project website`, "error", error);
       });
   };
 

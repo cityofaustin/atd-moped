@@ -47,7 +47,7 @@ const ProjectSummaryProjectTypes = ({
   // Original Types: array of moped_type objects
   const originalTypes = data?.moped_project[0]?.moped_project_types ?? [];
   // Original Types Ids: array of ids (ints)
-  const originalTypesIds = originalTypes.map(t => t?.moped_type?.type_id);
+  const originalTypesIds = originalTypes.map((t) => t?.moped_type?.type_id);
 
   /**
    * Edit Mode and selected Types states
@@ -62,7 +62,7 @@ const ProjectSummaryProjectTypes = ({
    * Handles whenever there is a click in any of the menu items
    * @param {Object} event - The event object
    */
-  const handleChange = event => {
+  const handleChange = (event) => {
     setSelectedTypes(event.target.value);
   };
 
@@ -83,19 +83,23 @@ const ProjectSummaryProjectTypes = ({
     // Get selected types ids
     const newTypesList = selectedTypes;
     // Retrieves the ids of oldTypesList that are not present in newTypesList
-    const typeIdsToDelete = oldTypesList.filter(t => !newTypesList.includes(t));
+    const typeIdsToDelete = oldTypesList.filter(
+      (t) => !newTypesList.includes(t)
+    );
     // Retrieves the ids of newTypesList that are not present in oldTypesList
-    const typeIdsToInsert = newTypesList.filter(t => !oldTypesList.includes(t));
+    const typeIdsToInsert = newTypesList.filter(
+      (t) => !oldTypesList.includes(t)
+    );
     // List of objects to insert
-    const typeObjectsToInsert = typeIdsToInsert.map(type_id => ({
+    const typeObjectsToInsert = typeIdsToInsert.map((type_id) => ({
       project_id: projectId,
       project_type_id: type_id,
     }));
 
     // List of primary keys to delete
     const typePksToDelete = originalTypes
-      .filter(t => typeIdsToDelete.includes(t?.moped_type.type_id))
-      .map(t => t.id);
+      .filter((t) => typeIdsToDelete.includes(t?.moped_type.type_id))
+      .map((t) => t.id);
 
     updateProjectTypes({
       variables: {
@@ -106,11 +110,11 @@ const ProjectSummaryProjectTypes = ({
       .then(() => {
         refetch();
         setEditMode(false);
-        snackbarHandle(true, "Update successful", "success");
+        snackbarHandle(true, "Project types updated", "success");
       })
-      .catch(err => {
-        snackbarHandle(true, "Failed to update types: " + String(err), "error");
+      .catch((error) => {
         handleProjectTypesClose();
+        snackbarHandle(true, `Error updating project types`, "error", error);
       });
     setEditMode(false);
   };
@@ -134,9 +138,9 @@ const ProjectSummaryProjectTypes = ({
               multiple
               value={selectedTypes}
               onChange={handleChange}
-              input={<Input autoFocus/>}
-              renderValue={type_ids =>
-                type_ids.map(t => typeDict[t]).join(", ")
+              input={<Input autoFocus />}
+              renderValue={(type_ids) =>
+                type_ids.map((t) => typeDict[t]).join(", ")
               }
               MenuProps={{
                 style: {
@@ -144,8 +148,9 @@ const ProjectSummaryProjectTypes = ({
                   width: 450,
                 },
               }}
-              className={classes.fieldSelectItem}>
-              {typeList.map(type => (
+              className={classes.fieldSelectItem}
+            >
+              {typeList.map((type) => (
                 <MenuItem key={type.type_id} value={type.type_id}>
                   <Checkbox
                     checked={selectedTypes.includes(type.type_id)}
@@ -170,9 +175,7 @@ const ProjectSummaryProjectTypes = ({
           </>
         ) : (
           <ProjectSummaryLabel
-            text={
-              selectedTypes.map(t => typeDict[t])
-            }
+            text={selectedTypes.map((t) => typeDict[t])}
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

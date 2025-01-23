@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Avatar,
   Card,
   CardContent,
@@ -311,6 +312,18 @@ const ProjectNotes = (props) => {
     setDeleteConfirmationId(id);
   };
 
+  if (error) {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Alert severity="error">
+            Something went wrong. Refresh the page to try again.
+          </Alert>
+        </Grid>
+      </Grid>
+    );
+  }
+
   return (
     <CardContent>
       <Grid container spacing={2}>
@@ -354,7 +367,7 @@ const ProjectNotes = (props) => {
         {/*Now the notes*/}
         <Grid item xs={12}>
           <Card>
-            {error || loading || !displayNotes ? (
+            {loading || !displayNotes ? (
               <CircularProgress />
             ) : displayNotes.length > 0 ? (
               <List className={classes.root}>
