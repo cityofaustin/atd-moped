@@ -33,11 +33,7 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({
-  activity,
-  onSubmitCallback,
-  snackbarHandle,
-}) => {
+const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -167,9 +163,7 @@ const ProjectWorkActivitiesForm = ({
               valueHandler={(value) => value || null}
             />
             {formErrors?.workgroup_contractor && (
-              <FormHelperText>
-                {formErrors.workgroup_contractor.message}
-              </FormHelperText>
+              <FormHelperText>{formErrors.workgroup_contractor.message}</FormHelperText>
             )}
           </FormControl>
         </Grid>
