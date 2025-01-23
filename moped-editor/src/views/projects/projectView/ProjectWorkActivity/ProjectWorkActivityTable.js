@@ -283,7 +283,6 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
           activity={editActivity}
           onClose={() => setEditActivity(null)}
           onSubmitCallback={onSubmitCallback}
-          snackbarHandle={snackbarHandle}
         />
       )}
       <DeleteConfirmationModal
