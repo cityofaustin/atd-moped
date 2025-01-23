@@ -84,13 +84,16 @@ const SubprojectFundingModal = ({
       },
     })
       .then(() => {
-        refetch().then(() => handleDialogClose());
+        refetch().then(() => {handleDialogClose()
+          snackbarHandle(true, "Funding source added", "success")
+        });
       })
       .catch((error) => {
         snackbarHandle(
           true,
-          `There was a problem adding funding. Error message: ${error.message}`,
-          "error"
+          "Error adding funding source",
+          "error",
+          error
         );
       });
     setSelectedFdus([]);
@@ -153,6 +156,9 @@ const SubprojectFundingModal = ({
           localeText={{ noRowsLabel: "No FDUs available" }}
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
+          onProcessRowUpdateError={(error) =>
+            snackbarHandle(true, "Error updating table", "error", error)
+          }
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>
           <Button
