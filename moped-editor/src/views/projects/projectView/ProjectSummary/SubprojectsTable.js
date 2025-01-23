@@ -199,22 +199,17 @@ const SubprojectsTable = ({
     })
       .then(() => {
         refetch();
-        snackbarHandle(true, "Subproject removed", "success");
         refetchSummaryData(); // Refresh subprojects in summary map
+        snackbarHandle(true, "Subproject removed", "success");
       })
       .then(() => setIsDeleteConfirmationOpen(false))
       .catch((error) => {
-        console.error(error);
-        snackbarHandle(true, `Subproject not removed: ${error}`, "error");
+        snackbarHandle(true, "Error removing subproject", "error", error);
       });
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
-  };
-
-  const handleProcessUpdateError = (error) => {
-    console.error(error.message);
   };
 
   // handles insert mutation triggered by row mode switching from edit to view
@@ -238,20 +233,25 @@ const SubprojectsTable = ({
           })
             .then(() => {
               refetch();
-              snackbarHandle(true, "Subproject added", "success");
               refetchSummaryData(); // Refresh subprojects in summary map
+              snackbarHandle(true, "Subproject added", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => newRow)
             .catch((error) => {
-              console.error(error);
-              snackbarHandle(true, `Subproject not added: ${error}`, "error");
+              snackbarHandle(true, "Error adding subproject", "error", error);
             })
         );
       }
     },
-    [projectId, refetch, refetchSummaryData, updateProjectSubproject, snackbarHandle]
+    [
+      projectId,
+      refetch,
+      refetchSummaryData,
+      updateProjectSubproject,
+      snackbarHandle,
+    ]
   );
 
   const dataGridColumns = useColumns({
@@ -278,7 +278,9 @@ const SubprojectsTable = ({
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessUpdateError}
+        onProcessRowUpdateError={(error) =>
+          snackbarHandle(true, "Error updating table", "error", error)
+        }
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}

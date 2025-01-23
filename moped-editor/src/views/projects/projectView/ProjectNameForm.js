@@ -59,11 +59,11 @@ const ProjectNameForm = ({
       })
         .then((res) => {
           // if the mutation is successful, show a success snackbar
-          props.snackbarHandle(true, "Success! The project names have been updated!", "success");
+          props.snackbarHandle(true, "Project names updated", "success");
         })
         .catch((error) => {
           // and if it fails, show an error snackbar
-          props.snackbarHandle(true, "Error. The project names have not been updated.", "error");
+          props.snackbarHandle(true, "Error updating project names", "error", error);
         })
         .finally(() => {
           // return to the view mode and alert the parent component of the change
