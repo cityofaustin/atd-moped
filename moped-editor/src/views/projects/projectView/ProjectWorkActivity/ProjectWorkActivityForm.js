@@ -92,11 +92,15 @@ const ProjectWorkActivitiesForm = ({
   );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
-    snackbarHandle(
-      true,
-      "Error updating work activity",
-      "error",
-      errorStatuses || errorTaskOrders || mutationState.error
+    console.error(errorStatuses || errorTaskOrders || mutationState.error);
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Alert severity="error">
+            Something went wrong. Refresh the page to try again.
+          </Alert>
+        </Grid>
+      </Grid>
     );
   } else if (loadingStatuses || loadingTaskOrders) {
     return (

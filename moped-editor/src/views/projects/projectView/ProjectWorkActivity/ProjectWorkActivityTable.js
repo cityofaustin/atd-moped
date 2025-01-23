@@ -199,21 +199,24 @@ const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
         .then(() => {
           setActivityToDelete(null);
           setIsDeleteConfirmationOpen(false);
-          snackbarHandle(true, "Work activity deleted", success)
+          snackbarHandle(true, "Work activity deleted", "success");
         })
         .catch((error) => {
-          snackbarHandle(
-            true,
-            "Error deleting work activity",
-            "error",
-            error
-          );
+          snackbarHandle(true, "Error deleting work activity", "error", error);
         });
     }
   }, [activityToDelete, deleteContract, refetch, snackbarHandle]);
 
-  const onSubmitCallback = () => {
-    refetch().then(() => setEditActivity(null));
+  const onSubmitCallback = ({ mutation }) => {
+    refetch().then(() => {
+      setEditActivity(null);
+      if (mutation.data.update_moped_proj_work_activity_by_pk) {
+        snackbarHandle(true, "Work activity updated", "success");
+      }
+      if (mutation.data.insert_moped_proj_work_activity_one) {
+        snackbarHandle(true, "Work activity added", "success");
+      }
+    });
   };
 
   const columns = useColumns({
