@@ -197,7 +197,13 @@ const ProjectNotes = (props) => {
           },
         ],
       },
-    });
+    })
+      .then(() => {
+        props.snackbarHandle(true, "Note/status added", "success");
+      })
+      .catch((error) =>
+        props.snackbarHandle(true, "Error adding note/status", "error", error)
+      );
   };
 
   const editNote = (index, item) => {
@@ -224,8 +230,13 @@ const ProjectNotes = (props) => {
         projectNoteId: noteId,
         projectNoteType: editingNoteType,
       },
-    });
-
+    })
+      .then(() => {
+        props.snackbarHandle(true, "Note/status updated", "success");
+      })
+      .catch((error) =>
+        props.snackbarHandle(true, "Error updating note/status", "error", error)
+      );
     setEditingNoteType(null);
   };
 
@@ -236,8 +247,13 @@ const ProjectNotes = (props) => {
         projectNoteId: project_note_id,
       },
     })
-      .then(() => setIsDeleteConfirmationOpen(false))
-      .catch((error) => console.error(error));
+      .then(() => {
+        setIsDeleteConfirmationOpen(false);
+        props.snackbarHandle(true, "Note/status deleted", "success");
+      })
+      .catch((error) =>
+        props.snackbarHandle(true, "Error deleting note/status", "error", error)
+      );
   };
 
   /**

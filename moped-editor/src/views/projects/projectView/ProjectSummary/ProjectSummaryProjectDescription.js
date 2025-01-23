@@ -57,15 +57,16 @@ const ProjectSummaryProjectDescription = ({
         },
         refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
       })
-        .then((data) => {
+        .then(() => {
           setEditMode(false);
-          snackbarHandle(true, "Project description updated.", "success");
+          snackbarHandle(true, "Project description updated", "success");
         })
-        .catch((err) => {
+        .catch((error) => {
           snackbarHandle(
             true,
-            "Failed to update project description: " + String(err),
-            "error"
+            "Error updating project description",
+            "error",
+            error
           );
           handleProjectDescriptionClose();
         });

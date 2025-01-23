@@ -20,9 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectNameForm = ({
-  props,
-}) => {
+const ProjectNameForm = ({ props }) => {
   const classes = useStyles();
 
   // state to hold values for controlled inputs
@@ -58,17 +56,18 @@ const ProjectNameForm = ({
         },
       })
         .then((res) => {
-          // if the mutation is successful, show a success snackbar
-          props.snackbarHandle(true, "Project names updated", "success");
-        })
-        .catch((error) => {
-          // and if it fails, show an error snackbar
-          props.snackbarHandle(true, "Error updating project names", "error", error);
-        })
-        .finally(() => {
           // return to the view mode and alert the parent component of the change
           props.setIsEditing(false);
           props.updatedCallback();
+          props.snackbarHandle(true, "Project names updated", "success");
+        })
+        .catch((error) => {
+          props.snackbarHandle(
+            true,
+            "Error updating project names",
+            "error",
+            error
+          );
         });
     }
   };

@@ -162,6 +162,7 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbar
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
+                snackbarHandle={snackbarHandle}
                 classes={classes}
               />
               <Grid item xs={12}>

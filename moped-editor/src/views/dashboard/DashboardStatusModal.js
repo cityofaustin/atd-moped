@@ -19,6 +19,7 @@ const DashboardStatusModal = ({
   modalParent,
   statusUpdate,
   queryRefetch,
+  snackbarHandle,
   children,
   classes,
 }) => {
@@ -77,6 +78,7 @@ const DashboardStatusModal = ({
             projectId={projectId}
             currentPhaseId={currentPhaseId}
             closeModalDialog={handleDialogClose}
+            snackbarHandle={snackbarHandle}
           />
         </DialogContent>
       </Dialog>
