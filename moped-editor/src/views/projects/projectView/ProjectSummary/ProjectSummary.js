@@ -122,7 +122,14 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbarHandle }) => {
+const ProjectSummary = ({
+  loading,
+  error,
+  data,
+  refetch,
+  listViewQuery,
+  snackbarHandle,
+}) => {
   const { projectId } = useParams();
   const classes = useStyles();
 
@@ -294,7 +301,10 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery, snackbar
                 />
               </Grid>
               <Grid item xs={12}>
-                <TagsSection projectId={projectId} />
+                <TagsSection
+                  projectId={projectId}
+                  snackbarHandle={snackbarHandle}
+                />
               </Grid>
               <Grid item xs={12}>
                 {!data.moped_project[0].parent_project_id && (

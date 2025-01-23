@@ -278,9 +278,6 @@ const SubprojectsTable = ({
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={(error) =>
-          snackbarHandle(true, "Error updating table", "error", error)
-        }
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}
