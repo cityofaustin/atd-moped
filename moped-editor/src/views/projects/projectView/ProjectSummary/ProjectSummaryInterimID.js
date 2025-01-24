@@ -29,10 +29,8 @@ const ProjectSummaryInterimID = ({
   classes,
   snackbarHandle,
 }) => {
-
   // Instantiate Original Value
-  const originalValue =
-    data?.moped_project?.[0]?.interim_project_id ?? null
+  const originalValue = data?.moped_project?.[0]?.interim_project_id ?? null;
   const [editMode, setEditMode] = useState(false);
   const [interimId, setInterimId] = useState(originalValue);
   const [updateProjectInterimId] = useMutation(PROJECT_UPDATE_INTERIM_ID);
@@ -68,15 +66,16 @@ const ProjectSummaryInterimID = ({
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, "Project interim database ID updated!", "success");
+        snackbarHandle(true, "Project interim database ID updated", "success");
       })
-      .catch((err) => {
+      .catch((error) => {
+        handleProjectInterimIdClose();
         snackbarHandle(
           true,
-          "Failed to update interim database ID " + String(err),
-          "error"
+          `Error updating project interim database ID`,
+          "error",
+          error
         );
-        handleProjectInterimIdClose();
       });
 
     setEditMode(false);
@@ -114,7 +113,8 @@ const ProjectSummaryInterimID = ({
               id="moped-project-interimID"
               label={null}
               onChange={handleProjectInterimIdChange}
-              value={interimId ?? ""} />
+              value={interimId ?? ""}
+            />
             <Icon
               className={classes.editIconConfirm}
               onClick={handleProjectInterimIdSave}

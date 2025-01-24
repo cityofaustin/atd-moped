@@ -165,7 +165,7 @@ const useColumns = ({ deleteInProgress, onDeleteActivity, setEditActivity }) =>
     ];
   }, [deleteInProgress, onDeleteActivity, setEditActivity]);
 
-const ProjectWorkActivitiesTable = () => {
+const ProjectWorkActivitiesTable = ({ snackbarHandle }) => {
   const [editActivity, setEditActivity] = useState(null);
   const { projectId } = useParams();
 
@@ -199,12 +199,24 @@ const ProjectWorkActivitiesTable = () => {
         .then(() => {
           setActivityToDelete(null);
           setIsDeleteConfirmationOpen(false);
+          snackbarHandle(true, "Work activity deleted", "success");
+        })
+        .catch((error) => {
+          snackbarHandle(true, "Error deleting work activity", "error", error);
         });
     }
-  }, [activityToDelete, deleteContract, refetch]);
+  }, [activityToDelete, deleteContract, refetch, snackbarHandle]);
 
-  const onSubmitCallback = () => {
-    refetch().then(() => setEditActivity(null));
+  const onSubmitCallback = ({ mutation }) => {
+    refetch().then(() => {
+      setEditActivity(null);
+      if (mutation.data.update_moped_proj_work_activity_by_pk) {
+        snackbarHandle(true, "Work activity updated", "success");
+      }
+      if (mutation.data.insert_moped_proj_work_activity_one) {
+        snackbarHandle(true, "Work activity added", "success");
+      }
+    });
   };
 
   const columns = useColumns({
@@ -271,6 +283,7 @@ const ProjectWorkActivitiesTable = () => {
           activity={editActivity}
           onClose={() => setEditActivity(null)}
           onSubmitCallback={onSubmitCallback}
+          snackbarHandle={snackbarHandle}
         />
       )}
       <DeleteConfirmationModal

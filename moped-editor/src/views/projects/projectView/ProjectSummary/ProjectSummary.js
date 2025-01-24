@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 
 import ProjectSummaryMap from "./ProjectSummaryMap";
@@ -8,7 +8,6 @@ import { Grid, CardContent, CircularProgress } from "@mui/material";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSummarySnackbar from "./ProjectSummarySnackbar";
 import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
 import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
 import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
@@ -122,38 +121,27 @@ const useStyles = makeStyles((theme) => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
+const ProjectSummary = ({
+  loading,
+  error,
+  data,
+  refetch,
+  listViewQuery,
+  snackbarHandle,
+}) => {
   const { projectId } = useParams();
   const classes = useStyles();
-
-  const [snackbarState, setSnackbarState] = useState(false);
 
   /* Not all child components have components and geography data */
   const childProjectGeography = data?.childProjects
     .filter((project) => project.project_geography.length > 0)
     .map((project) => project.project_geography[0]);
-  /**
-   * Updates the state of snackbar state
-   * @param {String|JSX.Element} message - The message to be displayed
-   * @param {String} severity - Usually "success" or "error"
-   */
-  const snackbarHandle = (open = true, message, severity = "success") => {
-    setSnackbarState({
-      open: open,
-      message: message,
-      severity: severity,
-    });
-  };
 
   if (loading) return <CircularProgress />;
   if (error) return `Error! ${error.message}`;
 
   return (
     <ApolloErrorHandler errors={error}>
-      <ProjectSummarySnackbar
-        snackbarState={snackbarState}
-        snackbarHandle={snackbarHandle}
-      />
       <CardContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -180,6 +168,7 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
+                snackbarHandle={snackbarHandle}
                 classes={classes}
               />
               <Grid item xs={12}>
@@ -302,13 +291,17 @@ const ProjectSummary = ({ loading, error, data, refetch, listViewQuery }) => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TagsSection projectId={projectId} />
+                <TagsSection
+                  projectId={projectId}
+                  snackbarHandle={snackbarHandle}
+                />
               </Grid>
               <Grid item xs={12}>
                 {!data.moped_project[0].parent_project_id && (
                   <SubprojectsTable
                     projectId={projectId}
                     refetchSummaryData={refetch}
+                    snackbarHandle={snackbarHandle}
                   />
                 )}
               </Grid>

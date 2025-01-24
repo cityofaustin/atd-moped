@@ -189,7 +189,13 @@ const useColumns = ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
+const ProjectMilestones = ({
+  projectId,
+  loading,
+  data,
+  refetch,
+  snackbarHandle,
+}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const apiRef = useGridApiRef();
 
@@ -315,12 +321,20 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
                 .project_milestone_id;
             updatedRow.project_milestone_id = record_id;
           })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            snackbarHandle(true, "Project milestone added", "success");
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            console.error(error.message);
+            snackbarHandle(
+              true,
+              "Error adding project milestone",
+              "error",
+              error
+            );
           })
       );
     } else {
@@ -335,20 +349,24 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           updateProjectMilestone({
             variables: updatedMilestoneData,
           })
-            .then(() => refetch())
+            .then(() => {
+              refetch();
+              snackbarHandle(true, "Project milestone updated", "success");
+            })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              console.error(error.message);
+              snackbarHandle(
+                true,
+                "Error updating project milestone",
+                "error",
+                error
+              );
             })
         );
       }
     }
-  };
-
-  const handleProcessUpdateError = (error) => {
-    console.error(error.message);
   };
 
   // handles row delete
@@ -362,14 +380,22 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
           project_milestone_id: id,
         },
       })
-        .then(() => refetch())
+        .then(() => {
+          refetch();
+          snackbarHandle(true, "Project milestone deleted", "success");
+        })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
-          console.error(error);
+          snackbarHandle(
+            true,
+            "Error deleting project milestone",
+            "error",
+            error
+          );
         });
     },
 
-    [rows, deleteProjectMilestone, refetch]
+    [rows, deleteProjectMilestone, refetch, snackbarHandle]
   );
 
   const dataGridColumns = useColumns({
@@ -411,7 +437,6 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessUpdateError}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
@@ -437,6 +462,7 @@ const ProjectMilestones = ({ projectId, loading, data, refetch }) => {
         selectedMilestones={data.moped_proj_milestones}
         projectId={projectId}
         refetch={refetch}
+        snackbarHandle={snackbarHandle}
       />
       <DeleteConfirmationModal
         type={"milestone"}

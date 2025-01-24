@@ -109,15 +109,11 @@ const ProjectSummaryProjectPartners = ({
       .then(() => {
         refetch();
         setEditMode(false);
-        snackbarHandle(true, "Update successful", "success");
+        snackbarHandle(true, "Project partners updated", "success");
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update partners: " + String(err),
-          "error"
-        );
+      .catch((error) => {
         handleProjectPartnersClose();
+        snackbarHandle(true, `Error updating project partners`, "error", error);
       });
     setEditMode(false);
   };

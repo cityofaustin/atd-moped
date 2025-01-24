@@ -4,14 +4,17 @@ import { useParams } from "react-router-dom";
 
 import { CardContent, Grid } from "@mui/material";
 
-const ProjectTeam = () => {
+const ProjectTeam = ({ snackbarHandle }) => {
   const { projectId } = useParams();
 
   return (
     <CardContent>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <ProjectTeamTable projectId={projectId} />
+          <ProjectTeamTable
+            projectId={projectId}
+            snackbarHandle={snackbarHandle}
+          />
         </Grid>
       </Grid>
     </CardContent>

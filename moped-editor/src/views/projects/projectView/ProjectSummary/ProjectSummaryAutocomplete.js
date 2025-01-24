@@ -62,10 +62,10 @@ const ProjectSummaryAutocomplete = ({
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, `${field} updated!`, "success");
+        snackbarHandle(true, `${field} updated`, "success");
       })
-      .catch((err) => {
-        snackbarHandle(true, "Failed to update: " + String(err), "error");
+      .catch((error) => {
+        snackbarHandle(true, `Error updating ${field}`, "error", error);
         handleFieldClose();
       });
   };
