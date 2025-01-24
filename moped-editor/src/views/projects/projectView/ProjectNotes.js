@@ -271,7 +271,7 @@ const ProjectNotes = (props) => {
     if (error) {
       props.snackbarHandle(true, "Error loading notes", "error", error);
     }
-  }, [loading, data, error]);
+  }, [loading, data, error, props.snackbarHandle]);
 
   /**
    * Whenever filterNoteType changes, filter the notes being displayed
