@@ -1,16 +1,6 @@
--- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
+-- Most recent migration: moped-database/migrations/1737754622032_deprecate_type_tables/up.sql
 
-CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
-    SELECT
-        mpcwt.project_component_id,
-        string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
-    WHERE mpcwt.is_deleted = false
-    GROUP BY mpcwt.project_component_id
-),
-
-council_districts AS (
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH council_districts AS (
     SELECT
         features.component_id AS project_component_id,
         string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
@@ -145,7 +135,7 @@ earliest_active_or_construction_phase_date AS (
 
 SELECT
     mpc.project_id,
-    comp_geography.project_component_id,
+    mpc.project_component_id,
     comp_geography.feature_ids,
     mpc.component_id,
     comp_geography.geometry,
@@ -165,7 +155,7 @@ SELECT
         ELSE 'Point'::text
     END AS geometry_type,
     subcomponents.subcomponents AS component_subcomponents,
-    work_types.work_types AS component_work_types,
+    plv.component_work_type_names AS component_work_types,
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
@@ -196,7 +186,6 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_and_program_names AS funding_sources,
-    plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
     to_char(timezone('US/Central'::text, plv.construction_start_date), 'YYYY-MM-DD'::text) AS construction_start_date,
@@ -233,7 +222,6 @@ FROM moped_proj_components mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
-LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
 LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
 LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
