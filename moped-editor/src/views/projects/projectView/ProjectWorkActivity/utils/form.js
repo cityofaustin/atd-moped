@@ -100,7 +100,13 @@ const FORM_PAYLOAD_FIELDS = [
   "work_order_url",
 ];
 
-export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {
+export const onSubmitActivity = ({
+  data,
+  mutate,
+  onSubmitCallback,
+  snackbarHandle,
+  isNewActivity,
+}) => {
   const { id } = data;
 
   const payload = FORM_PAYLOAD_FIELDS.reduce((obj, key) => {
@@ -118,7 +124,13 @@ export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {
 
   mutate({
     variables,
-  }).then((mutation) => onSubmitCallback({ mutation }));
+  })
+    .then((mutation) => onSubmitCallback({ mutation }))
+    .catch((error) => {
+      isNewActivity
+        ? snackbarHandle(true, "Error adding work activity", "error", error)
+        : snackbarHandle(true, "Error updating work activity", "error", error);
+    });
 };
 
 export const useDefaultValues = (activity) =>
