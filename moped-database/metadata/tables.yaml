@@ -1669,37 +1669,40 @@
     - role: moped-admin
       permission:
         columns:
+          - date_added
           - department_id
           - entity_id
+          - entity_name
+          - entity_uuid
+          - is_deleted
           - organization_id
           - workgroup_id
-          - entity_name
-          - date_added
-          - entity_uuid
         filter: {}
         allow_aggregations: true
     - role: moped-editor
       permission:
         columns:
+          - date_added
           - department_id
           - entity_id
+          - entity_name
+          - entity_uuid
+          - is_deleted
           - organization_id
           - workgroup_id
-          - entity_name
-          - date_added
-          - entity_uuid
         filter: {}
         allow_aggregations: true
     - role: moped-viewer
       permission:
         columns:
+          - date_added
           - department_id
           - entity_id
+          - entity_name
+          - entity_uuid
+          - is_deleted
           - organization_id
           - workgroup_id
-          - entity_name
-          - date_added
-          - entity_uuid
         filter: {}
         allow_aggregations: true
 - table:
@@ -5493,6 +5496,9 @@
           - workgroup_name
         filter: {}
         allow_aggregations: true
+- table:
+    name: project_funding_view
+    schema: public
 - table:
     name: project_geography
     schema: public
