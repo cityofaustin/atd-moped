@@ -119,7 +119,7 @@ const useLookupTables = (data) =>
           component.component_subtype ? ` - ${component.component_subtype}` : ""
         }`;
       });
-      data["moped_types"].forEach((projectType) => {
+      data["deprecated_moped_types"].forEach((projectType) => {
         lookupData.projectTypeList[`${projectType.type_id}`] =
           projectType.type_name;
       });
@@ -129,10 +129,7 @@ const useLookupTables = (data) =>
   }, [data]);
 
 /** Fields which do not need to be rendered in the activity log */
-const CHANGE_FIELDS_TO_IGNORE = [
-  "updated_by_user_id",
-  "updated_at"
-];
+const CHANGE_FIELDS_TO_IGNORE = ["updated_by_user_id", "updated_at"];
 
 /**
  * Updates the description field with newData and oldData
@@ -164,7 +161,10 @@ const usePrepareActivityData = (activityData) =>
               if (!isEqual(newData[key], oldData[key])) {
                 changedField = key;
               }
-            } else if (newData[key] !== oldData[key] && !CHANGE_FIELDS_TO_IGNORE.includes(key)) {
+            } else if (
+              newData[key] !== oldData[key] &&
+              !CHANGE_FIELDS_TO_IGNORE.includes(key)
+            ) {
               changedField = key;
             }
           });
