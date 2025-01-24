@@ -248,7 +248,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -329,7 +328,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -410,7 +408,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -5612,7 +5609,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}
@@ -5665,7 +5661,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}
@@ -5718,7 +5713,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}
