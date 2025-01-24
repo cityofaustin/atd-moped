@@ -460,7 +460,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           .catch((error) => {
             snackbarHandle(
               true,
-              "Error deleting funding source",
+              "Error adding funding source",
               "error",
               error
             );
@@ -526,9 +526,6 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={(error) =>
-            snackbarHandle(true, "Error updating table", "error", error)
-          }
           disableRowSelectionOnClick
           toolbar
           density="comfortable"

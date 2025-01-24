@@ -519,9 +519,6 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
-        onProcessRowUpdateError={(error) =>
-          snackbarHandle(true, "Error updating table", "error", error)
-        }
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
