@@ -498,6 +498,7 @@ const ProjectTeamTable = ({ projectId }) => {
     classes,
     teamNameLookup,
     roleNameLookup,
+    usingShiftKey
   });
 
   const processRowUpdateMemoized = useCallback(

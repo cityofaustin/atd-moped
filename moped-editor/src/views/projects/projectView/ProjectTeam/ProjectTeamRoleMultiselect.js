@@ -14,12 +14,26 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
 
 import theme from "src/theme";
 
-const ProjectTeamRoleMultiselect = ({ id, field, roles, value, error }) => {
+const ProjectTeamRoleMultiselect = ({
+  id,
+  field,
+  roles,
+  value,
+  error,
+  hasFocus,
+}) => {
+  const ref = React.useRef(null);
   const rolesArray = React.useMemo(
     () => value.map((role) => role.project_role_id),
     [value]
   );
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const apiRef = useGridApiContext();
 
@@ -48,7 +62,7 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value, error }) => {
         error={error}
         value={selectedValues}
         onChange={handleChange}
-        input={<Input id="select-multiple" />}
+        input={<Input id="select-multiple" inputRef={ref} />}
         renderValue={() => {
           const selectedRoles = roles.filter((role) =>
             selectedValues.includes(role.project_role_id)

@@ -22,9 +22,13 @@ const WorkgroupTextField = ({ field, value, id, hasFocus, usingShiftKey }) => {
     if (hasFocus) {
       // Check if shift key is pressed, and user is trying to tab "backwards"
       if (usingShiftKey) {
+        apiRef.current.setCellFocus(id, "moped_user");
+      } else {
+        apiRef.current.setCellFocus(id, "moped_proj_personnel_roles");
       }
+      ref.current.focus();
     }
-  });
+  }, [apiRef, hasFocus, id, usingShiftKey]);
 
   return (
     <TextField
