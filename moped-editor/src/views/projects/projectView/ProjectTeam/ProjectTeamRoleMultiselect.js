@@ -11,15 +11,37 @@ import {
   Typography,
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-
 import theme from "src/theme";
 
-const ProjectTeamRoleMultiselect = ({ id, field, roles, value, error }) => {
+/**
+ * @param {Integer} id - Data Grid row id (same as record id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {[Object]} roles - array of role objects: {project_role_id, project_role_name, project_role_description}
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Boolean} error - toggles error style in textfield
+ * @return {JSX.Element}
+ */
+const ProjectTeamRoleMultiselect = ({
+  id,
+  field,
+  roles,
+  value,
+  error,
+  hasFocus,
+}) => {
+  const ref = React.useRef(null);
   const rolesArray = React.useMemo(
     () => value.map((role) => role.project_role_id),
     [value]
   );
   const [selectedValues, setSelectedValues] = React.useState(rolesArray || []);
+
+  React.useEffect(() => {
+    if (hasFocus) {
+      ref.current.focus();
+    }
+  }, [hasFocus]);
 
   const apiRef = useGridApiContext();
 
@@ -48,7 +70,7 @@ const ProjectTeamRoleMultiselect = ({ id, field, roles, value, error }) => {
         error={error}
         value={selectedValues}
         onChange={handleChange}
-        input={<Input id="select-multiple" />}
+        input={<Input id="select-multiple" inputRef={ref} />}
         renderValue={() => {
           const selectedRoles = roles.filter((role) =>
             selectedValues.includes(role.project_role_id)
