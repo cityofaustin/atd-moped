@@ -11,6 +11,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/**
+ * @param {Integer} id - Data Grid row id (same as record id)
+ * @param {String} value - field value
+ * @param {String} field - name of field
+ * @param {Boolean} hasFocus - does this field have focus
+ * @param {Object} workgroupLookup - mapping of workgroup ids to their corresponding workgroup name
+ * @return {JSX.Element}
+ */
 const WorkgroupTextField = ({
   field,
   value,
