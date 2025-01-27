@@ -260,8 +260,6 @@ const ProjectTeamTable = ({ projectId }) => {
   const workgroupLookup = useWorkgroupLookup(data);
   const userWorkgroupLookup = useUserWorkgroupLookup(data);
 
-  console.log(data);
-
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
    * @param {Object} newData - a table row object with { moped_user, notes, roleIds }

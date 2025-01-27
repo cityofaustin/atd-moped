@@ -11,6 +11,7 @@ import { useTheme } from "@mui/material/styles";
  * @param {Object} nameLookup - maps user id to user name
  * @param {Boolean} error - toggles error style in textfield
  * @param {Object} name - name of the field
+ * @param {Object} userWorkgroupLookup - mapping of user ids to their corresponding workgroup ids
  * @return {JSX.Element}
  */
 const TeamAutocompleteComponent = ({
