@@ -39,6 +39,13 @@ const TeamAutocompleteComponent = ({
       field,
       value: personnelValue ?? null,
     });
+    // Also update the corresponding workgroup field
+    apiRef.current.setEditCellValue({
+      id,
+      field: "moped_workgroup",
+      // value: { related_phase_id: relatedPhaseLookup[newValue] },
+      value: "edited",
+    });
   };
 
   const options = Object.keys(nameLookup);

@@ -38,7 +38,7 @@ const WorkgroupTextField = ({ field, value, id, hasFocus, usingShiftKey }) => {
       inputRef={ref}
       name={field}
       type="text"
-      value="hi"
+      value={value || ""}
       // value={phaseNameLookupData[value?.related_phase_id] || " "}
       InputProps={{ readOnly: true, disableUnderline: true }}
     />
