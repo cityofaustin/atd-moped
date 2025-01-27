@@ -21,6 +21,7 @@ const TeamAutocompleteComponent = ({
   nameLookup,
   error,
   name,
+  userWorkgroupLookup,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -39,12 +40,11 @@ const TeamAutocompleteComponent = ({
       field,
       value: personnelValue ?? null,
     });
-    // Also update the corresponding workgroup field
+    // Also update the corresponding workgroup field with the selected user's workgroup id
     apiRef.current.setEditCellValue({
       id,
       field: "moped_workgroup",
-      // value: { related_phase_id: relatedPhaseLookup[newValue] },
-      value: "edited",
+      value: { workgroup_id: userWorkgroupLookup[newValue] },
     });
   };
 

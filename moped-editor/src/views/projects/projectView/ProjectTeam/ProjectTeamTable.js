@@ -49,13 +49,24 @@ const useTeamNameLookup = (data) =>
     }, {});
   }, [data]);
 
-const useRoleNameLookup = (data) =>
+const useWorkgroupLookup = (data) =>
   useMemo(() => {
     if (!data) {
       return {};
     }
-    return data.moped_project_roles.reduce((obj, item) => {
-      obj[item.project_role_id] = item.project_role_name;
+    return data.moped_workgroup.reduce((obj, item) => {
+      obj[item.workgroup_id] = item.workgroup_name;
+      return obj;
+    }, {});
+  }, [data]);
+
+const useUserWorkgroupLookup = (data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_users.reduce((obj, item) => {
+      obj[item.user_id] = item.workgroup_id;
       return obj;
     }, {});
   }, [data]);
@@ -72,6 +83,8 @@ const useColumns = ({
   classes,
   teamNameLookup,
   usingShiftKey,
+  workgroupLookup,
+  userWorkgroupLookup,
 }) =>
   useMemo(() => {
     return [
@@ -91,6 +104,7 @@ const useColumns = ({
               value={props.row.moped_user}
               nameLookup={teamNameLookup}
               error={props.error}
+              userWorkgroupLookup={userWorkgroupLookup}
             />
           );
         },
@@ -106,10 +120,11 @@ const useColumns = ({
         field: "moped_workgroup",
         editable: true,
         width: 200,
-        valueGetter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) => workgroup?.workgroup_name,
         renderEditCell: (props) => (
           <WorkgroupTextField
             {...props}
+            workgroupLookup={workgroupLookup}
             // phaseNameLookupData={phaseNameLookup}
             usingShiftKey={usingShiftKey}
           />
@@ -202,6 +217,8 @@ const useColumns = ({
     classes,
     teamNameLookup,
     usingShiftKey,
+    workgroupLookup,
+    userWorkgroupLookup,
   ]);
 
 const ProjectTeamTable = ({ projectId }) => {
@@ -240,7 +257,10 @@ const ProjectTeamTable = ({ projectId }) => {
   }, [data]);
 
   const teamNameLookup = useTeamNameLookup(data);
-  const roleNameLookup = useRoleNameLookup(data);
+  const workgroupLookup = useWorkgroupLookup(data);
+  const userWorkgroupLookup = useUserWorkgroupLookup(data);
+
+  console.log(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -497,8 +517,9 @@ const ProjectTeamTable = ({ projectId }) => {
     handleDeleteOpen,
     classes,
     teamNameLookup,
-    roleNameLookup,
-    usingShiftKey
+    usingShiftKey,
+    workgroupLookup,
+    userWorkgroupLookup,
   });
 
   const processRowUpdateMemoized = useCallback(

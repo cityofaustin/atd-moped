@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WorkgroupTextField = ({ field, value, id, hasFocus, usingShiftKey }) => {
+const WorkgroupTextField = ({ field, value, id, hasFocus, usingShiftKey, workgroupLookup }) => {
   const ref = React.useRef(null);
   const apiRef = useGridApiContext();
   const classes = useStyles();
@@ -38,7 +38,7 @@ const WorkgroupTextField = ({ field, value, id, hasFocus, usingShiftKey }) => {
       inputRef={ref}
       name={field}
       type="text"
-      value={value || ""}
+      value={workgroupLookup[value.workgroup_id] || ""}
       // value={phaseNameLookupData[value?.related_phase_id] || " "}
       InputProps={{ readOnly: true, disableUnderline: true }}
     />

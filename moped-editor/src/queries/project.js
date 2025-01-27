@@ -200,6 +200,13 @@ export const TEAM_QUERY = gql`
       user_id
       is_deleted
     }
+    moped_workgroup(
+      order_by: { workgroup_id: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
+      workgroup_id
+      workgroup_name
+    }
   }
 `;
 
