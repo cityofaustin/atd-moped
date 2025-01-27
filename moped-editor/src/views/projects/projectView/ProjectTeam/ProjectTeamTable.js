@@ -125,7 +125,6 @@ const useColumns = ({
           <WorkgroupTextField
             {...props}
             workgroupLookup={workgroupLookup}
-            // phaseNameLookupData={phaseNameLookup}
             usingShiftKey={usingShiftKey}
           />
         ),
