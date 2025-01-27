@@ -22,6 +22,7 @@ import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import WorkgroupTextField from "./WorkgroupTextField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -70,7 +71,7 @@ const useColumns = ({
   handleDeleteOpen,
   classes,
   teamNameLookup,
-  roleNameLookup,
+  usingShiftKey,
 }) =>
   useMemo(() => {
     return [
@@ -103,8 +104,16 @@ const useColumns = ({
       {
         headerName: "Workgroup",
         field: "moped_workgroup",
+        editable: true,
         width: 200,
         valueGetter: (workgroup) => workgroup?.workgroup_name,
+        renderEditCell: (props) => (
+          <WorkgroupTextField
+            {...props}
+            // phaseNameLookupData={phaseNameLookup}
+            usingShiftKey={usingShiftKey}
+          />
+        ),
       },
       {
         headerName: "Role",
@@ -192,6 +201,7 @@ const useColumns = ({
     handleDeleteOpen,
     classes,
     teamNameLookup,
+    usingShiftKey,
   ]);
 
 const ProjectTeamTable = ({ projectId }) => {
@@ -212,6 +222,7 @@ const ProjectTeamTable = ({ projectId }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -499,6 +510,12 @@ const ProjectTeamTable = ({ projectId }) => {
 
   if (loading || !data) return <CircularProgress />;
 
+  const checkIfShiftKey = (params, event) => {
+    if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
+      setUsingShiftKey(event.shiftKey);
+    }
+  };
+
   return (
     <ApolloErrorHandler errors={error}>
       <DataGridPro
@@ -514,6 +531,7 @@ const ProjectTeamTable = ({ projectId }) => {
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
         onProcessRowUpdateError={handleProcessUpdateError}
+        onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
