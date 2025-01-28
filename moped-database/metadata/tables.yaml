@@ -5,43 +5,6 @@
     - name: moped_type
       using:
         foreign_key_constraint_on: project_type_id
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
 - table:
     name: moped_types
     schema: deprecated
