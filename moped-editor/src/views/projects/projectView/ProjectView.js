@@ -65,7 +65,7 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
-import DataGridSnackbar from "src/components/DataGridPro/DataGridSnackbar";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -658,7 +658,7 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      <DataGridSnackbar
+      <FeedbackSnackbar
         snackbarState={snackbarState}
         snackbarHandle={snackbarHandle}
       />

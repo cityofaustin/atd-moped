@@ -10,7 +10,7 @@ import { Snackbar } from "@mui/material";
  * @returns {JSX.Element}
  * @constructor
  */
-const DataGridSnackbar = ({
+const FeedbackSnackbar = ({
   snackbarState,
   snackbarHandle,
   timeOut = 7000,
@@ -36,4 +36,4 @@ const DataGridSnackbar = ({
   );
 };
 
-export default DataGridSnackbar;
+export default FeedbackSnackbar;
