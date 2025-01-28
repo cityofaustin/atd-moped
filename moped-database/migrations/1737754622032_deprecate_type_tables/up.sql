@@ -309,7 +309,17 @@ LEFT JOIN LATERAL (
 WHERE mp.is_deleted = false
 GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
 
-CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH council_districts AS (
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
+    SELECT
+        mpcwt.project_component_id,
+        string_agg(mwt.name, ', '::text) AS work_types
+    FROM moped_proj_component_work_types mpcwt
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    WHERE mpcwt.is_deleted = false
+    GROUP BY mpcwt.project_component_id
+),
+
+council_districts AS (
     SELECT
         features.component_id AS project_component_id,
         string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
@@ -464,7 +474,7 @@ SELECT
         ELSE 'Point'::text
     END AS geometry_type,
     subcomponents.subcomponents AS component_subcomponents,
-    plv.component_work_type_names AS component_work_types,
+    work_types.work_types AS component_work_types,
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
@@ -531,6 +541,7 @@ FROM moped_proj_components mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
+LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
 LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
 LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
