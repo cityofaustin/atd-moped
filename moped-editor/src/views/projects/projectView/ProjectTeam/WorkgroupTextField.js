@@ -53,7 +53,7 @@ const WorkgroupTextField = ({
       inputRef={ref}
       name={field}
       type="text"
-      value={workgroupLookup[value.workgroup_id] || ""}
+      value={workgroupLookup[value?.workgroup_id] || ""}
       InputProps={{ readOnly: true, disableUnderline: true }}
     />
   );
