@@ -213,9 +213,10 @@ const ProjectView = () => {
     if (error) {
       setSnackbarState({
         open: open,
-        message: `${message}: ${error}`,
+        message: `${message}. Refresh the page to try again.`,
         severity: severity,
       });
+      console.error(error);
     } else {
       setSnackbarState({
         open: open,
@@ -392,7 +393,7 @@ const ProjectView = () => {
       })
         .then(() => {
           refetch();
-          handleSnackbar(true, "Poject followed", "success");
+          handleSnackbar(true, "Project followed", "success");
         })
         .catch((error) => {
           handleSnackbar(true, "Error following project", "error", error);
@@ -406,7 +407,7 @@ const ProjectView = () => {
       })
         .then(() => {
           refetch();
-          handleSnackbar(true, "Poject unfollowed", "success");
+          handleSnackbar(true, "Project unfollowed", "success");
         })
         .catch((error) => {
           handleSnackbar(true, "Error unfollowing project", "error", error);
