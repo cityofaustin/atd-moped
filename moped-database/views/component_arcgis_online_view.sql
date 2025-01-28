@@ -1,6 +1,16 @@
 -- Most recent migration: moped-database/migrations/1737754622032_deprecate_type_tables/up.sql
 
-CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH council_districts AS (
+CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
+    SELECT
+        mpcwt.project_component_id,
+        string_agg(mwt.name, ', '::text) AS work_types
+    FROM moped_proj_component_work_types mpcwt
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    WHERE mpcwt.is_deleted = false
+    GROUP BY mpcwt.project_component_id
+),
+
+council_districts AS (
     SELECT
         features.component_id AS project_component_id,
         string_agg(DISTINCT features_council_districts.council_district_id::text, ', '::text) AS council_districts,
@@ -155,7 +165,7 @@ SELECT
         ELSE 'Point'::text
     END AS geometry_type,
     subcomponents.subcomponents AS component_subcomponents,
-    plv.component_work_type_names AS component_work_types,
+    work_types.work_types AS component_work_types,
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
@@ -222,6 +232,7 @@ FROM moped_proj_components mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
+LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
 LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
 LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
