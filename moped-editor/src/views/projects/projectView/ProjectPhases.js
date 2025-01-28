@@ -152,7 +152,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
+const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -177,14 +177,14 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Project phase deleted", "success");
+          handleSnackbar(true, "Project phase deleted", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
-          snackbarHandle(true, "Error deleting project phase", "error", error);
+          handleSnackbar(true, "Error deleting project phase", "error", error);
         });
     },
-    [deletePhase, refetch, snackbarHandle]
+    [deletePhase, refetch, handleSnackbar]
   );
 
   const columns = useColumns({
@@ -208,8 +208,8 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
   const onSubmitCallback = (isNewPhase) => {
     refetch().then(() => {
       isNewPhase
-        ? snackbarHandle(true, "Project phase added", "success")
-        : snackbarHandle(true, "Project phase updated", "success");
+        ? handleSnackbar(true, "Project phase added", "success")
+        : handleSnackbar(true, "Project phase updated", "success");
       setEditPhase(null);
     });
   };
@@ -246,7 +246,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
           },
         }}
         onProcessRowUpdateError={(error) =>
-          snackbarHandle(true, "Error updating table", "error", error)
+          handleSnackbar(true, "Error updating table", "error", error)
         }
       />
       {editPhase && (
@@ -258,7 +258,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
           currentProjectPhaseIds={currentProjectPhaseIds}
           currentPhaseIds={currentPhaseIds}
           projectId={projectId}
-          snackbarHandle={snackbarHandle}
+          handleSnackbar={handleSnackbar}
         />
       )}
       <PhaseTemplateModal
@@ -269,7 +269,7 @@ const ProjectPhases = ({ projectId, data, refetch, snackbarHandle }) => {
         subphaseNameLookup={subphaseNameLookup}
         projectId={projectId}
         refetch={refetch}
-        snackbarHandle={snackbarHandle}
+        handleSnackbar={handleSnackbar}
       />
       <DeleteConfirmationModal
         type={"phase"}

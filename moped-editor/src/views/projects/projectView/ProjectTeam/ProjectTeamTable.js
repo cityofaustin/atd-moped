@@ -194,7 +194,7 @@ const useColumns = ({
     teamNameLookup,
   ]);
 
-const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
+const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -419,11 +419,11 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
         })
           .then(() => {
             refetch();
-            snackbarHandle(true, "Team member added", "success");
+            handleSnackbar(true, "Team member added", "success");
           })
           .then(() => updatedRow)
           .catch((error) => {
-            snackbarHandle(true, "Error adding team member", "error", error);
+            handleSnackbar(true, "Error adding team member", "error", error);
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -466,11 +466,11 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
         return updateProjectPersonnel({ variables })
           .then(() => {
             refetch();
-            snackbarHandle(true, "Team member updated", "success");
+            handleSnackbar(true, "Team member updated", "success");
           })
           .then(() => updatedRow)
           .catch((error) => {
-            snackbarHandle(true, "Error updating team member", "error", error);
+            handleSnackbar(true, "Error updating team member", "error", error);
           });
       }
     },
@@ -479,7 +479,7 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
       insertProjectPersonnel,
       projectId,
       refetch,
-      snackbarHandle,
+      handleSnackbar,
     ]
   );
 
@@ -547,10 +547,10 @@ const ProjectTeamTable = ({ projectId, snackbarHandle }) => {
             .then(() => {
               refetch();
               setIsDeleteConfirmationOpen(false);
-              snackbarHandle(true, "Team member removed", "success");
+              handleSnackbar(true, "Team member removed", "success");
             })
             .catch((error) => {
-              snackbarHandle(
+              handleSnackbar(
                 true,
                 "Error removing team member",
                 "error",

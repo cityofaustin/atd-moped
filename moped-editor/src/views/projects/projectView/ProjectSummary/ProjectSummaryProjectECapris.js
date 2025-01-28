@@ -41,7 +41,7 @@ const WrapperComponent = ({ children, noWrapper, classes }) =>
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -50,7 +50,7 @@ const ProjectSummaryProjectECapris = ({
   data,
   refetch,
   classes,
-  snackbarHandle,
+  handleSnackbar,
   noWrapper,
 }) => {
   const [originalValue, setOriginalValue] = useState(
@@ -89,7 +89,7 @@ const ProjectSummaryProjectECapris = ({
     const isEmpty = (eCapris ?? "").length === 0;
 
     if (!isEmpty && !isValidECaprisId(eCapris)) {
-      snackbarHandle(
+      handleSnackbar(
         true,
         `Invalid eCapris value: ${eCapris} must not contain letters and have exactly three digits after the decimal place. E.g., 12680.010.`,
         "error"
@@ -112,7 +112,7 @@ const ProjectSummaryProjectECapris = ({
     )
       .then(() => {
         setEditMode(false);
-        snackbarHandle(
+        handleSnackbar(
           true,
           "eCAPRIS Subproject ID updated",
           "success"
@@ -121,7 +121,7 @@ const ProjectSummaryProjectECapris = ({
       .then(() => refetch())
       .catch((error) => {
         handleProjectECaprisClose();
-        snackbarHandle(
+        handleSnackbar(
           true,
           `Error updating eCAPRIS Subproject ID`,
           "error",

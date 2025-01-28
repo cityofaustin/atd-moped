@@ -33,7 +33,7 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, snackbarHandle }) => {
+const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar }) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -110,7 +110,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, snackbarHandle 
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmitActivity({ data, mutate, onSubmitCallback, snackbarHandle, isNewActivity })
+        onSubmitActivity({ data, mutate, onSubmitCallback, handleSnackbar, isNewActivity })
       )}
       autoComplete="off"
     >

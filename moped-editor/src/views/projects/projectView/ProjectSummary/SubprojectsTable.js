@@ -104,7 +104,7 @@ const useColumns = ({
 const SubprojectsTable = ({
   projectId = null,
   refetchSummaryData,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
@@ -200,11 +200,11 @@ const SubprojectsTable = ({
       .then(() => {
         refetch();
         refetchSummaryData(); // Refresh subprojects in summary map
-        snackbarHandle(true, "Subproject removed", "success");
+        handleSnackbar(true, "Subproject removed", "success");
       })
       .then(() => setIsDeleteConfirmationOpen(false))
       .catch((error) => {
-        snackbarHandle(true, "Error removing subproject", "error", error);
+        handleSnackbar(true, "Error removing subproject", "error", error);
       });
   };
 
@@ -234,13 +234,13 @@ const SubprojectsTable = ({
             .then(() => {
               refetch();
               refetchSummaryData(); // Refresh subprojects in summary map
-              snackbarHandle(true, "Subproject added", "success");
+              handleSnackbar(true, "Subproject added", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => newRow)
             .catch((error) => {
-              snackbarHandle(true, "Error adding subproject", "error", error);
+              handleSnackbar(true, "Error adding subproject", "error", error);
             })
         );
       }
@@ -250,7 +250,7 @@ const SubprojectsTable = ({
       refetch,
       refetchSummaryData,
       updateProjectSubproject,
-      snackbarHandle,
+      handleSnackbar,
     ]
   );
 

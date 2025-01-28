@@ -104,7 +104,7 @@ export const onSubmitActivity = ({
   data,
   mutate,
   onSubmitCallback,
-  snackbarHandle,
+  handleSnackbar,
   isNewActivity,
 }) => {
   const { id } = data;
@@ -128,8 +128,8 @@ export const onSubmitActivity = ({
     .then((mutation) => onSubmitCallback({ mutation }))
     .catch((error) => {
       isNewActivity
-        ? snackbarHandle(true, "Error adding work activity", "error", error)
-        : snackbarHandle(true, "Error updating work activity", "error", error);
+        ? handleSnackbar(true, "Error adding work activity", "error", error)
+        : handleSnackbar(true, "Error updating work activity", "error", error);
     });
 };
 

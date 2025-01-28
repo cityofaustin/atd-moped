@@ -183,7 +183,7 @@ export const onSubmitPhase = ({
   currentPhaseIdsToClear,
   currentPhaseIds,
   onSubmitCallback,
-  snackbarHandle
+  handleSnackbar
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
@@ -222,7 +222,7 @@ export const onSubmitPhase = ({
     .then(() => onSubmitCallback(isNewPhase))
     .catch((error) => {
       isNewPhase
-        ? snackbarHandle(true, "Error adding project phase", "error", error)
-        : snackbarHandle(true, "Error updating project phase", "error", error);
+        ? handleSnackbar(true, "Error adding project phase", "error", error)
+        : handleSnackbar(true, "Error updating project phase", "error", error);
     });
 };

@@ -237,7 +237,7 @@ const useColumns = ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = ({ snackbarHandle }) => {
+const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
@@ -294,10 +294,10 @@ const ProjectFiles = ({ snackbarHandle }) => {
     })
       .then(() => {
         setDialogOpen(false);
-        snackbarHandle(true, "File saved", "success");
+        handleSnackbar(true, "File saved", "success");
       })
       .catch((error) => {
-        snackbarHandle(true, "Error saving file", "error", error);
+        handleSnackbar(true, "Error saving file", "error", error);
       })
       .finally(() => {
         refetch();
@@ -368,13 +368,13 @@ const ProjectFiles = ({ snackbarHandle }) => {
         .then(() => refetch())
         .then(() => {
           setIsDeleteConfirmationOpen(false);
-          snackbarHandle(true, "File deleted", "success");
+          handleSnackbar(true, "File deleted", "success");
         })
         .catch((error) => {
-          snackbarHandle(true, "Error deleting file", "error", error);
+          handleSnackbar(true, "Error deleting file", "error", error);
         });
     },
-    [rows, deleteProjectFileAttachment, refetch, snackbarHandle]
+    [rows, deleteProjectFileAttachment, refetch, handleSnackbar]
   );
 
   // saves row update after editing an existing row
@@ -402,13 +402,13 @@ const ProjectFiles = ({ snackbarHandle }) => {
         })
           .then(() => {
             refetch();
-            snackbarHandle(true, "File updated", "success");
+            handleSnackbar(true, "File updated", "success");
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
           .catch((error) => {
-            snackbarHandle(true, "Error updating file", "error", error);
+            handleSnackbar(true, "Error updating file", "error", error);
           })
       );
     }
@@ -457,7 +457,7 @@ const ProjectFiles = ({ snackbarHandle }) => {
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) =>
-            snackbarHandle(true, "Error updating table", "error", error)
+            handleSnackbar(true, "Error updating table", "error", error)
           }
           disableRowSelectionOnClick
           toolbar

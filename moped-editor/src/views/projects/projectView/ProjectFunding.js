@@ -5,7 +5,7 @@ import ProjectFundingTable from "./ProjectFunding/ProjectFundingTable";
 import ProjectWorkActivitiesTable from "./ProjectWorkActivity/ProjectWorkActivityTable";
 import { useParams } from "react-router-dom";
 
-const ProjectFunding = ({ snackbarHandle }) => {
+const ProjectFunding = ({ handleSnackbar }) => {
   const { projectId } = useParams();
   return (
     <CardContent>
@@ -13,13 +13,13 @@ const ProjectFunding = ({ snackbarHandle }) => {
         <Grid item xs={12}>
           <ProjectFundingTable
             projectId={projectId}
-            snackbarHandle={snackbarHandle}
+            handleSnackbar={handleSnackbar}
           />
         </Grid>
         <Grid item xs={12}>
           <ProjectWorkActivitiesTable
             projectId={projectId}
-            snackbarHandle={snackbarHandle}
+            handleSnackbar={handleSnackbar}
           />
         </Grid>
       </Grid>

@@ -101,7 +101,7 @@ const ProjectNotes = (props) => {
   const currentPhaseId =
     props.currentPhaseId ??
     props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
-  const snackbarHandle = props.snackbarHandle;
+  const handleSnackbar = props.handleSnackbar;
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
@@ -201,10 +201,10 @@ const ProjectNotes = (props) => {
       },
     })
       .then(() => {
-        snackbarHandle(true, "Note/status added", "success");
+        handleSnackbar(true, "Note/status added", "success");
       })
       .catch((error) =>
-        snackbarHandle(true, "Error adding note/status", "error", error)
+        handleSnackbar(true, "Error adding note/status", "error", error)
       );
   };
 
@@ -234,10 +234,10 @@ const ProjectNotes = (props) => {
       },
     })
       .then(() => {
-        snackbarHandle(true, "Note/status updated", "success");
+        handleSnackbar(true, "Note/status updated", "success");
       })
       .catch((error) =>
-        snackbarHandle(true, "Error updating note/status", "error", error)
+        handleSnackbar(true, "Error updating note/status", "error", error)
       );
     setEditingNoteType(null);
   };
@@ -251,10 +251,10 @@ const ProjectNotes = (props) => {
     })
       .then(() => {
         setIsDeleteConfirmationOpen(false);
-        snackbarHandle(true, "Note/status deleted", "success");
+        handleSnackbar(true, "Note/status deleted", "success");
       })
       .catch((error) =>
-        snackbarHandle(true, "Error deleting note/status", "error", error)
+        handleSnackbar(true, "Error deleting note/status", "error", error)
       );
   };
 
@@ -270,9 +270,9 @@ const ProjectNotes = (props) => {
       setDisplayNotes(data.moped_proj_notes);
     }
     if (error) {
-      snackbarHandle(true, "Error loading notes", "error", error);
+      handleSnackbar(true, "Error loading notes", "error", error);
     }
-  }, [loading, data, error, snackbarHandle]);
+  }, [loading, data, error, handleSnackbar]);
 
   /**
    * Whenever filterNoteType changes, filter the notes being displayed

@@ -18,7 +18,7 @@ import { useMutation } from "@apollo/client";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -33,7 +33,7 @@ const ProjectSummaryAutocomplete = ({
   projectId,
   refetch,
   classes,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);
@@ -62,10 +62,10 @@ const ProjectSummaryAutocomplete = ({
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, `${field} updated`, "success");
+        handleSnackbar(true, `${field} updated`, "success");
       })
       .catch((error) => {
-        snackbarHandle(true, `Error updating ${field}`, "error", error);
+        handleSnackbar(true, `Error updating ${field}`, "error", error);
         handleFieldClose();
       });
   };

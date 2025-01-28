@@ -207,7 +207,7 @@ const ProjectView = () => {
    * @param {String} severity - The severity color of the snackbar
    * @param {Object} error - The error to be displayed and logged
    */
-  const snackbarHandle = (open, message, severity, error) => {
+  const handleSnackbar = (open, message, severity, error) => {
     // if there is an error, render error message,
     // otherwise, render success message
     if (error) {
@@ -392,10 +392,10 @@ const ProjectView = () => {
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Poject followed", "success");
+          handleSnackbar(true, "Poject followed", "success");
         })
         .catch((error) => {
-          snackbarHandle(true, "Error following project", "error", error);
+          handleSnackbar(true, "Error following project", "error", error);
         });
     } else {
       unfollowProject({
@@ -406,10 +406,10 @@ const ProjectView = () => {
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Poject unfollowed", "success");
+          handleSnackbar(true, "Poject unfollowed", "success");
         })
         .catch((error) => {
-          snackbarHandle(true, "Error unfollowing project", "error", error);
+          handleSnackbar(true, "Error unfollowing project", "error", error);
         });
     }
   };
@@ -490,7 +490,7 @@ const ProjectView = () => {
                               setIsEditing={setIsEditing}
                               updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
-                              snackbarHandle={snackbarHandle}
+                              handleSnackbar={handleSnackbar}
                             />
                           </Box>
                         </Grid>
@@ -594,7 +594,7 @@ const ProjectView = () => {
                             }
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
-                            snackbarHandle={snackbarHandle}
+                            handleSnackbar={handleSnackbar}
                           />
                         </TabPanel>
                       );
@@ -660,7 +660,7 @@ const ProjectView = () => {
       )}
       <FeedbackSnackbar
         snackbarState={snackbarState}
-        snackbarHandle={snackbarHandle}
+        handleSnackbar={handleSnackbar}
       />
     </ApolloErrorHandler>
   );

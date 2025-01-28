@@ -18,7 +18,7 @@ import { useMutation } from "@apollo/client";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -27,7 +27,7 @@ const ProjectSummaryInterimID = ({
   data,
   refetch,
   classes,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   // Instantiate Original Value
   const originalValue = data?.moped_project?.[0]?.interim_project_id ?? null;
@@ -66,11 +66,11 @@ const ProjectSummaryInterimID = ({
       .then(() => {
         setEditMode(false);
         refetch();
-        snackbarHandle(true, "Project interim database ID updated", "success");
+        handleSnackbar(true, "Project interim database ID updated", "success");
       })
       .catch((error) => {
         handleProjectInterimIdClose();
-        snackbarHandle(
+        handleSnackbar(
           true,
           `Error updating project interim database ID`,
           "error",

@@ -194,7 +194,7 @@ const ProjectMilestones = ({
   loading,
   data,
   refetch,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const apiRef = useGridApiRef();
@@ -323,13 +323,13 @@ const ProjectMilestones = ({
           })
           .then(() => {
             refetch();
-            snackbarHandle(true, "Project milestone added", "success");
+            handleSnackbar(true, "Project milestone added", "success");
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            snackbarHandle(
+            handleSnackbar(
               true,
               "Error adding project milestone",
               "error",
@@ -351,13 +351,13 @@ const ProjectMilestones = ({
           })
             .then(() => {
               refetch();
-              snackbarHandle(true, "Project milestone updated", "success");
+              handleSnackbar(true, "Project milestone updated", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              snackbarHandle(
+              handleSnackbar(
                 true,
                 "Error updating project milestone",
                 "error",
@@ -382,11 +382,11 @@ const ProjectMilestones = ({
       })
         .then(() => {
           refetch();
-          snackbarHandle(true, "Project milestone deleted", "success");
+          handleSnackbar(true, "Project milestone deleted", "success");
         })
         .then(() => setIsDeleteConfirmationOpen(false))
         .catch((error) => {
-          snackbarHandle(
+          handleSnackbar(
             true,
             "Error deleting project milestone",
             "error",
@@ -395,7 +395,7 @@ const ProjectMilestones = ({
         });
     },
 
-    [rows, deleteProjectMilestone, refetch, snackbarHandle]
+    [rows, deleteProjectMilestone, refetch, handleSnackbar]
   );
 
   const dataGridColumns = useColumns({
@@ -462,7 +462,7 @@ const ProjectMilestones = ({
         selectedMilestones={data.moped_proj_milestones}
         projectId={projectId}
         refetch={refetch}
-        snackbarHandle={snackbarHandle}
+        handleSnackbar={handleSnackbar}
       />
       <DeleteConfirmationModal
         type={"milestone"}

@@ -36,7 +36,7 @@ const ProjectPhaseForm = ({
   currentProjectPhaseIds,
   currentPhaseIds,
   onSubmitCallback,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const isNewPhase = !phase.project_phase_id;
   const userSessionData = getSessionDatabaseData();
@@ -97,7 +97,7 @@ const ProjectPhaseForm = ({
       currentPhaseIdsToClear,
       currentPhaseIds,
       onSubmitCallback,
-      snackbarHandle
+      handleSnackbar
     });
   };
 

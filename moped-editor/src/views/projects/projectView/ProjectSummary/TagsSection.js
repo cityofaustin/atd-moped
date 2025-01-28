@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const TagsSection = ({ projectId, snackbarHandle }) => {
+const TagsSection = ({ projectId, handleSnackbar }) => {
   const [addTagMode, setAddTagMode] = useState(false);
   const [newTagList, setNewTagList] = useState([]);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -113,10 +113,10 @@ const TagsSection = ({ projectId, snackbarHandle }) => {
       .then(() => refetch())
       .then(() => {
         setIsDeleteConfirmationOpen(false);
-        snackbarHandle(true, "Tag deleted", "success");
+        handleSnackbar(true, "Tag deleted", "success");
       })
       .catch((error) => {
-        snackbarHandle(true, "Error deleting tag", "error", error);
+        handleSnackbar(true, "Error deleting tag", "error", error);
       });
 
   /**
@@ -135,11 +135,11 @@ const TagsSection = ({ projectId, snackbarHandle }) => {
     })
       .then(() => {
         refetch();
-        snackbarHandle(true, "Tag(s) added", "success");
+        handleSnackbar(true, "Tag(s) added", "success");
       })
       .then(() => handleNewTagCancel())
       .catch((error) => {
-        snackbarHandle(true, "Error adding tag(s)", "error", error);
+        handleSnackbar(true, "Error adding tag(s)", "error", error);
       });
   };
 

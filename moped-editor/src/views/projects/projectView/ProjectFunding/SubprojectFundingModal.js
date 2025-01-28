@@ -40,7 +40,7 @@ const SubprojectFundingModal = ({
   fdusArray,
   addProjectFunding,
   projectId,
-  snackbarHandle,
+  handleSnackbar,
   refetch,
 }) => {
   const { data } = useSocrataJson(
@@ -85,11 +85,11 @@ const SubprojectFundingModal = ({
     })
       .then(() => {
         refetch().then(() => {handleDialogClose()
-          snackbarHandle(true, "Funding source added", "success")
+          handleSnackbar(true, "Funding source added", "success")
         });
       })
       .catch((error) => {
-        snackbarHandle(
+        handleSnackbar(
           true,
           "Error adding funding source",
           "error",
@@ -103,7 +103,7 @@ const SubprojectFundingModal = ({
     projectId,
     refetch,
     selectedFdus,
-    snackbarHandle,
+    handleSnackbar,
   ]);
 
   const handleRowSelection = useCallback(
@@ -157,7 +157,7 @@ const SubprojectFundingModal = ({
           checkboxSelection
           onRowSelectionModelChange={handleRowSelection}
           onProcessRowUpdateError={(error) =>
-            snackbarHandle(true, "Error updating table", "error", error)
+            handleSnackbar(true, "Error updating table", "error", error)
           }
         />
         <Box my={3} sx={{ display: "flex", flexDirection: "row-reverse" }}>

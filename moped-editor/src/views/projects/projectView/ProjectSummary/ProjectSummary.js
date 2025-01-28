@@ -127,7 +127,7 @@ const ProjectSummary = ({
   data,
   refetch,
   listViewQuery,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const { projectId } = useParams();
   const classes = useStyles();
@@ -151,7 +151,7 @@ const ProjectSummary = ({
                 data={data}
                 refetch={refetch}
                 classes={classes}
-                snackbarHandle={snackbarHandle}
+                handleSnackbar={handleSnackbar}
                 listViewQuery={listViewQuery}
               />
               {data.moped_project[0]?.parent_project_id && (
@@ -160,7 +160,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               )}
               {/*Status Update Component*/}
@@ -168,7 +168,7 @@ const ProjectSummary = ({
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
-                snackbarHandle={snackbarHandle}
+                handleSnackbar={handleSnackbar}
                 classes={classes}
               />
               <Grid item xs={12}>
@@ -184,7 +184,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -200,7 +200,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -209,7 +209,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                   tooltipText="Other internal or external workgroups participating in the project"
                 />
               </Grid>
@@ -234,7 +234,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -243,7 +243,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -252,7 +252,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -261,7 +261,7 @@ const ProjectSummary = ({
                   data={data}
                   refetch={refetch}
                   classes={classes}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -293,7 +293,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <TagsSection
                   projectId={projectId}
-                  snackbarHandle={snackbarHandle}
+                  handleSnackbar={handleSnackbar}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -301,7 +301,7 @@ const ProjectSummary = ({
                   <SubprojectsTable
                     projectId={projectId}
                     refetchSummaryData={refetch}
-                    snackbarHandle={snackbarHandle}
+                    handleSnackbar={handleSnackbar}
                   />
                 )}
               </Grid>

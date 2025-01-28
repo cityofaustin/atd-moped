@@ -240,7 +240,7 @@ const useColumns = ({
     handleEditClick,
   ]);
 
-const ProjectFundingTable = ({ snackbarHandle }) => {
+const ProjectFundingTable = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -384,10 +384,10 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           .then(() => refetch())
           .then(() => {
             setIsDeleteConfirmationOpen(false);
-            snackbarHandle(true, "Funding source deleted", "success");
+            handleSnackbar(true, "Funding source deleted", "success");
           })
           .catch((error) => {
-            snackbarHandle(
+            handleSnackbar(
               true,
               "Error deleting funding source",
               "error",
@@ -396,7 +396,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           });
       }
     },
-    [rows, deleteProjectFunding, refetch, snackbarHandle]
+    [rows, deleteProjectFunding, refetch, handleSnackbar]
   );
 
   // when a user cancels editing by clicking the X in the actions
@@ -452,13 +452,13 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           })
           .then(() => {
             refetch();
-            snackbarHandle(true, "Funding source added", "success");
+            handleSnackbar(true, "Funding source added", "success");
           })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            snackbarHandle(
+            handleSnackbar(
               true,
               "Error adding funding source",
               "error",
@@ -480,13 +480,13 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
           })
             .then(() => {
               refetch();
-              snackbarHandle(true, "Funding source updated", "success");
+              handleSnackbar(true, "Funding source updated", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              snackbarHandle(
+              handleSnackbar(
                 true,
                 "Error updating funding source",
                 "error",
@@ -544,7 +544,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
               eCaprisID: eCaprisID,
               data: data,
               refetch: refetch,
-              snackbarHandle: snackbarHandle,
+              handleSnackbar: handleSnackbar,
               classes: classes,
               noWrapper: true,
               setIsDialogOpen: setIsDialogOpen,
@@ -565,7 +565,7 @@ const ProjectFundingTable = ({ snackbarHandle }) => {
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
         projectId={projectId}
-        snackbarHandle={snackbarHandle}
+        handleSnackbar={handleSnackbar}
         refetch={refetch}
       />
     </ApolloErrorHandler>
