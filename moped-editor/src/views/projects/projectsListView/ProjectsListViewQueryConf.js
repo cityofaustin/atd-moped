@@ -219,12 +219,6 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-    type_name: {
-      type: "string",
-      sortable: true,
-      defaultHidden: true,
-      showInTable: true,
-    },
     funding_source_and_program_names: {
       type: "string",
       sortable: true,
@@ -319,7 +313,7 @@ export const PROJECT_LIST_VIEW_QUERY_CONFIG = {
       defaultHidden: true,
       showInTable: true,
     },
-   component_work_type_names: {
+    component_work_type_names: {
       type: "array",
       sortable: true,
       defaultHidden: true,

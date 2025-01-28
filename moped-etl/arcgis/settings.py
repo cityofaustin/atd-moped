@@ -82,7 +82,6 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     substantial_completion_date
     substantial_completion_date_estimated
     task_order_names
-    type_name
     workgroup_contractors
   }
 }
