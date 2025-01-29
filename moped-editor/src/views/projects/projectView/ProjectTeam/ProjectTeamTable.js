@@ -22,7 +22,7 @@ import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
-import WorkgroupTextField from "./WorkgroupTextField";
+import ViewOnlyTextField from "../ViewOnlyTextField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -122,10 +122,13 @@ const useColumns = ({
         width: 200,
         valueFormatter: (workgroup) => workgroup?.workgroup_name,
         renderEditCell: (props) => (
-          <WorkgroupTextField
+          <ViewOnlyTextField
             {...props}
-            workgroupLookup={workgroupLookup}
+            lookupTable={workgroupLookup}
             usingShiftKey={usingShiftKey}
+            previousColumnField="moped_user"
+            nextColumnField="moped_proj_personnel_roles"
+            valueIdName="workgroup_id"
           />
         ),
       },
