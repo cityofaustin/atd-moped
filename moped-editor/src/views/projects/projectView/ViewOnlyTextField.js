@@ -12,11 +12,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 /**
- * @param {Integer} id - Data Grid row id (same as record id)
- * @param {String} value - field value
  * @param {String} field - name of field
+ * @param {Object} value - field value, should have an entry for the id and the corresponding string
+ * @param {Integer} id - Data Grid row id (same as record id)
  * @param {Boolean} hasFocus - does this field have focus
- * @param {Object} workgroupLookup - mapping of workgroup ids to their corresponding workgroup name
+ * @param {Boolean} usingShiftKey - if shift key is depressed
+ * @param {string} previousColumnField - name of previous column in table
+ * @param {string} nextColumnField - name of next column in table
+ * @param {string} valueIdName - name of id key, ex: workgroup_id
+ * @param {Object} lookupTable - mapping of lookup ids to their corresponding name
  * @return {JSX.Element}
  */
 const ViewOnlyTextField = ({

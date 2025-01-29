@@ -8,6 +8,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
+import ViewOnlyTextField from "./ViewOnlyTextField";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -106,10 +107,13 @@ const useColumns = ({
         },
         width: 150,
         renderEditCell: (props) => (
-          <RelatedPhaseTextField
+          <ViewOnlyTextField
             {...props}
-            phaseNameLookupData={phaseNameLookup}
+            lookupTable={phaseNameLookup}
             usingShiftKey={usingShiftKey}
+            previousColumnField="description"
+            nextColumnField="date_estimate"
+            valueIdName="related_phase_id"
           />
         ),
       },
