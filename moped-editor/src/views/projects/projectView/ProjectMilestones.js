@@ -7,7 +7,6 @@ import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
-import RelatedPhaseTextField from "./ProjectMilestones/RelatedPhaseTextField";
 import ViewOnlyTextField from "./ViewOnlyTextField";
 
 import {

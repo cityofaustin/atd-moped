@@ -50,7 +50,14 @@ const ViewOnlyTextField = ({
       }
       ref.current.focus();
     }
-  }, [apiRef, hasFocus, id, usingShiftKey]);
+  }, [
+    apiRef,
+    hasFocus,
+    id,
+    usingShiftKey,
+    nextColumnField,
+    previousColumnField,
+  ]);
 
   return (
     <TextField
