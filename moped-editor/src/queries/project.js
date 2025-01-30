@@ -200,6 +200,13 @@ export const TEAM_QUERY = gql`
       user_id
       is_deleted
     }
+    moped_workgroup(
+      order_by: { workgroup_id: asc }
+      where: { is_deleted: { _eq: false } }
+    ) {
+      workgroup_id
+      workgroup_name
+    }
   }
 `;
 
@@ -595,7 +602,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
       component_name
       component_subtype
     }
-    moped_types(order_by: { type_id: asc }) {
+    deprecated_moped_types(order_by: { type_id: asc }) {
       type_id
       type_name
     }
