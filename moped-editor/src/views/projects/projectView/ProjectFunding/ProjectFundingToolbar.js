@@ -11,7 +11,7 @@ const ProjectFundingToolbar = ({
   projectId,
   data,
   refetch,
-  snackbarHandle,
+  handleSnackbar,
   setIsDialogOpen,
   classes,
 }) => (
@@ -24,7 +24,7 @@ const ProjectFundingToolbar = ({
         projectId={projectId}
         data={data}
         refetch={refetch}
-        snackbarHandle={snackbarHandle}
+        handleSnackbar={handleSnackbar}
         classes={classes}
         noWrapper
       />

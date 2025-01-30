@@ -101,7 +101,11 @@ const useColumns = ({
     handleCancelClick,
   ]);
 
-const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
+const SubprojectsTable = ({
+  projectId = null,
+  refetchSummaryData,
+  handleSnackbar,
+}) => {
   const { loading, error, data, refetch } = useQuery(SUBPROJECT_QUERY, {
     variables: { projectId: projectId },
     fetchPolicy: "no-cache",
@@ -196,17 +200,16 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
       .then(() => {
         refetch();
         refetchSummaryData(); // Refresh subprojects in summary map
+        handleSnackbar(true, "Subproject removed", "success");
       })
       .then(() => setIsDeleteConfirmationOpen(false))
-      .catch((error) => console.error(error));
+      .catch((error) => {
+        handleSnackbar(true, "Error removing subproject", "error", error);
+      });
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
-  };
-
-  const handleProcessUpdateError = (error) => {
-    console.error(error.message);
   };
 
   // handles insert mutation triggered by row mode switching from edit to view
@@ -231,15 +234,24 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
             .then(() => {
               refetch();
               refetchSummaryData(); // Refresh subprojects in summary map
+              handleSnackbar(true, "Subproject added", "success");
             })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => newRow)
-            .catch((error) => console.error(error))
+            .catch((error) => {
+              handleSnackbar(true, "Error adding subproject", "error", error);
+            })
         );
       }
     },
-    [projectId, refetch, refetchSummaryData, updateProjectSubproject]
+    [
+      projectId,
+      refetch,
+      refetchSummaryData,
+      updateProjectSubproject,
+      handleSnackbar,
+    ]
   );
 
   const dataGridColumns = useColumns({
@@ -266,7 +278,6 @@ const SubprojectsTable = ({ projectId = null, refetchSummaryData }) => {
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
         processRowUpdate={processRowUpdate}
-        onProcessRowUpdateError={handleProcessUpdateError}
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}

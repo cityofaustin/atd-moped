@@ -223,7 +223,7 @@ const useColumns = ({
     userWorkgroupLookup,
   ]);
 
-const ProjectTeamTable = ({ projectId }) => {
+const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -448,11 +448,13 @@ const ProjectTeamTable = ({ projectId }) => {
             object: payload,
           },
         })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "Team member added", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            throw error;
+            handleSnackbar(true, "Error adding team member", "error", error);
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -493,20 +495,24 @@ const ProjectTeamTable = ({ projectId }) => {
         };
 
         return updateProjectPersonnel({ variables })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "Team member updated", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            throw error;
+            handleSnackbar(true, "Error updating team member", "error", error);
           });
       }
     },
-    [updateProjectPersonnel, insertProjectPersonnel, projectId, refetch]
+    [
+      updateProjectPersonnel,
+      insertProjectPersonnel,
+      projectId,
+      refetch,
+      handleSnackbar,
+    ]
   );
-
-  const handleProcessUpdateError = useCallback((error) => {
-    console.error("process row update error", error);
-  }, []);
 
   const dataGridColumns = useColumns({
     data,
@@ -552,7 +558,6 @@ const ProjectTeamTable = ({ projectId }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
-        onProcessRowUpdateError={handleProcessUpdateError}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
@@ -578,10 +583,20 @@ const ProjectTeamTable = ({ projectId }) => {
         submitDelete={() => {
           deleteProjectPersonnel({
             variables: { id: deleteConfirmationId },
-          }).then(() => {
-            refetch();
-            setIsDeleteConfirmationOpen(false);
-          });
+          })
+            .then(() => {
+              refetch();
+              setIsDeleteConfirmationOpen(false);
+              handleSnackbar(true, "Team member removed", "success");
+            })
+            .catch((error) => {
+              handleSnackbar(
+                true,
+                "Error removing team member",
+                "error",
+                error
+              );
+            });
         }}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}

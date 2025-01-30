@@ -21,7 +21,7 @@ import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -30,7 +30,7 @@ const ProjectSummaryProjectPartners = ({
   data,
   refetch,
   classes,
-  snackbarHandle,
+  handleSnackbar,
   tooltipText,
 }) => {
   /**
@@ -109,15 +109,11 @@ const ProjectSummaryProjectPartners = ({
       .then(() => {
         refetch();
         setEditMode(false);
-        snackbarHandle(true, "Update successful", "success");
+        handleSnackbar(true, "Project partners updated", "success");
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update partners: " + String(err),
-          "error"
-        );
+      .catch((error) => {
         handleProjectPartnersClose();
+        handleSnackbar(true, `Error updating project partners`, "error", error);
       });
     setEditMode(false);
   };

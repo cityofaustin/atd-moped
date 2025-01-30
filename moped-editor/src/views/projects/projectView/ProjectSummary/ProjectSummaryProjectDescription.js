@@ -18,7 +18,7 @@ import { useMutation } from "@apollo/client";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -26,7 +26,7 @@ const ProjectSummaryProjectDescription = ({
   projectId,
   data,
   classes,
-  snackbarHandle,
+  handleSnackbar,
   listViewQuery,
 }) => {
   const originalDescription =
@@ -57,15 +57,16 @@ const ProjectSummaryProjectDescription = ({
         },
         refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
       })
-        .then((data) => {
+        .then(() => {
           setEditMode(false);
-          snackbarHandle(true, "Project description updated.", "success");
+          handleSnackbar(true, "Project description updated", "success");
         })
-        .catch((err) => {
-          snackbarHandle(
+        .catch((error) => {
+          handleSnackbar(
             true,
-            "Failed to update project description: " + String(err),
-            "error"
+            "Error updating project description",
+            "error",
+            error
           );
           handleProjectDescriptionClose();
         });

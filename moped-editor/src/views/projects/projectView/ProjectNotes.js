@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Alert,
   Avatar,
   Card,
   CardContent,
@@ -100,6 +101,7 @@ const ProjectNotes = (props) => {
   const currentPhaseId =
     props.currentPhaseId ??
     props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
+  const handleSnackbar = props.handleSnackbar;
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
@@ -197,7 +199,13 @@ const ProjectNotes = (props) => {
           },
         ],
       },
-    });
+    })
+      .then(() => {
+        handleSnackbar(true, "Note/status added", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(true, "Error adding note/status", "error", error)
+      );
   };
 
   const editNote = (index, item) => {
@@ -224,8 +232,13 @@ const ProjectNotes = (props) => {
         projectNoteId: noteId,
         projectNoteType: editingNoteType,
       },
-    });
-
+    })
+      .then(() => {
+        handleSnackbar(true, "Note/status updated", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(true, "Error updating note/status", "error", error)
+      );
     setEditingNoteType(null);
   };
 
@@ -236,8 +249,13 @@ const ProjectNotes = (props) => {
         projectNoteId: project_note_id,
       },
     })
-      .then(() => setIsDeleteConfirmationOpen(false))
-      .catch((error) => console.error(error));
+      .then(() => {
+        setIsDeleteConfirmationOpen(false);
+        handleSnackbar(true, "Note/status deleted", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(true, "Error deleting note/status", "error", error)
+      );
   };
 
   /**
@@ -251,7 +269,10 @@ const ProjectNotes = (props) => {
     if (!loading && data) {
       setDisplayNotes(data.moped_proj_notes);
     }
-  }, [loading, data]);
+    if (error) {
+      handleSnackbar(true, "Error loading notes", "error", error);
+    }
+  }, [loading, data, error, handleSnackbar]);
 
   /**
    * Whenever filterNoteType changes, filter the notes being displayed
@@ -269,8 +290,6 @@ const ProjectNotes = (props) => {
       setDisplayNotes(filteredNotes);
     }
   }, [filterNoteType, mopedProjNotes]);
-
-  if (error) return console.log(error);
 
   /**
    * Defines the NoteTypeButton with a toggle style-change behavior.
@@ -293,6 +312,18 @@ const ProjectNotes = (props) => {
     setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
   };
+
+  if (error) {
+    return (
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Alert severity="error">
+            Something went wrong. Refresh the page to try again.
+          </Alert>
+        </Grid>
+      </Grid>
+    );
+  }
 
   return (
     <CardContent>
