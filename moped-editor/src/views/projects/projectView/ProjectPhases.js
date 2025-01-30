@@ -152,7 +152,7 @@ const useColumns = ({ deleteInProgress, handleDeleteOpen, setEditPhase }) =>
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectPhases = ({ projectId, data, refetch }) => {
+const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
   const [isTemplateDialogOpen, setIsTemplateDialogOpen] = useState(false);
   const [editPhase, setEditPhase] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
@@ -175,10 +175,16 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         variables: { project_phase_id: id },
         refetchQueries: ["ProjectSummary"],
       })
-        .then(() => refetch())
-        .then(() => setIsDeleteConfirmationOpen(false));
+        .then(() => {
+          refetch();
+          handleSnackbar(true, "Project phase deleted", "success");
+        })
+        .then(() => setIsDeleteConfirmationOpen(false))
+        .catch((error) => {
+          handleSnackbar(true, "Error deleting project phase", "error", error);
+        });
     },
-    [deletePhase, refetch]
+    [deletePhase, refetch, handleSnackbar]
   );
 
   const columns = useColumns({
@@ -199,8 +205,13 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
   const completionDate =
     data?.project_list_view[0]["substantial_completion_date"];
 
-  const onSubmitCallback = () => {
-    refetch().then(() => setEditPhase(null));
+  const onSubmitCallback = (isNewPhase) => {
+    refetch().then(() => {
+      isNewPhase
+        ? handleSnackbar(true, "Project phase added", "success")
+        : handleSnackbar(true, "Project phase updated", "success");
+      setEditPhase(null);
+    });
   };
 
   // Open activity edit modal when double clicking in a cell
@@ -234,6 +245,9 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
             completionDate: completionDate,
           },
         }}
+        onProcessRowUpdateError={(error) =>
+          handleSnackbar(true, "Error updating table", "error", error)
+        }
       />
       {editPhase && (
         <ProjectPhaseDialog
@@ -244,6 +258,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
           currentProjectPhaseIds={currentProjectPhaseIds}
           currentPhaseIds={currentPhaseIds}
           projectId={projectId}
+          handleSnackbar={handleSnackbar}
         />
       )}
       <PhaseTemplateModal
@@ -254,6 +269,7 @@ const ProjectPhases = ({ projectId, data, refetch }) => {
         subphaseNameLookup={subphaseNameLookup}
         projectId={projectId}
         refetch={refetch}
+        handleSnackbar={handleSnackbar}
       />
       <DeleteConfirmationModal
         type={"phase"}

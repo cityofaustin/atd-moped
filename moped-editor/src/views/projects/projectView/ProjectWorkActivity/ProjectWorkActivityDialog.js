@@ -9,6 +9,7 @@ const ProjectWorkActivitiesDialog = ({
   onClose,
   activity,
   onSubmitCallback,
+  handleSnackbar
 }) => {
   const titleText = activity.id ? "Edit work activity" : "Add work activity";
   return (
@@ -30,6 +31,7 @@ const ProjectWorkActivitiesDialog = ({
         <ProjectWorkActivitiesForm
           activity={activity}
           onSubmitCallback={onSubmitCallback}
+          handleSnackbar={handleSnackbar}
         />
       </DialogContent>
     </Dialog>

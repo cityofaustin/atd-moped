@@ -237,7 +237,7 @@ const useColumns = ({
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectFiles = () => {
+const ProjectFiles = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
   const { projectId } = useParams();
@@ -294,8 +294,11 @@ const ProjectFiles = () => {
     })
       .then(() => {
         setDialogOpen(false);
+        handleSnackbar(true, "File saved", "success");
       })
-      .catch((error) => console.error(error))
+      .catch((error) => {
+        handleSnackbar(true, "Error saving file", "error", error);
+      })
       .finally(() => {
         refetch();
       });
@@ -363,12 +366,15 @@ const ProjectFiles = () => {
         },
       })
         .then(() => refetch())
-        .then(() => setIsDeleteConfirmationOpen(false))
+        .then(() => {
+          setIsDeleteConfirmationOpen(false);
+          handleSnackbar(true, "File deleted", "success");
+        })
         .catch((error) => {
-          console.error(error);
+          handleSnackbar(true, "Error deleting file", "error", error);
         });
     },
-    [rows, deleteProjectFileAttachment, refetch]
+    [rows, deleteProjectFileAttachment, refetch, handleSnackbar]
   );
 
   // saves row update after editing an existing row
@@ -394,17 +400,18 @@ const ProjectFiles = () => {
             fileUrl: updateProjectFilesData.file_url || null,
           },
         })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "File updated", "success");
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updateProjectFilesData)
-          .catch((error) => console.error(error))
+          .catch((error) => {
+            handleSnackbar(true, "Error updating file", "error", error);
+          })
       );
     }
-  };
-
-  const handleProcessUpdateError = (error) => {
-    console.error(error);
   };
 
   // Validate the input for the file url or file Key field
@@ -449,7 +456,9 @@ const ProjectFiles = () => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={handleProcessUpdateError}
+          onProcessRowUpdateError={(error) =>
+            handleSnackbar(true, "Error updating table", "error", error)
+          }
           disableRowSelectionOnClick
           toolbar
           density="comfortable"

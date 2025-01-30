@@ -11,6 +11,7 @@ import { useTheme } from "@mui/material/styles";
  * @param {Object} nameLookup - maps user id to user name
  * @param {Boolean} error - toggles error style in textfield
  * @param {Object} name - name of the field
+ * @param {Object} userWorkgroupLookup - mapping of user ids to their corresponding workgroup ids
  * @return {JSX.Element}
  */
 const TeamAutocompleteComponent = ({
@@ -21,6 +22,7 @@ const TeamAutocompleteComponent = ({
   nameLookup,
   error,
   name,
+  userWorkgroupLookup,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -38,6 +40,12 @@ const TeamAutocompleteComponent = ({
       id,
       field,
       value: personnelValue ?? null,
+    });
+    // Also update the corresponding workgroup field with the selected user's workgroup id
+    apiRef.current.setEditCellValue({
+      id,
+      field: "moped_workgroup",
+      value: { workgroup_id: userWorkgroupLookup[newValue] },
     });
   };
 

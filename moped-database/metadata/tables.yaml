@@ -1,4 +1,48 @@
 - table:
+    name: moped_project_types
+    schema: deprecated
+  object_relationships:
+    - name: moped_type
+      using:
+        foreign_key_constraint_on: project_type_id
+- table:
+    name: moped_types
+    schema: deprecated
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - type_name
+          - type_id
+          - active_type
+          - on_street
+          - sensitivity
+          - type_order
+          - date_added
+        filter: {}
+    - role: moped-editor
+      permission:
+        columns:
+          - type_name
+          - type_id
+          - active_type
+          - on_street
+          - sensitivity
+          - type_order
+          - date_added
+        filter: {}
+    - role: moped-viewer
+      permission:
+        columns:
+          - type_name
+          - type_id
+          - active_type
+          - on_street
+          - sensitivity
+          - type_order
+          - date_added
+        filter: {}
+- table:
     name: component_arcgis_online_view
     schema: public
   select_permissions:
@@ -79,7 +123,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -160,7 +203,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -241,7 +283,6 @@
           - substantial_completion_date
           - substantial_completion_date_estimated
           - task_order_names
-          - type_name
           - workgroup_contractors
         filter: {}
       comment: ""
@@ -4312,7 +4353,7 @@
           column: project_id
           table:
             name: moped_project_types
-            schema: public
+            schema: deprecated
     - name: moped_projects
       using:
         foreign_key_constraint_on:
@@ -4788,138 +4829,6 @@
           - role_order
         filter: {}
 - table:
-    name: moped_project_types
-    schema: public
-  object_relationships:
-    - name: moped_type
-      using:
-        foreign_key_constraint_on: project_type_id
-  insert_permissions:
-    - role: moped-admin
-      permission:
-        check: {}
-        set:
-          created_by_user_id: x-hasura-user-db-id
-          updated_by_user_id: x-hasura-user-db-id
-        columns:
-          - is_deleted
-          - project_id
-          - project_type_id
-    - role: moped-editor
-      permission:
-        check: {}
-        set:
-          created_by_user_id: x-hasura-user-db-id
-          updated_by_user_id: x-hasura-user-db-id
-        columns:
-          - is_deleted
-          - project_id
-          - project_type_id
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - created_at
-          - created_by_user_id
-          - id
-          - is_deleted
-          - project_id
-          - project_type_id
-          - updated_at
-          - updated_by_user_id
-        filter: {}
-  update_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - is_deleted
-          - project_id
-          - project_type_id
-        filter: {}
-        check: null
-        set:
-          updated_by_user_id: x-hasura-user-db-id
-    - role: moped-editor
-      permission:
-        columns:
-          - is_deleted
-          - project_id
-          - project_type_id
-        filter: {}
-        check: null
-        set:
-          updated_by_user_id: x-hasura-user-db-id
-  event_triggers:
-    - name: activity_log_moped_project_types
-      definition:
-        enable_manual: false
-        insert:
-          columns: '*'
-        update:
-          columns: '*'
-      retry_conf:
-        interval_sec: 10
-        num_retries: 0
-        timeout_sec: 60
-      webhook_from_env: HASURA_ENDPOINT
-      headers:
-        - name: x-hasura-admin-secret
-          value_from_env: ACTIVITY_LOG_API_SECRET
-      request_transform:
-        body:
-          action: transform
-          template: |-
-            {
-              "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
-              "variables": {
-                "object": {
-                  "record_id": {{ $body.event.data.new.id }},
-                  "record_type":  {{ $body.table.name }},
-                  "activity_id": {{ $body.id }},
-                  "record_project_id": {{ $body.event.data.new.project_id }},
-                  "record_data": {"event": {{ $body.event }}},
-                  "description": [{"newSchema": "true"}],
-                  "operation_type": {{ $body.event.op }},
-                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
-                }
-              }
-            }
-        method: POST
-        query_params: {}
-        template_engine: Kriti
-        version: 2
-      cleanup_config:
-        batch_size: 10000
-        clean_invocation_logs: false
-        clear_older_than: 168
-        paused: true
-        schedule: 0 0 * * *
-        timeout: 60
-- table:
     name: moped_public_process_statuses
     schema: public
   select_permissions:
@@ -5036,43 +4945,6 @@
           - type
           - slug
           - is_deleted
-        filter: {}
-- table:
-    name: moped_types
-    schema: public
-  select_permissions:
-    - role: moped-admin
-      permission:
-        columns:
-          - type_name
-          - type_id
-          - active_type
-          - on_street
-          - sensitivity
-          - type_order
-          - date_added
-        filter: {}
-    - role: moped-editor
-      permission:
-        columns:
-          - type_name
-          - type_id
-          - active_type
-          - on_street
-          - sensitivity
-          - type_order
-          - date_added
-        filter: {}
-    - role: moped-viewer
-      permission:
-        columns:
-          - type_name
-          - type_id
-          - active_type
-          - on_street
-          - sensitivity
-          - type_order
-          - date_added
         filter: {}
 - table:
     name: moped_user_events
@@ -5612,7 +5484,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}
@@ -5665,7 +5536,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}
@@ -5718,7 +5588,6 @@
           - task_order_names
           - task_order_names_short
           - task_orders
-          - type_name
           - updated_at
           - workgroup_contractors
         filter: {}

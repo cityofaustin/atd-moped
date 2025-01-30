@@ -179,9 +179,11 @@ export const onSubmitPhase = ({
   phaseData,
   noteData,
   mutate,
+  isNewPhase,
   currentPhaseIdsToClear,
   currentPhaseIds,
   onSubmitCallback,
+  handleSnackbar
 }) => {
   const { project_phase_id, ...formData } = phaseData;
   const { project_id, phase_id } = phaseData;
@@ -216,5 +218,11 @@ export const onSubmitPhase = ({
   mutate({
     variables,
     refetchQueries: ["ProjectSummary"],
-  }).then(() => onSubmitCallback());
+  })
+    .then(() => onSubmitCallback(isNewPhase))
+    .catch((error) => {
+      isNewPhase
+        ? handleSnackbar(true, "Error adding project phase", "error", error)
+        : handleSnackbar(true, "Error updating project phase", "error", error);
+    });
 };
