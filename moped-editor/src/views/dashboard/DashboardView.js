@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { format } from "date-fns";
 
@@ -24,6 +24,7 @@ import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
+import FeedbackSnackbar from "src/components/FeedbackSnackbar";
 
 import typography from "../../theme/typography";
 
@@ -110,6 +111,38 @@ const DashboardView = () => {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
+
+  /* Snackbar state and handler for phase and milestone update feedback */
+  const [snackbarState, setSnackbarState] = useState(false);
+
+  /**
+   * Wrapper around snackbar state setter
+   * @param {boolean} open - The new state of open
+   * @param {String} message - The message for the snackbar
+   * @param {String} severity - The severity color of the snackbar
+   * @param {Object} error - The error to be displayed and logged
+   */
+  const handleSnackbar = useCallback(
+    (open, message, severity, error) => {
+      // if there is an error, render error message,
+      // otherwise, render success message
+      if (error) {
+        setSnackbarState({
+          open: open,
+          message: `${message}. Refresh the page to try again.`,
+          severity: severity,
+        });
+        console.error(error);
+      } else {
+        setSnackbarState({
+          open: open,
+          message: message,
+          severity: severity,
+        });
+      }
+    },
+    [setSnackbarState]
+  );
 
   if (error) {
     console.log(error);
@@ -204,6 +237,7 @@ const DashboardView = () => {
           projectId={entry.project_id}
           projectName={entry.project.project_name_full}
           dashboardRefetch={refetch}
+          handleSnackbar={handleSnackbar}
         >
           <ProjectStatusBadge
             phaseName={entry.phase_name}
@@ -227,6 +261,7 @@ const DashboardView = () => {
           modalParent="dashboard"
           statusUpdate={entry.status_update}
           queryRefetch={refetch}
+          handleSnackbar={handleSnackbar}
           classes={classes}
         >
           {parse(String(entry.status_update))}
@@ -333,6 +368,10 @@ const DashboardView = () => {
             </Grid>
           </Card>
         </Container>
+        <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbar={handleSnackbar}
+        />
       </Page>
     </ActivityMetrics>
   );
