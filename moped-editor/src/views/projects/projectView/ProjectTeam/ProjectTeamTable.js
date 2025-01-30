@@ -22,7 +22,7 @@ import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
-import ViewOnlyTextField from "../ViewOnlyTextField";
+import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
