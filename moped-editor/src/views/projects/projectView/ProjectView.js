@@ -207,24 +207,27 @@ const ProjectView = () => {
    * @param {String} severity - The severity color of the snackbar
    * @param {Object} error - The error to be displayed and logged
    */
-  const handleSnackbar = (open, message, severity, error) => {
-    // if there is an error, render error message,
-    // otherwise, render success message
-    if (error) {
-      setSnackbarState({
-        open: open,
-        message: `${message}. Refresh the page to try again.`,
-        severity: severity,
-      });
-      console.error(error);
-    } else {
-      setSnackbarState({
-        open: open,
-        message: message,
-        severity: severity,
-      });
-    }
-  };
+  const handleSnackbar = useCallback(
+    (open, message, severity, error) => {
+      // if there is an error, render error message,
+      // otherwise, render success message
+      if (error) {
+        setSnackbarState({
+          open: open,
+          message: `${message}. Refresh the page to try again.`,
+          severity: severity,
+        });
+        console.error(error);
+      } else {
+        setSnackbarState({
+          open: open,
+          message: message,
+          severity: severity,
+        });
+      }
+    },
+    [setSnackbarState]
+  );
 
   /**
    * The query to gather the project summary data
