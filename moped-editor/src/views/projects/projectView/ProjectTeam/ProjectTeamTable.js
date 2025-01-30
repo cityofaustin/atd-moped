@@ -22,6 +22,7 @@ import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -48,13 +49,24 @@ const useTeamNameLookup = (data) =>
     }, {});
   }, [data]);
 
-const useRoleNameLookup = (data) =>
+const useWorkgroupLookup = (data) =>
   useMemo(() => {
     if (!data) {
       return {};
     }
-    return data.moped_project_roles.reduce((obj, item) => {
-      obj[item.project_role_id] = item.project_role_name;
+    return data.moped_workgroup.reduce((obj, item) => {
+      obj[item.workgroup_id] = item.workgroup_name;
+      return obj;
+    }, {});
+  }, [data]);
+
+const useUserWorkgroupLookup = (data) =>
+  useMemo(() => {
+    if (!data) {
+      return {};
+    }
+    return data.moped_users.reduce((obj, item) => {
+      obj[item.user_id] = item.workgroup_id;
       return obj;
     }, {});
   }, [data]);
@@ -70,7 +82,9 @@ const useColumns = ({
   handleDeleteOpen,
   classes,
   teamNameLookup,
-  roleNameLookup,
+  usingShiftKey,
+  workgroupLookup,
+  userWorkgroupLookup,
 }) =>
   useMemo(() => {
     return [
@@ -90,6 +104,7 @@ const useColumns = ({
               value={props.row.moped_user}
               nameLookup={teamNameLookup}
               error={props.error}
+              userWorkgroupLookup={userWorkgroupLookup}
             />
           );
         },
@@ -103,8 +118,19 @@ const useColumns = ({
       {
         headerName: "Workgroup",
         field: "moped_workgroup",
+        editable: true,
         width: 200,
-        valueGetter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) => workgroup?.workgroup_name,
+        renderEditCell: (props) => (
+          <ViewOnlyTextField
+            {...props}
+            lookupTable={workgroupLookup}
+            usingShiftKey={usingShiftKey}
+            previousColumnField="moped_user"
+            nextColumnField="moped_proj_personnel_roles"
+            valueIdName="workgroup_id"
+          />
+        ),
       },
       {
         headerName: "Role",
@@ -192,6 +218,9 @@ const useColumns = ({
     handleDeleteOpen,
     classes,
     teamNameLookup,
+    usingShiftKey,
+    workgroupLookup,
+    userWorkgroupLookup,
   ]);
 
 const ProjectTeamTable = ({ projectId }) => {
@@ -212,6 +241,7 @@ const ProjectTeamTable = ({ projectId }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -229,7 +259,8 @@ const ProjectTeamTable = ({ projectId }) => {
   }, [data]);
 
   const teamNameLookup = useTeamNameLookup(data);
-  const roleNameLookup = useRoleNameLookup(data);
+  const workgroupLookup = useWorkgroupLookup(data);
+  const userWorkgroupLookup = useUserWorkgroupLookup(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -486,7 +517,9 @@ const ProjectTeamTable = ({ projectId }) => {
     handleDeleteOpen,
     classes,
     teamNameLookup,
-    roleNameLookup,
+    usingShiftKey,
+    workgroupLookup,
+    userWorkgroupLookup,
   });
 
   const processRowUpdateMemoized = useCallback(
@@ -498,6 +531,12 @@ const ProjectTeamTable = ({ projectId }) => {
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
   if (loading || !data) return <CircularProgress />;
+
+  const checkIfShiftKey = (params, event) => {
+    if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
+      setUsingShiftKey(event.shiftKey);
+    }
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -514,6 +553,7 @@ const ProjectTeamTable = ({ projectId }) => {
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
         onProcessRowUpdateError={handleProcessUpdateError}
+        onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
