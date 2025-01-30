@@ -595,7 +595,7 @@ export const PROJECT_ACTIVITY_LOG = gql`
       component_name
       component_subtype
     }
-    moped_types(order_by: { type_id: asc }) {
+    deprecated_moped_types(order_by: { type_id: asc }) {
       type_id
       type_name
     }
