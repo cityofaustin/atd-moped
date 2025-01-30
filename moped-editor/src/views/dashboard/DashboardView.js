@@ -277,6 +277,7 @@ const DashboardView = () => {
           table="milestones"
           projectId={entry.project_id}
           projectName={entry.project.project_name_full}
+          handleSnackbar={handleSnackbar}
           dashboardRefetch={refetch}
         >
           <MilestoneProgressMeter
