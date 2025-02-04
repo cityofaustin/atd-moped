@@ -76,13 +76,13 @@ const validationSchema = yup.object().shape({
           "Required if a phase with phase name simple of Complete is selected"
         ),
     }),
-  description: yup.string().nullable().optional(),
+  description: yup.string().max(10000).nullable().optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().nullable(),
   schoolBeacon: yup.object().nullable(),
   srtsId: yup.string().nullable().optional(),
-  locationDescription: yup.string().nullable().optional(),
+  locationDescription: yup.string().max(10000).nullable().optional(),
 });
 
 const ComponentForm = ({
@@ -347,6 +347,8 @@ const ComponentForm = ({
             name="locationDescription"
             size="small"
             control={control}
+            error={errors?.locationDescription}
+            helperText={errors?.locationDescription?.message}
           />
         </Grid>
         <Grid item xs={12}>
@@ -358,6 +360,8 @@ const ComponentForm = ({
             multiline
             minRows={4}
             control={control}
+            error={errors?.description}
+            helperText={errors?.description?.message}
           />
         </Grid>
         <Grid item xs={12}>
