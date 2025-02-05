@@ -80,6 +80,7 @@ const DefineProjectForm = ({
       </Grid>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
+          {/* TODO: Add limit here too */}
           <TextField
             variant="standard"
             required

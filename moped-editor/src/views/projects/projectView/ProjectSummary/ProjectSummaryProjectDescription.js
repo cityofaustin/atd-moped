@@ -1,16 +1,19 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  TextField,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import { Box, Grid, Icon, Typography, IconButton } from "@mui/material";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
+import * as yup from "yup";
 
-import { PROJECT_UPDATE_DESCRIPTION } from "../../../../queries/project";
+import { PROJECT_UPDATE_DESCRIPTION } from "src/queries/project";
 import { useMutation } from "@apollo/client";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import { useForm } from "react-hook-form";
+
+const validationSchema = yup.object().shape({
+  description: yup
+    .string()
+    .max(10000, "Description must be at most 10,000 characters")
+    .required("Description cannot be blank"),
+});
 
 /**
  * ProjectSummaryProjectDescription Component
@@ -32,90 +35,82 @@ const ProjectSummaryProjectDescription = ({
   const originalDescription =
     data?.moped_project?.[0]?.project_description ?? null;
 
+  const { handleSubmit, errors, control } = useForm({
+    defaultValues: { description: originalDescription },
+    validationSchema: validationSchema,
+  });
+
   const [editMode, setEditMode] = useState(false);
-  const [description, setDescription] = useState(originalDescription);
 
   const [updateProjectDescription] = useMutation(PROJECT_UPDATE_DESCRIPTION);
 
   /**
-   * Resets the project description to original value
+   * Switch to view mode on close
    */
   const handleProjectDescriptionClose = () => {
-    setDescription(originalDescription);
     setEditMode(false);
   };
 
   /**
    * Saves the new project description...
    */
-  const handleProjectDescriptionSave = () => {
-    if (description.trim().length > 0) {
-      updateProjectDescription({
-        variables: {
-          projectId: projectId,
-          description: description,
-        },
-        refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
-      })
-        .then(() => {
-          setEditMode(false);
-          handleSnackbar(true, "Project description updated", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(
-            true,
-            "Error updating project description",
-            "error",
-            error
-          );
-          handleProjectDescriptionClose();
-        });
-      setEditMode(false);
-    } else {
-      setDescription(description.trim());
-    }
-  };
 
-  /**
-   * Updates the description state
-   * @param {Object} e - Event object
-   */
-  const handleProjectDescriptionChange = (e) => {
-    setDescription(e.target.value);
+  const handleProjectDescriptionSave = ({ description }) => {
+    updateProjectDescription({
+      variables: {
+        projectId: projectId,
+        description: description,
+      },
+      refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
+    })
+      .then(() => {
+        setEditMode(false);
+        handleSnackbar(true, "Project description updated", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(
+          true,
+          "Error updating project description",
+          "error",
+          error
+        );
+        handleProjectDescriptionClose();
+      });
+    setEditMode(false);
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Description</Typography>
-      <Box
-        display="flex"
-        justifyContent="flex-start"
-        className={classes.fieldBox}
-        flexWrap="nowrap"
-        alignItems="center"
-      >
-        {editMode && (
-          <>
-            <TextField
+      {editMode && (
+        <form onSubmit={handleSubmit(handleProjectDescriptionSave)}>
+          <Box
+            display="flex"
+            justifyContent="flex-start"
+            className={classes.fieldBox}
+            flexWrap="nowrap"
+            alignItems="center"
+          >
+            <ControlledTextInput
               variant="standard"
-              autoFocus
               fullWidth
-              multiline={true}
-              minRows={4}
-              error={description.length < 1}
+              autoFocus
+              multiline
+              rows={4}
               id="moped-project-description"
+              name="description"
               label={null}
-              onChange={handleProjectDescriptionChange}
-              value={description}
-              helperText={
-                description.length < 1 ? "Description cannot be blank" : ""
-              }
+              size="small"
+              control={control}
+              error={errors?.description}
+              helperText={errors?.description?.message}
             />
 
             <IconButton
               onClick={handleProjectDescriptionSave}
               size="large"
-              disabled={description.length < 1}
+              disabled={errors?.description}
+              type="submit"
             >
               <Icon>check</Icon>
             </IconButton>
@@ -123,16 +118,28 @@ const ProjectSummaryProjectDescription = ({
             <IconButton onClick={handleProjectDescriptionClose} size="large">
               <Icon>close</Icon>
             </IconButton>
-          </>
-        )}
-        {!editMode && (
+          </Box>
+        </form>
+      )}
+      {!editMode && (
+        <Box
+          display="flex"
+          justifyContent="flex-start"
+          className={classes.fieldBox}
+          flexWrap="nowrap"
+          alignItems="center"
+        >
           <ProjectSummaryLabel
-            text={description.trim().length > 0 ? description : " - "}
+            text={
+              originalDescription.trim().length > 0
+                ? originalDescription
+                : " - "
+            }
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
-        )}
-      </Box>
+        </Box>
+      )}
     </Grid>
   );
 };
