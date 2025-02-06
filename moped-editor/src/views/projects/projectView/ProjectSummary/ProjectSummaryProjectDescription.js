@@ -5,6 +5,7 @@ import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/P
 import { PROJECT_UPDATE_DESCRIPTION } from "src/queries/project";
 import { useMutation } from "@apollo/client";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import * as yup from "yup";
 import { agolDescriptionCharacterMax } from "src/constants/projects";
@@ -16,6 +17,7 @@ const validationSchema = yup.object().shape({
       agolDescriptionCharacterMax,
       `Description must be at most ${agolDescriptionCharacterMax} characters`
     )
+    .nullable()
     .required("Description cannot be blank"),
 });
 
@@ -32,6 +34,7 @@ const validationSchema = yup.object().shape({
 const ProjectSummaryProjectDescription = ({
   projectId,
   data,
+  refetch,
   classes,
   handleSnackbar,
   listViewQuery,
@@ -39,14 +42,22 @@ const ProjectSummaryProjectDescription = ({
   const originalDescription =
     data?.moped_project?.[0]?.project_description ?? null;
 
-  const { handleSubmit, errors, control } = useForm({
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     defaultValues: { description: originalDescription },
-    validationSchema: validationSchema,
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
   });
+  console.log(errors);
 
   const [editMode, setEditMode] = useState(false);
 
-  const [updateProjectDescription] = useMutation(PROJECT_UPDATE_DESCRIPTION);
+  const [updateProjectDescription, { loading }] = useMutation(
+    PROJECT_UPDATE_DESCRIPTION
+  );
 
   /**
    * Switch to view mode on close
@@ -65,11 +76,13 @@ const ProjectSummaryProjectDescription = ({
         projectId: projectId,
         description: description,
       },
-      refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
+      refetchQueries: [{ query: listViewQuery }],
     })
       .then(() => {
-        setEditMode(false);
-        handleSnackbar(true, "Project description updated", "success");
+        refetch().then(() => {
+          handleProjectDescriptionClose();
+          handleSnackbar(true, "Project description updated", "success");
+        });
       })
       .catch((error) => {
         handleSnackbar(
@@ -80,52 +93,53 @@ const ProjectSummaryProjectDescription = ({
         );
         handleProjectDescriptionClose();
       });
-    setEditMode(false);
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Description</Typography>
-      {editMode && (
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          className={classes.fieldBox}
-          flexWrap="nowrap"
-          alignItems="center"
-          component="form"
-          onSubmit={handleSubmit(handleProjectDescriptionSave)}
-        >
-          <ControlledTextInput
-            variant="standard"
-            fullWidth
-            autoFocus
-            multiline
-            rows={4}
-            name="description"
-            size="small"
-            control={control}
-            error={errors?.description}
-            helperText={errors?.description?.message}
-          />
 
-          <IconButton size="large" disabled={errors?.description} type="submit">
-            <Icon>check</Icon>
-          </IconButton>
-
-          <IconButton onClick={handleProjectDescriptionClose} size="large">
-            <Icon>close</Icon>
-          </IconButton>
-        </Box>
-      )}
-      {!editMode && (
-        <Box
-          display="flex"
-          justifyContent="flex-start"
-          className={classes.fieldBox}
-          flexWrap="nowrap"
-          alignItems="center"
-        >
+      <Box
+        display="flex"
+        justifyContent="flex-start"
+        className={classes.fieldBox}
+        flexWrap="nowrap"
+        alignItems="center"
+        component="form"
+        onSubmit={handleSubmit(handleProjectDescriptionSave)}
+      >
+        {editMode ? (
+          <>
+            <ControlledTextInput
+              variant="standard"
+              fullWidth
+              autoFocus
+              multiline
+              minRows={4}
+              maxRows={10}
+              id="description"
+              name="description"
+              size="small"
+              control={control}
+              error={errors?.description || loading}
+              helperText={errors?.description?.message}
+            />
+            <IconButton
+              size="large"
+              disabled={errors?.description}
+              type="submit"
+            >
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton
+              disabled={loading}
+              onClick={handleProjectDescriptionClose}
+              size="large"
+            >
+              <Icon>close</Icon>
+            </IconButton>
+          </>
+        ) : (
           <ProjectSummaryLabel
             text={
               originalDescription.trim().length > 0
@@ -135,8 +149,8 @@ const ProjectSummaryProjectDescription = ({
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />
-        </Box>
-      )}
+        )}
+      </Box>
     </Grid>
   );
 };
