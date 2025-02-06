@@ -1,17 +1,21 @@
 import React, { useState } from "react";
 import { Box, Grid, Icon, Typography, IconButton } from "@mui/material";
 import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
-import * as yup from "yup";
 
 import { PROJECT_UPDATE_DESCRIPTION } from "src/queries/project";
 import { useMutation } from "@apollo/client";
-import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { useForm } from "react-hook-form";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import * as yup from "yup";
+import { agolDescriptionCharacterMax } from "src/constants/projects";
 
 const validationSchema = yup.object().shape({
   description: yup
     .string()
-    .max(10000, "Description must be at most 10,000 characters")
+    .max(
+      agolDescriptionCharacterMax,
+      `Description must be at most ${agolDescriptionCharacterMax} characters`
+    )
     .required("Description cannot be blank"),
 });
 
@@ -83,43 +87,36 @@ const ProjectSummaryProjectDescription = ({
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Description</Typography>
       {editMode && (
-        <form onSubmit={handleSubmit(handleProjectDescriptionSave)}>
-          <Box
-            display="flex"
-            justifyContent="flex-start"
-            className={classes.fieldBox}
-            flexWrap="nowrap"
-            alignItems="center"
-          >
-            <ControlledTextInput
-              variant="standard"
-              fullWidth
-              autoFocus
-              multiline
-              rows={4}
-              id="moped-project-description"
-              name="description"
-              label={null}
-              size="small"
-              control={control}
-              error={errors?.description}
-              helperText={errors?.description?.message}
-            />
+        <Box
+          display="flex"
+          justifyContent="flex-start"
+          className={classes.fieldBox}
+          flexWrap="nowrap"
+          alignItems="center"
+          component="form"
+          onSubmit={handleSubmit(handleProjectDescriptionSave)}
+        >
+          <ControlledTextInput
+            variant="standard"
+            fullWidth
+            autoFocus
+            multiline
+            rows={4}
+            name="description"
+            size="small"
+            control={control}
+            error={errors?.description}
+            helperText={errors?.description?.message}
+          />
 
-            <IconButton
-              onClick={handleProjectDescriptionSave}
-              size="large"
-              disabled={errors?.description}
-              type="submit"
-            >
-              <Icon>check</Icon>
-            </IconButton>
+          <IconButton size="large" disabled={errors?.description} type="submit">
+            <Icon>check</Icon>
+          </IconButton>
 
-            <IconButton onClick={handleProjectDescriptionClose} size="large">
-              <Icon>close</Icon>
-            </IconButton>
-          </Box>
-        </form>
+          <IconButton onClick={handleProjectDescriptionClose} size="large">
+            <Icon>close</Icon>
+          </IconButton>
+        </Box>
       )}
       {!editMode && (
         <Box

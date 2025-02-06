@@ -40,6 +40,7 @@ import {
   SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
 import ComponentProperties from "src/views/projects/projectView/ProjectComponents/ComponentProperties";
+import { agolDescriptionCharacterMax } from "src/constants/projects";
 
 import * as yup from "yup";
 
@@ -78,7 +79,10 @@ const validationSchema = yup.object().shape({
     }),
   description: yup
     .string()
-    .max(10000, "Description must be at most 10,000 characters")
+    .max(
+      agolDescriptionCharacterMax,
+      `Description must be at most ${agolDescriptionCharacterMax} characters`
+    )
     .nullable()
     .optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
@@ -88,7 +92,10 @@ const validationSchema = yup.object().shape({
   srtsId: yup.string().nullable().optional(),
   locationDescription: yup
     .string()
-    .max(10000, "Location description must be at most 10,000 characters")
+    .max(
+      agolDescriptionCharacterMax,
+      `Location description must be at most ${agolDescriptionCharacterMax} characters`
+    )
     .nullable()
     .optional(),
 });
