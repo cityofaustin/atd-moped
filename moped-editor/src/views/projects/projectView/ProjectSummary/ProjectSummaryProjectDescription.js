@@ -15,10 +15,10 @@ const validationSchema = yup.object().shape({
     .string()
     .max(
       agolDescriptionCharacterMax,
-      `Description must be at most ${agolDescriptionCharacterMax} characters`
+      `Description must be ${agolDescriptionCharacterMax} characters or less`
     )
     .nullable()
-    .required("Description cannot be blank"),
+    .required("Required"),
 });
 
 /**
@@ -51,7 +51,6 @@ const ProjectSummaryProjectDescription = ({
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
-  console.log(errors);
 
   const [editMode, setEditMode] = useState(false);
 

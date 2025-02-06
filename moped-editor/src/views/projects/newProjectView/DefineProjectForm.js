@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Grid, InputLabel, Switch, Box } from "@mui/material";
-import SignalAutocomplete from "./SignalAutocomplete";
+import SignalAutocomplete from "src/views/projects/newProjectView/SignalAutocomplete";
 
 const DefineProjectForm = ({
   projectDetails,
@@ -80,7 +80,6 @@ const DefineProjectForm = ({
       </Grid>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
-          {/* TODO: Add limit here too */}
           <TextField
             variant="standard"
             required
@@ -90,8 +89,8 @@ const DefineProjectForm = ({
             type="text"
             fullWidth
             value={projectDetails.project_description}
-            error={descriptionError}
-            helperText="Required"
+            error={descriptionError !== null}
+            helperText={descriptionError?.message || "Required"}
             InputLabelProps={{ required: false }}
             onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
           />

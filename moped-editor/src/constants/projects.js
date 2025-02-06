@@ -8,3 +8,9 @@ export const substantialCompletionDateTooltipText =
  * See Field settings at https://austin.maps.arcgis.com/home/item.html?id=1c084c8756a84e6db7e2796c98c850a2#data
  */
 export const agolDescriptionCharacterMax = 5000;
+
+// TODO: Should these all different limits
+// Based of max char queries in prod:
+// 2000 for project description
+// 5000 for component description
+// 500 for location description
