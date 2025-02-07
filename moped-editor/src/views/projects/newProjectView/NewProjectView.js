@@ -24,7 +24,7 @@ import {
   useSignalStateManager,
   generateProjectComponent,
 } from "src/utils/signalComponentHelpers";
-import { agolDescriptionCharacterMax } from "src/constants/projects";
+import { agolFieldCharMax } from "src/constants/projects";
 
 /**
  * Styles
@@ -124,10 +124,10 @@ const NewProjectView = () => {
       setDescriptionError({ message: "Required" });
     } else if (
       projectDetails.project_description.trim().length >
-      agolDescriptionCharacterMax
+      agolFieldCharMax.projectDescription
     ) {
       setDescriptionError({
-        message: `Description must be ${agolDescriptionCharacterMax} characters or less`,
+        message: `Description must be ${agolFieldCharMax.projectDescription} characters or less`,
       });
     }
 
@@ -135,7 +135,7 @@ const NewProjectView = () => {
       projectDetails.project_name.trim().length > 0 &&
       projectDetails.project_description.trim().length > 0 &&
       projectDetails.project_description.trim().length <=
-        agolDescriptionCharacterMax
+        agolFieldCharMax.projectDescription
     ) {
       // Reset errors and set loading state
       setDescriptionError(null);

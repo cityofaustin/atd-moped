@@ -40,7 +40,7 @@ import {
   SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
 import ComponentProperties from "src/views/projects/projectView/ProjectComponents/ComponentProperties";
-import { agolDescriptionCharacterMax } from "src/constants/projects";
+import { agolFieldCharMax } from "src/constants/projects";
 
 import * as yup from "yup";
 
@@ -80,8 +80,8 @@ const validationSchema = yup.object().shape({
   description: yup
     .string()
     .max(
-      agolDescriptionCharacterMax,
-      `Description must be ${agolDescriptionCharacterMax} characters or less`
+      agolFieldCharMax.componentDescription,
+      `Description must be ${agolFieldCharMax.componentDescription} characters or less`
     )
     .nullable()
     .optional(),
@@ -93,8 +93,8 @@ const validationSchema = yup.object().shape({
   locationDescription: yup
     .string()
     .max(
-      agolDescriptionCharacterMax,
-      `Location description must be ${agolDescriptionCharacterMax} characters or less`
+      agolFieldCharMax.componentLocationDescription,
+      `Location description must be ${agolFieldCharMax.componentLocationDescription} characters or less`
     )
     .nullable()
     .optional(),

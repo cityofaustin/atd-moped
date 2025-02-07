@@ -8,14 +8,14 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import * as yup from "yup";
-import { agolDescriptionCharacterMax } from "src/constants/projects";
+import { agolFieldCharMax } from "src/constants/projects";
 
 const validationSchema = yup.object().shape({
   description: yup
     .string()
     .max(
-      agolDescriptionCharacterMax,
-      `Description must be ${agolDescriptionCharacterMax} characters or less`
+      agolFieldCharMax.projectDescription,
+      `Description must be ${agolFieldCharMax.projectDescription} characters or less`
     )
     .nullable()
     .required("Required"),
