@@ -51,8 +51,13 @@ export const useSnackbar = () => {
   /**
    * Callback to reset the snackbar state on snackbar close
    */
-  const handleSnackbarClose = () =>
+  const handleSnackbarClose = (_, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
     setSnackbarState({ open: false, message: "", severity: "" });
+  };
 
   return { snackbarState, handleSnackbar, handleSnackbarClose };
 };
