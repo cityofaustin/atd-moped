@@ -144,6 +144,8 @@ const DashboardView = () => {
     [setSnackbarState]
   );
 
+  const handleSnackbarClose = () => handleSnackbar(false, "", "");
+
   if (error) {
     console.log(error);
   }
@@ -371,7 +373,7 @@ const DashboardView = () => {
         </Container>
         <FeedbackSnackbar
           snackbarState={snackbarState}
-          handleSnackbar={handleSnackbar}
+          handleSnackbarClose={handleSnackbarClose}
         />
       </Page>
     </ActivityMetrics>

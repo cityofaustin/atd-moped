@@ -191,7 +191,6 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
-  const [snackbarState, setSnackbarState] = useState(false);
 
   const menuOpen = Boolean(anchorElement);
 
@@ -199,6 +198,8 @@ const ProjectView = () => {
 
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
+
+  const [snackbarState, setSnackbarState] = useState(false);
 
   /**
    * Wrapper around snackbar state setter
@@ -228,6 +229,8 @@ const ProjectView = () => {
     },
     [setSnackbarState]
   );
+
+  const handleSnackbarClose = () => handleSnackbar(false, "", "");
 
   /**
    * The query to gather the project summary data
@@ -664,7 +667,7 @@ const ProjectView = () => {
       )}
       <FeedbackSnackbar
         snackbarState={snackbarState}
-        handleSnackbar={handleSnackbar}
+        handleSnackbarClose={handleSnackbarClose}
       />
     </ApolloErrorHandler>
   );
