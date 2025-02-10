@@ -24,7 +24,9 @@ import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
-import FeedbackSnackbar, { useSnackbar } from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 import typography from "../../theme/typography";
 
@@ -112,7 +114,8 @@ const DashboardView = () => {
     fetchPolicy: "no-cache",
   });
 
-  const { snackbarState, handleSnackbar, handleSnackbarClose } = useSnackbar();
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   if (error) {
     console.log(error);

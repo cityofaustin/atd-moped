@@ -65,7 +65,9 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
-import FeedbackSnackbar, { useSnackbar } from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -199,7 +201,8 @@ const ProjectView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
-  const { snackbarState, handleSnackbar, handleSnackbarClose } = useSnackbar();
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   /**
    * The query to gather the project summary data

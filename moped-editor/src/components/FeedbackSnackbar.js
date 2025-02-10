@@ -6,7 +6,7 @@ import { Snackbar } from "@mui/material";
  * Custom hook to manage snackbar state
  * @returns {Object} - snackbarState, handleSnackbar, handleSnackbarClose
  */
-export const useSnackbar = () => {
+export const useFeedbackSnackbar = () => {
   /**
    * State for the snackbar
    * @property {boolean} open - Whether the snackbar is open
