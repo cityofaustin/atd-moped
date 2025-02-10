@@ -2,14 +2,28 @@ import React, { useCallback, useState } from "react";
 import { Alert } from "@mui/material";
 import { Snackbar } from "@mui/material";
 
+/**
+ * Custom hook to manage snackbar state
+ * @returns {Object} - snackbarState, handleSnackbar, handleSnackbarClose
+ */
 export const useSnackbar = () => {
-  const [snackbarState, setSnackbarState] = useState(false);
+  /**
+   * State for the snackbar
+   * @property {boolean} open - Whether the snackbar is open
+   * @property {String} message - The message to display in the snackbar
+   * @property {String} severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
+   */
+  const [snackbarState, setSnackbarState] = useState({
+    open: false,
+    message: "",
+    severity: "",
+  });
 
   /**
    * Wrapper around snackbar state setter
    * @param {boolean} open - The new state of open
    * @param {String} message - The message for the snackbar
-   * @param {String} severity - The severity color of the snackbar
+   * @param {String} severity - The MUI Alert severity of the snackbar ("success", "error", "warning", "info")
    * @param {Object} error - The error to be displayed and logged
    */
   const handleSnackbar = useCallback(
@@ -34,14 +48,18 @@ export const useSnackbar = () => {
     [setSnackbarState]
   );
 
-  const handleSnackbarClose = () => handleSnackbar(false, "", "");
+  /**
+   * Callback to reset the snackbar state on snackbar close
+   */
+  const handleSnackbarClose = () =>
+    setSnackbarState({ open: false, message: "", severity: "" });
 
   return { snackbarState, handleSnackbar, handleSnackbarClose };
 };
 
 /**
- * A project summary snackbar
- * @param {Object} snackbarState - The message you would like to see
+ * A feedback summary snackbar to show on success or error events
+ * @param {Object} snackbarState - snackbar state object: { open, message, severity }
  * @param {function} handleSnackbarClose - Callback function on snackbar close
  * @param {Number} timeOut - Time out in milliseconds (default: 5000 milliseconds--for five seconds)
  * @returns {JSX.Element}
