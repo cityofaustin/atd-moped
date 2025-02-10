@@ -374,6 +374,7 @@ const ComponentForm = ({
             size="small"
             multiline
             minRows={4}
+            maxRows={10}
             control={control}
             error={errors?.description}
             helperText={errors?.description?.message}
