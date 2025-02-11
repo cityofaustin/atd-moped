@@ -93,7 +93,7 @@ const useColumns = ({
         field: "moped_user",
         width: 250,
         editable: true,
-        valueGetter: (user) => {
+        valueFormatter: (user) => {
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
@@ -103,6 +103,7 @@ const useColumns = ({
               name={"user"}
               value={props.row.moped_user}
               nameLookup={teamNameLookup}
+              options={data.moped_users}
               error={props.error}
               userWorkgroupLookup={userWorkgroupLookup}
             />
@@ -345,6 +346,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         isNew: true,
         roleIds: [],
         project_personnel_id: id,
+        moped_user: {},
       },
       ...oldRows,
     ]);

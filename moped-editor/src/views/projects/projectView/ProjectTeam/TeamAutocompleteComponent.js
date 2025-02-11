@@ -23,6 +23,7 @@ const TeamAutocompleteComponent = ({
   error,
   name,
   userWorkgroupLookup,
+  options,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -49,32 +50,13 @@ const TeamAutocompleteComponent = ({
     });
   };
 
-  const options = Object.keys(nameLookup);
-
   const isOptionEqualToValue = (option, value) => {
-    // if the value is a number, use the idFromValue nameLookup to find if option is equal to Value
-    // If the value is an object, use the user_id to find if option is equal to Value
-    let idFromValue;
-    if (typeof value === "string") {
-      idFromValue = Object.keys(nameLookup).find(
-        (key) => nameLookup[key] === value
-      );
-    } else if (typeof value === "object") {
-      idFromValue = value.user_id;
-    }
-
-    if (Number(option) === Number(idFromValue)) {
-      return true;
-    } else {
-      return false;
-    }
+    // if 
+    return value?.user_id === option?.user_id;
   };
 
   const getOptionLabel = (option) => {
-    if (typeof option === "string" && !nameLookup[option]) {
-      return option;
-    }
-    return nameLookup[option] || "";
+    return option.user_id ? `${option.first_name} ${option.last_name}` : "";
   };
 
   return (
@@ -84,6 +66,7 @@ const TeamAutocompleteComponent = ({
         name={name}
         options={options}
         getOptionLabel={getOptionLabel}
+        getOptionKey={(option) => option.user_id}
         isOptionEqualToValue={(option, value) =>
           isOptionEqualToValue(option, value)
         }
