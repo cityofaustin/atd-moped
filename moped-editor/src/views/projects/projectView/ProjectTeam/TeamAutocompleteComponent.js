@@ -1,5 +1,10 @@
 import React from "react";
-import { Autocomplete, TextField, FormControl } from "@mui/material";
+import {
+  Autocomplete,
+  TextField,
+  FormControl,
+  ListItemText,
+} from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
@@ -51,12 +56,23 @@ const TeamAutocompleteComponent = ({
   };
 
   const isOptionEqualToValue = (option, value) => {
-    // if 
     return value?.user_id === option?.user_id;
   };
 
   const getOptionLabel = (option) => {
     return option.user_id ? `${option.first_name} ${option.last_name}` : "";
+  };
+
+  const renderOption = (props, option, state) => {
+    console.log(props, state);
+    return (
+      <ListItemText
+        key={option.user_id}
+        inset
+        primary={`${option.first_name} ${option.last_name}`}
+        secondary={option.email}
+      />
+    );
   };
 
   return (
@@ -70,7 +86,8 @@ const TeamAutocompleteComponent = ({
         isOptionEqualToValue={(option, value) =>
           isOptionEqualToValue(option, value)
         }
-        value={value || null}
+        renderOption={renderOption}
+        value={value?.user_id ? value : null}
         sx={{ paddingTop: theme.spacing(1) }}
         onChange={(event, newValue) => {
           handleChange(event, newValue);
