@@ -66,14 +66,14 @@ export const useFeedbackSnackbar = () => {
  * A feedback summary snackbar to show on success or error events
  * @param {Object} snackbarState - snackbar state object: { open, message, severity }
  * @param {function} handleSnackbarClose - Callback function on snackbar close
- * @param {Number} timeOut - Time out in milliseconds (default: 5000 milliseconds--for five seconds)
+ * @param {Number} autoHideDuration - Duration in milliseconds (default: 5000 milliseconds--for five seconds)
  * @returns {JSX.Element}
  * @constructor
  */
 const FeedbackSnackbar = ({
   snackbarState,
   handleSnackbarClose,
-  timeOut = 5000,
+  autoHideDuration = 5000,
 }) => {
   return (
     <Snackbar
@@ -81,7 +81,7 @@ const FeedbackSnackbar = ({
       open={snackbarState.open}
       onClose={handleSnackbarClose}
       key={"datatable-snackbar"}
-      autoHideDuration={timeOut}
+      autoHideDuration={autoHideDuration}
     >
       <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
         {snackbarState.message}
