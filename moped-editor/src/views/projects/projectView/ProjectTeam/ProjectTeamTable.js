@@ -102,15 +102,14 @@ const useColumns = ({
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              nameLookup={teamNameLookup}
               options={data.moped_users}
               error={props.error}
-              userWorkgroupLookup={userWorkgroupLookup}
             />
           );
         },
         preProcessEditCellProps: (params) => {
           // Enforce required field
+          console.log(params.props)
           const hasError =
             !params.props.value || params.props.value.length === 0;
           return { ...params.props, error: hasError };

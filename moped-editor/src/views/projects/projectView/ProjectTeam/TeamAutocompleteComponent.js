@@ -3,6 +3,7 @@ import {
   Autocomplete,
   TextField,
   FormControl,
+  ListItem,
   ListItemText,
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
@@ -24,10 +25,8 @@ const TeamAutocompleteComponent = ({
   value,
   field,
   hasFocus,
-  nameLookup,
   error,
   name,
-  userWorkgroupLookup,
   options,
 }) => {
   const theme = useTheme();
@@ -41,17 +40,16 @@ const TeamAutocompleteComponent = ({
   }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
-    const personnelValue = nameLookup[newValue];
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: personnelValue ?? null,
+      value: newValue,
     });
     // Also update the corresponding workgroup field with the selected user's workgroup id
     apiRef.current.setEditCellValue({
       id,
       field: "moped_workgroup",
-      value: { workgroup_id: userWorkgroupLookup[newValue] },
+      value: { workgroup_id: newValue?.workgroup_id },
     });
   };
 
@@ -63,15 +61,14 @@ const TeamAutocompleteComponent = ({
     return option.user_id ? `${option.first_name} ${option.last_name}` : "";
   };
 
-  const renderOption = (props, option, state) => {
-    console.log(props, state);
+  const renderOption = (props, option) => {
     return (
-      <ListItemText
-        key={option.user_id}
-        inset
-        primary={`${option.first_name} ${option.last_name}`}
-        secondary={option.email}
-      />
+      <ListItem {...props} key={option.user_id}>
+        <ListItemText
+          primary={`${option.first_name} ${option.last_name}`}
+          secondary={option.email}
+        />
+      </ListItem>
     );
   };
 
