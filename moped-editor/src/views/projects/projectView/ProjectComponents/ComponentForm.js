@@ -165,6 +165,7 @@ const ComponentForm = ({
   const [useComponentPhase, setUseComponentPhase] = useState(
     !!initialFormValues?.phase || !!initialFormValues?.completionDate
   );
+  const [hasToggledPhaseSwitch, setHasToggledPhaseSwitch] = useState(false);
 
   useResetDependentFieldOnParentFieldChange({
     parentValue: watch("phase"),
@@ -228,8 +229,18 @@ const ComponentForm = ({
     setValue,
   });
 
+  const handleFormSubmit = (formData) => {
+    // If the phase switch is off, null out phase-related values before saving
+    if (!useComponentPhase) {
+      formData.phase = null;
+      formData.subphase = null;
+      formData.completionDate = null;
+    }
+    onSave(formData);
+  };
+
   return (
-    <form onSubmit={handleSubmit(onSave)}>
+    <form onSubmit={handleSubmit(handleFormSubmit)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <ControlledAutocomplete
@@ -377,10 +388,12 @@ const ComponentForm = ({
             control={
               <Switch
                 checked={useComponentPhase}
-                onChange={() => setUseComponentPhase(!useComponentPhase)}
+                onChange={() => {
+                  setUseComponentPhase(!useComponentPhase);
+                  setHasToggledPhaseSwitch(true);
+                }}
                 name="useComponentPhase"
                 color="primary"
-                disabled={!!phase || !!completionDate}
               />
             }
             labelPlacement="start"
@@ -457,7 +470,7 @@ const ComponentForm = ({
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!isDirty || areFormErrors}
+            disabled={(!isDirty && !hasToggledPhaseSwitch) || areFormErrors}
           >
             {hasGeometry ? "Save" : formButtonText}
           </Button>
