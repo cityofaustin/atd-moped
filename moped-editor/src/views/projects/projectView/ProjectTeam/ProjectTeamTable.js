@@ -49,17 +49,6 @@ const useWorkgroupLookup = (data) =>
     }, {});
   }, [data]);
 
-const useUserWorkgroupLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_users.reduce((obj, item) => {
-      obj[item.user_id] = item.workgroup_id;
-      return obj;
-    }, {});
-  }, [data]);
-
 const requiredFields = ["moped_user", "moped_proj_personnel_roles"];
 
 const useColumns = ({
@@ -72,7 +61,6 @@ const useColumns = ({
   classes,
   usingShiftKey,
   workgroupLookup,
-  userWorkgroupLookup,
 }) =>
   useMemo(() => {
     return [
@@ -206,7 +194,6 @@ const useColumns = ({
     classes,
     usingShiftKey,
     workgroupLookup,
-    userWorkgroupLookup,
   ]);
 
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
@@ -245,7 +232,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   }, [data]);
 
   const workgroupLookup = useWorkgroupLookup(data);
-  const userWorkgroupLookup = useUserWorkgroupLookup(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -510,7 +496,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     classes,
     usingShiftKey,
     workgroupLookup,
-    userWorkgroupLookup,
   });
 
   const processRowUpdateMemoized = useCallback(
