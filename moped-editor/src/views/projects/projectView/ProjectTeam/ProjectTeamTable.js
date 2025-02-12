@@ -38,17 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useTeamNameLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_users.reduce((obj, item) => {
-      obj[item.user_id] = `${item.first_name} ${item.last_name}`;
-      return obj;
-    }, {});
-  }, [data]);
-
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
     if (!data) {
@@ -81,7 +70,6 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   classes,
-  teamNameLookup,
   usingShiftKey,
   workgroupLookup,
   userWorkgroupLookup,
@@ -109,7 +97,6 @@ const useColumns = ({
         },
         preProcessEditCellProps: (params) => {
           // Enforce required field
-          console.log(params.props)
           const hasError =
             !params.props.value || params.props.value.length === 0;
           return { ...params.props, error: hasError };
@@ -217,7 +204,6 @@ const useColumns = ({
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
     usingShiftKey,
     workgroupLookup,
     userWorkgroupLookup,
@@ -258,7 +244,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   }, [data]);
 
-  const teamNameLookup = useTeamNameLookup(data);
   const workgroupLookup = useWorkgroupLookup(data);
   const userWorkgroupLookup = useUserWorkgroupLookup(data);
 
@@ -523,7 +508,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
     usingShiftKey,
     workgroupLookup,
     userWorkgroupLookup,
