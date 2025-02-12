@@ -90,7 +90,7 @@ const DefineProjectForm = ({
             fullWidth
             value={projectDetails.project_description}
             error={descriptionError !== null}
-            helperText={descriptionError?.message || "Required"}
+            helperText={descriptionError?.message}
             InputLabelProps={{ required: false }}
             onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
           />
