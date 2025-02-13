@@ -14,8 +14,8 @@ const validationSchema = yup.object().shape({
   description: yup
     .string()
     .max(
-      agolFieldCharMax.projectDescription,
-      `Description must be ${agolFieldCharMax.projectDescription} characters or less`
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
     )
     .nullable()
     .required("Required"),

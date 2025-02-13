@@ -124,10 +124,10 @@ const NewProjectView = () => {
       setDescriptionError({ message: "Required" });
     } else if (
       projectDetails.project_description.trim().length >
-      agolFieldCharMax.projectDescription
+      agolFieldCharMax.descriptionString
     ) {
       setDescriptionError({
-        message: `Description must be ${agolFieldCharMax.projectDescription} characters or less`,
+        message: `Description must be ${agolFieldCharMax.descriptionString} characters or less`,
       });
     }
 
@@ -135,7 +135,7 @@ const NewProjectView = () => {
       projectDetails.project_name.trim().length > 0 &&
       projectDetails.project_description.trim().length > 0 &&
       projectDetails.project_description.trim().length <=
-        agolFieldCharMax.projectDescription
+        agolFieldCharMax.descriptionString
     ) {
       // Reset errors and set loading state
       setDescriptionError(null);

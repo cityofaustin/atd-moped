@@ -80,8 +80,8 @@ const validationSchema = yup.object().shape({
   description: yup
     .string()
     .max(
-      agolFieldCharMax.componentDescription,
-      `Description must be ${agolFieldCharMax.componentDescription} characters or less`
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
     )
     .nullable()
     .optional(),
@@ -93,8 +93,8 @@ const validationSchema = yup.object().shape({
   locationDescription: yup
     .string()
     .max(
-      agolFieldCharMax.componentLocationDescription,
-      `Location description must be ${agolFieldCharMax.componentLocationDescription} characters or less`
+      agolFieldCharMax.descriptionString,
+      `Location description must be ${agolFieldCharMax.descriptionString} characters or less`
     )
     .nullable()
     .optional(),
