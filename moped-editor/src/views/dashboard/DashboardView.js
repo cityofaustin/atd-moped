@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@apollo/client";
 import { format } from "date-fns";
 
@@ -24,7 +24,9 @@ import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
-import FeedbackSnackbar from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 import typography from "../../theme/typography";
 
@@ -112,37 +114,8 @@ const DashboardView = () => {
     fetchPolicy: "no-cache",
   });
 
-  /* Snackbar state and handler for phase and milestone update feedback */
-  const [snackbarState, setSnackbarState] = useState(false);
-
-  /**
-   * Wrapper around snackbar state setter
-   * @param {boolean} open - The new state of open
-   * @param {String} message - The message for the snackbar
-   * @param {String} severity - The severity color of the snackbar
-   * @param {Object} error - The error to be displayed and logged
-   */
-  const handleSnackbar = useCallback(
-    (open, message, severity, error) => {
-      // if there is an error, render error message,
-      // otherwise, render success message
-      if (error) {
-        setSnackbarState({
-          open: open,
-          message: `${message}. Refresh the page to try again.`,
-          severity: severity,
-        });
-        console.error(error);
-      } else {
-        setSnackbarState({
-          open: open,
-          message: message,
-          severity: severity,
-        });
-      }
-    },
-    [setSnackbarState]
-  );
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   if (error) {
     console.log(error);
@@ -371,7 +344,7 @@ const DashboardView = () => {
         </Container>
         <FeedbackSnackbar
           snackbarState={snackbarState}
-          handleSnackbar={handleSnackbar}
+          handleSnackbarClose={handleSnackbarClose}
         />
       </Page>
     </ActivityMetrics>
