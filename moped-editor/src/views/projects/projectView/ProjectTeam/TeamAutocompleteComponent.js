@@ -1,5 +1,11 @@
 import React from "react";
-import { Autocomplete, TextField, FormControl } from "@mui/material";
+import {
+  Autocomplete,
+  TextField,
+  FormControl,
+  ListItem,
+  ListItemText,
+} from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
@@ -19,10 +25,9 @@ const TeamAutocompleteComponent = ({
   value,
   field,
   hasFocus,
-  nameLookup,
   error,
   name,
-  userWorkgroupLookup,
+  options,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -35,46 +40,36 @@ const TeamAutocompleteComponent = ({
   }, [hasFocus]);
 
   const handleChange = (event, newValue) => {
-    const personnelValue = nameLookup[newValue];
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: personnelValue ?? null,
+      value: newValue,
     });
     // Also update the corresponding workgroup field with the selected user's workgroup id
     apiRef.current.setEditCellValue({
       id,
       field: "moped_workgroup",
-      value: { workgroup_id: userWorkgroupLookup[newValue] },
+      value: { workgroup_id: newValue?.workgroup_id },
     });
   };
 
-  const options = Object.keys(nameLookup);
-
   const isOptionEqualToValue = (option, value) => {
-    // if the value is a number, use the idFromValue nameLookup to find if option is equal to Value
-    // If the value is an object, use the user_id to find if option is equal to Value
-    let idFromValue;
-    if (typeof value === "string") {
-      idFromValue = Object.keys(nameLookup).find(
-        (key) => nameLookup[key] === value
-      );
-    } else if (typeof value === "object") {
-      idFromValue = value.user_id;
-    }
-
-    if (Number(option) === Number(idFromValue)) {
-      return true;
-    } else {
-      return false;
-    }
+    return value?.user_id === option?.user_id;
   };
 
   const getOptionLabel = (option) => {
-    if (typeof option === "string" && !nameLookup[option]) {
-      return option;
-    }
-    return nameLookup[option] || "";
+    return option.user_id ? `${option.first_name} ${option.last_name}` : "";
+  };
+
+  const renderOption = (props, option) => {
+    return (
+      <ListItem {...props} key={option.user_id}>
+        <ListItemText
+          primary={`${option.first_name} ${option.last_name}`}
+          secondary={option.email}
+        />
+      </ListItem>
+    );
   };
 
   return (
@@ -84,10 +79,12 @@ const TeamAutocompleteComponent = ({
         name={name}
         options={options}
         getOptionLabel={getOptionLabel}
+        getOptionKey={(option) => option.user_id}
         isOptionEqualToValue={(option, value) =>
           isOptionEqualToValue(option, value)
         }
-        value={value || null}
+        renderOption={renderOption}
+        value={value?.user_id ? value : null}
         sx={{ paddingTop: theme.spacing(1) }}
         onChange={(event, newValue) => {
           handleChange(event, newValue);

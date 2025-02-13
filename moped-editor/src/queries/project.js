@@ -165,6 +165,7 @@ export const TEAM_QUERY = gql`
           last_name
           user_id
           is_deleted
+          email
           moped_workgroup {
             workgroup_id
             workgroup_name
@@ -199,6 +200,7 @@ export const TEAM_QUERY = gql`
       workgroup_id
       user_id
       is_deleted
+      email
     }
     moped_workgroup(
       order_by: { workgroup_id: asc }

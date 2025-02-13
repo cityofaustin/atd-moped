@@ -38,17 +38,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useTeamNameLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_users.reduce((obj, item) => {
-      obj[item.user_id] = `${item.first_name} ${item.last_name}`;
-      return obj;
-    }, {});
-  }, [data]);
-
 const useWorkgroupLookup = (data) =>
   useMemo(() => {
     if (!data) {
@@ -56,17 +45,6 @@ const useWorkgroupLookup = (data) =>
     }
     return data.moped_workgroup.reduce((obj, item) => {
       obj[item.workgroup_id] = item.workgroup_name;
-      return obj;
-    }, {});
-  }, [data]);
-
-const useUserWorkgroupLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_users.reduce((obj, item) => {
-      obj[item.user_id] = item.workgroup_id;
       return obj;
     }, {});
   }, [data]);
@@ -81,10 +59,8 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   classes,
-  teamNameLookup,
   usingShiftKey,
   workgroupLookup,
-  userWorkgroupLookup,
 }) =>
   useMemo(() => {
     return [
@@ -93,7 +69,7 @@ const useColumns = ({
         field: "moped_user",
         width: 250,
         editable: true,
-        valueGetter: (user) => {
+        valueFormatter: (user) => {
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
@@ -102,9 +78,8 @@ const useColumns = ({
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              nameLookup={teamNameLookup}
+              options={data.moped_users}
               error={props.error}
-              userWorkgroupLookup={userWorkgroupLookup}
             />
           );
         },
@@ -217,10 +192,8 @@ const useColumns = ({
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
     usingShiftKey,
     workgroupLookup,
-    userWorkgroupLookup,
   ]);
 
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
@@ -258,9 +231,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     }
   }, [data]);
 
-  const teamNameLookup = useTeamNameLookup(data);
   const workgroupLookup = useWorkgroupLookup(data);
-  const userWorkgroupLookup = useUserWorkgroupLookup(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -345,6 +316,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         isNew: true,
         roleIds: [],
         project_personnel_id: id,
+        moped_user: {},
       },
       ...oldRows,
     ]);
@@ -522,10 +494,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
     usingShiftKey,
     workgroupLookup,
-    userWorkgroupLookup,
   });
 
   const processRowUpdateMemoized = useCallback(
