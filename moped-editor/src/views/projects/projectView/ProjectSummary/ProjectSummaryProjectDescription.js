@@ -129,7 +129,7 @@ const ProjectSummaryProjectDescription = ({
               name="description"
               size="small"
               control={control}
-              error={errors?.description || loading}
+              error={errors?.description}
               helperText={errors?.description?.message}
             />
             <IconButton
