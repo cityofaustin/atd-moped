@@ -65,7 +65,9 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
-import FeedbackSnackbar from "src/components/FeedbackSnackbar";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -191,7 +193,6 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
-  const [snackbarState, setSnackbarState] = useState(false);
 
   const menuOpen = Boolean(anchorElement);
 
@@ -200,34 +201,8 @@ const ProjectView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
-  /**
-   * Wrapper around snackbar state setter
-   * @param {boolean} open - The new state of open
-   * @param {String} message - The message for the snackbar
-   * @param {String} severity - The severity color of the snackbar
-   * @param {Object} error - The error to be displayed and logged
-   */
-  const handleSnackbar = useCallback(
-    (open, message, severity, error) => {
-      // if there is an error, render error message,
-      // otherwise, render success message
-      if (error) {
-        setSnackbarState({
-          open: open,
-          message: `${message}. Refresh the page to try again.`,
-          severity: severity,
-        });
-        console.error(error);
-      } else {
-        setSnackbarState({
-          open: open,
-          message: message,
-          severity: severity,
-        });
-      }
-    },
-    [setSnackbarState]
-  );
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   /**
    * The query to gather the project summary data
@@ -664,7 +639,7 @@ const ProjectView = () => {
       )}
       <FeedbackSnackbar
         snackbarState={snackbarState}
-        handleSnackbar={handleSnackbar}
+        handleSnackbarClose={handleSnackbarClose}
       />
     </ApolloErrorHandler>
   );
