@@ -1,16 +1,25 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  TextField,
-  Typography,
-  IconButton,
-} from "@mui/material";
-import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import { Box, Grid, Icon, Typography, IconButton } from "@mui/material";
+import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/ProjectSummaryLabel";
 
-import { PROJECT_UPDATE_DESCRIPTION } from "../../../../queries/project";
+import { PROJECT_UPDATE_DESCRIPTION } from "src/queries/project";
 import { useMutation } from "@apollo/client";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import * as yup from "yup";
+import { agolFieldCharMax } from "src/constants/projects";
+
+const validationSchema = yup.object().shape({
+  description: yup
+    .string()
+    .max(
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
+    )
+    .nullable()
+    .required("Required"),
+});
 
 /**
  * ProjectSummaryProjectDescription Component
@@ -25,6 +34,7 @@ import { useMutation } from "@apollo/client";
 const ProjectSummaryProjectDescription = ({
   projectId,
   data,
+  refetch,
   classes,
   handleSnackbar,
   listViewQuery,
@@ -32,102 +42,114 @@ const ProjectSummaryProjectDescription = ({
   const originalDescription =
     data?.moped_project?.[0]?.project_description ?? null;
 
-  const [editMode, setEditMode] = useState(false);
-  const [description, setDescription] = useState(originalDescription);
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { description: originalDescription },
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
+  });
 
-  const [updateProjectDescription] = useMutation(PROJECT_UPDATE_DESCRIPTION);
+  const [editMode, setEditMode] = useState(false);
+
+  const [updateProjectDescription, { loading }] = useMutation(
+    PROJECT_UPDATE_DESCRIPTION
+  );
 
   /**
-   * Resets the project description to original value
+   * Switch to view mode on close
    */
   const handleProjectDescriptionClose = () => {
-    setDescription(originalDescription);
     setEditMode(false);
+  };
+
+  /**
+   * Switch to view mode and revert to original value on cancel
+   */
+  const handleCancel = () => {
+    setValue("description", originalDescription);
+    handleProjectDescriptionClose();
   };
 
   /**
    * Saves the new project description...
    */
-  const handleProjectDescriptionSave = () => {
-    if (description.trim().length > 0) {
-      updateProjectDescription({
-        variables: {
-          projectId: projectId,
-          description: description,
-        },
-        refetchQueries: [{ query: listViewQuery }, "ProjectSummary"],
-      })
-        .then(() => {
-          setEditMode(false);
-          handleSnackbar(true, "Project description updated", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(
-            true,
-            "Error updating project description",
-            "error",
-            error
-          );
-          handleProjectDescriptionClose();
-        });
-      setEditMode(false);
-    } else {
-      setDescription(description.trim());
-    }
-  };
 
-  /**
-   * Updates the description state
-   * @param {Object} e - Event object
-   */
-  const handleProjectDescriptionChange = (e) => {
-    setDescription(e.target.value);
+  const handleProjectDescriptionSave = ({ description }) => {
+    updateProjectDescription({
+      variables: {
+        projectId: projectId,
+        description: description,
+      },
+      refetchQueries: [{ query: listViewQuery }],
+    })
+      .then(() => {
+        refetch().then(() => {
+          handleProjectDescriptionClose();
+          handleSnackbar(true, "Project description updated", "success");
+        });
+      })
+      .catch((error) => {
+        handleSnackbar(
+          true,
+          "Error updating project description",
+          "error",
+          error
+        );
+        handleProjectDescriptionClose();
+      });
   };
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
       <Typography className={classes.fieldLabel}>Description</Typography>
+
       <Box
         display="flex"
         justifyContent="flex-start"
         className={classes.fieldBox}
         flexWrap="nowrap"
         alignItems="center"
+        component="form"
+        onSubmit={handleSubmit(handleProjectDescriptionSave)}
       >
-        {editMode && (
+        {editMode ? (
           <>
-            <TextField
+            <ControlledTextInput
               variant="standard"
-              autoFocus
               fullWidth
-              multiline={true}
+              autoFocus
+              multiline
               minRows={4}
-              error={description.length < 1}
-              id="moped-project-description"
-              label={null}
-              onChange={handleProjectDescriptionChange}
-              value={description}
-              helperText={
-                description.length < 1 ? "Description cannot be blank" : ""
-              }
+              maxRows={10}
+              id="description"
+              name="description"
+              size="small"
+              control={control}
+              error={errors?.description || loading}
+              helperText={errors?.description?.message}
             />
-
             <IconButton
-              onClick={handleProjectDescriptionSave}
               size="large"
-              disabled={description.length < 1}
+              disabled={errors?.description}
+              type="submit"
             >
               <Icon>check</Icon>
             </IconButton>
-
-            <IconButton onClick={handleProjectDescriptionClose} size="large">
+            <IconButton disabled={loading} onClick={handleCancel} size="large">
               <Icon>close</Icon>
             </IconButton>
           </>
-        )}
-        {!editMode && (
+        ) : (
           <ProjectSummaryLabel
-            text={description.trim().length > 0 ? description : " - "}
+            text={
+              originalDescription.trim().length > 0
+                ? originalDescription
+                : " - "
+            }
             classes={classes}
             onClickEdit={() => setEditMode(true)}
           />

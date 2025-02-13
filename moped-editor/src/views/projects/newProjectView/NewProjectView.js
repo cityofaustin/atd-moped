@@ -15,15 +15,16 @@ import {
   SIGNAL_COMPONENTS_QUERY,
   ADD_PROJECT,
   PROJECT_FOLLOW,
-} from "../../../queries/project";
+} from "src/queries/project";
 
-import { getSessionDatabaseData } from "../../../auth/user";
+import { getSessionDatabaseData } from "src/auth/user";
 
 import ProjectSaveButton from "./ProjectSaveButton";
 import {
   useSignalStateManager,
   generateProjectComponent,
 } from "src/utils/signalComponentHelpers";
+import { agolFieldCharMax } from "src/constants/projects";
 
 /**
  * Styles
@@ -63,7 +64,7 @@ const NewProjectView = () => {
    * Form State
    * @type {Object} projectDetails - The current state of project details
    * @type {boolean} nameError - When true, it denotes an error in the name
-   * @type {boolean} descriptionError - When true, it denotes an error in the project description
+   * @type {Object} descriptionError - Object containing the error message, Ex. { message: "Error message" }
    * @type {Object} signalRecord - The signal record to be inserted into a project and its component
    */
   const [projectDetails, setProjectDetails] = useState({
@@ -72,7 +73,7 @@ const NewProjectView = () => {
     project_name_secondary: "",
   });
   const [nameError, setNameError] = useState(false);
-  const [descriptionError, setDescriptionError] = useState(false);
+  const [descriptionError, setDescriptionError] = useState(null);
   const [signalRecord, setSignalRecord] = useState(null);
 
   /**
@@ -120,13 +121,25 @@ const NewProjectView = () => {
       setNameError(true);
     }
     if (projectDetails.project_description.trim().length === 0) {
-      setDescriptionError(true);
+      setDescriptionError({ message: "Required" });
+    } else if (
+      projectDetails.project_description.trim().length >
+      agolFieldCharMax.descriptionString
+    ) {
+      setDescriptionError({
+        message: `Description must be ${agolFieldCharMax.descriptionString} characters or less`,
+      });
     }
 
     if (
       projectDetails.project_name.trim().length > 0 &&
-      projectDetails.project_description.trim().length > 0
+      projectDetails.project_description.trim().length > 0 &&
+      projectDetails.project_description.trim().length <=
+        agolFieldCharMax.descriptionString
     ) {
+      // Reset errors and set loading state
+      setDescriptionError(null);
+      setNameError(false);
       setLoading(true);
 
       /**

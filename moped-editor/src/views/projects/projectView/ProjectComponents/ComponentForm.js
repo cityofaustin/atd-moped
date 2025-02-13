@@ -9,10 +9,10 @@ import {
   FormControlLabel,
   FormHelperText,
 } from "@mui/material";
-import DateFieldEditComponent from "../DateFieldEditComponent";
+import DateFieldEditComponent from "src/views/projects/projectView/DateFieldEditComponent";
 import { CheckCircle } from "@mui/icons-material";
 import { GET_COMPONENTS_FORM_OPTIONS } from "src/queries/components";
-import KnackComponentAutocomplete from "./KnackComponentAutocomplete";
+import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
 import {
   ComponentOptionWithIcon,
   DEFAULT_COMPONENT_WORK_TYPE_OPTION,
@@ -28,8 +28,8 @@ import {
   getOptionLabel,
   isOptionEqualToValue,
   isPhaseOptionSimpleComplete,
-} from "./utils/form";
-import ControlledAutocomplete from "../../../../components/forms/ControlledAutocomplete";
+} from "src/views/projects/projectView/ProjectComponents/utils/form";
+import ControlledAutocomplete from "src/components/forms/ControlledAutocomplete";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import {
   getSignalOptionLabel,
@@ -39,7 +39,8 @@ import {
   getSchoolZoneBeaconOptionSelected,
   SOCRATA_ENDPOINT_SCHOOL_BEACONS,
 } from "src/utils/signalComponentHelpers";
-import ComponentProperties from "./ComponentProperties";
+import ComponentProperties from "src/views/projects/projectView/ProjectComponents/ComponentProperties";
+import { agolFieldCharMax } from "src/constants/projects";
 
 import * as yup from "yup";
 
@@ -76,13 +77,27 @@ const validationSchema = yup.object().shape({
           "Required if a phase with phase name simple of Complete is selected"
         ),
     }),
-  description: yup.string().nullable().optional(),
+  description: yup
+    .string()
+    .max(
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
+    )
+    .nullable()
+    .optional(),
   work_types: yup.array().of(yup.object()).min(1).required(),
   // Signal field is required if the selected component inserts into the feature_signals table
   signal: yup.object().nullable(),
   schoolBeacon: yup.object().nullable(),
   srtsId: yup.string().nullable().optional(),
-  locationDescription: yup.string().nullable().optional(),
+  locationDescription: yup
+    .string()
+    .max(
+      agolFieldCharMax.descriptionString,
+      `Location description must be ${agolFieldCharMax.descriptionString} characters or less`
+    )
+    .nullable()
+    .optional(),
 });
 
 const ComponentForm = ({
@@ -358,6 +373,8 @@ const ComponentForm = ({
             name="locationDescription"
             size="small"
             control={control}
+            error={errors?.locationDescription}
+            helperText={errors?.locationDescription?.message}
           />
         </Grid>
         <Grid item xs={12}>
@@ -368,7 +385,10 @@ const ComponentForm = ({
             size="small"
             multiline
             minRows={4}
+            maxRows={10}
             control={control}
+            error={errors?.description}
+            helperText={errors?.description?.message}
           />
         </Grid>
         <Grid item xs={12}>
