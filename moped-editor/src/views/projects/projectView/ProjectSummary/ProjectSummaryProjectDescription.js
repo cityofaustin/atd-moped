@@ -45,6 +45,7 @@ const ProjectSummaryProjectDescription = ({
   const {
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: { description: originalDescription },
@@ -63,6 +64,14 @@ const ProjectSummaryProjectDescription = ({
    */
   const handleProjectDescriptionClose = () => {
     setEditMode(false);
+  };
+
+  /**
+   * Switch to view mode and revert to original value on cancel
+   */
+  const handleCancel = () => {
+    setValue("description", originalDescription);
+    handleProjectDescriptionClose();
   };
 
   /**
@@ -130,11 +139,7 @@ const ProjectSummaryProjectDescription = ({
             >
               <Icon>check</Icon>
             </IconButton>
-            <IconButton
-              disabled={loading}
-              onClick={handleProjectDescriptionClose}
-              size="large"
-            >
+            <IconButton disabled={loading} onClick={handleCancel} size="large">
               <Icon>close</Icon>
             </IconButton>
           </>
