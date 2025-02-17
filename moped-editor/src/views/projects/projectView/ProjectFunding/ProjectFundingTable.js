@@ -114,22 +114,18 @@ const useColumns = ({
     return [
       {
         headerName: "Source",
-        field: "funding_source_id",
+        field: "moped_fund_source",
+        // field: "moped_fund_source_object",
         width: 200,
         editable: true,
-        renderCell: ({ value }) =>
-          getLookupValueByID(
-            data["moped_fund_sources"],
-            "funding_source",
-            value
-          ),
-        // renderEditCell: (props) => (
-        //   <LookupAutocompleteComponent
-        //     {...props}
-        //     name={"funding_source"}
-        //     lookupTable={data["moped_fund_sources"]}
-        //   />
-        // ),
+        valueFormatter: (value) => value?.funding_source_name,
+        renderEditCell: (props) => (
+          <LookupAutocompleteComponent
+            {...props}
+            name={"funding_source"}
+            lookupTable={data["moped_fund_sources"]}
+          />
+        ),
       },
       {
         headerName: "Program",
@@ -330,7 +326,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     setRows((oldRows) => [
       {
         id,
-        funding_source_id: null,
+        moped_fund_source: null,
         funding_program_id: null,
         funding_description: null,
         funding_status_id: null,
@@ -421,6 +417,10 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
         ? null
         : updateProjectFundingData.funding_description;
 
+    updateProjectFundingData.funding_source_id =
+      updateProjectFundingData.moped_fund_source.funding_source_id;
+    delete updateProjectFundingData.moped_fund_source;
+
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
       delete updateProjectFundingData.id;
@@ -453,12 +453,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            handleSnackbar(
-              true,
-              "Error adding funding source",
-              "error",
-              error
-            );
+            handleSnackbar(true, "Error adding funding source", "error", error);
           })
       );
     } else {
