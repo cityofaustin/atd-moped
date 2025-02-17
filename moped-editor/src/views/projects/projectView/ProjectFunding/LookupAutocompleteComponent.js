@@ -1,7 +1,6 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import CustomPopper from "src/components/CustomPopper";
 
 /**
@@ -35,18 +34,14 @@ const LookupAutocompleteComponent = ({
     apiRef.current.setEditCellValue({
       id,
       field,
-      value: newValue ? newValue[`${name}_id`] : null,
+      value: newValue,
     });
   };
 
   return (
     <Autocomplete
       sx={{ width: "100%", mx: 1 }}
-      value={
-        // if we are editing, the autocomplete has the value provided by the material table, which is the record id
-        // need to get its corresponding text value
-        value ? getLookupValueByID(lookupTable, name, value) : null
-      }
+      value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
       id={name}
@@ -54,11 +49,10 @@ const LookupAutocompleteComponent = ({
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />
       )}
-      getOptionLabel={(option) =>
-        // if our value is a string, just return the string instead of accessing the name
-        typeof option === "string" ? option : option[`${name}_name`]
+      getOptionLabel={(option) => option[`${name}_name`]}
+      isOptionEqualToValue={(value, option) =>
+        value[`${name}_id`] === option[`${name}_id`]
       }
-      isOptionEqualToValue={(value, option) => value[`${name}_name`] === option}
       onChange={handleChange}
     />
   );

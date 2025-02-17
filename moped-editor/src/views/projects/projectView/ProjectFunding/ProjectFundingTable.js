@@ -123,25 +123,20 @@ const useColumns = ({
             "funding_source",
             value
           ),
-        renderEditCell: (props) => (
-          <LookupAutocompleteComponent
-            {...props}
-            name={"funding_source"}
-            lookupTable={data["moped_fund_sources"]}
-          />
-        ),
+        // renderEditCell: (props) => (
+        //   <LookupAutocompleteComponent
+        //     {...props}
+        //     name={"funding_source"}
+        //     lookupTable={data["moped_fund_sources"]}
+        //   />
+        // ),
       },
       {
         headerName: "Program",
-        field: "funding_program_id",
+        field: "moped_fund_program_object",
         width: 200,
         editable: true,
-        renderCell: ({ value }) =>
-          getLookupValueByID(
-            data["moped_fund_programs"],
-            "funding_program",
-            value
-          ),
+        valueFormatter: (value) => value?.funding_program_name,
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
