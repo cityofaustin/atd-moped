@@ -11,6 +11,8 @@ import CustomPopper from "src/components/CustomPopper";
  * @param {Boolean} hasFocus - is field focused
  * @param {String} name - name of lookup table
  * @param {Array|Objects} lookupTable - the lookup table data
+ * @param {Function}
+ * @param {Function}
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
@@ -20,6 +22,8 @@ const LookupAutocompleteComponent = ({
   hasFocus,
   name,
   lookupTable,
+  getOptionLabel,
+  isOptionEqualToValue,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -38,9 +42,14 @@ const LookupAutocompleteComponent = ({
     });
   };
 
+  const defaultGetOptionLabel = (option) => option[`${name}_name`];
+
+  const defaultIsOptionEqualToValue = (value, option) =>
+    value[`${name}_id`] === option[`${name}_id`];
+
   return (
     <Autocomplete
-      sx={{ width: "100%", mx: 1 }}
+      sx={{ width: "100%", mx: 1, alignContent: "center" }}
       value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={CustomPopper}
@@ -49,9 +58,11 @@ const LookupAutocompleteComponent = ({
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />
       )}
-      getOptionLabel={(option) => option[`${name}_name`]}
-      isOptionEqualToValue={(value, option) =>
-        value[`${name}_id`] === option[`${name}_id`]
+      getOptionLabel={getOptionLabel ? getOptionLabel : defaultGetOptionLabel}
+      isOptionEqualToValue={
+        isOptionEqualToValue
+          ? isOptionEqualToValue
+          : defaultIsOptionEqualToValue
       }
       onChange={handleChange}
     />

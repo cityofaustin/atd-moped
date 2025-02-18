@@ -31,7 +31,6 @@ import SubprojectFundingModal from "./SubprojectFundingModal";
 import ProjectFundingToolbar from "./ProjectFundingToolbar";
 import LookupSelectComponent from "../../../../components/LookupSelectComponent";
 import LookupAutocompleteComponent from "./LookupAutocompleteComponent";
-import FundAutocompleteComponent from "./FundAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
@@ -175,7 +174,20 @@ const useColumns = ({
         valueFormatter: (value) =>
           !!value?.fund_name ? `${value?.fund_id} | ${value?.fund_name}` : "",
         renderEditCell: (props) => (
-          <FundAutocompleteComponent {...props} data={data.moped_funds} />
+          <LookupAutocompleteComponent
+            {...props}
+            name={"fund"}
+            lookupTable={data.moped_funds}
+            getOptionLabel={(option) =>
+              // if our value is a string, just return the string
+              typeof option === "string"
+                ? option
+                : `${option.fund_id} | ${option.fund_name}`
+            }
+            isOptionEqualToValue={(value, option) =>
+              value.fund_id === option.fund_id && value.fund_name === option.fund_name
+            }
+          />
         ),
       },
       {
