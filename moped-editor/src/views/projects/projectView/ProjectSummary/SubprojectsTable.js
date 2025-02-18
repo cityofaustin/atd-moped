@@ -52,7 +52,7 @@ const useColumns = ({
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
-            name="holder"
+            name="project"
             lookupTable={data?.subprojectOptions}
             getOptionLabel={(option) =>
               `${option.project_id} - ${option.project_name_full}`}
