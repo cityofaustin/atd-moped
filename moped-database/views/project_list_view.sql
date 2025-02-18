@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1737754622032_deprecate_type_tables/up.sql
+-- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -105,8 +105,8 @@ parent_child_project_map AS (
 
     SELECT
         projects.project_id,
-        array_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
-        array_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
+        jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
+        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
     FROM parent_child_project_map projects
     LEFT JOIN project_council_district_map project_and_children_districts ON projects.self_and_children_project_ids = project_and_children_districts.project_id
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
@@ -173,8 +173,8 @@ project_component_work_types AS (
             ORDER BY mwt.name
         ) AS component_work_type_names
     FROM moped_proj_components mpc
-    LEFT JOIN moped_proj_component_work_types mpcwt ON mpcwt.project_component_id = mpc.project_component_id
-    LEFT JOIN moped_work_types mwt ON mwt.id = mpcwt.work_type_id
+    LEFT JOIN moped_proj_component_work_types mpcwt ON mpc.project_component_id = mpcwt.project_component_id
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
     WHERE true AND mpc.is_deleted = false AND mpcwt.is_deleted = false
     GROUP BY mpc.project_id
 )
