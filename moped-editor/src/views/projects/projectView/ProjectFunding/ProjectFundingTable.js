@@ -122,6 +122,7 @@ const useColumns = ({
             {...props}
             name={"funding_source"}
             lookupTable={data["moped_fund_sources"]}
+            fullWidthPopper={true}
           />
         ),
       },
@@ -136,6 +137,7 @@ const useColumns = ({
             {...props}
             name={"funding_program"}
             lookupTable={data["moped_fund_programs"]}
+            fullWidthPopper={true}
           />
         ),
       },

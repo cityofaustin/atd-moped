@@ -24,6 +24,7 @@ const LookupAutocompleteComponent = ({
   lookupTable,
   getOptionLabel,
   isOptionEqualToValue,
+  fullWidthPopper,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -52,7 +53,7 @@ const LookupAutocompleteComponent = ({
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
       value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
-      PopperComponent={CustomPopper}
+      PopperComponent={fullWidthPopper && CustomPopper}
       id={name}
       options={lookupTable}
       renderInput={(params) => (
