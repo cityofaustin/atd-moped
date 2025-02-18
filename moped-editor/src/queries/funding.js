@@ -14,7 +14,7 @@ export const FUNDING_QUERY = gql`
       funding_amount
       funding_description
       funding_program_id
-      moped_fund_program_object {
+      moped_fund_program {
         funding_program_id
         funding_program_name
       }

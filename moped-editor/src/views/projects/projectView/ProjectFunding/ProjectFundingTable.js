@@ -115,7 +115,6 @@ const useColumns = ({
       {
         headerName: "Source",
         field: "moped_fund_source",
-        // field: "moped_fund_source_object",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
@@ -129,7 +128,7 @@ const useColumns = ({
       },
       {
         headerName: "Program",
-        field: "moped_fund_program_object",
+        field: "moped_fund_program",
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_program_name,
@@ -327,6 +326,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
       {
         id,
         moped_fund_source: null,
+        funding_source_id: null,
         funding_program_id: null,
         funding_description: null,
         funding_status_id: null,
@@ -418,8 +418,12 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
         : updateProjectFundingData.funding_description;
 
     updateProjectFundingData.funding_source_id =
-      updateProjectFundingData.moped_fund_source.funding_source_id;
+      updateProjectFundingData.moped_fund_source?.funding_source_id;
     delete updateProjectFundingData.moped_fund_source;
+
+    updateProjectFundingData.funding_program_id =
+      updateProjectFundingData.moped_fund_program?.funding_program_id;
+    delete updateProjectFundingData.moped_fund_program;
 
     if (updatedRow.isNew) {
       delete updateProjectFundingData.isNew;
@@ -516,6 +520,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
+          onProcessRowUpdateError={(error) => console.error(error)}
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
