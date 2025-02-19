@@ -2,6 +2,7 @@ import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import CustomPopper from "src/components/CustomPopper";
+import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
  * Component for dropdown select using a lookup table as options
@@ -13,6 +14,7 @@ import CustomPopper from "src/components/CustomPopper";
  * @param {Array|Objects} lookupTable - the lookup table data
  * @param {Function}
  * @param {Function}
+ * @param {Boolean} fullWidthPopper - should component use custom Popper component
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
@@ -55,6 +57,7 @@ const LookupAutocompleteComponent = ({
       // use customized popper component so menu expands to fullwidth
       PopperComponent={fullWidthPopper && CustomPopper}
       id={name}
+      filterOptions={filterOptions}
       options={lookupTable}
       renderInput={(params) => (
         <TextField variant="standard" {...params} inputRef={ref} />

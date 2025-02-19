@@ -280,6 +280,7 @@ const SubprojectsTable = ({
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
+        onProcessRowUpdateError={(error) => console.error}
         slots={{ toolbar: SubprojectsToolbar }}
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"

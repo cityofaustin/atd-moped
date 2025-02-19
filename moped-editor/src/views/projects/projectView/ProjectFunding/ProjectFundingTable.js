@@ -203,7 +203,17 @@ const useColumns = ({
               ${value?.unit_long_name}`
             : "",
         renderEditCell: (props) => (
-          <FundingDeptUnitAutocomplete props={props} value={props.value} />
+          <LookupAutocompleteComponent
+            {...props}
+            name={"dept_unit"}
+            lookupTable={[]} // todo: add the socrata query
+            getOptionLabel={(option) =>
+              !!option.dept
+                ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
+                : ""}
+            isOptionEqualToValue={(value, option) =>
+              value.unit_long_name === option.unit_long_name}
+          />
         ),
       },
       {
