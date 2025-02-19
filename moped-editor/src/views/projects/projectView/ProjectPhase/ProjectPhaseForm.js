@@ -36,6 +36,7 @@ const ProjectPhaseForm = ({
   currentProjectPhaseIds,
   currentPhaseIds,
   onSubmitCallback,
+  handleSnackbar,
 }) => {
   const isNewPhase = !phase.project_phase_id;
   const userSessionData = getSessionDatabaseData();
@@ -92,9 +93,11 @@ const ProjectPhaseForm = ({
       phaseData,
       noteData,
       mutate,
+      isNewPhase,
       currentPhaseIdsToClear,
       currentPhaseIds,
       onSubmitCallback,
+      handleSnackbar
     });
   };
 
@@ -162,7 +165,6 @@ const ProjectPhaseForm = ({
   };
 
   if (mutationState.error) {
-    console.error(mutationState.error);
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>

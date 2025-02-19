@@ -16,7 +16,7 @@ import { formatRelativeDate } from "src/utils/dateAndTime";
  * @returns {JSX.Element}
  * @constructor
  */
-const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
+const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, handleSnackbar, classes }) => {
   const statusUpdate = data.moped_project[0].moped_proj_notes[0]?.project_note;
   const projectName = data.moped_project[0].project_name;
   const addedByUser = data.moped_project[0].moped_proj_notes[0]?.moped_user;
@@ -45,6 +45,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, classes }) => {
           modalParent="summary"
           statusUpdate={statusUpdate}
           queryRefetch={refetch}
+          handleSnackbar={handleSnackbar}
           classes={classes}
         >
           {!!statusUpdate && (

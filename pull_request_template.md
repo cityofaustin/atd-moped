@@ -3,7 +3,7 @@
 ## Testing
 **URL to test:** 
 <!---
- [branch-name]--atd-moped-main.netlify.app/moped/ if test instance or deploy-preview-[pr-number]--atd-moped-main.netlify.app/moped/ 
+deploy-preview-[pr-number]--atd-moped-main.netlify.app/moped/
 --->
 
 **Steps to test:**

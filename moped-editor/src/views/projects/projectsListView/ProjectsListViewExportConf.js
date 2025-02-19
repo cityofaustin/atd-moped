@@ -58,9 +58,6 @@ export const PROJECT_LIST_VIEW_EXPORT_CONFIG = {
     label: "Signal IDs",
     filter: filterProjectSignals,
   },
-  type_name: {
-    label: "Type",
-  },
   funding_source_and_program_names: {
     label: "Funding",
   },

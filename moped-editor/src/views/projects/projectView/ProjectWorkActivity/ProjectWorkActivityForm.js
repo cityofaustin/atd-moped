@@ -33,7 +33,7 @@ import {
   IMPLEMENTATION_WORKGROUP_OPTIONS,
 } from "./utils/form";
 
-const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
+const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback, handleSnackbar }) => {
   /** Status lookup values */
   const {
     loading: loadingStatuses,
@@ -84,11 +84,10 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   );
 
   const [mutate, mutationState] = useMutation(
-    activity.id ? UPDATE_WORK_ACTIVITY : ADD_WORK_ACTIVITIY
+    isNewActivity ? ADD_WORK_ACTIVITIY : UPDATE_WORK_ACTIVITY
   );
 
   if (errorStatuses || errorTaskOrders || mutationState.error) {
-    console.error(errorStatuses || errorTaskOrders || mutationState.error);
     return (
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -111,7 +110,7 @@ const ProjectWorkActivitiesForm = ({ activity, onSubmitCallback }) => {
   return (
     <form
       onSubmit={handleSubmit((data) =>
-        onSubmitActivity({ data, mutate, onSubmitCallback })
+        onSubmitActivity({ data, mutate, onSubmitCallback, handleSnackbar, isNewActivity })
       )}
       autoComplete="off"
     >

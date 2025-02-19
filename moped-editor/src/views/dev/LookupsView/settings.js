@@ -139,7 +139,7 @@ export const SETTINGS = [
   },
   {
     key: "moped_fund_status",
-    label: "Fund Status",
+    label: "Fund status",
     columns: [
       {
         key: "funding_status_id",

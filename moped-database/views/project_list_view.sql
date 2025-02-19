@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
+-- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -45,15 +45,6 @@ funding_sources_lookup AS (
     LEFT JOIN moped_fund_programs mfp ON mpf.funding_program_id = mfp.funding_program_id
     WHERE mpf.is_deleted = false
     GROUP BY mpf.project_id
-),
-
-project_type_lookup AS (
-    SELECT
-        mpt.project_id,
-        string_agg(mt.type_name, ', '::text) AS type_name
-    FROM moped_project_types mpt
-    LEFT JOIN moped_types mt ON mpt.project_type_id = mt.type_id AND mpt.is_deleted = false
-    GROUP BY mpt.project_id
 ),
 
 child_project_lookup AS (
@@ -114,8 +105,8 @@ parent_child_project_map AS (
 
     SELECT
         projects.project_id,
-        array_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
-        array_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
+        jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
+        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
     FROM parent_child_project_map projects
     LEFT JOIN project_council_district_map project_and_children_districts ON projects.self_and_children_project_ids = project_and_children_districts.project_id
     LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
@@ -182,8 +173,8 @@ project_component_work_types AS (
             ORDER BY mwt.name
         ) AS component_work_type_names
     FROM moped_proj_components mpc
-    LEFT JOIN moped_proj_component_work_types mpcwt ON mpcwt.project_component_id = mpc.project_component_id
-    LEFT JOIN moped_work_types mwt ON mwt.id = mpcwt.work_type_id
+    LEFT JOIN moped_proj_component_work_types mpcwt ON mpc.project_component_id = mpcwt.project_component_id
+    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
     WHERE true AND mpc.is_deleted = false AND mpcwt.is_deleted = false
     GROUP BY mpc.project_id
 )
@@ -234,7 +225,6 @@ SELECT
     fsl.funding_source_name,
     fsl.funding_program_names,
     fsl.funding_source_and_program_names,
-    ptl.type_name,
     (
         SELECT min(phases.phase_start) AS min
         FROM moped_proj_phases phases
@@ -278,7 +268,6 @@ SELECT
 FROM moped_project mp
 LEFT JOIN project_person_list_lookup ppll ON mp.project_id = ppll.project_id
 LEFT JOIN funding_sources_lookup fsl ON mp.project_id = fsl.project_id
-LEFT JOIN project_type_lookup ptl ON mp.project_id = ptl.project_id
 LEFT JOIN moped_entity me ON mp.project_sponsor = me.entity_id
 LEFT JOIN moped_entity mel ON mp.project_lead_id = mel.entity_id
 LEFT JOIN moped_proj_partners mpp2 ON mp.project_id = mpp2.project_id AND mpp2.is_deleted = false
@@ -303,4 +292,4 @@ LEFT JOIN LATERAL (
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false
-GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, ptl.type_name, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;
+GROUP BY mp.project_id, mp.project_name, mp.project_description, ppll.project_team_members, mp.ecapris_subproject_id, mp.date_added, mp.is_deleted, me.entity_name, mel.entity_name, mp.updated_at, mp.interim_project_id, mp.parent_project_id, mp.knack_project_id, current_phase.phase_name, current_phase.phase_key, current_phase.phase_name_simple, mpcs.components, fsl.funding_source_name, fsl.funding_program_names, fsl.funding_source_and_program_names, added_by_user.first_name, added_by_user.last_name, mpps.name, cpl.children_project_ids, proj_status_update.project_note, proj_status_update.date_created, work_activities.workgroup_contractors, work_activities.contract_numbers, work_activities.task_order_names, work_activities.task_order_names_short, work_activities.task_orders, districts.project_council_districts, districts.project_and_child_project_council_districts, mepd.min_phase_date, mcpd.min_phase_date, pcwt.component_work_type_names;

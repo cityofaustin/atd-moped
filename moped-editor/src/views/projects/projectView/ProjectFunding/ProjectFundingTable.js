@@ -4,7 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import isEqual from "lodash/isEqual";
 
 // Material
-import { Alert, CircularProgress, Snackbar, Box } from "@mui/material";
+import { CircularProgress, Box } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   DataGridPro,
@@ -240,7 +240,7 @@ const useColumns = ({
     handleEditClick,
   ]);
 
-const ProjectFundingTable = () => {
+const ProjectFundingTable = ({ handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -262,12 +262,6 @@ const ProjectFundingTable = () => {
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
   const [deleteProjectFunding] = useMutation(DELETE_PROJECT_FUNDING);
 
-  const DEFAULT_SNACKBAR_STATE = {
-    open: false,
-    message: null,
-    severity: "success",
-  };
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -329,27 +323,6 @@ const ProjectFundingTable = () => {
     [apiRef]
   );
 
-  /**
-   * Wrapper around snackbar state setter
-   * @param {boolean} open - The new state of open
-   * @param {String} message - The message for the snackbar
-   * @param {String} severity - The severity color of the snackbar
-   */
-  const snackbarHandle = (open = true, message, severity = "success") => {
-    setSnackbarState({
-      open: open,
-      message: message,
-      severity: severity,
-    });
-  };
-
-  /**
-   * Return Snackbar state to default, closed state
-   */
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
-  };
-
   const handleRowModesModelChange = (newRowModesModel) => {
     setRowModesModel(newRowModesModel);
   };
@@ -409,22 +382,21 @@ const ProjectFundingTable = () => {
           },
         })
           .then(() => refetch())
-          .then(() => setIsDeleteConfirmationOpen(false))
+          .then(() => {
+            setIsDeleteConfirmationOpen(false);
+            handleSnackbar(true, "Funding source deleted", "success");
+          })
           .catch((error) => {
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  There was a problem deleting funding. Error message:{" "}
-                  {error.message}
-                </span>
-              ),
-              severity: "error",
-            });
+            handleSnackbar(
+              true,
+              "Error deleting funding source",
+              "error",
+              error
+            );
           });
       }
     },
-    [rows, deleteProjectFunding, refetch]
+    [rows, deleteProjectFunding, refetch, handleSnackbar]
   );
 
   // when a user cancels editing by clicking the X in the actions
@@ -478,21 +450,20 @@ const ProjectFundingTable = () => {
                 .proj_funding_id;
             updatedRow.proj_funding_id = record_id;
           })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "Funding source added", "success");
+          })
           // from the data grid docs:
           // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
           .then(() => updatedRow)
           .catch((error) => {
-            setSnackbarState({
-              open: true,
-              message: (
-                <span>
-                  There was a problem adding funding. Error message:{" "}
-                  {error.message}
-                </span>
-              ),
-              severity: "error",
-            });
+            handleSnackbar(
+              true,
+              "Error adding funding source",
+              "error",
+              error
+            );
           })
       );
     } else {
@@ -507,37 +478,24 @@ const ProjectFundingTable = () => {
           updateProjectFunding({
             variables: updateProjectFundingData,
           })
-            .then(() => refetch())
+            .then(() => {
+              refetch();
+              handleSnackbar(true, "Funding source updated", "success");
+            })
             // from the data grid docs:
             // Please note that the processRowUpdate must return the row object to update the Data Grid internal state.
             .then(() => updatedRow)
             .catch((error) => {
-              setSnackbarState({
-                open: true,
-                message: (
-                  <span>
-                    There was a problem updating funding. Error message:{" "}
-                    {error.message}
-                  </span>
-                ),
-                severity: "error",
-              });
+              handleSnackbar(
+                true,
+                "Error updating funding source",
+                "error",
+                error
+              );
             })
         );
       }
     }
-  };
-
-  const handleProcessUpdateError = (error) => {
-    setSnackbarState({
-      open: true,
-      message: (
-        <span>
-          There was a problem updating funding. Error message: {error.message}
-        </span>
-      ),
-      severity: "error",
-    });
   };
 
   const dataGridColumns = useColumns({
@@ -568,7 +526,6 @@ const ProjectFundingTable = () => {
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
-          onProcessRowUpdateError={handleProcessUpdateError}
           disableRowSelectionOnClick
           toolbar
           density="comfortable"
@@ -587,7 +544,7 @@ const ProjectFundingTable = () => {
               eCaprisID: eCaprisID,
               data: data,
               refetch: refetch,
-              snackbarHandle: snackbarHandle,
+              handleSnackbar: handleSnackbar,
               classes: classes,
               noWrapper: true,
               setIsDialogOpen: setIsDialogOpen,
@@ -601,16 +558,6 @@ const ProjectFundingTable = () => {
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
       />
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
       <SubprojectFundingModal
         isDialogOpen={isDialogOpen}
         handleDialogClose={handleSubprojectDialogClose}
@@ -618,7 +565,7 @@ const ProjectFundingTable = () => {
         fdusArray={fdusArray}
         addProjectFunding={addProjectFunding}
         projectId={projectId}
-        setSnackbarState={setSnackbarState}
+        handleSnackbar={handleSnackbar}
         refetch={refetch}
       />
     </ApolloErrorHandler>

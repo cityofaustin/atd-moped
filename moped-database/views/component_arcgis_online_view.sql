@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1733184698645_add_comp_work_types/up.sql
+-- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -145,7 +145,7 @@ earliest_active_or_construction_phase_date AS (
 
 SELECT
     mpc.project_id,
-    comp_geography.project_component_id,
+    mpc.project_component_id,
     comp_geography.feature_ids,
     mpc.component_id,
     comp_geography.geometry,
@@ -196,7 +196,6 @@ SELECT
     plv.project_partners,
     plv.task_order_names,
     plv.funding_source_and_program_names AS funding_sources,
-    plv.type_name,
     plv.project_status_update,
     plv.project_status_update_date_created,
     to_char(timezone('US/Central'::text, plv.construction_start_date), 'YYYY-MM-DD'::text) AS construction_start_date,

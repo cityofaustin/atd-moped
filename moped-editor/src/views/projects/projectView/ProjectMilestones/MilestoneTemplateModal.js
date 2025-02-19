@@ -69,6 +69,7 @@ const MilestoneTemplateModal = ({
   milestoneNameLookup,
   selectedMilestones,
   refetch,
+  handleSnackbar,
 }) => {
   const [template, setTemplate] = useState(null);
   const [milestonesToAdd, setMilestonesToAdd] = useState([]);
@@ -113,7 +114,23 @@ const MilestoneTemplateModal = ({
       variables: {
         objects: milestonesToAdd,
       },
-    }).then(() => refetch());
+    })
+      .then(() => {
+        refetch();
+        handleSnackbar(
+          true,
+          "Project milestones added from template",
+          "success"
+        );
+      })
+      .catch((error) => {
+        handleSnackbar(
+          true,
+          "Error adding project milestones from template",
+          "error",
+          error
+        );
+      });
     closeDialog();
   };
 

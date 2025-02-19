@@ -113,6 +113,10 @@ const buildRecordEntry = (
       : Object.keys(exportConfig);
   // For each column in the export configuration
   columnsToExport.forEach((column) => {
+    // check if column exists
+    if (!exportConfig[column]) {
+      return;
+    }
     // column label and data formatting function
     const { label, filter } = exportConfig[column];
     // Determine the new column name, if available.

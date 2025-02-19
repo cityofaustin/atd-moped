@@ -20,13 +20,28 @@ const DEFAULT_ACTIVITY_VALUES = {
 };
 
 export const activityValidationSchema = yup.object().shape({
-  workgroup_contractor: yup.string().max(500, "Must be less than 500 characters").nullable(),
-  contract_number: yup.string().max(500, "Must be less than 500 characters").nullable(),
-  description: yup.string().max(5000, "Must be less than 5,000 characters").nullable(),
-  work_assignment_id: yup.string().max(500, "Must be less than 500 characters").nullable(),
+  workgroup_contractor: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
+  contract_number: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
+  description: yup
+    .string()
+    .max(5000, "Must be less than 5,000 characters")
+    .nullable(),
+  work_assignment_id: yup
+    .string()
+    .max(500, "Must be less than 500 characters")
+    .nullable(),
   contract_amount: yup.number().nullable(),
   status_id: yup.number().required(),
-  status_note: yup.string().max(5000, "Must be less than 5,000 characters").nullable(),
+  status_note: yup
+    .string()
+    .max(5000, "Must be less than 5,000 characters")
+    .nullable(),
   task_orders: yup.array().nullable(),
   id: yup.number().optional(),
   project_id: yup.number().required(),
@@ -85,7 +100,13 @@ const FORM_PAYLOAD_FIELDS = [
   "work_order_url",
 ];
 
-export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {
+export const onSubmitActivity = ({
+  data,
+  mutate,
+  onSubmitCallback,
+  handleSnackbar,
+  isNewActivity,
+}) => {
   const { id } = data;
 
   const payload = FORM_PAYLOAD_FIELDS.reduce((obj, key) => {
@@ -103,7 +124,13 @@ export const onSubmitActivity = ({ data, mutate, onSubmitCallback }) => {
 
   mutate({
     variables,
-  }).then(() => onSubmitCallback());
+  })
+    .then((mutation) => onSubmitCallback({ mutation }))
+    .catch((error) => {
+      isNewActivity
+        ? handleSnackbar(true, "Error adding work activity", "error", error)
+        : handleSnackbar(true, "Error updating work activity", "error", error);
+    });
 };
 
 export const useDefaultValues = (activity) =>

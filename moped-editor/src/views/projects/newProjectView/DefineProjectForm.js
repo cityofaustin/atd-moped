@@ -1,6 +1,6 @@
 import React from "react";
 import { TextField, Grid, InputLabel, Switch, Box } from "@mui/material";
-import SignalAutocomplete from "./SignalAutocomplete";
+import SignalAutocomplete from "src/views/projects/newProjectView/SignalAutocomplete";
 
 const DefineProjectForm = ({
   projectDetails,
@@ -89,8 +89,8 @@ const DefineProjectForm = ({
             type="text"
             fullWidth
             value={projectDetails.project_description}
-            error={descriptionError}
-            helperText="Required"
+            error={descriptionError !== null}
+            helperText={descriptionError?.message}
             InputLabelProps={{ required: false }}
             onChange={(e) => handleFieldChange(e.target.value, e.target.name)}
           />

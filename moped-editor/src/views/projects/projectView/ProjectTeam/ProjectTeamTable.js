@@ -22,6 +22,7 @@ import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -37,24 +38,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useTeamNameLookup = (data) =>
+const useWorkgroupLookup = (data) =>
   useMemo(() => {
     if (!data) {
       return {};
     }
-    return data.moped_users.reduce((obj, item) => {
-      obj[item.user_id] = `${item.first_name} ${item.last_name}`;
-      return obj;
-    }, {});
-  }, [data]);
-
-const useRoleNameLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_project_roles.reduce((obj, item) => {
-      obj[item.project_role_id] = item.project_role_name;
+    return data.moped_workgroup.reduce((obj, item) => {
+      obj[item.workgroup_id] = item.workgroup_name;
       return obj;
     }, {});
   }, [data]);
@@ -69,8 +59,8 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   classes,
-  teamNameLookup,
-  roleNameLookup,
+  usingShiftKey,
+  workgroupLookup,
 }) =>
   useMemo(() => {
     return [
@@ -79,7 +69,7 @@ const useColumns = ({
         field: "moped_user",
         width: 250,
         editable: true,
-        valueGetter: (user) => {
+        valueFormatter: (user) => {
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
@@ -88,7 +78,7 @@ const useColumns = ({
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              nameLookup={teamNameLookup}
+              options={data.moped_users}
               error={props.error}
             />
           );
@@ -103,8 +93,19 @@ const useColumns = ({
       {
         headerName: "Workgroup",
         field: "moped_workgroup",
+        editable: true,
         width: 200,
-        valueGetter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) => workgroup?.workgroup_name,
+        renderEditCell: (props) => (
+          <ViewOnlyTextField
+            {...props}
+            lookupTable={workgroupLookup}
+            usingShiftKey={usingShiftKey}
+            previousColumnField="moped_user"
+            nextColumnField="moped_proj_personnel_roles"
+            valueIdName="workgroup_id"
+          />
+        ),
       },
       {
         headerName: "Role",
@@ -115,7 +116,7 @@ const useColumns = ({
           <div className={classes.roleHeader}>
             Role{" "}
             <Link
-              href="https://atd-dts.gitbook.io/moped/user-guides/project-team"
+              href="dev/lookups#moped-project_roles"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -191,10 +192,11 @@ const useColumns = ({
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
+    usingShiftKey,
+    workgroupLookup,
   ]);
 
-const ProjectTeamTable = ({ projectId }) => {
+const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -212,6 +214,7 @@ const ProjectTeamTable = ({ projectId }) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [usingShiftKey, setUsingShiftKey] = useState(false);
 
   useEffect(() => {
     if (data?.moped_project_by_pk?.moped_proj_personnel?.length > 0) {
@@ -228,8 +231,7 @@ const ProjectTeamTable = ({ projectId }) => {
     }
   }, [data]);
 
-  const teamNameLookup = useTeamNameLookup(data);
-  const roleNameLookup = useRoleNameLookup(data);
+  const workgroupLookup = useWorkgroupLookup(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -314,6 +316,7 @@ const ProjectTeamTable = ({ projectId }) => {
         isNew: true,
         roleIds: [],
         project_personnel_id: id,
+        moped_user: {},
       },
       ...oldRows,
     ]);
@@ -417,11 +420,13 @@ const ProjectTeamTable = ({ projectId }) => {
             object: payload,
           },
         })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "Team member added", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            throw error;
+            handleSnackbar(true, "Error adding team member", "error", error);
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -462,20 +467,24 @@ const ProjectTeamTable = ({ projectId }) => {
         };
 
         return updateProjectPersonnel({ variables })
-          .then(() => refetch())
+          .then(() => {
+            refetch();
+            handleSnackbar(true, "Team member updated", "success");
+          })
           .then(() => updatedRow)
           .catch((error) => {
-            console.error("Mutation error:", error);
-            throw error;
+            handleSnackbar(true, "Error updating team member", "error", error);
           });
       }
     },
-    [updateProjectPersonnel, insertProjectPersonnel, projectId, refetch]
+    [
+      updateProjectPersonnel,
+      insertProjectPersonnel,
+      projectId,
+      refetch,
+      handleSnackbar,
+    ]
   );
-
-  const handleProcessUpdateError = useCallback((error) => {
-    console.error("process row update error", error);
-  }, []);
 
   const dataGridColumns = useColumns({
     data,
@@ -485,8 +494,8 @@ const ProjectTeamTable = ({ projectId }) => {
     handleCancelClick,
     handleDeleteOpen,
     classes,
-    teamNameLookup,
-    roleNameLookup,
+    usingShiftKey,
+    workgroupLookup,
   });
 
   const processRowUpdateMemoized = useCallback(
@@ -498,6 +507,12 @@ const ProjectTeamTable = ({ projectId }) => {
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
   if (loading || !data) return <CircularProgress />;
+
+  const checkIfShiftKey = (params, event) => {
+    if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
+      setUsingShiftKey(event.shiftKey);
+    }
+  };
 
   return (
     <ApolloErrorHandler errors={error}>
@@ -513,7 +528,7 @@ const ProjectTeamTable = ({ projectId }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
-        onProcessRowUpdateError={handleProcessUpdateError}
+        onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
         density="comfortable"
@@ -538,10 +553,20 @@ const ProjectTeamTable = ({ projectId }) => {
         submitDelete={() => {
           deleteProjectPersonnel({
             variables: { id: deleteConfirmationId },
-          }).then(() => {
-            refetch();
-            setIsDeleteConfirmationOpen(false);
-          });
+          })
+            .then(() => {
+              refetch();
+              setIsDeleteConfirmationOpen(false);
+              handleSnackbar(true, "Team member removed", "success");
+            })
+            .catch((error) => {
+              handleSnackbar(
+                true,
+                "Error removing team member",
+                "error",
+                error
+              );
+            });
         }}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}

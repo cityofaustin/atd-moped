@@ -24,6 +24,9 @@ import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
 import MilestoneProgressMeter from "./MilestoneProgressMeter";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 import typography from "../../theme/typography";
 
@@ -110,6 +113,9 @@ const DashboardView = () => {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
+
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   if (error) {
     console.log(error);
@@ -204,6 +210,7 @@ const DashboardView = () => {
           projectId={entry.project_id}
           projectName={entry.project.project_name_full}
           dashboardRefetch={refetch}
+          handleSnackbar={handleSnackbar}
         >
           <ProjectStatusBadge
             phaseName={entry.phase_name}
@@ -227,6 +234,7 @@ const DashboardView = () => {
           modalParent="dashboard"
           statusUpdate={entry.status_update}
           queryRefetch={refetch}
+          handleSnackbar={handleSnackbar}
           classes={classes}
         >
           {parse(String(entry.status_update))}
@@ -242,6 +250,7 @@ const DashboardView = () => {
           table="milestones"
           projectId={entry.project_id}
           projectName={entry.project.project_name_full}
+          handleSnackbar={handleSnackbar}
           dashboardRefetch={refetch}
         >
           <MilestoneProgressMeter
@@ -333,6 +342,10 @@ const DashboardView = () => {
             </Grid>
           </Card>
         </Container>
+        <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbarClose={handleSnackbarClose}
+        />
       </Page>
     </ActivityMetrics>
   );

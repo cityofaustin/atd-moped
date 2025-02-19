@@ -27,6 +27,7 @@ const DashboardTimelineModal = ({
   projectId,
   projectName,
   dashboardRefetch,
+  handleSnackbar,
   children,
 }) => {
   const classes = useStyles();
@@ -88,6 +89,7 @@ const DashboardTimelineModal = ({
                         loading={loading}
                         data={data}
                         refetch={refetch}
+                        handleSnackbar={handleSnackbar}
                       />
                     )}
                     {table === "milestones" && (
@@ -96,6 +98,7 @@ const DashboardTimelineModal = ({
                         loading={loading}
                         data={data}
                         refetch={refetch}
+                        handleSnackbar={handleSnackbar}
                       />
                     )}
                   </Box>

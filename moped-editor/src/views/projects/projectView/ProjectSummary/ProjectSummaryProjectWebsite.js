@@ -14,7 +14,7 @@ import { isValidUrl, makeUrlValid } from "src/utils/urls";
  * @param {Object} data - The data object from the GraphQL query
  * @param {function} refetch - The refetch function from apollo
  * @param {Object} classes - The shared style settings
- * @param {function} snackbarHandle - The function to show the snackbar
+ * @param {function} handleSnackbar - The function to show the snackbar
  * @returns {JSX.Element}
  * @constructor
  */
@@ -23,7 +23,7 @@ const ProjectSummaryProjectWebsite = ({
   data,
   refetch,
   classes,
-  snackbarHandle,
+  handleSnackbar,
 }) => {
   const originalWebsite = data?.moped_project?.[0]?.project_website ?? null;
 
@@ -63,16 +63,12 @@ const ProjectSummaryProjectWebsite = ({
         setWebsite(websiteToSubmit);
         setEditMode(false);
         refetch();
-        snackbarHandle(true, "Project website updated!", "success");
+        handleSnackbar(true, "Project website updated", "success");
       })
-      .catch((err) => {
-        snackbarHandle(
-          true,
-          "Failed to update project website: " + String(err),
-          "error"
-        );
+      .catch((error) => {
         handleProjectWebsiteClose();
         setEditMode(false);
+        handleSnackbar(true, `Error updating project website`, "error", error);
       });
   };
 

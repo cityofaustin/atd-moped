@@ -18,7 +18,7 @@ import ProjectMilestones from "./ProjectMilestones";
  * @return {JSX.Element}
  * @constructor
  */
-const ProjectTimeline = () => {
+const ProjectTimeline = ({ handleSnackbar }) => {
   /** Params Hook
    * @type {integer} projectId
    * */
@@ -50,6 +50,7 @@ const ProjectTimeline = () => {
                 projectId={projectId}
                 data={data}
                 refetch={refetch}
+                handleSnackbar={handleSnackbar}
               />
             </Box>
           </Grid>
@@ -60,6 +61,7 @@ const ProjectTimeline = () => {
                 loading={loading}
                 data={data}
                 refetch={refetch}
+                handleSnackbar={handleSnackbar}
               />
             </Box>
           </Grid>

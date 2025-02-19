@@ -66,9 +66,6 @@ const useClient = (user) =>
           moped_phases: {
             keyFields: ["phase_id"],
           },
-          moped_types: {
-            keyFields: ["type_id"],
-          },
         },
       }),
     });

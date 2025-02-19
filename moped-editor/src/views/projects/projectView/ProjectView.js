@@ -32,11 +32,9 @@ import {
   Fade,
   ListItemIcon,
   ListItemText,
-  Snackbar,
   Tooltip,
   Typography,
 } from "@mui/material";
-import { Alert } from "@mui/material";
 
 import Page from "src/components/Page";
 import ProjectSummary from "./ProjectSummary/ProjectSummary";
@@ -67,6 +65,9 @@ import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import NotFoundView from "../../errors/NotFoundView";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import FallbackComponent from "src/components/FallbackComponent";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -149,12 +150,6 @@ const TABS = [
   },
 ];
 
-const DEFAULT_SNACKBAR_STATE = {
-  open: false,
-  message: "Default State",
-  severity: "warning",
-};
-
 /**
  * Get the index of the currently active tab
  * @param {*} tabName - a `tab` name from the url search string
@@ -198,7 +193,7 @@ const ProjectView = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogState, setDialogState] = useState(null);
   const [anchorElement, setAnchorElement] = useState(null);
-  const [snackbarState, setSnackbarState] = useState(DEFAULT_SNACKBAR_STATE);
+
   const menuOpen = Boolean(anchorElement);
 
   const queryContext = useContext(ProjectListViewQueryContext);
@@ -206,9 +201,8 @@ const ProjectView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
 
-  const handleSnackbarClose = () => {
-    setSnackbarState(DEFAULT_SNACKBAR_STATE);
-  };
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
 
   /**
    * The query to gather the project summary data
@@ -374,14 +368,28 @@ const ProjectView = () => {
             user_id: userId,
           },
         },
-      }).then(() => refetch());
+      })
+        .then(() => {
+          refetch();
+          handleSnackbar(true, "Project followed", "success");
+        })
+        .catch((error) => {
+          handleSnackbar(true, "Error following project", "error", error);
+        });
     } else {
       unfollowProject({
         variables: {
           project_id: projectId,
           user_id: userId,
         },
-      }).then(() => refetch());
+      })
+        .then(() => {
+          refetch();
+          handleSnackbar(true, "Project unfollowed", "success");
+        })
+        .catch((error) => {
+          handleSnackbar(true, "Error unfollowing project", "error", error);
+        });
     }
   };
 
@@ -461,6 +469,7 @@ const ProjectView = () => {
                               setIsEditing={setIsEditing}
                               updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
+                              handleSnackbar={handleSnackbar}
                             />
                           </Box>
                         </Grid>
@@ -564,6 +573,7 @@ const ProjectView = () => {
                             }
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
+                            handleSnackbar={handleSnackbar}
                           />
                         </TabPanel>
                       );
@@ -627,17 +637,10 @@ const ProjectView = () => {
           )}
         </Page>
       )}
-      <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={snackbarState.open}
-        onClose={handleSnackbarClose}
-        key={"datatable-snackbar"}
-        autoHideDuration={5000}
-      >
-        <Alert onClose={handleSnackbarClose} severity={snackbarState.severity}>
-          {snackbarState.message}
-        </Alert>
-      </Snackbar>
+      <FeedbackSnackbar
+        snackbarState={snackbarState}
+        handleSnackbarClose={handleSnackbarClose}
+      />
     </ApolloErrorHandler>
   );
 };
