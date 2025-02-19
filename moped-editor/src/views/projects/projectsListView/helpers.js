@@ -82,20 +82,6 @@ export const resolveHasSubprojects = (array) => {
   return "No";
 };
 
-// const renderSplitListDisplayBlock = (row, fieldName) =>
-//   row[fieldName] && (
-//     <div>
-//       {row[fieldName].split(",").map((value, i) => {
-//         return (
-//           <span key={i} style={{ display: "block" }}>
-//             {value}
-//             {i < row[fieldName].split(",").length - 1 && ","}
-//           </span>
-//         );
-//       })}
-//     </div>
-//   );
-
 const renderSplitListDisplayBlock = (row, fieldName) => {
   if (row[fieldName]) {
     const array = row[fieldName].split(",");
