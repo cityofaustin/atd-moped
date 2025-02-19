@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import {
-  Button,
   TextField,
   InputAdornment,
   SvgIcon,
@@ -37,9 +36,6 @@ const useStyles = makeStyles((theme) => ({
     width: "33px",
     color: "rgba(0, 0, 0, 0.54)",
   },
-  // saveViewButton: {
-  //   display: "flex",
-  // },
 }));
 
 /**
@@ -170,19 +166,14 @@ const SearchBar = ({
         value={searchFieldValue}
       />
       {filterStateActive && !advancedSearchAnchor && (
-        // <div className={classes.saveViewButton}>
-        //   <Button variant="outlined" color="primary">
-        //     SAVE VIEW
-        //   </Button>
-          <FiltersChips
-            filters={filters}
-            setFilters={setFilters}
-            filtersConfig={filtersConfig}
-            setIsOr={setIsOr}
-            isOr={isOr}
-            setSearchParams={setSearchParams}
-          />
-        // </div>
+        <FiltersChips
+          filters={filters}
+          setFilters={setFilters}
+          filtersConfig={filtersConfig}
+          setIsOr={setIsOr}
+          isOr={isOr}
+          setSearchParams={setSearchParams}
+        />
       )}
     </>
   );
