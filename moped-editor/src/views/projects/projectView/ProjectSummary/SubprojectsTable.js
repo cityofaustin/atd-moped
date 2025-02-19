@@ -10,7 +10,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
-import LookupAutocompleteComponent from "../ProjectFunding/LookupAutocompleteComponent";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import RenderFieldLink from "src/components/RenderFieldLink";
 
