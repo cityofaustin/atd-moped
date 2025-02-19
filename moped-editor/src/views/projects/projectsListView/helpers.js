@@ -32,13 +32,15 @@ export const filterProjectTeamMembers = (value, view) => {
       uniqueNames[fullName] = projectRole;
     }
   });
-  // if the view is projectsListView, render each team member as a block
+  // if the view is projectsListView, render each team member as a block,
+  // adding commas to all blocks except the final one
   if (view === "projectsListView") {
+    const array = Object.keys(uniqueNames);
     return (
       <div style={{ display: "block" }}>
-        {Object.keys(uniqueNames).map((key) => (
+        {array.map((key, i) => (
           <span key={key} style={{ display: "block" }}>
-            {`${key} - ${uniqueNames[key]}`}
+            {`${key} - ${uniqueNames[key]}${i < array.length - 1 ? "," : ""}`}
           </span>
         ))}
       </div>
@@ -80,32 +82,36 @@ export const resolveHasSubprojects = (array) => {
   return "No";
 };
 
-const filterComponentFullNames = (value) => {
-  if (!value.components) {
-    return "";
-  }
-  const componentNamesArray = value.components.split(",");
-  return (
-    <div>
-      {componentNamesArray.map((comp) => (
-        <span key={comp} style={{ display: "block" }}>
-          {comp}
-        </span>
-      ))}
-    </div>
-  );
-};
+// const renderSplitListDisplayBlock = (row, fieldName) =>
+//   row[fieldName] && (
+//     <div>
+//       {row[fieldName].split(",").map((value, i) => {
+//         return (
+//           <span key={i} style={{ display: "block" }}>
+//             {value}
+//             {i < row[fieldName].split(",").length - 1 && ","}
+//           </span>
+//         );
+//       })}
+//     </div>
+//   );
 
-const renderSplitListDisplayBlock = (row, fieldName) =>
-  row[fieldName] && (
-    <div>
-      {row[fieldName].split(",").map((value, i) => (
-        <span key={i} style={{ display: "block" }}>
-          {value}
-        </span>
-      ))}
-    </div>
-  );
+const renderSplitListDisplayBlock = (row, fieldName) => {
+  if (row[fieldName]) {
+    const array = row[fieldName].split(",");
+    return (
+      <div>
+        {array.map((value, i) => {
+          return (
+            <span key={i} style={{ display: "block" }}>
+              {`${value}${i < array.length - 1 ? "," : ""}`}
+            </span>
+          );
+        })}
+      </div>
+    );
+  }
+};
 
 const COLUMN_CONFIG = PROJECT_LIST_VIEW_QUERY_CONFIG.columns;
 
@@ -330,11 +336,15 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Designer",
         field: "project_designer",
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_designer"),
         width: COLUMN_WIDTHS.small,
       },
       {
         headerName: "Inspector",
         field: "project_inspector",
+        renderCell: ({ row }) =>
+          renderSplitListDisplayBlock(row, "project_inspector"),
         width: COLUMN_WIDTHS.small,
       },
       {
@@ -376,7 +386,7 @@ export const useColumns = ({ hiddenColumns }) => {
       {
         headerName: "Components",
         field: "components",
-        renderCell: ({ row }) => filterComponentFullNames(row),
+        renderCell: ({ row }) => renderSplitListDisplayBlock(row, "components"),
         width: COLUMN_WIDTHS.medium,
       },
       {
