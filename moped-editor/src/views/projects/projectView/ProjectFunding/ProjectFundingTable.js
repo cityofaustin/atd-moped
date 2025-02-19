@@ -23,8 +23,8 @@ import {
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
 } from "../../../../queries/funding";
+import { useSocrataJson } from "src/utils/socrataHelpers";
 
-import FundingDeptUnitAutocomplete from "./FundingDeptUnitAutocomplete";
 import DollarAmountIntegerField from "./DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import SubprojectFundingModal from "./SubprojectFundingModal";
@@ -88,6 +88,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+/*
+ * Transportation Project Financial Codes
+ */
+const SOCRATA_ENDPOINT =
+  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=9999";
+
 // memoized hook to concatanate fund dept and unit ids into an fdu string
 const useFdusArray = (projectFunding) =>
   useMemo(() => {
@@ -108,6 +114,7 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleEditClick,
+  deptUnitData,
 }) =>
   useMemo(() => {
     return [
@@ -187,7 +194,8 @@ const useColumns = ({
                 : `${option.fund_id} | ${option.fund_name}`
             }
             isOptionEqualToValue={(value, option) =>
-              value.fund_id === option.fund_id && value.fund_name === option.fund_name
+              value.fund_id === option.fund_id &&
+              value.fund_name === option.fund_name
             }
           />
         ),
@@ -206,13 +214,16 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"dept_unit"}
-            lookupTable={[]} // todo: add the socrata query
+            lookupTable={deptUnitData}
             getOptionLabel={(option) =>
               !!option.dept
                 ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
-                : ""}
+                : ""
+            }
             isOptionEqualToValue={(value, option) =>
-              value.unit_long_name === option.unit_long_name}
+              value.unit_long_name === option.unit_long_name
+            }
+            fullWidthPopper={true}
           />
         ),
       },
@@ -271,6 +282,11 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     },
     fetchPolicy: "no-cache",
   });
+  const {
+    data: deptUnitData,
+    loading: socrataLoading,
+    error: socrataError,
+  } = useSocrataJson(SOCRATA_ENDPOINT);
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
@@ -523,6 +539,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    deptUnitData,
   });
 
   if (loading || !data) return <CircularProgress />;
