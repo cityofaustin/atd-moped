@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1737754622032_deprecate_type_tables/up.sql
+-- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
