@@ -563,7 +563,7 @@ export const PROJECT_LIST_VIEW_FILTERS_CONFIG = {
     name: "project_and_child_project_council_districts",
     label: "Council districts",
     placeholder: "District",
-    type: "jsonb",
+    type: "array",
     lookup: {
       table_name: "layer_council_district",
       getOptionLabel: (option) => String(option.council_district),

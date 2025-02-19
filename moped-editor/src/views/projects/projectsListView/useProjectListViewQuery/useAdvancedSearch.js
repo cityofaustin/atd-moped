@@ -60,7 +60,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
           // If it is a number or boolean, it does not need quotation marks
           // Otherwise, parse as string and add quotation marks for the query to identify as string
-          if (type === "array" || "jsonb") {
+          if (type === "array") {
             value = `[${value}]`;
           } else if (!["number", "boolean"].includes(type)) {
             value = `"${parseGqlString(value)}"`;
