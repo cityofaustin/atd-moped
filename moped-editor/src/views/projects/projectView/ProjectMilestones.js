@@ -21,10 +21,11 @@ import parseISO from "date-fns/parseISO";
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
-import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
+import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent"; //
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -57,6 +58,7 @@ const useMilestoneRelatedPhaseLookup = (data) =>
 const requiredFields = ["milestone_id"];
 
 const useColumns = ({
+  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -72,7 +74,10 @@ const useColumns = ({
       {
         headerName: "Milestone",
         field: "milestone_id",
-        renderCell: ({ row }) => row.moped_milestone?.milestone_name,
+        renderCell: ({ row }) => {
+          console.log(row);
+          return row.moped_milestone?.milestone_name;
+        },
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,
@@ -80,12 +85,19 @@ const useColumns = ({
         }),
         editable: true,
         renderEditCell: (props) => (
-          <MilestoneAutocompleteComponent
+          <LookupAutocompleteComponent
             {...props}
-            milestoneNameLookup={milestoneNameLookup}
-            relatedPhaseLookup={relatedPhaseLookup}
-            error={props.error}
+            value={props.row.moped_milestone} // leave a comment why this is needed
+            name={"milestone"}
+            lookupTable={data["moped_milestones"]}
+            fullWidthPopper={true}
           />
+          // <MilestoneAutocompleteComponent
+          //   {...props}
+          //   milestoneNameLookup={milestoneNameLookup}
+          //   relatedPhaseLookup={relatedPhaseLookup}
+          //   error={props.error}
+          // />
         ),
         width: 250,
       },
@@ -176,6 +188,7 @@ const useColumns = ({
       },
     ];
   }, [
+    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -301,6 +314,8 @@ const ProjectMilestones = ({
       updatedMilestoneData.description.trim() === ""
         ? null
         : updatedMilestoneData.description;
+    updatedMilestoneData.milestone_id =
+      updatedMilestoneData.milestone_id.milestone_id;
 
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
@@ -402,6 +417,7 @@ const ProjectMilestones = ({
   );
 
   const dataGridColumns = useColumns({
+    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
@@ -440,6 +456,7 @@ const ProjectMilestones = ({
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) => console.error}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar

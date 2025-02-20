@@ -27,6 +27,8 @@ const LookupAutocompleteComponent = ({
   getOptionLabel,
   isOptionEqualToValue,
   fullWidthPopper,
+  error = "false",
+  textFieldHelperText,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -60,7 +62,13 @@ const LookupAutocompleteComponent = ({
       filterOptions={filterOptions}
       options={lookupTable}
       renderInput={(params) => (
-        <TextField variant="standard" {...params} inputRef={ref} />
+        <TextField
+          variant="standard"
+          {...params}
+          inputRef={ref}
+          error={error}
+          helperText={textFieldHelperText}
+        />
       )}
       getOptionLabel={getOptionLabel ? getOptionLabel : defaultGetOptionLabel}
       isOptionEqualToValue={
