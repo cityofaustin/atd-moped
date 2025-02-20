@@ -91,6 +91,12 @@ const useColumns = ({
             name={"milestone"}
             lookupTable={data["moped_milestones"]}
             fullWidthPopper={true}
+            textFieldHelperText="Required"
+            dependentFieldObject={{
+              fieldToUpdate: "moped_milestone",
+              dependentFieldLookup: relatedPhaseLookup,
+              relatedFieldName: "related_phase_id"
+            }}
           />
           // <MilestoneAutocompleteComponent
           //   {...props}

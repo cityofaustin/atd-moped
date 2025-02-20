@@ -15,6 +15,9 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Function}
  * @param {Function}
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
+ * @param {Boolean}
+ * @param {string}
+ *
  * @returns {React component}
  */
 const LookupAutocompleteComponent = ({
@@ -29,6 +32,7 @@ const LookupAutocompleteComponent = ({
   fullWidthPopper,
   error = "false",
   textFieldHelperText,
+  dependentFieldObject,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -45,7 +49,24 @@ const LookupAutocompleteComponent = ({
       field,
       value: newValue,
     });
+
+    if (dependentFieldObject.fieldToUpdate) {
+      const dependentFieldValue =
+        dependentFieldObject.dependentFieldLookup[
+          newValue[dependentFieldObject.relatedFieldName]
+        ];
+      console.log(dependentFieldValue);
+      // Also update the moped_milestone field aka the Related Phase
+      apiRef.current.setEditCellValue({
+        id,
+        field: dependentFieldObject.fieldToUpdate,
+        value: { [dependentFieldObject.relatedFieldName]: dependentFieldValue },
+      });
+    }
+    console.log(newValue);
   };
+
+  console.log(lookupTable)
 
   const defaultGetOptionLabel = (option) => option[`${name}_name`];
 
