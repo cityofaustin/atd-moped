@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useMutation, useQuery } from "@apollo/client";
 import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
@@ -9,7 +10,6 @@ import {
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 import { ADD_USER_SAVED_VIEW } from "src/queries/project";
-import { getSessionDatabaseData } from "src/auth/user";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -43,13 +43,14 @@ const FiltersChips = ({
   filtersConfig,
   setSearchParams,
   setIsOr,
+  handleSnackbar
 }) => {
   const classes = useStyles();
 
-  const userSessionData = getSessionDatabaseData();
-  const userId = userSessionData?.user_id;
-
   const [saveView] = useMutation(ADD_USER_SAVED_VIEW);
+  const [IsViewSaved, setIsViewSaved] = useState(false);
+
+  let { pathname, search } = useLocation();
 
   const filtersCount = Object.keys(filters).length;
 
@@ -96,6 +97,7 @@ const FiltersChips = ({
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
       });
+      setIsViewSaved(false);
     } else {
       // no filters left, clear search params
       setSearchParams((prevSearchParams) => {
@@ -117,26 +119,32 @@ const FiltersChips = ({
       prevSearchParams.set(advancedSearchIsOrParamName, !isOr);
       return prevSearchParams;
     });
+    setIsViewSaved(false);
   };
 
   const handleSaveView = () => {
-    console.log(filters);
-    console.log(userId);
+    const defaultDescription = filtersLabels
+      .map(
+        (filter) =>
+          `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
+      )
+      .join(", ");
     saveView({
       variables: {
         object: {
+          description: defaultDescription,
+          url: `${pathname}${search}`,
           query_filters: filters,
-          user_id: userId,
         },
       },
     })
-      // .then(() => {
-      //   refetch();
-      //   handleSnackbar(true, "View saved", "success");
-      // })
-      // .catch((error) => {
-      //   handleSnackbar(true, "Error saving view", "error", error);
-      // });
+      .then(() => {
+        setIsViewSaved(true);
+        handleSnackbar(true, "View saved to Dashboard", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error saving view to Dashboard", "error", error);
+      });
   };
 
   return (
@@ -151,6 +159,7 @@ const FiltersChips = ({
               variant="outlined"
               color="primary"
               className={classes.saveViewButton}
+              disabled={IsViewSaved}
             >
               SAVE VIEW
             </Button>

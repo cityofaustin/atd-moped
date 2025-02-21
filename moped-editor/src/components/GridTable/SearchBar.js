@@ -69,6 +69,7 @@ const SearchBar = ({
   resetSimpleSearch,
   setSearchParams,
   setIsOr,
+  handleSnackbar
 }) => {
   const classes = useStyles();
 
@@ -173,6 +174,7 @@ const SearchBar = ({
           setIsOr={setIsOr}
           isOr={isOr}
           setSearchParams={setSearchParams}
+          handleSnackbar={handleSnackbar}
         />
       )}
     </>
