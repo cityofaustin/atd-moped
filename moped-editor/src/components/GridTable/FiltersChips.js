@@ -1,5 +1,7 @@
-import React from "react";
-import { Box, Typography, Chip, Grid } from "@mui/material";
+import React, { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useMutation } from "@apollo/client";
+import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   advancedSearchFilterParamName,
@@ -7,6 +9,7 @@ import {
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
+import { ADD_USER_SAVED_VIEW } from "src/queries/project";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -18,6 +21,10 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Roboto",
     fontSize: ".9rem",
     color: theme.palette.text.secondary,
+  },
+  saveViewButton: {
+    margin: theme.spacing(0.5),
+    marginTop: theme.spacing(1),
   },
 }));
 
@@ -36,8 +43,14 @@ const FiltersChips = ({
   filtersConfig,
   setSearchParams,
   setIsOr,
+  handleSnackbar
 }) => {
   const classes = useStyles();
+
+  const [saveView] = useMutation(ADD_USER_SAVED_VIEW);
+  const [IsViewSaved, setIsViewSaved] = useState(false);
+
+  let { pathname, search } = useLocation();
 
   const filtersCount = Object.keys(filters).length;
 
@@ -84,6 +97,7 @@ const FiltersChips = ({
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         return prevSearchParams;
       });
+      setIsViewSaved(false);
     } else {
       // no filters left, clear search params
       setSearchParams((prevSearchParams) => {
@@ -105,12 +119,51 @@ const FiltersChips = ({
       prevSearchParams.set(advancedSearchIsOrParamName, !isOr);
       return prevSearchParams;
     });
+    setIsViewSaved(false);
+  };
+
+  const handleSaveView = () => {
+    const defaultDescription = filtersLabels
+      .map(
+        (filter) =>
+          `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
+      )
+      .join(", ");
+    saveView({
+      variables: {
+        object: {
+          description: defaultDescription,
+          url: `${pathname}${search}`,
+          query_filters: filters,
+        },
+      },
+    })
+      .then(() => {
+        setIsViewSaved(true);
+        handleSnackbar(true, "View saved to Dashboard", "success");
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error saving view to Dashboard", "error", error);
+      });
   };
 
   return (
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
+          <Grid>
+            <Button
+              onClick={() => {
+                handleSaveView();
+              }}
+              variant="outlined"
+              color="primary"
+              className={classes.saveViewButton}
+              disabled={IsViewSaved}
+            >
+              SAVE VIEW
+            </Button>
+          </Grid>
           {filtersCount > 1 && (
             <Grid item>
               <Chip

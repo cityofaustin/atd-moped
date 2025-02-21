@@ -5074,8 +5074,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - description
           - is_deleted
@@ -5086,8 +5086,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - description
           - is_deleted
@@ -5148,7 +5148,7 @@
         filter: {}
         check: null
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
       comment: ""
     - role: moped-editor
       permission:
@@ -5160,7 +5160,7 @@
         filter: {}
         check: null
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
       comment: ""
 - table:
     name: moped_users
