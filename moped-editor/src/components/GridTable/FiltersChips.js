@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
