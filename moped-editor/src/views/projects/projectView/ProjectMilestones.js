@@ -21,11 +21,10 @@ import parseISO from "date-fns/parseISO";
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
-import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent"; //
+import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -73,9 +72,7 @@ const useColumns = ({
       {
         headerName: "Milestone",
         field: "milestone_id",
-        renderCell: ({ row }) => {
-          return row.moped_milestone?.milestone_name;
-        },
+        renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,

@@ -188,10 +188,7 @@ const useColumns = ({
             name={"fund"}
             lookupTable={data.moped_funds}
             getOptionLabel={(option) =>
-              // if our value is a string, just return the string
-              typeof option === "string"
-                ? option
-                : `${option.fund_id} | ${option.fund_name}`
+              option.fund_id ? `${option.fund_id} | ${option.fund_name}` : ""
             }
             isOptionEqualToValue={(value, option) =>
               value.fund_id === option.fund_id &&
