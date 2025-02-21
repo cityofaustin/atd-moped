@@ -34,6 +34,13 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       // Use operator name to get the GraphQL operator config for that operator
       const operatorConfig = FILTERS_COMMON_OPERATORS[operator];
+
+      if (!operatorConfig) {
+        throwFallbackComponentError(
+          `Operator ${operator} in this url does not exist.`
+        );
+      }
+
       let {
         envelope,
         specialNullValue,
