@@ -25,7 +25,7 @@ import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocom
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+
 
 const useMilestoneNameLookup = (data) =>
   useMemo(() => {
@@ -58,7 +58,6 @@ const useMilestoneRelatedPhaseLookup = (data) =>
 const requiredFields = ["milestone_id"];
 
 const useColumns = ({
-  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -180,7 +179,6 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -306,8 +304,6 @@ const ProjectMilestones = ({
       updatedMilestoneData.description.trim() === ""
         ? null
         : updatedMilestoneData.description;
-    updatedMilestoneData.milestone_id =
-      updatedMilestoneData.milestone_id.milestone_id;
 
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
@@ -409,7 +405,6 @@ const ProjectMilestones = ({
   );
 
   const dataGridColumns = useColumns({
-    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,

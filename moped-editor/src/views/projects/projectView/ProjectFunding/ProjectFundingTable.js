@@ -263,6 +263,7 @@ const useColumns = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
+    deptUnitData,
   ]);
 
 const ProjectFundingTable = ({ handleSnackbar }) => {
@@ -282,11 +283,8 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     },
     fetchPolicy: "no-cache",
   });
-  const {
-    data: deptUnitData,
-    loading: socrataLoading,
-    error: socrataError,
-  } = useSocrataJson(SOCRATA_ENDPOINT);
+  const { data: deptUnitData, error: socrataError } =
+    useSocrataJson(SOCRATA_ENDPOINT);
 
   const [addProjectFunding] = useMutation(ADD_PROJECT_FUNDING);
   const [updateProjectFunding] = useMutation(UPDATE_PROJECT_FUNDING);
@@ -542,6 +540,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     deptUnitData,
   });
 
+  if (socrataError) console.error(socrataError);
   if (loading || !data) return <CircularProgress />;
 
   const eCaprisID = data?.moped_project[0].ecapris_subproject_id;
