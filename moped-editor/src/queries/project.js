@@ -315,6 +315,7 @@ export const TIMELINE_QUERY = gql`
       project_milestone_id
       project_id
       moped_milestone {
+        milestone_id
         milestone_name
         related_phase_id
       }

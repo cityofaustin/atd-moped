@@ -440,6 +440,7 @@ const ProjectMilestones = ({
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         processRowUpdate={processRowUpdate}
+        onProcessRowUpdateError={(error) => console.error}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
