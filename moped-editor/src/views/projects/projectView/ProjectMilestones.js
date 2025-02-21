@@ -75,7 +75,6 @@ const useColumns = ({
         headerName: "Milestone",
         field: "milestone_id",
         renderCell: ({ row }) => {
-          console.log(row);
           return row.moped_milestone?.milestone_name;
         },
         // input validation:
@@ -85,25 +84,12 @@ const useColumns = ({
         }),
         editable: true,
         renderEditCell: (props) => (
-          <LookupAutocompleteComponent
+          <MilestoneAutocompleteComponent
             {...props}
-            value={props.row.moped_milestone} // leave a comment why this is needed
-            name={"milestone"}
-            lookupTable={data["moped_milestones"]}
-            fullWidthPopper={true}
-            textFieldHelperText="Required"
-            dependentFieldObject={{
-              fieldToUpdate: "moped_milestone",
-              dependentFieldLookup: relatedPhaseLookup,
-              relatedFieldName: "related_phase_id"
-            }}
+            milestoneNameLookup={milestoneNameLookup}
+            relatedPhaseLookup={relatedPhaseLookup}
+            error={props.error}
           />
-          // <MilestoneAutocompleteComponent
-          //   {...props}
-          //   milestoneNameLookup={milestoneNameLookup}
-          //   relatedPhaseLookup={relatedPhaseLookup}
-          //   error={props.error}
-          // />
         ),
         width: 250,
       },
