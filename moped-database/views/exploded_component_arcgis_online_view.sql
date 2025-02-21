@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
+-- Most recent migration: moped-database/migrations/1739832264645_fix_agol_view_bug/up.sql
 
 CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
     component_arcgis_online_view.project_id,
