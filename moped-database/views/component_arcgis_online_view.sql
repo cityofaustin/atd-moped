@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
+-- Most recent migration: moped-database/migrations/1739832264645_fix_agol_view_bug/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -169,7 +169,11 @@ SELECT
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
-    coalesce(mpc.completion_date, plv.substantial_completion_date) AS substantial_completion_date,
+    CASE
+        WHEN mpc.phase_id IS null THEN plv.substantial_completion_date
+        WHEN mpc.phase_id IS NOT null AND mpc.completion_date IS null THEN null::timestamp with time zone
+        ELSE mpc.completion_date
+    END AS substantial_completion_date,
     plv.substantial_completion_date_estimated,
     mpc.srts_id,
     mpc.location_description AS component_location_description,
