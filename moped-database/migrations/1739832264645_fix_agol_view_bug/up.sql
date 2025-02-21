@@ -173,8 +173,9 @@ SELECT
     -- When there is a phase ID and no completion date, use null
     -- When these is a phase ID and completion date, use completion date
     -- When there is no phase ID, use project substantial completion date
-    CASE (mpc.phase_id IS NULL)
-        WHEN true THEN plv.substantial_completion_date
+    CASE 
+        WHEN mpc.phase_id IS NULL THEN plv.substantial_completion_date
+        WHEN mpc.phase_id IS NOT NULL AND mpc.completion_date IS NULL THEN NULL
         ELSE mpc.completion_date
     END AS substantial_completion_date,
     plv.substantial_completion_date_estimated,
