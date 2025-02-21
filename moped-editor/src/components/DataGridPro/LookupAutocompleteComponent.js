@@ -9,14 +9,14 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Number} id - row id in Data Grid
  * @param {string} value - Field value
  * @param {string} field - name of Field
- * @param {Boolean} hasFocus - is field focused
- * @param {String} name - name of lookup table
+ * @param {Boolean} hasFocus - does field have focus in table
+ * @param {String} name - name of lookup table relationship
  * @param {Array|Objects} lookupTable - the lookup table data
- * @param {Function}
- * @param {Function}
+ * @param {Function} getOptionLabel - optional, formats label shown in autocomplete options
+ * @param {Function} isOptionEqualToValue - optional, custom comparision function, compares value to options
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
- * @param {Boolean}
- * @param {string}
+ * @param {Boolean} error - toggles error state in input text field
+ * @param {string} textFieldHelperText - optional helper text for input text field
  *
  * @returns {React component}
  */
