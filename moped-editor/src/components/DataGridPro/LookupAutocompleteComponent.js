@@ -63,12 +63,12 @@ const LookupAutocompleteComponent = ({
       )}
       {...autocompleteProps}
       getOptionLabel={
-        autocompleteProps.getOptionLabel
+        autocompleteProps?.getOptionLabel
           ? autocompleteProps.getOptionLabel
           : defaultGetOptionLabel
       }
       isOptionEqualToValue={
-        autocompleteProps.isOptionEqualToValue
+        autocompleteProps?.isOptionEqualToValue
           ? autocompleteProps.isOptionEqualToValue
           : defaultIsOptionEqualToValue
       }

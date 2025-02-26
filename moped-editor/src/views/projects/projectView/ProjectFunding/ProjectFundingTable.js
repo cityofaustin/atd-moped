@@ -146,7 +146,6 @@ const useColumns = ({
             name={"funding_program"}
             options={data["moped_fund_programs"]}
             fullWidthPopper={true}
-            autocompleteProps={{}}
           />
         ),
       },
