@@ -11,7 +11,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {string} field - name of Field
  * @param {Boolean} hasFocus - does field have focus in table
  * @param {String} name - name of lookup table relationship
- * @param {Array|Objects} lookupTable - the lookup table data
+ * @param {Array|Objects} options - the lookup table data
  * @param {Function} getOptionLabel - optional, formats label shown in autocomplete options
  * @param {Function} isOptionEqualToValue - optional, custom comparision function, compares value to options
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
@@ -26,7 +26,7 @@ const LookupAutocompleteComponent = ({
   field,
   hasFocus,
   name,
-  lookupTable,
+  options,
   getOptionLabel,
   isOptionEqualToValue,
   fullWidthPopper,
@@ -63,7 +63,7 @@ const LookupAutocompleteComponent = ({
       PopperComponent={fullWidthPopper && FullWidthPopper}
       id={name}
       filterOptions={filterOptions}
-      options={lookupTable}
+      options={options}
       renderInput={(params) => (
         <TextField
           variant="standard"

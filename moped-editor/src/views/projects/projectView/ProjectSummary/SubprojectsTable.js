@@ -53,7 +53,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name="project"
-            lookupTable={data?.subprojectOptions}
+            options={data?.subprojectOptions}
             getOptionLabel={(option) =>
               `${option.project_id} - ${option.project_name_full}`}
           />

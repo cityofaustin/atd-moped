@@ -128,7 +128,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_source"}
-            lookupTable={data["moped_fund_sources"]}
+            options={data["moped_fund_sources"]}
             fullWidthPopper={true}
           />
         ),
@@ -143,7 +143,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"funding_program"}
-            lookupTable={data["moped_fund_programs"]}
+            options={data["moped_fund_programs"]}
             fullWidthPopper={true}
           />
         ),
@@ -186,7 +186,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"fund"}
-            lookupTable={data.moped_funds}
+            options={data.moped_funds}
             getOptionLabel={(option) =>
               option.fund_id ? `${option.fund_id} | ${option.fund_name}` : ""
             }
@@ -211,7 +211,7 @@ const useColumns = ({
           <LookupAutocompleteComponent
             {...props}
             name={"dept_unit"}
-            lookupTable={deptUnitData}
+            options={deptUnitData}
             getOptionLabel={(option) =>
               !!option.dept
                 ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
