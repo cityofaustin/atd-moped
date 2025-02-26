@@ -26,7 +26,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       if (!filterConfigForField) {
         throwFallbackComponentError(
-          `Field ${field} in this url no longer exists in the project list.`
+          `Field ${field} in this URL no longer exists in the project list.`
         );
       }
 
@@ -37,7 +37,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       if (!operatorConfig) {
         throwFallbackComponentError(
-          `Operator ${operator} in this url does not exist.`
+          `Operator ${operator} in this URL no longer exists in the project list.`
         );
       }
 
