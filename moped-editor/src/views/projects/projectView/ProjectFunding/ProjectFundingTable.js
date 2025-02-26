@@ -375,7 +375,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     ]);
     setRowModesModel((oldModel) => ({
       ...oldModel,
-      [id]: { mode: GridRowModes.Edit, fieldToFocus: "funding_source_id" },
+      [id]: { mode: GridRowModes.Edit, fieldToFocus: "moped_fund_source" },
     }));
   };
 
