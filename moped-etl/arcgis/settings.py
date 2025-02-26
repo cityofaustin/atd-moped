@@ -83,6 +83,7 @@ query GetProjectsComponents($project_where: moped_project_bool_exp!, $component_
     substantial_completion_date_estimated
     task_order_names
     workgroup_contractors
+    is_mapped
   }
 }
 """
