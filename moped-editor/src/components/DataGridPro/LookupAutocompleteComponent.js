@@ -1,7 +1,7 @@
 import React from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
-import CustomPopper from "src/components/CustomPopper";
+import FullWidthPopper from "src/components/FullWidthPopper";
 import { filterOptions } from "src/utils/autocompleteHelpers";
 
 /**
@@ -60,7 +60,7 @@ const LookupAutocompleteComponent = ({
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
       value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
-      PopperComponent={fullWidthPopper && CustomPopper}
+      PopperComponent={fullWidthPopper && FullWidthPopper}
       id={name}
       filterOptions={filterOptions}
       options={lookupTable}
