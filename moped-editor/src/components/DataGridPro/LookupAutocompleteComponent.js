@@ -12,11 +12,8 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Boolean} hasFocus - does field have focus in table
  * @param {String} name - name of lookup table relationship
  * @param {Array|Objects} options - the lookup table data
- * @param {Function} getOptionLabel - optional, formats label shown in autocomplete options
- * @param {Function} isOptionEqualToValue - optional, custom comparision function, compares value to options
+ * @param {Object} autocompleteProps - props passed to the MUI Autcomplete Component
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
- * @param {Boolean} error - toggles error state in input text field
- * @param {string} textFieldHelperText - optional helper text for input text field
  *
  * @returns {React component}
  */
@@ -27,11 +24,8 @@ const LookupAutocompleteComponent = ({
   hasFocus,
   name,
   options,
-  getOptionLabel,
-  isOptionEqualToValue,
   fullWidthPopper,
-  error = "false",
-  textFieldHelperText,
+  autocompleteProps,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -65,18 +59,17 @@ const LookupAutocompleteComponent = ({
       filterOptions={filterOptions}
       options={options}
       renderInput={(params) => (
-        <TextField
-          variant="standard"
-          {...params}
-          inputRef={ref}
-          error={error}
-          helperText={textFieldHelperText}
-        />
+        <TextField variant="standard" {...params} inputRef={ref} />
       )}
-      getOptionLabel={getOptionLabel ? getOptionLabel : defaultGetOptionLabel}
+      {...autocompleteProps}
+      getOptionLabel={
+        autocompleteProps.getOptionLabel
+          ? autocompleteProps.getOptionLabel
+          : defaultGetOptionLabel
+      }
       isOptionEqualToValue={
-        isOptionEqualToValue
-          ? isOptionEqualToValue
+        autocompleteProps.isOptionEqualToValue
+          ? autocompleteProps.isOptionEqualToValue
           : defaultIsOptionEqualToValue
       }
       onChange={handleChange}

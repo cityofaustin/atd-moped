@@ -54,8 +54,10 @@ const useColumns = ({
             {...props}
             name="project"
             options={data?.subprojectOptions}
-            getOptionLabel={(option) =>
-              `${option.project_id} - ${option.project_name_full}`}
+            autocompleteProps={{
+              getOptionLabel: (option) =>
+                `${option.project_id} - ${option.project_name_full}`,
+            }}
           />
         ),
       },

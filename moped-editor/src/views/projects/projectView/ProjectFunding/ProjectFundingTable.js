@@ -130,6 +130,7 @@ const useColumns = ({
             name={"funding_source"}
             options={data["moped_fund_sources"]}
             fullWidthPopper={true}
+            autocompleteProps={{}}
           />
         ),
       },
@@ -145,6 +146,7 @@ const useColumns = ({
             name={"funding_program"}
             options={data["moped_fund_programs"]}
             fullWidthPopper={true}
+            autocompleteProps={{}}
           />
         ),
       },
@@ -187,13 +189,14 @@ const useColumns = ({
             {...props}
             name={"fund"}
             options={data.moped_funds}
-            getOptionLabel={(option) =>
-              option.fund_id ? `${option.fund_id} | ${option.fund_name}` : ""
-            }
-            isOptionEqualToValue={(value, option) =>
-              value.fund_id === option.fund_id &&
-              value.fund_name === option.fund_name
-            }
+            fullWidthPopper={true}
+            autocompleteProps={{
+              getOptionLabel: (option) =>
+                option.fund_id ? `${option.fund_id} | ${option.fund_name}` : "",
+              isOptionEqualToValue: (value, option) =>
+                value.fund_id === option.fund_id &&
+                value.fund_name === option.fund_name,
+            }}
           />
         ),
       },
@@ -212,14 +215,14 @@ const useColumns = ({
             {...props}
             name={"dept_unit"}
             options={deptUnitData}
-            getOptionLabel={(option) =>
-              !!option.dept
-                ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
-                : ""
-            }
-            isOptionEqualToValue={(value, option) =>
-              value.unit_long_name === option.unit_long_name
-            }
+            autocompleteProps={{
+              getOptionLabel: (option) =>
+                !!option.dept
+                  ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
+                  : "",
+              isOptionEqualToValue: (value, option) =>
+                value.unit_long_name === option.unit_long_name,
+            }}
             fullWidthPopper={true}
           />
         ),
