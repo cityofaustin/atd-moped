@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import FullWidthPopper from "src/components/FullWidthPopper";
@@ -44,10 +44,15 @@ const LookupAutocompleteComponent = ({
     });
   };
 
-  const defaultGetOptionLabel = (option) => option[`${name}_name`];
+  const defaultGetOptionLabel = useCallback(
+    (option) => option[`${name}_name`],
+    [name]
+  );
 
-  const defaultIsOptionEqualToValue = (value, option) =>
-    value[`${name}_id`] === option[`${name}_id`];
+  const defaultIsOptionEqualToValue = useCallback(
+    (value, option) => value[`${name}_id`] === option[`${name}_id`],
+    [name]
+  );
 
   return (
     <Autocomplete

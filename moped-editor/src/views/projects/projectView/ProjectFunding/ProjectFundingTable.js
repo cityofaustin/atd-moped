@@ -92,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
  * Transportation Project Financial Codes
  */
 const SOCRATA_ENDPOINT =
-  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=9999";
+  "https://data.austintexas.gov/resource/bgrt-2m2z.json?$limit=999999";
 
 // memoized hook to concatanate fund dept and unit ids into an fdu string
 const useFdusArray = (projectFunding) =>
