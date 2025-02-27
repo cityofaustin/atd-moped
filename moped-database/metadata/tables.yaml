@@ -76,6 +76,7 @@
           - geometry_type
           - interim_project_component_id
           - interim_project_id
+          - is_mapped
           - is_within_city_limits
           - knack_data_tracker_project_record_id
           - length_feet_total
@@ -156,6 +157,7 @@
           - geometry_type
           - interim_project_component_id
           - interim_project_id
+          - is_mapped
           - is_within_city_limits
           - knack_data_tracker_project_record_id
           - length_feet_total
@@ -236,6 +238,7 @@
           - geometry_type
           - interim_project_component_id
           - interim_project_id
+          - is_mapped
           - is_within_city_limits
           - knack_data_tracker_project_record_id
           - length_feet_total
