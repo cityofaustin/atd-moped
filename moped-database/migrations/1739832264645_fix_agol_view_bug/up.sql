@@ -1,4 +1,5 @@
--- Most recent migration: moped-database/migrations/1739832264647_agol_view_is_mapped_bool/up.sql
+DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
+DROP VIEW IF EXISTS component_arcgis_online_view;
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -164,18 +165,17 @@ SELECT
         WHEN mc.line_representation = true THEN 'Line'::text
         ELSE 'Point'::text
     END AS geometry_type,
-    CASE
-        WHEN comp_geography.geometry IS null THEN false
-        ELSE true
-    END AS is_mapped,
     subcomponents.subcomponents AS component_subcomponents,
     work_types.work_types AS component_work_types,
     component_tags.component_tags,
     mpc.description AS component_description,
     mpc.interim_project_component_id,
-    CASE
-        WHEN mpc.phase_id IS null THEN plv.substantial_completion_date
-        WHEN mpc.phase_id IS NOT null AND mpc.completion_date IS null THEN null::timestamp with time zone
+    -- When there is a phase ID and no completion date, use null
+    -- When these is a phase ID and completion date, use completion date
+    -- When there is no phase ID, use project substantial completion date
+    CASE 
+        WHEN mpc.phase_id IS NULL THEN plv.substantial_completion_date
+        WHEN mpc.phase_id IS NOT NULL AND mpc.completion_date IS NULL THEN NULL
         ELSE mpc.completion_date
     END AS substantial_completion_date,
     plv.substantial_completion_date_estimated,
@@ -251,3 +251,15 @@ LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
 LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
 LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
+
+CREATE OR REPLACE VIEW exploded_component_arcgis_online_view AS SELECT
+    component_arcgis_online_view.project_id,
+    component_arcgis_online_view.project_component_id,
+    st_geometrytype(dump.geom) AS geometry_type,
+    dump.path[1] AS point_index,
+    component_arcgis_online_view.geometry AS original_geometry,
+    st_asgeojson(dump.geom) AS exploded_geometry,
+    component_arcgis_online_view.project_updated_at
+FROM component_arcgis_online_view,
+    LATERAL st_dump(st_geomfromgeojson(component_arcgis_online_view.geometry)) dump (path, geom)
+WHERE st_geometrytype(st_geomfromgeojson(component_arcgis_online_view.geometry)) = 'ST_MultiPoint'::text;

@@ -26,7 +26,7 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       if (!filterConfigForField) {
         throwFallbackComponentError(
-          `Field ${field} in this url no longer exists in the project list.`
+          `Field ${field} in this URL no longer exists in the project list.`
         );
       }
 
@@ -34,6 +34,13 @@ const makeAdvancedSearchWhereFilters = (filters) =>
 
       // Use operator name to get the GraphQL operator config for that operator
       const operatorConfig = FILTERS_COMMON_OPERATORS[operator];
+
+      if (!operatorConfig) {
+        throwFallbackComponentError(
+          `Operator ${operator} in this URL no longer exists in the project list.`
+        );
+      }
+
       let {
         envelope,
         specialNullValue,
