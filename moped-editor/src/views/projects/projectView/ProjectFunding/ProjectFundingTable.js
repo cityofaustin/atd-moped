@@ -459,11 +459,11 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
         : updateProjectFundingData.funding_description;
 
     updateProjectFundingData.funding_source_id =
-      updateProjectFundingData.moped_fund_source?.funding_source_id;
+      updateProjectFundingData.moped_fund_source?.funding_source_id || null;
     delete updateProjectFundingData.moped_fund_source;
 
     updateProjectFundingData.funding_program_id =
-      updateProjectFundingData.moped_fund_program?.funding_program_id;
+      updateProjectFundingData.moped_fund_program?.funding_program_id || null;
     delete updateProjectFundingData.moped_fund_program;
 
     if (updatedRow.isNew) {
@@ -504,6 +504,8 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
     } else {
       // Remove __typename since we removed it from updatedRow and check if the row has changed
       delete originalRow.__typename;
+      delete originalRow.moped_fund_source;
+      delete originalRow.moped_fund_program;
       const hasRowChanged = !isEqual(updatedRow, originalRow);
 
       if (!hasRowChanged) {
