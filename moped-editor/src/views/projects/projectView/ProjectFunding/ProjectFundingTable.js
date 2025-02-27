@@ -106,6 +106,24 @@ const useFdusArray = (projectFunding) =>
     );
   }, [projectFunding]);
 
+// object to pass to the Fund column's LookupAutocomplete component
+const fundAutocompleteProps = {
+  getOptionLabel: (option) =>
+    option.fund_id ? `${option.fund_id} | ${option.fund_name}` : "",
+  isOptionEqualToValue: (value, option) =>
+    value.fund_id === option.fund_id && value.fund_name === option.fund_name,
+};
+
+// object to pass to the Dept Unit column's LookupAutocomplete component
+const deptunitAutocompleteProps = {
+  getOptionLabel: (option) =>
+    !!option.dept
+      ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
+      : "",
+  isOptionEqualToValue: (value, option) =>
+    value.unit_long_name === option.unit_long_name,
+};
+
 /** Hook that provides memoized column settings */
 const useColumns = ({
   data,
@@ -188,13 +206,7 @@ const useColumns = ({
             name={"fund"}
             options={data.moped_funds}
             fullWidthPopper={true}
-            autocompleteProps={{
-              getOptionLabel: (option) =>
-                option.fund_id ? `${option.fund_id} | ${option.fund_name}` : "",
-              isOptionEqualToValue: (value, option) =>
-                value.fund_id === option.fund_id &&
-                value.fund_name === option.fund_name,
-            }}
+            autocompleteProps={fundAutocompleteProps}
           />
         ),
       },
@@ -213,14 +225,7 @@ const useColumns = ({
             {...props}
             name={"dept_unit"}
             options={deptUnitData}
-            autocompleteProps={{
-              getOptionLabel: (option) =>
-                !!option.dept
-                  ? `${option.dept} | ${option.unit} | ${option.unit_long_name} `
-                  : "",
-              isOptionEqualToValue: (value, option) =>
-                value.unit_long_name === option.unit_long_name,
-            }}
+            autocompleteProps={deptunitAutocompleteProps}
             fullWidthPopper={true}
           />
         ),
