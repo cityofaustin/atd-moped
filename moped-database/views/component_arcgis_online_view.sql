@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1739832264646_agol_view_is_mapped/up.sql
+-- Most recent migration: moped-database/migrations/1739832264647_agol_view_is_mapped_bool/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -165,8 +165,8 @@ SELECT
         ELSE 'Point'::text
     END AS geometry_type,
     CASE
-        WHEN comp_geography.geometry IS null THEN 'No'::text
-        ELSE 'Yes'::text
+        WHEN comp_geography.geometry IS null THEN false
+        ELSE true
     END AS is_mapped,
     subcomponents.subcomponents AS component_subcomponents,
     work_types.work_types AS component_work_types,
