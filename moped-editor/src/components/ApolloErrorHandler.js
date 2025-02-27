@@ -1,10 +1,10 @@
 import React from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import FallbackComponent from "./FallbackComponent";
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: "#fff",
@@ -20,12 +20,14 @@ const useStyles = makeStyles(theme => ({
  * @return {JSX.Element}
  * @constructor
  */
-const ApolloErrorHandler = props => {
+const ApolloErrorHandler = (props) => {
   const classes = useStyles();
 
   // Error Variables
   const error = props?.error ?? null;
-  const errorString = error ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : "";
+  const errorString = error
+    ? JSON.stringify(error, Object.getOwnPropertyNames(error))
+    : "";
   const jwtError = errorString.includes("JWT") || errorString.includes("token");
 
   if (jwtError) {
@@ -41,7 +43,7 @@ const ApolloErrorHandler = props => {
           <CircularProgress color="inherit" />
         </Backdrop>
       ) : error ? (
-        <FallbackComponent error={error}/>
+        <FallbackComponent error={error} />
       ) : (
         props.children
       )}
