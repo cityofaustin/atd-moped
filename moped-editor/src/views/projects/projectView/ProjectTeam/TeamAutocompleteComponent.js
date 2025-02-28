@@ -14,10 +14,9 @@ import { useTheme } from "@mui/material/styles";
  * @param {String} value - field value
  * @param {String} field - name of field
  * @param {Boolean} hasFocus - does this field have focus
- * @param {Object} nameLookup - maps user id to user name
  * @param {Boolean} error - toggles error style in textfield
  * @param {Object} name - name of the field
- * @param {Object} userWorkgroupLookup - mapping of user ids to their corresponding workgroup ids
+ * @param {Object} options - moped users to use in team member select
  * @return {JSX.Element}
  */
 const TeamAutocompleteComponent = ({
