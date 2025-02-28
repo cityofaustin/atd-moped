@@ -73,12 +73,22 @@ const useColumns = ({
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
+          const currentTeamMembers =
+            data?.moped_project_by_pk?.moped_proj_personnel.map(
+              (option) => option.moped_user.email
+            );
+          // filter out current team members from list of moped users unless they are the row.moped_user.email
+          const teamMembersWithoutDuplicates = data?.moped_users.filter(
+            (user) =>
+              !currentTeamMembers.includes(user.email) ||
+              user.email === props.row.moped_user.email
+          );
           return (
             <TeamAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              options={data.moped_users}
+              options={teamMembersWithoutDuplicates}
               error={props.error}
             />
           );
