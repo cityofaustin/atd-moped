@@ -9,4 +9,5 @@ export const substantialCompletionDateTooltipText =
 export const agolFieldCharMax = {
   string: 2000,
   descriptionString: 10000,
+  projectNameFull: 1000,
 };
