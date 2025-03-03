@@ -20,15 +20,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProjectNameForm = ({ props }) => {
+/**
+ * ProjectNameForm Component
+ * @param {Number} projectId - The id of the current project being viewed
+ * @param {Object} data - The data object from the GraphQL query
+ * @param {Function} setIsEditing - The function to toggle the editing boolean state
+ * @param {Function} updatedCallback - The function to call when project named are updated
+ * @param {Function} handleSnackbar - The function to show the snackbar
+ * @param {*} currentPhase - The current phase data object
+ * @returns
+ */
+const ProjectNameForm = ({
+  projectId,
+  data,
+  setIsEditing,
+  updatedCallback,
+  handleSnackbar,
+  currentPhase,
+}) => {
   const classes = useStyles();
 
   // state to hold values for controlled inputs
-  const [projectName, setProjectName] = useState(
-    props.projectData.project_name
-  );
+  const [projectName, setProjectName] = useState(data.project_name);
   const [secondaryName, setSecondaryName] = useState(
-    props.projectData.project_name_secondary
+    data.project_name_secondary
   );
 
   // indicates that the primary title isn't valid via the error state on the input field
@@ -50,19 +65,19 @@ const ProjectNameForm = ({ props }) => {
       setPrimaryTitleError(false);
       updateProjectNames({
         variables: {
-          projectId: props.projectId,
+          projectId: projectId,
           projectName: projectName,
           projectNameSecondary: secondaryName,
         },
       })
         .then((res) => {
           // return to the view mode and alert the parent component of the change
-          props.setIsEditing(false);
-          props.updatedCallback();
-          props.handleSnackbar(true, "Project name(s) updated", "success");
+          setIsEditing(false);
+          updatedCallback();
+          handleSnackbar(true, "Project name(s) updated", "success");
         })
         .catch((error) => {
-          props.handleSnackbar(
+          handleSnackbar(
             true,
             "Error updating project name(s)",
             "error",
@@ -75,7 +90,7 @@ const ProjectNameForm = ({ props }) => {
   // this is fired when the user clicks on the 'X' to cancel the edit
   const handleCancelClick = (e) => {
     e.preventDefault();
-    props.setIsEditing(false);
+    setIsEditing(false);
   };
 
   // this is fired onChange of the project name field to check if it's valid
@@ -185,8 +200,8 @@ const ProjectNameForm = ({ props }) => {
       along the horizontal midline of the project name input field. */}
       <Grid item xs={12} md={2} container alignItems="flex-end">
         <ProjectStatusBadge
-          phaseKey={props.currentPhase?.phase_key}
-          phaseName={props.currentPhase?.phase_name}
+          phaseKey={currentPhase?.phase_key}
+          phaseName={currentPhase?.phase_name}
         />
       </Grid>
     </Grid>
