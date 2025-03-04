@@ -27,6 +27,7 @@ const TeamAutocompleteComponent = ({
   error,
   name,
   options,
+  workgroupLookup,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -48,7 +49,10 @@ const TeamAutocompleteComponent = ({
     apiRef.current.setEditCellValue({
       id,
       field: "moped_workgroup",
-      value: { workgroup_id: newValue?.workgroup_id },
+      value: {
+        workgroup_id: newValue?.workgroup_id,
+        workgroup_name: workgroupLookup[newValue?.workgroup_id],
+      },
     });
   };
 
