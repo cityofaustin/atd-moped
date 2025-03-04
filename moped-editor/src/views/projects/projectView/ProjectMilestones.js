@@ -54,9 +54,10 @@ const useMilestoneRelatedPhaseLookup = (data) =>
     );
   }, [data]);
 
-const requiredFields = ["milestone_id"];
+const requiredFields = ["moped_milestone"];
 
 const useColumns = ({
+  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
@@ -71,17 +72,19 @@ const useColumns = ({
     return [
       {
         headerName: "Milestone",
-        field: "milestone_id",
+        field: "moped_milestone",
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,
-          error: !params.props.value,
+          error: !params.props.value?.milestone_id,
         }),
         editable: true,
         renderEditCell: (props) => (
           <MilestoneAutocompleteComponent
             {...props}
+            name={"milestone"}
+            options={data?.moped_milestones}
             milestoneNameLookup={milestoneNameLookup}
             relatedPhaseLookup={relatedPhaseLookup}
             error={props.error}
@@ -98,16 +101,16 @@ const useColumns = ({
       },
       {
         headerName: "Related phase",
-        field: "moped_milestone",
+        field: "moped_milestone_related_phase",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
-        valueFormatter: (value) => {
-          return phaseNameLookup[value?.related_phase_id] ?? "";
-        },
+        renderCell: (props) =>
+          phaseNameLookup[props.row.moped_milestone?.related_phase_id] ?? "",
         width: 150,
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
+            value={props.row.moped_milestone}
             lookupTable={phaseNameLookup}
             usingShiftKey={usingShiftKey}
             previousColumnField="description"
@@ -176,6 +179,7 @@ const useColumns = ({
       },
     ];
   }, [
+    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
@@ -402,6 +406,7 @@ const ProjectMilestones = ({
   );
 
   const dataGridColumns = useColumns({
+    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
