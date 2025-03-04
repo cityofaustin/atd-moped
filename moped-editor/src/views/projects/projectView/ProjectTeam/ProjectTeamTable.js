@@ -73,15 +73,18 @@ const useColumns = ({
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
+          // the team member object for the current row
           const currentRowMember =
             data?.moped_project_by_pk?.moped_proj_personnel.filter(
               (user) => user.project_personnel_id === props.id
             );
+          // the existing team members on this project
           const existingTeamMembers =
             data?.moped_project_by_pk?.moped_proj_personnel.map(
               (option) => option.moped_user.email
             );
           // filter out existing team members from list of options unless they are the current row member
+          // that way the current member remains an option when editing a row
           const teamMembersWithoutDuplicates = data?.moped_users.filter(
             (user) => {
               return (
