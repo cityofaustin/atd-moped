@@ -48,8 +48,6 @@ const MilestoneAutocompleteComponent = ({
     });
   };
 
-  console.log(value);
-
   return (
     <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete

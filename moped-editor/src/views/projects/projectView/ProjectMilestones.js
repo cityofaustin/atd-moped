@@ -306,6 +306,9 @@ const ProjectMilestones = ({
         ? null
         : updatedMilestoneData.description;
 
+    updatedMilestoneData.milestone_id =
+        updatedMilestoneData.moped_milestone?.milestone_id || null;
+
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
       delete updatedMilestoneData.id;
