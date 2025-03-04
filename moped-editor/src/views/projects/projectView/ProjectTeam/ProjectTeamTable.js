@@ -73,15 +73,22 @@ const useColumns = ({
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
-          const currentTeamMembers =
+          const currentRowMember =
+            data?.moped_project_by_pk?.moped_proj_personnel.filter(
+              (user) => user.project_personnel_id === props.id
+            );
+          const existingTeamMembers =
             data?.moped_project_by_pk?.moped_proj_personnel.map(
               (option) => option.moped_user.email
             );
-          // filter out current team members from list of moped users unless they are the row.moped_user.email
+          // filter out existing team members from list of options unless they are the current row member
           const teamMembersWithoutDuplicates = data?.moped_users.filter(
-            (user) =>
-              !currentTeamMembers.includes(user.email) ||
-              user.email === props.row.moped_user.email
+            (user) => {
+              return (
+                !existingTeamMembers.includes(user.email) ||
+                user.email === currentRowMember?.[0]?.moped_user.email
+              );
+            }
           );
           return (
             <TeamAutocompleteComponent
@@ -90,6 +97,7 @@ const useColumns = ({
               value={props.row.moped_user}
               options={teamMembersWithoutDuplicates}
               error={props.error}
+              workgroupLookup={workgroupLookup}
             />
           );
         },
