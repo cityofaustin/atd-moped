@@ -17,6 +17,7 @@ import { useTheme } from "@mui/material/styles";
  * @param {Boolean} error - toggles error style in textfield
  * @param {Object} name - name of the field
  * @param {Object} options - moped users to use in team member select
+ * @param {Object} workgroupLookup - lookup object to map workgroup ids to names
  * @return {JSX.Element}
  */
 const TeamAutocompleteComponent = ({
