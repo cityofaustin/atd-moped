@@ -110,7 +110,6 @@ const useColumns = ({
               value={props.row.moped_user}
               options={unassignedTeamMembers}
               error={props.error}
-              workgroupLookup={workgroupLookup}
               autocompleteProps={{
                 getOptionLabel: (option) => {
                   return option.user_id
@@ -133,6 +132,11 @@ const useColumns = ({
                 error: props.error,
                 helperText: "Required",
               }}
+              dependentFieldName="moped_workgroup"
+              dependentFieldValue={(newValue) => ({
+                workgroup_id: newValue?.workgroup_id,
+                workgroup_name: workgroupLookup[newValue?.workgroup_id],
+              })}
             />
             // <TeamAutocompleteComponent
             //   {...props}

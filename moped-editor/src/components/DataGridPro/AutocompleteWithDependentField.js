@@ -25,9 +25,10 @@ const AutcompleteWithDependentField = ({
   hasFocus,
   name,
   options,
-  workgroupLookup,
   autocompleteProps,
   textFieldProps,
+  dependentFieldName,
+  dependentFieldValue,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -48,11 +49,8 @@ const AutcompleteWithDependentField = ({
     // Also update the corresponding workgroup field with the selected user's workgroup id
     apiRef.current.setEditCellValue({
       id,
-      field: "moped_workgroup",
-      value: {
-        workgroup_id: newValue?.workgroup_id,
-        workgroup_name: workgroupLookup[newValue?.workgroup_id],
-      },
+      field: dependentFieldName,
+      value: dependentFieldValue(newValue),
     });
   };
 
