@@ -89,20 +89,18 @@ const useColumns = ({
             );
           // filter out existing team members from list of options unless they are the current row member
           // that way the current member remains an option when editing a row
-          const teamMembersWithoutDuplicates = data?.moped_users.filter(
-            (user) => {
-              return (
-                !existingTeamMembers.includes(user.user_id) ||
-                user.user_id === currentRowMember?.moped_user.user_id
-              );
-            }
-          );
+          const unassignedTeamMembers = data?.moped_users.filter((user) => {
+            return (
+              !existingTeamMembers.includes(user.user_id) ||
+              user.user_id === currentRowMember?.moped_user.user_id
+            );
+          });
           return (
             <TeamAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              options={teamMembersWithoutDuplicates}
+              options={unassignedTeamMembers}
               error={props.error}
               workgroupLookup={workgroupLookup}
             />
