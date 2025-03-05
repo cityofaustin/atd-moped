@@ -23,6 +23,7 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
+import AutocompleteWithDependentField from "src/components/DataGridPro/AutocompleteWithDependentField";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -96,7 +97,7 @@ const useColumns = ({
             );
           });
           return (
-            <TeamAutocompleteComponent
+            <AutocompleteWithDependentField
               {...props}
               name={"user"}
               value={props.row.moped_user}
@@ -104,6 +105,14 @@ const useColumns = ({
               error={props.error}
               workgroupLookup={workgroupLookup}
             />
+            // <TeamAutocompleteComponent
+            //   {...props}
+            //   name={"user"}
+            //   value={props.row.moped_user}
+            //   options={unassignedTeamMembers}
+            //   error={props.error}
+            //   workgroupLookup={workgroupLookup}
+            // />
           );
         },
         preProcessEditCellProps: (params) => {
@@ -118,7 +127,7 @@ const useColumns = ({
         field: "moped_workgroup",
         editable: true,
         width: 200,
-        valueFormatter: (workgroup) =>  workgroup?.workgroup_name ?? "",
+        valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
