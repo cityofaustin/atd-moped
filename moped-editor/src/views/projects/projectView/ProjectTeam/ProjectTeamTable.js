@@ -120,7 +120,7 @@ const useColumns = ({
         field: "moped_workgroup",
         editable: true,
         width: 200,
-        valueFormatter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) =>  workgroup?.workgroup_name ?? "",
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
