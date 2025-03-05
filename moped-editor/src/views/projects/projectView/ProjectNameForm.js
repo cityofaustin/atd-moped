@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Grid, Icon, TextField } from "@mui/material";
+import { Box, Grid, Icon, TextField } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { useMutation } from "@apollo/client";
 import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
 
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { agolFieldCharMax } from "src/constants/projects";
@@ -15,15 +17,15 @@ import { agolFieldCharMax } from "src/constants/projects";
  * to allow equal space for the primary and secondary name fields.
  */
 const validationSchema = yup.object().shape({
-  name: yup
+  projectName: yup
     .string()
     .max(
       agolFieldCharMax.descriptionString,
       `Name must be ${agolFieldCharMax.projectNameFull / 2} characters or less`
     )
     .nullable()
-    .required("Required"),
-  secondaryName: yup
+    .required("Title cannot be blank"),
+  projectSecondaryName: yup
     .string()
     .max(
       agolFieldCharMax.descriptionString,
@@ -52,27 +54,82 @@ const useStyles = makeStyles((theme) => ({
 /**
  * ProjectNameForm Component
  * @param {Number} projectId - The id of the current project being viewed
- * @param {Object} data - The data object from the GraphQL query
+ * @param {Object} projectData - The data object from the GraphQL query
  * @param {Function} setIsEditing - The function to toggle the editing boolean state
  * @param {Function} updatedCallback - The function to call when project named are updated
  * @param {Function} handleSnackbar - The function to show the snackbar
- * @param {*} currentPhase - The current phase data object
+ * @param {Object} currentPhase - The current phase data object
  * @returns
  */
 const ProjectNameForm = ({
   projectId,
-  data,
+  projectData,
   setIsEditing,
   updatedCallback,
   handleSnackbar,
   currentPhase,
 }) => {
+  /* New forms */
+  const originalName = projectData?.project_name ?? null;
+  const originalSecondaryName = projectData?.project_name_secondary ?? null;
+
+  const {
+    handleSubmit,
+    control,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      projectName: originalName,
+      projectSecondaryName: originalSecondaryName,
+    },
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
+  });
+
+  // this function is fired when the user clicks on the check mark to save the names
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    // Check if the primary name is defined and has meaningful content
+    if (!projectName || projectName.trim() === "") {
+      // if it does not, set the error state
+      setPrimaryTitleError(true);
+    } else {
+      // and if it passes the test, clear any error state and save it via a mutation
+      setPrimaryTitleError(false);
+      updateProjectNames({
+        variables: {
+          projectId: projectId,
+          projectName: projectName,
+          projectNameSecondary: secondaryName,
+        },
+      })
+        .then((res) => {
+          // return to the view mode and alert the parent component of the change
+          setIsEditing(false);
+          updatedCallback();
+          handleSnackbar(true, "Project name(s) updated", "success");
+        })
+        .catch((error) => {
+          handleSnackbar(
+            true,
+            "Error updating project name(s)",
+            "error",
+            error
+          );
+        });
+    }
+  };
+
+  /* End new form */
+
   const classes = useStyles();
 
   // state to hold values for controlled inputs
-  const [projectName, setProjectName] = useState(data.project_name);
+  const [projectName, setProjectName] = useState(projectData.project_name);
   const [secondaryName, setSecondaryName] = useState(
-    data.project_name_secondary
+    projectData.project_name_secondary
   );
 
   // indicates that the primary title isn't valid via the error state on the input field
@@ -142,28 +199,26 @@ const ProjectNameForm = ({
 
   return (
     <>
-      <Grid container spacing={4}>
-        {/* Primary project name field */}
-        <Grid item xs={12} sm={6}>
-          <form onSubmit={(e) => handleAcceptClick(e)}>
-            <TextField
-              required
+      <Box
+        component="form"
+        sx={{ minWidth: "100%" }}
+        onSubmit={handleSubmit(handleSave)}
+      >
+        <Grid container spacing={4}>
+          <Grid item xs={12} sm={6}>
+            {/* Primary project name field */}
+
+            <ControlledTextInput
               autoFocus
               variant="standard"
               fullWidth
               id="project_name"
-              label={"Project name"}
-              type="text"
-              value={projectName || ""}
-              error={primaryTitleError}
-              placeholder={
-                primaryTitleError
-                  ? "Title cannot be blank"
-                  : "Enter project name"
-              }
-              multiline={false}
-              rows={1}
-              onChange={handleProjectNameChange}
+              label="Project name"
+              name="projectName"
+              placeholder="Enter project name"
+              control={control}
+              error={errors?.name}
+              helperText={errors?.description?.message}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -173,118 +228,21 @@ const ProjectNameForm = ({
                 },
               }}
             />
-          </form>
-        </Grid>
+          </Grid>
 
-        {/* Secondary project name field */}
-        <Grid item xs={12} sm={3}>
-          <form onSubmit={(e) => handleAcceptClick(e)}>
-            <TextField
+          {/* Secondary project name field */}
+          <Grid item xs={12} sm={3}>
+            <ControlledTextInput
               variant="standard"
               fullWidth
-              id="secondary_name"
-              label={"Secondary name"}
-              type="text"
-              value={secondaryName || ""}
-              placeholder={"Secondary name"}
-              multiline={false}
-              rows={1}
-              onChange={handleSecondaryNameChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                classes: {
-                  input: classes.projectSecondaryNameEditField,
-                },
-              }}
-            />
-          </form>
-        </Grid>
-
-        {/* Accept / Cancel icons.
-      This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-        <Grid
-          item
-          container
-          direction="row"
-          justifyContent="flex-end"
-          alignItems="flex-end"
-          xs={12}
-          sm={1}
-          sx={{ minWidth: "77px" }}
-        >
-          <Icon
-            className={classes.editIcons}
-            onClick={(e) => handleAcceptClick(e)}
-          >
-            check
-          </Icon>
-          <Icon
-            className={classes.editIcons}
-            onClick={(e) => handleCancelClick(e)}
-          >
-            close
-          </Icon>
-        </Grid>
-
-        {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
-      along the horizontal midline of the project name input field. */}
-        <Grid item xs={12} md={2} container alignItems="flex-end">
-          <ProjectStatusBadge
-            phaseKey={currentPhase?.phase_key}
-            phaseName={currentPhase?.phase_name}
-          />
-        </Grid>
-      </Grid>
-      <Grid container spacing={4}>
-        {/* Primary project name field */}
-        <Grid item xs={12} sm={6}>
-          <form onSubmit={(e) => handleAcceptClick(e)}>
-            <TextField
-              required
               autoFocus
-              variant="standard"
-              fullWidth
-              id="project_name"
-              label={"Project name"}
-              type="text"
-              value={projectName || ""}
-              error={primaryTitleError}
-              placeholder={
-                primaryTitleError
-                  ? "Title cannot be blank"
-                  : "Enter project name"
-              }
-              multiline={false}
-              rows={1}
-              onChange={handleProjectNameChange}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                classes: {
-                  input: classes.projectNameEditField,
-                },
-              }}
-            />
-          </form>
-        </Grid>
-
-        {/* Secondary project name field */}
-        <Grid item xs={12} sm={3}>
-          <form onSubmit={(e) => handleAcceptClick(e)}>
-            <TextField
-              variant="standard"
-              fullWidth
               id="secondary_name"
-              label={"Secondary name"}
-              type="text"
-              value={secondaryName || ""}
-              placeholder={"Secondary name"}
-              multiline={false}
-              rows={1}
-              onChange={handleSecondaryNameChange}
+              name="projectSecondaryName"
+              placeholder="Secondary name"
+              label="Secondary name"
+              control={control}
+              error={errors?.description}
+              helperText={errors?.description?.message}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -294,44 +252,45 @@ const ProjectNameForm = ({
                 },
               }}
             />
-          </form>
-        </Grid>
+          </Grid>
 
-        {/* Accept / Cancel icons.
+          {/* Accept / Cancel icons.
       This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-        <Grid
-          item
-          container
-          direction="row"
-          justifyContent="flex-end"
-          alignItems="flex-end"
-          xs={12}
-          sm={1}
-          sx={{ minWidth: "77px" }}
-        >
-          <Icon
-            className={classes.editIcons}
-            onClick={(e) => handleAcceptClick(e)}
+          <Grid
+            item
+            container
+            direction="row"
+            alignItems="flex-end"
+            xs={12}
+            sm={1}
+            sx={(theme) => ({
+              minWidth: theme.spacing(10),
+            })}
           >
-            check
-          </Icon>
-          <Icon
-            className={classes.editIcons}
-            onClick={(e) => handleCancelClick(e)}
-          >
-            close
-          </Icon>
-        </Grid>
+            <Icon
+              className={classes.editIcons}
+              onClick={(e) => handleAcceptClick(e)}
+            >
+              check
+            </Icon>
+            <Icon
+              className={classes.editIcons}
+              onClick={(e) => handleCancelClick(e)}
+            >
+              close
+            </Icon>
+          </Grid>
 
-        {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
+          {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
-        <Grid item xs={12} md={2} container alignItems="flex-end">
-          <ProjectStatusBadge
-            phaseKey={currentPhase?.phase_key}
-            phaseName={currentPhase?.phase_name}
-          />
+          <Grid item xs={12} sm={2} container alignItems="flex-end">
+            <ProjectStatusBadge
+              phaseKey={currentPhase?.phase_key}
+              phaseName={currentPhase?.phase_name}
+            />
+          </Grid>
         </Grid>
-      </Grid>
+      </Box>
     </>
   );
 };
