@@ -2,9 +2,7 @@ import React, { useCallback } from "react";
 import {
   Autocomplete,
   TextField,
-  FormControl,
-  ListItem,
-  ListItemText,
+  FormControl
 } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
@@ -25,11 +23,11 @@ const AutcompleteWithDependentField = ({
   value,
   field,
   hasFocus,
-  error,
   name,
   options,
   workgroupLookup,
   autocompleteProps,
+  textFieldProps,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -93,8 +91,7 @@ const AutcompleteWithDependentField = ({
             variant="standard"
             {...params}
             inputRef={ref}
-            error={error}
-            helperText="Required"
+            {...textFieldProps}
           />
         )}
       />

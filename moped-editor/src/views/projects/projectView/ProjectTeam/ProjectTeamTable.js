@@ -26,7 +26,6 @@ import {
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectTeamToolbar from "./ProjectTeamToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
@@ -129,6 +128,10 @@ const useColumns = ({
                     </ListItem>
                   );
                 },
+              }}
+              textFieldProps={{
+                error: props.error,
+                helperText: "Required",
               }}
             />
             // <TeamAutocompleteComponent
