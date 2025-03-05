@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import {
   Autocomplete,
   TextField,
@@ -29,6 +29,7 @@ const AutcompleteWithDependentField = ({
   name,
   options,
   workgroupLookup,
+  autocompleteProps,
 }) => {
   const theme = useTheme();
   const apiRef = useGridApiContext();
@@ -39,8 +40,6 @@ const AutcompleteWithDependentField = ({
       ref.current.focus();
     }
   }, [hasFocus]);
-
-  console.log(name)
 
   const handleChange = (event, newValue) => {
     apiRef.current.setEditCellValue({
@@ -59,42 +58,36 @@ const AutcompleteWithDependentField = ({
     });
   };
 
-  const isOptionEqualToValue = (option, value) => {
-    return value?.user_id === option?.user_id;
-  };
+  const defaultGetOptionLabel = useCallback(
+    (option) => option[`${name}_name`],
+    [name]
+  );
 
-  const getOptionLabel = (option) => {
-    return option.user_id ? `${option.first_name} ${option.last_name}` : "";
-  };
-
-  const renderOption = (props, option) => {
-    return (
-      <ListItem {...props} key={option.user_id}>
-        <ListItemText
-          primary={`${option.first_name} ${option.last_name}`}
-          secondary={option.email}
-        />
-      </ListItem>
-    );
-  };
+  const defaultIsOptionEqualToValue = useCallback(
+    (value, option) => value[`${name}_id`] === option[`${name}_id`],
+    [name]
+  );
 
   return (
     <FormControl variant="standard" sx={{ width: "100%", mx: 1 }}>
       <Autocomplete
+        sx={{ paddingTop: theme.spacing(1) }}
         id={name}
         name={name}
         options={options}
-        getOptionLabel={getOptionLabel}
-        getOptionKey={(option) => option.user_id}
-        isOptionEqualToValue={(option, value) =>
-          isOptionEqualToValue(option, value)
+        {...autocompleteProps}
+        getOptionLabel={
+          autocompleteProps?.getOptionLabel
+            ? autocompleteProps.getOptionLabel
+            : defaultGetOptionLabel
         }
-        renderOption={renderOption}
+        isOptionEqualToValue={
+          autocompleteProps?.isOptionEqualToValue
+            ? autocompleteProps.isOptionEqualToValue
+            : defaultIsOptionEqualToValue
+        }
         value={value?.user_id ? value : null}
-        sx={{ paddingTop: theme.spacing(1) }}
-        onChange={(event, newValue) => {
-          handleChange(event, newValue);
-        }}
+        onChange={handleChange}
         renderInput={(params) => (
           <TextField
             variant="standard"
