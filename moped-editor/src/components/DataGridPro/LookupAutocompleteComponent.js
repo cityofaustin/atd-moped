@@ -26,6 +26,9 @@ const LookupAutocompleteComponent = ({
   options,
   fullWidthPopper,
   autocompleteProps,
+  textFieldProps,
+  dependentFieldName,
+  dependentFieldValue,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -42,6 +45,13 @@ const LookupAutocompleteComponent = ({
       field,
       value: newValue,
     });
+    if (dependentFieldName) {
+      apiRef.current.setEditCellValue({
+        id,
+        field: dependentFieldName,
+        value: dependentFieldValue(newValue),
+      });
+    }
   };
 
   const defaultGetOptionLabel = useCallback(
@@ -57,6 +67,7 @@ const LookupAutocompleteComponent = ({
   return (
     <Autocomplete
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
+      // do i need padding top here?
       value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={fullWidthPopper && FullWidthPopper}
@@ -64,7 +75,7 @@ const LookupAutocompleteComponent = ({
       filterOptions={filterOptions}
       options={options}
       renderInput={(params) => (
-        <TextField variant="standard" {...params} inputRef={ref} />
+        <TextField variant="standard" {...params} inputRef={ref} {...textFieldProps}/>
       )}
       {...autocompleteProps}
       getOptionLabel={
