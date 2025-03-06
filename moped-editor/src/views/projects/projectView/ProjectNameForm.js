@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Box, Grid, Icon, TextField } from "@mui/material";
+import { Box, Grid, Icon, IconButton } from "@mui/material";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { useMutation } from "@apollo/client";
@@ -36,7 +36,7 @@ const validationSchema = yup.object().shape({
     .nullable(),
 });
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   editIcons: {
     cursor: "pointer",
     fontSize: "1.4rem",
@@ -59,6 +59,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} updatedCallback - The function to call when project named are updated
  * @param {Function} handleSnackbar - The function to show the snackbar
  * @param {Object} currentPhase - The current phase data object
+ * * @param {function} refetch - The refetch function from Apollo
  * @returns
  */
 const ProjectNameForm = ({
@@ -68,15 +69,19 @@ const ProjectNameForm = ({
   updatedCallback,
   handleSnackbar,
   currentPhase,
+  refetch,
 }) => {
+  const classes = useStyles();
+
   /* New forms */
   const originalName = projectData?.project_name ?? null;
   const originalSecondaryName = projectData?.project_name_secondary ?? null;
 
+  const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
+
   const {
     handleSubmit,
     control,
-    setValue,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -88,113 +93,34 @@ const ProjectNameForm = ({
   });
 
   // this function is fired when the user clicks on the check mark to save the names
-  const handleSave = (e) => {
-    e.preventDefault();
-
-    // Check if the primary name is defined and has meaningful content
-    if (!projectName || projectName.trim() === "") {
-      // if it does not, set the error state
-      setPrimaryTitleError(true);
-    } else {
-      // and if it passes the test, clear any error state and save it via a mutation
-      setPrimaryTitleError(false);
-      updateProjectNames({
-        variables: {
-          projectId: projectId,
-          projectName: projectName,
-          projectNameSecondary: secondaryName,
-        },
-      })
-        .then((res) => {
-          // return to the view mode and alert the parent component of the change
+  const handleSave = ({ projectName, projectSecondaryName }) => {
+    // and if it passes the test, clear any error state and save it via a mutation
+    updateProjectNames({
+      variables: {
+        projectId: projectId,
+        projectName: projectName,
+        projectNameSecondary: projectSecondaryName,
+      },
+    })
+      .then(() => {
+        // return to the view mode and alert the parent component of the change
+        refetch().then(() => {
           setIsEditing(false);
           updatedCallback();
           handleSnackbar(true, "Project name(s) updated", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(
-            true,
-            "Error updating project name(s)",
-            "error",
-            error
-          );
         });
-    }
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error updating project name(s)", "error", error);
+      });
   };
 
   /* End new form */
-
-  const classes = useStyles();
-
-  // state to hold values for controlled inputs
-  const [projectName, setProjectName] = useState(projectData.project_name);
-  const [secondaryName, setSecondaryName] = useState(
-    projectData.project_name_secondary
-  );
-
-  // indicates that the primary title isn't valid via the error state on the input field
-  const [primaryTitleError, setPrimaryTitleError] = useState(false);
-
-  // apollo hook returning the async function to update the project names
-  const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
-
-  // this function is fired when the user clicks on the check mark to save the names
-  const handleAcceptClick = (e) => {
-    e.preventDefault();
-
-    // Check if the primary name is defined and has meaningful content
-    if (!projectName || projectName.trim() === "") {
-      // if it does not, set the error state
-      setPrimaryTitleError(true);
-    } else {
-      // and if it passes the test, clear any error state and save it via a mutation
-      setPrimaryTitleError(false);
-      updateProjectNames({
-        variables: {
-          projectId: projectId,
-          projectName: projectName,
-          projectNameSecondary: secondaryName,
-        },
-      })
-        .then((res) => {
-          // return to the view mode and alert the parent component of the change
-          setIsEditing(false);
-          updatedCallback();
-          handleSnackbar(true, "Project name(s) updated", "success");
-        })
-        .catch((error) => {
-          handleSnackbar(
-            true,
-            "Error updating project name(s)",
-            "error",
-            error
-          );
-        });
-    }
-  };
 
   // this is fired when the user clicks on the 'X' to cancel the edit
   const handleCancelClick = (e) => {
     e.preventDefault();
     setIsEditing(false);
-  };
-
-  // this is fired onChange of the project name field to check if it's valid
-  const handleProjectNameChange = (e) => {
-    // Update the state variables when the input changes
-    setProjectName(e.target.value);
-    if (!e.target.value) {
-      setPrimaryTitleError(true);
-    } else {
-      setPrimaryTitleError(false);
-    }
-  };
-
-  // Update the secondary name state variable when the input changes
-  const handleSecondaryNameChange = (e) => {
-    // If user entered an empty string then nullify the value
-    const value = e.target.value.trim() === "" ? null : e.target.value;
-    setSecondaryName(value);
   };
 
   return (
@@ -204,10 +130,9 @@ const ProjectNameForm = ({
         sx={{ minWidth: "100%" }}
         onSubmit={handleSubmit(handleSave)}
       >
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={6}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={5}>
             {/* Primary project name field */}
-
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -264,26 +189,25 @@ const ProjectNameForm = ({
             xs={12}
             sm={1}
             sx={(theme) => ({
-              minWidth: theme.spacing(10),
+              minWidth: theme.spacing(12),
             })}
           >
-            <Icon
-              className={classes.editIcons}
-              onClick={(e) => handleAcceptClick(e)}
-            >
-              check
-            </Icon>
-            <Icon
-              className={classes.editIcons}
-              onClick={(e) => handleCancelClick(e)}
-            >
-              close
-            </Icon>
+            <IconButton type="submit">
+              <Icon className={classes.editIcons}>check</Icon>
+            </IconButton>
+            <IconButton>
+              <Icon
+                className={classes.editIcons}
+                onClick={(e) => handleCancelClick(e)}
+              >
+                close
+              </Icon>
+            </IconButton>
           </Grid>
 
           {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
       along the horizontal midline of the project name input field. */}
-          <Grid item xs={12} sm={2} container alignItems="flex-end">
+          <Grid item xs={12} sm={3} container alignItems="flex-end">
             <ProjectStatusBadge
               phaseKey={currentPhase?.phase_key}
               phaseName={currentPhase?.phase_name}

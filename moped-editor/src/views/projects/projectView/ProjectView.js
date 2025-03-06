@@ -470,6 +470,7 @@ const ProjectView = () => {
                               updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
                               handleSnackbar={handleSnackbar}
+                              refetch={refetch}
                             />
                           </Box>
                         </Grid>
