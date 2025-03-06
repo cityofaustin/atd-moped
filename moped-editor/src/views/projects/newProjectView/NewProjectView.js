@@ -113,7 +113,7 @@ const NewProjectView = () => {
   /**
    * Persists a new project into the database
    */
-  const handleSubmit = () => {
+  const handleSave = () => {
     const newSignalError = fromSignalAsset && !Boolean(signal);
     setSignalError(newSignalError);
 
@@ -264,15 +264,9 @@ const NewProjectView = () => {
                 signal={signal}
                 signalError={signalError}
                 setSignal={setSignal}
+                handleSave={handleSave}
+                classes={classes}
               />
-              <Box pt={2} pl={2} className={classes.buttons}>
-                <ProjectSaveButton
-                  label={"Create"}
-                  loading={loading}
-                  success={success}
-                  handleButtonClick={handleSubmit}
-                />
-              </Box>
             </div>
           </CardContent>
         </Card>
