@@ -137,14 +137,6 @@ const useColumns = ({
                 workgroup_name: workgroupLookup[newValue?.workgroup_id],
               })}
             />
-            // <TeamAutocompleteComponent
-            //   {...props}
-            //   name={"user"}
-            //   value={props.row.moped_user}
-            //   options={unassignedTeamMembers}
-            //   error={props.error}
-            //   workgroupLookup={workgroupLookup}
-            // />
           );
         },
         preProcessEditCellProps: (params) => {

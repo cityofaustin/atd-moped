@@ -22,7 +22,7 @@ import parseISO from "date-fns/parseISO";
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
-import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
+// import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -41,19 +41,19 @@ const useMilestoneNameLookup = (data) =>
     );
   }, [data]);
 
-const useMilestoneRelatedPhaseLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_milestones.reduce(
-      (obj, item) =>
-        Object.assign(obj, {
-          [item.milestone_id]: item.related_phase_id,
-        }),
-      {}
-    );
-  }, [data]);
+// const useMilestoneRelatedPhaseLookup = (data) =>
+//   useMemo(() => {
+//     if (!data) {
+//       return {};
+//     }
+//     return data.moped_milestones.reduce(
+//       (obj, item) =>
+//         Object.assign(obj, {
+//           [item.milestone_id]: item.related_phase_id,
+//         }),
+//       {}
+//     );
+//   }, [data]);
 
 const requiredFields = ["moped_milestone"];
 
@@ -64,8 +64,6 @@ const useColumns = ({
   handleSaveClick,
   handleCancelClick,
   handleDeleteOpen,
-  milestoneNameLookup,
-  relatedPhaseLookup,
   usingShiftKey,
   phaseNameLookup,
 }) =>
@@ -198,8 +196,6 @@ const useColumns = ({
     handleCancelClick,
     handleEditClick,
     handleDeleteOpen,
-    milestoneNameLookup,
-    relatedPhaseLookup,
     usingShiftKey,
     phaseNameLookup,
   ]);
@@ -241,7 +237,7 @@ const ProjectMilestones = ({
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
-  const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
+  // const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data); // check the bug in team table isnt here
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback(
@@ -428,8 +424,6 @@ const ProjectMilestones = ({
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    milestoneNameLookup,
-    relatedPhaseLookup,
     usingShiftKey,
     phaseNameLookup,
   });
