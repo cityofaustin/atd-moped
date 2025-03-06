@@ -1,15 +1,16 @@
 import React from "react";
 import makeStyles from "@mui/styles/makeStyles";
-import { Box, Grid, Icon, IconButton } from "@mui/material";
-import ProjectStatusBadge from "./ProjectStatusBadge";
-import ControlledTextInput from "src/components/forms/ControlledTextInput";
-import { useMutation } from "@apollo/client";
-import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
-
 import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
+import { useMutation } from "@apollo/client";
+import { Box, Grid, Icon, IconButton } from "@mui/material";
+
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
 import { agolFieldCharMax } from "src/constants/projects";
+
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 /**
  * This validation schema considers the total number of characters allowed in the project full name
