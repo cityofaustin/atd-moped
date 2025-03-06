@@ -112,8 +112,7 @@ const ProjectNameForm = ({
       });
   };
 
-  const handleCancelClick = (e) => {
-    e.preventDefault();
+  const handleCancelClick = () => {
     setIsEditing(false);
   };
 
@@ -135,7 +134,7 @@ const ProjectNameForm = ({
               name="projectName"
               placeholder="Enter project name"
               control={control}
-              error={errors?.projectName}
+              error={!!errors?.projectName}
               helperText={errors?.projectName?.message}
               InputLabelProps={{
                 shrink: true,
@@ -157,7 +156,7 @@ const ProjectNameForm = ({
               placeholder="Secondary name"
               label="Secondary name"
               control={control}
-              error={errors?.projectSecondaryName}
+              error={!!errors?.projectSecondaryName}
               helperText={errors?.projectSecondaryName?.message}
               InputLabelProps={{
                 shrink: true,
@@ -187,10 +186,7 @@ const ProjectNameForm = ({
             >
               <Icon className={classes.editIcons}>check</Icon>
             </IconButton>
-            <IconButton
-              onClick={(e) => handleCancelClick(e)}
-              disabled={loading}
-            >
+            <IconButton onClick={handleCancelClick} disabled={loading}>
               <Icon className={classes.editIcons}>close</Icon>
             </IconButton>
           </Grid>
