@@ -15,7 +15,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 /**
  * This validation schema considers the total number of characters allowed in the project full name
  * field in the component_arcgis_online_view feature service. This schema splits that limit in half
- * to allow equal space for the primary and secondary name fields.
+ * to allow equal space for the primary and secondary name fields that make up the full name.
  */
 const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
 
@@ -59,8 +59,9 @@ const useStyles = makeStyles(() => ({
  * @param {Function} setIsEditing - The function to toggle the editing boolean state
  * @param {Function} handleSnackbar - The function to show the snackbar
  * @param {Object} currentPhase - The current phase data object
- * * @param {function} refetch - The refetch function from Apollo
- * @returns
+ * @param {Function} refetch - The refetch function from Apollo
+ * @returns {JSX.Element}
+ * @constructor
  */
 const ProjectNameForm = ({
   projectId,
@@ -75,12 +76,14 @@ const ProjectNameForm = ({
   const originalName = projectData?.project_name ?? null;
   const originalSecondaryName = projectData?.project_name_secondary ?? null;
 
-  const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
+  const [updateProjectNames, { loading }] = useMutation(
+    UPDATE_PROJECT_NAMES_QUERY
+  );
 
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -90,9 +93,7 @@ const ProjectNameForm = ({
     resolver: yupResolver(validationSchema),
   });
 
-  // this function is fired when the user clicks on the check mark to save the names
   const handleSave = ({ projectName, projectSecondaryName }) => {
-    // and if it passes the test, clear any error state and save it via a mutation
     updateProjectNames({
       variables: {
         projectId: projectId,
@@ -101,7 +102,6 @@ const ProjectNameForm = ({
       },
     })
       .then(() => {
-        // return to the view mode and alert the parent component of the change
         refetch().then(() => {
           setIsEditing(false);
           handleSnackbar(true, "Project name(s) updated", "success");
@@ -181,16 +181,17 @@ const ProjectNameForm = ({
               minWidth: theme.spacing(12),
             })}
           >
-            <IconButton type="submit">
+            <IconButton
+              type="submit"
+              disabled={!isDirty || !isValid || loading}
+            >
               <Icon className={classes.editIcons}>check</Icon>
             </IconButton>
-            <IconButton>
-              <Icon
-                className={classes.editIcons}
-                onClick={(e) => handleCancelClick(e)}
-              >
-                close
-              </Icon>
+            <IconButton
+              onClick={(e) => handleCancelClick(e)}
+              disabled={loading}
+            >
+              <Icon className={classes.editIcons}>close</Icon>
             </IconButton>
           </Grid>
           <Grid item xs={12} sm={3} container alignItems="flex-end">
