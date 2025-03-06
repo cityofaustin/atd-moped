@@ -1,5 +1,4 @@
 import React from "react";
-import makeStyles from "@mui/styles/makeStyles";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
 import { Box, Grid, Icon, IconButton } from "@mui/material";
@@ -37,16 +36,7 @@ const validationSchema = yup.object().shape({
     .nullable(),
 });
 
-const useStyles = makeStyles(() => ({
-  projectNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-  projectSecondaryNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-}));
+const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };
 
 /**
  * ProjectNameForm Component
@@ -67,8 +57,6 @@ const ProjectNameForm = ({
   currentPhase,
   refetch,
 }) => {
-  const classes = useStyles();
-
   const originalName = projectData?.project_name ?? null;
   const originalSecondaryName = projectData?.project_name_secondary ?? null;
 
@@ -136,9 +124,7 @@ const ProjectNameForm = ({
                 shrink: true,
               }}
               InputProps={{
-                classes: {
-                  input: classes.projectNameEditField,
-                },
+                sx: inputStyles,
               }}
             />
           </Grid>
@@ -158,9 +144,7 @@ const ProjectNameForm = ({
                 shrink: true,
               }}
               InputProps={{
-                classes: {
-                  input: classes.projectSecondaryNameEditField,
-                },
+                sx: inputStyles,
               }}
             />
           </Grid>
