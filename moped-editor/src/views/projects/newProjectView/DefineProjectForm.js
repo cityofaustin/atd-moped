@@ -1,21 +1,54 @@
 import React from "react";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Grid, InputLabel, Switch, Box } from "@mui/material";
-import SignalAutocomplete from "src/views/projects/newProjectView/SignalAutocomplete";
+import { agolFieldCharMax } from "src/constants/projects";
 
-const DefineProjectForm = ({
-  projectDetails,
-  setProjectDetails,
-  nameError,
-  descriptionError,
-  setSignalRecord,
-  fromSignalAsset,
-  setFromSignalAsset,
-  signal,
-  setSignal,
-  signalError,
-}) => {
+const validationSchema = yup.object().shape({
+  projectName: yup
+    .string()
+    .max(
+      projectNamesCharMax,
+      `Name must be ${projectNamesCharMax} characters or less`
+    )
+    .nullable()
+    .required("Title cannot be blank"),
+  projectSecondaryName: yup
+    .string()
+    .max(
+      projectNamesCharMax,
+      `Secondary name must be ${projectNamesCharMax} characters or less`
+    )
+    .nullable(),
+  description: yup
+    .string()
+    .max(
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
+    )
+    .nullable()
+    .required("Required"),
+});
+
+const DefineProjectForm = ({ handleSave }) => {
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isDirty, isValid },
+  } = useForm({
+    defaultValues: {
+      projectName: null,
+      projectSecondaryName: null,
+      description: null,
+    },
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
+  });
+
+  const handleSave = () => {};
+
   return (
-    <form style={{ padding: 25 }}>
+    <form onSubmit={handleSubmit(handleSave)} style={{ padding: 25 }}>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
           {!fromSignalAsset && ( // if
@@ -34,13 +67,21 @@ const DefineProjectForm = ({
           )}
           {fromSignalAsset && ( // else
             <Box sx={{ marginBottom: "2.1rem" }}>
-              <SignalAutocomplete
-                signal={signal}
-                setSignal={setSignal}
-                projectDetails={projectDetails}
-                setProjectDetails={setProjectDetails}
-                setSignalRecord={setSignalRecord}
-                signalError={signalError}
+              <Controller
+                id="signal"
+                name="signal"
+                control={control}
+                shouldUnregister={true}
+                render={({ field }) => (
+                  <KnackComponentAutocomplete
+                    {...field}
+                    componentLabel="Signal"
+                    signalType={component?.data?.component_subtype}
+                    socrataEndpoint={SOCRATA_ENDPOINT}
+                    isOptionEqualToValue={getSignalOptionSelected}
+                    getOptionLabel={getSignalOptionLabel}
+                  />
+                )}
               />
             </Box>
           )}
