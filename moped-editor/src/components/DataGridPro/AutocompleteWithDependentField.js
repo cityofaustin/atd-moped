@@ -1,9 +1,5 @@
 import React, { useCallback } from "react";
-import {
-  Autocomplete,
-  TextField,
-  FormControl
-} from "@mui/material";
+import { Autocomplete, TextField, FormControl } from "@mui/material";
 import { useGridApiContext } from "@mui/x-data-grid-pro";
 import { useTheme } from "@mui/material/styles";
 
@@ -82,7 +78,7 @@ const AutcompleteWithDependentField = ({
             ? autocompleteProps.isOptionEqualToValue
             : defaultIsOptionEqualToValue
         }
-        value={value?.user_id ? value : null}
+        value={value?.[`${name}_id`] ? value : null}
         onChange={handleChange}
         renderInput={(params) => (
           <TextField

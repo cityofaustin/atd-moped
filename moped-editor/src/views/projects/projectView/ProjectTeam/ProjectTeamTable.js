@@ -109,7 +109,6 @@ const useColumns = ({
               name={"user"}
               value={props.row.moped_user}
               options={unassignedTeamMembers}
-              error={props.error}
               autocompleteProps={{
                 getOptionLabel: (option) => {
                   return option.user_id

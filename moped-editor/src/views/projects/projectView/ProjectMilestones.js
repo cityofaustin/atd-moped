@@ -8,6 +8,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
+import AutocompleteWithDependentField from "src/components/DataGridPro/AutocompleteWithDependentField";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -81,14 +82,26 @@ const useColumns = ({
         }),
         editable: true,
         renderEditCell: (props) => (
-          <MilestoneAutocompleteComponent
+          <AutocompleteWithDependentField
             {...props}
             name={"milestone"}
             options={data?.moped_milestones}
-            milestoneNameLookup={milestoneNameLookup}
-            relatedPhaseLookup={relatedPhaseLookup}
-            error={props.error}
+            textFieldProps={{
+              error: props.error,
+            }}
+            dependentFieldName="moped_milestone_related_phase"
+            dependentFieldValue={(newValue) => ({
+              related_phase_id: newValue?.related_phase_id,
+            })}
           />
+          // <MilestoneAutocompleteComponent
+          //  {...props}
+          //   name={"milestone"}
+          //   options={data?.moped_milestones}
+          //   milestoneNameLookup={milestoneNameLookup}
+          //   relatedPhaseLookup={relatedPhaseLookup}
+          //   error={props.error}
+          // />
         ),
         width: 250,
       },
@@ -307,7 +320,7 @@ const ProjectMilestones = ({
         : updatedMilestoneData.description;
 
     updatedMilestoneData.milestone_id =
-        updatedMilestoneData.moped_milestone?.milestone_id || null;
+      updatedMilestoneData.moped_milestone?.milestone_id || null;
 
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
