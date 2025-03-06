@@ -350,15 +350,6 @@ const ProjectView = () => {
       });
   };
 
-  /**
-   * Routine to pass down to ProjectNameEditable so it can indicate when a name
-   * update has been issued allowing this component to refetch() and populate
-   * data.
-   */
-  const handleNameUpdate = () => {
-    refetch();
-  };
-
   const handleFollowProject = () => {
     if (!isFollowing) {
       followProject({
@@ -467,7 +458,6 @@ const ProjectView = () => {
                               projectId={projectId}
                               isEditing={isEditing}
                               setIsEditing={setIsEditing}
-                              updatedCallback={handleNameUpdate}
                               currentPhase={currentPhase}
                               handleSnackbar={handleSnackbar}
                               refetch={refetch}

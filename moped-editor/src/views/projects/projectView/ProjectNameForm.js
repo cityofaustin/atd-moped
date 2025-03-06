@@ -16,22 +16,22 @@ import { agolFieldCharMax } from "src/constants/projects";
  * field in the component_arcgis_online_view feature service. This schema splits that limit in half
  * to allow equal space for the primary and secondary name fields.
  */
+const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
+
 const validationSchema = yup.object().shape({
   projectName: yup
     .string()
     .max(
-      agolFieldCharMax.descriptionString,
-      `Name must be ${agolFieldCharMax.projectNameFull / 2} characters or less`
+      projectNamesCharMax,
+      `Name must be ${projectNamesCharMax} characters or less`
     )
     .nullable()
     .required("Title cannot be blank"),
   projectSecondaryName: yup
     .string()
     .max(
-      agolFieldCharMax.descriptionString,
-      `Secondary name must be ${
-        agolFieldCharMax.projectNameFull / 2
-      } characters or less`
+      projectNamesCharMax,
+      `Secondary name must be ${projectNamesCharMax} characters or less`
     )
     .nullable(),
 });
@@ -56,7 +56,6 @@ const useStyles = makeStyles(() => ({
  * @param {Number} projectId - The id of the current project being viewed
  * @param {Object} projectData - The data object from the GraphQL query
  * @param {Function} setIsEditing - The function to toggle the editing boolean state
- * @param {Function} updatedCallback - The function to call when project named are updated
  * @param {Function} handleSnackbar - The function to show the snackbar
  * @param {Object} currentPhase - The current phase data object
  * * @param {function} refetch - The refetch function from Apollo
@@ -66,14 +65,12 @@ const ProjectNameForm = ({
   projectId,
   projectData,
   setIsEditing,
-  updatedCallback,
   handleSnackbar,
   currentPhase,
   refetch,
 }) => {
   const classes = useStyles();
 
-  /* New forms */
   const originalName = projectData?.project_name ?? null;
   const originalSecondaryName = projectData?.project_name_secondary ?? null;
 
@@ -106,7 +103,6 @@ const ProjectNameForm = ({
         // return to the view mode and alert the parent component of the change
         refetch().then(() => {
           setIsEditing(false);
-          updatedCallback();
           handleSnackbar(true, "Project name(s) updated", "success");
         });
       })
@@ -115,9 +111,6 @@ const ProjectNameForm = ({
       });
   };
 
-  /* End new form */
-
-  // this is fired when the user clicks on the 'X' to cancel the edit
   const handleCancelClick = (e) => {
     e.preventDefault();
     setIsEditing(false);
@@ -132,7 +125,6 @@ const ProjectNameForm = ({
       >
         <Grid container spacing={2}>
           <Grid item xs={12} sm={5}>
-            {/* Primary project name field */}
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -142,8 +134,8 @@ const ProjectNameForm = ({
               name="projectName"
               placeholder="Enter project name"
               control={control}
-              error={errors?.name}
-              helperText={errors?.description?.message}
+              error={errors?.projectName}
+              helperText={errors?.projectName?.message}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -154,8 +146,6 @@ const ProjectNameForm = ({
               }}
             />
           </Grid>
-
-          {/* Secondary project name field */}
           <Grid item xs={12} sm={3}>
             <ControlledTextInput
               variant="standard"
@@ -166,8 +156,8 @@ const ProjectNameForm = ({
               placeholder="Secondary name"
               label="Secondary name"
               control={control}
-              error={errors?.description}
-              helperText={errors?.description?.message}
+              error={errors?.projectSecondaryName}
+              helperText={errors?.projectSecondaryName?.message}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -178,9 +168,7 @@ const ProjectNameForm = ({
               }}
             />
           </Grid>
-
-          {/* Accept / Cancel icons.
-      This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
+          {/* Minimum width prevents icons from wrapping. */}
           <Grid
             item
             container
@@ -204,9 +192,6 @@ const ProjectNameForm = ({
               </Icon>
             </IconButton>
           </Grid>
-
-          {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
-      along the horizontal midline of the project name input field. */}
           <Grid item xs={12} sm={3} container alignItems="flex-end">
             <ProjectStatusBadge
               phaseKey={currentPhase?.phase_key}
