@@ -8,7 +8,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
-import AutocompleteWithDependentField from "src/components/DataGridPro/AutocompleteWithDependentField";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -22,7 +22,6 @@ import parseISO from "date-fns/parseISO";
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
-// import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -40,20 +39,6 @@ const useMilestoneNameLookup = (data) =>
       {}
     );
   }, [data]);
-
-// const useMilestoneRelatedPhaseLookup = (data) =>
-//   useMemo(() => {
-//     if (!data) {
-//       return {};
-//     }
-//     return data.moped_milestones.reduce(
-//       (obj, item) =>
-//         Object.assign(obj, {
-//           [item.milestone_id]: item.related_phase_id,
-//         }),
-//       {}
-//     );
-//   }, [data]);
 
 const requiredFields = ["moped_milestone"];
 
@@ -80,7 +65,7 @@ const useColumns = ({
         }),
         editable: true,
         renderEditCell: (props) => (
-          <AutocompleteWithDependentField
+          <LookupAutocompleteComponent
             {...props}
             name={"milestone"}
             options={data?.moped_milestones}
@@ -92,14 +77,6 @@ const useColumns = ({
               related_phase_id: newValue?.related_phase_id,
             })}
           />
-          // <MilestoneAutocompleteComponent
-          //  {...props}
-          //   name={"milestone"}
-          //   options={data?.moped_milestones}
-          //   milestoneNameLookup={milestoneNameLookup}
-          //   relatedPhaseLookup={relatedPhaseLookup}
-          //   error={props.error}
-          // />
         ),
         width: 250,
       },
