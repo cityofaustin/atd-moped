@@ -10,7 +10,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import SubprojectsToolbar from "./SubprojectsToolbar";
 import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
 import ProjectStatusBadge from "../../projectView/ProjectStatusBadge";
-import SubprojectLookupComponent from "./SubprojectLookupComponent";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import RenderFieldLink from "src/components/RenderFieldLink";
 
@@ -50,7 +50,15 @@ const useColumns = ({
           />
         ),
         renderEditCell: (props) => (
-          <SubprojectLookupComponent {...props} data={data} />
+          <LookupAutocompleteComponent
+            {...props}
+            name="project"
+            options={data?.subprojectOptions}
+            autocompleteProps={{
+              getOptionLabel: (option) =>
+                `${option.project_id} - ${option.project_name_full}`,
+            }}
+          />
         ),
       },
       {
@@ -274,6 +282,7 @@ const SubprojectsTable = ({
         getRowId={(row) => row.id}
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
+        onProcessRowUpdateError={(error) => console.error}
         slots={{ toolbar: SubprojectsToolbar }}
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"

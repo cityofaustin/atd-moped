@@ -14,7 +14,15 @@ export const FUNDING_QUERY = gql`
       funding_amount
       funding_description
       funding_program_id
+      moped_fund_program {
+        funding_program_id
+        funding_program_name
+      }
       funding_source_id
+      moped_fund_source {
+        funding_source_id
+        funding_source_name
+      }
       funding_status_id
       is_deleted
     }
