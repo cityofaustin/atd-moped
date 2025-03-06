@@ -24,12 +24,19 @@ const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
 const validationSchema = yup.object().shape({
   projectName: yup
     .string()
-    .max(
-      projectNamesCharMax,
-      `Name must be ${projectNamesCharMax} characters or less`
-    )
     .nullable()
-    .required("Title cannot be blank"),
+    .optional()
+    .when("isSignal", {
+      is: false,
+      then: yup
+        .string()
+        .max(
+          projectNamesCharMax,
+          `Name must be ${projectNamesCharMax} characters or less`
+        )
+        .nullable()
+        .required("Name cannot be blank"),
+    }),
   projectSecondaryName: yup
     .string()
     .max(
@@ -45,6 +52,14 @@ const validationSchema = yup.object().shape({
     )
     .nullable()
     .required("Required"),
+  signal: yup
+    .object()
+    .nullable()
+    .optional()
+    .when("isSignal", {
+      is: true,
+      then: yup.object().required("Required"),
+    }),
   isSignal: yup.boolean(),
 });
 
@@ -59,6 +74,8 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
       projectName: null,
       projectSecondaryName: null,
       description: null,
+      isSignal: false,
+      signal: null,
     },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
@@ -78,7 +95,6 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
               id="project_name"
               label="Project name"
               name="projectName"
-              placeholder="Enter project name"
               control={control}
               error={!!errors?.projectName}
               helperText={errors?.projectName?.message}
@@ -108,10 +124,8 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
           <ControlledTextInput
             variant="standard"
             fullWidth
-            autoFocus
             id="secondary_name"
             name="projectSecondaryName"
-            placeholder="Secondary name"
             label="Secondary name"
             control={control}
             error={!!errors?.projectSecondaryName}
@@ -135,7 +149,6 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
                     inputProps={{ "aria-label": "primary checkbox" }}
                   />
                 }
-                // label="Use signal asset"
               />
             )}
           />
@@ -146,11 +159,9 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
           <ControlledTextInput
             variant="standard"
             fullWidth
-            multiline
-            minRows={4}
-            maxRows={10}
             id="description"
             name="description"
+            label="Description"
             size="small"
             control={control}
             error={!!errors?.description}
@@ -163,8 +174,7 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
           label={"Create"}
           loading={loading}
           success={success}
-          // handleButtonClick={handleSubmit}
-          // TODO: Add type=submit to button
+          buttonOptions={{ type: "submit", disabled: !isDirty || !isValid }}
         />
       </Box>
     </form>

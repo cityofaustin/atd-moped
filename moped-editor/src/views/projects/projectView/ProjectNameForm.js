@@ -26,7 +26,7 @@ const validationSchema = yup.object().shape({
       `Name must be ${projectNamesCharMax} characters or less`
     )
     .nullable()
-    .required("Title cannot be blank"),
+    .required("Name cannot be blank"),
   projectSecondaryName: yup
     .string()
     .max(
