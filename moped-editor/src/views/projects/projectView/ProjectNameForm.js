@@ -38,10 +38,6 @@ const validationSchema = yup.object().shape({
 });
 
 const useStyles = makeStyles(() => ({
-  editIcons: {
-    cursor: "pointer",
-    fontSize: "1.4rem",
-  },
   projectNameEditField: {
     "font-size": "1.4rem",
     "font-weight": "bold",
@@ -184,10 +180,10 @@ const ProjectNameForm = ({
               type="submit"
               disabled={!isDirty || !isValid || loading}
             >
-              <Icon className={classes.editIcons}>check</Icon>
+              <Icon>check</Icon>
             </IconButton>
             <IconButton onClick={handleCancelClick} disabled={loading}>
-              <Icon className={classes.editIcons}>close</Icon>
+              <Icon>close</Icon>
             </IconButton>
           </Grid>
           <Grid item xs={12} sm={3} container alignItems="flex-end">
