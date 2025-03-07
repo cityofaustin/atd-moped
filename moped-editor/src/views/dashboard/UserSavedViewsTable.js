@@ -63,7 +63,6 @@ const useColumns = ({
       },
     ];
   }, [
-    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
