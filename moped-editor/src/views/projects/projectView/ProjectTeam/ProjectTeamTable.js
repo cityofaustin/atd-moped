@@ -8,8 +8,6 @@ import {
   Link,
   CircularProgress,
   Typography,
-  ListItem,
-  ListItemText,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
@@ -31,6 +29,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import { mopedUserAutocompleteProps } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -109,24 +108,7 @@ const useColumns = ({
               name={"user"}
               value={props.row.moped_user}
               options={unassignedTeamMembers}
-              autocompleteProps={{
-                getOptionLabel: (option) => {
-                  return option.user_id
-                    ? `${option.first_name} ${option.last_name}`
-                    : "";
-                },
-                getOptionKey: (option) => option.user_id,
-                renderOption: (props, option) => {
-                  return (
-                    <ListItem {...props} key={option.user_id}>
-                      <ListItemText
-                        primary={`${option.first_name} ${option.last_name}`}
-                        secondary={option.email}
-                      />
-                    </ListItem>
-                  );
-                },
-              }}
+              autocompleteProps={mopedUserAutocompleteProps}
               textFieldProps={{
                 error: props.error,
                 helperText: "Required",
