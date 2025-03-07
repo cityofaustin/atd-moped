@@ -30,7 +30,7 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
-import AutocompleteWithDependentField from "src/components/DataGridPro/AutocompleteWithDependentField";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -104,7 +104,7 @@ const useColumns = ({
             );
           });
           return (
-            <AutocompleteWithDependentField
+            <LookupAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
