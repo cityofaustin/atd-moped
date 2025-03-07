@@ -64,78 +64,79 @@ const NewProjectView = () => {
   const handleSave = (formData) => {
     // Validate project nam
     console.log(formData);
+    const { isSignal, signal, projectName, projectSecondaryName, description } =
+      formData;
 
-    // setLoading(true);
+    setLoading(true);
 
-    // /**
-    //  * We now must generate the payload with variables for our GraphQL query.
-    //  * If it is a signal asset, include moped_proj_components, otherwise only the project details
-    //  * @type {Object}
-    //  */
-    // const variablePayload = {
-    //   object: {
-    //     // First we need to copy the project details
-    //     ...projectDetails,
-    //     project_name_secondary:
-    //       projectDetails.project_name_secondary.length > 0
-    //         ? projectDetails.project_name_secondary
-    //         : null,
-    //     added_by: userId,
-    //     // We need to add the potential phase as a default
-    //     moped_proj_phases: {
-    //       data: [
-    //         {
-    //           phase_id: 1,
-    //           is_current_phase: true,
-    //           phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
-    //           is_phase_start_confirmed: true,
-    //         },
-    //       ],
-    //     },
-    //     // Append moped_proj_components object if fromSignalAsset is true
-    //     ...(fromSignalAsset
-    //       ? {
-    //           moped_proj_components: {
-    //             data: [
-    //               generateProjectComponent(
-    //                 signalRecord,
-    //                 fromSignalAsset,
-    //                 componentData["moped_components"]
-    //               ),
-    //             ],
-    //           },
-    //         }
-    //       : {}),
-    //   },
-    // };
+    /**
+     * We now must generate the payload with variables for our GraphQL query.
+     * If it is a signal asset, include moped_proj_components, otherwise only the project details
+     * @type {Object}
+     */
+    const variablePayload = {
+      object: {
+        project_name: projectName,
+        project_description: description,
+        project_name_secondary:
+          projectSecondaryName.length > 0 ? projectSecondaryName : null,
+        added_by: userId,
+        // We need to add the potential phase as a default
+        moped_proj_phases: {
+          data: [
+            {
+              phase_id: 1,
+              is_current_phase: true,
+              phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
+              is_phase_start_confirmed: true,
+            },
+          ],
+        },
+        // Append moped_proj_components object if fromSignalAsset is true
+        // TODO: Figure out if we have this data in the signal object
+        ...(isSignal
+          ? {
+              moped_proj_components: {
+                data: [
+                  generateProjectComponent(
+                    signal,
+                    fromSignalAsset,
+                    componentData["moped_components"]
+                  ),
+                ],
+              },
+            }
+          : {}),
+      },
+    };
 
-    // /**
-    //  * Persist the new project to database
-    //  */
-    // addProject({
-    //   variables: variablePayload,
-    // })
-    //   // On success
-    //   .then((response) => {
-    //     // Capture the project ID, which will be used to redirect to the Project Summary page
-    //     const { project_id } = response.data.insert_moped_project_one;
-    //     setNewProjectId(project_id);
-    //     // Add project to user's following list
-    //     followProject({
-    //       variables: {
-    //         object: {
-    //           project_id: project_id,
-    //           user_id: userId,
-    //         },
-    //       },
-    //     });
-    //   })
-    //   // If there is an error, we must show it...
-    //   .catch((err) => {
-    //     alert(err);
-    //     setLoading(false);
-    //     setSuccess(false);
-    //   });
+    /**
+     * Persist the new project to database
+     */
+    addProject({
+      variables: variablePayload,
+    })
+      // On success
+      .then((response) => {
+        // Capture the project ID, which will be used to redirect to the Project Summary page
+        const { project_id } = response.data.insert_moped_project_one;
+        setNewProjectId(project_id);
+        // Add project to user's following list
+        followProject({
+          variables: {
+            object: {
+              project_id: project_id,
+              user_id: userId,
+            },
+          },
+        });
+      })
+      // If there is an error, we must show it...
+      .catch((err) => {
+        alert(err);
+        setLoading(false);
+        setSuccess(false);
+      });
   };
 
   /**

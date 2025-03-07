@@ -11,3 +11,10 @@ export const agolFieldCharMax = {
   descriptionString: 10000,
   projectNameFull: 1000,
 };
+
+/**
+ * This maximum considers the total number of characters allowed in the project full name
+ * field in the component_arcgis_online_view feature service. This schema splits that limit in half
+ * to allow equal space for the primary and secondary name fields that make up the full name.
+ */
+export const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;

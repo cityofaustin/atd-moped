@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, FormControlLabel, Grid, InputLabel, Switch } from "@mui/material";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
-import { agolFieldCharMax } from "src/constants/projects";
+import { agolFieldCharMax, projectNamesCharMax } from "src/constants/projects";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
 import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
 import * as yup from "yup";
@@ -14,13 +14,7 @@ import {
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
 
-/**
- * This validation schema considers the total number of characters allowed in the project full name
- * field in the component_arcgis_online_view feature service. This schema splits that limit in half
- * to allow equal space for the primary and secondary name fields that make up the full name.
- */
-const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
-
+// TODO: Make schema or parts of it reusable? https://github.com/jquense/yup?tab=readme-ov-file#composition-and-reuse
 const validationSchema = yup.object().shape({
   projectName: yup
     .string()

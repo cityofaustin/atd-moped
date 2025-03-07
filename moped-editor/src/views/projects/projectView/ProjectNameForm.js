@@ -6,17 +6,10 @@ import { Box, Grid, Icon, IconButton } from "@mui/material";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
-import { agolFieldCharMax } from "src/constants/projects";
+import { projectNamesCharMax } from "src/constants/projects";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-/**
- * This validation schema considers the total number of characters allowed in the project full name
- * field in the component_arcgis_online_view feature service. This schema splits that limit in half
- * to allow equal space for the primary and secondary name fields that make up the full name.
- */
-const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
 
 const validationSchema = yup.object().shape({
   projectName: yup
