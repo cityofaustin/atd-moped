@@ -96,7 +96,7 @@ const TABS = [
     label: "Following",
   },
   {
-    label: "User saved views",
+    label: "Saved views",
   },
 ];
 
@@ -312,8 +312,8 @@ const DashboardView = () => {
                   </AppBar>
                   {loading ? (
                     <CircularProgress />
-                  ) : TABS[activeTab].label === "User saved views" ? (
-                    <UserSavedViewsTable />
+                  ) : TABS[activeTab].label === "Saved views" ? (
+                    <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
                     <MaterialTable
                       columns={columns}

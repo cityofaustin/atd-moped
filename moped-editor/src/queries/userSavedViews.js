@@ -22,10 +22,10 @@ export const USER_SAVED_VIEWS_QUERY = gql`
 `;
 
 export const UPDATE_USER_SAVED_VIEW = gql`
-  mutation UpdateUserSavedView($id: Int!, $description: Int!) {
-    update_moped_proj_funding(
-      where: { id: { _eq: $id } }
+  mutation UpdateUserSavedView($id: Int!, $description: String!) {
+    update_moped_user_saved_views(
       _set: { description: $description }
+      where: { id: { _eq: $id } }
     ) {
       affected_rows
     }
