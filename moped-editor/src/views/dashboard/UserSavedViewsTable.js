@@ -4,6 +4,7 @@ import { useQuery, useMutation } from "@apollo/client";
 // Material
 import { CircularProgress } from "@mui/material";
 import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
+import Link from "@mui/material/Link";
 
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import {
@@ -17,10 +18,12 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
+import { FormattedDateString } from "src/utils/dateAndTime";
+
+const requiredFields = ["description"];
 
 /** Hook that provides memoized column settings */
 const useColumns = ({
-  data,
   rowModesModel,
   handleDeleteOpen,
   handleSaveClick,
@@ -40,7 +43,47 @@ const useColumns = ({
         headerName: "URL",
         field: "url",
         editable: false,
-        width: 500,
+        width: 300,
+        renderCell: ({ row }) =>
+          row.url ? (
+            <Link
+              href={row.url}
+              target={"_blank"}
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "block",
+              }}
+            >
+              {`mobility.austin.gov${row.url}`}
+            </Link>
+          ) : null,
+      },
+      {
+        headerName: "Updated at",
+        field: "updated_at",
+        width: 150,
+        defaultVisible: true,
+        renderCell: ({ row }) => (
+          <FormattedDateString
+            date={row.updated_at}
+            primary="relative"
+            secondary="absolute"
+          />
+        ),
+      },
+      {
+        headerName: "Created at",
+        field: "created_at",
+        width: 150,
+        defaultVisible: true,
+        renderCell: ({ row }) => (
+          <FormattedDateString
+            date={row.updated_at}
+            primary="relative"
+            secondary="absolute"
+          />
+        ),
       },
       {
         headerName: "",
@@ -53,6 +96,7 @@ const useColumns = ({
         renderCell: ({ id }) => (
           <DataGridActions
             id={id}
+            requiredFields={requiredFields}
             rowModesModel={rowModesModel}
             handleCancelClick={handleCancelClick}
             handleDeleteOpen={handleDeleteOpen}
