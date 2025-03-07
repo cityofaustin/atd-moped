@@ -294,6 +294,10 @@ const ProjectMilestones = ({
     updatedMilestoneData.milestone_id =
       updatedMilestoneData.moped_milestone?.milestone_id || null;
 
+    // "moped_milestone_related_phase" is a column name only for rendering in DataGrid, the pertinent information is in the
+    // moped_milestone object. Deleting from the payload since the db is not expecting it in this shape
+    delete updatedMilestoneData.moped_milestone_related_phase;
+
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
       delete updatedMilestoneData.id;
