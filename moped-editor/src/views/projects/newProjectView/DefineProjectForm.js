@@ -20,7 +20,7 @@ const validationSchema = yup.object().shape({
     .string()
     .nullable()
     .optional()
-    .when("isSignal", {
+    .when("isSignalProject", {
       is: false,
       then: yup
         .string()
@@ -50,11 +50,11 @@ const validationSchema = yup.object().shape({
     .object()
     .nullable()
     .optional()
-    .when("isSignal", {
+    .when("isSignalProject", {
       is: true,
       then: yup.object().required("Required"),
     }),
-  isSignal: yup.boolean(),
+  isSignalProject: yup.boolean(),
 });
 
 const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
@@ -68,20 +68,20 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
       projectName: null,
       projectSecondaryName: null,
       description: null,
-      isSignal: false,
+      isSignalProject: false,
       signal: null,
     },
     mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
 
-  const [isSignal] = watch(["isSignal"]);
+  const [isSignalProject] = watch(["isSignalProject"]);
 
   return (
     <form onSubmit={handleSubmit(handleSave)} style={{ padding: 25 }}>
       <Grid container spacing={3} style={{ margin: 20 }}>
         <Grid item xs={6}>
-          {!isSignal && ( // if
+          {!isSignalProject && (
             <ControlledTextInput
               autoFocus
               variant="standard"
@@ -94,7 +94,7 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
               helperText={errors?.projectName?.message}
             />
           )}
-          {isSignal && ( // else
+          {isSignalProject && (
             <Box sx={{ marginBottom: "2.1rem" }}>
               <Controller
                 id="signal"
@@ -129,7 +129,7 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
         <Grid item xs={3}>
           <InputLabel>Use signal asset</InputLabel>
           <Controller
-            name="isSignal"
+            name="isSignalProject"
             control={control}
             render={({ field: { onChange, value } }) => (
               <FormControlLabel

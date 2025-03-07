@@ -46,6 +46,15 @@ const NewProjectView = () => {
   const userId = userSessionData?.user_id;
 
   /**
+   * Signals query
+   */
+  const {
+    error: componentQueryError,
+    loading: componentQueryloading,
+    data: componentData,
+  } = useQuery(SIGNAL_COMPONENTS_QUERY);
+
+  /**
    * Add Project Apollo Mutation
    */
   const [addProject] = useMutation(ADD_PROJECT);
@@ -66,6 +75,30 @@ const NewProjectView = () => {
     console.log(formData);
     const { isSignal, signal, projectName, projectSecondaryName, description } =
       formData;
+
+    const payload = {
+      project_name: projectName,
+      project_name_seconary:
+        projectSecondaryName.length > 0 ? projectSecondaryName : null,
+      project_description: description,
+      // Use potential phase as default
+      moped_proj_phases: {
+        data: [
+          {
+            phase_id: 1,
+            is_current_phase: true,
+            phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
+            is_phase_start_confirmed: true,
+          },
+        ],
+      },
+    };
+
+    if (isSignal) {
+      // TODO: 1. use knackSignalRecordToFeatureSignalsRecord to get from autocomplete to signalRecord
+      // TODO: 2. use generateProjectComponent to convert signalRecord into a insertable component
+      // TODO 3. Replace project name with const projectName = signal?.properties?.location_name || "";
+    }
 
     setLoading(true);
 
@@ -166,6 +199,11 @@ const NewProjectView = () => {
       }, 800);
     }
   }, [success, newProjectId, navigate]);
+
+  if (componentQueryloading) {
+    return <CircularProgress />;
+  }
+  if (componentQueryError) return `Error! ${componentQueryError.message}`;
 
   return (
     <Page title="New project">
