@@ -214,7 +214,6 @@ const ProjectMilestones = ({
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
-  // const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data); // check the bug in team table isnt here
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback(
