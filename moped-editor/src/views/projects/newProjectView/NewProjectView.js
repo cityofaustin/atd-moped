@@ -4,8 +4,13 @@ import { CircularProgress, Container, Card, CardContent } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
-import { useMutation } from "@apollo/client";
-import { ADD_PROJECT, PROJECT_FOLLOW } from "src/queries/project";
+import { useQuery, useMutation } from "@apollo/client";
+import {
+  SIGNAL_COMPONENTS_QUERY,
+  ADD_PROJECT,
+  PROJECT_FOLLOW,
+} from "src/queries/project";
+import { knackSignalRecordToFeatureSignalsRecord } from "src/utils/signalComponentHelpers";
 
 import { getSessionDatabaseData } from "src/auth/user";
 
@@ -73,12 +78,17 @@ const NewProjectView = () => {
   const handleSave = (formData) => {
     // Validate project nam
     console.log(formData);
-    const { isSignal, signal, projectName, projectSecondaryName, description } =
-      formData;
+    const {
+      isSignalProject,
+      signal,
+      projectName,
+      projectSecondaryName,
+      description,
+    } = formData;
 
     const payload = {
       project_name: projectName,
-      project_name_seconary:
+      project_name_secondary:
         projectSecondaryName.length > 0 ? projectSecondaryName : null,
       project_description: description,
       // Use potential phase as default
@@ -94,60 +104,30 @@ const NewProjectView = () => {
       },
     };
 
-    if (isSignal) {
-      // TODO: 1. use knackSignalRecordToFeatureSignalsRecord to get from autocomplete to signalRecord
-      // TODO: 2. use generateProjectComponent to convert signalRecord into a insertable component
-      // TODO 3. Replace project name with const projectName = signal?.properties?.location_name || "";
+    if (isSignalProject) {
+      // Use signal location name as project name
+      payload.project_name = signal?.properties?.location_name || "";
+
+      const signalFeature = knackSignalRecordToFeatureSignalsRecord(signal);
+      console.log(signalFeature);
+      const insertableComponent = generateProjectComponent(
+        signalFeature,
+        isSignalProject,
+        componentData["moped_components"]
+      );
+
+      payload.moped_proj_components = {
+        data: [insertableComponent],
+      };
     }
 
     setLoading(true);
 
     /**
-     * We now must generate the payload with variables for our GraphQL query.
-     * If it is a signal asset, include moped_proj_components, otherwise only the project details
-     * @type {Object}
-     */
-    const variablePayload = {
-      object: {
-        project_name: projectName,
-        project_description: description,
-        project_name_secondary:
-          projectSecondaryName.length > 0 ? projectSecondaryName : null,
-        added_by: userId,
-        // We need to add the potential phase as a default
-        moped_proj_phases: {
-          data: [
-            {
-              phase_id: 1,
-              is_current_phase: true,
-              phase_start: new Date(new Date().setHours(0, 0, 0, 0)),
-              is_phase_start_confirmed: true,
-            },
-          ],
-        },
-        // Append moped_proj_components object if fromSignalAsset is true
-        // TODO: Figure out if we have this data in the signal object
-        ...(isSignal
-          ? {
-              moped_proj_components: {
-                data: [
-                  generateProjectComponent(
-                    signal,
-                    fromSignalAsset,
-                    componentData["moped_components"]
-                  ),
-                ],
-              },
-            }
-          : {}),
-      },
-    };
-
-    /**
      * Persist the new project to database
      */
     addProject({
-      variables: variablePayload,
+      variables: { object: payload },
     })
       // On success
       .then((response) => {
