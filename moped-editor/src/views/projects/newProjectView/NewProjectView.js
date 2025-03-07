@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CircularProgress, Container, Card, CardContent } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
 import { useQuery, useMutation } from "@apollo/client";
@@ -17,28 +16,11 @@ import { getSessionDatabaseData } from "src/auth/user";
 import { generateProjectComponent } from "src/utils/signalComponentHelpers";
 
 /**
- * Styles
- */
-const useStyles = makeStyles((theme) => ({
-  cardWrapper: {
-    marginTop: theme.spacing(3),
-  },
-  buttons: {
-    display: "flex",
-    justifyContent: "flex-end",
-  },
-  button: {
-    marginLeft: theme.spacing(1),
-  },
-}));
-
-/**
  * New Project View
  * @return {JSX.Element}
  * @constructor
  */
 const NewProjectView = () => {
-  const classes = useStyles();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [newProjectId, setNewProjectId] = useState(null);
@@ -76,8 +58,6 @@ const NewProjectView = () => {
    * Persists a new project into the database
    */
   const handleSave = (formData) => {
-    // Validate project nam
-    console.log(formData);
     const {
       isSignalProject,
       signal,
@@ -123,9 +103,6 @@ const NewProjectView = () => {
 
     setLoading(true);
 
-    /**
-     * Persist the new project to database
-     */
     addProject({
       variables: { object: payload },
     })
@@ -188,14 +165,13 @@ const NewProjectView = () => {
   return (
     <Page title="New project">
       <Container>
-        <Card className={classes.cardWrapper}>
+        <Card sx={{ marginTop: 3 }}>
           <CardContent>
             <div>
               <DefineProjectForm
                 loading={loading}
                 success={success}
                 handleSave={handleSave}
-                classes={classes}
               />
             </div>
           </CardContent>

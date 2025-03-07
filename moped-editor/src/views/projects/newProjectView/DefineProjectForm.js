@@ -57,7 +57,15 @@ const validationSchema = yup.object().shape({
   isSignalProject: yup.boolean(),
 });
 
-const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
+/**
+ * DefineProjectForm Component
+ * @param {Function} handleSave - The function to save the new project
+ * @param {Boolean} loading - Loading state to show form submission
+ * @param {Boolean} success - Success state to show successful form submission
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const DefineProjectForm = ({ handleSave, loading, success }) => {
   const {
     handleSubmit,
     control,
@@ -163,12 +171,22 @@ const DefineProjectForm = ({ handleSave, loading, success, classes }) => {
           />
         </Grid>
       </Grid>
-      <Box pt={2} pl={2} className={classes.buttons}>
+      <Box
+        pt={2}
+        pl={2}
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
         <ProjectSaveButton
           label={"Create"}
           loading={loading}
           success={success}
-          buttonOptions={{ type: "submit", disabled: !isDirty || !isValid }}
+          buttonOptions={{
+            type: "submit",
+            disabled: !isDirty || !isValid || loading,
+          }}
         />
       </Box>
     </form>
