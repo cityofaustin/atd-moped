@@ -12,8 +12,11 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Boolean} hasFocus - does field have focus in table
  * @param {String} name - name of lookup table relationship
  * @param {Array|Objects} options - the lookup table data
- * @param {Object} autocompleteProps - props passed to the MUI Autcomplete Component
  * @param {Boolean} fullWidthPopper - should component use custom Popper component
+ * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
+ * @param {Object} textFieldProps - props passed to the renderInput TextField
+ * @param {string} dependentFieldName - optional, if another field should be updated on change, name of field
+ * @param {function} dependentFieldValue - optional, takes newValue as input and returns the dependent fields change
  *
  * @returns {React component}
  */
@@ -67,7 +70,6 @@ const LookupAutocompleteComponent = ({
   return (
     <Autocomplete
       sx={{ width: "100%", mx: 1, alignContent: "center" }}
-      // do i need padding top here?
       value={value?.[`${name}_id`] ? value : null}
       // use customized popper component so menu expands to fullwidth
       PopperComponent={fullWidthPopper && FullWidthPopper}
@@ -75,7 +77,12 @@ const LookupAutocompleteComponent = ({
       filterOptions={filterOptions}
       options={options}
       renderInput={(params) => (
-        <TextField variant="standard" {...params} inputRef={ref} {...textFieldProps}/>
+        <TextField
+          variant="standard"
+          {...params}
+          inputRef={ref}
+          {...textFieldProps}
+        />
       )}
       {...autocompleteProps}
       getOptionLabel={
