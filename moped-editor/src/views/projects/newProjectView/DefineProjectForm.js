@@ -1,7 +1,7 @@
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Box, FormControlLabel, Grid, InputLabel, Switch } from "@mui/material";
+import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { agolFieldCharMax, projectNamesCharMax } from "src/constants/projects";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
@@ -86,97 +86,111 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
   const [isSignalProject] = watch(["isSignalProject"]);
 
   return (
-    <form onSubmit={handleSubmit(handleSave)} style={{ padding: 25 }}>
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={6}>
-          {!isSignalProject && (
-            <ControlledTextInput
-              autoFocus
-              variant="standard"
-              fullWidth
-              id="project_name"
-              label="Project name"
-              name="projectName"
-              control={control}
-              error={!!errors?.projectName}
-              helperText={errors?.projectName?.message}
-            />
-          )}
-          {isSignalProject && (
-            <Box sx={{ marginBottom: "2.1rem" }}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleSave)}
+      sx={{ paddingX: 9, paddingY: 9 }}
+    >
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item sm={6} xs={12}>
+              {!isSignalProject && (
+                <ControlledTextInput
+                  autoFocus
+                  variant="standard"
+                  fullWidth
+                  id="project_name"
+                  label="Project name"
+                  name="projectName"
+                  control={control}
+                  error={!!errors?.projectName}
+                  helperText={errors?.projectName?.message}
+                />
+              )}
+              {isSignalProject && (
+                <Controller
+                  id="signal"
+                  name="signal"
+                  control={control}
+                  shouldUnregister={true}
+                  render={({ field }) => (
+                    <KnackComponentAutocomplete
+                      {...field}
+                      componentLabel="Signal"
+                      signalType={"TRAFFIC"}
+                      socrataEndpoint={SOCRATA_ENDPOINT}
+                      isOptionEqualToValue={getSignalOptionSelected}
+                      getOptionLabel={getSignalOptionLabel}
+                      textInputOptions={{ variant: "standard" }}
+                    />
+                  )}
+                />
+              )}
+            </Grid>
+            <Grid item sm={6} xs={12} alignContent="flex-end">
               <Controller
-                id="signal"
-                name="signal"
+                name="isSignalProject"
                 control={control}
-                shouldUnregister={true}
-                render={({ field }) => (
-                  <KnackComponentAutocomplete
-                    {...field}
-                    componentLabel="Signal"
-                    signalType={"TRAFFIC"}
-                    socrataEndpoint={SOCRATA_ENDPOINT}
-                    isOptionEqualToValue={getSignalOptionSelected}
-                    getOptionLabel={getSignalOptionLabel}
-                    textInputOptions={{ variant: "standard" }}
+                render={({ field: { onChange, value } }) => (
+                  <FormControlLabel
+                    label="Use signal asset"
+                    control={
+                      <Switch
+                        variant="standard"
+                        type="checkbox"
+                        color="primary"
+                        checked={value}
+                        onChange={onChange}
+                        inputProps={{ "aria-label": "primary checkbox" }}
+                      />
+                    }
                   />
                 )}
               />
-            </Box>
-          )}
-          <ControlledTextInput
-            variant="standard"
-            fullWidth
-            id="secondary_name"
-            name="projectSecondaryName"
-            label="Secondary name"
-            control={control}
-            error={!!errors?.projectSecondaryName}
-            helperText={errors?.projectSecondaryName?.message}
-          />
+            </Grid>
+          </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <InputLabel>Use signal asset</InputLabel>
-          <Controller
-            name="isSignalProject"
-            control={control}
-            render={({ field: { onChange, value } }) => (
-              <FormControlLabel
-                control={
-                  <Switch
-                    variant="standard"
-                    type="checkbox"
-                    color="primary"
-                    checked={value}
-                    onChange={onChange}
-                    inputProps={{ "aria-label": "primary checkbox" }}
-                  />
-                }
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <ControlledTextInput
+                variant="standard"
+                fullWidth
+                id="secondary_name"
+                name="projectSecondaryName"
+                label="Secondary name"
+                control={control}
+                error={!!errors?.projectSecondaryName}
+                helperText={errors?.projectSecondaryName?.message}
               />
-            )}
-          />
+            </Grid>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container spacing={3} style={{ margin: 20 }}>
-        <Grid item xs={6}>
-          <ControlledTextInput
-            variant="standard"
-            fullWidth
-            id="description"
-            name="description"
-            label="Description"
-            size="small"
-            control={control}
-            error={!!errors?.description}
-            helperText={errors?.description?.message}
-          />
+        <Grid item xs={12}>
+          <Grid container spacing={3}>
+            <Grid item xs={6}>
+              <ControlledTextInput
+                variant="standard"
+                fullWidth
+                id="description"
+                name="description"
+                label="Description"
+                size="small"
+                control={control}
+                error={!!errors?.description}
+                helperText={errors?.description?.message}
+              />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Box
-        pt={2}
-        pl={2}
         sx={{
           display: "flex",
           justifyContent: "flex-end",
+          paddingTop: 8,
+          marginRight: 1,
         }}
       >
         <ProjectSaveButton
@@ -189,7 +203,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
           }}
         />
       </Box>
-    </form>
+    </Box>
   );
 };
 

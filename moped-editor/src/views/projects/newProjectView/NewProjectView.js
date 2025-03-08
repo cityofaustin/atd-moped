@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CircularProgress, Container, Card, CardContent } from "@mui/material";
+import { CircularProgress, Container, Paper } from "@mui/material";
 import DefineProjectForm from "./DefineProjectForm";
 import Page from "src/components/Page";
 import { useQuery, useMutation } from "@apollo/client";
@@ -165,17 +165,13 @@ const NewProjectView = () => {
   return (
     <Page title="New project">
       <Container>
-        <Card sx={{ marginTop: 3 }}>
-          <CardContent>
-            <div>
-              <DefineProjectForm
-                loading={loading}
-                success={success}
-                handleSave={handleSave}
-              />
-            </div>
-          </CardContent>
-        </Card>
+        <Paper sx={{ mt: 3 }}>
+          <DefineProjectForm
+            loading={loading}
+            success={success}
+            handleSave={handleSave}
+          />
+        </Paper>
       </Container>
     </Page>
   );
