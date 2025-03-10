@@ -509,6 +509,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
       const hasRowChanged = !isEqual(updatedRow, originalRow);
 
       if (!hasRowChanged) {
+        console.log("didn't change", updatedRow);
         return Promise.resolve(updatedRow);
       } else {
         return (

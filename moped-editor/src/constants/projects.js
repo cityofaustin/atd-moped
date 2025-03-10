@@ -1,3 +1,5 @@
+import * as yup from "yup";
+
 export const substantialCompletionDateTooltipText =
   "The earliest confirmed date of any Complete or Post-construction phase";
 
@@ -18,3 +20,32 @@ export const agolFieldCharMax = {
  * to allow equal space for the primary and secondary name fields that make up the full name.
  */
 export const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
+
+/**
+ * Reusable validation schema for fields with multiple inputs in different app views.
+ */
+export const agolValidation = {
+  description: yup
+    .string()
+    .max(
+      agolFieldCharMax.descriptionString,
+      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
+    )
+    .nullable()
+    .required("Required"),
+  projectName: yup
+    .string()
+    .max(
+      projectNamesCharMax,
+      `Name must be ${projectNamesCharMax} characters or less`
+    )
+    .nullable()
+    .required("Name cannot be blank"),
+  projectSecondaryName: yup
+    .string()
+    .max(
+      projectNamesCharMax,
+      `Secondary name must be ${projectNamesCharMax} characters or less`
+    )
+    .nullable(),
+};

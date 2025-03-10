@@ -6,27 +6,14 @@ import { Box, Grid, Icon, IconButton } from "@mui/material";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
-import { projectNamesCharMax } from "src/constants/projects";
+import { agolValidation } from "src/constants/projects";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 const validationSchema = yup.object().shape({
-  projectName: yup
-    .string()
-    .max(
-      projectNamesCharMax,
-      `Name must be ${projectNamesCharMax} characters or less`
-    )
-    .nullable()
-    .required("Name cannot be blank"),
-  projectSecondaryName: yup
-    .string()
-    .max(
-      projectNamesCharMax,
-      `Secondary name must be ${projectNamesCharMax} characters or less`
-    )
-    .nullable(),
+  projectName: agolValidation.projectName,
+  projectSecondaryName: agolValidation.projectSecondaryName,
 });
 
 const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };

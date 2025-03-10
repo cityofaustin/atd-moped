@@ -3,7 +3,7 @@ import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, FormControlLabel, Grid, Switch } from "@mui/material";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
-import { agolFieldCharMax, projectNamesCharMax } from "src/constants/projects";
+import { agolValidation } from "src/constants/projects";
 import KnackComponentAutocomplete from "src/views/projects/projectView/ProjectComponents/KnackComponentAutocomplete";
 import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
 import * as yup from "yup";
@@ -14,38 +14,13 @@ import {
   SOCRATA_ENDPOINT,
 } from "src/utils/signalComponentHelpers";
 
-// TODO: Make schema or parts of it reusable? https://github.com/jquense/yup?tab=readme-ov-file#composition-and-reuse
 const validationSchema = yup.object().shape({
-  projectName: yup
-    .string()
-    .nullable()
-    .optional()
-    .when("isSignalProject", {
-      is: false,
-      then: yup
-        .string()
-        .max(
-          projectNamesCharMax,
-          `Name must be ${projectNamesCharMax} characters or less`
-        )
-        .nullable()
-        .required("Name cannot be blank"),
-    }),
-  projectSecondaryName: yup
-    .string()
-    .max(
-      projectNamesCharMax,
-      `Secondary name must be ${projectNamesCharMax} characters or less`
-    )
-    .nullable(),
-  description: yup
-    .string()
-    .max(
-      agolFieldCharMax.descriptionString,
-      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
-    )
-    .nullable()
-    .required("Required"),
+  projectName: yup.string().nullable().optional().when("isSignalProject", {
+    is: false,
+    then: agolValidation.projectName,
+  }),
+  projectSecondaryName: agolValidation.projectSecondaryName,
+  description: agolValidation.description,
   signal: yup
     .object()
     .nullable()
