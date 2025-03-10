@@ -4,8 +4,6 @@
 import logging
 import json
 
-from bs4 import BeautifulSoup
-
 from process.logging import get_logger
 from cli import get_cli_args
 from settings import (
