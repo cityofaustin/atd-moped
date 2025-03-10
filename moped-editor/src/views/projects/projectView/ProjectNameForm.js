@@ -105,6 +105,7 @@ const ProjectNameForm = ({
               }}
               InputProps={{
                 sx: inputStyles,
+                disabled: loading,
               }}
             />
           </Grid>
@@ -125,6 +126,7 @@ const ProjectNameForm = ({
               }}
               InputProps={{
                 sx: inputStyles,
+                disabled: loading,
               }}
             />
           </Grid>

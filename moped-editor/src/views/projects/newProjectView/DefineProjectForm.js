@@ -81,6 +81,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                   control={control}
                   error={!!errors?.projectName}
                   helperText={errors?.projectName?.message}
+                  InputProps={{
+                    disabled: loading,
+                  }}
                 />
               )}
               {isSignalProject && (
@@ -97,7 +100,12 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                       socrataEndpoint={SOCRATA_ENDPOINT}
                       isOptionEqualToValue={getSignalOptionSelected}
                       getOptionLabel={getSignalOptionLabel}
-                      textInputOptions={{ variant: "standard" }}
+                      textInputOptions={{
+                        variant: "standard",
+                        error: !!errors?.signal,
+                        helperText: errors?.signal?.message,
+                        disabled: loading,
+                      }}
                     />
                   )}
                 />
@@ -138,6 +146,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                 control={control}
                 error={!!errors?.projectSecondaryName}
                 helperText={errors?.projectSecondaryName?.message}
+                InputProps={{
+                  disabled: loading,
+                }}
               />
             </Grid>
           </Grid>
@@ -155,6 +166,9 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
                 control={control}
                 error={!!errors?.description}
                 helperText={errors?.description?.message}
+                InputProps={{
+                  disabled: loading,
+                }}
               />
             </Grid>
           </Grid>

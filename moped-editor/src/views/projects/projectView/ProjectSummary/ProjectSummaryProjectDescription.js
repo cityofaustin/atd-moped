@@ -124,6 +124,9 @@ const ProjectSummaryProjectDescription = ({
               control={control}
               error={!!errors?.description}
               helperText={errors?.description?.message}
+              InputProps={{
+                disabled: loading,
+              }}
             />
             <IconButton
               size="large"
