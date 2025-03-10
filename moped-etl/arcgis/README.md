@@ -22,6 +22,8 @@ The fourth layer is sourced from a derivative view, `exploded_component_arcgis_o
 
 ## Running the Script
 
+1. (If running full refresh) Ensure the local Moped stack is running with a current snapshot.
+
 1. Configure an `env_file` according to the `env_template` example. You can find the AGOL Scripts Publisher username and password in the API Secrets vault in the team password store.
 
 1. `docker compose build` to build the container.
