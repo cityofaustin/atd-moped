@@ -89,7 +89,6 @@ const NewProjectView = () => {
       payload.project_name = signal?.properties?.location_name || "";
 
       const signalFeature = knackSignalRecordToFeatureSignalsRecord(signal);
-      console.log(signalFeature);
       const insertableComponent = generateProjectComponent(
         signalFeature,
         isSignalProject,
