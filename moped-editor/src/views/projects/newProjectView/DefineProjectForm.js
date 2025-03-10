@@ -153,7 +153,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={3}>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <ControlledTextInput
                 variant="standard"
                 fullWidth
@@ -169,7 +169,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={3}>
-            <Grid item xs={6}>
+            <Grid item sm={6} xs={12}>
               <ControlledTextInput
                 variant="standard"
                 fullWidth
