@@ -21,35 +21,6 @@ from utils import (
     get_logger,
 )
 
-
-def has_html_tags(html_string_to_check):
-    """Identify if a string contains HTML tags.
-
-    See: https://pypi.org/project/beautifulsoup4/
-
-    Args:
-        html_string_to_check (str): A string to test for HTML tags
-
-    Returns:
-        bool: True if the string contains HTML tags, False otherwise
-    """
-    return bool(BeautifulSoup(html_string_to_check, "html.parser").find())
-
-
-def is_valid_HTML_tag(html_string_to_check):
-    """Identify if a string contains valid HTML.
-
-    See: https://pypi.org/project/beautifulsoup4/
-
-    Args:
-        html_string_to_check (str): A string that contains HTML to test for valid HTML.
-
-    Returns:
-        bool: True if the string contains valid HTML, False otherwise
-    """
-    soup = BeautifulSoup(html_string_to_check, "html.parser")
-    return html_string_to_check == str(soup)
-
 def get_esri_geometry_key(geometry):
     """Identify the name of the geometry property that will hold coordinate data in an
     Esri feature object.
@@ -216,8 +187,7 @@ def main(args):
     if args.full:
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
-            features_of_type = all_features[feature_type]
-            features = features_of_type
+            features = all_features[feature_type]
 
             logger.info("Deleting all existing features...")
             if not args.test:
@@ -237,8 +207,7 @@ def main(args):
         # Delete outdated feature from AGOL and add updated features
         for feature_type in ["points", "lines", "combined", "exploded"]:
             logger.info(f"Processing {feature_type} features...")
-            features_of_type = all_features[feature_type]
-            features = features_of_type
+            features = all_features[feature_type]
 
             logger.info(
                 f"Deleting all existing features in {feature_type} layer for updated projects in chunks of {UPLOAD_CHUNK_SIZE}..."
