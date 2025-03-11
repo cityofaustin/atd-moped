@@ -8,7 +8,7 @@ This script takes a csv with
 
 1. Use `secrets_template.py` as a template to create `secrets.py`
 
-1. Export https://docs.google.com/spreadsheets/d/1M2dwi-GqheZLmy-GJwmrf6LAJpu07aoiD3aTEOo7IUQ/edit#gid=102248273
+1. Export https://docs.google.com/spreadsheets/d/1M2dwi-GqheZLmy-GJwmrf6LAJpu07aoiD3aTEOo7IUQ/edit?gid=1500102334#gid=1500102334
    as a csv file and place in the /data/ directory 
 
 1. Create a virtual environment and install requirements.txt:

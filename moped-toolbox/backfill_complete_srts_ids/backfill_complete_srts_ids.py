@@ -11,11 +11,10 @@ from datetime import datetime, timezone
 from time import sleep
 from secrets import HASURA
 
-csv_filename = "complete_srts_id_phase_and_completion_date.csv"
+csv_filename = "ATSD Moped Issue Tracking - SRTS Complete IDs.csv"
 
-# Query for project components with SRTS ID. This query captures descriptions that are
-# null, empty string, or do not start with "SRTS Recommendation:" so we can repeat this
-# process if needed without appending SRTS info multiple times to the same record.
+# Query for project components AGOL view with SRTS ID. This query captures components that
+# have not been substantially completed yet and match a givent Safe Routes to School ID.
 GET_COMPONENTS_BY_SRTS_ID = """
 query GetProjectComponentsBySrtsId($srts_id: String) {
   component_arcgis_online_view(
@@ -27,14 +26,18 @@ query GetProjectComponentsBySrtsId($srts_id: String) {
     }
   ) {
     project_component_id
+    project_id
+    component_url
+    srts_id
   }
 }
 """
 
 # Mutate project component description to include PROJECT_END_DATE (completion_date) from csv
 UPDATE_COMPONENT_PHASE_AND_COMPLETION_DATE = """
-mutation UpdateProjectComponentDescription($project_component_id: Int!, $completion_date: timestamptz) {
-    update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {phase_id: 11, completion_date: $completion_date, updated_by_user_id: 1}) {
+mutation UpdateProjectComponentDescription($project_component_id: Int!, $completion_date: timestamptz, $phase_id: Int!, $updated_by_user_id: Int!) {
+    update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, 
+    _set: {phase_id: $phase_id, completion_date: $completion_date, updated_by_user_id: $updated_by_user_id}) {
         project_component_id
     }
 }
@@ -80,6 +83,16 @@ def get_srts_data_from_csv(filepath):
     return rows
 
 
+def save_to_csv(rows, fieldnames, filepath):
+    with open(filepath, mode="w", newline="") as file:
+        writer = csv.DictWriter(
+            file,
+            fieldnames=fieldnames,
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main(env, verbose):
     rows = get_srts_data_from_csv(f"data/{csv_filename}")
     print(f"Found {len(rows)} rows in csv file.")
@@ -107,11 +120,17 @@ def main(env, verbose):
         if len(existing_components_matched_by_srts_id) > 0:
             for component in existing_components_matched_by_srts_id:
                 project_component_id = component["project_component_id"]
+                project_id = component["project_id"]
+                component_url = component["component_url"]
+                srts_id = component["srts_id"]
 
                 updates.append(
                     {
+                        "project_id": project_id,
                         "project_component_id": project_component_id,
                         "completion_date": new_completion_date,
+                        "component_url": component_url,
+                        "srts_id": srts_id,
                     }
                 )
 
@@ -130,11 +149,11 @@ def main(env, verbose):
     for update in updates:
         project_component_id = update["project_component_id"]
         completion_date = update["completion_date"]
-        timestampz = convert_to_utc_timestamp(completion_date)
+        timestamp = convert_to_utc_timestamp(completion_date)
 
         if verbose:
             print(
-                f"Updating component {project_component_id} with completion date: {timestampz}"
+                f"Updating component {project_component_id} with completion date: {timestamp}"
             )
 
         try:
@@ -142,7 +161,11 @@ def main(env, verbose):
                 query=UPDATE_COMPONENT_PHASE_AND_COMPLETION_DATE,
                 variables={
                     "project_component_id": project_component_id,
-                    "completion_date": timestampz,
+                    "completion_date": timestamp,
+                    # Complete phase
+                    "phase_id": 11,
+                    # Data and Tech Admin user ID
+                    "updated_by_user_id": 1,
                 },
                 endpoint=HASURA["HASURA_ENDPOINT"][env],
                 secret=HASURA["HASURA_ADMIN_SECRET"][env],
@@ -159,7 +182,26 @@ def main(env, verbose):
         f"Found {len(no_match)} SRTS IDs in csv with no match in database: {no_match}"
     )
     print(f"Errors on project component IDs: {errors}")
-    # TODO: Output list of updated project component IDs to a csv file
+
+    # Save updates to a CSV file
+    save_to_csv(
+        updates,
+        [
+            "project_id",
+            "project_component_id",
+            "srts_id",
+            "completion_date",
+            "component_url",
+        ],
+        "data/updated_project_components.csv",
+    )
+
+    # Save SRTS IDs with no match to a CSV file
+    save_to_csv(
+        [{"srts_id": srts_id} for srts_id in no_match],
+        ["srts_id"],
+        "data/srts_ids_no_match.csv",
+    )
 
 
 if __name__ == "__main__":
