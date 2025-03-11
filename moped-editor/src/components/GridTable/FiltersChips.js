@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useMutation } from "@apollo/client";
 import { Box, Typography, Chip, Grid, Button } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
@@ -9,7 +7,7 @@ import {
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
-import { ADD_USER_SAVED_VIEW } from "src/queries/project";
+import SaveViewModal from "src/views/projects/projectsListView/components/saveViewModal";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -43,14 +41,12 @@ const FiltersChips = ({
   filtersConfig,
   setSearchParams,
   setIsOr,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const classes = useStyles();
 
-  const [saveView] = useMutation(ADD_USER_SAVED_VIEW);
   const [IsViewSaved, setIsViewSaved] = useState(false);
-
-  let { pathname, search } = useLocation();
+  const [isSaveViewModalOpen, setIsSaveViewModalOpen] = useState(false);
 
   const filtersCount = Object.keys(filters).length;
 
@@ -123,28 +119,7 @@ const FiltersChips = ({
   };
 
   const handleSaveView = () => {
-    const defaultDescription = filtersLabels
-      .map(
-        (filter) =>
-          `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
-      )
-      .join(", ");
-    saveView({
-      variables: {
-        object: {
-          description: defaultDescription,
-          url: `${pathname}${search}`,
-          query_filters: filters,
-        },
-      },
-    })
-      .then(() => {
-        setIsViewSaved(true);
-        handleSnackbar(true, "View saved to Dashboard", "success");
-      })
-      .catch((error) => {
-        handleSnackbar(true, "Error saving view to Dashboard", "error", error);
-      });
+    setIsSaveViewModalOpen(true);
   };
 
   return (
@@ -203,6 +178,14 @@ const FiltersChips = ({
           ))}
         </Grid>
       </Typography>
+      <SaveViewModal
+        showDialog={isSaveViewModalOpen}
+        setIsSaveViewModalOpen={setIsSaveViewModalOpen}
+        filters={filters}
+        filtersLabels={filtersLabels}
+        setIsViewSaved={setIsViewSaved}
+        handleSnackbar={handleSnackbar}
+      />
     </Box>
   );
 };
