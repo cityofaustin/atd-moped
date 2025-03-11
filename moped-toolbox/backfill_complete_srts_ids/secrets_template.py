@@ -4,4 +4,9 @@ HASURA = {
         "staging": "",
         "prod": "",
     },
+    HASURA_ADMIN_SECRET: {
+        "local": "hasurapassword",
+        "staging": "<redacted>",
+        "prod": "<redacted>",
+    },
 }
