@@ -7,10 +7,11 @@ import argparse
 import csv
 import json
 import requests
+from datetime import datetime, timezone
 from time import sleep
 from secrets import HASURA
 
-csv_filename = "complete_srts_id_phase_and_completion_date"
+csv_filename = "complete_srts_id_phase_and_completion_date.csv"
 
 # Query for project components with SRTS ID. This query captures descriptions that are
 # null, empty string, or do not start with "SRTS Recommendation:" so we can repeat this
@@ -31,17 +32,28 @@ query GetProjectComponentsBySrtsId($srts_id: String) {
 """
 
 # Mutate project component description to include PROJECT_END_DATE (completion_date) from csv
-UPDATE_COMPONENT_DESCRIPTION = """
+UPDATE_COMPONENT_PHASE_AND_COMPLETION_DATE = """
 mutation UpdateProjectComponentDescription($project_component_id: Int!, $completion_date: timestamptz) {
-    update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {phase_id: 11, completion_date: $completion_date}) {
+    update_moped_proj_components_by_pk(pk_columns: {project_component_id: $project_component_id}, _set: {phase_id: 11, completion_date: $completion_date, updated_by_user_id: 1}) {
         project_component_id
     }
 }
 """
 
 
-def make_hasura_request(*, query, variables, endpoint):
-    headers = {"X-Hasura-Admin-Secret": admin_secret}
+def convert_to_utc_timestamp(date_str):
+    date_format = "%m/%d/%y"
+    naive_datetime = datetime.strptime(date_str, date_format)
+    # Set the time to midnight and convert to UTC
+    naive_datetime = naive_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
+    utc_datetime = naive_datetime.astimezone(timezone.utc)
+    # Convert to ISO 8601 format
+    utc_timestamp = utc_datetime.isoformat()
+    return utc_timestamp
+
+
+def make_hasura_request(*, query, variables, endpoint, secret):
+    headers = {"X-Hasura-Admin-Secret": secret}
     payload = {"query": query, "variables": variables}
     res = requests.post(endpoint, json=payload, headers=headers)
     res.raise_for_status()
@@ -68,7 +80,7 @@ def get_srts_data_from_csv(filepath):
     return rows
 
 
-def main(env):
+def main(env, verbose):
     rows = get_srts_data_from_csv(f"data/{csv_filename}")
     print(f"Found {len(rows)} rows in csv file.")
 
@@ -82,11 +94,15 @@ def main(env):
         srts_id = row["srts_id"]
         new_completion_date = row["completion_date"]
 
+        if verbose:
+            print(f"Checking for components with SRTS ID: {srts_id}")
+
         existing_components_matched_by_srts_id = make_hasura_request(
             query=GET_COMPONENTS_BY_SRTS_ID,
             variables={"srts_id": srts_id},
             endpoint=HASURA["HASURA_ENDPOINT"][env],
-        )["moped_proj_components"]
+            secret=HASURA["HASURA_ADMIN_SECRET"][env],
+        )["component_arcgis_online_view"]
 
         if len(existing_components_matched_by_srts_id) > 0:
             for component in existing_components_matched_by_srts_id:
@@ -98,23 +114,38 @@ def main(env):
                         "completion_date": new_completion_date,
                     }
                 )
+
+            if verbose:
+                print(
+                    f"Found {len(existing_components_matched_by_srts_id)} components with SRTS ID: {srts_id}"
+                )
         else:
+            if verbose:
+                print(f"No components found with SRTS ID: {srts_id}")
+
             no_match.append(srts_id)
 
     print(f"Found {len(updates)} components to update. Updating...")
+
     for update in updates:
         project_component_id = update["project_component_id"]
         completion_date = update["completion_date"]
+        timestampz = convert_to_utc_timestamp(completion_date)
+
+        if verbose:
+            print(
+                f"Updating component {project_component_id} with completion date: {timestampz}"
+            )
 
         try:
             existing_components_matched_by_srts_id = make_hasura_request(
-                query=UPDATE_COMPONENT_DESCRIPTION,
+                query=UPDATE_COMPONENT_PHASE_AND_COMPLETION_DATE,
                 variables={
                     "project_component_id": project_component_id,
-                    "description": description,
+                    "completion_date": timestampz,
                 },
                 endpoint=HASURA["HASURA_ENDPOINT"][env],
-                token=token,
+                secret=HASURA["HASURA_ADMIN_SECRET"][env],
             )["update_moped_proj_components_by_pk"]
         except Exception as e:
             print(f"Error updating component {project_component_id}: {e}")
@@ -143,6 +174,13 @@ if __name__ == "__main__":
         help=f"Environment",
     )
 
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        action="store_true",
+        help="Enable verbose output",
+    )
+
     args = parser.parse_args()
 
-    main(args.env)
+    main(args.env, args.verbose)
