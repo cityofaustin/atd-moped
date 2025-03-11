@@ -108,7 +108,7 @@ const useColumns = ({
                 helperText: "Required",
               }}
               dependentFieldName="moped_workgroup"
-              dependentFieldValue={(newValue) => ({
+              setDependentFieldValue={(newValue) => ({
                 workgroup_id: newValue?.workgroup_id,
                 workgroup_name: workgroupLookup[newValue?.workgroup_id],
               })}

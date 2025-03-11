@@ -16,7 +16,7 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} autocompleteProps - props passed to the MUI Autocomplete Component
  * @param {Object} textFieldProps - props passed to the renderInput TextField
  * @param {string} dependentFieldName - optional, if another field should be updated on change, name of field
- * @param {function} dependentFieldValue - optional, takes newValue as input and returns the dependent fields change
+ * @param {function} setDependentFieldValue - optional, takes newValue as input and returns the dependent fields change
  *
  * @returns {React component}
  */
@@ -31,7 +31,7 @@ const LookupAutocompleteComponent = ({
   autocompleteProps,
   textFieldProps,
   dependentFieldName,
-  dependentFieldValue,
+  setDependentFieldValue,
 }) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
@@ -52,7 +52,7 @@ const LookupAutocompleteComponent = ({
       apiRef.current.setEditCellValue({
         id,
         field: dependentFieldName,
-        value: dependentFieldValue(newValue),
+        value: setDependentFieldValue(newValue),
       });
     }
   };
