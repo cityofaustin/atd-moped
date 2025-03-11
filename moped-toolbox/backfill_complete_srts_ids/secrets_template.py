@@ -6,7 +6,7 @@ HASURA = {
     },
     HASURA_ADMIN_SECRET: {
         "local": "hasurapassword",
-        "staging": "<redacted>",
-        "prod": "<redacted>",
+        "staging": "",
+        "prod": "",
     },
 }
