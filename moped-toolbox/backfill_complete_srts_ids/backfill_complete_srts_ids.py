@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Appends SRTS info to project component descriptions by matching SRTS
-IDs in a csv file to the moped_proj_components.srts_id column value
+Updates project component phase and completion date by matching SRTS
+IDs in a csv file to the srts_id and substantial_completion_date column values
+in the component_arcgis_online_view DB view.
 """
 import argparse
 import csv
