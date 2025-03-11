@@ -16,6 +16,7 @@ const SaveViewForm = ({ onSave, description }) => {
   const {
     handleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: { description: description },
@@ -47,7 +48,7 @@ const SaveViewForm = ({ onSave, description }) => {
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={areFormErrors}
+            disabled={!watch("description")?.length || areFormErrors}
           >
             Save view
           </Button>
