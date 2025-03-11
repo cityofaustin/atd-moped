@@ -73,7 +73,7 @@ const useColumns = ({
               error: props.error,
             }}
             dependentFieldName="moped_milestone_related_phase"
-            dependentFieldValue={(newValue) => ({
+            setDependentFieldValue={(newValue) => ({
               related_phase_id: newValue?.related_phase_id,
             })}
           />
