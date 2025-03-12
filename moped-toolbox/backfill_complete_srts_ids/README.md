@@ -11,9 +11,9 @@ with existing substantial completion dates are excluded.
 1. Use `secrets_template.py` as a template to create `secrets.py`
 
 1. Export https://docs.google.com/spreadsheets/d/1M2dwi-GqheZLmy-GJwmrf6LAJpu07aoiD3aTEOo7IUQ/edit?gid=1500102334#gid=1500102334
-   as a csv file and place in the /data/ directory 
+   as a csv file and place in the `moped-toolbox/backfill_complete_srts_ids/data` directory 
 
-1. Create a virtual environment and install requirements.txt:
+2. Create a virtual environment and install requirements.txt:
 ```shell
 pip install -r requirements.txt
 ```

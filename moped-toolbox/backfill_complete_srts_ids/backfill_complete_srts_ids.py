@@ -15,7 +15,7 @@ from secrets import HASURA
 csv_filename = "ATSD Moped Issue Tracking - SRTS Complete IDs.csv"
 
 # Query for project components AGOL view with SRTS ID. This query captures components that
-# have not been substantially completed yet and match a givent Safe Routes to School ID.
+# have not been substantially completed yet and match a given Safe Routes to School ID.
 GET_COMPONENTS_BY_SRTS_ID = """
 query GetProjectComponentsBySrtsId($srts_id: String) {
   component_arcgis_online_view(
