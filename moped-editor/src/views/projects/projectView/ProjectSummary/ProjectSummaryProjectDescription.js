@@ -39,7 +39,7 @@ const ProjectSummaryProjectDescription = ({
     handleSubmit,
     control,
     setValue,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: { description: originalDescription },
     mode: "onChange",
@@ -130,7 +130,7 @@ const ProjectSummaryProjectDescription = ({
             />
             <IconButton
               size="large"
-              disabled={!isDirty || !isValid || loading}
+              disabled={!isDirty || loading}
               type="submit"
             >
               <Icon>check</Icon>

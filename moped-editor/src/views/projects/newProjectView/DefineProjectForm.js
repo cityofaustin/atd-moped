@@ -45,7 +45,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
     handleSubmit,
     control,
     watch,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
       projectName: null,
@@ -188,7 +188,7 @@ const DefineProjectForm = ({ handleSave, loading, success }) => {
           success={success}
           buttonOptions={{
             type: "submit",
-            disabled: !isDirty || !isValid || loading,
+            disabled: !isDirty || loading,
           }}
         />
       </Box>

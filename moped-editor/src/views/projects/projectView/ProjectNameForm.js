@@ -47,7 +47,7 @@ const ProjectNameForm = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -142,10 +142,7 @@ const ProjectNameForm = ({
               minWidth: theme.spacing(12),
             })}
           >
-            <IconButton
-              type="submit"
-              disabled={!isDirty || !isValid || loading}
-            >
+            <IconButton type="submit" disabled={!isDirty || loading}>
               <Icon>check</Icon>
             </IconButton>
             <IconButton onClick={handleCancelClick} disabled={loading}>
