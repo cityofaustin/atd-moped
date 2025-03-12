@@ -21,6 +21,7 @@ const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
 const validationSchema = yup.object().shape({
   projectName: yup
     .string()
+    .trim()
     .max(
       projectNamesCharMax,
       `Name must be ${projectNamesCharMax} characters or less`
@@ -29,6 +30,7 @@ const validationSchema = yup.object().shape({
     .required("Title cannot be blank"),
   projectSecondaryName: yup
     .string()
+    .trim()
     .max(
       projectNamesCharMax,
       `Secondary name must be ${projectNamesCharMax} characters or less`
