@@ -27,6 +27,7 @@ export const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
 export const agolValidation = {
   description: yup
     .string()
+    .trim()
     .max(
       agolFieldCharMax.descriptionString,
       `Description must be ${agolFieldCharMax.descriptionString} characters or less`
@@ -35,6 +36,7 @@ export const agolValidation = {
     .required("Required"),
   projectName: yup
     .string()
+    .trim()
     .max(
       projectNamesCharMax,
       `Name must be ${projectNamesCharMax} characters or less`
@@ -43,6 +45,7 @@ export const agolValidation = {
     .required("Name cannot be blank"),
   projectSecondaryName: yup
     .string()
+    .trim()
     .max(
       projectNamesCharMax,
       `Secondary name must be ${projectNamesCharMax} characters or less`
