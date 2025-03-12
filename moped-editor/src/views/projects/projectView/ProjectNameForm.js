@@ -153,7 +153,7 @@ const ProjectNameForm = ({
             item
             container
             direction="row"
-            alignItems="flex-end"
+            alignItems="center"
             xs={12}
             sm={1}
             sx={(theme) => ({
@@ -170,7 +170,7 @@ const ProjectNameForm = ({
               <Icon>close</Icon>
             </IconButton>
           </Grid>
-          <Grid item xs={12} sm={3} container alignItems="flex-end">
+          <Grid item xs={12} sm={3} container alignItems="center">
             <ProjectStatusBadge
               phaseKey={currentPhase?.phase_key}
               phaseName={currentPhase?.phase_name}
