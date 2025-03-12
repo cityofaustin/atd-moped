@@ -49,6 +49,14 @@ const useWorkgroupLookup = (data) =>
     }, {});
   }, [data]);
 
+// returns a list of user ids for the existing team members on this project
+const useExistingTeamMembers = (data) =>
+  useMemo(() => {
+    return data?.moped_project_by_pk?.moped_proj_personnel.map(
+      (option) => option.moped_user.user_id
+    );
+  }, [data]);
+
 const requiredFields = ["moped_user", "moped_proj_personnel_roles"];
 
 const useColumns = ({
@@ -61,6 +69,7 @@ const useColumns = ({
   classes,
   usingShiftKey,
   workgroupLookup,
+  existingTeamMembers,
 }) =>
   useMemo(() => {
     return [
@@ -73,13 +82,27 @@ const useColumns = ({
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
+          // the team member object for the current row
+          const currentRowMember =
+            data?.moped_project_by_pk?.moped_proj_personnel.find(
+              (user) => user.project_personnel_id === props.id
+            );
+          // filter out existing team members from list of options unless they are the current row member
+          // that way the current member remains an option when editing a row
+          const unassignedTeamMembers = data?.moped_users.filter((user) => {
+            return (
+              !existingTeamMembers.includes(user.user_id) ||
+              user.user_id === currentRowMember?.moped_user.user_id
+            );
+          });
           return (
             <TeamAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              options={data.moped_users}
+              options={unassignedTeamMembers}
               error={props.error}
+              workgroupLookup={workgroupLookup}
             />
           );
         },
@@ -194,6 +217,7 @@ const useColumns = ({
     classes,
     usingShiftKey,
     workgroupLookup,
+    existingTeamMembers,
   ]);
 
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
@@ -232,6 +256,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   }, [data]);
 
   const workgroupLookup = useWorkgroupLookup(data);
+
+  const existingTeamMembers = useExistingTeamMembers(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -496,6 +522,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     classes,
     usingShiftKey,
     workgroupLookup,
+    existingTeamMembers,
   });
 
   const processRowUpdateMemoized = useCallback(
