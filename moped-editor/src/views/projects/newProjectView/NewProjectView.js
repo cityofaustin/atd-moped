@@ -68,7 +68,8 @@ const NewProjectView = () => {
 
     const payload = {
       project_name: projectName,
-      project_name_secondary: projectSecondaryName,
+      project_name_secondary:
+        projectSecondaryName?.length > 0 ? projectSecondaryName : null,
       project_description: description,
       // Use potential phase as default
       moped_proj_phases: {
