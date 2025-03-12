@@ -1,6 +1,8 @@
 # Backfill component phases and completion date from SRTS source statuses and complete dates
 
-This script takes a csv with 
+This script takes a csv that lists completed SRTS IDs and their current completion dates and updates
+Moped components with the same SRTS ID to reflect the current status and completion date. Components
+with existing substantial completion dates are excluded.
 
 ## Running locally
 
