@@ -7,9 +7,12 @@ in the component_arcgis_online_view DB view.
 import argparse
 import csv
 import json
-import requests
 from datetime import datetime, timezone
 from time import sleep
+from zoneinfo import ZoneInfo
+
+import requests
+
 from secrets import HASURA
 
 csv_filename = "ATSD Moped Issue Tracking - SRTS Complete IDs.csv"
@@ -45,15 +48,23 @@ mutation UpdateProjectComponentDescription($project_component_id: Int!, $complet
 """
 
 
-def convert_to_utc_timestamp(date_str):
+def convert_to_timezone_aware_timestamp(date_str):
+    """
+    Converts a date string in the format 'MM/DD/YY' to a timezone-aware
+    timestamp in the 'America/Chicago' timezone.
+
+    Args:
+        date_str (str): The date string to convert, in the format 'MM/DD/YY'.
+
+    Returns:
+        str: The ISO timestamp string in the 'America/Chicago' timezone.
+    """
     date_format = "%m/%d/%y"
-    naive_datetime = datetime.strptime(date_str, date_format)
-    # Set the time to midnight and convert to UTC
-    naive_datetime = naive_datetime.replace(hour=0, minute=0, second=0, microsecond=0)
-    utc_datetime = naive_datetime.astimezone(timezone.utc)
-    # Convert to ISO 8601 format
-    utc_timestamp = utc_datetime.isoformat()
-    return utc_timestamp
+    parsed_date = datetime.strptime(date_str, date_format)
+    parsed_date_tz = parsed_date.replace(tzinfo=ZoneInfo("America/Chicago"))
+    timestamptz = parsed_date_tz.isoformat()
+
+    return timestamptz
 
 
 def make_hasura_request(*, query, variables, endpoint, secret):
@@ -150,7 +161,7 @@ def main(env, verbose):
     for update in updates:
         project_component_id = update["project_component_id"]
         completion_date = update["completion_date"]
-        timestamp = convert_to_utc_timestamp(completion_date)
+        timestamp = convert_to_timezone_aware_timestamp(completion_date)
 
         if verbose:
             print(
