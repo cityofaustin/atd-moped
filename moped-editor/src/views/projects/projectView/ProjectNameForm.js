@@ -6,36 +6,14 @@ import { Box, Grid, Icon, IconButton } from "@mui/material";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
-import { agolFieldCharMax } from "src/constants/projects";
+import { agolValidation } from "src/constants/projects";
 
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-/**
- * This validation schema considers the total number of characters allowed in the project full name
- * field in the component_arcgis_online_view feature service. This schema splits that limit in half
- * to allow equal space for the primary and secondary name fields that make up the full name.
- */
-const projectNamesCharMax = agolFieldCharMax.projectNameFull / 2;
-
 const validationSchema = yup.object().shape({
-  projectName: yup
-    .string()
-    .trim()
-    .max(
-      projectNamesCharMax,
-      `Name must be ${projectNamesCharMax} characters or less`
-    )
-    .nullable()
-    .required("Title cannot be blank"),
-  projectSecondaryName: yup
-    .string()
-    .trim()
-    .max(
-      projectNamesCharMax,
-      `Secondary name must be ${projectNamesCharMax} characters or less`
-    )
-    .nullable(),
+  projectName: agolValidation.projectName,
+  projectSecondaryName: agolValidation.projectSecondaryName,
 });
 
 const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };
@@ -69,7 +47,7 @@ const ProjectNameForm = ({
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty, isValid },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: {
       projectName: originalName,
@@ -127,10 +105,11 @@ const ProjectNameForm = ({
               }}
               InputProps={{
                 sx: inputStyles,
+                disabled: loading,
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -147,6 +126,7 @@ const ProjectNameForm = ({
               }}
               InputProps={{
                 sx: inputStyles,
+                disabled: loading,
               }}
             />
           </Grid>
@@ -157,22 +137,19 @@ const ProjectNameForm = ({
             direction="row"
             alignItems="center"
             xs={12}
-            sm={1}
+            sm="auto"
             sx={(theme) => ({
               minWidth: theme.spacing(12),
             })}
           >
-            <IconButton
-              type="submit"
-              disabled={!isDirty || !isValid || loading}
-            >
+            <IconButton type="submit" disabled={!isDirty || loading}>
               <Icon>check</Icon>
             </IconButton>
             <IconButton onClick={handleCancelClick} disabled={loading}>
               <Icon>close</Icon>
             </IconButton>
           </Grid>
-          <Grid item xs={12} sm={3} container alignItems="center">
+          <Grid item xs={12} sm="auto" container alignItems="center">
             <ProjectStatusBadge
               phaseKey={currentPhase?.phase_key}
               phaseName={currentPhase?.phase_name}
