@@ -18,11 +18,12 @@ import {
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectTeamToolbar from "./ProjectTeamToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import { mopedUserAutocompleteProps } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -96,13 +97,21 @@ const useColumns = ({
             );
           });
           return (
-            <TeamAutocompleteComponent
+            <LookupAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
               options={unassignedTeamMembers}
-              error={props.error}
-              workgroupLookup={workgroupLookup}
+              autocompleteProps={mopedUserAutocompleteProps}
+              textFieldProps={{
+                error: props.error,
+                helperText: "Required",
+              }}
+              dependentFieldName="moped_workgroup"
+              setDependentFieldValue={(newValue) => ({
+                workgroup_id: newValue?.workgroup_id,
+                workgroup_name: workgroupLookup[newValue?.workgroup_id],
+              })}
             />
           );
         },
@@ -118,7 +127,7 @@ const useColumns = ({
         field: "moped_workgroup",
         editable: true,
         width: 200,
-        valueFormatter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
