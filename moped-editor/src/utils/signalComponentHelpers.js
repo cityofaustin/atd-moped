@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { TextField } from "@mui/material";
 
 /*
@@ -144,24 +144,6 @@ export const getComponentDef = (
     description: "Project Extent - Generic",
     component_id: 0,
   };
-};
-
-/**
- * Resets signal when fromSignalAsset toggle changes. Ensures we keep
- * form state clean in new project view.
- * @param {Boolean} fromSignalAsset - if signal autocomplete switch is active
- * @param {func} setSignal - signal state setter
- * @param {Function} setSignalRecord - signal record state setter
- */
-export const useSignalStateManager = (
-  fromSignal,
-  setSignal,
-  setSignalRecord
-) => {
-  useEffect(() => {
-    setSignal("");
-    setSignalRecord(null);
-  }, [fromSignal, setSignal, setSignalRecord]);
 };
 
 /**

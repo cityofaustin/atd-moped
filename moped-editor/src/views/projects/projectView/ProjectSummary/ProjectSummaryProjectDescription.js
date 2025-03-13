@@ -8,17 +8,10 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 import * as yup from "yup";
-import { agolFieldCharMax } from "src/constants/projects";
+import { agolValidation } from "src/constants/projects";
 
 const validationSchema = yup.object().shape({
-  description: yup
-    .string()
-    .max(
-      agolFieldCharMax.descriptionString,
-      `Description must be ${agolFieldCharMax.descriptionString} characters or less`
-    )
-    .nullable()
-    .required("Required"),
+  description: agolValidation.description,
 });
 
 /**
@@ -46,7 +39,7 @@ const ProjectSummaryProjectDescription = ({
     handleSubmit,
     control,
     setValue,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: { description: originalDescription },
     mode: "onChange",
@@ -129,12 +122,15 @@ const ProjectSummaryProjectDescription = ({
               name="description"
               size="small"
               control={control}
-              error={errors?.description}
+              error={!!errors?.description}
               helperText={errors?.description?.message}
+              InputProps={{
+                disabled: loading,
+              }}
             />
             <IconButton
               size="large"
-              disabled={errors?.description}
+              disabled={!isDirty || loading}
               type="submit"
             >
               <Icon>check</Icon>

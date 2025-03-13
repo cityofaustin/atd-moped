@@ -1,195 +1,163 @@
-import React, { useState } from "react";
-import makeStyles from "@mui/styles/makeStyles";
-import { Grid, Icon, TextField } from "@mui/material";
-import ProjectStatusBadge from "./ProjectStatusBadge";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { useMutation } from "@apollo/client";
-import { UPDATE_PROJECT_NAMES_QUERY } from "../../../queries/project";
+import { Box, Grid, Icon, IconButton } from "@mui/material";
 
-const useStyles = makeStyles((theme) => ({
-  editIcons: {
-    cursor: "pointer",
-    fontSize: "1.4rem",
-  },
-  projectNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-  projectSecondaryNameEditField: {
-    "font-size": "1.4rem",
-    "font-weight": "bold",
-  },
-}));
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import ControlledTextInput from "src/components/forms/ControlledTextInput";
+import { UPDATE_PROJECT_NAMES_QUERY } from "src/queries/project";
+import { agolValidation } from "src/constants/projects";
 
-const ProjectNameForm = ({ props }) => {
-  const classes = useStyles();
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
-  // state to hold values for controlled inputs
-  const [projectName, setProjectName] = useState(
-    props.projectData.project_name
+const validationSchema = yup.object().shape({
+  projectName: agolValidation.projectName,
+  projectSecondaryName: agolValidation.projectSecondaryName,
+});
+
+const inputStyles = { fontSize: "1.4rem", fontWeight: "bold" };
+
+/**
+ * ProjectNameForm Component
+ * @param {Number} projectId - The id of the current project being viewed
+ * @param {Object} projectData - The data object from the GraphQL query
+ * @param {Function} setIsEditing - The function to toggle the editing boolean state
+ * @param {Function} handleSnackbar - The function to show the snackbar
+ * @param {Object} currentPhase - The current phase data object
+ * @param {Function} refetch - The refetch function from Apollo
+ * @returns {JSX.Element}
+ * @constructor
+ */
+const ProjectNameForm = ({
+  projectId,
+  projectData,
+  setIsEditing,
+  handleSnackbar,
+  currentPhase,
+  refetch,
+}) => {
+  const originalName = projectData?.project_name ?? null;
+  const originalSecondaryName = projectData?.project_name_secondary ?? null;
+
+  const [updateProjectNames, { loading }] = useMutation(
+    UPDATE_PROJECT_NAMES_QUERY
   );
-  const [secondaryName, setSecondaryName] = useState(
-    props.projectData.project_name_secondary
-  );
 
-  // indicates that the primary title isn't valid via the error state on the input field
-  const [primaryTitleError, setPrimaryTitleError] = useState(false);
+  const {
+    handleSubmit,
+    control,
+    formState: { errors, isDirty },
+  } = useForm({
+    defaultValues: {
+      projectName: originalName,
+      projectSecondaryName: originalSecondaryName,
+    },
+    mode: "onChange",
+    resolver: yupResolver(validationSchema),
+  });
 
-  // apollo hook returning the async function to update the project names
-  const [updateProjectNames] = useMutation(UPDATE_PROJECT_NAMES_QUERY);
-
-  // this function is fired when the user clicks on the check mark to save the names
-  const handleAcceptClick = (e) => {
-    e.preventDefault();
-
-    // Check if the primary name is defined and has meaningful content
-    if (!projectName || projectName.trim() === "") {
-      // if it does not, set the error state
-      setPrimaryTitleError(true);
-    } else {
-      // and if it passes the test, clear any error state and save it via a mutation
-      setPrimaryTitleError(false);
-      updateProjectNames({
-        variables: {
-          projectId: props.projectId,
-          projectName: projectName,
-          projectNameSecondary: secondaryName,
-        },
-      })
-        .then((res) => {
-          // return to the view mode and alert the parent component of the change
-          props.setIsEditing(false);
-          props.updatedCallback();
-          props.handleSnackbar(true, "Project name(s) updated", "success");
-        })
-        .catch((error) => {
-          props.handleSnackbar(
-            true,
-            "Error updating project name(s)",
-            "error",
-            error
-          );
+  const handleSave = ({ projectName, projectSecondaryName }) => {
+    updateProjectNames({
+      variables: {
+        projectId: projectId,
+        projectName: projectName,
+        projectNameSecondary: projectSecondaryName,
+      },
+    })
+      .then(() => {
+        refetch().then(() => {
+          setIsEditing(false);
+          handleSnackbar(true, "Project name(s) updated", "success");
         });
-    }
+      })
+      .catch((error) => {
+        handleSnackbar(true, "Error updating project name(s)", "error", error);
+      });
   };
 
-  // this is fired when the user clicks on the 'X' to cancel the edit
-  const handleCancelClick = (e) => {
-    e.preventDefault();
-    props.setIsEditing(false);
-  };
-
-  // this is fired onChange of the project name field to check if it's valid
-  const handleProjectNameChange = (e) => {
-    // Update the state variables when the input changes
-    setProjectName(e.target.value);
-    if (!e.target.value) {
-      setPrimaryTitleError(true);
-    } else {
-      setPrimaryTitleError(false);
-    }
-  };
-
-  // Update the secondary name state variable when the input changes
-  const handleSecondaryNameChange = (e) => {
-    // If user entered an empty string then nullify the value
-    const value = e.target.value.trim() === "" ? null : e.target.value;
-    setSecondaryName(value);
+  const handleCancelClick = () => {
+    setIsEditing(false);
   };
 
   return (
-    <Grid container spacing={4}>
-      {/* Primary project name field */}
-      <Grid item xs={12} sm={6}>
-        <form onSubmit={(e) => handleAcceptClick(e)}>
-          <TextField
-            required
-            autoFocus
-            variant="standard"
-            fullWidth
-            id="project_name"
-            label={"Project name"}
-            type="text"
-            value={projectName || ""}
-            error={primaryTitleError}
-            placeholder={
-              primaryTitleError ? "Title cannot be blank" : "Enter project name"
-            }
-            multiline={false}
-            rows={1}
-            onChange={handleProjectNameChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              classes: {
-                input: classes.projectNameEditField,
-              },
-            }}
-          />
-        </form>
-      </Grid>
-
-      {/* Secondary project name field */}
-      <Grid item xs={12} sm={3}>
-        <form onSubmit={(e) => handleAcceptClick(e)}>
-          <TextField
-            variant="standard"
-            fullWidth
-            id="secondary_name"
-            label={"Secondary name"}
-            type="text"
-            value={secondaryName || ""}
-            placeholder={"Secondary name"}
-            multiline={false}
-            rows={1}
-            onChange={handleSecondaryNameChange}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            InputProps={{
-              classes: {
-                input: classes.projectSecondaryNameEditField,
-              },
-            }}
-          />
-        </form>
-      </Grid>
-
-      {/* Accept / Cancel icons.
-      This grid item gets a minimum width to prevent it from reflowing onto two lines. */}
-      <Grid
-        item
-        container
-        direction="row"
-        justifyContent="flex-end"
-        alignItems="flex-end"
-        xs={12}
-        sm={1}
-        sx={{ minWidth: "77px" }}
+    <>
+      <Box
+        component="form"
+        sx={{ minWidth: "100%" }}
+        onSubmit={handleSubmit(handleSave)}
       >
-        <Icon
-          className={classes.editIcons}
-          onClick={(e) => handleAcceptClick(e)}
-        >
-          check
-        </Icon>
-        <Icon
-          className={classes.editIcons}
-          onClick={(e) => handleCancelClick(e)}
-        >
-          close
-        </Icon>
-      </Grid>
-
-      {/* The status badge. Here, we're going to jog it down a bit to make it visually centered
-      along the horizontal midline of the project name input field. */}
-      <Grid item xs={12} md={2} container alignItems="flex-end">
-        <ProjectStatusBadge
-          phaseKey={props.currentPhase?.phase_key}
-          phaseName={props.currentPhase?.phase_name}
-        />
-      </Grid>
-    </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={5}>
+            <ControlledTextInput
+              autoFocus
+              variant="standard"
+              fullWidth
+              id="project_name"
+              label="Project name"
+              name="projectName"
+              placeholder="Enter project name"
+              control={control}
+              error={!!errors?.projectName}
+              helperText={errors?.projectName?.message}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                sx: inputStyles,
+                disabled: loading,
+              }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <ControlledTextInput
+              variant="standard"
+              fullWidth
+              autoFocus
+              id="secondary_name"
+              name="projectSecondaryName"
+              placeholder="Secondary name"
+              label="Secondary name"
+              control={control}
+              error={!!errors?.projectSecondaryName}
+              helperText={errors?.projectSecondaryName?.message}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              InputProps={{
+                sx: inputStyles,
+                disabled: loading,
+              }}
+            />
+          </Grid>
+          {/* Minimum width prevents icons from wrapping. */}
+          <Grid
+            item
+            container
+            direction="row"
+            alignItems="center"
+            xs={12}
+            sm="auto"
+            sx={(theme) => ({
+              minWidth: theme.spacing(12),
+            })}
+          >
+            <IconButton type="submit" disabled={!isDirty || loading}>
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton onClick={handleCancelClick} disabled={loading}>
+              <Icon>close</Icon>
+            </IconButton>
+          </Grid>
+          <Grid item xs={12} sm="auto" container alignItems="center">
+            <ProjectStatusBadge
+              phaseKey={currentPhase?.phase_key}
+              phaseName={currentPhase?.phase_name}
+            />
+          </Grid>
+        </Grid>
+      </Box>
+    </>
   );
 };
 
