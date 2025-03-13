@@ -12,10 +12,10 @@ import { filterOptions } from "src/utils/autocompleteHelpers";
  * @param {Object} value - the signal feature to set as the value of the autocomplete from React Hook Form
  * @param {Function} onOptionsLoaded - callback function to run when the options are loaded
  * @param {String} signalType - either PHB, TRAFFIC or null
- * @param {String} socrataEndpoint - 
- * @param {Function} isOptionEqualToValue - 
- * @param {Function} getOptionLabel - 
- * @param {String} componentLabel - 
+ * @param {String} socrataEndpoint -
+ * @param {Function} isOptionEqualToValue -
+ * @param {Function} getOptionLabel -
+ * @param {String} componentLabel -
  * @return {JSX.Element}
  */
 const KnackComponentAutocomplete = React.forwardRef(
@@ -30,6 +30,7 @@ const KnackComponentAutocomplete = React.forwardRef(
       isOptionEqualToValue,
       getOptionLabel,
       componentLabel,
+      textInputOptions = {},
     },
     ref
   ) => {
@@ -84,6 +85,7 @@ const KnackComponentAutocomplete = React.forwardRef(
             label={componentLabel}
             variant="outlined"
             size="small"
+            {...textInputOptions}
           />
         )}
         value={value}

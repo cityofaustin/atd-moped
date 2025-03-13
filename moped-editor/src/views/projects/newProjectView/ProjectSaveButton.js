@@ -1,13 +1,13 @@
 import React from "react";
 import clsx from "clsx";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import { green } from "@mui/material/colors";
 import { Icon, Button, CircularProgress } from "@mui/material";
 
 /**
  * Styles
  */
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     alignItems: "center",
@@ -58,6 +58,7 @@ export default function ProjectSaveButton({
   success,
   handleButtonClick,
   disabled,
+  buttonOptions = {},
 }) {
   const classes = useStyles();
 
@@ -73,6 +74,7 @@ export default function ProjectSaveButton({
         className={buttonClassname}
         disabled={(loading && !success) || disabled}
         onClick={success ? null : handleButtonClick}
+        {...buttonOptions}
       >
         {success ? <Icon>check</Icon> : label}
       </Button>

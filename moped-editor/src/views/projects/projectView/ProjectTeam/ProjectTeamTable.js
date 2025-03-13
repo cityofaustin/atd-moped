@@ -18,11 +18,12 @@ import {
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectTeamToolbar from "./ProjectTeamToolbar";
 import ProjectTeamRoleMultiselect from "./ProjectTeamRoleMultiselect";
-import TeamAutocompleteComponent from "./TeamAutocompleteComponent";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
+import { mopedUserAutocompleteProps } from "./utils";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -49,6 +50,14 @@ const useWorkgroupLookup = (data) =>
     }, {});
   }, [data]);
 
+// returns a list of user ids for the existing team members on this project
+const useExistingTeamMembers = (data) =>
+  useMemo(() => {
+    return data?.moped_project_by_pk?.moped_proj_personnel.map(
+      (option) => option.moped_user.user_id
+    );
+  }, [data]);
+
 const requiredFields = ["moped_user", "moped_proj_personnel_roles"];
 
 const useColumns = ({
@@ -61,6 +70,7 @@ const useColumns = ({
   classes,
   usingShiftKey,
   workgroupLookup,
+  existingTeamMembers,
 }) =>
   useMemo(() => {
     return [
@@ -73,13 +83,35 @@ const useColumns = ({
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
         renderEditCell: (props) => {
+          // the team member object for the current row
+          const currentRowMember =
+            data?.moped_project_by_pk?.moped_proj_personnel.find(
+              (user) => user.project_personnel_id === props.id
+            );
+          // filter out existing team members from list of options unless they are the current row member
+          // that way the current member remains an option when editing a row
+          const unassignedTeamMembers = data?.moped_users.filter((user) => {
+            return (
+              !existingTeamMembers.includes(user.user_id) ||
+              user.user_id === currentRowMember?.moped_user.user_id
+            );
+          });
           return (
-            <TeamAutocompleteComponent
+            <LookupAutocompleteComponent
               {...props}
               name={"user"}
               value={props.row.moped_user}
-              options={data.moped_users}
-              error={props.error}
+              options={unassignedTeamMembers}
+              autocompleteProps={mopedUserAutocompleteProps}
+              textFieldProps={{
+                error: props.error,
+                helperText: "Required",
+              }}
+              dependentFieldName="moped_workgroup"
+              setDependentFieldValue={(newValue) => ({
+                workgroup_id: newValue?.workgroup_id,
+                workgroup_name: workgroupLookup[newValue?.workgroup_id],
+              })}
             />
           );
         },
@@ -95,7 +127,7 @@ const useColumns = ({
         field: "moped_workgroup",
         editable: true,
         width: 200,
-        valueFormatter: (workgroup) => workgroup?.workgroup_name,
+        valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
@@ -194,6 +226,7 @@ const useColumns = ({
     classes,
     usingShiftKey,
     workgroupLookup,
+    existingTeamMembers,
   ]);
 
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
@@ -232,6 +265,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   }, [data]);
 
   const workgroupLookup = useWorkgroupLookup(data);
+
+  const existingTeamMembers = useExistingTeamMembers(data);
 
   /**
    * Construct a moped_project_personnel object that can be passed to an insert mutation
@@ -496,6 +531,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     classes,
     usingShiftKey,
     workgroupLookup,
+    existingTeamMembers,
   });
 
   const processRowUpdateMemoized = useCallback(
