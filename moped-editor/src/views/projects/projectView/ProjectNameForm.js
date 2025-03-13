@@ -109,7 +109,7 @@ const ProjectNameForm = ({
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={3}>
+          <Grid item xs={12} sm={4}>
             <ControlledTextInput
               variant="standard"
               fullWidth
@@ -137,7 +137,7 @@ const ProjectNameForm = ({
             direction="row"
             alignItems="center"
             xs={12}
-            sm={1}
+            sm="auto"
             sx={(theme) => ({
               minWidth: theme.spacing(12),
             })}
@@ -149,7 +149,7 @@ const ProjectNameForm = ({
               <Icon>close</Icon>
             </IconButton>
           </Grid>
-          <Grid item xs={12} sm={3} container alignItems="center">
+          <Grid item xs={12} sm="auto" container alignItems="center">
             <ProjectStatusBadge
               phaseKey={currentPhase?.phase_key}
               phaseName={currentPhase?.phase_name}

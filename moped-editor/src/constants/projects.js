@@ -34,6 +34,8 @@ export const agolValidation = {
     )
     .nullable()
     .required("Required"),
+  /* Name is intentionally nullable and required to support our ControlledTextInput
+  that coerces empty strings to be null */
   projectName: yup
     .string()
     .trim()
