@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Typography, Chip, Grid, Button } from "@mui/material";
+import { Box, Typography, Chip, Grid, Button, Tooltip } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   advancedSearchFilterParamName,
@@ -127,15 +127,20 @@ const FiltersChips = ({
       <Typography className={classes.filtersText} component="span">
         <Grid container alignItems={"center"} spacing={0.5}>
           <Grid>
-            <Button
-              onClick={handleSaveView}
-              variant="outlined"
-              color="primary"
-              className={classes.saveViewButton}
-              disabled={IsViewSaved}
+            <Tooltip
+              placement="bottom-start"
+              title="Save these filters to Dashboard"
             >
-              SAVE VIEW
-            </Button>
+              <Button
+                onClick={handleSaveView}
+                variant="outlined"
+                color="primary"
+                className={classes.saveViewButton}
+                disabled={IsViewSaved}
+              >
+                SAVE VIEW
+              </Button>
+            </Tooltip>
           </Grid>
           {filtersCount > 1 && (
             <Grid item>

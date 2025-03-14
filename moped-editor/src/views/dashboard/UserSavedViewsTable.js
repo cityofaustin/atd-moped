@@ -48,7 +48,6 @@ const useColumns = ({
           row.url ? (
             <Link
               href={row.url}
-              target={"_blank"}
               sx={{
                 overflow: "hidden",
                 textOverflow: "ellipsis",
