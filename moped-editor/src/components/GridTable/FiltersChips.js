@@ -128,9 +128,7 @@ const FiltersChips = ({
         <Grid container alignItems={"center"} spacing={0.5}>
           <Grid>
             <Button
-              onClick={() => {
-                handleSaveView();
-              }}
+              onClick={handleSaveView}
               variant="outlined"
               color="primary"
               className={classes.saveViewButton}
