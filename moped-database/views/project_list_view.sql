@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
+-- Most recent migration: moped-database/migrations/1741980016312_speed-up-project-list-view/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -81,36 +81,50 @@ moped_proj_components_subtypes AS (
     GROUP BY mpc.project_id
 ),
 
-project_district_association AS (
-    WITH project_council_district_map AS (
-        SELECT DISTINCT
-            moped_project.project_id,
-            features_council_districts.council_district_id
-        FROM moped_project
-        LEFT JOIN moped_proj_components ON moped_project.project_id = moped_proj_components.project_id
-        LEFT JOIN features ON moped_proj_components.project_component_id = features.component_id
-        LEFT JOIN features_council_districts ON features.id = features_council_districts.feature_id
-        WHERE features.is_deleted IS false AND moped_proj_components.is_deleted IS false
-    ),
+project_council_district_map AS (
+    SELECT DISTINCT
+        components.project_id,
+        districts_1.council_district_id
+    FROM moped_proj_components components
+    JOIN features ON components.project_component_id = features.component_id AND features.is_deleted IS false
+    JOIN features_council_districts districts_1 ON features.id = districts_1.feature_id
+    WHERE components.is_deleted IS false
+),
 
-parent_child_project_map AS (
-        SELECT
-            parent_projects.project_id,
-            unnest(ARRAY[parent_projects.project_id] || array_agg(child_projects.project_id)) AS self_and_children_project_ids
-        FROM moped_project parent_projects
-        LEFT JOIN moped_project child_projects ON parent_projects.project_id = child_projects.parent_project_id
-        GROUP BY parent_projects.project_id
-        ORDER BY parent_projects.project_id
-    )
-
+project_districts AS (
     SELECT
-        projects.project_id,
-        jsonb_agg(DISTINCT project_districts.council_district_id) FILTER (WHERE project_districts.council_district_id IS NOT null) AS project_council_districts,
-        jsonb_agg(DISTINCT project_and_children_districts.council_district_id) FILTER (WHERE project_and_children_districts.council_district_id IS NOT null) AS project_and_child_project_council_districts
-    FROM parent_child_project_map projects
-    LEFT JOIN project_council_district_map project_and_children_districts ON projects.self_and_children_project_ids = project_and_children_districts.project_id
-    LEFT JOIN project_council_district_map project_districts ON projects.project_id = project_districts.project_id
-    GROUP BY projects.project_id
+        project_council_district_map.project_id,
+        jsonb_agg(DISTINCT project_council_district_map.council_district_id) FILTER (WHERE project_council_district_map.council_district_id IS NOT null) AS project_council_districts
+    FROM project_council_district_map
+    GROUP BY project_council_district_map.project_id
+),
+
+child_project_districts AS (
+    SELECT
+        p.project_id,
+        jsonb_agg(DISTINCT d.council_district_id) FILTER (WHERE d.council_district_id IS NOT null) AS child_project_districts
+    FROM moped_project p
+    JOIN moped_project c ON p.project_id = c.parent_project_id AND c.is_deleted = false
+    JOIN project_council_district_map d ON c.project_id = d.project_id
+    GROUP BY p.project_id
+),
+
+project_district_association AS (
+    SELECT
+        p.project_id,
+        pd.project_council_districts,
+        CASE
+            WHEN cd.child_project_districts IS NOT null
+                THEN (
+                    SELECT jsonb_agg(DISTINCT elem.value) AS jsonb_agg
+                    FROM jsonb_array_elements(pd.project_council_districts || cd.child_project_districts) elem (value)
+                )
+            ELSE pd.project_council_districts
+        END AS project_and_child_project_council_districts
+    FROM moped_project p
+    LEFT JOIN project_districts pd ON p.project_id = pd.project_id
+    LEFT JOIN child_project_districts cd ON p.project_id = cd.project_id
+    WHERE p.is_deleted = false
 ),
 
 min_confirmed_phase_dates AS (
