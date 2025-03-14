@@ -154,7 +154,6 @@ const SearchBar = ({
                   [classes.advancedSearchSelected]: advancedSearchAnchor,
                   [classes.advancedSearchActive]: filterStateActive,
                 })}
-                data-testid="advanced-filter-button"
                 size="large"
               >
                 <Icon style={{ verticalAlign: "middle" }}>tune</Icon>

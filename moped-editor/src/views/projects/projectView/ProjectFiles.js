@@ -357,9 +357,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
   // handles row delete
   const handleDeleteClick = useCallback(
     (id) => () => {
-      // remove row from rows in state
-      setRows(rows.filter((row) => row.project_file_id !== id));
-
       deleteProjectFileAttachment({
         variables: {
           fileId: id,
@@ -367,6 +364,8 @@ const ProjectFiles = ({ handleSnackbar }) => {
       })
         .then(() => refetch())
         .then(() => {
+          // remove row from rows in state
+          setRows(rows.filter((row) => row.project_file_id !== id));
           setIsDeleteConfirmationOpen(false);
           handleSnackbar(true, "File deleted", "success");
         })

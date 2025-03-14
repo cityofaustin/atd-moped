@@ -8,6 +8,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ProjectMilestoneToolbar from "./ProjectMilestones/ProjectMilestoneToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
+import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 
 import {
   UPDATE_PROJECT_MILESTONES_MUTATION,
@@ -21,7 +22,6 @@ import parseISO from "date-fns/parseISO";
 import { usePhaseNameLookup } from "./ProjectPhase/helpers";
 import ToggleEditComponent from "./ToggleEditComponent";
 import MilestoneTemplateModal from "./ProjectMilestones/MilestoneTemplateModal";
-import MilestoneAutocompleteComponent from "./ProjectMilestones/MilestoneAutocompleteComponent";
 import DataGridDateFieldEdit from "./ProjectMilestones/DataGridDateFieldEdit";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
@@ -40,30 +40,15 @@ const useMilestoneNameLookup = (data) =>
     );
   }, [data]);
 
-const useMilestoneRelatedPhaseLookup = (data) =>
-  useMemo(() => {
-    if (!data) {
-      return {};
-    }
-    return data.moped_milestones.reduce(
-      (obj, item) =>
-        Object.assign(obj, {
-          [item.milestone_id]: item.related_phase_id,
-        }),
-      {}
-    );
-  }, [data]);
-
-const requiredFields = ["milestone_id"];
+const requiredFields = ["moped_milestone"];
 
 const useColumns = ({
+  data,
   rowModesModel,
   handleEditClick,
   handleSaveClick,
   handleCancelClick,
   handleDeleteOpen,
-  milestoneNameLookup,
-  relatedPhaseLookup,
   usingShiftKey,
   phaseNameLookup,
 }) =>
@@ -71,20 +56,26 @@ const useColumns = ({
     return [
       {
         headerName: "Milestone",
-        field: "milestone_id",
+        field: "moped_milestone",
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,
-          error: !params.props.value,
+          error: !params.props.value?.milestone_id,
         }),
         editable: true,
         renderEditCell: (props) => (
-          <MilestoneAutocompleteComponent
+          <LookupAutocompleteComponent
             {...props}
-            milestoneNameLookup={milestoneNameLookup}
-            relatedPhaseLookup={relatedPhaseLookup}
-            error={props.error}
+            name={"milestone"}
+            options={data?.moped_milestones}
+            textFieldProps={{
+              error: props.error,
+            }}
+            dependentFieldName="moped_milestone_related_phase"
+            setDependentFieldValue={(newValue) => ({
+              related_phase_id: newValue?.related_phase_id,
+            })}
           />
         ),
         width: 250,
@@ -98,16 +89,16 @@ const useColumns = ({
       },
       {
         headerName: "Related phase",
-        field: "moped_milestone",
+        field: "moped_milestone_related_phase",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
-        valueFormatter: (value) => {
-          return phaseNameLookup[value?.related_phase_id] ?? "";
-        },
+        renderCell: (props) =>
+          phaseNameLookup[props.row.moped_milestone?.related_phase_id] ?? "",
         width: 150,
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
+            value={props.row.moped_milestone}
             lookupTable={phaseNameLookup}
             usingShiftKey={usingShiftKey}
             previousColumnField="description"
@@ -176,13 +167,12 @@ const useColumns = ({
       },
     ];
   }, [
+    data,
     rowModesModel,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
     handleDeleteOpen,
-    milestoneNameLookup,
-    relatedPhaseLookup,
     usingShiftKey,
     phaseNameLookup,
   ]);
@@ -224,7 +214,6 @@ const ProjectMilestones = ({
   }, [data]);
 
   const milestoneNameLookup = useMilestoneNameLookup(data);
-  const relatedPhaseLookup = useMilestoneRelatedPhaseLookup(data);
   const phaseNameLookup = usePhaseNameLookup(data?.moped_phases || []);
 
   const handleDeleteOpen = useCallback(
@@ -301,6 +290,13 @@ const ProjectMilestones = ({
       updatedMilestoneData.description.trim() === ""
         ? null
         : updatedMilestoneData.description;
+
+    updatedMilestoneData.milestone_id =
+      updatedMilestoneData.moped_milestone?.milestone_id || null;
+
+    // "moped_milestone_related_phase" is a column name only for rendering in DataGrid, the pertinent information is in the
+    // moped_milestone object. Deleting from the payload since the db is not expecting it in this shape
+    delete updatedMilestoneData.moped_milestone_related_phase;
 
     if (updatedRow.isNew) {
       delete updatedMilestoneData.isNew;
@@ -402,13 +398,12 @@ const ProjectMilestones = ({
   );
 
   const dataGridColumns = useColumns({
+    data,
     rowModesModel,
     handleDeleteOpen,
     handleSaveClick,
     handleCancelClick,
     handleEditClick,
-    milestoneNameLookup,
-    relatedPhaseLookup,
     usingShiftKey,
     phaseNameLookup,
   });

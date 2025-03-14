@@ -445,7 +445,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
 
   // saves row update, either editing an existing row or saving a new row
   const processRowUpdate = (updatedRow, originalRow) => {
-    const updateProjectFundingData = updatedRow;
+    const updateProjectFundingData = { ...updatedRow };
     // Remove unexpected variables
     delete updateProjectFundingData.__typename;
 
@@ -502,10 +502,9 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
           })
       );
     } else {
-      // Remove __typename since we removed it from updatedRow and check if the row has changed
+      // Remove __typename and check if the row has changed
       delete originalRow.__typename;
-      delete originalRow.moped_fund_source;
-      delete originalRow.moped_fund_program;
+      delete updatedRow.__typename;
       const hasRowChanged = !isEqual(updatedRow, originalRow);
 
       if (!hasRowChanged) {

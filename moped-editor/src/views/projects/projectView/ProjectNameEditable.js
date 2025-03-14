@@ -3,13 +3,10 @@ import ProjectNameForm from "./ProjectNameForm";
 import ProjectName from "./ProjectName";
 
 const ProjectNameEditable = (props) => {
-
   return (
     <>
       {props.isEditing ? (
-        <ProjectNameForm
-          props={props}
-        />
+        <ProjectNameForm {...props} />
       ) : (
         <ProjectName
           projectData={props.projectData}
