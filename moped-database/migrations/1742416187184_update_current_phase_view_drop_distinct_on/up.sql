@@ -1,4 +1,4 @@
--- Removes DISTINCT ON handling which was causing query timeouts
+-- Removes DISTINCT ON handling and ORDER BY which was causing query timeouts
 CREATE OR REPLACE VIEW current_phase_view AS SELECT
     mpp.project_id,
     mpp.project_phase_id,
@@ -9,4 +9,3 @@ CREATE OR REPLACE VIEW current_phase_view AS SELECT
 FROM moped_proj_phases mpp
 LEFT JOIN moped_phases mp ON mp.phase_id = mpp.phase_id
 WHERE mpp.is_deleted = false AND mpp.is_current_phase = true;
-
