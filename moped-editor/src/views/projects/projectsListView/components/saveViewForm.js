@@ -9,14 +9,13 @@ import * as yup from "yup";
 import ControlledTextInput from "src/components/forms/ControlledTextInput";
 
 const validationSchema = yup.object().shape({
-  description: yup.string().required(),
+  description: yup.string().trim().required("Required").nullable(),
 });
 
-const SaveViewForm = ({ onSave, description }) => {
+const SaveViewForm = ({ onSave, description, loading }) => {
   const {
     handleSubmit,
     control,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: { description: description },
@@ -26,7 +25,7 @@ const SaveViewForm = ({ onSave, description }) => {
   const areFormErrors = Object.keys(errors).length > 0;
 
   return (
-    <form onSubmit={handleSubmit(() => onSave())}>
+    <form onSubmit={handleSubmit(onSave)}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
           <FormControl fullWidth>
@@ -36,7 +35,11 @@ const SaveViewForm = ({ onSave, description }) => {
               name="description"
               size="small"
               control={control}
-              helperText="Required"
+              error={!!errors?.description}
+              helperText={errors?.description?.message}
+              InputProps={{
+                disabled: loading,
+              }}
             />
           </FormControl>
         </Grid>
@@ -48,7 +51,7 @@ const SaveViewForm = ({ onSave, description }) => {
             color="primary"
             startIcon={<CheckCircle />}
             type="submit"
-            disabled={!watch("description")?.length || areFormErrors}
+            disabled={loading || areFormErrors}
           >
             Save view
           </Button>
