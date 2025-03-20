@@ -45,7 +45,7 @@ const FiltersChips = ({
 }) => {
   const classes = useStyles();
 
-  const [IsViewSaved, setIsViewSaved] = useState(false);
+  const [isViewSaved, setIsViewSaved] = useState(false);
   const [isSaveViewModalOpen, setIsSaveViewModalOpen] = useState(false);
 
   const filtersCount = Object.keys(filters).length;
@@ -136,7 +136,7 @@ const FiltersChips = ({
                 variant="outlined"
                 color="primary"
                 className={classes.saveViewButton}
-                disabled={IsViewSaved}
+                disabled={isViewSaved}
               >
                 SAVE VIEW
               </Button>

@@ -14,7 +14,7 @@ const SaveViewModal = ({
   setIsViewSaved,
   handleSnackbar,
 }) => {
-  const [saveView] = useMutation(ADD_USER_SAVED_VIEW);
+  const [saveView, { loading }] = useMutation(ADD_USER_SAVED_VIEW);
 
   let { pathname, search } = useLocation();
 
@@ -30,11 +30,11 @@ const SaveViewModal = ({
   };
 
   // run save view mutation
-  const onSaveViewClick = () => {
+  const onSaveViewClick = (formData) => {
     saveView({
       variables: {
         object: {
-          description: defaultDescription,
+          description: formData.description,
           url: `${pathname}${search}`,
           query_filters: filters,
         },
@@ -70,6 +70,7 @@ const SaveViewModal = ({
         <SaveViewForm
           onSave={onSaveViewClick}
           description={defaultDescription}
+          loading={loading}
         />
       </DialogContent>
     </Dialog>
