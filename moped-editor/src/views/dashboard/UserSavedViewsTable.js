@@ -19,6 +19,7 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
+import config from "../../config";
 
 const requiredFields = ["description"];
 
@@ -54,7 +55,7 @@ const useColumns = ({
                 display: "block",
               }}
             >
-              {`mobility.austin.gov${row.url}`}
+              {`${config.env.APP_CLOUDFRONT}${row.url}`}
             </Link>
           ) : null,
       },
@@ -78,7 +79,7 @@ const useColumns = ({
         defaultVisible: true,
         renderCell: ({ row }) => (
           <FormattedDateString
-            date={row.updated_at}
+            date={row.created_at}
             primary="relative"
             secondary="absolute"
           />
