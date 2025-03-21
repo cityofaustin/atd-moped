@@ -181,6 +181,7 @@ const ProjectView = () => {
   const allProjectsLink = !previousProjectListViewQueryString
     ? "/moped/projects"
     : `/moped/projects${previousProjectListViewQueryString}`;
+
   /**
    * @constant {boolean} isEditing - When true, it signals a child component we want to edit the project name
    * @constant {boolean} dialogOpen - When true, the dialog shows
@@ -221,10 +222,18 @@ const ProjectView = () => {
    */
   const handleChange = useCallback(
     (event, newTab) => {
-      setSearchParams({ tab: TABS[newTab].param });
+      // Preserve the queryString state when changing tabs
+      setSearchParams(
+        {
+          tab: TABS[newTab].param,
+        },
+        {
+          state: locationState, // Preserve the location state when changing tabs
+        }
+      );
       if (newTab === 0) refetch();
     },
-    [refetch, setSearchParams]
+    [refetch, setSearchParams, locationState]
   );
 
   /**
