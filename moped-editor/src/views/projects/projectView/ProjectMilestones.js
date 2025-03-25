@@ -58,6 +58,8 @@ const useColumns = ({
         headerName: "Milestone",
         field: "moped_milestone",
         renderCell: ({ row }) => row.moped_milestone?.milestone_name,
+        sortComparator: (v1, v2) =>
+          v1.milestone_name.localeCompare(v2.milestone_name),
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,
@@ -92,8 +94,8 @@ const useColumns = ({
         field: "moped_milestone_related_phase",
         editable: true, // this is to be able to use the renderEditCell option to update the related phase
         // during editing -- the input field is always disabled
-        renderCell: (props) =>
-          phaseNameLookup[props.row.moped_milestone?.related_phase_id] ?? "",
+        valueGetter: (value, row) =>
+          phaseNameLookup[row.moped_milestone?.related_phase_id] ?? "",
         width: 150,
         renderEditCell: (props) => (
           <ViewOnlyTextField
