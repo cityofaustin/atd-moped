@@ -674,6 +674,11 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
         last_name
       }
     }
+    moped_file_types
+    {
+      id
+      name
+    }
   }
 `;
 

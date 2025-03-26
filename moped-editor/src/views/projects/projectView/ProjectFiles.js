@@ -481,6 +481,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}
         projectId={projectId}
+        fileTypesLookup={data?.moped_file_types || []}
       />
       <DeleteConfirmationModal
         type={"file"}
