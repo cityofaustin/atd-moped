@@ -58,7 +58,18 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const fileTypes = ["", "Funding", "Plans", "Estimates", "Other"];
+export const useFileTypeObject = (fileTypes) =>
+  useMemo(
+    () =>
+     fileTypes.reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.id]: item.name,
+          }),
+        {}
+      ),
+    [fileTypes]
+  );
 
 // remove the FilePond and s3 added path for display, ex:
 // 'private/project/65/80_04072022191747_40d4c982e064d0f9_1800halfscofieldridgepwkydesignprint.pdf'
@@ -75,6 +86,8 @@ const useColumns = ({
   handleCancelClick,
   handleDeleteOpen,
   validateFileInput,
+  fileTypesLookup,
+  fileTypesObject
 }) =>
   useMemo(() => {
     return [
@@ -145,16 +158,21 @@ const useColumns = ({
         field: "file_type",
         editable: true,
         width: 150,
-        valueFormatter: (value) => fileTypes[value],
+        valueFormatter: (value) => fileTypesObject[value],
         sortComparator: (v1, v2, param1, param2) => {
           return gridStringOrNumberComparator(
-            fileTypes[v1],
-            fileTypes[v2],
+            fileTypesObject[v1],
+            fileTypesObject[v2],
             param1,
             param2
           );
         },
-        renderEditCell: (props) => <ProjectFilesTypeSelect {...props} />,
+        renderEditCell: (props) => (
+          <ProjectFilesTypeSelect
+            {...props}
+            fileTypesLookup={fileTypesLookup}
+          />
+        ),
       },
       {
         headerName: "Description",
@@ -229,6 +247,8 @@ const useColumns = ({
     handleEditClick,
     handleDeleteOpen,
     validateFileInput,
+    fileTypesLookup,
+    fileTypesObject,
   ]);
 
 /**
@@ -311,6 +331,10 @@ const ProjectFiles = ({ handleSnackbar }) => {
     variables: { projectId },
     fetchPolicy: "no-cache",
   });
+
+  // const fileTypesLookup = useFileTypesLookup(data?.moped_file_types || []);
+  const fileTypesLookup = data?.moped_file_types;
+  const fileTypesObject = useFileTypeObject(data?.moped_file_types || [])
 
   useEffect(() => {
     if (data && data.moped_project_files.length > 0) {
@@ -435,6 +459,8 @@ const ProjectFiles = ({ handleSnackbar }) => {
     handleCancelClick,
     handleEditClick,
     validateFileInput,
+    fileTypesLookup,
+    fileTypesObject
   });
 
   // If no data or loading show progress circle
@@ -481,7 +507,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
         handleClickCloseUploadFile={handleClickCloseUploadFile}
         handleClickSaveFile={handleClickSaveFile}
         projectId={projectId}
-        fileTypesLookup={data?.moped_file_types || []}
+        fileTypesLookup={fileTypesLookup}
       />
       <DeleteConfirmationModal
         type={"file"}

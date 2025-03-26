@@ -174,7 +174,6 @@ const FileUploadDialogSingle = ({
       fieldLength(fileKey) > 0 &&
       fileObject != null;
 
-  console.log(fileTypesLookup);
   return (
     <Dialog
       open={dialogOpen}
