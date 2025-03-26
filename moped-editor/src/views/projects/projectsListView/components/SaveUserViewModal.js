@@ -2,11 +2,11 @@ import React from "react";
 import { useMutation } from "@apollo/client";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import SaveViewForm from "./saveViewForm";
+import SaveUserViewForm from "./SaveUserViewForm";
 import { useLocation } from "react-router-dom";
-import { ADD_USER_SAVED_VIEW } from "src/queries/project";
+import { ADD_USER_SAVED_VIEW } from "src/queries/userSavedViews";
 
-const SaveViewModal = ({
+const SaveUserViewModal = ({
   showDialog,
   setIsSaveViewModalOpen,
   filters,
@@ -67,7 +67,7 @@ const SaveViewModal = ({
         </IconButton>
       </DialogTitle>
       <DialogContent dividers={true}>
-        <SaveViewForm
+        <SaveUserViewForm
           onSave={onSaveViewClick}
           description={defaultDescription}
           loading={loading}
@@ -77,4 +77,4 @@ const SaveViewModal = ({
   );
 };
 
-export default SaveViewModal;
+export default SaveUserViewModal;

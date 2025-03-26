@@ -21,6 +21,16 @@ export const USER_SAVED_VIEWS_QUERY = gql`
   }
 `;
 
+export const ADD_USER_SAVED_VIEW = gql`
+  mutation AddUserSavedView($object: moped_user_saved_views_insert_input!) {
+    insert_moped_user_saved_views_one(object: $object) {
+      description
+      url
+      query_filters
+    }
+  }
+`;
+
 export const UPDATE_USER_SAVED_VIEW = gql`
   mutation UpdateUserSavedView($id: Int!, $description: String!) {
     update_moped_user_saved_views(
