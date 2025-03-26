@@ -58,6 +58,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+// reshape the array of file types into an object with key id, value name
 export const useFileTypeObject = (fileTypes) =>
   useMemo(
     () =>
@@ -332,7 +333,6 @@ const ProjectFiles = ({ handleSnackbar }) => {
     fetchPolicy: "no-cache",
   });
 
-  // const fileTypesLookup = useFileTypesLookup(data?.moped_file_types || []);
   const fileTypesLookup = data?.moped_file_types;
   const fileTypesObject = useFileTypeObject(data?.moped_file_types || [])
 
