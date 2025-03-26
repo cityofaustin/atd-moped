@@ -57,7 +57,7 @@ const useColumns = ({
       {
         headerName: "Milestone",
         field: "moped_milestone",
-        renderCell: ({ row }) => row.moped_milestone?.milestone_name,
+        valueFormatter: (value) => value?.milestone_name,
         sortComparator: (v1, v2) =>
           v1.milestone_name.localeCompare(v2.milestone_name),
         // input validation:
