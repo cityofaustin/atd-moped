@@ -7,7 +7,7 @@ import {
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
-import SaveViewModal from "src/views/projects/projectsListView/components/SaveViewModal";
+import SaveViewModal from "../../views/projects/projectsListView/components/saveViewModal"
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
