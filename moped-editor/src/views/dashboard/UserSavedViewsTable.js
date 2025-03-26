@@ -42,7 +42,7 @@ const useColumns = ({
         // input validation:
         preProcessEditCellProps: (params) => ({
           ...params.props,
-          error: !params.props.value?.description,
+          error: !params.props.value,
         }),
       },
       {
