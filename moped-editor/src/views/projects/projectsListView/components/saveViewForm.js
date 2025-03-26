@@ -19,6 +19,7 @@ const SaveViewForm = ({ onSave, description, loading }) => {
     formState: { errors },
   } = useForm({
     defaultValues: { description: description },
+    mode: "onChange",
     resolver: yupResolver(validationSchema),
   });
 
@@ -39,13 +40,14 @@ const SaveViewForm = ({ onSave, description, loading }) => {
               helperText={errors?.description?.message}
               InputProps={{
                 disabled: loading,
+                autoFocus: true,
               }}
             />
           </FormControl>
         </Grid>
       </Grid>
-      <Grid container spacing={4} display="flex" justifyContent="flex-end">
-        <Grid item style={{ margin: 5 }}>
+      <Grid container display="flex" justifyContent="flex-end">
+        <Grid item sx={{ marginTop: 2 }}>
           <Button
             variant="contained"
             color="primary"

@@ -1013,13 +1013,3 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
     }
   }
 `;
-
-export const ADD_USER_SAVED_VIEW = gql`
-  mutation AddUserSavedView($object: moped_user_saved_views_insert_input!) {
-    insert_moped_user_saved_views_one(object: $object) {
-      description
-      url
-      query_filters
-    }
-  }
-`;

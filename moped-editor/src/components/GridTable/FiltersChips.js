@@ -7,7 +7,7 @@ import {
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
-import SaveViewModal from "src/views/projects/projectsListView/components/saveViewModal";
+import SaveViewModal from "src/views/projects/projectsListView/components/SaveViewModal";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -132,6 +132,7 @@ const FiltersChips = ({
               title="Save these filters to Dashboard"
             >
               <Button
+                size="small"
                 onClick={handleSaveView}
                 variant="outlined"
                 color="primary"
