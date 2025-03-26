@@ -12,7 +12,7 @@ const validationSchema = yup.object().shape({
   description: yup.string().trim().required("Required").nullable(),
 });
 
-const SaveViewForm = ({ onSave, description, loading }) => {
+const SaveUserViewForm = ({ onSave, description, loading }) => {
   const {
     handleSubmit,
     control,
@@ -63,4 +63,4 @@ const SaveViewForm = ({ onSave, description, loading }) => {
   );
 };
 
-export default SaveViewForm;
+export default SaveUserViewForm;
