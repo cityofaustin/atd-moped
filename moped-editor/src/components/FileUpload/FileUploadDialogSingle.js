@@ -43,7 +43,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const FileUploadDialogSingle = (props) => {
+const FileUploadDialogSingle = ({
+  title,
+  dialogOpen,
+  handleClickCloseUploadFile,
+  handleClickSaveFile,
+  projectId,
+  fileTypesLookup,
+}) => {
   const classes = useStyles();
 
   /**
@@ -121,7 +128,7 @@ const FileUploadDialogSingle = (props) => {
   };
 
   const handleCancel = () => {
-    props.handleClickCloseUploadFile();
+    handleClickCloseUploadFile();
     clearState();
   };
 
@@ -139,8 +146,8 @@ const FileUploadDialogSingle = (props) => {
     };
 
     // If there is a click save file handler, call it...
-    if (props?.handleClickSaveFile) {
-      props.handleClickSaveFile(fileBundle);
+    if (handleClickSaveFile) {
+      handleClickSaveFile(fileBundle);
       clearState();
     }
   };
@@ -169,14 +176,12 @@ const FileUploadDialogSingle = (props) => {
 
   return (
     <Dialog
-      open={props.dialogOpen}
-      onClose={props.handleClickCloseUploadFile}
+      open={dialogOpen}
+      onClose={handleClickCloseUploadFile}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle variant="h4">
-        {props?.title ? props.title : "Upload Media"}
-      </DialogTitle>
+      <DialogTitle variant="h4">{title ? title : "Upload Media"}</DialogTitle>
       <DialogContent>
         <Grid container style={{ marginTop: "5px" }}>
           <Grid item xs={12} md={12}>
@@ -201,10 +206,11 @@ const FileUploadDialogSingle = (props) => {
                 label="Type"
                 onChange={handleFileTypeChange}
               >
-                <MenuItem value={1}>Funding</MenuItem>
-                <MenuItem value={2}>Plans</MenuItem>
-                <MenuItem value={3}>Estimates</MenuItem>
-                <MenuItem value={4}>Other</MenuItem>
+                {fileTypesLookup.map((type) => (
+                  <MenuItem key={type.id} value={type.id}>
+                    {type.name}
+                  </MenuItem>
+                ))}
               </Select>
               <FormHelperText>Required</FormHelperText>
             </FormControl>
@@ -251,7 +257,7 @@ const FileUploadDialogSingle = (props) => {
               <FileUpload
                 limit={1}
                 sizeLimit={"1024MB"}
-                projectId={props.projectId}
+                projectId={projectId}
                 onFileProcessed={handleOnFileProcessed}
                 onFileAdded={handleOnFileAdded}
               />
