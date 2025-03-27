@@ -27,6 +27,7 @@ import MilestoneProgressMeter from "./MilestoneProgressMeter";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
+import UserSavedViewsTable from "./UserSavedViewsTable";
 
 import typography from "../../theme/typography";
 
@@ -93,6 +94,9 @@ const TABS = [
   },
   {
     label: "Following",
+  },
+  {
+    label: "Saved views",
   },
 ];
 
@@ -308,6 +312,8 @@ const DashboardView = () => {
                   </AppBar>
                   {loading ? (
                     <CircularProgress />
+                  ) : TABS[activeTab].label === "Saved views" ? (
+                    <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
                     <MaterialTable
                       columns={columns}

@@ -1750,6 +1750,34 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: moped_file_types
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+- table:
     name: moped_fund_programs
     schema: public
   select_permissions:
@@ -5080,8 +5108,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - description
           - is_deleted
@@ -5092,8 +5120,8 @@
       permission:
         check: {}
         set:
-          created_by_user_id: x-hasura-x-hasura-user-db-id
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          created_by_user_id: x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
         columns:
           - description
           - is_deleted
@@ -5154,7 +5182,7 @@
         filter: {}
         check: null
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
       comment: ""
     - role: moped-editor
       permission:
@@ -5166,7 +5194,7 @@
         filter: {}
         check: null
         set:
-          updated_by_user_id: x-hasura-x-hasura-user-db-id
+          updated_by_user_id: x-hasura-user-db-id
       comment: ""
 - table:
     name: moped_users

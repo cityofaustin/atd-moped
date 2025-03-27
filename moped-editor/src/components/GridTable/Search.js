@@ -97,6 +97,7 @@ const Search = ({
   loading,
   showMapView,
   setShowMapView,
+  handleSnackbar
 }) => {
   const classes = useStyles();
   const divRef = React.useRef();
@@ -184,6 +185,7 @@ const Search = ({
                 resetSimpleSearch={resetSimpleSearch}
                 setIsOr={setIsOr}
                 setSearchParams={setSearchParams}
+                handleSnackbar={handleSnackbar}
               />
             </Grid>
             <Grid item xs={12} md="auto" className={classes.downloadButtonGrid}>
