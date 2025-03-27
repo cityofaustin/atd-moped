@@ -129,7 +129,7 @@ const FiltersChips = ({
           <Grid>
             <Tooltip
               placement="bottom-start"
-              title="Save these filters to Dashboard"
+              title="Save these filters to the dashboard"
             >
               <Button
                 size="small"

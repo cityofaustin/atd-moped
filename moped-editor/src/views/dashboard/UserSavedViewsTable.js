@@ -260,11 +260,11 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         processRowUpdate={processRowUpdate}
         hideFooter
         disableRowSelectionOnClick
-        localeText={{ noRowsLabel: "No saved queries to display" }}
+        localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
       />
       <DeleteConfirmationModal
-        type={"saved query"}
+        type={"saved view"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
