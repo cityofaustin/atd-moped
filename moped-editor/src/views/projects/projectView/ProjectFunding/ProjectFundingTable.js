@@ -142,6 +142,8 @@ const useColumns = ({
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_source_name,
+        sortComparator: (v1, v2) =>
+          v1.funding_source_name.localeCompare(v2.funding_source_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -157,6 +159,8 @@ const useColumns = ({
         width: 200,
         editable: true,
         valueFormatter: (value) => value?.funding_program_name,
+        sortComparator: (v1, v2) =>
+          v1.funding_program_name.localeCompare(v2.funding_program_name),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -178,11 +182,19 @@ const useColumns = ({
         field: "funding_status_id",
         editable: true,
         width: 200,
-        renderCell: ({ value }) =>
+        valueFormatter: (value) =>
           getLookupValueByID(
             data["moped_fund_status"],
             "funding_status",
             value
+          ),
+        sortComparator: (v1, v2) =>
+          getLookupValueByID(
+            data["moped_fund_status"],
+            "funding_status",
+            v1
+          ).localeCompare(
+            getLookupValueByID(data["moped_fund_status"], "funding_status", v2)
           ),
         renderEditCell: (props) => (
           <LookupSelectComponent
@@ -200,6 +212,10 @@ const useColumns = ({
         editable: true,
         valueFormatter: (value) =>
           !!value?.fund_name ? `${value?.fund_id} | ${value?.fund_name}` : "",
+        sortComparator: (v1, v2) =>
+          `${v1?.fund_id} | ${v1?.fund_name}`.localeCompare(
+            `${v2?.fund_id} | ${v2?.fund_name}`
+          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
@@ -220,6 +236,12 @@ const useColumns = ({
             ? `${value?.dept} | ${value?.unit} |
               ${value?.unit_long_name}`
             : "",
+        sortComparator: (v1, v2) =>
+          `${v1?.dept} | ${v1?.unit} |
+              ${v1?.unit_long_name}`.localeCompare(
+            `${v2?.dept} | ${v2?.unit} |
+              ${v2?.unit_long_name}`
+          ),
         renderEditCell: (props) => (
           <LookupAutocompleteComponent
             {...props}
