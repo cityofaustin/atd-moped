@@ -31,6 +31,9 @@ import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
 import ProjectsListViewMap from "./ProjectsListViewMap";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ActivityMetrics from "src/components/ActivityMetrics";
+import FeedbackSnackbar, {
+  useFeedbackSnackbar,
+} from "src/components/FeedbackSnackbar";
 
 export const mapSearchParamName = "map";
 
@@ -196,6 +199,9 @@ const ProjectsListViewTable = () => {
     [setQueryLimit, setQueryOffset]
   );
 
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+  useFeedbackSnackbar();
+
   /**
    * Store the most recent version of the query in app context so that it
    * can be refetched elswhere
@@ -231,6 +237,7 @@ const ProjectsListViewTable = () => {
           loading={loading || isMapDataLoading}
           showMapView={showMapView}
           setShowMapView={setShowMapView}
+          handleSnackbar={handleSnackbar}
         />
         {/*Main Table Body*/}
         <Paper className={classes.paper}>
@@ -295,6 +302,10 @@ const ProjectsListViewTable = () => {
           </Box>
         </Paper>
       </Container>
+      <FeedbackSnackbar
+          snackbarState={snackbarState}
+          handleSnackbarClose={handleSnackbarClose}
+        />
     </ApolloErrorHandler>
   );
 };
