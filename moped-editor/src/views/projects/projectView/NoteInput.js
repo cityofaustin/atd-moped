@@ -30,6 +30,47 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "./EditorTheme";
 
+import * as Yup from "yup";
+
+// TODO: Add validation check if the note is a status update (project_note_type = 2)
+// TODO: Render error message in red helper text below the editor
+// TODO: Add reusable validation schema to src/constants/projects.js (does this need its own? or can it be generalized?)
+const validationSchema = Yup.object().shape({
+  editorContent: Yup.string().max(
+    2000,
+    "Status update must be 2000 characters or less"
+  ),
+});
+
+// TODO: Adapt this to the Lexical editor code
+const validateEditor = async () => {
+  try {
+    // Extract plain text from editor state
+    const editorText = editorState
+      ? editorState.read(() => {
+          return $getRoot().getTextContent();
+        })
+      : "";
+
+    // Validate with Yup
+    await validationSchema.validate(
+      { editorContent: editorText },
+      { abortEarly: false }
+    );
+    return true;
+  } catch (yupError) {
+    // Handle Yup validation errors
+    const formattedErrors = {};
+    if (yupError.inner) {
+      yupError.inner.forEach((err) => {
+        formattedErrors[err.path] = err.message;
+      });
+    }
+    setErrors(formattedErrors);
+    return false;
+  }
+};
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
