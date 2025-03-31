@@ -43,7 +43,7 @@ const validationSchema = Yup.object().shape({
 });
 
 // TODO: Adapt this to the Lexical editor code
-const validateEditor = async () => {
+const validateHtmlContent = (htmlContent) => {
   try {
     // Extract plain text from editor state
     const editorText = editorState
@@ -143,6 +143,11 @@ const OnChangePlugin = ({ onChange }) => {
         const htmlContent = isEditorEmpty
           ? null
           : $generateHtmlFromNodes(editor, null);
+
+        // TODO: Validate here
+        console.log("htmlContent", htmlContent?.length);
+        validateHtmlContent(htmlContent);
+
         onChange(htmlContent);
       });
     });
