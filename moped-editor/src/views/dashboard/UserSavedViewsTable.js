@@ -39,6 +39,11 @@ const useColumns = ({
         editable: true,
         width: 500,
         renderEditCell: (props) => <DataGridTextField {...props} />,
+        // input validation:
+        preProcessEditCellProps: (params) => ({
+          ...params.props,
+          error: !params.props.value,
+        }),
       },
       {
         headerName: "URL",
@@ -63,7 +68,6 @@ const useColumns = ({
         headerName: "Updated at",
         field: "updated_at",
         width: 150,
-        defaultVisible: true,
         renderCell: ({ row }) => (
           <FormattedDateString
             date={row.updated_at}
@@ -76,7 +80,6 @@ const useColumns = ({
         headerName: "Created at",
         field: "created_at",
         width: 150,
-        defaultVisible: true,
         renderCell: ({ row }) => (
           <FormattedDateString
             date={row.created_at}
@@ -189,9 +192,6 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
 
   // handles row delete
   const handleDeleteClick = (id) => () => {
-    // remove row from rows in state
-    setRows(rows.filter((row) => row.id !== id));
-
     deleteUserSavedView({
       variables: {
         id,
@@ -199,9 +199,13 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     })
       .then(() => {
         refetch();
+      })
+      .then(() => {
+        // remove row from rows in state
+        setRows(rows.filter((row) => row.id !== id));
+        setIsDeleteConfirmationOpen(false);
         handleSnackbar(true, "Saved view removed", "success");
       })
-      .then(() => setIsDeleteConfirmationOpen(false))
       .catch((error) => {
         handleSnackbar(true, "Error removing saved view", "error", error);
       });
@@ -256,14 +260,11 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
         processRowUpdate={processRowUpdate}
         hideFooter
         disableRowSelectionOnClick
-        localeText={{ noRowsLabel: "No saved queries to display" }}
+        localeText={{ noRowsLabel: "No saved views to display" }}
         initialState={{ pinnedColumns: { right: ["edit"] } }}
-        onRowEditStart={(params, event) => {
-          event.defaultMuiPrevented = true; // disable editing rows
-        }}
       />
       <DeleteConfirmationModal
-        type={"saved query"}
+        type={"saved view"}
         submitDelete={handleDeleteClick(deleteConfirmationId)}
         isDeleteConfirmationOpen={isDeleteConfirmationOpen}
         setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}

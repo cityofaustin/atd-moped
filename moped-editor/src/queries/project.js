@@ -674,6 +674,11 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
         last_name
       }
     }
+    moped_file_types
+    {
+      id
+      name
+    }
   }
 `;
 
@@ -1010,16 +1015,6 @@ export const GET_PROJECTS_GEOGRAPHIES = gql`
       attributes
       component_name
       line_representation
-    }
-  }
-`;
-
-export const ADD_USER_SAVED_VIEW = gql`
-  mutation AddUserSavedView($object: moped_user_saved_views_insert_input!) {
-    insert_moped_user_saved_views_one(object: $object) {
-      description
-      url
-      query_filters
     }
   }
 `;

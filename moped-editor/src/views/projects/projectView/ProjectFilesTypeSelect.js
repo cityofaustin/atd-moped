@@ -9,7 +9,13 @@ import { useGridApiContext } from "@mui/x-data-grid-pro";
  * @param {Boolean} hasFocus - does this field have focus
  * @return {JSX.Element}
  */
-const ProjectFilesTypeSelect = ({ id, value, field, hasFocus }) => {
+const ProjectFilesTypeSelect = ({
+  id,
+  value,
+  field,
+  hasFocus,
+  fileTypesLookup,
+}) => {
   const apiRef = useGridApiContext();
   const ref = React.useRef(null);
 
@@ -39,10 +45,11 @@ const ProjectFilesTypeSelect = ({ id, value, field, hasFocus }) => {
         value={value}
         onChange={handleChange}
       >
-        <MenuItem value={1}>Funding</MenuItem>
-        <MenuItem value={2}>Plans</MenuItem>
-        <MenuItem value={3}>Estimates</MenuItem>
-        <MenuItem value={4}>Other</MenuItem>
+        {fileTypesLookup.map((type) => (
+          <MenuItem key={type.id} value={type.id}>
+            {type.name}
+          </MenuItem>
+        ))}
       </Select>
       <FormHelperText>Required</FormHelperText>
     </FormControl>

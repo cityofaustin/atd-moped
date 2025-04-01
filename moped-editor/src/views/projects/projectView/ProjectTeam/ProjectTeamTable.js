@@ -82,6 +82,10 @@ const useColumns = ({
         valueFormatter: (user) => {
           return user ? `${user.first_name} ${user.last_name}` : "";
         },
+        sortComparator: (v1, v2) =>
+          `${v1.first_name} ${v1.last_name}`.localeCompare(
+            `${v2.first_name} ${v2.last_name}`
+          ),
         renderEditCell: (props) => {
           // the team member object for the current row
           const currentRowMember =
@@ -128,6 +132,8 @@ const useColumns = ({
         editable: true,
         width: 200,
         valueFormatter: (workgroup) => workgroup?.workgroup_name ?? "",
+        sortComparator: (v1, v2) =>
+          v1.workgroup_name.localeCompare(v2.workgroup_name),
         renderEditCell: (props) => (
           <ViewOnlyTextField
             {...props}
@@ -144,6 +150,7 @@ const useColumns = ({
         field: "moped_proj_personnel_roles",
         width: 200,
         editable: true,
+        sortable: false,
         renderHeader: () => (
           <div className={classes.roleHeader}>
             Role{" "}
