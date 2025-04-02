@@ -101,6 +101,17 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 export const STATUS_UPDATE_TYPE_ID = 2;
 export const INTERNAL_NOTE_TYPE_ID = 1;
 
+/**
+ * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
+ * @param {boolean} isStatusEditModal - true if the component is being used in the ProjectSummaryStatusUpdate modal
+ * @param {string} currentPhaseId - The phase ID of the current phase
+ * @param {object} projectData - The project data passed from ProjectView
+ * @param {function} handleSnackbar - Function to handle snackbar notifications
+ * @param {function} closeModalDialog - Function to close the modal dialog
+ * @param {function} refetchProjectSummary - Function to refetch the project summary data
+ * @param {string} projectId - The project ID if rendered in the ProjectSummaryStatusUpdate modal
+ * @returns JSX.Element
+ */
 const ProjectNotes = ({
   modal: isStatusEditModal,
   currentPhaseId,
