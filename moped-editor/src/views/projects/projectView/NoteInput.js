@@ -191,7 +191,7 @@ const initialConfig = {
  * @param {function} cancelNoteEdit - Function to cancel note editing
  * @param {boolean} isStatusEditModal - Flag indicating if the note component is in a status edit modal
  * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
- * @returns
+ * @returns JSX.Element
  */
 const NoteInput = ({
   noteText,
