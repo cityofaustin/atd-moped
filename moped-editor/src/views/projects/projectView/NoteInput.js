@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -29,47 +29,6 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "./EditorTheme";
-
-import * as Yup from "yup";
-
-// TODO: Add validation check if the note is a status update (project_note_type = 2)
-// TODO: Render error message in red helper text below the editor
-// TODO: Add reusable validation schema to src/constants/projects.js (does this need its own? or can it be generalized?)
-const validationSchema = Yup.object().shape({
-  editorContent: Yup.string().max(
-    2000,
-    "Status update must be 2000 characters or less"
-  ),
-});
-
-// TODO: Adapt this to the Lexical editor code
-const validateHtmlContent = (htmlContent) => {
-  try {
-    // Extract plain text from editor state
-    const editorText = editorState
-      ? editorState.read(() => {
-          return $getRoot().getTextContent();
-        })
-      : "";
-
-    // Validate with Yup
-    await validationSchema.validate(
-      { editorContent: editorText },
-      { abortEarly: false }
-    );
-    return true;
-  } catch (yupError) {
-    // Handle Yup validation errors
-    const formattedErrors = {};
-    if (yupError.inner) {
-      yupError.inner.forEach((err) => {
-        formattedErrors[err.path] = err.message;
-      });
-    }
-    setErrors(formattedErrors);
-    return false;
-  }
-};
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -134,7 +93,7 @@ const onError = (error) => {
 };
 
 // On change, return editor content as HTML
-const OnChangePlugin = ({ onChange }) => {
+const OnChangePlugin = ({ onChange, validator, setValidationErrors }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -144,14 +103,18 @@ const OnChangePlugin = ({ onChange }) => {
           ? null
           : $generateHtmlFromNodes(editor, null);
 
-        // TODO: Validate here
-        console.log("htmlContent", htmlContent?.length);
-        validateHtmlContent(htmlContent);
+        // Validate the HTML content if a validator is provided
+        const errors = validator ? validator(htmlContent) : null;
+        if (errors) {
+          setValidationErrors(errors);
+        } else {
+          setValidationErrors(null);
+        }
 
         onChange(htmlContent);
       });
     });
-  }, [editor, onChange]);
+  }, [editor, onChange, validator, setValidationErrors]);
   return null;
 };
 
@@ -219,6 +182,24 @@ const initialConfig = {
   onError,
 };
 
+/**
+ * NoteInput component that allows users to add and edit notes.
+ * @param {string} noteText - The text of the note
+ * @param {function} setNoteText - Function to set the note text
+ * @param {number} newNoteType - The type of the new note
+ * @param {function} setNewNoteType - Function to set the new note type
+ * @param {number} editingNoteType - The type of the note being edited
+ * @param {function} setEditingNoteType - Function to set the editing note type
+ * @param {boolean} isEditingNote - Flag indicating if the note is being edited
+ * @param {boolean} noteAddLoading - Flag indicating if the note addition is loading
+ * @param {boolean} noteAddSuccess - Flag indicating if the note was added successfully
+ * @param {function} submitNewNote - Function to submit a new note
+ * @param {function} submitEditNote - Function to submit an edited note
+ * @param {function} cancelNoteEdit - Function to cancel note editing
+ * @param {boolean} isStatusEditModal - Flag indicating if the note component is in a status edit modal
+ * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
+ * @returns
+ */
 const NoteInput = ({
   noteText,
   setNoteText,
@@ -233,8 +214,12 @@ const NoteInput = ({
   submitEditNote,
   cancelNoteEdit,
   isStatusEditModal,
+  validator = null,
 }) => {
   const classes = useStyles();
+
+  const [validationErrors, setValidationErrors] = useState(null);
+  console.log(validationErrors);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);
@@ -258,7 +243,11 @@ const NoteInput = ({
               />
               <HistoryPlugin />
               <AutoFocusPlugin />
-              <OnChangePlugin onChange={onChange} />
+              <OnChangePlugin
+                onChange={onChange}
+                validator={validator}
+                setValidationErrors={setValidationErrors}
+              />
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
               <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
               <LinkPlugin />
@@ -277,12 +266,12 @@ const NoteInput = ({
               {!editingNote ? (
                 <NoteTypeRadioButtons
                   defaultValue={newNoteType}
-                  onChange={(e) => setNewNoteType(e.target.value)}
+                  onChange={(e) => setNewNoteType(Number(e.target.value))}
                 ></NoteTypeRadioButtons>
               ) : (
                 <NoteTypeRadioButtons
                   defaultValue={editingNoteType}
-                  onChange={(e) => setEditingNoteType(e.target.value)}
+                  onChange={(e) => setEditingNoteType(Number(e.target.value))}
                 ></NoteTypeRadioButtons>
               )}
             </FormControl>

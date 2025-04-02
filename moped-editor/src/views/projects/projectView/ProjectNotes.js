@@ -30,6 +30,8 @@ import NoteInput from "./NoteInput";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
+import * as Yup from "yup";
+
 import "./ProjectNotes.css";
 
 // Query
@@ -87,6 +89,36 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// TODO: Render error message in red helper text below the editor
+// TODO: Add reusable validation schema to src/constants/projects.js (does this need its own? or can it be generalized?)
+const validationSchema = Yup.object().shape({
+  editorContent: Yup.string()
+    .max(2000, "Status update must be 2000 characters or less")
+    .nullable(),
+});
+
+// TODO: Adapt this to the Lexical editor code
+const validator = (htmlContent) => {
+  try {
+    // Validate with Yup
+    validationSchema.validateSync(
+      { editorContent: htmlContent },
+      { abortEarly: false }
+    );
+    return true;
+  } catch (yupError) {
+    // Handle Yup validation errors
+    const formattedErrors = {};
+    if (yupError.inner) {
+      yupError.inner.forEach((err) => {
+        formattedErrors[err.path] = err.message;
+      });
+    }
+
+    return formattedErrors;
+  }
+};
+
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
 const projectNoteTypes = ["", "Internal Note", "Status Update"];
@@ -112,7 +144,7 @@ const ProjectNotes = (props) => {
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
-  const [editingNote, setEditingNote] = useState(false);
+  const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteId, setNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
@@ -121,6 +153,10 @@ const ProjectNotes = (props) => {
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+
+  const isStatusUpdate =
+    newNoteType === STATUS_UPDATE_TYPE_ID ||
+    editingNoteType === STATUS_UPDATE_TYPE_ID;
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -166,7 +202,7 @@ const ProjectNotes = (props) => {
         props.refetch();
       }
       setNoteAddSuccess(true);
-      setEditingNote(false);
+      setIsEditingNote(false);
       setTimeout(() => {
         setNoteAddLoading(false);
         setNoteAddSuccess(false);
@@ -210,7 +246,7 @@ const ProjectNotes = (props) => {
 
   const editNote = (index, item) => {
     setEditingNoteType(item.project_note_type);
-    setEditingNote(true);
+    setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
     setNoteId(item.project_note_id);
   };
@@ -218,7 +254,7 @@ const ProjectNotes = (props) => {
   const cancelNoteEdit = () => {
     setEditingNoteType(null);
     setNoteText("");
-    setEditingNote(false);
+    setIsEditingNote(false);
     setNoteId(null);
   };
 
@@ -329,7 +365,7 @@ const ProjectNotes = (props) => {
     <CardContent>
       <Grid container spacing={2}>
         {/*New Note Form*/}
-        {!editingNote && (
+        {!isEditingNote && (
           <Grid item xs={12}>
             <Card>
               <NoteInput
@@ -337,13 +373,14 @@ const ProjectNotes = (props) => {
                 setNoteText={setNoteText}
                 newNoteType={newNoteType}
                 setNewNoteType={setNewNoteType}
-                editingNote={editingNote}
+                isEditingNote={isEditingNote}
                 noteAddLoading={noteAddLoading}
                 noteAddSuccess={noteAddSuccess}
                 submitNewNote={submitNewNote}
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
+                validator={isStatusUpdate ? validator : null}
               />
             </Card>
           </Grid>
@@ -442,7 +479,7 @@ const ProjectNotes = (props) => {
                                 <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}
-                                  editingNote={editingNote}
+                                  isEditingNote={isEditingNote}
                                   noteAddLoading={noteAddLoading}
                                   noteAddSuccess={noteAddSuccess}
                                   submitNewNote={submitNewNote}
@@ -479,7 +516,7 @@ const ProjectNotes = (props) => {
                                     <EditIcon className={classes.editButtons} />
                                   </IconButton>
                                 )}
-                                {!editingNote && (
+                                {!isEditingNote && (
                                   <IconButton
                                     edge="end"
                                     aria-label="delete"
