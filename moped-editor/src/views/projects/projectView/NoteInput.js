@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -12,7 +12,7 @@ import {
   FormHelperText,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
+import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
 import ToolbarPlugin from "./ToolbarPlugin";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
@@ -29,7 +29,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
-import EditorTheme from "./EditorTheme";
+import EditorTheme from "src/views/projects/projectView/EditorTheme.js";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -213,22 +213,17 @@ const NoteInput = ({
 
   const [validationErrors, setValidationErrors] = useState(null);
 
-  const validateContent = useCallback(
-    (htmlContent) => {
-      const errors = validator ? validator(htmlContent) : null;
-      if (errors) {
-        setValidationErrors(errors);
-      } else {
-        setValidationErrors(null);
-      }
-    },
-    [validator]
-  );
-
   // Validate content when the note text or note type changes
   useEffect(() => {
-    validateContent(noteText);
-  }, [noteText, newNoteType, editingNoteType, validateContent]);
+    const errors = validator
+      ? validator({ projectStatusUpdate: noteText })
+      : null;
+    if (errors) {
+      setValidationErrors(errors);
+    } else {
+      setValidationErrors(null);
+    }
+  }, [noteText, newNoteType, editingNoteType, validator]);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);

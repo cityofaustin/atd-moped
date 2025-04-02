@@ -30,7 +30,8 @@ import NoteInput from "./NoteInput";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
-import * as Yup from "yup";
+import * as yup from "yup";
+import { yupValidator } from "src/utils/validationHelpers";
 
 import "./ProjectNotes.css";
 
@@ -46,6 +47,7 @@ import {
   makeUSExpandedFormDateFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 import { getUserFullName } from "src/utils/userNames";
+import { agolValidation } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -89,35 +91,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// TODO: Render error message in red helper text below the editor
-// TODO: Add reusable validation schema to src/constants/projects.js (does this need its own? or can it be generalized?)
-const validationSchema = Yup.object().shape({
-  editorContent: Yup.string()
-    .max(2000, "Status update must be 2000 characters or less")
-    .nullable(),
+const validationSchema = yup.object().shape({
+  projectStatusUpdate: agolValidation.projectStatusUpdate,
 });
 
-// TODO: Adapt this to the Lexical editor code
-const validator = (htmlContent) => {
-  try {
-    // Validate with Yup
-    validationSchema.validateSync(
-      { editorContent: htmlContent },
-      { abortEarly: false }
-    );
-    return true;
-  } catch (yupError) {
-    // Handle Yup validation errors
-    const formattedErrors = {};
-    if (yupError.inner) {
-      yupError.inner.forEach((err) => {
-        formattedErrors[err.path] = err.message;
-      });
-    }
-
-    return formattedErrors;
-  }
-};
+const validator = (value) => yupValidator(value, validationSchema);
 
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
