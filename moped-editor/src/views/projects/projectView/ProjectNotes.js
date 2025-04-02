@@ -488,6 +488,7 @@ const ProjectNotes = (props) => {
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
+                                  validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
                                 <Typography

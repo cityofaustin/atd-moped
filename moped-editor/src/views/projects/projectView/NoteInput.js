@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,6 +9,7 @@ import {
   RadioGroup,
   FormControlLabel,
   Paper,
+  FormHelperText,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
@@ -93,7 +94,7 @@ const onError = (error) => {
 };
 
 // On change, return editor content as HTML
-const OnChangePlugin = ({ onChange, validator, setValidationErrors }) => {
+const OnChangePlugin = ({ onChange }) => {
   const [editor] = useLexicalComposerContext();
   useEffect(() => {
     return editor.registerUpdateListener(({ editorState }) => {
@@ -103,18 +104,10 @@ const OnChangePlugin = ({ onChange, validator, setValidationErrors }) => {
           ? null
           : $generateHtmlFromNodes(editor, null);
 
-        // Validate the HTML content if a validator is provided
-        const errors = validator ? validator(htmlContent) : null;
-        if (errors) {
-          setValidationErrors(errors);
-        } else {
-          setValidationErrors(null);
-        }
-
         onChange(htmlContent);
       });
     });
-  }, [editor, onChange, validator, setValidationErrors]);
+  }, [editor, onChange]);
   return null;
 };
 
@@ -219,7 +212,23 @@ const NoteInput = ({
   const classes = useStyles();
 
   const [validationErrors, setValidationErrors] = useState(null);
-  console.log(validationErrors);
+
+  const validateContent = useCallback(
+    (htmlContent) => {
+      const errors = validator ? validator(htmlContent) : null;
+      if (errors) {
+        setValidationErrors(errors);
+      } else {
+        setValidationErrors(null);
+      }
+    },
+    [validator]
+  );
+
+  // Validate content when the note text or note type changes
+  useEffect(() => {
+    validateContent(noteText);
+  }, [noteText, newNoteType, editingNoteType, validateContent]);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);
@@ -255,6 +264,15 @@ const NoteInput = ({
             </Box>
           </LexicalComposer>
         </Grid>
+        {validationErrors && (
+          <Grid item xs={12}>
+            {Object.values(validationErrors).map((error, index) => (
+              <FormHelperText key={index} error>
+                {error}
+              </FormHelperText>
+            ))}
+          </Grid>
+        )}
         <Grid
           item
           xs={12}
@@ -288,7 +306,7 @@ const NoteInput = ({
             )}
             <ProjectSaveButton
               // disable save button if no text
-              disabled={!noteText}
+              disabled={!noteText || validationErrors}
               label={<>Save</>}
               loading={noteAddLoading}
               success={noteAddSuccess}
