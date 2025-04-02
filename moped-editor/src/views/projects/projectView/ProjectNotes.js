@@ -86,9 +86,6 @@ const useStyles = makeStyles((theme) => ({
   editButtons: {
     color: theme.palette.text.primary,
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
 }));
 
 const validationSchema = yup.object().shape({
@@ -104,15 +101,21 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 export const STATUS_UPDATE_TYPE_ID = 2;
 export const INTERNAL_NOTE_TYPE_ID = 1;
 
-const ProjectNotes = (props) => {
-  const isStatusEditModal = props.modal;
+const ProjectNotes = ({
+  modal: isStatusEditModal,
+  currentPhaseId,
+  data: projectData,
+  handleSnackbar,
+  closeModalDialog,
+  refetch: refetchProjectSummary,
+  projectId,
+}) => {
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
   // otherwise use data passed from ProjectView
-  const currentPhaseId =
-    props.currentPhaseId ??
-    props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
-  const handleSnackbar = props.handleSnackbar;
-  let { projectId } = useParams();
+  const noteCurrentPhaseId = isStatusEditModal
+    ? currentPhaseId
+    : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
+  let { projectId: projectIdFromParam } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
@@ -138,14 +141,12 @@ const ProjectNotes = (props) => {
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
-  if (isStatusEditModal) {
-    projectId = props.projectId;
-  }
+  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
 
   const { loading, error, data, refetch } = useQuery(NOTES_QUERY, {
     variables: {
       projectNoteConditions: {
-        project_id: { _eq: Number(projectId) },
+        project_id: { _eq: Number(noteProjectId) },
         is_deleted: { _eq: false },
       },
     },
@@ -163,7 +164,7 @@ const ProjectNotes = (props) => {
         setNoteAddLoading(false);
         setNoteAddSuccess(false);
         if (isStatusEditModal) {
-          props.closeModalDialog();
+          closeModalDialog();
         }
       }, 350);
     },
@@ -174,10 +175,10 @@ const ProjectNotes = (props) => {
       setNoteText("");
       refetch();
       if (isStatusEditModal) {
-        props.closeModalDialog();
+        closeModalDialog();
       } else {
         // refetch the project summary query passed down from ProjectView
-        props.refetch();
+        refetchProjectSummary();
       }
       setNoteAddSuccess(true);
       setIsEditingNote(false);
@@ -192,10 +193,10 @@ const ProjectNotes = (props) => {
     onCompleted() {
       refetch();
       if (isStatusEditModal) {
-        props.closeModalDialog();
+        closeModalDialog();
       } else {
         // refetch the project summary query passed down from ProjectView
-        props.refetch();
+        refetchProjectSummary();
       }
     },
   });
@@ -207,9 +208,9 @@ const ProjectNotes = (props) => {
         objects: [
           {
             project_note: DOMPurify.sanitize(noteText),
-            project_id: projectId,
+            project_id: noteProjectId,
             project_note_type: newNoteType,
-            phase_id: currentPhaseId,
+            phase_id: noteCurrentPhaseId,
           },
         ],
       },
@@ -242,7 +243,7 @@ const ProjectNotes = (props) => {
     editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
-        projectId: Number(projectId),
+        projectId: noteProjectId,
         projectNoteId: noteId,
         projectNoteType: editingNoteType,
       },
@@ -259,7 +260,7 @@ const ProjectNotes = (props) => {
   const submitDeleteNote = (project_note_id) => {
     deleteExistingNote({
       variables: {
-        projectId: Number(projectId),
+        projectId: noteProjectId,
         projectNoteId: project_note_id,
       },
     })

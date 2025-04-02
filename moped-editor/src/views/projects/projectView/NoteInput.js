@@ -200,7 +200,7 @@ const NoteInput = ({
   setNewNoteType,
   editingNoteType,
   setEditingNoteType,
-  editingNote,
+  isEditingNote,
   noteAddLoading,
   noteAddSuccess,
   submitNewNote,
@@ -253,7 +253,10 @@ const NoteInput = ({
                 setValidationErrors={setValidationErrors}
               />
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
-              <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
+              <OnEditPlugin
+                htmlContent={noteText}
+                editingNote={isEditingNote}
+              />
               <LinkPlugin />
               <ListPlugin />
             </Box>
@@ -276,7 +279,7 @@ const NoteInput = ({
         >
           {!isStatusEditModal && (
             <FormControl>
-              {!editingNote ? (
+              {!isEditingNote ? (
                 <NoteTypeRadioButtons
                   defaultValue={newNoteType}
                   onChange={(e) => setNewNoteType(Number(e.target.value))}
@@ -292,7 +295,7 @@ const NoteInput = ({
         </Grid>
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
-            {editingNote && (
+            {isEditingNote && (
               <div className={classes.cancelButton}>
                 <Button variant="text" onClick={cancelNoteEdit}>
                   Cancel
@@ -305,7 +308,7 @@ const NoteInput = ({
               label={<>Save</>}
               loading={noteAddLoading}
               success={noteAddSuccess}
-              handleButtonClick={editingNote ? submitEditNote : submitNewNote}
+              handleButtonClick={isEditingNote ? submitEditNote : submitNewNote}
             />
           </Box>
         </Grid>
