@@ -53,4 +53,11 @@ export const agolValidation = {
       `Secondary name must be ${projectNamesCharMax} characters or less`
     )
     .nullable(),
+  projectStatusUpdate: yup
+    .string()
+    .max(
+      agolFieldCharMax.string,
+      `Status update must be ${agolFieldCharMax.string} characters or less`
+    )
+    .nullable(),
 };
