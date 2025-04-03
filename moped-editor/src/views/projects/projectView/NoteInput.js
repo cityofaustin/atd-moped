@@ -215,9 +215,9 @@ const NoteInput = ({
 
   // Validate content when the note text or note type changes
   useEffect(() => {
-    if (validator === null) return;
-
-    const errors = validator({ projectStatusUpdate: noteText });
+    const errors = validator
+      ? validator({ projectStatusUpdate: noteText })
+      : null;
 
     if (errors) {
       setValidationErrors(errors);
@@ -301,7 +301,7 @@ const NoteInput = ({
             )}
             <ProjectSaveButton
               // disable save button if no text
-              disabled={!noteText || validationErrors}
+              disabled={!noteText || Boolean(validationErrors)}
               label={<>Save</>}
               loading={noteAddLoading}
               success={noteAddSuccess}
