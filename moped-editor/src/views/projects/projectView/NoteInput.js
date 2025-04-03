@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
-import ToolbarPlugin from "./ToolbarPlugin";
+import ToolbarPlugin from "src/views/projects/projectView/ToolbarPlugin";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -29,7 +29,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
-import EditorTheme from "src/views/projects/projectView/EditorTheme.js";
+import EditorTheme from "src/views/projects/projectView/EditorTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -215,9 +215,10 @@ const NoteInput = ({
 
   // Validate content when the note text or note type changes
   useEffect(() => {
-    const errors = validator
-      ? validator({ projectStatusUpdate: noteText })
-      : null;
+    if (validator === null) return;
+
+    const errors = validator({ projectStatusUpdate: noteText });
+
     if (errors) {
       setValidationErrors(errors);
     } else {
@@ -247,11 +248,7 @@ const NoteInput = ({
               />
               <HistoryPlugin />
               <AutoFocusPlugin />
-              <OnChangePlugin
-                onChange={onChange}
-                validator={validator}
-                setValidationErrors={setValidationErrors}
-              />
+              <OnChangePlugin onChange={onChange} />
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
               <OnEditPlugin
                 htmlContent={noteText}

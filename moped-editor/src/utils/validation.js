@@ -1,7 +1,7 @@
 /**
  * Wrapper function for Yup.validateSync that returns formatted errors
  * See https://github.com/jquense/yup?tab=readme-ov-file#schemavalidatesyncvalue-any-options-object-infertypeschema
- * @param {object} value - Key-value pairs of the field to validate
+ * @param {object} value - Key-value pairs of the fields to validate
  * @param {object} yupValidationSchema - The Yup validation schema to use
  * @returns {object|null} - Returns an object with errors or null if no errors
  */

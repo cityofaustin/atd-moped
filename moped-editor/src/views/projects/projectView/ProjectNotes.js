@@ -26,14 +26,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteInput from "./NoteInput";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import ProjectStatusBadge from "./ProjectStatusBadge";
+import NoteInput from "src/views/projects/projectView/NoteInput";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
 import * as yup from "yup";
-import { yupValidator } from "src/utils/validationHelpers";
+import { yupValidator } from "src/utils/validation";
 
-import "./ProjectNotes.css";
+import "src/views/projects/projectView/ProjectNotes.css";
 
 // Query
 import {
@@ -219,7 +219,7 @@ const ProjectNotes = ({
         objects: [
           {
             project_note: DOMPurify.sanitize(noteText),
-            project_id: noteProjectId,
+            project_id: Number(noteProjectId),
             project_note_type: newNoteType,
             phase_id: noteCurrentPhaseId,
           },
@@ -254,7 +254,7 @@ const ProjectNotes = ({
     editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
-        projectId: noteProjectId,
+        projectId: Number(noteProjectId),
         projectNoteId: noteId,
         projectNoteType: editingNoteType,
       },
