@@ -27,10 +27,8 @@ import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "./UserSavedViewsTable";
-import { DataGridPro, GridRowModes } from "@mui/x-data-grid-pro";
+import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-
-import typography from "../../theme/typography";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -107,10 +105,6 @@ const DashboardView = () => {
   const userName = userSessionData?.first_name;
 
   const classes = useStyles();
-  const typographyStyle = {
-    fontFamily: typography.fontFamily,
-    fontSize: "14px",
-  };
 
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
@@ -127,7 +121,7 @@ const DashboardView = () => {
   const [activeTab, setActiveTab] = useState(0);
 
   /** Hook that provides memoized column settings */
-const useColumns = ({ rowModesModel }) =>
+const useColumns = () =>
   useMemo(() => {
     return [
       {
@@ -217,7 +211,7 @@ const useColumns = ({ rowModesModel }) =>
         flex: 1,
       },
     ];
-  }, [rowModesModel, refetch]);
+  }, []);
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -358,7 +352,6 @@ const useColumns = ({ rowModesModel }) =>
                       onRowModesModelChange={handleRowModesModelChange}
                       onProcessRowUpdateError={(error) => console.error}
                       editMode="row"
-                      // processRowUpdate={processRowUpdate}
                       hideFooter
                       disableRowSelectionOnClick
                       localeText={{
@@ -366,33 +359,6 @@ const useColumns = ({ rowModesModel }) =>
                       }}
                       initialState={{ pinnedColumns: { right: ["edit"] } }}
                     />
-                    // <MaterialTable
-                    //   columns={columns}
-                    //   data={selectedData}
-                    //   localization={{
-                    //     body: {
-                    //       emptyDataSourceMessage: (
-                    //         <Typography>
-                    //           {TABS[activeTab].label === "Following" &&
-                    //             "No projects to display. You have not followed any current projects."}
-                    //           {TABS[activeTab].label === "My projects" &&
-                    //             "No projects to display. You are not listed as a Team Member on any current projects."}
-                    //         </Typography>
-                    //       ),
-                    //     },
-                    //   }}
-                    //   options={{
-                    //     search: false,
-                    //     toolbar: false,
-                    //     tableLayout: "fixed",
-                    //     ...(selectedData.length < 51 && {
-                    //       paging: false,
-                    //     }),
-                    //     pageSize: 50,
-                    //     pageSizeOptions: [10, 50, 100],
-                    //     idSynonym: "project_id",
-                    //   }}
-                    // />
                   )}
                 </Grid>
               </Box>
