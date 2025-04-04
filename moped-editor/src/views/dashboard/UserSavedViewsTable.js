@@ -243,6 +243,8 @@ const UserSavedViewsTable = ({ handleSnackbar }) => {
     handleEditClick,
   });
 
+  console.log(dataGridColumns);
+
   if (loading || !data) return <CircularProgress />;
 
   return (
