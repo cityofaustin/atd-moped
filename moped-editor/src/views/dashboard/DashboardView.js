@@ -10,6 +10,7 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Link,
   Tab,
   Tabs,
   Typography,
@@ -18,7 +19,6 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 import ActivityMetrics from "src/components/ActivityMetrics";
-import RenderFieldLink from "../../components/RenderFieldLink";
 import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
@@ -101,93 +101,6 @@ const TABS = [
   },
 ];
 
-  /** Hook that provides memoized column settings */
-  const useColumns = ({ rowModesModel }) =>
-    useMemo(() => {
-      return [
-        {
-          headerName: "ID",
-          field: "project_id",
-          editable: false,
-          width: "10%",
-        },
-        // {
-        //   headerName: "Full name",
-        //   field: "project_name_full",
-        //   editable: false,
-        //   renderCell: (row) => (
-        //     <renderCellFieldLink
-        //       projectId={row.project_id}
-        //       value={row.project_name_full}
-        //     />
-        //   ),
-        //   width: "20%",
-        // },
-        // {
-        //   headerName: "Status",
-        //   field: "phase_name",
-        //   editable: false,
-        //   renderCell: (row) => (
-        //     <DashboardTimelineModal
-        //       table="phases"
-        //       projectId={row.project_id}
-        //       projectName={row.project.project_name_full}
-        //       dashboardRefetch={refetch}
-        //       handleSnackbar={handleSnackbar}
-        //     >
-        //       <ProjectStatusBadge
-        //         phaseName={row.phase_name}
-        //         phaseKey={row.phase_key}
-        //         condensed
-        //         clickable
-        //       />
-        //     </DashboardTimelineModal>
-        //   ),
-        //   width: "20%",
-        // },
-        // {
-        //   headerName: "Status update",
-        //   field: "status_update", // Status update (from Project details page)
-        //   editable: false,
-        //   renderCell: (row) => (
-        //     <DashboardStatusModal
-        //       projectId={row.project_id}
-        //       projectName={row.project.project_name_full}
-        //       currentPhaseId={row.current_phase_id}
-        //       modalParent="dashboard"
-        //       statusUpdate={row.status_update}
-        //       queryRefetch={refetch}
-        //       handleSnackbar={handleSnackbar}
-        //       classes={classes}
-        //     >
-        //       {parse(String(row.status_update))}
-        //     </DashboardStatusModal>
-        //   ),
-        //   width: "40%",
-        // },
-        // {
-        //   headerName: "Milestones",
-        //   field: "completed_milestones_percentage",
-        //   renderCell: (row) => (
-        //     <DashboardTimelineModal
-        //       table="milestones"
-        //       projectId={row.project_id}
-        //       projectName={row.project.project_name_full}
-        //       handleSnackbar={handleSnackbar}
-        //       dashboardRefetch={refetch}
-        //     >
-        //       <MilestoneProgressMeter
-        //         completedMilestonesPercentage={
-        //           row.completed_milestones_percentage
-        //         }
-        //       />
-        //     </DashboardTimelineModal>
-        //   ),
-        //   width: "10%",
-        // },
-      ];
-    }, [rowModesModel]);
-
 const DashboardView = () => {
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
@@ -212,6 +125,99 @@ const DashboardView = () => {
   }
 
   const [activeTab, setActiveTab] = useState(0);
+
+  /** Hook that provides memoized column settings */
+const useColumns = ({ rowModesModel }) =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "ID",
+        field: "project_id",
+        editable: false,
+        flex: .5,
+      },
+      {
+        headerName: "Full name",
+        field: "project_name_full",
+        editable: false,
+        renderCell: ({ row }) => (
+          <Link
+            href={`/moped/projects/${row.id}`}
+            sx={{
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              display: "block",
+            }}
+          >
+            {row.project_name_full}
+          </Link>
+        ),
+        flex: 4,
+      },
+      {
+        headerName: "Status",
+        field: "phase_name",
+        editable: false,
+        renderCell: ({ row }) => (
+          <DashboardTimelineModal
+            table="phases"
+            projectId={row.project_id}
+            projectName={row.project.project_name_full}
+            dashboardRefetch={refetch}
+            handleSnackbar={handleSnackbar}
+          >
+            <ProjectStatusBadge
+              phaseName={row.phase_name}
+              phaseKey={row.phase_key}
+              condensed
+              clickable
+            />
+          </DashboardTimelineModal>
+        ),
+        flex: 2,
+      },
+      {
+        headerName: "Status update",
+        field: "status_update", // Status update (from Project details page)
+        editable: false,
+        renderCell: ({row}) => (
+          <DashboardStatusModal
+            projectId={row.project_id}
+            projectName={row.project_name_full}
+            currentPhaseId={row.current_phase_id}
+            modalParent="dashboard"
+            statusUpdate={row.status_update}
+            queryRefetch={refetch}
+            handleSnackbar={handleSnackbar}
+            classes={classes}
+          >
+            {parse(String(row.status_update))}
+          </DashboardStatusModal>
+        ),
+        flex: 4,
+      },
+      {
+        headerName: "Milestones",
+        field: "completed_milestones_percentage",
+        renderCell: ({ row }) => (
+          <DashboardTimelineModal
+            table="milestones"
+            projectId={row.project_id}
+            projectName={row.project.project_name_full}
+            handleSnackbar={handleSnackbar}
+            dashboardRefetch={refetch}
+          >
+            <MilestoneProgressMeter
+              completedMilestonesPercentage={
+                row.completed_milestones_percentage
+              }
+            />
+          </DashboardTimelineModal>
+        ),
+        flex: 1,
+      },
+    ];
+  }, [rowModesModel, refetch]);
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -264,8 +270,7 @@ const DashboardView = () => {
       });
     }
     if (data) {
-      console.log(selectedData);
-      setRows(selectedData)
+      setRows(selectedData);
     }
   }, [data, activeTab]);
 
@@ -298,9 +303,7 @@ const DashboardView = () => {
     rowModesModel,
   });
 
-  console.log(dataGridColumns);
-
-    if (loading || !data) return <CircularProgress />;
+  if (loading || !data) return <CircularProgress />;
 
   return (
     <ActivityMetrics eventName="dashboard_load">
