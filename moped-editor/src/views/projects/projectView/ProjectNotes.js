@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Alert,
   Avatar,
@@ -32,7 +32,6 @@ import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import "./ProjectNotes.css";
 
-// Query
 import {
   NOTES_QUERY,
   ADD_PROJECT_NOTE,
@@ -87,11 +86,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const STATUS_UPDATE_TYPE_ID = 2;
-export const INTERNAL_NOTE_TYPE_ID = 1;
+// // reshape the array of note types into an object with key slug, value id
+// export const useNoteTypeObject = (noteTypes) =>
+//   useMemo(
+//     () =>
+//      noteTypes.reduce(
+//         (obj, item) =>
+//           Object.assign(obj, {
+//             [item.slug]: item.id,
+//           }),
+//         {}
+//       ),
+//     [noteTypes]
+//   );
+
+const STATUS_UPDATE_TYPE_ID = 2;
+const INTERNAL_NOTE_TYPE_ID = 1;
 
 const ProjectNotes = (props) => {
-  const isStatusEditModal = props.modal;
+  const isStatusEditModal = !!props.modal;
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
   // otherwise use data passed from ProjectView
   const currentPhaseId =

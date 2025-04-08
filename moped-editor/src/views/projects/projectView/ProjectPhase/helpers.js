@@ -1,7 +1,9 @@
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
 import * as yup from "yup";
-import { STATUS_UPDATE_TYPE_ID } from "../ProjectNotes";
+// import { STATUS_UPDATE_TYPE_ID } from "../ProjectNotes";
+
+const STATUS_UPDATE_TYPE_ID = 2;
 
 export const phaseValidationSchema = yup.object().shape({
   phase_id: yup.number().nullable().required("Phase is required"),
