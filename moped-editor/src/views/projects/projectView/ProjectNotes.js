@@ -121,8 +121,8 @@ const ProjectNotes = (props) => {
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
-  const [editingNote, setEditingNote] = useState(false);
-  const [noteId, setNoteId] = useState(null);
+  const [isEditingNote, setIsEditingNote] = useState(false);
+  const [editingNoteId, setEditingNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
     isStatusEditModal ? STATUS_UPDATE_TYPE_ID : 0
@@ -175,7 +175,7 @@ const ProjectNotes = (props) => {
         props.refetch();
       }
       setNoteAddSuccess(true);
-      setEditingNote(false);
+      setIsEditingNote(false);
       setTimeout(() => {
         setNoteAddLoading(false);
         setNoteAddSuccess(false);
@@ -219,26 +219,26 @@ const ProjectNotes = (props) => {
 
   const editNote = (index, item) => {
     setEditingNoteType(item.project_note_type);
-    setEditingNote(true);
+    setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setNoteId(item.project_note_id);
+    setEditingNoteId(item.project_note_id);
   };
 
   const cancelNoteEdit = () => {
     setEditingNoteType(null);
     setNoteText("");
-    setEditingNote(false);
-    setNoteId(null);
+    setIsEditingNote(false);
+    setEditingNoteId(null);
   };
 
   const submitEditNote = () => {
     setNoteAddLoading(true);
-    setNoteId(null);
+    setEditingNoteId(null);
     editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
         projectId: Number(projectId),
-        projectNoteId: noteId,
+        projectNoteId: editingNoteId,
         projectNoteType: editingNoteType,
       },
     })
@@ -311,11 +311,13 @@ const ProjectNotes = (props) => {
     );
   }
 
+  console.log(data);
+
   return (
     <CardContent>
       <Grid container spacing={2}>
         {/*New Note Form*/}
-        {!editingNote && (
+        {!isEditingNote && (
           <Grid item xs={12}>
             <Card>
               <NoteInput
@@ -323,7 +325,7 @@ const ProjectNotes = (props) => {
                 setNoteText={setNoteText}
                 newNoteType={newNoteType}
                 setNewNoteType={setNewNoteType}
-                editingNote={editingNote}
+                editingNote={isEditingNote}
                 noteAddLoading={noteAddLoading}
                 noteAddSuccess={noteAddSuccess}
                 submitNewNote={submitNewNote}
@@ -432,11 +434,11 @@ const ProjectNotes = (props) => {
                               </>
                             }
                             secondary={
-                              noteId === item.project_note_id ? (
+                              editingNoteId === item.project_note_id ? (
                                 <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}
-                                  editingNote={editingNote}
+                                  editingNote={isEditingNote}
                                   noteAddLoading={noteAddLoading}
                                   noteAddSuccess={noteAddSuccess}
                                   submitNewNote={submitNewNote}
@@ -463,7 +465,7 @@ const ProjectNotes = (props) => {
                               <ListItemSecondaryAction
                                 className={classes.editControls}
                               >
-                                {noteId !== item.project_note_id && (
+                                {editingNoteId !== item.project_note_id && (
                                   <IconButton
                                     edge="end"
                                     aria-label="edit"
@@ -473,7 +475,7 @@ const ProjectNotes = (props) => {
                                     <EditIcon className={classes.editButtons} />
                                   </IconButton>
                                 )}
-                                {!editingNote && (
+                                {!isEditingNote && (
                                   <IconButton
                                     edge="end"
                                     aria-label="delete"
