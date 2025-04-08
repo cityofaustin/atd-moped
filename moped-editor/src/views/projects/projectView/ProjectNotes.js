@@ -26,7 +26,7 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteInput from "./NoteInput";
+import NoteInput from "./ProjectNotes/NoteInput";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 

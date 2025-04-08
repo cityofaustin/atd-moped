@@ -11,8 +11,8 @@ import {
   Paper,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
-import ToolbarPlugin from "./ToolbarPlugin";
+import ProjectSaveButton from "../../newProjectView/ProjectSaveButton";
+import ToolbarPlugin from "../ToolbarPlugin";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -28,7 +28,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
-import EditorTheme from "./EditorTheme";
+import EditorTheme from "../EditorTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
