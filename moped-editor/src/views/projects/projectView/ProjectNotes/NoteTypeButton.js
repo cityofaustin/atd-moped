@@ -9,7 +9,7 @@ import { Button } from "@mui/material";
 const NoteTypeButton = ({
   noteTypeId,
   showButtonItemStyle,
-  changeFilterNoteType,
+  setFilterNoteType,
   filterNoteType,
   label,
 }) => (
@@ -17,7 +17,7 @@ const NoteTypeButton = ({
     color="primary"
     className={showButtonItemStyle}
     variant={filterNoteType === noteTypeId ? "contained" : "outlined"}
-    onClick={() => changeFilterNoteType(noteTypeId)}
+    onClick={() => setFilterNoteType(noteTypeId)}
   >
     {label}
   </Button>

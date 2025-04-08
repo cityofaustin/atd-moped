@@ -267,12 +267,6 @@ const ProjectNotes = (props) => {
       );
   };
 
-  /**
-   * Updates the note type based on conditions
-   * @param {Number} typeId
-   */
-  const changeFilterNoteType = (typeId) => setFilterNoteType(Number(typeId));
-
   // when the data changes, update the display notes state
   useEffect(() => {
     if (!loading && data) {
@@ -351,7 +345,7 @@ const ProjectNotes = (props) => {
             <NoteTypeButton
               showButtonItemStyle={classes.showButtonItem}
               fitlerNoteType={filterNoteType}
-              changeFilterNoteType={changeFilterNoteType}
+              setFilterNoteType={setFilterNoteType}
               noteTypeId={0}
               label="All"
             />
@@ -359,7 +353,7 @@ const ProjectNotes = (props) => {
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}
                 fitlerNoteType={filterNoteType}
-                changeFilterNoteType={changeFilterNoteType}
+                setFilterNoteType={setFilterNoteType}
                 noteTypeId={type.id}
                 label={type.name}
                 key={type.slug}
