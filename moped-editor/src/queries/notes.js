@@ -17,10 +17,19 @@ export const NOTES_QUERY = gql`
       project_note_type
       is_deleted
       created_by_user_id
+      moped_note_type {
+        id
+        name
+      }
       moped_phase {
         phase_key
         phase_name
       }
+    }
+    moped_note_types {
+      id
+      name
+      slug
     }
   }
 `;

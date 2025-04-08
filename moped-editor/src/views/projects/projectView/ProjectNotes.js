@@ -87,10 +87,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// Lookup array to convert project note types to a human readable interpretation
-// The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = ["", "Internal Note", "Status Update"];
-
 export const STATUS_UPDATE_TYPE_ID = 2;
 export const INTERNAL_NOTE_TYPE_ID = 1;
 
@@ -420,9 +416,7 @@ const ProjectNotes = (props) => {
                                   component={"span"}
                                   className={classes.filterNoteType}
                                 >
-                                  {` ${
-                                    projectNoteTypes[item.project_note_type]
-                                  }`}
+                                  {item.moped_note_type?.name}
                                 </Typography>
                                 <Typography component={"span"}>
                                   {/* only show note's status badge if the note has a phase_id */}
