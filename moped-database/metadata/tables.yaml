@@ -1930,6 +1930,34 @@
           - is_deleted
         filter: {}
 - table:
+    name: moped_note_types
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+- table:
     name: moped_organization
     schema: public
 - table:
