@@ -99,36 +99,15 @@ const TABS = [
   },
 ];
 
-const DashboardView = () => {
-  const userSessionData = getSessionDatabaseData();
-  const userId = userSessionData?.user_id;
-  const userName = userSessionData?.first_name;
-
-  const classes = useStyles();
-
-  const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
-    variables: { userId },
-    fetchPolicy: "no-cache",
-  });
-
-  const { snackbarState, handleSnackbar, handleSnackbarClose } =
-    useFeedbackSnackbar();
-
-  if (error) {
-    console.log(error);
-  }
-
-  const [activeTab, setActiveTab] = useState(0);
-
-  /** Hook that provides memoized column settings */
-const useColumns = () =>
+/** Hook that provides memoized column settings */
+const useColumns = ({refetch, handleSnackbar, classes}) =>
   useMemo(() => {
     return [
       {
         headerName: "ID",
         field: "project_id",
         editable: false,
-        flex: .5,
+        flex: 0.5,
       },
       {
         headerName: "Full name",
@@ -174,7 +153,7 @@ const useColumns = () =>
         headerName: "Status update",
         field: "status_update", // Status update (from Project details page)
         editable: false,
-        renderCell: ({row}) => (
+        renderCell: ({ row }) => (
           <DashboardStatusModal
             projectId={row.project_id}
             projectName={row.project_name_full}
@@ -211,7 +190,28 @@ const useColumns = () =>
         flex: 1,
       },
     ];
-  }, []);
+  }, [refetch, handleSnackbar, classes]);
+
+const DashboardView = () => {
+  const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData?.user_id;
+  const userName = userSessionData?.first_name;
+
+  const classes = useStyles();
+
+  const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
+    variables: { userId },
+    fetchPolicy: "no-cache",
+  });
+
+  const { snackbarState, handleSnackbar, handleSnackbarClose } =
+    useFeedbackSnackbar();
+
+  if (error) {
+    console.log(error);
+  }
+
+  const [activeTab, setActiveTab] = useState(0);
 
   // rows and rowModesModel used in DataGrid
   const [rows, setRows] = useState([]);
@@ -295,6 +295,9 @@ const useColumns = () =>
   const dataGridColumns = useColumns({
     data,
     rowModesModel,
+    refetch,
+    handleSnackbar,
+    classes
   });
 
   if (loading || !data) return <CircularProgress />;
