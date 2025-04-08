@@ -14,7 +14,6 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-  Button,
   FormControlLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -27,6 +26,7 @@ import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
 import NoteInput from "./ProjectNotes/NoteInput";
+import NoteTypeButton from "./ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
@@ -300,23 +300,6 @@ const ProjectNotes = (props) => {
     }
   }, [filterNoteType, mopedProjNotes]);
 
-  /**
-   * Defines the NoteTypeButton with a toggle style-change behavior.
-   * @param {Object} props
-   * @return {JSX.Element}
-   * @constructor
-   */
-  const NoteTypeButton = (props) => (
-    <Button
-      color="primary"
-      className={classes.showButtonItem}
-      variant={filterNoteType === props.noteTypeId ? "contained" : "outlined"}
-      onClick={() => changeFilterNoteType(props.noteTypeId)}
-    >
-      {props.children}
-    </Button>
-  );
-
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
     setDeleteConfirmationId(id);
@@ -363,15 +346,25 @@ const ProjectNotes = (props) => {
             <FormControlLabel
               className={classes.showButtonItem}
               label="Show"
-              control={<span />}
+              control={<span />} // hm
             />
-            <NoteTypeButton noteTypeId={0}>All</NoteTypeButton>
-            <NoteTypeButton noteTypeId={INTERNAL_NOTE_TYPE_ID}>
-              Internal Notes
-            </NoteTypeButton>
-            <NoteTypeButton noteTypeId={STATUS_UPDATE_TYPE_ID}>
-              Status Updates
-            </NoteTypeButton>
+            <NoteTypeButton
+              showButtonItemStyle={classes.showButtonItem}
+              fitlerNoteType={filterNoteType}
+              changeFilterNoteType={changeFilterNoteType}
+              noteTypeId={0}
+              label="All"
+            />
+            {data?.moped_note_types.map((type) => (
+              <NoteTypeButton
+                showButtonItemStyle={classes.showButtonItem}
+                fitlerNoteType={filterNoteType}
+                changeFilterNoteType={changeFilterNoteType}
+                noteTypeId={type.id}
+                label={type.name}
+                key={type.slug}
+              />
+            ))}
           </Grid>
         )}
         {/*Now the notes*/}
