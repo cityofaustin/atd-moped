@@ -9,15 +9,16 @@ import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
  * @return {JSX.Element}
  * @constructor
  */
-const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
+const NoteTypeRadioButtons = ({ defaultValue, onChange, noteTypes }) => (
   <RadioGroup
     row
     value={defaultValue}
     onChange={onChange}
     sx={{ color: "black" }}
   >
-    <FormControlLabel value={1} control={<Radio />} label="Internal note" />
-    <FormControlLabel value={2} control={<Radio />} label="Status update" />
+    {noteTypes.map((type) => (
+      <FormControlLabel value={type.id} control={<Radio />} label={type.name} />
+    ))}
   </RadioGroup>
 );
 

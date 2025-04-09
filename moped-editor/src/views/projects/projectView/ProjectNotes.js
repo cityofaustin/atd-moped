@@ -30,7 +30,7 @@ import NoteTypeButton from "./ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import ProjectStatusBadge from "./ProjectStatusBadge";
 
-import "./ProjectNotes.css";
+import "./ProjectNotes/ProjectNotes.css";
 
 import {
   NOTES_QUERY,
@@ -86,19 +86,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// // reshape the array of note types into an object with key slug, value id
-// export const useNoteTypeObject = (noteTypes) =>
-//   useMemo(
-//     () =>
-//      noteTypes.reduce(
-//         (obj, item) =>
-//           Object.assign(obj, {
-//             [item.slug]: item.id,
-//           }),
-//         {}
-//       ),
-//     [noteTypes]
-//   );
+// reshape the array of note types into an object with key slug, value id
+export const useNoteTypeObject = (noteTypes) =>
+  useMemo(() => {
+    console.log("usememo", noteTypes);
+    return noteTypes.reduce(
+      (obj, item) =>
+        Object.assign(obj, {
+          [item.slug]: item.id,
+        }),
+      {}
+    );
+  }, [noteTypes]);
 
 const STATUS_UPDATE_TYPE_ID = 2;
 const INTERNAL_NOTE_TYPE_ID = 1;
@@ -447,6 +446,7 @@ const ProjectNotes = (props) => {
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
+                                  noteType={data?.moped_note_types ?? []}
                                 />
                               ) : (
                                 <Typography

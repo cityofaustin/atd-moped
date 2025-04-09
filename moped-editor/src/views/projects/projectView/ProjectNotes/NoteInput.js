@@ -26,7 +26,7 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "../EditorTheme";
-import NoteTypeRadioButtons from "./NoteTypeRadioButtons"
+import NoteTypeRadioButtons from "./NoteTypeRadioButtons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +62,6 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
 }));
-
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed.
@@ -165,6 +164,7 @@ const NoteInput = ({
   submitEditNote,
   cancelNoteEdit,
   isStatusEditModal,
+  noteTypes,
 }) => {
   const classes = useStyles();
 
@@ -198,28 +198,33 @@ const NoteInput = ({
             </Box>
           </LexicalComposer>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          style={{ justifyContent: "flex-end" }}
-        >
-          {!isStatusEditModal && (
-            <FormControl>
-              {!editingNote ? (
-                <NoteTypeRadioButtons
-                  defaultValue={newNoteType}
-                  onChange={(e) => setNewNoteType(e.target.value)}
-                ></NoteTypeRadioButtons>
-              ) : (
-                <NoteTypeRadioButtons
-                  defaultValue={editingNoteType}
-                  onChange={(e) => setEditingNoteType(e.target.value)}
-                ></NoteTypeRadioButtons>
-              )}
-            </FormControl>
-          )}
-        </Grid>
+        {
+          // only show Note Type Radio Buttons on Notes tab interface
+          !isStatusEditModal && (
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              style={{ justifyContent: "flex-end" }}
+            >
+              <FormControl>
+                {!editingNote ? (
+                  <NoteTypeRadioButtons
+                    defaultValue={newNoteType}
+                    onChange={(e) => setNewNoteType(e.target.value)}
+                    noteTypes={noteTypes}
+                  />
+                ) : (
+                  <NoteTypeRadioButtons
+                    defaultValue={editingNoteType}
+                    onChange={(e) => setEditingNoteType(e.target.value)}
+                    noteTypes={noteTypes}
+                  />
+                )}
+              </FormControl>
+            </Grid>
+          )
+        }
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
             {editingNote && (
