@@ -105,6 +105,11 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
     moped_public_process_statuses(order_by: { id: asc }) {
       id
       name

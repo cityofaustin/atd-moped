@@ -17,7 +17,12 @@ const NoteTypeRadioButtons = ({ defaultValue, onChange, noteTypes }) => (
     sx={{ color: "black" }}
   >
     {noteTypes.map((type) => (
-      <FormControlLabel value={type.id} control={<Radio />} label={type.name} />
+      <FormControlLabel
+        value={type.id}
+        control={<Radio />}
+        label={type.name}
+        key={type.slug}
+      />
     ))}
   </RadioGroup>
 );

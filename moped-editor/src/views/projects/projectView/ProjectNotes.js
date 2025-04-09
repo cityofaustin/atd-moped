@@ -113,9 +113,14 @@ const ProjectNotes = (props) => {
   let { projectId } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
+  const noteTypesIDLookup = useNoteTypeObject(
+    props.data?.moped_note_types || []
+  );
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
-    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : INTERNAL_NOTE_TYPE_ID
+    isStatusEditModal
+      ? noteTypesIDLookup["status_update"]
+      : noteTypesIDLookup["internal_note"]
   );
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
@@ -124,7 +129,7 @@ const ProjectNotes = (props) => {
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : 0
+    isStatusEditModal ? noteTypesIDLookup["status_update"] : 0
   );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -310,8 +315,6 @@ const ProjectNotes = (props) => {
     );
   }
 
-  console.log(data);
-
   return (
     <CardContent>
       <Grid container spacing={2}>
@@ -331,11 +334,13 @@ const ProjectNotes = (props) => {
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
+                noteTypes={data?.moped_note_types ?? []}
               />
             </Card>
           </Grid>
         )}
-        {/*First the Filter Buttons*/}
+        {/* Visible note types can only be filtered on the Notes Tab.
+          The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
           <Grid item xs={12}>
             <FormControlLabel
