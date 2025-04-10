@@ -99,9 +99,6 @@ export const useNoteTypeObject = (noteTypes) =>
     );
   }, [noteTypes]);
 
-const STATUS_UPDATE_TYPE_ID = 2;
-const INTERNAL_NOTE_TYPE_ID = 1;
-
 const ProjectNotes = (props) => {
   const isStatusEditModal = !!props.modal;
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
