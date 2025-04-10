@@ -26,11 +26,6 @@ export const NOTES_QUERY = gql`
         phase_name
       }
     }
-    moped_note_types {
-      id
-      name
-      slug
-    }
   }
 `;
 

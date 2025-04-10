@@ -88,16 +88,17 @@ const useStyles = makeStyles((theme) => ({
 
 // reshape the array of note types into an object with key slug, value id
 export const useNoteTypeObject = (noteTypes) =>
-  useMemo(() => {
-    console.log("usememo", noteTypes);
-    return noteTypes.reduce(
-      (obj, item) =>
-        Object.assign(obj, {
-          [item.slug]: item.id,
-        }),
-      {}
-    );
-  }, [noteTypes]);
+  useMemo(
+    () =>
+      noteTypes.reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.slug]: item.id,
+          }),
+        {}
+      ),
+    [noteTypes]
+  );
 
 const ProjectNotes = (props) => {
   const isStatusEditModal = !!props.modal;
@@ -331,7 +332,7 @@ const ProjectNotes = (props) => {
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
-                noteTypes={data?.moped_note_types ?? []}
+                noteTypes={props.data?.moped_note_types ?? []}
               />
             </Card>
           </Grid>
@@ -347,15 +348,15 @@ const ProjectNotes = (props) => {
             />
             <NoteTypeButton
               showButtonItemStyle={classes.showButtonItem}
-              fitlerNoteType={filterNoteType}
+              filterNoteType={filterNoteType}
               setFilterNoteType={setFilterNoteType}
               noteTypeId={0}
               label="All"
             />
-            {data?.moped_note_types.map((type) => (
+            {props.data?.moped_note_types.map((type) => (
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}
-                fitlerNoteType={filterNoteType}
+                filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
                 noteTypeId={type.id}
                 label={type.name}
@@ -448,7 +449,7 @@ const ProjectNotes = (props) => {
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
-                                  noteType={data?.moped_note_types ?? []}
+                                  noteType={props.data?.moped_note_types ?? []}
                                 />
                               ) : (
                                 <Typography
