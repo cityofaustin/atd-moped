@@ -36,6 +36,10 @@ import { getSessionDatabaseData } from "../../auth/user";
 
 import parse from "html-react-parser";
 
+const userSessionData = getSessionDatabaseData();
+const userId = userSessionData?.user_id;
+const userName = userSessionData?.first_name;
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -99,8 +103,38 @@ const TABS = [
   },
 ];
 
+const getUserGreeting = ({ classes }) => {
+  /** Build custom user greeting
+   */
+  const date = new Date();
+  const curHr = format(date, "HH");
+  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
+  const getTimeOfDay = (curHr) => {
+    switch (true) {
+      case curHr < 12:
+        return "morning";
+      case curHr >= 12 && curHr < 18:
+        return "afternoon";
+      default:
+        return "evening";
+    }
+  };
+
+  return (
+    <Grid className={classes.greeting}>
+      {getUserGreeting}
+      <Typography className={classes.greetingText}>
+        <strong>{`Good ${getTimeOfDay(curHr)}, ${userName}!`}</strong>
+      </Typography>
+      <Typography variant="h1" className={classes.date}>
+        {dateFormatted}
+      </Typography>
+    </Grid>
+  );
+};
+
 /** Hook that provides memoized column settings */
-const useColumns = ({refetch, handleSnackbar, classes}) =>
+const useColumns = ({ refetch, handleSnackbar, classes }) =>
   useMemo(() => {
     return [
       {
@@ -193,10 +227,6 @@ const useColumns = ({refetch, handleSnackbar, classes}) =>
   }, [refetch, handleSnackbar, classes]);
 
 const DashboardView = () => {
-  const userSessionData = getSessionDatabaseData();
-  const userId = userSessionData?.user_id;
-  const userName = userSessionData?.first_name;
-
   const classes = useStyles();
 
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
@@ -272,22 +302,6 @@ const DashboardView = () => {
     setRowModesModel(newRowModesModel);
   };
 
-  /** Build custom user greeting
-   */
-  const date = new Date();
-  const curHr = format(date, "HH");
-  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-  const getTimeOfDay = (curHr) => {
-    switch (true) {
-      case curHr < 12:
-        return "morning";
-      case curHr >= 12 && curHr < 18:
-        return "afternoon";
-      default:
-        return "evening";
-    }
-  };
-
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
@@ -297,7 +311,7 @@ const DashboardView = () => {
     rowModesModel,
     refetch,
     handleSnackbar,
-    classes
+    classes,
   });
 
   if (loading || !data) return <CircularProgress />;
@@ -309,16 +323,7 @@ const DashboardView = () => {
           <Card className={classes.cardWrapper}>
             <Grid className={classes.root}>
               <Box pl={3} pt={3}>
-                <Grid className={classes.greeting}>
-                  <Typography className={classes.greetingText}>
-                    <strong>{`Good ${getTimeOfDay(
-                      curHr
-                    )}, ${userName}!`}</strong>
-                  </Typography>
-                  <Typography variant="h1" className={classes.date}>
-                    {dateFormatted}
-                  </Typography>
-                </Grid>
+                {getUserGreeting({ classes })}
               </Box>
               <Box px={3} py={3}>
                 <Grid>
