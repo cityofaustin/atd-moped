@@ -36,10 +36,6 @@ import { getSessionDatabaseData } from "../../auth/user";
 
 import parse from "html-react-parser";
 
-const userSessionData = getSessionDatabaseData();
-const userId = userSessionData?.user_id;
-const userName = userSessionData?.first_name;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -103,7 +99,7 @@ const TABS = [
   },
 ];
 
-const getUserGreeting = ({ classes }) => {
+const UserGreeting = ({ classes, userName }) => {
   /** Build custom user greeting
    */
   const date = new Date();
@@ -228,6 +224,10 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
 const DashboardView = () => {
   const classes = useStyles();
 
+  const userSessionData = getSessionDatabaseData();
+  const userId = userSessionData?.user_id;
+  const userName = userSessionData?.first_name;
+
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
     fetchPolicy: "no-cache",
@@ -322,7 +322,7 @@ const DashboardView = () => {
           <Card className={classes.cardWrapper}>
             <Grid className={classes.root}>
               <Box pl={3} pt={3}>
-                {getUserGreeting({ classes })}
+                <UserGreeting classes={classes} userName={userName}/>
               </Box>
               <Box px={3} py={3}>
                 <Grid>
