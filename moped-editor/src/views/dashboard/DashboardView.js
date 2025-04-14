@@ -1,6 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { format } from "date-fns";
 
 // Material
 import {
@@ -29,6 +28,10 @@ import FeedbackSnackbar, {
 import UserSavedViewsTable from "./UserSavedViewsTable";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import {
+  getTimeOfDay,
+  getCalendarDate,
+} from "src/components/DataGridPro/utils/helpers";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -100,29 +103,17 @@ const TABS = [
 ];
 
 const UserGreeting = ({ classes, userName }) => {
+  const date = new Date();
+
   /** Build custom user greeting
    */
-  const date = new Date();
-  const curHr = format(date, "HH");
-  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-  const getTimeOfDay = (curHr) => {
-    switch (true) {
-      case curHr < 12:
-        return "morning";
-      case curHr >= 12 && curHr < 18:
-        return "afternoon";
-      default:
-        return "evening";
-    }
-  };
-
   return (
     <Grid className={classes.greeting}>
       <Typography className={classes.greetingText}>
-        <strong>{`Good ${getTimeOfDay(curHr)}, ${userName}!`}</strong>
+        <strong>{`Good ${getTimeOfDay(date)}, ${userName}!`}</strong>
       </Typography>
       <Typography variant="h1" className={classes.date}>
-        {dateFormatted}
+        {getCalendarDate(date)}
       </Typography>
     </Grid>
   );
@@ -322,7 +313,7 @@ const DashboardView = () => {
           <Card className={classes.cardWrapper}>
             <Grid className={classes.root}>
               <Box pl={3} pt={3}>
-                <UserGreeting classes={classes} userName={userName}/>
+                <UserGreeting classes={classes} userName={userName} />
               </Box>
               <Box px={3} py={3}>
                 <Grid>
