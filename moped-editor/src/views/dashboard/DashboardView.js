@@ -122,7 +122,6 @@ const getUserGreeting = ({ classes }) => {
 
   return (
     <Grid className={classes.greeting}>
-      {getUserGreeting}
       <Typography className={classes.greetingText}>
         <strong>{`Good ${getTimeOfDay(curHr)}, ${userName}!`}</strong>
       </Typography>
