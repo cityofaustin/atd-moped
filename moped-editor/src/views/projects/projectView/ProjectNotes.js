@@ -26,11 +26,14 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteInput from "./NoteInput";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import ProjectStatusBadge from "./ProjectStatusBadge";
+import NoteInput from "src/views/projects/projectView/NoteInput";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
-import "./ProjectNotes.css";
+import * as yup from "yup";
+import { yupValidator } from "src/utils/validation";
+
+import "src/views/projects/projectView/ProjectNotes.css";
 
 // Query
 import {
@@ -44,6 +47,7 @@ import {
   makeUSExpandedFormDateFromTimeStampTZ,
 } from "src/utils/dateAndTime";
 import { getUserFullName } from "src/utils/userNames";
+import { agolValidation } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,10 +86,13 @@ const useStyles = makeStyles((theme) => ({
   editButtons: {
     color: theme.palette.text.primary,
   },
-  chip: {
-    margin: theme.spacing(0.5),
-  },
 }));
+
+const validationSchema = yup.object().shape({
+  projectStatusUpdate: agolValidation.projectStatusUpdate,
+});
+
+const validator = (value) => yupValidator(value, validationSchema);
 
 // Lookup array to convert project note types to a human readable interpretation
 // The zeroth item in the list is intentionally blank; the notes are 1-indexed.
@@ -94,15 +101,32 @@ const projectNoteTypes = ["", "Internal Note", "Status Update"];
 export const STATUS_UPDATE_TYPE_ID = 2;
 export const INTERNAL_NOTE_TYPE_ID = 1;
 
-const ProjectNotes = (props) => {
-  const isStatusEditModal = props.modal;
+/**
+ * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
+ * @param {boolean} isStatusEditModal - true if the component is being used in the ProjectSummaryStatusUpdate modal
+ * @param {string} currentPhaseId - The phase ID of the current phase
+ * @param {object} projectData - The project data passed from ProjectView
+ * @param {function} handleSnackbar - Function to handle snackbar notifications
+ * @param {function} closeModalDialog - Function to close the modal dialog
+ * @param {function} refetchProjectSummary - Function to refetch the project summary data
+ * @param {string} projectId - The project ID if rendered in the ProjectSummaryStatusUpdate modal
+ * @returns JSX.Element
+ */
+const ProjectNotes = ({
+  modal: isStatusEditModal,
+  currentPhaseId,
+  data: projectData,
+  handleSnackbar,
+  closeModalDialog,
+  refetch: refetchProjectSummary,
+  projectId,
+}) => {
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
   // otherwise use data passed from ProjectView
-  const currentPhaseId =
-    props.currentPhaseId ??
-    props.data?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
-  const handleSnackbar = props.handleSnackbar;
-  let { projectId } = useParams();
+  const noteCurrentPhaseId = isStatusEditModal
+    ? currentPhaseId
+    : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
+  let { projectId: projectIdFromParam } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const [noteText, setNoteText] = useState("");
@@ -112,7 +136,7 @@ const ProjectNotes = (props) => {
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
-  const [editingNote, setEditingNote] = useState(false);
+  const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteId, setNoteId] = useState(null);
   const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
@@ -122,16 +146,18 @@ const ProjectNotes = (props) => {
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
+  const isStatusUpdate =
+    (!isEditingNote && newNoteType === STATUS_UPDATE_TYPE_ID) ||
+    (isEditingNote && editingNoteType === STATUS_UPDATE_TYPE_ID);
+
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
-  if (isStatusEditModal) {
-    projectId = props.projectId;
-  }
+  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
 
   const { loading, error, data, refetch } = useQuery(NOTES_QUERY, {
     variables: {
       projectNoteConditions: {
-        project_id: { _eq: Number(projectId) },
+        project_id: { _eq: Number(noteProjectId) },
         is_deleted: { _eq: false },
       },
     },
@@ -149,7 +175,7 @@ const ProjectNotes = (props) => {
         setNoteAddLoading(false);
         setNoteAddSuccess(false);
         if (isStatusEditModal) {
-          props.closeModalDialog();
+          closeModalDialog();
         }
       }, 350);
     },
@@ -160,13 +186,13 @@ const ProjectNotes = (props) => {
       setNoteText("");
       refetch();
       if (isStatusEditModal) {
-        props.closeModalDialog();
+        closeModalDialog();
       } else {
         // refetch the project summary query passed down from ProjectView
-        props.refetch();
+        refetchProjectSummary();
       }
       setNoteAddSuccess(true);
-      setEditingNote(false);
+      setIsEditingNote(false);
       setTimeout(() => {
         setNoteAddLoading(false);
         setNoteAddSuccess(false);
@@ -178,10 +204,10 @@ const ProjectNotes = (props) => {
     onCompleted() {
       refetch();
       if (isStatusEditModal) {
-        props.closeModalDialog();
+        closeModalDialog();
       } else {
         // refetch the project summary query passed down from ProjectView
-        props.refetch();
+        refetchProjectSummary();
       }
     },
   });
@@ -193,9 +219,9 @@ const ProjectNotes = (props) => {
         objects: [
           {
             project_note: DOMPurify.sanitize(noteText),
-            project_id: projectId,
+            project_id: Number(noteProjectId),
             project_note_type: newNoteType,
-            phase_id: currentPhaseId,
+            phase_id: noteCurrentPhaseId,
           },
         ],
       },
@@ -210,7 +236,7 @@ const ProjectNotes = (props) => {
 
   const editNote = (index, item) => {
     setEditingNoteType(item.project_note_type);
-    setEditingNote(true);
+    setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
     setNoteId(item.project_note_id);
   };
@@ -218,7 +244,7 @@ const ProjectNotes = (props) => {
   const cancelNoteEdit = () => {
     setEditingNoteType(null);
     setNoteText("");
-    setEditingNote(false);
+    setIsEditingNote(false);
     setNoteId(null);
   };
 
@@ -228,7 +254,7 @@ const ProjectNotes = (props) => {
     editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
-        projectId: Number(projectId),
+        projectId: Number(noteProjectId),
         projectNoteId: noteId,
         projectNoteType: editingNoteType,
       },
@@ -245,7 +271,7 @@ const ProjectNotes = (props) => {
   const submitDeleteNote = (project_note_id) => {
     deleteExistingNote({
       variables: {
-        projectId: Number(projectId),
+        projectId: noteProjectId,
         projectNoteId: project_note_id,
       },
     })
@@ -329,7 +355,7 @@ const ProjectNotes = (props) => {
     <CardContent>
       <Grid container spacing={2}>
         {/*New Note Form*/}
-        {!editingNote && (
+        {!isEditingNote && (
           <Grid item xs={12}>
             <Card>
               <NoteInput
@@ -337,13 +363,14 @@ const ProjectNotes = (props) => {
                 setNoteText={setNoteText}
                 newNoteType={newNoteType}
                 setNewNoteType={setNewNoteType}
-                editingNote={editingNote}
+                isEditingNote={isEditingNote}
                 noteAddLoading={noteAddLoading}
                 noteAddSuccess={noteAddSuccess}
                 submitNewNote={submitNewNote}
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
+                validator={isStatusUpdate ? validator : null}
               />
             </Card>
           </Grid>
@@ -442,7 +469,7 @@ const ProjectNotes = (props) => {
                                 <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}
-                                  editingNote={editingNote}
+                                  isEditingNote={isEditingNote}
                                   noteAddLoading={noteAddLoading}
                                   noteAddSuccess={noteAddSuccess}
                                   submitNewNote={submitNewNote}
@@ -451,6 +478,7 @@ const ProjectNotes = (props) => {
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
+                                  validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
                                 <Typography
@@ -479,7 +507,7 @@ const ProjectNotes = (props) => {
                                     <EditIcon className={classes.editButtons} />
                                   </IconButton>
                                 )}
-                                {!editingNote && (
+                                {!isEditingNote && (
                                   <IconButton
                                     edge="end"
                                     aria-label="delete"
