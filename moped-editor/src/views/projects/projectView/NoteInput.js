@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -9,10 +9,11 @@ import {
   RadioGroup,
   FormControlLabel,
   Paper,
+  FormHelperText,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSaveButton from "../newProjectView/ProjectSaveButton";
-import ToolbarPlugin from "./ToolbarPlugin";
+import ProjectSaveButton from "src/views/projects/newProjectView/ProjectSaveButton";
+import ToolbarPlugin from "src/views/projects/projectView/ToolbarPlugin";
 
 import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
 import { LexicalComposer } from "@lexical/react/LexicalComposer";
@@ -28,7 +29,7 @@ import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
-import EditorTheme from "./EditorTheme";
+import EditorTheme from "src/views/projects/projectView/EditorTheme";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -102,6 +103,7 @@ const OnChangePlugin = ({ onChange }) => {
         const htmlContent = isEditorEmpty
           ? null
           : $generateHtmlFromNodes(editor, null);
+
         onChange(htmlContent);
       });
     });
@@ -173,6 +175,24 @@ const initialConfig = {
   onError,
 };
 
+/**
+ * NoteInput component that allows users to add and edit notes.
+ * @param {string} noteText - The text of the note
+ * @param {function} setNoteText - Function to set the note text
+ * @param {number} newNoteType - The type of the new note
+ * @param {function} setNewNoteType - Function to set the new note type
+ * @param {number} editingNoteType - The type of the note being edited
+ * @param {function} setEditingNoteType - Function to set the editing note type
+ * @param {boolean} isEditingNote - Flag indicating if the note is being edited
+ * @param {boolean} noteAddLoading - Flag indicating if the note addition is loading
+ * @param {boolean} noteAddSuccess - Flag indicating if the note was added successfully
+ * @param {function} submitNewNote - Function to submit a new note
+ * @param {function} submitEditNote - Function to submit an edited note
+ * @param {function} cancelNoteEdit - Function to cancel note editing
+ * @param {boolean} isStatusEditModal - Flag indicating if the note component is in a status edit modal
+ * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
+ * @returns JSX.Element
+ */
 const NoteInput = ({
   noteText,
   setNoteText,
@@ -180,15 +200,31 @@ const NoteInput = ({
   setNewNoteType,
   editingNoteType,
   setEditingNoteType,
-  editingNote,
+  isEditingNote,
   noteAddLoading,
   noteAddSuccess,
   submitNewNote,
   submitEditNote,
   cancelNoteEdit,
   isStatusEditModal,
+  validator = null,
 }) => {
   const classes = useStyles();
+
+  const [validationErrors, setValidationErrors] = useState(null);
+
+  // Validate content when the note text or note type changes
+  useEffect(() => {
+    const errors = validator
+      ? validator({ projectStatusUpdate: noteText })
+      : null;
+
+    if (errors) {
+      setValidationErrors(errors);
+    } else {
+      setValidationErrors(null);
+    }
+  }, [noteText, newNoteType, editingNoteType, validator]);
 
   const onChange = (htmlContent) => {
     setNoteText(htmlContent);
@@ -214,12 +250,24 @@ const NoteInput = ({
               <AutoFocusPlugin />
               <OnChangePlugin onChange={onChange} />
               <OnSavePlugin noteAddSuccess={noteAddSuccess} />
-              <OnEditPlugin htmlContent={noteText} editingNote={editingNote} />
+              <OnEditPlugin
+                htmlContent={noteText}
+                editingNote={isEditingNote}
+              />
               <LinkPlugin />
               <ListPlugin />
             </Box>
           </LexicalComposer>
         </Grid>
+        {validationErrors && (
+          <Grid item xs={12}>
+            {Object.values(validationErrors).map((error, index) => (
+              <FormHelperText key={index} error>
+                {error}
+              </FormHelperText>
+            ))}
+          </Grid>
+        )}
         <Grid
           item
           xs={12}
@@ -228,15 +276,15 @@ const NoteInput = ({
         >
           {!isStatusEditModal && (
             <FormControl>
-              {!editingNote ? (
+              {!isEditingNote ? (
                 <NoteTypeRadioButtons
                   defaultValue={newNoteType}
-                  onChange={(e) => setNewNoteType(e.target.value)}
+                  onChange={(e) => setNewNoteType(Number(e.target.value))}
                 ></NoteTypeRadioButtons>
               ) : (
                 <NoteTypeRadioButtons
                   defaultValue={editingNoteType}
-                  onChange={(e) => setEditingNoteType(e.target.value)}
+                  onChange={(e) => setEditingNoteType(Number(e.target.value))}
                 ></NoteTypeRadioButtons>
               )}
             </FormControl>
@@ -244,7 +292,7 @@ const NoteInput = ({
         </Grid>
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
-            {editingNote && (
+            {isEditingNote && (
               <div className={classes.cancelButton}>
                 <Button variant="text" onClick={cancelNoteEdit}>
                   Cancel
@@ -253,11 +301,11 @@ const NoteInput = ({
             )}
             <ProjectSaveButton
               // disable save button if no text
-              disabled={!noteText}
+              disabled={!noteText || Boolean(validationErrors)}
               label={<>Save</>}
               loading={noteAddLoading}
               success={noteAddSuccess}
-              handleButtonClick={editingNote ? submitEditNote : submitNewNote}
+              handleButtonClick={isEditingNote ? submitEditNote : submitNewNote}
             />
           </Box>
         </Grid>
