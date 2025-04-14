@@ -147,8 +147,9 @@ const ProjectNotes = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const isStatusUpdate =
-    newNoteType === STATUS_UPDATE_TYPE_ID ||
-    editingNoteType === STATUS_UPDATE_TYPE_ID;
+    (!isEditingNote && newNoteType === STATUS_UPDATE_TYPE_ID) ||
+    (isEditingNote && editingNoteType === STATUS_UPDATE_TYPE_ID);
+  console.log(isStatusUpdate);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
