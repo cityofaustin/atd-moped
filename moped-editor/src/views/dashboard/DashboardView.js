@@ -125,7 +125,10 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
     return [
       {
         headerName: "ID",
-        field: "project_id",
+        field: "project",
+        valueGetter: (params) => {
+          return params.project_id;
+        },
         editable: false,
         flex: 0.5,
       },
@@ -135,14 +138,14 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         editable: false,
         renderCell: ({ row }) => (
           <Link
-            href={`/moped/projects/${row.id}`}
+            href={`/moped/projects/${row.project.project_id}`}
             sx={{
               overflow: "hidden",
               textOverflow: "ellipsis",
               display: "block",
             }}
           >
-            {row.project_name_full}
+            {row.project.project_name_full}
           </Link>
         ),
         flex: 4,
@@ -154,14 +157,18 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         renderCell: ({ row }) => (
           <DashboardTimelineModal
             table="phases"
-            projectId={row.project_id}
+            projectId={row.project.project_id}
             projectName={row.project.project_name_full}
             dashboardRefetch={refetch}
             handleSnackbar={handleSnackbar}
           >
             <ProjectStatusBadge
-              phaseName={row.phase_name}
-              phaseKey={row.phase_key}
+              phaseName={
+                row.project.moped_proj_phases?.[0]?.moped_phase.phase_name
+              }
+              phaseKey={
+                row.project.moped_proj_phases?.[0]?.moped_phase.phase_key
+              }
               condensed
               clickable
             />
@@ -171,20 +178,25 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
       },
       {
         headerName: "Status update",
-        field: "status_update", // Status update (from Project details page)
+        field: "status_update",
         editable: false,
         renderCell: ({ row }) => (
+          // Display status update (from Project details page), i.e., most recent note
           <DashboardStatusModal
-            projectId={row.project_id}
-            projectName={row.project_name_full}
-            currentPhaseId={row.current_phase_id}
+            projectId={row.project.project_id}
+            projectName={row.project.project_name_full}
+            currentPhaseId={
+              row.project.moped_proj_phases?.[0]?.moped_phase.phase_id
+            }
             modalParent="dashboard"
-            statusUpdate={row.status_update}
+            statusUpdate={row.project.moped_proj_notes?.[0]?.project_note ?? ""}
             queryRefetch={refetch}
             handleSnackbar={handleSnackbar}
             classes={classes}
           >
-            {parse(String(row.status_update))}
+            {parse(
+              String(row.project.moped_proj_notes?.[0]?.project_note ?? "")
+            )}
           </DashboardStatusModal>
         ),
         flex: 4,
@@ -193,16 +205,23 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         headerName: "Milestones",
         field: "completed_milestones_percentage",
         renderCell: ({ row }) => (
+          // Display percentage of milestone completed, or 0 if no milestones saved
           <DashboardTimelineModal
             table="milestones"
-            projectId={row.project_id}
+            projectId={row.project.project_id}
             projectName={row.project.project_name_full}
             handleSnackbar={handleSnackbar}
             dashboardRefetch={refetch}
           >
             <MilestoneProgressMeter
               completedMilestonesPercentage={
-                row.completed_milestones_percentage
+                row.project.moped_proj_milestones.length
+                  ? (row.project.moped_proj_milestones.filter(
+                      (milestone) => milestone.completed === true
+                    ).length /
+                      row.project.moped_proj_milestones.length) *
+                    100
+                  : 0
               }
             />
           </DashboardTimelineModal>
@@ -239,52 +258,13 @@ const DashboardView = () => {
 
   // sets the data grid row data when query data is fetched
   useEffect(() => {
-    let selectedData = [];
-
-    if (TABS[activeTab].label === "Following" && !!data) {
-      selectedData = data.moped_user_followed_projects;
-    } else if (TABS[activeTab].label === "My projects" && !!data) {
-      selectedData = data.moped_proj_personnel;
-    }
-
-    if (selectedData) {
-      /**
-       * Build data needed in Dashboard Material Table
-       */
-      selectedData.forEach((project) => {
-        project["project_name_full"] = project.project.project_name_full;
-        project["project_id"] = project.project.project_id;
-        project["phase_name"] =
-          project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
-        project["phase_key"] =
-          project.project.moped_proj_phases?.[0]?.moped_phase.phase_key;
-        project["current_phase_id"] =
-          project.project.moped_proj_phases?.[0]?.moped_phase.phase_id;
-        /**
-         * Get percentage of milestones completed
-         */
-        const milestonesTotal = project.project.moped_proj_milestones.length;
-        const milestonesCompleted =
-          project.project.moped_proj_milestones.filter(
-            (milestone) => milestone.completed === true
-          ).length;
-        project["completed_milestones_percentage"] = !!milestonesTotal
-          ? (milestonesCompleted / milestonesTotal) * 100
-          : 0;
-
-        project["id"] = project.project.project_id;
-
-        // project status update equivalent to most recent project note
-        // html is parsed before being rendered in the DashboardStatusModal component
-        project["status_update"] = "";
-        if (project?.project?.moped_proj_notes?.length) {
-          const note = project.project.moped_proj_notes[0]["project_note"];
-          project["status_update"] = note ? note : "";
-        }
-      });
-    }
     if (data) {
-      setRows(selectedData);
+      if (TABS[activeTab].label === "My projects") {
+        setRows(data.moped_proj_personnel);
+      }
+      if (TABS[activeTab].label === "Following") {
+        setRows(data.moped_user_followed_projects);
+      }
     }
   }, [data, activeTab]);
 
@@ -345,7 +325,7 @@ const DashboardView = () => {
                       columns={dataGridColumns}
                       rows={rows}
                       autoHeight
-                      getRowId={(row) => row.id}
+                      getRowId={(row) => row.project.project_id}
                       rowModesModel={rowModesModel}
                       onRowModesModelChange={handleRowModesModelChange}
                       onProcessRowUpdateError={(error) => console.error}
