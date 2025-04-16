@@ -96,13 +96,6 @@ const validationSchema = yup.object().shape({
 
 const validator = (value) => yupValidator(value, validationSchema);
 
-// Lookup array to convert project note types to a human readable interpretation
-// The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = ["", "Internal Note", "Status Update"];
-
-export const STATUS_UPDATE_TYPE_ID = 2;
-export const INTERNAL_NOTE_TYPE_ID = 1;
-
 // reshape the array of note types into an object with key slug, value id
 export const useNoteTypeObject = (noteTypes) =>
   useMemo(
@@ -168,8 +161,8 @@ const ProjectNotes = ({
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const isStatusUpdate =
-    (!isEditingNote && newNoteType === STATUS_UPDATE_TYPE_ID) ||
-    (isEditingNote && editingNoteType === STATUS_UPDATE_TYPE_ID);
+    (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
+    (isEditingNote && editingNoteType === noteTypesIDLookup["status_update"]);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
