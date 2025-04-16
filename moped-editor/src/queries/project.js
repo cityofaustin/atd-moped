@@ -329,6 +329,11 @@ export const TIMELINE_QUERY = gql`
       substantial_completion_date
       project_id
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
   }
 `;
 

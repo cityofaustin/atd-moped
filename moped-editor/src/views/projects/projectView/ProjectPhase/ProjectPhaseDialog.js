@@ -9,6 +9,7 @@ const ProjectPhaseDialog = ({
   onClose,
   phase,
   phases,
+  noteTypes,
   currentProjectPhaseIds,
   currentPhaseIds,
   onSubmitCallback,
@@ -35,6 +36,7 @@ const ProjectPhaseDialog = ({
           phase={phase}
           onSubmitCallback={onSubmitCallback}
           phases={phases}
+          noteTypes={noteTypes}
           currentProjectPhaseIds={currentProjectPhaseIds}
           currentPhaseIds={currentPhaseIds}
           handleSnackbar={handleSnackbar}
