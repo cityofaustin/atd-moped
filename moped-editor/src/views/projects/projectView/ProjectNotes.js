@@ -25,11 +25,9 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteTypeButton from "./ProjectNotes/NoteTypeButton";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
-import ProjectStatusBadge from "./ProjectStatusBadge";
 
 import NoteInput from "src/views/projects/projectView/ProjectNotes/NoteInput";
+import NoteTypeButton from "src/views/projects/projectView/ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
@@ -139,7 +137,7 @@ const ProjectNotes = ({
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const noteTypesIDLookup = useNoteTypeObject(
-    props.data?.moped_note_types || []
+    projectData?.moped_note_types || []
   );
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
@@ -361,7 +359,7 @@ const ProjectNotes = ({
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
-                noteTypes={props.data?.moped_note_types ?? []}
+                noteTypes={projectData?.moped_note_types ?? []}
                 validator={isStatusUpdate ? validator : null}
               />
             </Card>
@@ -374,7 +372,7 @@ const ProjectNotes = ({
             <FormControlLabel
               className={classes.showButtonItem}
               label="Show"
-              control={<span />} // hm
+              control={<span />}
             />
             <NoteTypeButton
               showButtonItemStyle={classes.showButtonItem}
@@ -383,7 +381,7 @@ const ProjectNotes = ({
               noteTypeId={0}
               label="All"
             />
-            {props.data?.moped_note_types.map((type) => (
+            {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}
                 filterNoteType={filterNoteType}
@@ -479,7 +477,7 @@ const ProjectNotes = ({
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
-                                  noteType={props.data?.moped_note_types ?? []}
+                                  noteType={projectData?.moped_note_types ?? []}
                                   validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
