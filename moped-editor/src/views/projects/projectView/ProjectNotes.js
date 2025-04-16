@@ -477,7 +477,7 @@ const ProjectNotes = ({
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
-                                  noteType={projectData?.moped_note_types ?? []}
+                                  noteTypes={projectData?.moped_note_types ?? []}
                                   validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
