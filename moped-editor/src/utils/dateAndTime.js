@@ -1,4 +1,5 @@
 import theme from "src/theme";
+import { format } from "date-fns";
 
 /**
  * Format date from the DB in YYYY-MM-DD format into human-readable locale date
@@ -168,3 +169,25 @@ export const FormattedDateString = ({ date, primary, secondary }) => {
     </span>
   );
 };
+
+/**
+ * Get the time of day to display to users on the dashboard
+ * @returns {string} - Time of day phrased as a salutation
+ */
+export const getTimeOfDay = (date) => {
+  const curHr = format(date, "HH");
+  switch (true) {
+    case curHr < 12:
+      return "morning";
+    case curHr >= 12 && curHr < 18:
+      return "afternoon";
+    default:
+      return "evening";
+  }
+};
+
+/**
+ * Get the calendar date to display to users on the dashboard
+ * @returns {string} - Date formatted in a user-friendly format
+ */
+export const getCalendarDate = (date) => format(date, "EEEE - LLLL dd, yyyy");

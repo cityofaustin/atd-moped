@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@apollo/client";
+import { NavLink as RouterLink } from "react-router-dom";
 
 // Material
 import {
@@ -28,10 +29,7 @@ import FeedbackSnackbar, {
 import UserSavedViewsTable from "./UserSavedViewsTable";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import {
-  getTimeOfDay,
-  getCalendarDate,
-} from "src/components/DataGridPro/utils/helpers";
+import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -81,6 +79,11 @@ const useStyles = makeStyles((theme) => ({
   tooltipIcon: {
     fontSize: "20px",
   },
+  tableRowDiv: {
+    display: "flex",
+    alignItems: "center",
+    padding: theme.spacing(2),
+  },
 }));
 
 function a11yProps(index) {
@@ -125,11 +128,11 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
     return [
       {
         headerName: "ID",
-        field: "project",
-        valueGetter: (params) => {
-          return params.project_id;
-        },
+        field: "project_id",
         editable: false,
+        renderCell: ({ row }) => (
+          <div className={classes.tableRowDiv}>{row.project.project_id}</div>
+        ),
         flex: 0.5,
       },
       {
@@ -137,16 +140,19 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "project_name_full",
         editable: false,
         renderCell: ({ row }) => (
-          <Link
-            href={`/moped/projects/${row.project.project_id}`}
-            sx={{
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-              display: "block",
-            }}
-          >
-            {row.project.project_name_full}
-          </Link>
+          <div className={classes.tableRowDiv}>
+            <Link
+              component={RouterLink}
+              to={`/moped/projects/${row.project.project_id}`}
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "block",
+              }}
+            >
+              {row.project.project_name_full}
+            </Link>
+          </div>
         ),
         flex: 4,
       },
@@ -155,24 +161,26 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "phase_name",
         editable: false,
         renderCell: ({ row }) => (
-          <DashboardTimelineModal
-            table="phases"
-            projectId={row.project.project_id}
-            projectName={row.project.project_name_full}
-            dashboardRefetch={refetch}
-            handleSnackbar={handleSnackbar}
-          >
-            <ProjectStatusBadge
-              phaseName={
-                row.project.moped_proj_phases?.[0]?.moped_phase.phase_name
-              }
-              phaseKey={
-                row.project.moped_proj_phases?.[0]?.moped_phase.phase_key
-              }
-              condensed
-              clickable
-            />
-          </DashboardTimelineModal>
+          <div className={classes.tableRowDiv}>
+            <DashboardTimelineModal
+              table="phases"
+              projectId={row.project.project_id}
+              projectName={row.project.project_name_full}
+              dashboardRefetch={refetch}
+              handleSnackbar={handleSnackbar}
+            >
+              <ProjectStatusBadge
+                phaseName={
+                  row.project.moped_proj_phases?.[0]?.moped_phase.phase_name
+                }
+                phaseKey={
+                  row.project.moped_proj_phases?.[0]?.moped_phase.phase_key
+                }
+                condensed
+                clickable
+              />
+            </DashboardTimelineModal>
+          </div>
         ),
         flex: 2,
       },
@@ -182,22 +190,26 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         editable: false,
         renderCell: ({ row }) => (
           // Display status update (from Project details page), i.e., most recent note
-          <DashboardStatusModal
-            projectId={row.project.project_id}
-            projectName={row.project.project_name_full}
-            currentPhaseId={
-              row.project.moped_proj_phases?.[0]?.moped_phase.phase_id
-            }
-            modalParent="dashboard"
-            statusUpdate={row.project.moped_proj_notes?.[0]?.project_note ?? ""}
-            queryRefetch={refetch}
-            handleSnackbar={handleSnackbar}
-            classes={classes}
-          >
-            {parse(
-              String(row.project.moped_proj_notes?.[0]?.project_note ?? "")
-            )}
-          </DashboardStatusModal>
+          <div className={classes.tableRowDiv}>
+            <DashboardStatusModal
+              projectId={row.project.project_id}
+              projectName={row.project.project_name_full}
+              currentPhaseId={
+                row.project.moped_proj_phases?.[0]?.moped_phase.phase_id
+              }
+              modalParent="dashboard"
+              statusUpdate={
+                row.project.moped_proj_notes?.[0]?.project_note ?? ""
+              }
+              queryRefetch={refetch}
+              handleSnackbar={handleSnackbar}
+              classes={classes}
+            >
+              {parse(
+                String(row.project.moped_proj_notes?.[0]?.project_note ?? "")
+              )}
+            </DashboardStatusModal>
+          </div>
         ),
         flex: 4,
       },
@@ -206,25 +218,27 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "completed_milestones_percentage",
         renderCell: ({ row }) => (
           // Display percentage of milestone completed, or 0 if no milestones saved
-          <DashboardTimelineModal
-            table="milestones"
-            projectId={row.project.project_id}
-            projectName={row.project.project_name_full}
-            handleSnackbar={handleSnackbar}
-            dashboardRefetch={refetch}
-          >
-            <MilestoneProgressMeter
-              completedMilestonesPercentage={
-                row.project.moped_proj_milestones.length
-                  ? (row.project.moped_proj_milestones.filter(
-                      (milestone) => milestone.completed === true
-                    ).length /
-                      row.project.moped_proj_milestones.length) *
-                    100
-                  : 0
-              }
-            />
-          </DashboardTimelineModal>
+          <div className={classes.tableRowDiv}>
+            <DashboardTimelineModal
+              table="milestones"
+              projectId={row.project.project_id}
+              projectName={row.project.project_name_full}
+              handleSnackbar={handleSnackbar}
+              dashboardRefetch={refetch}
+            >
+              <MilestoneProgressMeter
+                completedMilestonesPercentage={
+                  row.project.moped_proj_milestones.length
+                    ? (row.project.moped_proj_milestones.filter(
+                        (milestone) => milestone.completed === true
+                      ).length /
+                        row.project.moped_proj_milestones.length) *
+                      100
+                    : 0
+                }
+              />
+            </DashboardTimelineModal>
+          </div>
         ),
         flex: 1,
       },
@@ -324,18 +338,15 @@ const DashboardView = () => {
                       sx={dataGridProStyleOverrides}
                       columns={dataGridColumns}
                       rows={rows}
-                      autoHeight
+                      getRowHeight={() => "auto"}
                       getRowId={(row) => row.project.project_id}
                       rowModesModel={rowModesModel}
                       onRowModesModelChange={handleRowModesModelChange}
-                      onProcessRowUpdateError={(error) => console.error}
-                      editMode="row"
                       hideFooter
                       disableRowSelectionOnClick
                       localeText={{
                         noRowsLabel: "No projects to display",
                       }}
-                      initialState={{ pinnedColumns: { right: ["edit"] } }}
                     />
                   )}
                 </Grid>

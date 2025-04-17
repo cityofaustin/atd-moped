@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -32,7 +31,7 @@ const DashboardStatusModal = ({
 
   return (
     <>
-      <Typography
+      <div
         component={"span"}
         className={clsx({
           [classes.fieldLabelText]: modalParent === "summary",
@@ -52,7 +51,7 @@ const DashboardStatusModal = ({
         )}
         {/* if there is a status update, render the content */}
         {!!statusUpdate && children}
-      </Typography>
+      </div>
       <Dialog
         open={isDialogOpen}
         onClose={handleDialogClose}

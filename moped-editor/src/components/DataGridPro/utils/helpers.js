@@ -1,5 +1,3 @@
-import { format } from "date-fns";
-
 /**
  * Get lookup value for a given table using a record ID and returning a name
  * @param {Array|Object} lookupTable - Lookup table
@@ -14,25 +12,3 @@ export const getLookupValueByID = (lookupTable, attribute, id) => {
     `${attribute}_name`
   ];
 };
-
-/**
- * Get the time of day to display to users on the dashboard
- * @returns {string} - Time of day phrased as a salutation
- */
-export const getTimeOfDay = (date) => {
-  const curHr = format(date, "HH");
-  switch (true) {
-    case curHr < 12:
-      return "morning";
-    case curHr >= 12 && curHr < 18:
-      return "afternoon";
-    default:
-      return "evening";
-  }
-};
-
-/**
- * Get the calendar date to display to users on the dashboard
- * @returns {string} - Date formatted in a user-friendly format
- */
-export const getCalendarDate = (date) => format(date, "EEEE - LLLL dd, yyyy");
