@@ -82,8 +82,15 @@ const useStyles = makeStyles((theme) => ({
   tableRowDiv: {
     display: "flex",
     alignItems: "center",
-    padding: theme.spacing(2),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
+  milestoneProgressDiv: {
+    display: "flex",
+    alignItems: "center",
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
+  }
 }));
 
 function a11yProps(index) {
@@ -218,7 +225,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "completed_milestones_percentage",
         renderCell: ({ row }) => (
           // Display percentage of milestone completed, or 0 if no milestones saved
-          <div className={classes.tableRowDiv}>
+          <div className={classes.milestoneProgressDiv}>
             <DashboardTimelineModal
               table="milestones"
               projectId={row.project.project_id}
