@@ -6,6 +6,7 @@ import { Radio, RadioGroup, FormControlLabel } from "@mui/material";
  * @param {integer} defaultValue - The note type id that determines which button option
  * should be selected/highlighted by default
  * @param {function} onChange - Callback function that runs when the note type is changed via button click
+ * @param {Array|objects} noteTypes - Array of moped_note_type objects containing id, name and slug
  * @return {JSX.Element}
  * @constructor
  */

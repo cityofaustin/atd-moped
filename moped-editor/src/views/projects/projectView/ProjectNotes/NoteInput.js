@@ -167,6 +167,7 @@ const initialConfig = {
  * @param {function} submitEditNote - Function to submit an edited note
  * @param {function} cancelNoteEdit - Function to cancel note editing
  * @param {boolean} isStatusEditModal - Flag indicating if the note component is in a status edit modal
+ * @param {Array|objects} noteTypes - Array of moped_note_type objects containing id, name and slug
  * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
  * @returns JSX.Element
  */
