@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Alert,
   Avatar,
@@ -107,6 +107,20 @@ export const useNoteTypeObject = (noteTypes) =>
       ),
     [noteTypes]
   );
+
+const useFilterNotes = (notes, filterNoteType, setDisplayNotes) =>
+  useMemo(() => {
+    if (filterNoteType === 0) {
+      // show all the notes
+      setDisplayNotes(notes);
+    } else {
+      // Check to see if array exists before trying to filter
+      const filteredNotes = notes
+        ? notes.filter((n) => n.project_note_type === filterNoteType)
+        : [];
+      setDisplayNotes(filteredNotes);
+    }
+  }, [notes, filterNoteType, setDisplayNotes]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -296,32 +310,7 @@ const ProjectNotes = ({
       );
   };
 
-  // when the data changes, update the display notes state
-  useEffect(() => {
-    if (!loading && data) {
-      setDisplayNotes(data.moped_proj_notes);
-    }
-    if (error) {
-      handleSnackbar(true, "Error loading notes", "error", error);
-    }
-  }, [loading, data, error, handleSnackbar]);
-
-  /**
-   * Whenever filterNoteType changes, filter the notes being displayed
-   */
-  useEffect(() => {
-    if (filterNoteType === 0) {
-      // show all the notes
-      setDisplayNotes(mopedProjNotes);
-    } else {
-      // on first few renders, mopedProjNotes is still undefined.
-      // Check to see if array exists before trying to filter
-      const filteredNotes = mopedProjNotes
-        ? mopedProjNotes.filter((n) => n.project_note_type === filterNoteType)
-        : [];
-      setDisplayNotes(filteredNotes);
-    }
-  }, [filterNoteType, mopedProjNotes]);
+  useFilterNotes(mopedProjNotes, filterNoteType, setDisplayNotes);
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
@@ -477,7 +466,9 @@ const ProjectNotes = ({
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
-                                  noteTypes={projectData?.moped_note_types ?? []}
+                                  noteTypes={
+                                    projectData?.moped_note_types ?? []
+                                  }
                                   validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
