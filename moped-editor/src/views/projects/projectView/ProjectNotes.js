@@ -110,7 +110,7 @@ export const useNoteTypeObject = (noteTypes) =>
 
 const useFilterNotes = (notes, filterNoteType) =>
   useMemo(() => {
-    if (filterNoteType === 0) {
+    if (!filterNoteType) {
       // show all the notes
       return notes;
     } else {
@@ -165,7 +165,7 @@ const ProjectNotes = ({
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
   const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? noteTypesIDLookup["status_update"] : 0
+    isStatusEditModal ? noteTypesIDLookup["status_update"] : null
   );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
@@ -366,7 +366,7 @@ const ProjectNotes = ({
               showButtonItemStyle={classes.showButtonItem}
               filterNoteType={filterNoteType}
               setFilterNoteType={setFilterNoteType}
-              noteTypeId={0}
+              noteTypeId={null}
               label="All"
             />
             {projectData?.moped_note_types.map((type) => (
