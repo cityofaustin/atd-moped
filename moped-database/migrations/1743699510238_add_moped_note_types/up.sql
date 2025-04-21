@@ -10,3 +10,9 @@ ALTER TABLE "public"."moped_proj_notes"
 ADD CONSTRAINT moped_proj_notes_type_fkey FOREIGN KEY ("project_note_type")
 REFERENCES moped_note_types ("id")
 ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE "public"."moped_proj_notes"
+ALTER COLUMN "project_note_type" DROP DEFAULT;
+
+ALTER TABLE "public"."moped_proj_notes"
+ALTER COLUMN "project_note_type" SET NOT NULL;
