@@ -1,0 +1,9 @@
+services:
+  ecapris:
+    build:
+      context: .
+    volumes:
+      - .:/app
+    entrypoint: python /app/ecapris_statuses_sync.py
+    env_file:
+      - env_file
