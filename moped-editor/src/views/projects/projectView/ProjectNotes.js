@@ -108,19 +108,19 @@ export const useNoteTypeObject = (noteTypes) =>
     [noteTypes]
   );
 
-const useFilterNotes = (notes, filterNoteType, setDisplayNotes) =>
+const useFilterNotes = (notes, filterNoteType) =>
   useMemo(() => {
     if (filterNoteType === 0) {
       // show all the notes
-      setDisplayNotes(notes);
+      return notes;
     } else {
       // Check to see if array exists before trying to filter
       const filteredNotes = notes
         ? notes.filter((n) => n.project_note_type === filterNoteType)
         : [];
-      setDisplayNotes(filteredNotes);
+      return filteredNotes;
     }
-  }, [notes, filterNoteType, setDisplayNotes]);
+  }, [notes, filterNoteType]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -164,7 +164,6 @@ const ProjectNotes = ({
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
-  const [displayNotes, setDisplayNotes] = useState([]);
   const [filterNoteType, setFilterNoteType] = useState(
     isStatusEditModal ? noteTypesIDLookup["status_update"] : 0
   );
@@ -310,7 +309,7 @@ const ProjectNotes = ({
       );
   };
 
-  useFilterNotes(mopedProjNotes, filterNoteType, setDisplayNotes);
+  const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
