@@ -175,7 +175,7 @@ export const FormattedDateString = ({ date, primary, secondary }) => {
  * @returns {string} - Time of day phrased as a salutation
  */
 export const getTimeOfDay = (date) => {
-  const curHr = format(date, "HH");
+  const curHr = date.getHours();
   switch (true) {
     case curHr < 12:
       return "morning";

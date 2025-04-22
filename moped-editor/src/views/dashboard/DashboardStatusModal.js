@@ -5,6 +5,7 @@ import {
   DialogContent,
   IconButton,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import clsx from "clsx";
 import CloseIcon from "@mui/icons-material/Close";
@@ -31,7 +32,7 @@ const DashboardStatusModal = ({
 
   return (
     <>
-      <div
+      <Typography
         component={"span"}
         className={clsx({
           [classes.fieldLabelText]: modalParent === "summary",
@@ -51,7 +52,7 @@ const DashboardStatusModal = ({
         )}
         {/* if there is a status update, render the content */}
         {!!statusUpdate && children}
-      </div>
+      </Typography>
       <Dialog
         open={isDialogOpen}
         onClose={handleDialogClose}
