@@ -85,12 +85,6 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
-  milestoneProgressDiv: {
-    display: "flex",
-    alignItems: "center",
-    paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
-  }
 }));
 
 function a11yProps(index) {
@@ -155,6 +149,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 display: "block",
+                fontSize: 16,
               }}
             >
               {row.project.project_name_full}
@@ -189,7 +184,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
             </DashboardTimelineModal>
           </div>
         ),
-        flex: 2,
+        width: 200,
       },
       {
         headerName: "Status update",
@@ -225,7 +220,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "completed_milestones_percentage",
         renderCell: ({ row }) => (
           // Display percentage of milestone completed, or 0 if no milestones saved
-          <div className={classes.milestoneProgressDiv}>
+          <div className={classes.tableRowDiv}>
             <DashboardTimelineModal
               table="milestones"
               projectId={row.project.project_id}
@@ -345,6 +340,7 @@ const DashboardView = () => {
                       sx={dataGridProStyleOverrides}
                       columns={dataGridColumns}
                       rows={rows}
+                      autoHeight
                       getRowHeight={() => "auto"}
                       getRowId={(row) => row.project.project_id}
                       rowModesModel={rowModesModel}
