@@ -4,6 +4,6 @@ services:
       context: .
     volumes:
       - .:/app
-    entrypoint: python /app/ecapris_statuses_sync.py
+    entrypoint: python3 /app/ecapris_statuses_sync.py
     env_file:
       - env_file
