@@ -39,6 +39,7 @@ def main():
     projects = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
     
     ecapris_subproject_ids = [project["ecapris_subproject_id"] for project in projects["moped_project"]]
+    deduped_ecapris_subproject_ids = set(ecapris_subproject_ids)
     print(f"Found {len(ecapris_subproject_ids)} eCapris subproject IDs to sync.")
     
     conn = get_conn(ORACLE_HOST, ORACLE_PORT, ORACLE_SERVICE, ORACLE_USER, ORACLE_PASSWORD)
