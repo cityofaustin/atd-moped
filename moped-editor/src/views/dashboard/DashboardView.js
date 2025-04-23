@@ -163,7 +163,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         headerName: "Status",
         field: "moped_proj_phases",
         editable: false,
-        valueGetter: (value) => value[0]?.moped_phase.phase_name,
+        valueGetter: (value) => value[0]?.moped_phase.phase_name || "Unknown",
         renderCell: ({ row }) => (
           <div className={classes.tableRowDiv}>
             <DashboardTimelineModal
