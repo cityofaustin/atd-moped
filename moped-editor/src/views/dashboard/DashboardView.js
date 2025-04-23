@@ -132,7 +132,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         field: "project_id",
         editable: false,
         renderCell: ({ row }) => (
-          <div className={classes.tableRowDiv}>{row.project.project_id}</div>
+          <div className={classes.tableRowDiv}>{row.project_id}</div>
         ),
         flex: 0.5,
       },
@@ -144,7 +144,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
           <div className={classes.tableRowDiv}>
             <Link
               component={RouterLink}
-              to={`/moped/projects/${row.project.project_id}`}
+              to={`/moped/projects/${row.project_id}`}
               sx={{
                 overflow: "hidden",
                 textOverflow: "ellipsis",
@@ -152,7 +152,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
                 fontSize: 16,
               }}
             >
-              {row.project.project_name_full}
+              {row.project_name_full}
             </Link>
           </div>
         ),
@@ -160,24 +160,21 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
       },
       {
         headerName: "Status",
-        field: "phase_name",
+        field: "moped_proj_phases",
         editable: false,
+        valueGetter: (value) => value[0]?.moped_phase.phase_name,
         renderCell: ({ row }) => (
           <div className={classes.tableRowDiv}>
             <DashboardTimelineModal
               table="phases"
-              projectId={row.project.project_id}
-              projectName={row.project.project_name_full}
+              projectId={row.project_id}
+              projectName={row.project_name_full}
               dashboardRefetch={refetch}
               handleSnackbar={handleSnackbar}
             >
               <ProjectStatusBadge
-                phaseName={
-                  row.project.moped_proj_phases?.[0]?.moped_phase.phase_name
-                }
-                phaseKey={
-                  row.project.moped_proj_phases?.[0]?.moped_phase.phase_key
-                }
+                phaseName={row.moped_proj_phases?.[0]?.moped_phase.phase_name}
+                phaseKey={row.moped_proj_phases?.[0]?.moped_phase.phase_key}
                 condensed
                 clickable
               />
@@ -188,28 +185,23 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
       },
       {
         headerName: "Status update",
-        field: "status_update",
+        field: "moped_proj_notes",
         editable: false,
+        sortable: false,
         renderCell: ({ row }) => (
           // Display status update (from Project details page), i.e., most recent note
           <div className={classes.tableRowDiv}>
             <DashboardStatusModal
-              projectId={row.project.project_id}
-              projectName={row.project.project_name_full}
-              currentPhaseId={
-                row.project.moped_proj_phases?.[0]?.moped_phase.phase_id
-              }
+              projectId={row.project_id}
+              projectName={row.project_name_full}
+              currentPhaseId={row.moped_proj_phases?.[0]?.moped_phase.phase_id}
               modalParent="dashboard"
-              statusUpdate={
-                row.project.moped_proj_notes?.[0]?.project_note ?? ""
-              }
+              statusUpdate={row.moped_proj_notes?.[0]?.project_note ?? ""}
               queryRefetch={refetch}
               handleSnackbar={handleSnackbar}
               classes={classes}
             >
-              {parse(
-                String(row.project.moped_proj_notes?.[0]?.project_note ?? "")
-              )}
+              {parse(String(row.moped_proj_notes?.[0]?.project_note)) ?? ""}
             </DashboardStatusModal>
           </div>
         ),
@@ -217,24 +209,31 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
       },
       {
         headerName: "Milestones",
-        field: "completed_milestones_percentage",
+        field: "moped_proj_milestones",
+        valueGetter: (value) =>
+          value.length
+            ? (value.filter((milestone) => milestone.completed === true)
+                .length /
+                value.length) *
+              100
+            : 0,
         renderCell: ({ row }) => (
           // Display percentage of milestone completed, or 0 if no milestones saved
           <div className={classes.tableRowDiv}>
             <DashboardTimelineModal
               table="milestones"
-              projectId={row.project.project_id}
-              projectName={row.project.project_name_full}
+              projectId={row.project_id}
+              projectName={row.project_name_full}
               handleSnackbar={handleSnackbar}
               dashboardRefetch={refetch}
             >
               <MilestoneProgressMeter
                 completedMilestonesPercentage={
-                  row.project.moped_proj_milestones.length
-                    ? (row.project.moped_proj_milestones.filter(
+                  row.moped_proj_milestones.length
+                    ? (row.moped_proj_milestones.filter(
                         (milestone) => milestone.completed === true
                       ).length /
-                        row.project.moped_proj_milestones.length) *
+                        row.moped_proj_milestones.length) *
                       100
                     : 0
                 }
@@ -276,10 +275,10 @@ const DashboardView = () => {
   useEffect(() => {
     if (data) {
       if (TABS[activeTab].label === "My projects") {
-        setRows(data.moped_proj_personnel);
+        setRows(data.moped_proj_personnel.map((row) => row.project));
       }
       if (TABS[activeTab].label === "Following") {
-        setRows(data.moped_user_followed_projects);
+        setRows(data.moped_user_followed_projects.map((row) => row.project));
       }
     }
   }, [data, activeTab]);
@@ -342,7 +341,7 @@ const DashboardView = () => {
                       rows={rows}
                       autoHeight
                       getRowHeight={() => "auto"}
-                      getRowId={(row) => row.project.project_id}
+                      getRowId={(row) => row.project_id}
                       rowModesModel={rowModesModel}
                       onRowModesModelChange={handleRowModesModelChange}
                       hideFooter
