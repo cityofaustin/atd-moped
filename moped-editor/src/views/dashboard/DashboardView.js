@@ -140,6 +140,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         headerName: "Full name",
         field: "project_name_full",
         editable: false,
+        valueGetter: (value) => value.trim(),
         renderCell: ({ row }) => (
           <div className={classes.tableRowDiv}>
             <Link
