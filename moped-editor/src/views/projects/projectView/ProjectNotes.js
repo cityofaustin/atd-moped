@@ -153,7 +153,6 @@ const ProjectNotes = ({
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
-  console.log(projectData);
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
     isStatusEditModal
