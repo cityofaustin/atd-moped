@@ -38,15 +38,15 @@ def main():
     # TODO: Update Moped DB with new status updates (if not already present - check by unique status ID)
     projects = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
     
-    ecapris_subproject_ids = [project["ecapris_subproject_id"] for project in projects["moped_project"]]
-    deduped_ecapris_subproject_ids = set(ecapris_subproject_ids)
-    print(f"Found {len(ecapris_subproject_ids)} eCapris subproject IDs to sync.")
+    project_ecapris_subproject_ids = [project["ecapris_subproject_id"] for project in projects["moped_project"]]
+    unique_ecapris_subproject_ids = set(project_ecapris_subproject_ids)
+    print(f"Found {len(unique_ecapris_subproject_ids)} unique eCapris subproject IDs to sync.")
     
     conn = get_conn(ORACLE_HOST, ORACLE_PORT, ORACLE_SERVICE, ORACLE_USER, ORACLE_PASSWORD)
     cursor = conn.cursor()
-    cursor.prepare(QUERIES["subproject_statuses"])
+    cursor.prepare(ORACLE_QUERIES["subproject_statuses"])
 
-    for sp_number in ecapris_subproject_ids:
+    for sp_number in unique_ecapris_subproject_ids:
         cursor.execute(None, sp_number=sp_number)  # Bind the parameter
         results = cursor.fetchall()
         print(results)
