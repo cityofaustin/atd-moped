@@ -105,6 +105,11 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
     moped_public_process_statuses(order_by: { id: asc }) {
       id
       name
@@ -323,6 +328,11 @@ export const TIMELINE_QUERY = gql`
     project_list_view(where: { project_id: { _eq: $projectId } }) {
       substantial_completion_date
       project_id
+    }
+    moped_note_types {
+      id
+      name
+      slug
     }
   }
 `;
