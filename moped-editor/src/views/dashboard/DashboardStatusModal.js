@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import {
-  Typography,
   Dialog,
   DialogTitle,
   DialogContent,
   IconButton,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import clsx from "clsx";
 import CloseIcon from "@mui/icons-material/Close";
@@ -22,7 +22,7 @@ const DashboardStatusModal = ({
   handleSnackbar,
   children,
   classes,
-  data
+  data,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
