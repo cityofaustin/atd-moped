@@ -239,7 +239,6 @@ const ProjectNotes = ({
 
   const submitNewNote = () => {
     setNoteAddLoading(true);
-    console.log(newNoteType);
     addNewNote({
       variables: {
         objects: [
