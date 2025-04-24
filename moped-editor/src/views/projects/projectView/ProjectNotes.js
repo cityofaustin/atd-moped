@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Alert,
   Avatar,
@@ -14,7 +14,6 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-  Button,
   FormControlLabel,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
@@ -26,16 +25,17 @@ import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import parse from "html-react-parser";
 import DOMPurify from "dompurify";
-import NoteInput from "src/views/projects/projectView/NoteInput";
+
+import NoteInput from "src/views/projects/projectView/ProjectNotes/NoteInput";
+import NoteTypeButton from "src/views/projects/projectView/ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
 
 import * as yup from "yup";
 import { yupValidator } from "src/utils/validation";
 
-import "src/views/projects/projectView/ProjectNotes.css";
+import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
-// Query
 import {
   NOTES_QUERY,
   ADD_PROJECT_NOTE,
@@ -94,12 +94,33 @@ const validationSchema = yup.object().shape({
 
 const validator = (value) => yupValidator(value, validationSchema);
 
-// Lookup array to convert project note types to a human readable interpretation
-// The zeroth item in the list is intentionally blank; the notes are 1-indexed.
-const projectNoteTypes = ["", "Internal Note", "Status Update"];
+// reshape the array of note types into an object with key slug, value id
+export const useNoteTypeObject = (noteTypes) =>
+  useMemo(
+    () =>
+      noteTypes.reduce(
+        (obj, item) =>
+          Object.assign(obj, {
+            [item.slug]: item.id,
+          }),
+        {}
+      ),
+    [noteTypes]
+  );
 
-export const STATUS_UPDATE_TYPE_ID = 2;
-export const INTERNAL_NOTE_TYPE_ID = 1;
+const useFilterNotes = (notes, filterNoteType) =>
+  useMemo(() => {
+    if (!filterNoteType) {
+      // show all the notes
+      return notes;
+    } else {
+      // Check to see if array exists before trying to filter
+      const filteredNotes = notes
+        ? notes.filter((n) => n.project_note_type === filterNoteType)
+        : [];
+      return filteredNotes;
+    }
+  }, [notes, filterNoteType]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -129,26 +150,30 @@ const ProjectNotes = ({
   let { projectId: projectIdFromParam } = useParams();
   const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
+  const noteTypesIDLookup = useNoteTypeObject(
+    projectData?.moped_note_types || []
+  );
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
-    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : INTERNAL_NOTE_TYPE_ID
+    isStatusEditModal
+      ? noteTypesIDLookup["status_update"]
+      : noteTypesIDLookup["internal_note"]
   );
   const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
   const [isEditingNote, setIsEditingNote] = useState(false);
-  const [noteId, setNoteId] = useState(null);
-  const [displayNotes, setDisplayNotes] = useState([]);
+  const [editingNoteId, setEditingNoteId] = useState(null);
   const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? STATUS_UPDATE_TYPE_ID : 0
+    isStatusEditModal ? noteTypesIDLookup["status_update"] : null
   );
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
   const isStatusUpdate =
-    (!isEditingNote && newNoteType === STATUS_UPDATE_TYPE_ID) ||
-    (isEditingNote && editingNoteType === STATUS_UPDATE_TYPE_ID);
+    (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
+    (isEditingNote && editingNoteType === noteTypesIDLookup["status_update"]);
 
   // if component is being used in edit modal from dashboard
   // get project id from props instead of url params
@@ -238,24 +263,24 @@ const ProjectNotes = ({
     setEditingNoteType(item.project_note_type);
     setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setNoteId(item.project_note_id);
+    setEditingNoteId(item.project_note_id);
   };
 
   const cancelNoteEdit = () => {
     setEditingNoteType(null);
     setNoteText("");
     setIsEditingNote(false);
-    setNoteId(null);
+    setEditingNoteId(null);
   };
 
   const submitEditNote = () => {
     setNoteAddLoading(true);
-    setNoteId(null);
+    setEditingNoteId(null);
     editExistingNote({
       variables: {
         projectNote: DOMPurify.sanitize(noteText),
         projectId: Number(noteProjectId),
-        projectNoteId: noteId,
+        projectNoteId: editingNoteId,
         projectNoteType: editingNoteType,
       },
     })
@@ -284,55 +309,7 @@ const ProjectNotes = ({
       );
   };
 
-  /**
-   * Updates the note type based on conditions
-   * @param {Number} typeId
-   */
-  const changeFilterNoteType = (typeId) => setFilterNoteType(Number(typeId));
-
-  // when the data changes, update the display notes state
-  useEffect(() => {
-    if (!loading && data) {
-      setDisplayNotes(data.moped_proj_notes);
-    }
-    if (error) {
-      handleSnackbar(true, "Error loading notes", "error", error);
-    }
-  }, [loading, data, error, handleSnackbar]);
-
-  /**
-   * Whenever filterNoteType changes, filter the notes being displayed
-   */
-  useEffect(() => {
-    if (filterNoteType === 0) {
-      // show all the notes
-      setDisplayNotes(mopedProjNotes);
-    } else {
-      // on first few renders, mopedProjNotes is still undefined.
-      // Check to see if array exists before trying to filter
-      const filteredNotes = mopedProjNotes
-        ? mopedProjNotes.filter((n) => n.project_note_type === filterNoteType)
-        : [];
-      setDisplayNotes(filteredNotes);
-    }
-  }, [filterNoteType, mopedProjNotes]);
-
-  /**
-   * Defines the NoteTypeButton with a toggle style-change behavior.
-   * @param {Object} props
-   * @return {JSX.Element}
-   * @constructor
-   */
-  const NoteTypeButton = (props) => (
-    <Button
-      color="primary"
-      className={classes.showButtonItem}
-      variant={filterNoteType === props.noteTypeId ? "contained" : "outlined"}
-      onClick={() => changeFilterNoteType(props.noteTypeId)}
-    >
-      {props.children}
-    </Button>
-  );
+  const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
@@ -370,12 +347,14 @@ const ProjectNotes = ({
                 submitEditNote={submitEditNote}
                 cancelNoteEdit={cancelNoteEdit}
                 isStatusEditModal={isStatusEditModal}
+                noteTypes={projectData?.moped_note_types ?? []}
                 validator={isStatusUpdate ? validator : null}
               />
             </Card>
           </Grid>
         )}
-        {/*First the Filter Buttons*/}
+        {/* Visible note types can only be filtered on the Notes Tab.
+          The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
           <Grid item xs={12}>
             <FormControlLabel
@@ -383,13 +362,23 @@ const ProjectNotes = ({
               label="Show"
               control={<span />}
             />
-            <NoteTypeButton noteTypeId={0}>All</NoteTypeButton>
-            <NoteTypeButton noteTypeId={INTERNAL_NOTE_TYPE_ID}>
-              Internal Notes
-            </NoteTypeButton>
-            <NoteTypeButton noteTypeId={STATUS_UPDATE_TYPE_ID}>
-              Status Updates
-            </NoteTypeButton>
+            <NoteTypeButton
+              showButtonItemStyle={classes.showButtonItem}
+              filterNoteType={filterNoteType}
+              setFilterNoteType={setFilterNoteType}
+              noteTypeId={null}
+              label="All"
+            />
+            {projectData?.moped_note_types.map((type) => (
+              <NoteTypeButton
+                showButtonItemStyle={classes.showButtonItem}
+                filterNoteType={filterNoteType}
+                setFilterNoteType={setFilterNoteType}
+                noteTypeId={type.id}
+                label={type.name}
+                key={type.slug}
+              />
+            ))}
           </Grid>
         )}
         {/*Now the notes*/}
@@ -447,9 +436,7 @@ const ProjectNotes = ({
                                   component={"span"}
                                   className={classes.filterNoteType}
                                 >
-                                  {` ${
-                                    projectNoteTypes[item.project_note_type]
-                                  }`}
+                                  {item.moped_note_type?.name}
                                 </Typography>
                                 <Typography component={"span"}>
                                   {/* only show note's status badge if the note has a phase_id */}
@@ -465,7 +452,7 @@ const ProjectNotes = ({
                               </>
                             }
                             secondary={
-                              noteId === item.project_note_id ? (
+                              editingNoteId === item.project_note_id ? (
                                 <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}
@@ -478,6 +465,9 @@ const ProjectNotes = ({
                                   editingNoteType={editingNoteType}
                                   setEditingNoteType={setEditingNoteType}
                                   isStatusEditModal={isStatusEditModal}
+                                  noteTypes={
+                                    projectData?.moped_note_types ?? []
+                                  }
                                   validator={isStatusUpdate ? validator : null}
                                 />
                               ) : (
@@ -497,7 +487,7 @@ const ProjectNotes = ({
                               <ListItemSecondaryAction
                                 className={classes.editControls}
                               >
-                                {noteId !== item.project_note_id && (
+                                {editingNoteId !== item.project_note_id && (
                                   <IconButton
                                     edge="end"
                                     aria-label="edit"

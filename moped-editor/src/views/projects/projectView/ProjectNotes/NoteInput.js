@@ -5,9 +5,6 @@ import {
   Container,
   Grid,
   FormControl,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
   Paper,
   FormHelperText,
 } from "@mui/material";
@@ -30,6 +27,7 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "src/views/projects/projectView/EditorTheme";
+import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons"
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -65,27 +63,6 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
 }));
-
-/**
- * Defines the NoteTypeRadioButtons that allow a user to select the note type of a
- * note they are creating or editing.
- * @param {integer} defaultValue - The note type id that determines which button option
- * should be selected/highlighted by default
- * @param {function} onChange - Callback function that runs when the note type is changed via button click
- * @return {JSX.Element}
- * @constructor
- */
-const NoteTypeRadioButtons = ({ defaultValue, onChange }) => (
-  <RadioGroup
-    row
-    value={defaultValue}
-    onChange={onChange}
-    sx={{ color: "black" }}
-  >
-    <FormControlLabel value={1} control={<Radio />} label="Internal note" />
-    <FormControlLabel value={2} control={<Radio />} label="Status update" />
-  </RadioGroup>
-);
 
 // Catch any errors that occur during Lexical updates and log them
 // or throw them as needed.
@@ -190,6 +167,7 @@ const initialConfig = {
  * @param {function} submitEditNote - Function to submit an edited note
  * @param {function} cancelNoteEdit - Function to cancel note editing
  * @param {boolean} isStatusEditModal - Flag indicating if the note component is in a status edit modal
+ * @param {Array|objects} noteTypes - Array of moped_note_type objects containing id, name and slug
  * @param {function} validator - Function to validate the note using Yup schema and validate()-generated errors
  * @returns JSX.Element
  */
@@ -207,6 +185,7 @@ const NoteInput = ({
   submitEditNote,
   cancelNoteEdit,
   isStatusEditModal,
+  noteTypes,
   validator = null,
 }) => {
   const classes = useStyles();
@@ -268,28 +247,33 @@ const NoteInput = ({
             ))}
           </Grid>
         )}
-        <Grid
-          item
-          xs={12}
-          display="flex"
-          style={{ justifyContent: "flex-end" }}
-        >
-          {!isStatusEditModal && (
-            <FormControl>
-              {!isEditingNote ? (
-                <NoteTypeRadioButtons
-                  defaultValue={newNoteType}
-                  onChange={(e) => setNewNoteType(Number(e.target.value))}
-                ></NoteTypeRadioButtons>
-              ) : (
-                <NoteTypeRadioButtons
-                  defaultValue={editingNoteType}
-                  onChange={(e) => setEditingNoteType(Number(e.target.value))}
-                ></NoteTypeRadioButtons>
-              )}
-            </FormControl>
-          )}
-        </Grid>
+        {
+          // only show Note Type Radio Buttons on Notes tab interface
+          !isStatusEditModal && (
+            <Grid
+              item
+              xs={12}
+              display="flex"
+              style={{ justifyContent: "flex-end" }}
+            >
+              <FormControl>
+                {!isEditingNote ? (
+                  <NoteTypeRadioButtons
+                    defaultValue={newNoteType}
+                    onChange={(e) => setNewNoteType(Number(e.target.value))}
+                    noteTypes={noteTypes}
+                  />
+                ) : (
+                  <NoteTypeRadioButtons
+                    defaultValue={editingNoteType}
+                    onChange={(e) => setEditingNoteType(Number(e.target.value))}
+                    noteTypes={noteTypes}
+                  />
+                )}
+              </FormControl>
+            </Grid>
+          )
+        }
         <Grid item>
           <Box pb={2} display="flex" style={{ justifyContent: "flex-end" }}>
             {isEditingNote && (
