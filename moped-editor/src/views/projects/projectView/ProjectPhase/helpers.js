@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
 import * as yup from "yup";
-import { STATUS_UPDATE_TYPE_ID } from "../ProjectNotes";
 
 export const phaseValidationSchema = yup.object().shape({
   phase_id: yup.number().nullable().required("Phase is required"),
@@ -194,7 +193,7 @@ export const onSubmitPhase = ({
         {
           project_note: DOMPurify.sanitize(noteData.status_update),
           project_id,
-          project_note_type: STATUS_UPDATE_TYPE_ID,
+          project_note_type: noteData.statusNoteTypeID,
           phase_id: is_current_phase ? phase_id : currentPhaseIds[0],
         },
       ]

@@ -122,7 +122,7 @@ export default function ComponentListItem({
               <ListItem className={classes.nested}>
                 <Grid container spacing={0.5}>
                   {component.moped_proj_component_work_types.map((element) => (
-                    <Grid item key={element.id}>
+                    <Grid item key={element.moped_work_type.id}>
                       <Chip
                         label={element.moped_work_type.name}
                         className={classes.workTypeChip}

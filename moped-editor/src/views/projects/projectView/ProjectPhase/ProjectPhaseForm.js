@@ -29,10 +29,12 @@ import {
   ADD_PROJECT_PHASE_AND_STATUS_UPDATE,
 } from "src/queries/project";
 import theme from "src/theme";
+import { useNoteTypeObject } from "../ProjectNotes";
 
 const ProjectPhaseForm = ({
   phase,
   phases,
+  noteTypes,
   currentProjectPhaseIds,
   currentPhaseIds,
   onSubmitCallback,
@@ -40,6 +42,9 @@ const ProjectPhaseForm = ({
 }) => {
   const isNewPhase = !phase.project_phase_id;
   const userSessionData = getSessionDatabaseData();
+
+  const noteTypesIDLookup = useNoteTypeObject(noteTypes);
+  const statusNoteTypeID = noteTypesIDLookup["status_update"];
 
   const defaultValues = useDefaultValues(phase);
 
@@ -86,7 +91,7 @@ const ProjectPhaseForm = ({
 
     if (status_update) {
       const { user_id } = userSessionData;
-      noteData = { status_update, user_id };
+      noteData = { status_update, user_id, statusNoteTypeID };
     }
 
     onSubmitPhase({
@@ -97,7 +102,7 @@ const ProjectPhaseForm = ({
       currentPhaseIdsToClear,
       currentPhaseIds,
       onSubmitCallback,
-      handleSnackbar
+      handleSnackbar,
     });
   };
 

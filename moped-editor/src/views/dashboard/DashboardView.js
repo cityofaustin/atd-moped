@@ -240,6 +240,7 @@ const DashboardView = () => {
           queryRefetch={refetch}
           handleSnackbar={handleSnackbar}
           classes={classes}
+          data={data}
         >
           {parse(String(entry.status_update))}
         </DashboardStatusModal>
