@@ -51,7 +51,6 @@
     "@lexical/react": "^0.16.1",
     "@mapbox/mapbox-gl-draw": "^1.4.3",
     "@mapbox/mapbox-gl-geocoder": "^5.0.2",
-    "@material-table/core": "~6.2.7",
     "@mui/icons-material": "^5.15.4",
     "@mui/lab": "^5.0.0-alpha.127",
     "@mui/material": "^5.15.5",
