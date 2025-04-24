@@ -22,7 +22,7 @@ const DashboardStatusModal = ({
   handleSnackbar,
   children,
   classes,
-  data
+  data,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 

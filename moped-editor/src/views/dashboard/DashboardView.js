@@ -124,7 +124,7 @@ const UserGreeting = ({ classes, userName }) => {
 };
 
 /** Hook that provides memoized column settings */
-const useColumns = ({ refetch, handleSnackbar, classes }) =>
+const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
   useMemo(() => {
     return [
       {
@@ -201,6 +201,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
               queryRefetch={refetch}
               handleSnackbar={handleSnackbar}
               classes={classes}
+              data={data}
             >
               {parse(String(row.moped_proj_notes?.[0]?.project_note)) ?? ""}
             </DashboardStatusModal>
@@ -245,7 +246,7 @@ const useColumns = ({ refetch, handleSnackbar, classes }) =>
         flex: 1,
       },
     ];
-  }, [refetch, handleSnackbar, classes]);
+  }, [data, refetch, handleSnackbar, classes]);
 
 const DashboardView = () => {
   const classes = useStyles();
