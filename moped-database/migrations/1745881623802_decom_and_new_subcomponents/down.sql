@@ -1,2 +1,5 @@
 -- if we delete the component tag in the future, we will soft delete and leave existing data intact
-SELECT 0;
+
+-- Restore previous component tag name
+UPDATE moped_component_tags SET name = 'Upgrades Existing'
+WHERE slug = 'bikeways_performance_measure_upgrades_existing';
