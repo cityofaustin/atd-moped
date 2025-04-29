@@ -1,12 +1,7 @@
--- Insert new tag to mark decommissioned components
-INSERT INTO moped_component_tags (name, type, slug) VALUES
-('', 'Decommissioned / Upgraded Component', 'decommissioned_upgraded_component');
-
--- Update existing component tag name to include 'component' in name
-UPDATE moped_component_tags SET name = '', type = 'Upgrades Existing Component', slug = 'upgrades_existing_component'
-WHERE slug = 'bikeways_performance_measure_upgrades_existing';
-
 -- Associate protection type subcomponents with Access Control components
+-- This is useful for batch inserting associations of multiple specific subcomponents 
+-- with multiple specific components.
+-- See https://github.com/cityofaustin/atd-moped/pull/1588
 -- The CTE produces all combinations of defined components and subcomponents IDs
 WITH
 	inserts_todo AS (
