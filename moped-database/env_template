@@ -1,4 +1,4 @@
 export MOPED_RR_PASSWORD=
 export MOPED_RR_USERNAME=
-export MOPED_RR_HOST=moped-read-replica.austinmobility.io
+export MOPED_RR_HOST=db-rr.austinmobility.io
 export MOPED_RR_DB=moped
