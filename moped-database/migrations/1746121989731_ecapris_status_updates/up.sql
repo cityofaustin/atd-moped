@@ -27,21 +27,28 @@ CREATE TABLE public.ecapris_subproject_statuses (
     is_deleted BOOLEAN DEFAULT FALSE NOT NULL
 );
 
-COMMENT ON TABLE ecapris.subproject_statuses IS 'Stores eCAPRIS subproject status information';
-COMMENT ON COLUMN ecapris.subproject_statuses.id IS 'Primary key for the table';
-COMMENT ON COLUMN ecapris.subproject_statuses.project_id IS 'Moped project ID';
-COMMENT ON COLUMN ecapris.subproject_statuses.subproject_id IS 'eCapris subproject ID number';
-COMMENT ON COLUMN ecapris.subproject_statuses.subproject_name IS 'Name of eCapris subproject';
-COMMENT ON COLUMN ecapris.subproject_statuses.subproject_status_id IS 'Unique ID of subproject status';
-COMMENT ON COLUMN ecapris.subproject_statuses.current_status_fl IS 'Is this the current and most recent status?';
-COMMENT ON COLUMN ecapris.subproject_statuses.sub_project_status_desc IS 'Content of the subproject status';
-COMMENT ON COLUMN ecapris.subproject_statuses.review_timestamp IS 'Timestamp of the status update - MM/DD/YYYY HH:MM:SS format';
-COMMENT ON COLUMN ecapris.subproject_statuses.subproject_status_impacts IS 'Updates on project blockers';
-COMMENT ON COLUMN ecapris.subproject_statuses.summary_description IS 'More of a public-ready status could be used down the road';
-COMMENT ON COLUMN ecapris.subproject_statuses.reviewed_by_name IS 'First and last name of author';
-COMMENT ON COLUMN ecapris.subproject_statuses.review_by_email IS 'Email of author';
-COMMENT ON COLUMN ecapris.subproject_statuses.created_at IS 'Timestamp when the record was created';
-COMMENT ON COLUMN ecapris.subproject_statuses.updated_at IS 'Timestamp when the record was last updated';
-COMMENT ON COLUMN ecapris.subproject_statuses.created_by_user_id IS 'ID of the user who created the record';
-COMMENT ON COLUMN ecapris.subproject_statuses.updated_by_user_id IS 'ID of the user who updated the record';
-COMMENT ON COLUMN ecapris.subproject_statuses.is_deleted IS 'Indicates soft deletion';
+COMMENT ON TABLE public.ecapris_subproject_statuses IS 'Stores eCAPRIS subproject status records synced from the FSD Data Warehouse to supplement the moped_proj_notes table records.';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.id IS 'Primary key for the table';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.project_id IS 'Moped project ID';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_id IS 'eCapris subproject ID number';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_name IS 'Name of eCapris subproject';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_status_id IS 'Unique ID of subproject status';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.current_status_fl IS 'Is this the current and most recent status?';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.sub_project_status_desc IS 'Content of the subproject status';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.review_timestamp IS 'Timestamp of the status update - MM/DD/YYYY HH:MM:SS format';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_status_impacts IS 'Updates on project blockers';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.summary_description IS 'More of a public-ready status could be used down the road';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.reviewed_by_name IS 'First and last name of author';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.review_by_email IS 'Email of author';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.created_at IS 'Timestamp when the record was created';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_at IS 'Timestamp when the record was last updated';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.created_by_user_id IS 'ID of the user who created the record';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_by_user_id IS 'ID of the user who updated the record';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.is_deleted IS 'Indicates soft deletion';
+
+-- Create trigger to set updated_at audit column before update
+CREATE TRIGGER set_ecapris_subproject_statuses_updated_at BEFORE UPDATE ON public.ecapris_subproject_statuses FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
+
+-- Create function to search for eCapris subproject status author match by email
+
+-- Create trigger to call the function to try match author before insert
