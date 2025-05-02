@@ -22,8 +22,8 @@ CREATE TABLE public.ecapris_subproject_statuses (
     review_by_email TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
-    created_by_user_id INTEGER,
-    updated_by_user_id INTEGER,
+    created_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
+    updated_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
     is_deleted BOOLEAN DEFAULT FALSE NOT NULL
 );
 
@@ -46,9 +46,35 @@ COMMENT ON COLUMN public.ecapris_subproject_statuses.created_by_user_id IS 'ID o
 COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_by_user_id IS 'ID of the user who updated the record';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.is_deleted IS 'Indicates soft deletion';
 
+-- Add foreign key constraint to created_by_user_id column
+-- Add foreign key constraint to project_id column
+
+
 -- Create trigger to set updated_at audit column before update
 CREATE TRIGGER set_ecapris_subproject_statuses_updated_at BEFORE UPDATE ON public.ecapris_subproject_statuses FOR EACH ROW EXECUTE FUNCTION public.set_updated_at();
 
 -- Create function to search for eCapris subproject status author match by email
+-- Function to match user email and set created_by_user_id
+CREATE OR REPLACE FUNCTION public.find_user_match_by_email()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Try to find matching user by email 
+    NEW.created_by_user_id := (
+        SELECT user_id 
+        FROM moped_users 
+        WHERE email = NEW.review_by_email
+        LIMIT 1
+    );
+    
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
--- Create trigger to call the function to try match author before insert
+-- Create trigger to call function to try match author (if there is one) before insert
+CREATE TRIGGER find_ecapris_user_match_by_email BEFORE INSERT ON public.ecapris_subproject_statuses
+FOR EACH ROW EXECUTE FUNCTION public.find_user_match_by_email();
+
+-- Add unique constraint for non-deleted rows with same project_id and subproject_status_id
+ALTER TABLE public.ecapris_subproject_statuses
+ADD CONSTRAINT unique_project_subproject_status_ids
+UNIQUE (project_id, subproject_status_id);
