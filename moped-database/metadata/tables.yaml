@@ -346,6 +346,9 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: ecapris_subproject_statuses
+    schema: public
+- table:
     name: exploded_component_arcgis_online_view
     schema: public
   select_permissions:
