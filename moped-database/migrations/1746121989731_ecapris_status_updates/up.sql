@@ -16,8 +16,8 @@ CREATE TABLE public.ecapris_subproject_statuses (
     current_status_fl BOOLEAN NOT NULL,
     sub_project_status_desc TEXT NOT NULL,
     review_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
-    subproject_status_impacts TEXT NOT NULL,
-    summary_description TEXT NOT NULL,
+    subproject_status_impacts TEXT,
+    summary_description TEXT,
     reviewed_by_name TEXT NOT NULL,
     review_by_email TEXT NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
@@ -58,11 +58,11 @@ CREATE TRIGGER set_ecapris_subproject_statuses_updated_at BEFORE UPDATE ON publi
 CREATE OR REPLACE FUNCTION public.find_user_match_by_email()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Try to find matching user by email 
+    -- Try to find matching user by email (case-insensitive)email 
     NEW.created_by_user_id := (
         SELECT user_id 
         FROM moped_users 
-        WHERE email = NEW.review_by_email
+        WHERE LOWER(email) = LOWER(NEW.review_by_email)
         LIMIT 1
     );
     
