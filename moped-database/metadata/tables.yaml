@@ -352,6 +352,67 @@
     - name: moped_user
       using:
         foreign_key_constraint_on: created_by_user_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
 - table:
     name: exploded_component_arcgis_online_view
     schema: public
