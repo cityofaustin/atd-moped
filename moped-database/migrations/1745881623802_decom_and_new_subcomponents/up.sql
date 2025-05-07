@@ -5,10 +5,6 @@ UNIQUE (component_id, subcomponent_id);
 
 COMMENT ON CONSTRAINT unique_component_subcomponents ON moped_components_subcomponents IS 'Ensures no duplicate component/subcomponent associations';
 
--- Alter moped_component_tags table to allow null names for new tags and updates to existing tags with empty names
-ALTER TABLE moped_component_tags
-ALTER COLUMN name DROP NOT NULL;
-
 -- Insert new tag to mark decommissioned components
 INSERT INTO moped_component_tags (name, type, slug) VALUES
 ('', 'Decommissioned / Upgraded Component', 'decommissioned_upgraded_component');
