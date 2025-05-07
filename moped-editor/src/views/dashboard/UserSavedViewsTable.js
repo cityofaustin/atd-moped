@@ -19,7 +19,6 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import config from "../../config";
 
 const requiredFields = ["description"];
 
@@ -37,19 +36,7 @@ const useColumns = ({
         headerName: "Description",
         field: "description",
         editable: true,
-        width: 500,
-        renderEditCell: (props) => <DataGridTextField {...props} />,
-        // input validation:
-        preProcessEditCellProps: (params) => ({
-          ...params.props,
-          error: !params.props.value,
-        }),
-      },
-      {
-        headerName: "URL",
-        field: "url",
-        editable: false,
-        width: 300,
+        width: 600,
         renderCell: ({ row }) =>
           row.url ? (
             <Link
@@ -60,9 +47,15 @@ const useColumns = ({
                 display: "block",
               }}
             >
-              {`${config.env.APP_CLOUDFRONT}${row.url}`}
+              {row.description}
             </Link>
           ) : null,
+        renderEditCell: (props) => <DataGridTextField {...props} hasFocus />,
+        // input validation:
+        preProcessEditCellProps: (params) => ({
+          ...params.props,
+          error: !params.props.value,
+        }),
       },
       {
         headerName: "Updated at",
