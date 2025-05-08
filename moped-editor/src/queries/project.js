@@ -399,35 +399,6 @@ export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
   }
 `;
 
-// use this to update a single moped_proj_phase
-export const UPDATE_PROJECT_PHASE = gql`
-  mutation ProjectPhasesMutation(
-    $project_phase_id: Int!
-    $object: moped_proj_phases_set_input!
-    $current_phase_ids_to_clear: [Int!] = []
-  ) {
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
-    ) {
-      affected_rows
-    }
-    update_moped_proj_phases_by_pk(
-      pk_columns: { project_phase_id: $project_phase_id }
-      _set: $object
-    ) {
-      project_id
-      project_phase_id
-      phase_id
-      phase_start
-      phase_end
-      subphase_id
-      is_current_phase
-      phase_description
-    }
-  }
-`;
-
 export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
   mutation ProjectPhasesMutation(
     $project_phase_id: Int!
