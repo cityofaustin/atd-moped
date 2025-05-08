@@ -13,7 +13,7 @@ const ProjectPhaseDialog = ({
   currentProjectPhaseIds,
   currentPhaseIds,
   onSubmitCallback,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const titleText = phase.project_phase_id ? "Edit phase" : "Add phase";
   return (
