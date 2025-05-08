@@ -137,7 +137,7 @@ export const ProjectActivityLogTableMaps = {
         label: "project ID",
       },
       milestone_id: {
-        label: "id",
+        label: "milestone",
       },
       project_milestone_id: {
         label: "ID",

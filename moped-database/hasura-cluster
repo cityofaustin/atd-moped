@@ -27,7 +27,7 @@ function __get_platform() {
 
 function __set_postgresql_image() {
   __get_platform;
-  HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:12-3.4";
+  HASURA_CLUSTER_POSTGRES_IMAGE="frankinaustin/postgis:16-3.5";
   echo "Database Docker Image: ${HASURA_CLUSTER_POSTGRES_IMAGE}"
 }
 

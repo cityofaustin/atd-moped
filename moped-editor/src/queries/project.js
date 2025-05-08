@@ -105,6 +105,11 @@ export const SUMMARY_QUERY = gql`
       entity_id
       entity_name
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
     moped_public_process_statuses(order_by: { id: asc }) {
       id
       name
@@ -324,14 +329,30 @@ export const TIMELINE_QUERY = gql`
       substantial_completion_date
       project_id
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
   }
 `;
+
+/**
+ * For all the following project phase mutations, the mutation to set
+ * current phases to false must run first or unique constraint could be violated
+ */
 
 export const ADD_PROJECT_PHASE = gql`
   mutation AddProjectPhase(
     $objects: [moped_proj_phases_insert_input!]!
     $current_phase_ids_to_clear: [Int!] = []
   ) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
     insert_moped_proj_phases(objects: $objects) {
       returning {
         phase_id
@@ -342,12 +363,6 @@ export const ADD_PROJECT_PHASE = gql`
         is_current_phase
         project_id
       }
-    }
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
-    ) {
-      affected_rows
     }
   }
 `;
@@ -358,6 +373,12 @@ export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
     $current_phase_ids_to_clear: [Int!] = []
     $noteObjects: [moped_proj_notes_insert_input!]!
   ) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
     insert_moped_proj_phases(objects: $objects) {
       returning {
         phase_id
@@ -369,46 +390,11 @@ export const ADD_PROJECT_PHASE_AND_STATUS_UPDATE = gql`
         project_id
       }
     }
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
-    ) {
-      affected_rows
-    }
     insert_moped_proj_notes(objects: $noteObjects) {
       returning {
         project_id
         project_note
       }
-    }
-  }
-`;
-
-// use this to update a single moped_proj_phase
-export const UPDATE_PROJECT_PHASE = gql`
-  mutation ProjectPhasesMutation(
-    $project_phase_id: Int!
-    $object: moped_proj_phases_set_input!
-    $current_phase_ids_to_clear: [Int!] = []
-  ) {
-    update_moped_proj_phases_by_pk(
-      pk_columns: { project_phase_id: $project_phase_id }
-      _set: $object
-    ) {
-      project_id
-      project_phase_id
-      phase_id
-      phase_start
-      phase_end
-      subphase_id
-      is_current_phase
-      phase_description
-    }
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
-    ) {
-      affected_rows
     }
   }
 `;
@@ -420,6 +406,12 @@ export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
     $current_phase_ids_to_clear: [Int!] = []
     $noteObjects: [moped_proj_notes_insert_input!]!
   ) {
+    update_moped_proj_phases(
+      _set: { is_current_phase: false }
+      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
+    ) {
+      affected_rows
+    }
     update_moped_proj_phases_by_pk(
       pk_columns: { project_phase_id: $project_phase_id }
       _set: $object
@@ -432,12 +424,6 @@ export const UPDATE_PROJECT_PHASE_AND_ADD_STATUS_UPDATE = gql`
       subphase_id
       is_current_phase
       phase_description
-    }
-    update_moped_proj_phases(
-      _set: { is_current_phase: false }
-      where: { project_phase_id: { _in: $current_phase_ids_to_clear } }
-    ) {
-      affected_rows
     }
     insert_moped_proj_notes(objects: $noteObjects) {
       returning {
@@ -674,8 +660,7 @@ export const PROJECT_FILE_ATTACHMENTS = gql`
         last_name
       }
     }
-    moped_file_types
-    {
+    moped_file_types {
       id
       name
     }

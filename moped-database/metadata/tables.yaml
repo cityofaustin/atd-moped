@@ -1930,6 +1930,34 @@
           - is_deleted
         filter: {}
 - table:
+    name: moped_note_types
+    schema: public
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-editor
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+    - role: moped-viewer
+      permission:
+        columns:
+          - id
+          - name
+          - slug
+        filter: {}
+        allow_aggregations: true
+- table:
     name: moped_organization
     schema: public
 - table:
@@ -3129,6 +3157,9 @@
     name: moped_proj_notes
     schema: public
   object_relationships:
+    - name: moped_note_type
+      using:
+        foreign_key_constraint_on: project_note_type
     - name: moped_phase
       using:
         foreign_key_constraint_on: phase_id

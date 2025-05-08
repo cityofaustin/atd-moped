@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useQuery } from "@apollo/client";
-import { format } from "date-fns";
+import { NavLink as RouterLink } from "react-router-dom";
 
 // Material
 import {
@@ -10,16 +10,15 @@ import {
   CircularProgress,
   Container,
   Grid,
+  Link,
   Tab,
   Tabs,
   Typography,
 } from "@mui/material";
-import MaterialTable from "@material-table/core";
 import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 import ActivityMetrics from "src/components/ActivityMetrics";
-import RenderFieldLink from "../../components/RenderFieldLink";
 import DashboardStatusModal from "./DashboardStatusModal";
 import DashboardTimelineModal from "./DashboardTimelineModal";
 import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
@@ -28,8 +27,9 @@ import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
 import UserSavedViewsTable from "./UserSavedViewsTable";
-
-import typography from "../../theme/typography";
+import { DataGridPro } from "@mui/x-data-grid-pro";
+import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
+import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 
 import { DASHBOARD_QUERY } from "../../queries/dashboard";
 
@@ -79,6 +79,12 @@ const useStyles = makeStyles((theme) => ({
   tooltipIcon: {
     fontSize: "20px",
   },
+  tableRowDiv: {
+    display: "flex",
+    alignItems: "center",
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
+  },
 }));
 
 function a11yProps(index) {
@@ -100,18 +106,154 @@ const TABS = [
   },
 ];
 
+const UserGreeting = ({ classes, userName }) => {
+  const date = new Date();
+
+  /** Build custom user greeting
+   */
+  return (
+    <Grid className={classes.greeting}>
+      <Typography className={classes.greetingText}>
+        <strong>{`Good ${getTimeOfDay(date)}, ${userName}!`}</strong>
+      </Typography>
+      <Typography variant="h1" className={classes.date}>
+        {getCalendarDate(date)}
+      </Typography>
+    </Grid>
+  );
+};
+
+/** Hook that provides memoized column settings */
+const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
+  useMemo(() => {
+    return [
+      {
+        headerName: "ID",
+        field: "project_id",
+        editable: false,
+        renderCell: ({ row }) => (
+          <div className={classes.tableRowDiv}>{row.project_id}</div>
+        ),
+        flex: 0.5,
+      },
+      {
+        headerName: "Full name",
+        field: "project_name_full",
+        editable: false,
+        valueGetter: (value) => value.trim(),
+        renderCell: ({ row }) => (
+          <div className={classes.tableRowDiv}>
+            <Link
+              component={RouterLink}
+              to={`/moped/projects/${row.project_id}`}
+              sx={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                display: "block",
+                fontSize: 16,
+              }}
+            >
+              {row.project_name_full}
+            </Link>
+          </div>
+        ),
+        flex: 4,
+      },
+      {
+        headerName: "Status",
+        field: "moped_proj_phases",
+        editable: false,
+        valueGetter: (value) => value[0]?.moped_phase.phase_name || "Unknown",
+        renderCell: ({ row }) => (
+          <div className={classes.tableRowDiv}>
+            <DashboardTimelineModal
+              table="phases"
+              projectId={row.project_id}
+              projectName={row.project_name_full}
+              dashboardRefetch={refetch}
+              handleSnackbar={handleSnackbar}
+            >
+              <ProjectStatusBadge
+                phaseName={row.moped_proj_phases?.[0]?.moped_phase.phase_name}
+                phaseKey={row.moped_proj_phases?.[0]?.moped_phase.phase_key}
+                condensed
+                clickable
+              />
+            </DashboardTimelineModal>
+          </div>
+        ),
+        width: 200,
+      },
+      {
+        headerName: "Status update",
+        field: "moped_proj_notes",
+        editable: false,
+        sortable: false,
+        renderCell: ({ row }) => (
+          // Display status update (from Project details page), i.e., most recent note
+          <div className={classes.tableRowDiv}>
+            <DashboardStatusModal
+              projectId={row.project_id}
+              projectName={row.project_name_full}
+              currentPhaseId={row.moped_proj_phases?.[0]?.moped_phase.phase_id}
+              modalParent="dashboard"
+              statusUpdate={row.moped_proj_notes?.[0]?.project_note ?? ""}
+              queryRefetch={refetch}
+              handleSnackbar={handleSnackbar}
+              classes={classes}
+              data={data}
+            >
+              {parse(String(row.moped_proj_notes?.[0]?.project_note)) ?? ""}
+            </DashboardStatusModal>
+          </div>
+        ),
+        flex: 4,
+      },
+      {
+        headerName: "Milestones",
+        field: "moped_proj_milestones",
+        valueGetter: (value) =>
+          value.length
+            ? (value.filter((milestone) => milestone.completed === true)
+                .length /
+                value.length) *
+              100
+            : 0,
+        renderCell: ({ row }) => (
+          // Display percentage of milestone completed, or 0 if no milestones saved
+          <div className={classes.tableRowDiv}>
+            <DashboardTimelineModal
+              table="milestones"
+              projectId={row.project_id}
+              projectName={row.project_name_full}
+              handleSnackbar={handleSnackbar}
+              dashboardRefetch={refetch}
+            >
+              <MilestoneProgressMeter
+                completedMilestonesPercentage={
+                  row.moped_proj_milestones.length
+                    ? (row.moped_proj_milestones.filter(
+                        (milestone) => milestone.completed === true
+                      ).length /
+                        row.moped_proj_milestones.length) *
+                      100
+                    : 0
+                }
+              />
+            </DashboardTimelineModal>
+          </div>
+        ),
+        flex: 1,
+      },
+    ];
+  }, [data, refetch, handleSnackbar, classes]);
+
 const DashboardView = () => {
+  const classes = useStyles();
+
   const userSessionData = getSessionDatabaseData();
   const userId = userSessionData?.user_id;
   const userName = userSessionData?.first_name;
-
-  const classes = useStyles();
-  const typographyStyle = {
-    fontFamily: typography.fontFamily,
-    fontSize: "14px",
-  };
-
-  const [activeTab, setActiveTab] = useState(0);
 
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
@@ -125,152 +267,41 @@ const DashboardView = () => {
     console.log(error);
   }
 
-  let selectedData = [];
+  const [activeTab, setActiveTab] = useState(0);
 
-  if (TABS[activeTab].label === "Following" && !!data) {
-    selectedData = data.moped_user_followed_projects;
-  } else if (TABS[activeTab].label === "My projects" && !!data) {
-    selectedData = data.moped_proj_personnel;
-  }
+  // rows and rowModesModel used in DataGrid
+  const [rows, setRows] = useState([]);
+  const [rowModesModel, setRowModesModel] = useState({});
 
-  if (selectedData) {
-    /**
-     * Build data needed in Dashboard Material Table
-     */
-    selectedData.forEach((project) => {
-      project["project_name_full"] = project.project.project_name_full;
-      project["project_id"] = project.project.project_id;
-      project["phase_name"] =
-        project.project.moped_proj_phases?.[0]?.moped_phase.phase_name;
-      project["phase_key"] =
-        project.project.moped_proj_phases?.[0]?.moped_phase.phase_key;
-      project["current_phase_id"] =
-        project.project.moped_proj_phases?.[0]?.moped_phase.phase_id;
-      /**
-       * Get percentage of milestones completed
-       */
-      const milestonesTotal = project.project.moped_proj_milestones.length;
-      const milestonesCompleted = project.project.moped_proj_milestones.filter(
-        (milestone) => milestone.completed === true
-      ).length;
-      project["completed_milestones_percentage"] = !!milestonesTotal
-        ? (milestonesCompleted / milestonesTotal) * 100
-        : 0;
-
-      // project status update equivalent to most recent project note
-      // html is parsed before being rendered in the DashboardStatusModal component
-      project["status_update"] = "";
-      if (project?.project?.moped_proj_notes?.length) {
-        const note = project.project.moped_proj_notes[0]["project_note"];
-        project["status_update"] = note ? note : "";
+  // sets the data grid row data when query data is fetched
+  useEffect(() => {
+    if (data) {
+      if (TABS[activeTab].label === "My projects") {
+        setRows(data.moped_proj_personnel.map((row) => row.project));
       }
-    });
-  }
-
-  /** Build custom user greeting
-   */
-  const date = new Date();
-  const curHr = format(date, "HH");
-  const dateFormatted = format(date, "EEEE - LLLL dd, yyyy");
-  const getTimeOfDay = (curHr) => {
-    switch (true) {
-      case curHr < 12:
-        return "morning";
-      case curHr >= 12 && curHr < 18:
-        return "afternoon";
-      default:
-        return "evening";
+      if (TABS[activeTab].label === "Following") {
+        setRows(data.moped_user_followed_projects.map((row) => row.project));
+      }
     }
-  };
+  }, [data, activeTab]);
 
-  const columns = [
-    {
-      title: "ID",
-      field: "project.project_id",
-      editable: "never",
-      cellStyle: { ...typographyStyle },
-      width: "10%",
-    },
-    {
-      title: "Full name",
-      field: "project.project_name_full",
-      editable: "never",
-      cellStyle: { ...typographyStyle },
-      render: (entry) => (
-        <RenderFieldLink
-          projectId={entry.project_id}
-          value={entry.project_name_full}
-        />
-      ),
-      width: "20%",
-    },
-    {
-      title: "Status",
-      field: "phase_name",
-      editable: "never",
-      render: (entry) => (
-        <DashboardTimelineModal
-          table="phases"
-          projectId={entry.project_id}
-          projectName={entry.project.project_name_full}
-          dashboardRefetch={refetch}
-          handleSnackbar={handleSnackbar}
-        >
-          <ProjectStatusBadge
-            phaseName={entry.phase_name}
-            phaseKey={entry.phase_key}
-            condensed
-            clickable
-          />
-        </DashboardTimelineModal>
-      ),
-      width: "20%",
-    },
-    {
-      title: "Status update",
-      field: "status_update", // Status update (from Project details page)
-      editable: "never",
-      render: (entry) => (
-        <DashboardStatusModal
-          projectId={entry.project_id}
-          projectName={entry.project.project_name_full}
-          currentPhaseId={entry.current_phase_id}
-          modalParent="dashboard"
-          statusUpdate={entry.status_update}
-          queryRefetch={refetch}
-          handleSnackbar={handleSnackbar}
-          classes={classes}
-        >
-          {parse(String(entry.status_update))}
-        </DashboardStatusModal>
-      ),
-      width: "40%",
-    },
-    {
-      title: "Milestones",
-      field: "completed_milestones",
-      render: (entry) => (
-        <DashboardTimelineModal
-          table="milestones"
-          projectId={entry.project_id}
-          projectName={entry.project.project_name_full}
-          handleSnackbar={handleSnackbar}
-          dashboardRefetch={refetch}
-        >
-          <MilestoneProgressMeter
-            completedMilestonesPercentage={
-              entry.completed_milestones_percentage
-            }
-          />
-        </DashboardTimelineModal>
-      ),
-      width: "10%",
-    },
-  ];
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
+  };
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
   };
+
+  const dataGridColumns = useColumns({
+    data,
+    rowModesModel,
+    refetch,
+    handleSnackbar,
+    classes,
+  });
+
+  if (loading || !data) return <CircularProgress />;
 
   return (
     <ActivityMetrics eventName="dashboard_load">
@@ -279,16 +310,7 @@ const DashboardView = () => {
           <Card className={classes.cardWrapper}>
             <Grid className={classes.root}>
               <Box pl={3} pt={3}>
-                <Grid className={classes.greeting}>
-                  <Typography className={classes.greetingText}>
-                    <strong>{`Good ${getTimeOfDay(
-                      curHr
-                    )}, ${userName}!`}</strong>
-                  </Typography>
-                  <Typography variant="h1" className={classes.date}>
-                    {dateFormatted}
-                  </Typography>
-                </Grid>
+                <UserGreeting classes={classes} userName={userName} />
               </Box>
               <Box px={3} py={3}>
                 <Grid>
@@ -315,31 +337,19 @@ const DashboardView = () => {
                   ) : TABS[activeTab].label === "Saved views" ? (
                     <UserSavedViewsTable handleSnackbar={handleSnackbar} />
                   ) : (
-                    <MaterialTable
-                      columns={columns}
-                      data={selectedData}
-                      localization={{
-                        body: {
-                          emptyDataSourceMessage: (
-                            <Typography>
-                              {TABS[activeTab].label === "Following" &&
-                                "No projects to display. You have not followed any current projects."}
-                              {TABS[activeTab].label === "My projects" &&
-                                "No projects to display. You are not listed as a Team Member on any current projects."}
-                            </Typography>
-                          ),
-                        },
-                      }}
-                      options={{
-                        search: false,
-                        toolbar: false,
-                        tableLayout: "fixed",
-                        ...(selectedData.length < 51 && {
-                          paging: false,
-                        }),
-                        pageSize: 50,
-                        pageSizeOptions: [10, 50, 100],
-                        idSynonym: "project_id",
+                    <DataGridPro
+                      sx={dataGridProStyleOverrides}
+                      columns={dataGridColumns}
+                      rows={rows}
+                      autoHeight
+                      getRowHeight={() => "auto"}
+                      getRowId={(row) => row.project_id}
+                      rowModesModel={rowModesModel}
+                      onRowModesModelChange={handleRowModesModelChange}
+                      hideFooter
+                      disableRowSelectionOnClick
+                      localeText={{
+                        noRowsLabel: "No projects to display",
                       }}
                     />
                   )}

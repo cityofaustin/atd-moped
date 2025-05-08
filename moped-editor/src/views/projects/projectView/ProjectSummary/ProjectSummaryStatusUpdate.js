@@ -47,6 +47,7 @@ const ProjectSummaryStatusUpdate = ({ projectId, data, refetch, handleSnackbar, 
           queryRefetch={refetch}
           handleSnackbar={handleSnackbar}
           classes={classes}
+          data={data}
         >
           {!!statusUpdate && (
             <div>

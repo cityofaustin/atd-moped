@@ -69,5 +69,10 @@ export const DASHBOARD_QUERY = gql`
         }
       }
     }
+    moped_note_types {
+      id
+      name
+      slug
+    }
   }
 `;

@@ -255,6 +255,7 @@ const ProjectPhases = ({ projectId, data, refetch, handleSnackbar }) => {
           onClose={() => setEditPhase(null)}
           onSubmitCallback={onSubmitCallback}
           phases={data?.moped_phases}
+          noteTypes={data?.moped_note_types ?? []}
           currentProjectPhaseIds={currentProjectPhaseIds}
           currentPhaseIds={currentPhaseIds}
           projectId={projectId}
