@@ -1,5 +1,5 @@
 import EventNoteOutlinedIcon from '@mui/icons-material/EventNoteOutlined';
-import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
+import { ProjectActivityLogTableMaps } from "src/views/projects/projectView/ProjectActivityLogTableMaps";
 
 export const formatMilestonesActivity = (change, milestoneList) => {
   const entryMap = ProjectActivityLogTableMaps["moped_proj_milestones"];
