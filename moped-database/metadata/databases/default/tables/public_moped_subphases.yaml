@@ -1,0 +1,32 @@
+table:
+  name: moped_subphases
+  schema: public
+object_relationships:
+  - name: moped_phase
+    using:
+      foreign_key_constraint_on: related_phase_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - related_phase_id
+        - subphase_id
+        - subphase_description
+        - subphase_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - related_phase_id
+        - subphase_id
+        - subphase_description
+        - subphase_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - related_phase_id
+        - subphase_id
+        - subphase_description
+        - subphase_name
+      filter: {}

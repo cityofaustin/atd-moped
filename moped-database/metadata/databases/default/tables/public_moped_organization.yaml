@@ -1,0 +1,3 @@
+table:
+  name: moped_organization
+  schema: public

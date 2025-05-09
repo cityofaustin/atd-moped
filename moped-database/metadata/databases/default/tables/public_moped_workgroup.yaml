@@ -1,0 +1,35 @@
+table:
+  name: moped_workgroup
+  schema: public
+object_relationships:
+  - name: moped_department
+    using:
+      foreign_key_constraint_on: department_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - date_added
+        - is_deleted
+        - workgroup_id
+        - workgroup_name
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - date_added
+        - is_deleted
+        - workgroup_id
+        - workgroup_name
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - date_added
+        - is_deleted
+        - workgroup_id
+        - workgroup_name
+      filter: {}
+      allow_aggregations: true

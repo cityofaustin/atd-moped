@@ -1,0 +1,31 @@
+table:
+  name: moped_user_events
+  schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        user_id: x-hasura-user-db-id
+      columns:
+        - event_name
+        - user_id
+    comment: ""
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        user_id: x-hasura-user-db-id
+      columns:
+        - event_name
+        - user_id
+    comment: ""
+  - role: moped-viewer
+    permission:
+      check: {}
+      set:
+        user_id: x-hasura-user-db-id
+      columns:
+        - event_name
+        - user_id
+    comment: ""

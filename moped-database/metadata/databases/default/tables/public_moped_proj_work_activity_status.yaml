@@ -1,0 +1,28 @@
+table:
+  name: moped_proj_work_activity_status
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - id
+        - key
+        - name
+        - is_deleted
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - id
+        - key
+        - name
+        - is_deleted
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - id
+        - key
+        - name
+        - is_deleted
+      filter: {}

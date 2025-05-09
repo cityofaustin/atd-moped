@@ -1,0 +1,61 @@
+table:
+  name: project_geography
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - attributes
+        - component_archtype_id
+        - component_id
+        - component_name
+        - council_districts
+        - feature_id
+        - geography
+        - is_deleted
+        - length_feet
+        - line_representation
+        - original_fk
+        - project_id
+        - project_name
+        - table
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - attributes
+        - component_archtype_id
+        - component_id
+        - component_name
+        - council_districts
+        - feature_id
+        - geography
+        - is_deleted
+        - length_feet
+        - line_representation
+        - original_fk
+        - project_id
+        - project_name
+        - table
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - attributes
+        - component_archtype_id
+        - component_id
+        - component_name
+        - council_districts
+        - feature_id
+        - geography
+        - is_deleted
+        - length_feet
+        - line_representation
+        - original_fk
+        - project_id
+        - project_name
+        - table
+      filter: {}
+      allow_aggregations: true

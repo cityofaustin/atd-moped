@@ -37,9 +37,15 @@ function run_migration() {
   echo "----- MIGRATIONS STARTED -----";
   hasura --skip-update-check version;
   echo "Applying migration";
-  hasura --skip-update-check migrate apply;
+  hasura migrate apply \
+    --skip-update-check \
+    --disable-interactive \
+    --database-name default;
   echo "Applying metadata";
-  hasura --skip-update-check metadata apply;
+  hasura metadata apply \
+    --skip-update-check \
+    --disable-interactive \
+    --database-name default;
   echo "----- MIGRATIONS FINISHED -----";
 }
 

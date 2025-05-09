@@ -1,0 +1,48 @@
+table:
+  name: moped_phases
+  schema: public
+array_relationships:
+  - name: moped_subphases
+    using:
+      foreign_key_constraint_on:
+        column: related_phase_id
+        table:
+          name: moped_subphases
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - required_phase
+        - phase_average_length
+        - phase_id
+        - phase_order
+        - phase_description
+        - phase_name
+        - phase_key
+        - phase_name_simple
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - required_phase
+        - phase_average_length
+        - phase_id
+        - phase_order
+        - phase_description
+        - phase_name
+        - phase_key
+        - phase_name_simple
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - required_phase
+        - phase_average_length
+        - phase_id
+        - phase_order
+        - phase_description
+        - phase_name
+        - phase_key
+        - phase_name_simple
+      filter: {}

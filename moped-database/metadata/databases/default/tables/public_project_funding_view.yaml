@@ -1,0 +1,3 @@
+table:
+  name: project_funding_view
+  schema: public

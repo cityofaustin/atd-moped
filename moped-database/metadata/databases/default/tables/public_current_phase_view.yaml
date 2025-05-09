@@ -1,0 +1,56 @@
+table:
+  name: current_phase_view
+  schema: public
+object_relationships:
+  - name: moped_phase
+    using:
+      manual_configuration:
+        column_mapping:
+          phase_id: phase_id
+        insertion_order: null
+        remote_table:
+          name: moped_phases
+          schema: public
+  - name: moped_proj_phase
+    using:
+      manual_configuration:
+        column_mapping:
+          project_phase_id: project_phase_id
+        insertion_order: null
+        remote_table:
+          name: moped_proj_phases
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - phase_id
+        - project_id
+        - project_phase_id
+        - phase_key
+        - phase_name
+        - phase_name_simple
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - phase_id
+        - project_id
+        - project_phase_id
+        - phase_key
+        - phase_name
+        - phase_name_simple
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - phase_id
+        - project_id
+        - project_phase_id
+        - phase_key
+        - phase_name
+        - phase_name_simple
+      filter: {}
+      allow_aggregations: true

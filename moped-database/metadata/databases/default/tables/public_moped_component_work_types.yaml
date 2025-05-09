@@ -1,0 +1,32 @@
+table:
+  name: moped_component_work_types
+  schema: public
+object_relationships:
+  - name: moped_component
+    using:
+      foreign_key_constraint_on: component_id
+  - name: moped_work_type
+    using:
+      foreign_key_constraint_on: work_type_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - component_id
+        - id
+        - work_type_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - component_id
+        - id
+        - work_type_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - component_id
+        - id
+        - work_type_id
+      filter: {}

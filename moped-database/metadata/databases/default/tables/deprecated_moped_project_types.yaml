@@ -1,0 +1,7 @@
+table:
+  name: moped_project_types
+  schema: deprecated
+object_relationships:
+  - name: moped_type
+    using:
+      foreign_key_constraint_on: project_type_id

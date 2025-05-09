@@ -1,0 +1,22 @@
+table:
+  name: moped_subcomponents
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - subcomponent_id
+        - subcomponent_name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - subcomponent_id
+        - subcomponent_name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - subcomponent_id
+        - subcomponent_name
+      filter: {}

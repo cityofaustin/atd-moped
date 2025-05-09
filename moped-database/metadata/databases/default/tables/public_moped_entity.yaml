@@ -1,0 +1,92 @@
+table:
+  name: moped_entity
+  schema: public
+array_relationships:
+  - name: entity_department
+    using:
+      manual_configuration:
+        column_mapping:
+          department_id: department_id
+        insertion_order: null
+        remote_table:
+          name: moped_department
+          schema: public
+  - name: entity_organization
+    using:
+      manual_configuration:
+        column_mapping:
+          organization_id: organization_id
+        insertion_order: null
+        remote_table:
+          name: moped_organization
+          schema: public
+  - name: entity_workgroup
+    using:
+      manual_configuration:
+        column_mapping:
+          workgroup_id: workgroup_id
+        insertion_order: null
+        remote_table:
+          name: moped_workgroup
+          schema: public
+  - name: mopedProjectsByProjectSponsor
+    using:
+      foreign_key_constraint_on:
+        column: project_sponsor
+        table:
+          name: moped_project
+          schema: public
+  - name: moped_proj_partners
+    using:
+      foreign_key_constraint_on:
+        column: entity_id
+        table:
+          name: moped_proj_partners
+          schema: public
+  - name: moped_projects
+    using:
+      foreign_key_constraint_on:
+        column: project_lead_id
+        table:
+          name: moped_project
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - date_added
+        - department_id
+        - entity_id
+        - entity_name
+        - entity_uuid
+        - is_deleted
+        - organization_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - date_added
+        - department_id
+        - entity_id
+        - entity_name
+        - entity_uuid
+        - is_deleted
+        - organization_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - date_added
+        - department_id
+        - entity_id
+        - entity_name
+        - entity_uuid
+        - is_deleted
+        - organization_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true

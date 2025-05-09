@@ -1,0 +1,41 @@
+table:
+  name: features
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - component_id
+        - id
+        - is_deleted
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - component_id
+        - id
+        - is_deleted
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - component_id
+        - id
+        - is_deleted
+      filter: {}
+      allow_aggregations: true
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_deleted
+      filter: {}
+      check: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+      filter: {}
+      check: {}

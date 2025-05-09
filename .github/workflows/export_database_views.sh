@@ -4,7 +4,7 @@ function create_view_file() {
     local VIEW_NAME=$1
 
     echo "View: $VIEW_NAME"
-    MOST_RECENT_MIGRATION=$(grep -rl --include=up.sql -E "CREATE (OR REPLACE )?VIEW (\"?public\"?.)?\"?$VIEW_NAME\"?" moped-database/migrations | sort -V | tail -n 1)
+    MOST_RECENT_MIGRATION=$(grep -rl --include=up.sql -E "CREATE (OR REPLACE )?VIEW (\"?public\"?.)?\"?$VIEW_NAME\"?" moped-database/migrations/default | sort -V | tail -n 1)
     echo "MOST_RECENT_MIGRATION: $MOST_RECENT_MIGRATION"
 
     # Create the view file with header

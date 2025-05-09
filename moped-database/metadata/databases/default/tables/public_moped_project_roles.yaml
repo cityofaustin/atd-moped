@@ -1,0 +1,42 @@
+table:
+  name: moped_project_roles
+  schema: public
+array_relationships:
+  - name: moped_proj_personnel_roles
+    using:
+      foreign_key_constraint_on:
+        column: project_role_id
+        table:
+          name: moped_proj_personnel_roles
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - active_role
+        - date_added
+        - project_role_description
+        - project_role_id
+        - project_role_name
+        - role_order
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - active_role
+        - date_added
+        - project_role_description
+        - project_role_id
+        - project_role_name
+        - role_order
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - active_role
+        - date_added
+        - project_role_description
+        - project_role_id
+        - project_role_name
+        - role_order
+      filter: {}

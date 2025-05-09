@@ -1,0 +1,28 @@
+table:
+  name: feature_layers
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - internal_table
+        - reference_layer_primary_key_column
+        - id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - internal_table
+        - reference_layer_primary_key_column
+        - id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - internal_table
+        - reference_layer_primary_key_column
+        - id
+      filter: {}
+      allow_aggregations: true

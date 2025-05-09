@@ -1,0 +1,32 @@
+table:
+  name: moped_components_subcomponents
+  schema: public
+object_relationships:
+  - name: moped_component
+    using:
+      foreign_key_constraint_on: component_id
+  - name: moped_subcomponent
+    using:
+      foreign_key_constraint_on: subcomponent_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - component_id
+        - id
+        - subcomponent_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - component_id
+        - id
+        - subcomponent_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - component_id
+        - id
+        - subcomponent_id
+      filter: {}
