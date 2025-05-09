@@ -8,6 +8,7 @@ import {
 import { formatDateType } from "src/utils/dateAndTime";
 import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
 import SaveUserViewModal from "src/views/projects/projectsListView/components/SaveUserViewModal";
+import { BookmarkBorder } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   filtersList: {
@@ -19,10 +20,6 @@ const useStyles = makeStyles((theme) => ({
     fontFamily: "Roboto",
     fontSize: ".9rem",
     color: theme.palette.text.secondary,
-  },
-  saveViewButton: {
-    margin: theme.spacing(0.5),
-    marginTop: theme.spacing(1),
   },
 }));
 
@@ -125,8 +122,13 @@ const FiltersChips = ({
   return (
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText} component="span">
-        <Grid container alignItems={"center"} spacing={0.5}>
-          <Grid>
+        <Grid
+          container
+          display="flex"
+          justifyContent="flex-end"
+          spacing={0.5}
+        >
+          <Grid item>
             <Tooltip
               placement="bottom-start"
               title="Save these filters to the dashboard"
@@ -136,7 +138,7 @@ const FiltersChips = ({
                 onClick={handleSaveView}
                 variant="outlined"
                 color="primary"
-                className={classes.saveViewButton}
+                startIcon={<BookmarkBorder />}
                 disabled={isViewSaved}
               >
                 SAVE VIEW
