@@ -39,6 +39,7 @@ const FiltersChips = ({
   setSearchParams,
   setIsOr,
   handleSnackbar,
+  searchTerm,
 }) => {
   const classes = useStyles();
 
@@ -191,6 +192,7 @@ const FiltersChips = ({
         filtersLabels={filtersLabels}
         setIsViewSaved={setIsViewSaved}
         handleSnackbar={handleSnackbar}
+        searchTerm={searchTerm}
       />
     </Box>
   );
