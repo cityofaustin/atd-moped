@@ -346,6 +346,74 @@
         filter: {}
         allow_aggregations: true
 - table:
+    name: ecapris_subproject_statuses
+    schema: public
+  object_relationships:
+    - name: moped_user
+      using:
+        foreign_key_constraint_on: created_by_user_id
+  select_permissions:
+    - role: moped-admin
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
+    - role: moped-editor
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
+    - role: moped-viewer
+      permission:
+        columns:
+          - sub_project_status_desc
+          - subproject_id
+          - review_by_email
+          - reviewed_by_name
+          - created_by_user_id
+          - updated_by_user_id
+          - current_status_fl
+          - summary_description
+          - subproject_name
+          - id
+          - review_timestamp
+          - created_at
+          - updated_at
+          - subproject_status_id
+          - subproject_status_impacts
+        filter: {}
+      comment: ""
+- table:
     name: exploded_component_arcgis_online_view
     schema: public
   select_permissions:
@@ -4456,6 +4524,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
     - role: moped-editor
       permission:
@@ -4477,6 +4546,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
   select_permissions:
     - role: moped-admin
@@ -4498,6 +4568,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
         filter: {}
         allow_aggregations: true
@@ -4520,6 +4591,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
         filter: {}
         allow_aggregations: true
@@ -4542,6 +4614,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
         filter: {}
         allow_aggregations: true
@@ -4563,6 +4636,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
         filter: {}
         check: {}
@@ -4585,6 +4659,7 @@
           - project_sponsor
           - project_website
           - public_process_status_id
+          - should_sync_ecapris_statuses
           - updated_at
         filter: {}
         check: {}
@@ -4613,6 +4688,7 @@
             - knack_project_id
             - public_process_status_id
             - project_name_secondary
+            - should_sync_ecapris_statuses
       retry_conf:
         interval_sec: 10
         num_retries: 0
