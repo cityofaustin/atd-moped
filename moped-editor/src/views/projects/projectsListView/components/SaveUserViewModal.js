@@ -13,17 +13,32 @@ const SaveUserViewModal = ({
   filtersLabels,
   setIsViewSaved,
   handleSnackbar,
+  searchTerm,
 }) => {
   const [saveView, { loading }] = useMutation(ADD_USER_SAVED_VIEW);
 
   let { pathname, search } = useLocation();
 
-  const defaultDescription = filtersLabels
-    .map(
-      (filter) =>
-        `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
-    )
-    .join(", ");
+  const getDefaultDescription = () => {
+    const filtersDescription = filtersLabels
+      .map(
+        (filter) =>
+          `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
+      )
+      .join(", ");
+
+    if (filtersDescription && searchTerm) {
+      return `${searchTerm} with ${filtersDescription}`;
+    }
+    if (filtersDescription && !searchTerm) {
+      return filtersDescription;
+    }
+    if (!filtersDescription && searchTerm) {
+      return searchTerm;
+    } else {
+      return "";
+    }
+  };
 
   const onClose = () => {
     setIsSaveViewModalOpen(false);
@@ -69,7 +84,7 @@ const SaveUserViewModal = ({
       <DialogContent dividers={true}>
         <SaveUserViewForm
           onSave={onSaveViewClick}
-          description={defaultDescription}
+          description={() => getDefaultDescription()}
           loading={loading}
         />
       </DialogContent>
