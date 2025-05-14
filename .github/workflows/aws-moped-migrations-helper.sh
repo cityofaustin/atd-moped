@@ -43,9 +43,7 @@ function run_migration() {
     --database-name default;
   echo "Applying metadata";
   hasura metadata apply \
-    --skip-update-check \
-    --disable-interactive \
-    --database-name default;
+    --skip-update-check;
   echo "----- MIGRATIONS FINISHED -----";
 }
 
