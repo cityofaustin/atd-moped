@@ -34,7 +34,7 @@ GRAPHQL_QUERIES = {
         insert_ecapris_subproject_statuses(objects: $objects, on_conflict: {constraint: ecapris_subproject_statuses_subproject_status_id_key, update_columns: []}) {
             returning {
                 subproject_status_id
-                subproject_id
+                ecapris_subproject_id
             }
         }
     }

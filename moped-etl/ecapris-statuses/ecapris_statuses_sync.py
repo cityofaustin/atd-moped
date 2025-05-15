@@ -73,14 +73,14 @@ def main():
             payload.append({
                 "subproject_status_id": status["SUB_PROJECT_STATUS_ID"],
                 "subproject_name": status["SP_NAME"],
-                "subproject_id": status["SP_NUMBER"],
+                "ecapris_subproject_id": status["SP_NUMBER"],
                 "current_status_fl": status["CURR_STATUS_FL"],
                 "sub_project_status_desc": status["SUB_PROJECT_STATUS_DESC"],
                 "review_timestamp": status["STATUS_REVIEW_DATE"],
                 "subproject_status_impacts": status["SUB_PROJECT_STATUS_IMPACTS"],
                 "summary_description": status["SUMM_DESC"],
                 "reviewed_by_name": status["REVIEWED_BY"],
-                "review_by_email": status["REVIEWED_BY_EMAIL"],
+                "reviewed_by_email": status["REVIEWED_BY_EMAIL"],
             })
 
         results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses_insert"], variables={"objects": payload})
