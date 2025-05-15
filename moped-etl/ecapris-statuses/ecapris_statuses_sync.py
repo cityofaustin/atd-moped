@@ -33,23 +33,23 @@ def get_conn(host, port, service, user, password):
     return cx_Oracle.connect(user=user, password=password, dsn=dsn_tns)
 
 def main():
-    # TODO: Connect to Moped DB and get eCapris subproject IDs
-    # TODO: Connect to Oracle DB and query status updates matching those subproject IDs
-    # TODO: Update Moped DB with new status updates (if not already present - check by unique status ID)
-    projects = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
+    # Connect to Moped DB and get uniqure eCapris subproject IDs set on any project
+    results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
     
-    project_ecapris_subproject_ids = [project["ecapris_subproject_id"] for project in projects["moped_project"]]
-    unique_ecapris_subproject_ids = set(project_ecapris_subproject_ids)
-    print(f"Found {len(unique_ecapris_subproject_ids)} unique eCapris subproject IDs to sync.")
+    distinct_project_ecapris_ids = [project["ecapris_subproject_id"] for project in results["moped_project"]]
+    print(f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync.")
     
+    # Connect to Oracle DB and query status updates matching those subproject IDs
     conn = get_conn(ORACLE_HOST, ORACLE_PORT, ORACLE_SERVICE, ORACLE_USER, ORACLE_PASSWORD)
     cursor = conn.cursor()
     cursor.prepare(ORACLE_QUERIES["subproject_statuses"])
 
     for sp_number in unique_ecapris_subproject_ids:
-        cursor.execute(None, sp_number=sp_number)  # Bind the parameter
+        cursor.execute(None, sp_number=sp_number)
         results = cursor.fetchall()
         print(results)
+
+    # TODO: Insert eCapris status updates into Moped DB
 
 if __name__ == "__main__":
     log_level = logging.DEBUG
