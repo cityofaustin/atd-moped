@@ -1,0 +1,340 @@
+table:
+  name: moped_project
+  schema: public
+object_relationships:
+  - name: current_phase_view
+    using:
+      manual_configuration:
+        column_mapping:
+          project_id: project_id
+        insertion_order: null
+        remote_table:
+          name: current_phase_view
+          schema: public
+  - name: moped_entity
+    using:
+      foreign_key_constraint_on: project_sponsor
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: parent_project_id
+  - name: moped_project_lead
+    using:
+      foreign_key_constraint_on: project_lead_id
+  - name: moped_public_process_statuses
+    using:
+      foreign_key_constraint_on: public_process_status_id
+  - name: moped_user
+    using:
+      foreign_key_constraint_on: added_by
+array_relationships:
+  - name: geography
+    using:
+      manual_configuration:
+        column_mapping:
+          project_id: project_id
+        insertion_order: null
+        remote_table:
+          name: project_geography
+          schema: public
+  - name: moped_proj_components
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_components
+          schema: public
+  - name: moped_proj_funding
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_funding
+          schema: public
+  - name: moped_proj_milestones
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_milestones
+          schema: public
+  - name: moped_proj_notes
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_notes
+          schema: public
+  - name: moped_proj_partners
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_partners
+          schema: public
+  - name: moped_proj_personnel
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_personnel
+          schema: public
+  - name: moped_proj_phases
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_phases
+          schema: public
+  - name: moped_proj_tags
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_tags
+          schema: public
+  - name: moped_proj_work_activities
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_proj_work_activity
+          schema: public
+  - name: moped_project_types
+    using:
+      foreign_key_constraint_on:
+        column: project_id
+        table:
+          name: moped_project_types
+          schema: deprecated
+  - name: moped_projects
+    using:
+      foreign_key_constraint_on:
+        column: parent_project_id
+        table:
+          name: moped_project
+          schema: public
+  - name: project_geography
+    using:
+      manual_configuration:
+        column_mapping:
+          project_id: project_id
+        insertion_order: null
+        remote_table:
+          name: project_geography
+          schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_lead_id
+        - project_name
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_lead_id
+        - project_name
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_id
+        - project_lead_id
+        - project_name
+        - project_name_full
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_id
+        - project_lead_id
+        - project_name
+        - project_name_full
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_id
+        - project_lead_id
+        - project_name
+        - project_name_full
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+      filter: {}
+      allow_aggregations: true
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_lead_id
+        - project_name
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+  - role: moped-editor
+    permission:
+      columns:
+        - added_by
+        - date_added
+        - ecapris_subproject_id
+        - interim_project_id
+        - is_deleted
+        - knack_project_id
+        - parent_project_id
+        - project_description
+        - project_lead_id
+        - project_name
+        - project_name_secondary
+        - project_sponsor
+        - project_website
+        - public_process_status_id
+        - updated_at
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+event_triggers:
+  - name: activity_log_moped_project
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns:
+          - ecapris_subproject_id
+          - project_id
+          - date_added
+          - added_by
+          - is_deleted
+          - project_sponsor
+          - parent_project_id
+          - interim_project_id
+          - project_lead_id
+          - project_name
+          - project_description
+          - project_website
+          - knack_project_id
+          - public_process_status_id
+          - project_name_secondary
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook_from_env: HASURA_ENDPOINT
+    headers:
+      - name: x-hasura-admin-secret
+        value_from_env: ACTIVITY_LOG_API_SECRET
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+                          "query": "mutation InsertActivity($object: moped_activity_log_insert_input! ) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+                          "variables": {
+                              "object": {
+                                  "record_id": {{ $body.event.data.new.project_id }},
+                                  "record_type":  {{ $body.table.name }},
+                                  "activity_id": {{ $body.id }},
+                                  "record_project_id": {{ $body.event.data.new.project_id }},
+                                  "record_data": { "event": {{ $body.event }}},
+                                  "description": [{"newSchema": "true"}],
+                                  "operation_type": {{ $body.event.op }},
+                                  "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                              }
+                          }
+                      }
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+      version: 2
+    cleanup_config:
+      batch_size: 10000
+      clean_invocation_logs: false
+      clear_older_than: 168
+      paused: true
+      schedule: 0 0 * * *
+      timeout: 60

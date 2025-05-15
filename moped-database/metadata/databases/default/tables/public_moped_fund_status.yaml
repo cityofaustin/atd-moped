@@ -1,0 +1,25 @@
+table:
+  name: moped_fund_status
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - funding_status_id
+        - funding_status_name
+        - funding_status_description
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - funding_status_id
+        - funding_status_name
+        - funding_status_description
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - funding_status_id
+        - funding_status_name
+        - funding_status_description
+      filter: {}

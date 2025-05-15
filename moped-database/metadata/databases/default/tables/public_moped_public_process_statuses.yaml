@@ -1,0 +1,25 @@
+table:
+  name: moped_public_process_statuses
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - id
+        - slug
+        - name
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - id
+        - slug
+        - name
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - id
+        - slug
+        - name
+      filter: {}
