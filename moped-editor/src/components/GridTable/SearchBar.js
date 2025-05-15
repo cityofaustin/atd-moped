@@ -69,7 +69,8 @@ const SearchBar = ({
   resetSimpleSearch,
   setSearchParams,
   setIsOr,
-  handleSnackbar
+  handleSnackbar,
+  searchTerm,
 }) => {
   const classes = useStyles();
 
@@ -165,7 +166,7 @@ const SearchBar = ({
         variant="outlined"
         value={searchFieldValue}
       />
-      {filterStateActive && !advancedSearchAnchor && (
+      {(filterStateActive || searchTerm) && !advancedSearchAnchor && (
         <FiltersChips
           filters={filters}
           setFilters={setFilters}
@@ -174,6 +175,7 @@ const SearchBar = ({
           isOr={isOr}
           setSearchParams={setSearchParams}
           handleSnackbar={handleSnackbar}
+          searchTerm={searchTerm}
         />
       )}
     </>
