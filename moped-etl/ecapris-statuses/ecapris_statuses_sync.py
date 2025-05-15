@@ -49,6 +49,12 @@ def main():
 
     for sp_number in distinct_project_ecapris_ids:
         cursor.execute(None, sp_number=sp_number)
+
+        # Use a row factory to convert the results to a list of dictionaries with k/v pairs
+        # See https://python-oracledb.readthedocs.io/en/latest/user_guide/sql_execution.html#changing-query-results-with-rowfactories
+        columns = [col.name for col in cursor.description]
+        cursor.rowfactory = lambda *args: dict(zip(columns, args))
+
         results = cursor.fetchall()
 
         if(len(results) > 0):
@@ -60,6 +66,7 @@ def main():
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
         payload = []
+        print(statuses)
         for status in statuses:
             payload.append({
                 "subproject_status_id": status["SUB_PROJECT_STATUS_ID"],

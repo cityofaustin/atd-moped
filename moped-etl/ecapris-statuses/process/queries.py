@@ -5,12 +5,12 @@ Queries for sync
 ORACLE_QUERIES = {
     "subproject_statuses": """
     SELECT
-        SP_NUMBER,
+        TO_CHAR(SP_NUMBER) AS SP_NUMBER,
         SP_NAME,
         SUB_PROJECT_STATUS_ID,
         CURR_STATUS_FL, 
         SUB_PROJECT_STATUS_DESC,
-        STATUS_REVIEW_DATE,
+        TO_CHAR(STATUS_REVIEW_DATE, 'YYYY-MM-DD HH24:MI:SS') AS STATUS_REVIEW_DATE,
         SUB_PROJECT_STATUS_IMPACTS,
         SUMM_DESC,
         REVIEWED_BY,
