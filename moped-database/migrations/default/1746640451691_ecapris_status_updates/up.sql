@@ -1,6 +1,6 @@
 -- Update moped_project table with should_sync_ecapris_statuses column and comment
 ALTER TABLE moped_project
-ADD COLUMN should_sync_ecapris_statuses BOOLEAN NOT NULL DEFAULT FALSE;
+ADD COLUMN should_sync_ecapris_statuses BOOLEAN NOT NULL DEFAULT TRUE;
 
 -- Add comment for the new column
 COMMENT ON COLUMN moped_project.should_sync_ecapris_statuses IS 'Indicates if project statuses should be synced with eCapris';
