@@ -64,9 +64,11 @@ def main():
             
     print(f"No results for {', '.join(no_result_ids)}")
 
+    updated_ecapris_ids = []
+
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
         payload = []
-        print(statuses)
+
         for status in statuses:
             payload.append({
                 "subproject_status_id": status["SUB_PROJECT_STATUS_ID"],
@@ -81,10 +83,15 @@ def main():
                 "review_by_email": status["REVIEWED_BY_EMAIL"],
             })
 
-        print(f"eCapris ID: {ecapris_id}")
         results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses_insert"], variables={"objects": payload})
 
-    # TODO: Insert eCapris status updates into Moped DB
+        if len(results["insert_ecapris_subproject_statuses"]["returning"]) > 0:
+            updated_ecapris_ids.append(ecapris_id)
+
+    if len(updated_ecapris_ids) == 0:
+        print("No new eCapris statuses were found for Moped projects.")
+    else:
+        print(f"Added new eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
 
 if __name__ == "__main__":
     log_level = logging.DEBUG
