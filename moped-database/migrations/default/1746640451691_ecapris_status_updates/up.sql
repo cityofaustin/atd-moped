@@ -9,7 +9,7 @@ COMMENT ON COLUMN moped_project.should_sync_ecapris_statuses IS 'Indicates if pr
 -- Create ecapris_status_updates table with column comments
 CREATE TABLE public.ecapris_subproject_statuses (
     id SERIAL PRIMARY KEY,
-    subproject_id TEXT NOT NULL,
+    ecapris_subproject_id TEXT NOT NULL,
     subproject_name TEXT NOT NULL,
     subproject_status_id INTEGER NOT NULL UNIQUE,
     current_status_fl BOOLEAN NOT NULL,
@@ -18,7 +18,7 @@ CREATE TABLE public.ecapris_subproject_statuses (
     subproject_status_impacts TEXT,
     summary_description TEXT,
     reviewed_by_name TEXT NOT NULL,
-    review_by_email TEXT,
+    reviewed_by_email TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
     created_by_user_id INTEGER REFERENCES moped_users (user_id) ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -27,7 +27,7 @@ CREATE TABLE public.ecapris_subproject_statuses (
 
 COMMENT ON TABLE public.ecapris_subproject_statuses IS 'Stores eCAPRIS subproject status records synced from the FSD Data Warehouse to supplement the moped_proj_notes table records.';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.id IS 'Primary key for the table';
-COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_id IS 'eCapris subproject ID number';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.ecapris_subproject_id IS 'eCapris subproject ID number';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_name IS 'Name of eCapris subproject';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_status_id IS 'Unique ID of subproject status from eCapris';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.current_status_fl IS 'Is this the current and most recent status?';
@@ -36,7 +36,7 @@ COMMENT ON COLUMN public.ecapris_subproject_statuses.review_timestamp IS 'Timest
 COMMENT ON COLUMN public.ecapris_subproject_statuses.subproject_status_impacts IS 'Updates on project blockers';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.summary_description IS 'More of a public-ready status could be used down the road; nullable in eCapris';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.reviewed_by_name IS 'First and last name of author; nullable in eCapris';
-COMMENT ON COLUMN public.ecapris_subproject_statuses.review_by_email IS 'Email of author';
+COMMENT ON COLUMN public.ecapris_subproject_statuses.reviewed_by_email IS 'Email of author';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.created_at IS 'Timestamp when the record was created';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.updated_at IS 'Timestamp when the record was last updated';
 COMMENT ON COLUMN public.ecapris_subproject_statuses.created_by_user_id IS 'ID of the user who created the record';
@@ -55,7 +55,7 @@ BEGIN
     NEW.created_by_user_id := (
         SELECT user_id 
         FROM moped_users 
-        WHERE LOWER(email) = LOWER(NEW.review_by_email)
+        WHERE LOWER(email) = LOWER(NEW.reviewed_by_email)
         LIMIT 1
     );
     

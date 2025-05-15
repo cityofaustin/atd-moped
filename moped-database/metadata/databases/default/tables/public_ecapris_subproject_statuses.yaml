@@ -10,8 +10,8 @@ select_permissions:
     permission:
       columns:
         - sub_project_status_desc
-        - subproject_id
-        - review_by_email
+        - ecapris_subproject_id
+        - reviewed_by_email
         - reviewed_by_name
         - created_by_user_id
         - updated_by_user_id
@@ -30,8 +30,8 @@ select_permissions:
     permission:
       columns:
         - sub_project_status_desc
-        - subproject_id
-        - review_by_email
+        - ecapris_subproject_id
+        - reviewed_by_email
         - reviewed_by_name
         - created_by_user_id
         - updated_by_user_id
@@ -50,8 +50,8 @@ select_permissions:
     permission:
       columns:
         - sub_project_status_desc
-        - subproject_id
-        - review_by_email
+        - ecapris_subproject_id
+        - reviewed_by_email
         - reviewed_by_name
         - created_by_user_id
         - updated_by_user_id
