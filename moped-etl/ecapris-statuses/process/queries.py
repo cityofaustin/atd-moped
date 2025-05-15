@@ -24,7 +24,7 @@ ORACLE_QUERIES = {
 GRAPHQL_QUERIES = {
     "subproject_statuses": """
     query MopedProjects {
-        moped_project(where: {ecapris_subproject_id: {_is_null: false}, is_deleted: {_eq: false}, distinct_on: ecapris_subproject_id}}) {
+        moped_project(where: {ecapris_subproject_id: {_is_null: false}, is_deleted: {_eq: false}}, distinct_on: ecapris_subproject_id) {
             ecapris_subproject_id
         }
     }

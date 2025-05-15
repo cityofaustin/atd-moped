@@ -44,10 +44,38 @@ def main():
     cursor = conn.cursor()
     cursor.prepare(ORACLE_QUERIES["subproject_statuses"])
 
-    for sp_number in unique_ecapris_subproject_ids:
+    no_result_ids = []
+    statuses_by_ecapris_id = {} 
+
+    for sp_number in distinct_project_ecapris_ids:
         cursor.execute(None, sp_number=sp_number)
         results = cursor.fetchall()
-        print(results)
+
+        if(len(results) > 0):
+            statuses_by_ecapris_id[sp_number] = results
+        else:
+            no_result_ids.append(sp_number)
+            
+    print(f"No results for {', '.join(no_result_ids)}")
+
+    for ecapris_id, statuses in statuses_by_ecapris_id.items():
+        payload = []
+        for status in statuses:
+            payload.append({
+                "subproject_status_id": status["SUB_PROJECT_STATUS_ID"],
+                "subproject_name": status["SP_NAME"],
+                "subproject_id": status["SP_NUMBER"],
+                "current_status_fl": status["CURR_STATUS_FL"],
+                "sub_project_status_desc": status["SUB_PROJECT_STATUS_DESC"],
+                "review_timestamp": status["STATUS_REVIEW_DATE"],
+                "subproject_status_impacts": status["SUB_PROJECT_STATUS_IMPACTS"],
+                "summary_description": status["SUMM_DESC"],
+                "reviewed_by_name": status["REVIEWED_BY"],
+                "review_by_email": status["REVIEWED_BY_EMAIL"],
+            })
+
+        print(f"eCapris ID: {ecapris_id}")
+        results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses_insert"], variables={"objects": payload})
 
     # TODO: Insert eCapris status updates into Moped DB
 
