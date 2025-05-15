@@ -1,0 +1,86 @@
+table:
+  name: moped_proj_components_subcomponents
+  schema: public
+object_relationships:
+  - name: moped_subcomponent
+    using:
+      foreign_key_constraint_on: subcomponent_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - component_subcomponent_id
+        - created_at
+        - created_by_user_id
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+        - updated_at
+        - updated_by_user_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - component_subcomponent_id
+        - created_at
+        - created_by_user_id
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+        - updated_at
+        - updated_by_user_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - component_subcomponent_id
+        - created_at
+        - created_by_user_id
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+        - updated_at
+        - updated_by_user_id
+      filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+        - project_component_id
+        - subcomponent_id
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id

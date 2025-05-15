@@ -1,0 +1,60 @@
+table:
+  name: moped_activity_log
+  schema: public
+object_relationships:
+  - name: moped_user
+    using:
+      manual_configuration:
+        column_mapping:
+          updated_by: cognito_user_id
+        insertion_order: null
+        remote_table:
+          name: moped_users
+          schema: public
+  - name: updated_by_user
+    using:
+      foreign_key_constraint_on: updated_by_user_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - activity_id
+        - created_at
+        - description
+        - operation_type
+        - record_data
+        - record_id
+        - record_project_id
+        - record_type
+        - updated_by
+        - updated_by_user_id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - activity_id
+        - created_at
+        - description
+        - operation_type
+        - record_data
+        - record_id
+        - record_project_id
+        - record_type
+        - updated_by
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - activity_id
+        - created_at
+        - description
+        - operation_type
+        - record_data
+        - record_id
+        - record_project_id
+        - record_type
+        - updated_by
+      filter: {}
+      allow_aggregations: true

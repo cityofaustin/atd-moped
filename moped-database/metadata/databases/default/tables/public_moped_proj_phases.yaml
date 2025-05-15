@@ -1,0 +1,198 @@
+table:
+  name: moped_proj_phases
+  schema: public
+object_relationships:
+  - name: moped_phase
+    using:
+      foreign_key_constraint_on: phase_id
+  - name: moped_subphase
+    using:
+      foreign_key_constraint_on: subphase_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_current_phase
+        - is_deleted
+        - phase_description
+        - phase_end
+        - phase_id
+        - phase_start
+        - project_id
+        - subphase_id
+        - is_phase_start_confirmed
+        - is_phase_end_confirmed
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_current_phase
+        - is_deleted
+        - phase_description
+        - phase_end
+        - phase_id
+        - phase_start
+        - project_id
+        - subphase_id
+        - is_phase_start_confirmed
+        - is_phase_end_confirmed
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_current_phase
+        - is_phase_end_confirmed
+        - is_phase_start_confirmed
+        - created_by_user_id
+        - phase_id
+        - project_id
+        - project_phase_id
+        - subphase_id
+        - phase_description
+        - created_at
+        - phase_end
+        - phase_start
+        - updated_by_user_id
+        - is_deleted
+        - updated_at
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - is_current_phase
+        - is_phase_end_confirmed
+        - is_phase_start_confirmed
+        - created_by_user_id
+        - phase_id
+        - project_id
+        - project_phase_id
+        - subphase_id
+        - phase_description
+        - created_at
+        - phase_end
+        - phase_start
+        - updated_by_user_id
+        - is_deleted
+        - updated_at
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - is_current_phase
+        - is_phase_end_confirmed
+        - is_phase_start_confirmed
+        - created_by_user_id
+        - phase_id
+        - project_id
+        - project_phase_id
+        - subphase_id
+        - phase_description
+        - created_at
+        - phase_end
+        - phase_start
+        - updated_by_user_id
+        - is_deleted
+        - updated_at
+      filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_current_phase
+        - is_deleted
+        - phase_description
+        - phase_end
+        - phase_id
+        - phase_start
+        - project_id
+        - subphase_id
+        - is_phase_start_confirmed
+        - is_phase_end_confirmed
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+  - role: moped-editor
+    permission:
+      columns:
+        - is_current_phase
+        - is_deleted
+        - phase_description
+        - phase_end
+        - phase_id
+        - phase_start
+        - project_id
+        - subphase_id
+        - is_phase_start_confirmed
+        - is_phase_end_confirmed
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+event_triggers:
+  - name: activity_log_moped_proj_phases
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns:
+          - is_phase_start_confirmed
+          - is_phase_end_confirmed
+          - created_at
+          - phase_start
+          - phase_end
+          - is_deleted
+          - project_id
+          - created_by_user_id
+          - updated_by_user_id
+          - subphase_id
+          - phase_description
+          - is_current_phase
+          - project_phase_id
+          - phase_id
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook_from_env: HASURA_ENDPOINT
+    headers:
+      - name: x-hasura-admin-secret
+        value_from_env: ACTIVITY_LOG_API_SECRET
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+            "query": "mutation InsertActivity( $object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+            "variables": {
+                "object": {
+                    "record_id": {{ $body.event.data.new.project_phase_id }},
+                    "record_type":  {{ $body.table.name }},
+                    "activity_id": {{ $body.id }},
+                    "record_project_id": {{ $body.event.data.new.project_id }},
+                    "record_data": {"event": {{ $body.event }}},
+                    "description": [{"newSchema": "true"}],
+                    "operation_type": {{ $body.event.op }},
+                    "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+                }
+              }
+            }
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+      version: 2
+    cleanup_config:
+      batch_size: 10000
+      clean_invocation_logs: false
+      clear_older_than: 168
+      paused: true
+      schedule: 0 0 * * *
+      timeout: 60

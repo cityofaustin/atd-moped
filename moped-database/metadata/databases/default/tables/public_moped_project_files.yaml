@@ -1,0 +1,200 @@
+table:
+  name: moped_project_files
+  schema: public
+object_relationships:
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
+  - name: moped_user
+    using:
+      foreign_key_constraint_on: created_by_user_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - api_response
+        - created_at
+        - created_by_user_id
+        - file_description
+        - file_key
+        - file_metadata
+        - file_name
+        - file_permissions
+        - file_size
+        - file_type
+        - is_deleted
+        - is_scanned
+        - project_file_id
+        - project_id
+        - file_url
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_file_id
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_file_id
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+      filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+      filter: {}
+      check: null
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+        - is_scanned
+        - created_by_user_id
+        - file_size
+        - file_type
+        - project_id
+        - api_response
+        - file_metadata
+        - file_permissions
+        - file_description
+        - file_key
+        - file_name
+        - created_at
+        - file_url
+      filter: {}
+      check: null
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+event_triggers:
+  - name: activity_log_moped_project_files
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook_from_env: HASURA_ENDPOINT
+    headers:
+      - name: x-hasura-admin-secret
+        value_from_env: ACTIVITY_LOG_API_SECRET
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+            "query": "mutation InsertActivity($object: moped_activity_log_insert_input! ) { insert_moped_activity_log_one(object: $object) { activity_id } }",
+            "variables": {
+              "object": {
+                "record_id": {{ $body.event.data.new.project_file_id }},
+                "record_type":  {{ $body.table.name }},
+                "activity_id": {{ $body.id }},
+                "record_project_id": {{ $body.event.data.new.project_id }},
+                "record_data": {"event": {{ $body.event }}},
+                "description": [{"newSchema": "true"}],
+                "operation_type": {{ $body.event.op }},
+                "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+              }
+            }
+          }
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+      version: 2
+    cleanup_config:
+      batch_size: 10000
+      clean_invocation_logs: false
+      clear_older_than: 168
+      paused: true
+      schedule: 0 0 * * *
+      timeout: 60
