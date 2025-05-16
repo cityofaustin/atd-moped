@@ -30,19 +30,20 @@ def get_conn(host, port, service, user, password):
     return cx_Oracle.connect(user=user, password=password, dsn=dsn_tns)
 
 def main():
-    # Connect to Moped DB and get uniqure eCapris subproject IDs set on any project
+    # Connect to Moped DB and get distinct eCapris subproject IDs set on any project
     results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
     
     distinct_project_ecapris_ids = [project["ecapris_subproject_id"] for project in results["moped_project"]]
-    print(f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync.")
+    logger.info(f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync: {', '.join(distinct_project_ecapris_ids)}")
     
     # Connect to Oracle DB and query status updates matching those subproject IDs
     conn = get_conn(ORACLE_HOST, ORACLE_PORT, ORACLE_SERVICE, ORACLE_USER, ORACLE_PASSWORD)
     cursor = conn.cursor()
     cursor.prepare(ORACLE_QUERIES["subproject_statuses"])
 
-    no_result_ids = []
+    # Loop through the distinct project eCapris IDs, query the status updates, and collect them by id
     statuses_by_ecapris_id = {} 
+    no_result_ids = []
 
     for sp_number in distinct_project_ecapris_ids:
         cursor.execute(None, sp_number=sp_number)
@@ -59,8 +60,9 @@ def main():
         else:
             no_result_ids.append(sp_number)
             
-    print(f"No results for {', '.join(no_result_ids)}")
+    logger.info(f"No results for eCapris IDs: {', '.join(no_result_ids)}")
 
+    # Loop through the eCapris IDs and insert the status updates into the Moped DB
     updated_ecapris_ids = []
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
@@ -86,9 +88,9 @@ def main():
             updated_ecapris_ids.append(ecapris_id)
 
     if len(updated_ecapris_ids) == 0:
-        print("No new eCapris statuses were found for subproject IDs associated with Moped projects.")
+        logger.info("No new eCapris statuses were found for subproject IDs associated with Moped projects.")
     else:
-        print(f"Added new eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
+        logger.info(f"Added new eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
 
 if __name__ == "__main__":
     log_level = logging.DEBUG
