@@ -19,8 +19,6 @@ ORACLE_HOST = os.getenv("ORACLE_HOST")
 ORACLE_PORT = os.getenv("ORACLE_PORT")
 ORACLE_SERVICE = os.getenv("ORACLE_SERVICE")
 
-# Moped GraphQL Endpoint
-
 def get_conn(host, port, service, user, password):
     # Need to run this once if you want to work locally
     # Change lib_dir to your cx_Oracle library location
