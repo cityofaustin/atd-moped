@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-# docker run -it --rm --env-file env_file -v /Users/john/Dropbox/atd/atd-finance-data:/app  atddocker/atd-finance-data:production /bin/bash
 """
-Fetch ecapris status records from the FSD Data Warehouse and sync to Moped projects
+Fetch ecapris status records from the FSD Data Warehouse and sync to Moped ecapris_subproject_statuses table
 """
 import os
 import sys
@@ -89,13 +88,13 @@ def main():
             updated_ecapris_ids.append(ecapris_id)
 
     if len(updated_ecapris_ids) == 0:
-        print("No new eCapris statuses were found for Moped projects.")
+        print("No new eCapris statuses were found for subproject IDs associated with Moped projects.")
     else:
         print(f"Added new eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
 
 if __name__ == "__main__":
     log_level = logging.DEBUG
-    logger = get_logger(name="moped-knack-sync", level=log_level)
+    logger = get_logger(name="moped-ecapris-statuses-sync", level=log_level)
     logger.info(
         f"Starting sync. Transferring eCapris status updates from FSD Data Warehouse to Moped DB."
     )

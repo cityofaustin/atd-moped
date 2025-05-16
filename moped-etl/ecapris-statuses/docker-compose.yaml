@@ -1,5 +1,5 @@
 services:
-  ecapris:
+  ecapris-statuses:
     build:
       context: .
     volumes:
