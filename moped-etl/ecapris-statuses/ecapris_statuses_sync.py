@@ -11,6 +11,7 @@ import oracledb as cx_Oracle
 from process.request import make_hasura_request
 from process.queries import GRAPHQL_QUERIES, ORACLE_QUERIES
 from process.logging import get_logger
+from process.time import convert_to_timezone_aware_timestamp
 
 # FSD Data Warehouse
 ORACLE_USER = os.getenv("ORACLE_USER")
@@ -67,10 +68,12 @@ def main():
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
         payload = []
-        review_timestamp = status["STATUS_REVIEW_DATE"]
-        timezone_aware_review_timestamp = convert_to_timezone_aware_timestamp(review_timestamp)
 
         for status in statuses:
+            review_timestamp = status["STATUS_REVIEW_DATE"]
+            print(f"Review timestamp: {review_timestamp}")
+            timezone_aware_review_timestamp = convert_to_timezone_aware_timestamp(review_timestamp)
+
             payload.append({
                 "subproject_status_id": status["SUB_PROJECT_STATUS_ID"],
                 "subproject_name": status["SP_NAME"],
