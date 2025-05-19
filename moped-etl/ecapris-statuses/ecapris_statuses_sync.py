@@ -63,7 +63,7 @@ def main():
             
     logger.info(f"No results for eCapris IDs: {', '.join(no_result_ids)}")
 
-    # Loop through the eCapris IDs and insert the status updates into the Moped DB
+    # Loop through the eCapris IDs and upsert the status updates into the Moped DB
     updated_ecapris_ids = []
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
@@ -71,7 +71,6 @@ def main():
 
         for status in statuses:
             review_timestamp = status["STATUS_REVIEW_DATE"]
-            print(f"Review timestamp: {review_timestamp}")
             timezone_aware_review_timestamp = convert_to_timezone_aware_timestamp(review_timestamp)
 
             payload.append({
@@ -87,7 +86,7 @@ def main():
                 "reviewed_by_email": status["REVIEWED_BY_EMAIL"],
             })
 
-        results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses_insert"], variables={"objects": payload})
+        results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses_upsert"], variables={"objects": payload})
 
         if len(results["insert_ecapris_subproject_statuses"]["returning"]) > 0:
             updated_ecapris_ids.append(ecapris_id)
@@ -95,7 +94,7 @@ def main():
     if len(updated_ecapris_ids) == 0:
         logger.info("No new eCapris statuses were found for subproject IDs associated with Moped projects.")
     else:
-        logger.info(f"Added new eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
+        logger.info(f"Upserted eCapris statuses for eCapris IDs: {', '.join(updated_ecapris_ids)}")
 
 if __name__ == "__main__":
     log_level = logging.DEBUG
