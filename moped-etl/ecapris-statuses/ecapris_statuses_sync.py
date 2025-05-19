@@ -67,6 +67,8 @@ def main():
 
     for ecapris_id, statuses in statuses_by_ecapris_id.items():
         payload = []
+        review_timestamp = status["STATUS_REVIEW_DATE"]
+        timezone_aware_review_timestamp = convert_to_timezone_aware_timestamp(review_timestamp)
 
         for status in statuses:
             payload.append({
@@ -75,7 +77,7 @@ def main():
                 "ecapris_subproject_id": status["SP_NUMBER"],
                 "current_status_fl": status["CURR_STATUS_FL"],
                 "sub_project_status_desc": status["SUB_PROJECT_STATUS_DESC"],
-                "review_timestamp": status["STATUS_REVIEW_DATE"],
+                "review_timestamp": timezone_aware_review_timestamp,
                 "subproject_status_impacts": status["SUB_PROJECT_STATUS_IMPACTS"],
                 "summary_description": status["SUMM_DESC"],
                 "reviewed_by_name": status["REVIEWED_BY"],
