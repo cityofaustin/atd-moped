@@ -5,6 +5,50 @@
  * @augments NavigationSearchFiltersConf
  * @default
  */
+export const NAVIGATION_SEARCH_QUERY_CONFIG = {
+  options: {
+    useQuery: {
+      fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
+    },
+  },
+  table: "project_list_view",
+  columns: {
+    project_id: {
+      search: {
+        operator: "_eq",
+        quoted: false,
+        envelope: "%{VALUE}%",
+        invalidValueDefault: 0,
+      },
+      type: "Int",
+    },
+    project_name_full: {
+      search: {
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    project_description: {
+      search: {
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "String",
+    },
+    ecapris_subproject_id: {
+      search: {
+        operator: "_ilike",
+        quoted: true,
+        envelope: "%{VALUE}%",
+      },
+      type: "string",
+    },
+  },
+};
+
 export const NavigationSearchQueryConf = {
   options: {
     useQuery: {
@@ -12,11 +56,6 @@ export const NavigationSearchQueryConf = {
     },
   },
   table: "project_list_view",
-  search: {
-    placeholder:
-      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
-    defaultFieldsOperator: "_or",
-  },
   columns: {
     project_id: {
       searchable: true,

@@ -12,9 +12,10 @@ import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
 import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
-import { NavigationSearchQueryConf } from "./NavigationSearchQueryConf";
+import { NavigationSearchQueryConf, NAVIGATION_SEARCH_QUERY_CONFIG } from "./NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
 import { getSearchValue } from "../../../utils/gridTableHelpers";
+import { useNavigationSearch } from "./useNavigationSearchQuery";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -153,9 +154,11 @@ const NavigationSearchInput = ({ input404Class }) => {
   // boolean used to initiate slide animation
   const [showSlideIn, toggleSlideIn] = useState(false);
 
+  const navSearchQuery = useNavigationSearch({searchTerm})
+    
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
-    projectSearchQuery.current.gql,
-    projectSearchQuery.current.config.options.useQuery
+    navSearchQuery.query,
+    NAVIGATION_SEARCH_QUERY_CONFIG.options.useQuery
   );
 
   /* Clear input and reset the gqlabstract 'or' config */
@@ -234,29 +237,33 @@ const NavigationSearchInput = ({ input404Class }) => {
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
-    // Formats search query based on project search columns and config
-    Object.keys(projectSearchQuery.current.config.columns)
-      .filter(
-        (column) =>
-          projectSearchQuery.current.config.columns[column]?.searchable
-      )
-      .forEach((column) => {
-        const { operator, quoted, envelope } =
-          projectSearchQuery.current.config.columns[column].search;
-        const searchValue = getSearchValue(
-          projectSearchQuery.current.config,
-          column,
-          searchTerm
-        );
-        const graphqlSearchValue = quoted
-          ? `"${envelope.replace("{VALUE}", searchValue)}"`
-          : searchValue;
 
-        projectSearchQuery.current.setOr(
-          column,
-          `${operator}: ${graphqlSearchValue}`
-        );
-      });
+    // // Formats search query based on project search columns and config
+    // Object.keys(projectSearchQuery.current.config.columns)
+    //   .filter(
+    //     (column) =>
+    //       projectSearchQuery.current.config.columns[column]?.searchable
+    //   )
+    //   .forEach((column) => {
+    //     const { operator, quoted, envelope } =
+    //       projectSearchQuery.current.config.columns[column].search;
+    //       console.log(column, operator, quoted, envelope)
+    //     const searchValue = getSearchValue(
+    //       projectSearchQuery.current.config,
+    //       column,
+    //       searchTerm
+    //     );
+    //     const graphqlSearchValue = quoted
+    //       ? `"${envelope.replace("{VALUE}", searchValue)}"`
+    //       : searchValue;
+
+    //     projectSearchQuery.current.setOr(
+    //       column,
+    //       `${operator}: ${graphqlSearchValue}`
+    //     );
+    //   });
+
+
 
     // Initiate Lazy Query to get search results
     loadSearchResults();
