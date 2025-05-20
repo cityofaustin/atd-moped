@@ -27,13 +27,9 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "src/views/projects/projectView/EditorTheme";
-import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons"
+import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
   cancelButton: {
     margin: theme.spacing(1),
     position: "relative",
@@ -49,18 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
   editorWrapper: {
     position: "relative",
-  },
-  showButtonItem: {
-    margin: theme.spacing(2),
-  },
-  toolbarButtons: {
-    backgroundColor: theme.palette.primary.main,
-    "&:hover, &.Mui-focusVisible": {
-      backgroundColor: theme.palette.primary.main,
-    },
-  },
-  startIcon: {
-    margin: 0,
   },
 }));
 
