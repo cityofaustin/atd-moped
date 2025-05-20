@@ -1,15 +1,17 @@
--- Make component tag names nullable again
-ALTER TABLE moped_component_tags ALTER COLUMN name SET NOT NULL;
-
 -- Update existing empty names to NULL
 UPDATE moped_component_tags SET name = ''
 WHERE name IS NULL;
 
--- Drop new generated column
-ALTER TABLE moped_component_tags DROP COLUMN IF EXISTS full_name;
+-- Make component tag names nullable again
+ALTER TABLE moped_component_tags ALTER COLUMN name SET NOT NULL;
+ALTER TABLE moped_component_tags ALTER COLUMN type SET NOT NULL;
 
+-- Drop the views that uses the component tags
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
 DROP VIEW IF EXISTS component_arcgis_online_view;
+
+-- Drop new generated column
+ALTER TABLE moped_component_tags DROP COLUMN IF EXISTS full_name;
 
 -- Restore previous view definitions
 CREATE OR REPLACE VIEW component_arcgis_online_view AS  WITH work_types AS (
