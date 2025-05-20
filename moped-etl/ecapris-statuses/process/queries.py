@@ -1,11 +1,16 @@
 """
 Queries for FSD Data Warehouse
+
+Oracle does not store trailing zeroes, but we need them to match eCapris subproject IDs in Moped DB which have them.
+Ex. eCapris ID 10553.030 is stored as 10553.030 in Moped DB, but stored as 10553.03 in Oracle.
+So, we format the SP_NUMBER to have 3 decimal places using its defined Oracle type Number(18,3).
+'FMFM999999999999999.000' formats the number to have 3 decimal places with trailing zeroes and 18 digits total.
 """
 
 ORACLE_QUERIES = {
     "subproject_statuses": """
     SELECT
-        TO_CHAR(SP_NUMBER) AS SP_NUMBER,
+        TO_CHAR(SP_NUMBER, 'FM999999999999999.000') AS SP_NUMBER,
         SP_NAME,
         SUB_PROJECT_STATUS_ID,
         CURR_STATUS_FL, 
