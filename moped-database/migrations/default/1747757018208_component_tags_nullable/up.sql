@@ -5,9 +5,14 @@ ALTER TABLE moped_component_tags ALTER COLUMN type DROP NOT NULL;
 ALTER TABLE moped_component_tags ALTER COLUMN type SET DEFAULT NULL;
 
 -- Add new generated column to produce full name
-ALTER TABLE moped_component_tags
+ALTER TABLE moped_component_tags 
 ADD COLUMN full_name TEXT GENERATED ALWAYS AS (
-    concat_ws(' - ', type, name)
+    CASE
+        WHEN type IS NOT NULL AND name IS NOT NULL THEN type || ' - ' || name
+        WHEN type IS NOT NULL THEN type
+        WHEN name IS NOT NULL THEN name
+        ELSE NULL
+    END
 ) STORED;
 
 -- Update existing empty names to NULL
