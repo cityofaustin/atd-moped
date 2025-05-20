@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useMutation } from "@apollo/client";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -19,7 +19,7 @@ const SaveUserViewModal = ({
 
   let { pathname, search } = useLocation();
 
-  const getDefaultDescription = () => {
+  const defaultDescription = useMemo(() => {
     const filtersDescription = filtersLabels
       .map(
         (filter) =>
@@ -38,7 +38,7 @@ const SaveUserViewModal = ({
     } else {
       return "";
     }
-  };
+  }, [filtersLabels, searchTerm]);
 
   const onClose = () => {
     setIsSaveViewModalOpen(false);
@@ -84,7 +84,7 @@ const SaveUserViewModal = ({
       <DialogContent dividers={true}>
         <SaveUserViewForm
           onSave={onSaveViewClick}
-          description={() => getDefaultDescription()}
+          description={defaultDescription}
           loading={loading}
         />
       </DialogContent>
