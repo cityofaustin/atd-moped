@@ -13,8 +13,9 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
-        - is_deleted
+        - full_name
         - id
+        - is_deleted
         - name
         - slug
         - type
@@ -22,8 +23,9 @@ select_permissions:
   - role: moped-editor
     permission:
       columns:
-        - is_deleted
+        - full_name
         - id
+        - is_deleted
         - name
         - slug
         - type
@@ -31,8 +33,9 @@ select_permissions:
   - role: moped-viewer
     permission:
       columns:
-        - is_deleted
+        - full_name
         - id
+        - is_deleted
         - name
         - slug
         - type
