@@ -1,8 +1,6 @@
 -- Remove not null on name
 ALTER TABLE moped_component_tags ALTER COLUMN name DROP NOT NULL;
-ALTER TABLE moped_component_tags ALTER COLUMN name SET DEFAULT NULL;
 ALTER TABLE moped_component_tags ALTER COLUMN type DROP NOT NULL;
-ALTER TABLE moped_component_tags ALTER COLUMN type SET DEFAULT NULL;
 
 -- Add new generated column to produce full name
 ALTER TABLE moped_component_tags
@@ -13,6 +11,8 @@ ADD COLUMN full_name TEXT GENERATED ALWAYS AS (
         WHEN name IS NOT NULL THEN name
     END
 ) STORED;
+
+COMMENT ON COLUMN moped_component_tags.full_name IS 'Full name of the component tag; type and name are concatenated if both present';
 
 -- Update existing empty names to NULL
 UPDATE moped_component_tags SET name = NULL
