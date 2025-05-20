@@ -44,9 +44,7 @@ export const GET_COMPONENTS_FORM_OPTIONS = gql`
       order_by: [{ type: asc }, { name: asc }]
       where: { is_deleted: { _eq: false } }
     ) {
-      name
       slug
-      type
       id
       full_name
     }
