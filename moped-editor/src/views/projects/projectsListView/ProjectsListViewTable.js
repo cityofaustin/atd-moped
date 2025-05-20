@@ -3,32 +3,32 @@ import { Box, Container, Paper } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@apollo/client";
-import Search from "../../../components/GridTable/Search";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
+import Search from "src/components/GridTable/Search";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 import { DataGridPro } from "@mui/x-data-grid-pro";
-import { useColumns } from "./helpers.js";
+import { useColumns } from "src/views/projects/projectsListView/helpers";
 import { useHiddenColumnsSettings } from "src/utils/localStorageHelpers";
-import { useGetProjectListView } from "./useProjectListViewQuery/useProjectListViewQuery";
+import { useGetProjectListView } from "src/views/projects/projectsListView/useProjectListViewQuery/useProjectListViewQuery";
 import {
   PROJECT_LIST_VIEW_QUERY_CONFIG,
   DEFAULT_HIDDEN_COLS,
   SHOW_ALL_COLS,
 } from "./ProjectsListViewQueryConf";
-import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "./ProjectsListViewFiltersConf";
-import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "./ProjectsListViewExportConf";
-import { usePagination } from "./useProjectListViewQuery/usePagination";
-import { useOrderBy } from "./useProjectListViewQuery/useOrderBy";
-import { useSearch } from "./useProjectListViewQuery/useSearch";
-import { useAdvancedSearch } from "./useProjectListViewQuery/useAdvancedSearch";
+import { PROJECT_LIST_VIEW_FILTERS_CONFIG } from "src/views/projects/projectsListView/ProjectsListViewFiltersConf";
+import { PROJECT_LIST_VIEW_EXPORT_CONFIG } from "src/views/projects/projectsListView/ProjectsListViewExportConf";
+import { usePagination } from "src/views/projects/projectsListView/useProjectListViewQuery/usePagination";
+import { useOrderBy } from "src/views/projects/projectsListView/useProjectListViewQuery/useOrderBy";
+import { useSearch } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
+import { useAdvancedSearch } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
 import ProjectListViewQueryContext from "src/components/QueryContextProvider";
 import {
   useCsvExport,
   CsvDownloadingDialog,
   CsvDownloadOptionsDialog,
-} from "./useProjectListViewQuery/useCsvExport";
-import ProjectListToolbar from "./ProjectListToolbar";
-import { useCurrentData } from "./useProjectListViewQuery/useCurrentData";
-import ProjectsListViewMap from "./ProjectsListViewMap";
+} from "src/views/projects/projectsListView/useProjectListViewQuery/useCsvExport";
+import ProjectListToolbar from "src/views/projects/projectsListView/ProjectListToolbar";
+import { useCurrentData } from "src/views/projects/projectsListView/useProjectListViewQuery/useCurrentData";
+import ProjectsListViewMap from "src/views/projects/projectsListView/ProjectsListViewMap";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import ActivityMetrics from "src/components/ActivityMetrics";
 import FeedbackSnackbar, {
@@ -37,12 +37,9 @@ import FeedbackSnackbar, {
 
 export const mapSearchParamName = "map";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   paper: {
     width: "100%",
-  },
-  table: {
-    minWidth: 750,
   },
 }));
 
@@ -200,7 +197,7 @@ const ProjectsListViewTable = () => {
   );
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
-  useFeedbackSnackbar();
+    useFeedbackSnackbar();
 
   /**
    * Store the most recent version of the query in app context so that it
@@ -303,9 +300,9 @@ const ProjectsListViewTable = () => {
         </Paper>
       </Container>
       <FeedbackSnackbar
-          snackbarState={snackbarState}
-          handleSnackbarClose={handleSnackbarClose}
-        />
+        snackbarState={snackbarState}
+        handleSnackbarClose={handleSnackbarClose}
+      />
     </ApolloErrorHandler>
   );
 };
