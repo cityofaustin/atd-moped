@@ -12,6 +12,8 @@ export const NAVIGATION_SEARCH_QUERY_CONFIG = {
     },
   },
   table: "project_list_view",
+  limit: 10,
+  orderBy: "{ updated_at: desc }",
   columns: {
     project_id: {
       search: {

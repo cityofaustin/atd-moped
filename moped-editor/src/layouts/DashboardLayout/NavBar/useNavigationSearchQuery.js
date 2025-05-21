@@ -28,8 +28,8 @@ export const useNavigationSearch = ({ searchTerm }) => {
     // put where clause in query string
     const queryString = `query NavigationProjectsList {
       project_list_view (
-          limit: 10
-          order_by: { updated_at: desc },
+          limit: ${NAVIGATION_SEARCH_QUERY_CONFIG.limit}
+          order_by: ${NAVIGATION_SEARCH_QUERY_CONFIG.orderBy},
           where: { 
             ${`_or: [${searchWhereString}]`}
           }
