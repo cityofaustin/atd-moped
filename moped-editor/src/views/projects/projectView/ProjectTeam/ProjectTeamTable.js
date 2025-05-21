@@ -571,27 +571,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         event,
         currentRowModesModel: rowModesModel,
       });
-
-      const id = params.id;
-      // First save the changes
-      // handleSaveClick(id)();
-      // // Then update the row mode
-      // setRowModesModel({
-      //   ...rowModesModel,
-      //   [id]: { mode: GridRowModes.View },
-      // });
-
-      // Use the DataGridPro API to stop edit mode
-      apiRef.current.stopRowEditMode({
-        id,
-        ignoreModifications: false,
-        field: params.field,
-        cellToFocusAfter: "below",
-      });
+      // TODO: handle the enter key press?
     }
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
+    // I've added in a bunch of error logging and try/catch to try to debug this issue
     try {
       console.log("Row mode changing:", {
         from: rowModesModel,
@@ -610,6 +595,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           (mode) => mode.mode === GridRowModes.Edit
         ),
       });
+      // This line is all that ProjectTeamTable needs to do to update the row modes model
       setRowModesModel(newRowModesModel);
     } catch (error) {
       console.error("Error in handleRowModesModelChange:", {
