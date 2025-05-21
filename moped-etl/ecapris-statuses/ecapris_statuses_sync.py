@@ -34,6 +34,7 @@ def main():
     # Connect to Moped DB and get distinct eCapris subproject IDs set on any project
     results = make_hasura_request(query=GRAPHQL_QUERIES["subproject_statuses"])
     
+    # eCapris subproject IDs are de-duplicated in the GraphQL query
     distinct_project_ecapris_ids = [project["ecapris_subproject_id"] for project in results["moped_project"]]
     logger.info(f"Found {len(distinct_project_ecapris_ids)} unique eCapris subproject IDs to sync: {', '.join(distinct_project_ecapris_ids)}")
     
