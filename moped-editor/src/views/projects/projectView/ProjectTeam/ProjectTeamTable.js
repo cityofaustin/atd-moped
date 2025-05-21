@@ -5,12 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-import {
-  DataGridPro,
-  GridRowModes,
-  useGridApiRef,
-  gridColumnFieldsSelector,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
@@ -410,7 +405,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   );
 
   const processRowUpdate = useCallback(
-    (updatedRow, originalRow, params, data) => {
+    (updatedRow, originalRow) => {
       let userId;
 
       const userObject = data.moped_users.find((user) => {
@@ -427,17 +422,22 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         userId = userObject.user_id;
         updatedRow.moped_user = userObject; // Update with full user object
       } else {
-        console.error("Invalid user data:", updatedRow.moped_user);
-        throw new Error("Invalid user data");
+        if (!updatedRow.moped_user?.user_id) {
+          console.error(
+            "Invalid user data, user not found:",
+            updatedRow.moped_user
+          );
+          return Promise.reject(new Error("Invalid user data: User not found"));
+        }
+        userId = updatedRow.moped_user.user_id;
       }
 
-      // normalize the updatedRow and originalRow
       const normalizedUpdatedRow = {
         ...updatedRow,
         roleIds: updatedRow.moped_proj_personnel_roles.map(
           (role) => role.project_role_id
         ),
-        moped_user: updatedRow.moped_user?.user_id || null,
+        moped_user: userId || updatedRow.moped_user?.user_id || null,
       };
       const normalizedOriginalRow = {
         ...originalRow,
@@ -447,7 +447,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         moped_user: originalRow.moped_user?.user_id || null,
       };
 
-      // Check if the row has changed, including the roles array
       const hasRowChanged = !isEqual(
         normalizedUpdatedRow,
         normalizedOriginalRow
@@ -470,13 +469,13 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => {
             refetch();
             handleSnackbar(true, "Team member added", "success");
+            return updatedRow;
           })
-          .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error adding team member", "error", error);
+            throw error;
           });
       } else {
-        // Ensure project_personnel_id is an integer
         const personnelId = parseInt(updatedRow.project_personnel_id);
 
         if (!personnelId) {
@@ -484,10 +483,9 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
             "Invalid project_personnel_id:",
             updatedRow.project_personnel_id
           );
-          throw new Error("Invalid project_personnel_id");
+          return Promise.reject(new Error("Invalid project_personnel_id"));
         }
 
-        // Update roleIds to be in sync with moped_proj_personnel_roles
         updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
           (role) => role.project_role_id
         );
@@ -498,13 +496,11 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           originalRow
         );
 
-        // get update name
-        payload.user_id = userId;
+        payload.user_id = userId || updatedRow.moped_user?.user_id;
 
-        const fullMopedUserObject = data.moped_users.find(
-          (user) => user.user_id === userId
-        );
-        updatedRow.moped_user = fullMopedUserObject;
+        if (userObject) {
+          updatedRow.moped_user = userObject;
+        }
 
         const variables = {
           id: personnelId,
@@ -517,19 +513,24 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => {
             refetch();
             handleSnackbar(true, "Team member updated", "success");
+            return updatedRow;
           })
-          .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error updating team member", "error", error);
+            throw error;
           });
       }
     },
     [
-      updateProjectPersonnel,
+      data,
       insertProjectPersonnel,
+      updateProjectPersonnel,
       projectId,
       refetch,
       handleSnackbar,
+      getNewPersonnelPayload,
+      getEditPersonnelPayload,
+      getEditRolesPayload,
     ]
   );
 
@@ -545,16 +546,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     workgroupLookup,
     existingTeamMembers,
   });
-
-  const processRowUpdateMemoized = useCallback(
-    (updatedRow, originalRow, params) => {
-      console.log("updatedRow", updatedRow);
-      console.log("originalRow", originalRow);
-      console.log("params", params);
-      return processRowUpdate(updatedRow, originalRow, params, data);
-    },
-    [processRowUpdate, data]
-  );
 
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
@@ -576,7 +567,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    // I've added in a bunch of error logging and try/catch to try to debug this issue
     try {
       console.log("Row mode changing:", {
         from: rowModesModel,
@@ -595,7 +585,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           (mode) => mode.mode === GridRowModes.Edit
         ),
       });
-      // This line is all that ProjectTeamTable needs to do to update the row modes model
       setRowModesModel(newRowModesModel);
     } catch (error) {
       console.error("Error in handleRowModesModelChange:", {
@@ -622,8 +611,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
-        // onRowModesModelChange={setRowModesModel}
-        processRowUpdate={processRowUpdateMemoized}
+        processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
