@@ -295,7 +295,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               container={searchResultsAnchor}
             >
               <Box className={classes.searchResults}>
-                {called && !loading && (
+                {called && !loading && !!searchTerm.length > 0 && (
                   <NavigationSearchResults
                     results={data?.project_list_view || []}
                     handleDropdownClose={handleDropdownClose}
