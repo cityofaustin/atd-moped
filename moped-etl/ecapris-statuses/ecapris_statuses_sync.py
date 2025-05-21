@@ -47,13 +47,14 @@ def main():
     statuses_by_ecapris_id = {} 
     no_result_ids = []
 
-    for sp_number in distinct_project_ecapris_ids:
+    for i, sp_number in enumerate(distinct_project_ecapris_ids):
         cursor.execute(None, sp_number=sp_number)
 
-        # Use a row factory to convert the results to a list of dictionaries with k/v pairs
-        # See https://python-oracledb.readthedocs.io/en/latest/user_guide/sql_execution.html#changing-query-results-with-rowfactories
-        columns = [col.name for col in cursor.description]
-        cursor.rowfactory = lambda *args: dict(zip(columns, args))
+        if i == 0:
+            # Use a row factory to convert the results to a list of dictionaries with k/v pairs
+            # See https://python-oracledb.readthedocs.io/en/latest/user_guide/sql_execution.html#changing-query-results-with-rowfactories
+            columns = [col.name for col in cursor.description]
+            cursor.rowfactory = lambda *args: dict(zip(columns, args))
 
         results = cursor.fetchall()
 
