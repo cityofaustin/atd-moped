@@ -34,7 +34,7 @@ const NavigationSearchResults = ({
     return (
       <List className={classes.padding}>
         <ListItem>
-          <ListItemText primary="No Results found" />
+          <ListItemText primary="No results found" />
         </ListItem>
       </List>
     );

@@ -6,6 +6,7 @@ import { getSearchValue } from "src/utils/gridTableHelpers";
 export const useNavigationSearch = ({ searchTerm }) => {
   const columnsToReturn = Object.keys(NAVIGATION_SEARCH_QUERY_CONFIG.columns);
   const query = useMemo(() => {
+    // format the where clause with search term
     const searchOperatorsOrValues = searchTerm
       ? columnsToReturn.map((column) => {
           const { operator, quoted, envelope } =
@@ -23,6 +24,8 @@ export const useNavigationSearch = ({ searchTerm }) => {
         })
       : [];
     const searchWhereString = searchOperatorsOrValues.join(", ");
+
+    // put where clause in query string
     const queryString = `query NavigationProjectsList {
       project_list_view (
           limit: 10
