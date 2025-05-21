@@ -1,11 +1,16 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GridRowModes,
+  useGridApiRef,
+  gridColumnFieldsSelector,
+} from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
@@ -559,6 +564,63 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
     }
+
+    if (params.cellMode === GridRowModes.Edit && event.key === "Enter") {
+      console.log("Enter pressed in edit mode:", {
+        params,
+        event,
+        currentRowModesModel: rowModesModel,
+      });
+
+      const id = params.id;
+      // First save the changes
+      // handleSaveClick(id)();
+      // // Then update the row mode
+      // setRowModesModel({
+      //   ...rowModesModel,
+      //   [id]: { mode: GridRowModes.View },
+      // });
+
+      // Use the DataGridPro API to stop edit mode
+      apiRef.current.stopRowEditMode({
+        id,
+        ignoreModifications: false,
+        field: params.field,
+        cellToFocusAfter: "below",
+      });
+    }
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    try {
+      console.log("Row mode changing:", {
+        from: rowModesModel,
+        to: newRowModesModel,
+        stack: new Error().stack,
+        error: new Error(),
+        timestamp: new Date().toISOString(),
+        affectedRows: Object.keys(newRowModesModel).filter(
+          (key) =>
+            !rowModesModel[key] ||
+            rowModesModel[key].mode !== newRowModesModel[key].mode
+        ),
+        currentRows: rows,
+        apiRefState: apiRef.current?.state,
+        isEditMode: Object.values(newRowModesModel).some(
+          (mode) => mode.mode === GridRowModes.Edit
+        ),
+      });
+      setRowModesModel(newRowModesModel);
+    } catch (error) {
+      console.error("Error in handleRowModesModelChange:", {
+        error,
+        newRowModesModel,
+        currentRowModesModel: rowModesModel,
+        rows,
+        apiRefState: apiRef.current?.state,
+      });
+      throw error;
+    }
   };
 
   return (
@@ -573,7 +635,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={setRowModesModel}
+        onRowModesModelChange={handleRowModesModelChange}
+        // onRowModesModelChange={setRowModesModel}
         processRowUpdate={processRowUpdateMemoized}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
