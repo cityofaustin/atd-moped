@@ -542,8 +542,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   });
 
   const processRowUpdateMemoized = useCallback(
-    (updatedRow, originalRow, params) =>
-      processRowUpdate(updatedRow, originalRow, params, data),
+    (updatedRow, originalRow, params) => {
+      console.log("updatedRow", updatedRow);
+      console.log("originalRow", originalRow);
+      console.log("params", params);
+      return processRowUpdate(updatedRow, originalRow, params, data);
+    },
     [processRowUpdate, data]
   );
 
