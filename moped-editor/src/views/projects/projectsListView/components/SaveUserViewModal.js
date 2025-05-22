@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useMutation } from "@apollo/client";
 import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -13,17 +13,32 @@ const SaveUserViewModal = ({
   filtersLabels,
   setIsViewSaved,
   handleSnackbar,
+  searchTerm,
 }) => {
   const [saveView, { loading }] = useMutation(ADD_USER_SAVED_VIEW);
 
   let { pathname, search } = useLocation();
 
-  const defaultDescription = filtersLabels
-    .map(
-      (filter) =>
-        `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
-    )
-    .join(", ");
+  const defaultDescription = useMemo(() => {
+    const filtersDescription = filtersLabels
+      .map(
+        (filter) =>
+          `${filter.filterLabel} ${filter.operatorLabel} ${filter.filterValue}`
+      )
+      .join(", ");
+
+    if (filtersDescription && searchTerm) {
+      return `${searchTerm} with ${filtersDescription}`;
+    }
+    if (filtersDescription && !searchTerm) {
+      return filtersDescription;
+    }
+    if (!filtersDescription && searchTerm) {
+      return searchTerm;
+    } else {
+      return "";
+    }
+  }, [filtersLabels, searchTerm]);
 
   const onClose = () => {
     setIsSaveViewModalOpen(false);
