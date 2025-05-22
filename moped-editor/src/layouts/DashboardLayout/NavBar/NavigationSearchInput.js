@@ -10,11 +10,10 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import clsx from "clsx";
 import SearchIcon from "@mui/icons-material/Search";
-import GQLAbstract from "../../../libs/GQLAbstract";
 import { useLazyQuery } from "@apollo/client";
-import { NavigationSearchQueryConf } from "./NavigationSearchQueryConf";
+import { NAVIGATION_SEARCH_QUERY_CONFIG } from "./NavigationSearchQueryConf";
 import NavigationSearchResults from "./NavigationSearchResults.js";
-import { getSearchValue } from "../../../utils/gridTableHelpers";
+import { useNavigationSearch } from "./useNavigationSearchQuery";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -139,9 +138,6 @@ const useStyles = makeStyles((theme) => ({
 const NavigationSearchInput = ({ input404Class }) => {
   const classes = useStyles();
   const divRef = React.useRef();
-  const projectSearchQuery = React.useRef(
-    new GQLAbstract(NavigationSearchQueryConf)
-  );
 
   // Toggle Text Input or magnifying glass
   const [searchInput, showSearchInput] = useState(false);
@@ -152,16 +148,17 @@ const NavigationSearchInput = ({ input404Class }) => {
   const [popperEnterComplete, setPopperEntered] = useState(false);
   // boolean used to initiate slide animation
   const [showSlideIn, toggleSlideIn] = useState(false);
+  // format search query based on search term
+  const navSearchQuery = useNavigationSearch({ searchTerm });
 
   const [loadSearchResults, { called, loading, data }] = useLazyQuery(
-    projectSearchQuery.current.gql,
-    projectSearchQuery.current.config.options.useQuery
+    navSearchQuery.query,
+    NAVIGATION_SEARCH_QUERY_CONFIG.options.useQuery
   );
 
-  /* Clear input and reset the gqlabstract 'or' config */
+  /* Clear input */
   const clearSearchInput = () => {
     setSearchTerm("");
-    projectSearchQuery.current.resetFull();
   };
 
   // when magnifying glass icon is clicked, show search bar and initiate animation
@@ -211,61 +208,20 @@ const NavigationSearchInput = ({ input404Class }) => {
         toggleSlideIn(false);
         clearSearchInput();
         break;
-      // On Enter key, initialize the search
-      case "Enter":
-        handleSearchSubmission(null);
-        break;
-
       default:
         return;
     }
   };
 
-  /**
-   * Formats search term and triggers lazy query to load search results
-   * @param {event} - Event that triggered submission
-   */
-  const handleSearchSubmission = (event) => {
-    // Stop if we don't have any value entered in the search field
-    if (searchTerm.length === 0) {
-      return;
-    }
-
-    // Prevent default behavior on any event
-    if (event) event.preventDefault();
-
-    // Formats search query based on project search columns and config
-    Object.keys(projectSearchQuery.current.config.columns)
-      .filter(
-        (column) =>
-          projectSearchQuery.current.config.columns[column]?.searchable
-      )
-      .forEach((column) => {
-        const { operator, quoted, envelope } =
-          projectSearchQuery.current.config.columns[column].search;
-        const searchValue = getSearchValue(
-          projectSearchQuery.current.config,
-          column,
-          searchTerm
-        );
-        const graphqlSearchValue = quoted
-          ? `"${envelope.replace("{VALUE}", searchValue)}"`
-          : searchValue;
-
-        projectSearchQuery.current.setOr(
-          column,
-          `${operator}: ${graphqlSearchValue}`
-        );
-      });
-
-    // Initiate Lazy Query to get search results
-    loadSearchResults();
-  };
-
   // Search as user updates searchTerm
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
-      handleSearchSubmission(null);
+      if (searchTerm.length === 0) {
+        return;
+      }
+
+      // Initiate Lazy Query to get search results
+      loadSearchResults();
     }, 500);
 
     return () => clearTimeout(delayDebounceFn);
@@ -339,7 +295,7 @@ const NavigationSearchInput = ({ input404Class }) => {
               container={searchResultsAnchor}
             >
               <Box className={classes.searchResults}>
-                {called && !loading && (
+                {called && !loading && !!searchTerm.length > 0 && (
                   <NavigationSearchResults
                     results={data?.project_list_view || []}
                     handleDropdownClose={handleDropdownClose}
