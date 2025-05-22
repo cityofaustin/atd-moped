@@ -67,9 +67,8 @@ export const TABLE_LOOKUPS_QUERY = gql`
       order_by: { type: asc, name: asc }
     ) {
       id
-      type
-      name
       slug
+      full_name
     }
     moped_project_roles(
       where: { active_role: { _eq: true } }

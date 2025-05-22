@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1739832264647_agol_view_is_mapped_bool/up.sql
+-- Most recent migration: moped-database/migrations/default/1747757018208_component_tags_nullable/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
@@ -106,7 +106,7 @@ subcomponents AS (
 component_tags AS (
     SELECT
         mpct.project_component_id,
-        string_agg((mct.type || ' - '::text) || mct.name, ', '::text) AS component_tags
+        string_agg(mct.full_name, ', '::text) AS component_tags
     FROM moped_proj_component_tags mpct
     LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
