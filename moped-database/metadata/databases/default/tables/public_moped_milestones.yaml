@@ -1,0 +1,43 @@
+table:
+  name: moped_milestones
+  schema: public
+object_relationships:
+  - name: moped_phase
+    using:
+      foreign_key_constraint_on: related_phase_id
+array_relationships:
+  - name: moped_proj_milestones
+    using:
+      foreign_key_constraint_on:
+        column: milestone_id
+        table:
+          name: moped_proj_milestones
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - milestone_id
+        - related_phase_id
+        - milestone_description
+        - milestone_name
+        - is_deleted
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - milestone_id
+        - related_phase_id
+        - milestone_description
+        - milestone_name
+        - is_deleted
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - milestone_id
+        - related_phase_id
+        - milestone_description
+        - milestone_name
+        - is_deleted
+      filter: {}

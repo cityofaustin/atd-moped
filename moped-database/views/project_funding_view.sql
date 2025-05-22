@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1736291471358_add_proj_fund_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1736291471358_add_proj_fund_view/up.sql
 
 CREATE OR REPLACE VIEW project_funding_view AS SELECT
     mp.project_id,

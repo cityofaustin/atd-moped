@@ -1,0 +1,28 @@
+table:
+  name: moped_fund_sources
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - funding_source_id
+        - funding_source_name
+        - is_deleted
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - funding_source_id
+        - funding_source_name
+        - is_deleted
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - funding_source_id
+        - funding_source_name
+        - is_deleted
+      filter: {}
+      allow_aggregations: true

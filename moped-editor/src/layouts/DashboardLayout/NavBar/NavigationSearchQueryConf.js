@@ -1,25 +1,21 @@
 /**
- * The Query configuration (now also including filters)
+ * The Query configuration for the navigation search input
  * @constant
  * @type {object}
  * @augments NavigationSearchFiltersConf
  * @default
  */
-export const NavigationSearchQueryConf = {
+export const NAVIGATION_SEARCH_QUERY_CONFIG = {
   options: {
     useQuery: {
       fetchPolicy: "cache-first", // Default is "cache-first", or use "no-cache"
     },
   },
   table: "project_list_view",
-  search: {
-    placeholder:
-      "Search by ID, name, description, phase, lead, sponsor, partners, eCAPRIS ID...",
-    defaultFieldsOperator: "_or",
-  },
+  limit: 10,
+  orderBy: "{ updated_at: desc }",
   columns: {
     project_id: {
-      searchable: true,
       search: {
         operator: "_eq",
         quoted: false,
@@ -29,7 +25,6 @@ export const NavigationSearchQueryConf = {
       type: "Int",
     },
     project_name_full: {
-      searchable: true,
       search: {
         operator: "_ilike",
         quoted: true,
@@ -38,7 +33,6 @@ export const NavigationSearchQueryConf = {
       type: "String",
     },
     project_description: {
-      searchable: true,
       search: {
         operator: "_ilike",
         quoted: true,
@@ -47,7 +41,6 @@ export const NavigationSearchQueryConf = {
       type: "String",
     },
     ecapris_subproject_id: {
-      searchable: true,
       search: {
         operator: "_ilike",
         quoted: true,
@@ -56,11 +49,4 @@ export const NavigationSearchQueryConf = {
       type: "string",
     },
   },
-  // This object gets consumed into the GQLAbstract system, and here is the single, un-nested order_by directive. ✅
-  order_by: { updated_at: "desc" },
-  where: null,
-  or: null,
-  and: null,
-  limit: 250,
-  offset: 0,
 };

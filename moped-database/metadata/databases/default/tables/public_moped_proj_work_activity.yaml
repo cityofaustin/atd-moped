@@ -1,0 +1,214 @@
+table:
+  name: moped_proj_work_activity
+  schema: public
+object_relationships:
+  - name: created_by_user
+    using:
+      foreign_key_constraint_on: created_by_user_id
+  - name: moped_project
+    using:
+      foreign_key_constraint_on: project_id
+  - name: moped_work_activity_status
+    using:
+      foreign_key_constraint_on: status_id
+  - name: updated_by_user
+    using:
+      foreign_key_constraint_on: updated_by_user_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - workgroup_contractor
+        - contract_number
+        - description
+        - project_id
+        - is_deleted
+        - work_assignment_id
+        - contract_amount
+        - interim_work_activity_id
+        - implementation_workgroup
+        - task_orders
+        - status_id
+        - status_note
+        - work_order_url
+  - role: moped-editor
+    permission:
+      check: {}
+      set:
+        created_by_user_id: x-hasura-user-db-id
+        updated_by_user_id: x-hasura-user-db-id
+      columns:
+        - workgroup_contractor
+        - contract_number
+        - description
+        - project_id
+        - is_deleted
+        - work_assignment_id
+        - contract_amount
+        - interim_work_activity_id
+        - implementation_workgroup
+        - task_orders
+        - status_id
+        - status_note
+        - work_order_url
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - contract_amount
+        - contract_number
+        - workgroup_contractor
+        - created_at
+        - created_by_user_id
+        - description
+        - id
+        - implementation_workgroup
+        - interim_work_activity_id
+        - is_deleted
+        - project_id
+        - status_id
+        - status_note
+        - task_orders
+        - updated_at
+        - updated_by_user_id
+        - work_assignment_id
+        - work_order_url
+        - reference_id
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - is_deleted
+        - contract_amount
+        - created_by_user_id
+        - id
+        - project_id
+        - status_id
+        - updated_by_user_id
+        - task_orders
+        - contract_number
+        - workgroup_contractor
+        - description
+        - implementation_workgroup
+        - interim_work_activity_id
+        - status_note
+        - work_assignment_id
+        - created_at
+        - updated_at
+        - work_order_url
+        - reference_id
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - is_deleted
+        - contract_amount
+        - created_by_user_id
+        - id
+        - project_id
+        - status_id
+        - updated_by_user_id
+        - task_orders
+        - contract_number
+        - workgroup_contractor
+        - description
+        - implementation_workgroup
+        - interim_work_activity_id
+        - status_note
+        - work_assignment_id
+        - created_at
+        - updated_at
+        - work_order_url
+        - reference_id
+      filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - workgroup_contractor
+        - contract_number
+        - description
+        - project_id
+        - is_deleted
+        - work_assignment_id
+        - contract_amount
+        - interim_work_activity_id
+        - implementation_workgroup
+        - task_orders
+        - status_id
+        - status_note
+        - work_order_url
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+  - role: moped-editor
+    permission:
+      columns:
+        - workgroup_contractor
+        - contract_number
+        - description
+        - project_id
+        - is_deleted
+        - work_assignment_id
+        - contract_amount
+        - interim_work_activity_id
+        - implementation_workgroup
+        - task_orders
+        - status_id
+        - status_note
+        - work_order_url
+      filter: {}
+      check: {}
+      set:
+        updated_by_user_id: x-hasura-user-db-id
+event_triggers:
+  - name: activity_log_moped_proj_work_activity
+    definition:
+      enable_manual: false
+      insert:
+        columns: '*'
+      update:
+        columns: '*'
+    retry_conf:
+      interval_sec: 10
+      num_retries: 0
+      timeout_sec: 60
+    webhook_from_env: HASURA_ENDPOINT
+    headers:
+      - name: x-hasura-admin-secret
+        value_from_env: ACTIVITY_LOG_API_SECRET
+    request_transform:
+      body:
+        action: transform
+        template: |-
+          {
+            "query": "mutation InsertActivity($object: moped_activity_log_insert_input!) { insert_moped_activity_log_one(object: $object) { activity_id }}",
+            "variables": {
+              "object": {
+                "record_id": {{ $body.event.data.new.id }},
+                "record_type":  {{ $body.table.name }},
+                "activity_id": {{ $body.id }},
+                "record_project_id": {{ $body.event.data.new.project_id }},
+                "record_data": {"event": {{ $body.event }}},
+                "description": [{"newSchema": "true"}],
+                "operation_type": {{ $body.event.op }},
+                "updated_by_user_id": {{ $session_variables?['x-hasura-user-db-id'] ?? 1}}
+              }
+            }
+          }
+      method: POST
+      query_params: {}
+      template_engine: Kriti
+      version: 2
+    cleanup_config:
+      batch_size: 10000
+      clean_invocation_logs: false
+      clear_older_than: 168
+      paused: true
+      schedule: 0 0 * * *
+      timeout: 60

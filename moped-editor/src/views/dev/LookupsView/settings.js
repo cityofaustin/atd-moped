@@ -118,8 +118,7 @@ export const SETTINGS = [
     label: "Component tags",
     columns: [
       { key: "id", label: "ID" },
-      { key: "type", label: "Type" },
-      { key: "name", label: "Name" },
+      { key: "full_name", label: "Full name" },
       { key: "slug", label: "Slug" },
     ],
   },
