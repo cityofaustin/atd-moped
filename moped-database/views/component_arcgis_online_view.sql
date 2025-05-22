@@ -4,8 +4,8 @@ CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
         mpcwt.project_component_id,
         string_agg(mwt.name, ', '::text) AS work_types
-    FROM moped_proj_component_work_types mpcwt
-    LEFT JOIN moped_work_types mwt ON mpcwt.work_type_id = mwt.id
+    FROM moped_proj_component_work_types AS mpcwt
+    LEFT JOIN moped_work_types AS mwt ON mpcwt.work_type_id = mwt.id
     WHERE mpcwt.is_deleted = false
     GROUP BY mpcwt.project_component_id
 ),
@@ -89,7 +89,7 @@ comp_geography AS (
             null::integer AS length_feet
         FROM feature_school_beacons
         WHERE feature_school_beacons.is_deleted = false
-    ) feature_union
+    ) AS feature_union
     GROUP BY feature_union.component_id
 ),
 
@@ -97,8 +97,8 @@ subcomponents AS (
     SELECT
         mpcs.project_component_id,
         string_agg(ms.subcomponent_name, ', '::text) AS subcomponents
-    FROM moped_proj_components_subcomponents mpcs
-    LEFT JOIN moped_subcomponents ms ON mpcs.subcomponent_id = ms.subcomponent_id
+    FROM moped_proj_components_subcomponents AS mpcs
+    LEFT JOIN moped_subcomponents AS ms ON mpcs.subcomponent_id = ms.subcomponent_id
     WHERE mpcs.is_deleted = false
     GROUP BY mpcs.project_component_id
 ),
@@ -107,8 +107,8 @@ component_tags AS (
     SELECT
         mpct.project_component_id,
         string_agg(mct.full_name, ', '::text) AS component_tags
-    FROM moped_proj_component_tags mpct
-    LEFT JOIN moped_component_tags mct ON mpct.component_tag_id = mct.id
+    FROM moped_proj_component_tags AS mpct
+    LEFT JOIN moped_component_tags AS mct ON mpct.component_tag_id = mct.id
     WHERE mpct.is_deleted = false
     GROUP BY mpct.project_component_id
 ),
@@ -118,8 +118,8 @@ related_projects AS (
         pmp.project_id,
         concat_ws(', '::text, pmp.project_id, string_agg(cmp.project_id::text, ', '::text)) AS related_project_ids_with_self,
         concat_ws(', '::text, lpad(pmp.project_id::text, 5, '0'::text), string_agg(lpad(cmp.project_id::text, 5, '0'::text), ', '::text)) AS related_project_ids_searchable_with_self
-    FROM moped_project pmp
-    LEFT JOIN moped_project cmp ON pmp.project_id = cmp.parent_project_id
+    FROM moped_project AS pmp
+    LEFT JOIN moped_project AS cmp ON pmp.project_id = cmp.parent_project_id
     WHERE cmp.is_deleted = false
     GROUP BY pmp.project_id
 ),
@@ -128,7 +128,7 @@ latest_public_meeting_date AS (
     SELECT
         mpm.project_id,
         coalesce(max(mpm.date_actual), max(mpm.date_estimate)) AS latest
-    FROM moped_proj_milestones mpm
+    FROM moped_proj_milestones AS mpm
     WHERE mpm.milestone_id = 65 AND mpm.is_deleted = false
     GROUP BY mpm.project_id
 ),
@@ -137,12 +137,13 @@ earliest_active_or_construction_phase_date AS (
     SELECT
         mpp.project_id,
         min(mpp.phase_start) AS earliest
-    FROM moped_proj_phases mpp
-    LEFT JOIN moped_phases mp ON mpp.phase_id = mp.phase_id
+    FROM moped_proj_phases AS mpp
+    LEFT JOIN moped_phases AS mp ON mpp.phase_id = mp.phase_id
     WHERE (mp.phase_name_simple = any(ARRAY['Active'::text, 'Construction'::text])) AND mpp.is_deleted = false
     GROUP BY mpp.project_id
-)
+),
 
+project_development_status_date AS (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result)
 SELECT
     mpc.project_id,
     mpc.project_component_id,
@@ -164,10 +165,7 @@ SELECT
         WHEN mc.line_representation = true THEN 'Line'::text
         ELSE 'Point'::text
     END AS geometry_type,
-    CASE
-        WHEN comp_geography.geometry IS null THEN false
-        ELSE true
-    END AS is_mapped,
+    NOT coalesce (comp_geography.geometry IS null, FALSE) AS is_mapped,
     subcomponents.subcomponents AS component_subcomponents,
     work_types.work_types AS component_work_types,
     component_tags.component_tags,
@@ -236,18 +234,18 @@ SELECT
         ELSE date_part('quarter'::text, project_development_status_date.result) + 1::double precision
     END::text AS project_development_status_date_fiscal_year_quarter,
     plv.added_by AS project_added_by
-FROM moped_proj_components mpc
+FROM moped_proj_components AS mpc
 LEFT JOIN comp_geography ON mpc.project_component_id = comp_geography.project_component_id
 LEFT JOIN council_districts ON mpc.project_component_id = council_districts.project_component_id
 LEFT JOIN subcomponents ON mpc.project_component_id = subcomponents.project_component_id
 LEFT JOIN work_types ON mpc.project_component_id = work_types.project_component_id
 LEFT JOIN component_tags ON mpc.project_component_id = component_tags.project_component_id
-LEFT JOIN project_list_view plv ON mpc.project_id = plv.project_id
-LEFT JOIN current_phase_view current_phase ON mpc.project_id = current_phase.project_id
-LEFT JOIN moped_phases mph ON mpc.phase_id = mph.phase_id
-LEFT JOIN moped_components mc ON mpc.component_id = mc.component_id
-LEFT JOIN related_projects rp ON mpc.project_id = rp.project_id
-LEFT JOIN latest_public_meeting_date lpmd ON mpc.project_id = lpmd.project_id
-LEFT JOIN earliest_active_or_construction_phase_date eaocpd ON mpc.project_id = eaocpd.project_id
-LEFT JOIN LATERAL (SELECT timezone('US/Central'::text, get_project_development_status_date(lpmd.latest::timestamp with time zone, eaocpd.earliest, coalesce(mpc.completion_date, plv.substantial_completion_date), plv.substantial_completion_date_estimated, coalesce(mph.phase_name_simple, current_phase.phase_name_simple))) AS result) project_development_status_date ON true
+LEFT JOIN project_list_view AS plv ON mpc.project_id = plv.project_id
+LEFT JOIN current_phase_view AS current_phase ON mpc.project_id = current_phase.project_id
+LEFT JOIN moped_phases AS mph ON mpc.phase_id = mph.phase_id
+LEFT JOIN moped_components AS mc ON mpc.component_id = mc.component_id
+LEFT JOIN related_projects AS rp ON mpc.project_id = rp.project_id
+LEFT JOIN latest_public_meeting_date AS lpmd ON mpc.project_id = lpmd.project_id
+LEFT JOIN earliest_active_or_construction_phase_date AS eaocpd ON mpc.project_id = eaocpd.project_id
+LEFT JOIN LATERAL project_development_status_date ON true
 WHERE mpc.is_deleted = false AND plv.is_deleted = false;
