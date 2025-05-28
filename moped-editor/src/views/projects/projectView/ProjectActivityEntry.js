@@ -8,6 +8,13 @@ const useStyles = makeStyles(() => ({
   entryText: {
     padding: "0 0 0 .5rem",
   },
+  boldText: {
+    fontWeight: 600,
+  },
+  indentText: {
+    paddingLeft: "16px",
+    display: "block",
+  },
 }));
 
 /**
