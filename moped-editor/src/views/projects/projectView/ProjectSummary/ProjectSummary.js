@@ -30,6 +30,9 @@ import {
 } from "../../../../queries/project";
 
 const useStyles = makeStyles((theme) => ({
+  fieldGridItem: {
+    marginBottom: theme.spacing(3),
+  },
   editIconConfirm: {
     cursor: "pointer",
     margin: ".25rem 0",

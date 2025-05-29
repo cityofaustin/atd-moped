@@ -37,6 +37,22 @@ import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
 
 const useStyles = makeStyles((theme) => ({
+  fieldGridItem: {
+    margin: theme.spacing(2),
+  },
+  editIconConfirm: {
+    cursor: "pointer",
+    margin: ".25rem 0",
+    fontSize: "24px",
+  },
+  fieldLabel: {
+    width: "100%",
+    color: theme.palette.text.secondary,
+    fontSize: ".8rem",
+  },
+  fieldBox: {
+    maxWidth: "10rem",
+  },
   fundingButton: {
     position: "absolute",
     top: "1rem",

@@ -46,6 +46,18 @@ const useStyles = makeStyles((theme) => ({
   editorWrapper: {
     position: "relative",
   },
+  showButtonItem: {
+    margin: theme.spacing(2),
+  },
+  toolbarButtons: {
+    backgroundColor: theme.palette.primary.main,
+    "&:hover, &.Mui-focusVisible": {
+      backgroundColor: theme.palette.primary.main,
+    },
+  },
+  startIcon: {
+    margin: 0,
+  },
 }));
 
 // Catch any errors that occur during Lexical updates and log them
