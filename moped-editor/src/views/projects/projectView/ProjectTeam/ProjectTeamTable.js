@@ -5,7 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GridRowModes,
+  useGridApiRef,
+  GridRowEditStopReasons,
+} from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
@@ -121,8 +126,9 @@ const useColumns = ({
         },
         preProcessEditCellProps: (params) => {
           // Enforce required field
-          const hasError =
-            !params.props.value || params.props.value.length === 0;
+          // const hasError =
+          //   !params.props.value || params.props.value.length === 0;
+          const hasError = !params.props.value;
           return { ...params.props, error: hasError };
         },
       },
@@ -404,6 +410,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     []
   );
 
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
   const processRowUpdate = useCallback(
     (updatedRow, originalRow) => {
       let userId;
@@ -611,6 +623,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         editMode="row"
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
         onProcessRowUpdateError={(error) => console.error(error)}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
