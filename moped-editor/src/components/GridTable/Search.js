@@ -176,6 +176,7 @@ const Search = ({
                 filtersConfig={filtersConfig}
                 resetSimpleSearch={resetSimpleSearch}
                 setIsOr={setIsOr}
+                searchTerm={searchTerm}
                 setSearchParams={setSearchParams}
                 handleSnackbar={handleSnackbar}
               />
