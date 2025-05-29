@@ -5,19 +5,16 @@ import makeStyles from "@mui/styles/makeStyles";
 import MenuIcon from "@mui/icons-material/Menu";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { helpItems, arcGISLink } from "./DropdownMenu";
-import { navigationItems } from "../TopBar";
-import { CanAddProjectButton } from "../../../views/projects/projectsListView/ProjectListViewCustomComponents";
+import {
+  helpItems,
+  arcGISLink,
+} from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
+import { navigationItems } from "src/layouts/DashboardLayout/TopBar";
+import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-  },
+const useStyles = makeStyles(() => ({
   subMenu: {
     marginLeft: "1em",
-  },
-  newProject: {
-    marginRight: 8,
   },
 }));
 

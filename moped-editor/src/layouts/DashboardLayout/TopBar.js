@@ -6,10 +6,10 @@ import { AppBar, Box, Hidden, Toolbar, Tabs, Tab } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import { Alert } from "@mui/material";
 import Logo from "src/components/Logo";
-import { CanAddProjectButton } from "../../views/projects/projectsListView/ProjectListViewCustomComponents";
-import MobileDropdownMenu from "./NavBar/MobileDropdownMenu";
-import DropdownMenu from "./NavBar/DropdownMenu";
-import NavigationSearchInput from "./NavBar/NavigationSearchInput";
+import { CanAddProjectButton } from "src/views/projects/projectsListView/ProjectListViewCustomComponents";
+import MobileDropdownMenu from "src/layouts/DashboardLayout/NavBar/MobileDropdownMenu";
+import DropdownMenu from "src/layouts/DashboardLayout/NavBar/DropdownMenu";
+import NavigationSearchInput from "src/layouts/DashboardLayout/NavBar/NavigationSearchInput";
 import NavLink from "src/components/NavLink";
 
 const getAlertBannerSeverity = (env) => {
@@ -57,12 +57,6 @@ const useStyles = makeStyles((theme) => ({
     borderBottomWidth: "2px",
     borderStyle: "solid",
     fontWeight: 800,
-  },
-  mobileMenu: {
-    width: 300,
-  },
-  subMenu: {
-    marginLeft: "1em",
   },
   newProject: {
     marginRight: 8,

@@ -6,8 +6,8 @@ import {
 } from "./helpers";
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { WORKGROUPS_QUERY } from "../../queries/workgroups";
-import { findHighestRole } from "../../auth/user";
+import { WORKGROUPS_QUERY } from "src/queries/workgroups";
+import { findHighestRole } from "src/auth/user";
 
 import { useQuery } from "@apollo/client";
 import {
@@ -25,19 +25,12 @@ import {
   Select,
 } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
-import StaffFormErrorModal from "./components/StaffFormErrorModal";
-import StaffFormConfirmModal from "./components/StaffFormConfirmModal";
+import StaffFormErrorModal from "src/views/staff/components/StaffFormErrorModal";
+import StaffFormConfirmModal from "src/views/staff/components/StaffFormConfirmModal";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   formSelect: {
     minWidth: 195,
-  },
-  formButton: {
-    margin: theme.spacing(1),
-    color: "white",
-  },
-  hiddenTextField: {
-    display: "none",
   },
 }));
 

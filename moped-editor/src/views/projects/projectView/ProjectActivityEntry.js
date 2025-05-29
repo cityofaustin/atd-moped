@@ -4,7 +4,7 @@ import { NavLink as RouterLink } from "react-router-dom";
 
 import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   entryText: {
     padding: "0 0 0 .5rem",
   },

@@ -8,10 +8,6 @@ import { Icon, Button, CircularProgress } from "@mui/material";
  * Styles
  */
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: "flex",
-    alignItems: "center",
-  },
   wrapper: {
     margin: theme.spacing(1),
     position: "relative",
@@ -24,13 +20,6 @@ const useStyles = makeStyles((theme) => ({
     },
     disabled: true,
     cursor: "default",
-  },
-  fabProgress: {
-    color: green[500],
-    position: "absolute",
-    top: -6,
-    left: -6,
-    zIndex: 1,
   },
   buttonProgress: {
     color: green[500],

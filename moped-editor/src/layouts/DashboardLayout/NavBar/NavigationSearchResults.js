@@ -4,11 +4,7 @@ import makeStyles from "@mui/styles/makeStyles";
 import { Link as RouterLink } from "react-router-dom";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    backgroundColor: theme.palette.background.paper,
-    marginRight: "1em",
-  },
+const useStyles = makeStyles(() => ({
   padding: {
     paddingTop: "0px",
     paddingBottom: "0px",

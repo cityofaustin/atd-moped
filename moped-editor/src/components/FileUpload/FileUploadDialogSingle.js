@@ -16,21 +16,11 @@ import {
   MenuItem,
   Switch,
 } from "@mui/material";
-import FileUpload from "./FileUpload";
+import FileUpload from "src/components/FileUpload/FileUpload";
 
 import makeStyles from "@mui/styles/makeStyles";
 
-const useStyles = makeStyles((theme) => ({
-  title: {
-    padding: "0rem 0 2rem 0",
-  },
-  uploadFileButton: {
-    float: "right",
-  },
-  secondaryHeading: {
-    fontSize: theme.typography.pxToRem(15),
-    color: theme.palette.text.secondary,
-  },
+const useStyles = makeStyles(() => ({
   textField: {
     marginTop: "1rem",
     marginBottom: "1rem",

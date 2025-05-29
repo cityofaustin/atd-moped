@@ -1,18 +1,13 @@
 import React from "react";
 import clsx from "clsx";
 import { Paper, Box, Avatar } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemAvatar from "@mui/material/ListItemAvatar";
 import ListItemText from "@mui/material/ListItemText";
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    minHeight: "100%",
-    paddingBottom: theme.spacing(3),
-    paddingTop: theme.spacing(3),
-  },
+const useStyles = makeStyles((theme) => ({
   colorCircles: {
     width: "60px",
     height: "60px",

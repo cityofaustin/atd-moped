@@ -7,33 +7,33 @@ import Drawer from "@mui/material/Drawer";
 import CssBaseline from "@mui/material/CssBaseline";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import TheMap from "./TheMap";
-import CreateComponentModal from "./CreateComponentModal";
-import EditAttributesModal from "./EditAttributesModal";
-import DeleteComponentModal from "./DeleteComponentModal";
-import ComponentMapToolbar from "./ComponentMapToolbar";
-import MoveProjectComponentModal from "./MoveProjectComponentModal";
-import { useAppBarHeight } from "./utils/map";
+import TheMap from "src/views/projects/projectView/ProjectComponents/TheMap";
+import CreateComponentModal from "src/views/projects/projectView/ProjectComponents/CreateComponentModal";
+import EditAttributesModal from "src/views/projects/projectView/ProjectComponents/EditAttributesModal";
+import DeleteComponentModal from "src/views/projects/projectView/ProjectComponents/DeleteComponentModal";
+import ComponentMapToolbar from "src/views/projects/projectView/ProjectComponents/ComponentMapToolbar";
+import MoveProjectComponentModal from "src/views/projects/projectView/ProjectComponents/MoveProjectComponentModal";
+import { useAppBarHeight } from "src/views/projects/projectView/ProjectComponents/utils/map";
 import { GET_PROJECT_COMPONENTS } from "src/queries/components";
 import { getAllComponentFeatures } from "./utils/makeFeatureCollections";
 import { fitBoundsOptions } from "./mapSettings";
-import { useCreateComponent } from "./utils/useCreateComponent";
-import { useUpdateComponent } from "./utils/useUpdateComponent";
-import { useDeleteComponent } from "./utils/useDeleteComponent";
+import { useCreateComponent } from "src/views/projects/projectView/ProjectComponents/utils/useCreateComponent";
+import { useUpdateComponent } from "src/views/projects/projectView/ProjectComponents/utils/useUpdateComponent";
+import { useDeleteComponent } from "src/views/projects/projectView/ProjectComponents/utils/useDeleteComponent";
 import {
   useComponentLinkParams,
   updateClickedComponentIdInSearchParams,
 } from "./utils/useComponentLinkParams";
-import { useToolbarErrorMessage } from "./utils/useToolbarErrorMessage";
-import { zoomMapToFeatureCollection } from "./utils/map";
-import { useProjectComponents } from "./utils/useProjectComponents";
-import NewComponentToolbar from "./NewComponentToolbar";
-import DraftComponentList from "./DraftComponentList";
-import ProjectComponentsList from "./ProjectComponentsList";
+import { useToolbarErrorMessage } from "src/views/projects/projectView/ProjectComponents/utils/useToolbarErrorMessage";
+import { zoomMapToFeatureCollection } from "src/views/projects/projectView/ProjectComponents/utils/map";
+import { useProjectComponents } from "src/views/projects/projectView/ProjectComponents/utils/useProjectComponents";
+import NewComponentToolbar from "src/views/projects/projectView/ProjectComponents/NewComponentToolbar";
+import DraftComponentList from "src/views/projects/projectView/ProjectComponents/DraftComponentList";
+import ProjectComponentsList from "src/views/projects/projectView/ProjectComponents/ProjectComponentsList";
 
 export const drawerWidth = 350;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: "flex",
   },
@@ -51,9 +51,6 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     backgroundColor: "#fff",
     minHeight: ({ appBarHeight }) => `calc(100vh - ${appBarHeight}px)`,
-  },
-  margin: {
-    margin: theme.spacing(1),
   },
 }));
 

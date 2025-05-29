@@ -15,17 +15,16 @@ import {
   TableRow,
 } from "@mui/material";
 
-import { PROJECT_ACTIVITY_LOG } from "../../../queries/project";
+import { PROJECT_ACTIVITY_LOG } from "src/queries/project";
 import makeStyles from "@mui/styles/makeStyles";
 import { Alert } from "@mui/material";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import CDNAvatar from "../../../components/CDN/Avatar";
-import typography from "src/theme/typography";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import CDNAvatar from "src/components/CDN/Avatar";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { getUserFullName, getInitials } from "../../../utils/userNames";
-import ProjectActivityEntry from "./ProjectActivityEntry";
+import { getUserFullName, getInitials } from "src/utils/userNames";
+import ProjectActivityEntry from "src/views/projects/projectView/ProjectActivityEntry";
 
-import { formatActivityLogEntry } from "../../../utils/activityLogHelpers";
+import { formatActivityLogEntry } from "src/utils/activityLogHelpers";
 
 const useStyles = makeStyles((theme) => ({
   table: {
@@ -40,18 +39,6 @@ const useStyles = makeStyles((theme) => ({
   },
   avatarName: {
     margin: "0.3rem 0 0 .5rem",
-  },
-  projectPageHeader: {
-    fontFamily: typography.fontFamily,
-    padding: "0rem 0 2rem 0",
-  },
-  boldText: {
-    fontWeight: 700,
-  },
-  mutedDate: {
-    display: "block",
-    fontSize: ".75rem",
-    color: theme.palette.text.secondary,
   },
 }));
 
