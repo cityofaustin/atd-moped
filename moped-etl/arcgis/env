@@ -1,0 +1,4 @@
+AGOL_USERNAME=ATD_Publisher_Scripts
+AGOL_PASSWORD=DTS@8700cameron
+HASURA_ENDPOINT=http://host.docker.internal:8080/v1/graphql
+HASURA_ADMIN_SECRET=hasurapassword

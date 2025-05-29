@@ -25,7 +25,7 @@ services:
 
 
     moped-pgsql:
-        image: "frankinaustin/postgis:16-3.5"
+        image: "atddocker/postgis:unified-db"
         volumes:
             - moped-db-vol:/var/lib/postgresql/data
         expose:
