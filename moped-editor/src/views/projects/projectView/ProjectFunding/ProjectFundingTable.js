@@ -58,6 +58,15 @@ const useStyles = makeStyles((theme) => ({
     top: "1rem",
     right: "1rem",
   },
+  fieldLabelText: {
+    width: "calc(100% - 2rem)",
+    paddingLeft: theme.spacing(0.5),
+    "&:hover": {
+      backgroundColor: theme.palette.background.summaryHover,
+      borderRadius: theme.spacing(0.5),
+      cursor: "pointer",
+    },
+  },
   toolbarTitle: {
     marginBottom: theme.spacing(1),
   },
