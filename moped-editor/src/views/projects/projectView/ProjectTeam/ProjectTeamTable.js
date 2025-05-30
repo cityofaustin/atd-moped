@@ -446,7 +446,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         roleIds: updatedRow.moped_proj_personnel_roles.map(
           (role) => role.project_role_id
         ),
-        moped_user: userId || updatedRow.moped_user?.user_id || null,
+        moped_user: updatedRow.moped_user?.user_id || null,
       };
       const normalizedOriginalRow = {
         ...originalRow,
@@ -486,6 +486,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
             throw error;
           });
       } else {
+        // Ensure project_personnel_id is an integer
         const personnelId = parseInt(updatedRow.project_personnel_id);
 
         if (!personnelId) {
@@ -507,11 +508,13 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           originalRow
         );
 
-        payload.user_id = userId || updatedRow.moped_user?.user_id;
+        // get update name
+        payload.user_id = userId;
 
-        if (userObject) {
-          updatedRow.moped_user = userObject;
-        }
+        const fullMopedUserObject = data.moped_users.find(
+          (user) => user.user_id === userId
+        );
+        updatedRow.moped_user = fullMopedUserObject;
 
         const variables = {
           id: personnelId,
