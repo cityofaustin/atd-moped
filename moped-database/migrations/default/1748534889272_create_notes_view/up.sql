@@ -7,6 +7,7 @@ INSERT INTO moped_note_types (name, slug, source)
 VALUES
 ('eCapris status', 'ecapris_status', 'ecapris');
 
+-- Create the combined_project_notes view for the project notes tab and status update in summary view
 CREATE OR REPLACE VIEW combined_project_notes AS
 SELECT
     ('M' || moped_proj_notes.project_note_id) AS id,
@@ -41,3 +42,5 @@ LEFT JOIN moped_users ON ecapris_subproject_statuses.created_by_user_id = moped_
 LEFT JOIN moped_note_types ON moped_note_types.slug = 'ecapris_status'
 ORDER BY
     created_at DESC;
+
+-- TODO: Update AGOL view to reference latest status update
