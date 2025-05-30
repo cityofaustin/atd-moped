@@ -1,11 +1,16 @@
-import { useState, useMemo, useEffect, useCallback } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
+import {
+  DataGridPro,
+  GridRowModes,
+  useGridApiRef,
+  GridRowEditStopReasons,
+} from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
@@ -282,22 +287,25 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
    * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
    */
 
-  const getNewPersonnelPayload = ({
-    newData: {
-      moped_user: { user_id },
-      notes,
-      moped_proj_personnel_roles,
-    },
-    projectId: project_id,
-  }) => {
-    const payload = { notes, project_id, user_id };
-    const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
-      project_role_id: roles.project_role_id,
-    }));
+  const getNewPersonnelPayload = useCallback(
+    ({
+      newData: {
+        moped_user: { user_id },
+        notes,
+        moped_proj_personnel_roles,
+      },
+      projectId: project_id,
+    }) => {
+      const payload = { notes, project_id, user_id };
+      const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
+        project_role_id: roles.project_role_id,
+      }));
 
-    payload.moped_proj_personnel_roles = { data: personnelRoles };
-    return payload;
-  };
+      payload.moped_proj_personnel_roles = { data: personnelRoles };
+      return payload;
+    },
+    []
+  );
 
   /**
    * Construct a moped_project_personnel object that can be passed to an update mutation
@@ -306,13 +314,13 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
    * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
    *  is handled separately
    */
-  const getEditPersonnelPayload = (newData) => {
+  const getEditPersonnelPayload = useCallback((newData) => {
     const {
       moped_user: { user_id },
       notes,
     } = newData;
     return { user_id, notes };
-  };
+  }, []);
 
   /**
    * Constructs payload objects for adding and removing moped_proj_personnel_roles
@@ -321,7 +329,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
    * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
    *  personnel role objects to delete
    */
-  const getEditRolesPayload = (newData, oldData) => {
+  const getEditRolesPayload = useCallback((newData, oldData) => {
     const { project_personnel_id } = oldData;
 
     // get an array of moped_proj_personnel_roles IDs to delete
@@ -344,7 +352,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
       project_role_id: newRoleId,
     }));
     return [rolesToAddPayload, projRoleIdsToDelete];
-  };
+  }, []);
 
   const onClickAddTeamMember = () => {
     const id = uuidv4();
@@ -404,8 +412,14 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     []
   );
 
+  const handleRowEditStop = (params, event) => {
+    if (params.reason === GridRowEditStopReasons.enterKeyDown) {
+      event.defaultMuiPrevented = true;
+    }
+  };
+
   const processRowUpdate = useCallback(
-    (updatedRow, originalRow, params, data) => {
+    (updatedRow, originalRow) => {
       let userId;
 
       const userObject = data.moped_users.find((user) => {
@@ -422,7 +436,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         userId = userObject.user_id;
         updatedRow.moped_user = userObject; // Update with full user object
       } else {
-        console.error("Invalid user data:", updatedRow.moped_user);
+        console.error(
+          "Invalid user data, user not found:",
+          updatedRow.moped_user
+        );
         throw new Error("Invalid user data");
       }
 
@@ -469,6 +486,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error adding team member", "error", error);
+            throw error;
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -516,15 +534,20 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error updating team member", "error", error);
+            throw error;
           });
       }
     },
     [
-      updateProjectPersonnel,
+      data,
       insertProjectPersonnel,
+      updateProjectPersonnel,
       projectId,
       refetch,
       handleSnackbar,
+      getNewPersonnelPayload,
+      getEditPersonnelPayload,
+      getEditRolesPayload,
     ]
   );
 
@@ -541,12 +564,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     existingTeamMembers,
   });
 
-  const processRowUpdateMemoized = useCallback(
-    (updatedRow, originalRow, params) =>
-      processRowUpdate(updatedRow, originalRow, params, data),
-    [processRowUpdate, data]
-  );
-
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
   if (loading || !data) return <CircularProgress />;
@@ -555,6 +572,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
     }
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
   };
 
   return (
@@ -569,8 +590,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={setRowModesModel}
-        processRowUpdate={processRowUpdateMemoized}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        onProcessRowUpdateError={(error) => console.error(error)}
+        processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar
