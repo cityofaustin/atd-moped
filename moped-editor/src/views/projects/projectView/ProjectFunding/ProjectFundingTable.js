@@ -35,6 +35,7 @@ import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
@@ -584,6 +585,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
+          onRowEditStop={handleRowEditStop}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.error(error)}
