@@ -126,9 +126,8 @@ const useColumns = ({
         },
         preProcessEditCellProps: (params) => {
           // Enforce required field
-          // const hasError =
-          //   !params.props.value || params.props.value.length === 0;
-          const hasError = !params.props.value;
+          const hasError =
+            !params.props.value || params.props.value.length === 0;
           return { ...params.props, error: hasError };
         },
       },
@@ -434,16 +433,14 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         userId = userObject.user_id;
         updatedRow.moped_user = userObject; // Update with full user object
       } else {
-        if (!updatedRow.moped_user?.user_id) {
-          console.error(
-            "Invalid user data, user not found:",
-            updatedRow.moped_user
-          );
-          return Promise.reject(new Error("Invalid user data: User not found"));
-        }
-        userId = updatedRow.moped_user.user_id;
+        console.error(
+          "Invalid user data, user not found:",
+          updatedRow.moped_user
+        );
+        throw new Error("Invalid user data");
       }
 
+      // normalize the updatedRow and originalRow
       const normalizedUpdatedRow = {
         ...updatedRow,
         roleIds: updatedRow.moped_proj_personnel_roles.map(
@@ -459,6 +456,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         moped_user: originalRow.moped_user?.user_id || null,
       };
 
+      // Check if the row has changed, including the roles array
       const hasRowChanged = !isEqual(
         normalizedUpdatedRow,
         normalizedOriginalRow
@@ -481,8 +479,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => {
             refetch();
             handleSnackbar(true, "Team member added", "success");
-            return updatedRow;
           })
+          .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error adding team member", "error", error);
             throw error;
@@ -495,9 +493,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
             "Invalid project_personnel_id:",
             updatedRow.project_personnel_id
           );
-          return Promise.reject(new Error("Invalid project_personnel_id"));
+          throw new Error("Invalid project_personnel_id");
         }
 
+        // Update roleIds to be in sync with moped_proj_personnel_roles
         updatedRow.roleIds = updatedRow.moped_proj_personnel_roles.map(
           (role) => role.project_role_id
         );
@@ -525,8 +524,8 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => {
             refetch();
             handleSnackbar(true, "Team member updated", "success");
-            return updatedRow;
           })
+          .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error updating team member", "error", error);
             throw error;
@@ -567,47 +566,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
     }
-
-    if (params.cellMode === GridRowModes.Edit && event.key === "Enter") {
-      console.log("Enter pressed in edit mode:", {
-        params,
-        event,
-        currentRowModesModel: rowModesModel,
-      });
-      // TODO: handle the enter key press?
-    }
   };
 
   const handleRowModesModelChange = (newRowModesModel) => {
-    try {
-      console.log("Row mode changing:", {
-        from: rowModesModel,
-        to: newRowModesModel,
-        stack: new Error().stack,
-        error: new Error(),
-        timestamp: new Date().toISOString(),
-        affectedRows: Object.keys(newRowModesModel).filter(
-          (key) =>
-            !rowModesModel[key] ||
-            rowModesModel[key].mode !== newRowModesModel[key].mode
-        ),
-        currentRows: rows,
-        apiRefState: apiRef.current?.state,
-        isEditMode: Object.values(newRowModesModel).some(
-          (mode) => mode.mode === GridRowModes.Edit
-        ),
-      });
-      setRowModesModel(newRowModesModel);
-    } catch (error) {
-      console.error("Error in handleRowModesModelChange:", {
-        error,
-        newRowModesModel,
-        currentRowModesModel: rowModesModel,
-        rows,
-        apiRefState: apiRef.current?.state,
-      });
-      throw error;
-    }
+    setRowModesModel(newRowModesModel);
   };
 
   return (
