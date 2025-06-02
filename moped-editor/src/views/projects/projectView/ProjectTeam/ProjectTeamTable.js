@@ -586,7 +586,9 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         rowModesModel={rowModesModel}
         onRowModesModelChange={handleRowModesModelChange}
         onRowEditStop={handleRowEditStop}
-        onProcessRowUpdateError={(error) => console.error(error)}
+        onProcessRowUpdateError={(error) => {
+          console.error("Unexpected error in processRowUpdate:", error);
+        }}
         processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
