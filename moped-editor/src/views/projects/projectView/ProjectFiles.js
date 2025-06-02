@@ -63,7 +63,7 @@ const useStyles = makeStyles(() => ({
 export const useFileTypeObject = (fileTypes) =>
   useMemo(
     () =>
-     fileTypes.reduce(
+      fileTypes.reduce(
         (obj, item) =>
           Object.assign(obj, {
             [item.id]: item.name,
@@ -89,7 +89,7 @@ const useColumns = ({
   handleDeleteOpen,
   validateFileInput,
   fileTypesLookup,
-  fileTypesObject
+  fileTypesObject,
 }) =>
   useMemo(() => {
     return [
@@ -335,7 +335,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   });
 
   const fileTypesLookup = data?.moped_file_types;
-  const fileTypesObject = useFileTypeObject(data?.moped_file_types || [])
+  const fileTypesObject = useFileTypeObject(data?.moped_file_types || []);
 
   useEffect(() => {
     if (data && data.moped_project_files.length > 0) {
@@ -461,7 +461,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
     handleEditClick,
     validateFileInput,
     fileTypesLookup,
-    fileTypesObject
+    fileTypesObject,
   });
 
   // If no data or loading show progress circle
