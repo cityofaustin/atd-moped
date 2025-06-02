@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1739832264644_update_districts_to_jsonb/up.sql
+-- Most recent migration: moped-database/migrations/default/1748534889272_create_notes_view/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT
@@ -284,11 +284,11 @@ LEFT JOIN min_estimated_phase_dates mepd ON mp.project_id = mepd.project_id
 LEFT JOIN project_component_work_types pcwt ON mp.project_id = pcwt.project_id
 LEFT JOIN LATERAL (
     SELECT
-        mpn.project_note,
-        mpn.created_at AS date_created
-    FROM moped_proj_notes mpn
-    WHERE mpn.project_id = mp.project_id AND mpn.project_note_type = 2 AND mpn.is_deleted = false
-    ORDER BY mpn.created_at DESC
+        combined_project_notes.project_note,
+        combined_project_notes.created_at AS date_created
+    FROM combined_project_notes
+    WHERE (combined_project_notes.project_id = mp.project_id OR mp.should_sync_ecapris_statuses = true AND mp.ecapris_subproject_id IS NOT null AND combined_project_notes.ecapris_subproject_id = mp.ecapris_subproject_id) AND (combined_project_notes.note_type_name = any(ARRAY['Status Update'::text, 'eCapris Status Update'::text])) AND combined_project_notes.is_deleted = false
+    ORDER BY combined_project_notes.created_at DESC
     LIMIT 1
 ) proj_status_update ON true
 WHERE mp.is_deleted = false

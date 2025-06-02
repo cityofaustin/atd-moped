@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/default/1747757018208_component_tags_nullable/up.sql
+-- Most recent migration: moped-database/migrations/default/1748534889272_create_notes_view/up.sql
 
 CREATE OR REPLACE VIEW component_arcgis_online_view AS WITH work_types AS (
     SELECT
