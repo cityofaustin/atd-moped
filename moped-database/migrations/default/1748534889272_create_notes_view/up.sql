@@ -7,6 +7,8 @@ INSERT INTO moped_note_types (name, slug, source)
 VALUES
 ('eCapris Status Update', 'ecapris_status_update', 'ecapris');
 
+COMMENT ON COLUMN moped_note_types.source IS 'Source of the note type, e.g., Moped or eCapris applications';
+
 -- Create the combined_project_notes view for the project notes tab and status update in summary view
 CREATE OR REPLACE VIEW combined_project_notes AS
 SELECT
@@ -40,9 +42,7 @@ SELECT
 FROM
     ecapris_subproject_statuses
 LEFT JOIN moped_users ON ecapris_subproject_statuses.created_by_user_id = moped_users.user_id
-LEFT JOIN moped_note_types ON moped_note_types.slug = 'ecapris_status_update'
-ORDER BY
-    created_at DESC;
+LEFT JOIN moped_note_types ON moped_note_types.slug = 'ecapris_status_update';
 
 -- Update project_list_view to reference latest status update depending on if eCapris sync is enabled or not
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
