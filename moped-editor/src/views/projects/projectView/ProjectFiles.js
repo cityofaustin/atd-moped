@@ -33,6 +33,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import { handleRowEditStop } from "src/utils/dataGridPro";
 
 const useStyles = makeStyles(() => ({
   title: {
@@ -478,6 +479,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
           rows={rows}
           getRowId={(row) => row.project_file_id}
           editMode="row"
+          onRowEditStop={handleRowEditStop}
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
