@@ -31,7 +31,7 @@ SELECT
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
     NULL::integer AS project_id,
-    COALESCE((moped_users.first_name || ' ' || moped_users.last_name), LOWER(ecapris_subproject_statuses.reviewed_by_email), ecapris_subproject_statuses.reviewed_by_name) AS author,
+    COALESCE((moped_users.first_name || ' ' || moped_users.last_name), TRIM(SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ',', 2)) || ' ' || TRIM(SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ',', 1)), LOWER(ecapris_subproject_statuses.reviewed_by_email)) AS author,
     moped_note_types.name AS note_type_name,
     FALSE AS is_deleted,
     NULL AS phase_id,
@@ -337,7 +337,7 @@ LEFT JOIN LATERAL (
         combined_project_notes.created_at AS date_created
     FROM combined_project_notes
     WHERE (combined_project_notes.project_id = mp.project_id OR (
-        mp.ecapris_subproject_id IS NOT NULL
+        mp.should_sync_ecapris_statuses = TRUE AND mp.ecapris_subproject_id IS NOT NULL
         AND combined_project_notes.ecapris_subproject_id = mp.ecapris_subproject_id
     )) AND (combined_project_notes.note_type_name IN ('Status Update', 'eCapris Status Update'
     ) AND combined_project_notes.is_deleted = FALSE)
