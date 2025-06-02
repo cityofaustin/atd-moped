@@ -19,7 +19,7 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
-import { handleRowEditStop } from "src/utils/dataGridPro";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const requiredFields = ["project_name_full"];
 

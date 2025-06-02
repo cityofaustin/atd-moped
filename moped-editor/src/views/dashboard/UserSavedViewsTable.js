@@ -19,7 +19,7 @@ import DataGridActions from "src/components/DataGridPro/DataGridActions";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import DeleteConfirmationModal from "../projects/projectView/DeleteConfirmationModal";
 import { FormattedDateString } from "src/utils/dateAndTime";
-import { handleRowEditStop } from "src/utils/dataGridPro";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const requiredFields = ["description"];
 

@@ -33,7 +33,7 @@ import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
 import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
 import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
-import { handleRowEditStop } from "src/utils/dataGridPro";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles(() => ({
   title: {
