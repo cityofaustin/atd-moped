@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
 import isEqual from "lodash/isEqual";
 import { v4 as uuidv4 } from "uuid";
 
@@ -241,6 +241,77 @@ const useColumns = ({
     existingTeamMembers,
   ]);
 
+/**
+ * Construct a moped_project_personnel object that can be passed to an insert mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
+ */
+
+const getNewPersonnelPayload = ({
+  newData: {
+    moped_user: { user_id },
+    notes,
+    moped_proj_personnel_roles,
+  },
+  projectId: project_id,
+}) => {
+  const payload = { notes, project_id, user_id };
+  const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
+    project_role_id: roles.project_role_id,
+  }));
+
+  payload.moped_proj_personnel_roles = { data: personnelRoles };
+  return payload;
+};
+
+/**
+ * Construct a moped_project_personnel object that can be passed to an update mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ *  is handled separately
+ */
+const getEditPersonnelPayload = (newData) => {
+  const {
+    moped_user: { user_id },
+    notes,
+  } = newData;
+  return { user_id, notes };
+};
+
+/**
+ * Constructs payload objects for adding and removing moped_proj_personnel_roles
+ * @param {Object} newData - a table row object with the new values
+ * @param {Object} oldData - a table row object with the old values
+ * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
+ *  personnel role objects to delete
+ */
+const getEditRolesPayload = (newData, oldData) => {
+  const { project_personnel_id } = oldData;
+
+  // get an array of moped_proj_personnel_roles IDs to delete
+  const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
+    .filter((projRole) => {
+      const roleId = projRole.moped_project_role.project_role_id;
+      return !newData.roleIds.includes(roleId);
+    })
+    .map((projRole) => projRole.id);
+
+  // construct an array of new moped_proj_personnel_roles objects
+  const existingRoleIds = oldData.moped_proj_personnel_roles.map(
+    ({ moped_project_role }) => moped_project_role.project_role_id
+  );
+  const roleIdsToAdd = newData.roleIds.filter(
+    (roleId) => !existingRoleIds.includes(roleId)
+  );
+  const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
+    project_personnel_id,
+    project_role_id: newRoleId,
+  }));
+  return [rolesToAddPayload, projRoleIdsToDelete];
+};
+
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
@@ -279,80 +350,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const workgroupLookup = useWorkgroupLookup(data);
 
   const existingTeamMembers = useExistingTeamMembers(data);
-
-  /**
-   * Construct a moped_project_personnel object that can be passed to an insert mutation
-   * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
-   * @param {integer} projectId - the project ID
-   * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
-   */
-
-  const getNewPersonnelPayload = useCallback(
-    ({
-      newData: {
-        moped_user: { user_id },
-        notes,
-        moped_proj_personnel_roles,
-      },
-      projectId: project_id,
-    }) => {
-      const payload = { notes, project_id, user_id };
-      const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
-        project_role_id: roles.project_role_id,
-      }));
-
-      payload.moped_proj_personnel_roles = { data: personnelRoles };
-      return payload;
-    },
-    []
-  );
-
-  /**
-   * Construct a moped_project_personnel object that can be passed to an update mutation
-   * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
-   * @param {integer} projectId - the project ID
-   * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
-   *  is handled separately
-   */
-  const getEditPersonnelPayload = useCallback((newData) => {
-    const {
-      moped_user: { user_id },
-      notes,
-    } = newData;
-    return { user_id, notes };
-  }, []);
-
-  /**
-   * Constructs payload objects for adding and removing moped_proj_personnel_roles
-   * @param {Object} newData - a table row object with the new values
-   * @param {Object} oldData - a table row object with the old values
-   * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
-   *  personnel role objects to delete
-   */
-  const getEditRolesPayload = useCallback((newData, oldData) => {
-    const { project_personnel_id } = oldData;
-
-    // get an array of moped_proj_personnel_roles IDs to delete
-    const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
-      .filter((projRole) => {
-        const roleId = projRole.moped_project_role.project_role_id;
-        return !newData.roleIds.includes(roleId);
-      })
-      .map((projRole) => projRole.id);
-
-    // construct an array of new moped_proj_personnel_roles objects
-    const existingRoleIds = oldData.moped_proj_personnel_roles.map(
-      ({ moped_project_role }) => moped_project_role.project_role_id
-    );
-    const roleIdsToAdd = newData.roleIds.filter(
-      (roleId) => !existingRoleIds.includes(roleId)
-    );
-    const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
-      project_personnel_id,
-      project_role_id: newRoleId,
-    }));
-    return [rolesToAddPayload, projRoleIdsToDelete];
-  }, []);
 
   const onClickAddTeamMember = () => {
     const id = uuidv4();
@@ -545,9 +542,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
       projectId,
       refetch,
       handleSnackbar,
-      getNewPersonnelPayload,
-      getEditPersonnelPayload,
-      getEditRolesPayload,
     ]
   );
 
