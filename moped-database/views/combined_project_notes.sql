@@ -5,9 +5,13 @@ CREATE OR REPLACE VIEW combined_project_notes AS SELECT
     moped_proj_notes.project_note_id AS original_id,
     moped_proj_notes.project_note,
     moped_proj_notes.created_at,
+    moped_proj_notes.created_by_user_id,
     moped_proj_notes.project_id,
     (moped_users.first_name || ' '::text) || moped_users.last_name AS author,
     moped_note_types.name AS note_type_name,
+    moped_note_types.slug AS note_type_slug,
+    moped_phases.phase_name,
+    moped_phases.phase_key,
     moped_proj_notes.is_deleted,
     moped_proj_notes.phase_id,
     true AS is_editable,
@@ -15,6 +19,7 @@ CREATE OR REPLACE VIEW combined_project_notes AS SELECT
 FROM moped_proj_notes
 LEFT JOIN moped_users ON moped_proj_notes.created_by_user_id = moped_users.user_id
 LEFT JOIN moped_note_types ON moped_proj_notes.project_note_type = moped_note_types.id
+LEFT JOIN moped_phases ON moped_proj_notes.phase_id = moped_phases.phase_id
 WHERE moped_proj_notes.is_deleted = false
 UNION ALL
 SELECT
@@ -22,6 +27,7 @@ SELECT
     ecapris_subproject_statuses.id AS original_id,
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
+    ecapris_subproject_statuses.created_by_user_id,
     null::integer AS project_id,
     COALESCE(
         (moped_users.first_name || ' '::text) || moped_users.last_name,
@@ -31,6 +37,9 @@ SELECT
         END
     ) AS author,
     moped_note_types.name AS note_type_name,
+    moped_note_types.slug AS note_type_slug,
+    null::text AS phase_name,
+    null::text AS phase_key,
     false AS is_deleted,
     null::integer AS phase_id,
     false AS is_editable,
