@@ -1,6 +1,6 @@
 -- Update moped_note_types to have source column
 ALTER TABLE moped_note_types
-ADD COLUMN source text DEFAULT 'moped';
+ADD COLUMN source text NOT NULL DEFAULT 'moped';
 
 -- Insert eCapris status note type that will be used in notes view
 INSERT INTO moped_note_types (name, slug, source)
@@ -13,6 +13,7 @@ COMMENT ON COLUMN moped_note_types.source IS 'Source of the note type, e.g., Mop
 CREATE OR REPLACE VIEW combined_project_notes AS
 SELECT
     ('M' || moped_proj_notes.project_note_id) AS id,
+    moped_proj_notes.project_note_id AS original_id,
     moped_proj_notes.project_note,
     moped_proj_notes.created_at,
     moped_proj_notes.project_id,
@@ -30,6 +31,7 @@ WHERE moped_proj_notes.is_deleted = FALSE
 UNION ALL
 SELECT
     ('E' || ecapris_subproject_statuses.id) AS id,
+    ecapris_subproject_statuses.id AS original_id,
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
     NULL::integer AS project_id,
