@@ -2,6 +2,7 @@
 
 CREATE OR REPLACE VIEW combined_project_notes AS SELECT
     'M'::text || moped_proj_notes.project_note_id AS id,
+    moped_proj_notes.project_note_id AS original_id,
     moped_proj_notes.project_note,
     moped_proj_notes.created_at,
     moped_proj_notes.project_id,
@@ -18,6 +19,7 @@ WHERE moped_proj_notes.is_deleted = false
 UNION ALL
 SELECT
     'E'::text || ecapris_subproject_statuses.id AS id,
+    ecapris_subproject_statuses.id AS original_id,
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
     null::integer AS project_id,
