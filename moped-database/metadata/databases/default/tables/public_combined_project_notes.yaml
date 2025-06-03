@@ -5,45 +5,60 @@ select_permissions:
   - role: moped-admin
     permission:
       columns:
-        - is_deleted
-        - is_editable
-        - phase_id
-        - project_id
         - author
+        - created_at
+        - created_by_user_id
         - ecapris_subproject_id
         - id
+        - is_deleted
+        - is_editable
         - note_type_name
+        - note_type_slug
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
         - project_note
-        - created_at
       filter: {}
     comment: ""
   - role: moped-editor
     permission:
       columns:
-        - is_deleted
-        - is_editable
-        - phase_id
-        - project_id
         - author
+        - created_at
+        - created_by_user_id
         - ecapris_subproject_id
         - id
+        - is_deleted
+        - is_editable
         - note_type_name
+        - note_type_slug
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
         - project_note
-        - created_at
       filter: {}
     comment: ""
   - role: moped-viewer
     permission:
       columns:
-        - is_deleted
-        - is_editable
-        - phase_id
-        - project_id
         - author
+        - created_at
+        - created_by_user_id
         - ecapris_subproject_id
         - id
+        - is_deleted
+        - is_editable
         - note_type_name
+        - note_type_slug
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
         - project_note
-        - created_at
       filter: {}
     comment: ""
