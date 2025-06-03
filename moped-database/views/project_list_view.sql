@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1739832264644_update_districts_to_jsonb/up.sql
+-- Most recent migration: moped-database/migrations/default/1739832264644_update_districts_to_jsonb/up.sql
 
 CREATE OR REPLACE VIEW project_list_view AS WITH project_person_list_lookup AS (
     SELECT

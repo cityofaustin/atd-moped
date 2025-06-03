@@ -1,0 +1,69 @@
+table:
+  name: moped_components
+  schema: public
+object_relationships:
+  - name: asset_feature_layer
+    using:
+      foreign_key_constraint_on: asset_feature_layer_id
+  - name: feature_layer
+    using:
+      foreign_key_constraint_on: feature_layer_id
+array_relationships:
+  - name: moped_component_work_types
+    using:
+      foreign_key_constraint_on:
+        column: component_id
+        table:
+          name: moped_component_work_types
+          schema: public
+  - name: moped_components_subcomponents
+    using:
+      foreign_key_constraint_on:
+        column: component_id
+        table:
+          name: moped_components_subcomponents
+          schema: public
+  - name: moped_proj_components
+    using:
+      foreign_key_constraint_on:
+        column: component_id
+        table:
+          name: moped_proj_components
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - component_id
+        - component_name
+        - is_deleted
+        - component_subtype
+        - line_representation
+        - feature_layer_id
+        - asset_feature_layer_id
+        - component_name_full
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - component_id
+        - component_name
+        - is_deleted
+        - component_subtype
+        - line_representation
+        - feature_layer_id
+        - asset_feature_layer_id
+        - component_name_full
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - component_id
+        - component_name
+        - is_deleted
+        - component_subtype
+        - line_representation
+        - feature_layer_id
+        - asset_feature_layer_id
+        - component_name_full
+      filter: {}

@@ -115,13 +115,13 @@ function run_migration() {
   {
     {
       CURRENT_STAGE_NAME="MIGRATE APPLY";
-      hasura migrate apply;
+      hasura migrate apply --database-name default;
     } && {
       CURRENT_STAGE_NAME="METADATA APPLY";
       hasura metadata apply;
     } && {
       CURRENT_STAGE_NAME="SEEDS APPLY";
-      hasura seeds apply;
+      hasura seeds apply --database-name default;
     }
   } || {
     echo "--------------------------------------------------------------------";
@@ -342,7 +342,7 @@ function replicate() {
   docker exec -i moped-database-moped-pgsql-1 psql -U moped moped < $snapshot_file;
   docker start moped-database-hasura-1;
   __wait_server_ready;
-  hasura migrate apply;
+  hasura migrate apply --database-name default;
   hasura metadata apply;
 }
 

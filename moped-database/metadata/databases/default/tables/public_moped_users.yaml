@@ -1,0 +1,128 @@
+table:
+  name: moped_users
+  schema: public
+object_relationships:
+  - name: moped_workgroup
+    using:
+      foreign_key_constraint_on: workgroup_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - cognito_user_id
+        - date_added
+        - email
+        - first_name
+        - is_coa_staff
+        - is_deleted
+        - is_user_group_member
+        - last_name
+        - last_seen_date
+        - note
+        - picture
+        - roles
+        - title
+        - workgroup_id
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - cognito_user_id
+        - date_added
+        - email
+        - first_name
+        - is_coa_staff
+        - is_deleted
+        - is_user_group_member
+        - last_name
+        - last_seen_date
+        - note
+        - picture
+        - roles
+        - title
+        - user_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - cognito_user_id
+        - date_added
+        - email
+        - first_name
+        - is_coa_staff
+        - is_deleted
+        - is_user_group_member
+        - last_name
+        - last_seen_date
+        - note
+        - picture
+        - roles
+        - title
+        - user_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - cognito_user_id
+        - date_added
+        - email
+        - first_name
+        - is_coa_staff
+        - is_deleted
+        - is_user_group_member
+        - last_name
+        - last_seen_date
+        - note
+        - picture
+        - roles
+        - title
+        - user_id
+        - workgroup_id
+      filter: {}
+      allow_aggregations: true
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - cognito_user_id
+        - date_added
+        - email
+        - first_name
+        - is_coa_staff
+        - is_deleted
+        - is_user_group_member
+        - last_name
+        - note
+        - picture
+        - roles
+        - title
+        - workgroup_id
+      filter: {}
+      check: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - first_name
+        - last_name
+        - picture
+        - title
+      filter:
+        user_id:
+          _eq: x-hasura-user-db-id
+      check: null
+  - role: moped-viewer
+    permission:
+      columns:
+        - first_name
+        - last_name
+        - picture
+        - title
+      filter:
+        user_id:
+          _eq: x-hasura-user-db-id
+      check: null

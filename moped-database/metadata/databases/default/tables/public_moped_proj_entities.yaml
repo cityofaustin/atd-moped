@@ -1,0 +1,91 @@
+table:
+  name: moped_proj_entities
+  schema: public
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - project_sponsors
+        - project_groups
+        - partners
+        - workgroups
+        - project_personnel
+        - project_id
+        - date_added
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+        - project_sponsors
+        - project_groups
+        - partners
+        - workgroups
+        - project_personnel
+        - project_id
+        - date_added
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - partners
+        - project_personnel
+        - project_sponsors
+        - project_groups
+        - entity_list_id
+        - project_id
+        - workgroups
+        - date_added
+      filter: {}
+      allow_aggregations: true
+  - role: moped-editor
+    permission:
+      columns:
+        - partners
+        - project_personnel
+        - project_sponsors
+        - project_groups
+        - entity_list_id
+        - project_id
+        - workgroups
+        - date_added
+      filter: {}
+      allow_aggregations: true
+  - role: moped-viewer
+    permission:
+      columns:
+        - project_sponsors
+        - project_groups
+        - partners
+        - workgroups
+        - project_personnel
+        - entity_list_id
+        - project_id
+        - date_added
+      filter: {}
+      allow_aggregations: true
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - partners
+        - project_personnel
+        - project_sponsors
+        - project_groups
+        - project_id
+        - workgroups
+        - date_added
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+        - partners
+        - project_personnel
+        - project_sponsors
+        - project_groups
+        - project_id
+        - workgroups
+        - date_added
+      filter: {}
+      check: null

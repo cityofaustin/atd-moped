@@ -3,7 +3,7 @@ name: Export Moped Views to SQL
 on:
   push:
     paths:
-      - moped-database/migrations/**
+      - moped-database/migrations/default/**
     branches-ignore:
       - "main"
       - "production"

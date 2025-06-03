@@ -1,0 +1,89 @@
+table:
+  name: moped_user_followed_projects
+  schema: public
+object_relationships:
+  - name: project
+    using:
+      foreign_key_constraint_on: project_id
+insert_permissions:
+  - role: moped-admin
+    permission:
+      check: {}
+      columns:
+        - created_at
+        - project_id
+        - user_id
+  - role: moped-editor
+    permission:
+      check: {}
+      columns:
+        - project_id
+        - user_id
+        - created_at
+  - role: moped-viewer
+    permission:
+      check: {}
+      columns:
+        - project_id
+        - user_id
+        - created_at
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - id
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - id
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - id
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+update_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+      check: null
+  - role: moped-editor
+    permission:
+      columns:
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+      check: null
+  - role: moped-viewer
+    permission:
+      columns:
+        - project_id
+        - user_id
+        - created_at
+      filter: {}
+      check: null
+delete_permissions:
+  - role: moped-admin
+    permission:
+      filter: {}
+  - role: moped-editor
+    permission:
+      filter: {}
+  - role: moped-viewer
+    permission:
+      filter: {}

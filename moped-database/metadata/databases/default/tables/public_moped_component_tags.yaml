@@ -1,0 +1,42 @@
+table:
+  name: moped_component_tags
+  schema: public
+array_relationships:
+  - name: moped_proj_component_tags
+    using:
+      foreign_key_constraint_on:
+        column: component_tag_id
+        table:
+          name: moped_proj_component_tags
+          schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - full_name
+        - id
+        - is_deleted
+        - name
+        - slug
+        - type
+      filter: {}
+  - role: moped-editor
+    permission:
+      columns:
+        - full_name
+        - id
+        - is_deleted
+        - name
+        - slug
+        - type
+      filter: {}
+  - role: moped-viewer
+    permission:
+      columns:
+        - full_name
+        - id
+        - is_deleted
+        - name
+        - slug
+        - type
+      filter: {}

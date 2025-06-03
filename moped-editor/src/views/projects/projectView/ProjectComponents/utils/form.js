@@ -32,16 +32,6 @@ export const makeComponentLabel = ({ component_name, component_subtype }) => {
 };
 
 /**
- * Create component tag label out of the type and name
- * @param {string} type The type of the component tag
- * @param {string} name The name of the component tag
- * @returns {string}
- */
-export const makeComponentTagLabel = ({ type, name }) => {
-  return name ? `${type} - ${name}` : type;
-};
-
-/**
  * Take the moped_components records data response and create options for a MUI autocomplete
  * @param {Object} data Data returned with moped_components records
  * @returns {Array} The options with value, label, and full data object to produce the subcomponents options
@@ -198,7 +188,7 @@ export const useComponentTagsOptions = (data) =>
 
     const options = data.moped_component_tags.map((tag) => ({
       value: tag.id,
-      label: makeComponentTagLabel(tag),
+      label: tag.full_name,
       data: tag,
     }));
 
@@ -315,7 +305,7 @@ export const makeSubphaseFormFieldValue = (subphase) => {
 export const makeTagFormFieldValues = (tags) => {
   return tags.map((tag) => ({
     value: tag.component_tag_id,
-    label: makeComponentTagLabel(tag.moped_component_tag),
+    label: tag.moped_component_tag.full_name,
   }));
 };
 

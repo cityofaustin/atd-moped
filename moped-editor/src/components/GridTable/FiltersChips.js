@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Chip, Grid, Button, Tooltip } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
@@ -39,6 +39,7 @@ const FiltersChips = ({
   setSearchParams,
   setIsOr,
   handleSnackbar,
+  searchTerm,
 }) => {
   const classes = useStyles();
 
@@ -119,15 +120,17 @@ const FiltersChips = ({
     setIsSaveViewModalOpen(true);
   };
 
+  /**
+   * Reenables the save view button when a new search term is applied
+   */
+  useEffect(() => {
+    setIsViewSaved(false);
+  }, [searchTerm]);
+
   return (
     <Box className={classes.filtersList}>
       <Typography className={classes.filtersText} component="span">
-        <Grid
-          container
-          display="flex"
-          justifyContent="flex-end"
-          spacing={0.5}
-        >
+        <Grid container display="flex" justifyContent="flex-end" spacing={0.5}>
           <Grid item>
             <Tooltip
               placement="bottom-start"
@@ -191,6 +194,7 @@ const FiltersChips = ({
         filtersLabels={filtersLabels}
         setIsViewSaved={setIsViewSaved}
         handleSnackbar={handleSnackbar}
+        searchTerm={searchTerm}
       />
     </Box>
   );

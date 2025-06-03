@@ -1,4 +1,4 @@
--- Most recent migration: moped-database/migrations/1727229291111_add_beacons_to_unified_features_view/up.sql
+-- Most recent migration: moped-database/migrations/default/1727229291111_add_beacons_to_unified_features_view/up.sql
 
 CREATE OR REPLACE VIEW uniform_features AS SELECT
     feature_signals.id,
