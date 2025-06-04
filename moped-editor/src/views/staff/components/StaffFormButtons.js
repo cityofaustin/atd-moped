@@ -2,7 +2,7 @@ import React from "react";
 
 import { Button } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 export const useButtonStyles = makeStyles((theme) => ({
   formButton: {
