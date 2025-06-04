@@ -5,12 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Box, Icon, Link, CircularProgress, Typography } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 
-import {
-  DataGridPro,
-  GridRowModes,
-  useGridApiRef,
-  GridRowEditStopReasons,
-} from "@mui/x-data-grid-pro";
+import { DataGridPro, GridRowModes, useGridApiRef } from "@mui/x-data-grid-pro";
 import { useQuery, useMutation } from "@apollo/client";
 import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
