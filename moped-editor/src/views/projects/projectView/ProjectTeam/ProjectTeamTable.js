@@ -29,6 +29,7 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -408,12 +409,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     },
     []
   );
-
-  const handleRowEditStop = (params, event) => {
-    if (params.reason === GridRowEditStopReasons.enterKeyDown) {
-      event.defaultMuiPrevented = true;
-    }
-  };
 
   const processRowUpdate = useCallback(
     (updatedRow, originalRow) => {
