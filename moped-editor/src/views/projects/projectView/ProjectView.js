@@ -80,10 +80,6 @@ const useStyles = makeStyles((theme) => ({
   cardWrapper: {
     marginTop: theme.spacing(3),
   },
-  button: {
-    marginTop: theme.spacing(1),
-    marginRight: theme.spacing(2),
-  },
   title: {
     minHeight: "3rem",
   },

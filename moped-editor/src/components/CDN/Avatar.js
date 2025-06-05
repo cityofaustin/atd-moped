@@ -1,12 +1,11 @@
 import React from "react";
 import { Avatar, Icon, Typography } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
-import config from "../../config";
+import config from "src/config";
 
-const useStyles = makeStyles(theme => ({
-  root: {},
+const useStyles = makeStyles((theme) => ({
   avatar: {
     height: 100,
     width: 100,

@@ -19,21 +19,21 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import Page from "src/components/Page";
 import ActivityMetrics from "src/components/ActivityMetrics";
-import DashboardStatusModal from "./DashboardStatusModal";
-import DashboardTimelineModal from "./DashboardTimelineModal";
-import ProjectStatusBadge from "../projects/projectView/ProjectStatusBadge";
-import MilestoneProgressMeter from "./MilestoneProgressMeter";
+import DashboardStatusModal from "src/views/dashboard/DashboardStatusModal";
+import DashboardTimelineModal from "src/views/dashboard/DashboardTimelineModal";
+import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import MilestoneProgressMeter from "src/views/dashboard/MilestoneProgressMeter";
 import FeedbackSnackbar, {
   useFeedbackSnackbar,
 } from "src/components/FeedbackSnackbar";
-import UserSavedViewsTable from "./UserSavedViewsTable";
+import UserSavedViewsTable from "src/views/dashboard/UserSavedViewsTable";
 import { DataGridPro } from "@mui/x-data-grid-pro";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { getTimeOfDay, getCalendarDate } from "src/utils/dateAndTime";
 
-import { DASHBOARD_QUERY } from "../../queries/dashboard";
+import { DASHBOARD_QUERY } from "src/queries/dashboard";
 
-import { getSessionDatabaseData } from "../../auth/user";
+import { getSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
 
@@ -57,13 +57,6 @@ const useStyles = makeStyles((theme) => ({
   indicatorColor: {
     backgroundColor: theme.palette.primary.light,
   },
-  viewsCard: {
-    display: "inline-flex",
-    padding: "24px",
-  },
-  cardTitle: {
-    paddingBottom: "16px",
-  },
   greeting: {
     display: "block",
   },
@@ -72,12 +65,6 @@ const useStyles = makeStyles((theme) => ({
   },
   date: {
     paddingTop: "4px",
-  },
-  statusUpdateText: {
-    cursor: "pointer",
-  },
-  tooltipIcon: {
-    fontSize: "20px",
   },
   tableRowDiv: {
     display: "flex",
