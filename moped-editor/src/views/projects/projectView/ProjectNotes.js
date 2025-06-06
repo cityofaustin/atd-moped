@@ -15,6 +15,7 @@ import {
   ListItemText,
   Typography,
   FormControlLabel,
+  Switch,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
@@ -379,6 +380,7 @@ const ProjectNotes = ({
                 key={type.slug}
               />
             ))}
+            <FormControlLabel control={<Switch />} label="Sync from eCapris" />
           </Grid>
         )}
         {/*Now the notes*/}
