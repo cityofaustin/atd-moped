@@ -261,6 +261,8 @@ const Search = ({
               setIsOr={setIsOr}
               setSearchParams={setSearchParams}
               searchParams={searchParams}
+              searchFieldValue={searchFieldValue}
+              setSearchFieldValue={setSearchFieldValue}
             />
           </Paper>
         </ClickAwayListener>
