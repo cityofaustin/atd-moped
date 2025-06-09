@@ -43,6 +43,7 @@ import {
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
 } from "../../../queries/notes";
+import { PROJECT_UPDATE_ECAPRIS_SYNC } from "src/queries/project";
 import {
   makeHourAndMinutesFromTimeStampTZ,
   makeUSExpandedFormDateFromTimeStampTZ,
@@ -171,6 +172,9 @@ const ProjectNotes = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
+  const [shouldSyncFromEcapris, setShouldSyncFromEcapris] = useState(
+    projectData.moped_project[0].should_sync_ecapris_statuses
+  );
 
   const isStatusUpdate =
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
@@ -237,6 +241,8 @@ const ProjectNotes = ({
       }
     },
   });
+
+  const [updateShouldSyncEcapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
 
   const submitNewNote = () => {
     setNoteAddLoading(true);
@@ -329,6 +335,16 @@ const ProjectNotes = ({
     );
   }
 
+  const handleEcaprisSwitch = () => {
+    updateShouldSyncEcapris({
+      variables: {
+        projectId: noteProjectId,
+        shouldSync: !shouldSyncFromEcapris,
+      },
+    });
+    setShouldSyncFromEcapris(!shouldSyncFromEcapris);
+  };
+
   return (
     <CardContent>
       <Grid container spacing={2}>
@@ -357,30 +373,51 @@ const ProjectNotes = ({
         {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
-          <Grid item xs={12}>
-            <FormControlLabel
-              className={classes.showButtonItem}
-              label="Show"
-              control={<span />}
-            />
-            <NoteTypeButton
-              showButtonItemStyle={classes.showButtonItem}
-              filterNoteType={filterNoteType}
-              setFilterNoteType={setFilterNoteType}
-              noteTypeId={null}
-              label="All"
-            />
-            {projectData?.moped_note_types.map((type) => (
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <FormControlLabel
+                className={classes.showButtonItem}
+                label="Show"
+                control={<span />}
+              />
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
-                noteTypeId={type.id}
-                label={type.name}
-                key={type.slug}
+                noteTypeId={null}
+                label="All"
               />
-            ))}
-            <FormControlLabel control={<Switch />} label="Sync from eCapris" />
+              {projectData?.moped_note_types.map((type) => (
+                <NoteTypeButton
+                  showButtonItemStyle={classes.showButtonItem}
+                  filterNoteType={filterNoteType}
+                  setFilterNoteType={setFilterNoteType}
+                  noteTypeId={type.id}
+                  label={type.name}
+                  key={type.slug}
+                />
+              ))}
+            </Grid>
+            <Grid item>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={!!shouldSyncFromEcapris}
+                    disabled={
+                      !projectData.moped_project[0].ecapris_subproject_id
+                    }
+                    onChange={handleEcaprisSwitch}
+                  />
+                }
+                label="Sync from eCapris"
+              />
+            </Grid>
           </Grid>
         )}
         {/*Now the notes*/}
