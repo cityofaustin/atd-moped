@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Chip, Grid, Button, Tooltip } from "@mui/material";
+import { Box, Chip, Grid, Button, Tooltip } from "@mui/material";
 import makeStyles from "@mui/styles/makeStyles";
 import {
   advancedSearchFilterParamName,
@@ -129,64 +129,60 @@ const FiltersChips = ({
 
   return (
     <Box className={classes.filtersList}>
-      <Typography className={classes.filtersText} component="span">
-        <Grid container display="flex" justifyContent="flex-end" spacing={0.5}>
-          <Grid item>
-            <Tooltip
-              placement="bottom-start"
-              title="Save these filters to the dashboard"
+      <Grid container justifyContent="flex-start" spacing={0.5}>
+        <Grid item>
+          <Tooltip
+            placement="bottom-start"
+            title="Save these filters to the dashboard"
+          >
+            <Button
+              size="small"
+              onClick={handleSaveView}
+              variant="outlined"
+              color="primary"
+              startIcon={<BookmarkBorder />}
+              disabled={isViewSaved}
             >
-              <Button
-                size="small"
-                onClick={handleSaveView}
-                variant="outlined"
-                color="primary"
-                startIcon={<BookmarkBorder />}
-                disabled={isViewSaved}
-              >
-                SAVE VIEW
-              </Button>
-            </Tooltip>
-          </Grid>
-          {filtersCount > 1 && (
-            <Grid item>
-              <Chip
-                variant="outlined"
-                color="primary"
-                onClick={toggleIsOrOnClick}
-                label={
-                  isOr ? (
-                    <>
-                      Matching
-                      <span style={{ fontWeight: 600 }}> any </span> filter
-                    </>
-                  ) : (
-                    <>
-                      Matching
-                      <span style={{ fontWeight: 600 }}> all </span> filters
-                    </>
-                  )
-                }
-              />
-            </Grid>
-          )}
-          {filtersLabels.map((filter, index) => (
-            <Grid item key={index}>
-              <Chip
-                onDelete={() => handleDeleteButtonClick(index)}
-                label={
-                  <>
-                    <span style={{ fontWeight: 600 }}>
-                      {filter.filterLabel}
-                    </span>{" "}
-                    {filter.operatorLabel} {filter.filterValue}
-                  </>
-                }
-              />
-            </Grid>
-          ))}
+              SAVE VIEW
+            </Button>
+          </Tooltip>
         </Grid>
-      </Typography>
+        {filtersCount > 1 && (
+          <Grid item>
+            <Chip
+              variant="outlined"
+              color="primary"
+              onClick={toggleIsOrOnClick}
+              label={
+                isOr ? (
+                  <>
+                    Matching
+                    <span style={{ fontWeight: 600 }}> any </span> filter
+                  </>
+                ) : (
+                  <>
+                    Matching
+                    <span style={{ fontWeight: 600 }}> all </span> filters
+                  </>
+                )
+              }
+            />
+          </Grid>
+        )}
+        {filtersLabels.map((filter, index) => (
+          <Grid item key={index}>
+            <Chip
+              onDelete={() => handleDeleteButtonClick(index)}
+              label={
+                <>
+                  <span style={{ fontWeight: 600 }}>{filter.filterLabel}</span>{" "}
+                  {filter.operatorLabel} {filter.filterValue}
+                </>
+              }
+            />
+          </Grid>
+        ))}
+      </Grid>
       <SaveUserViewModal
         showDialog={isSaveViewModalOpen}
         setIsSaveViewModalOpen={setIsSaveViewModalOpen}
