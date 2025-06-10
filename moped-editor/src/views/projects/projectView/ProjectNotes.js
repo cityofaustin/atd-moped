@@ -325,6 +325,16 @@ const ProjectNotes = ({
     setDeleteConfirmationId(id);
   };
 
+  const handleEcaprisSwitch = () => {
+    updateShouldSyncEcapris({
+      variables: {
+        projectId: noteProjectId,
+        shouldSync: !shouldSyncFromEcapris,
+      },
+    });
+    setShouldSyncFromEcapris(!shouldSyncFromEcapris);
+  };
+
   if (error) {
     return (
       <Grid container spacing={2}>
@@ -336,16 +346,6 @@ const ProjectNotes = ({
       </Grid>
     );
   }
-
-  const handleEcaprisSwitch = () => {
-    updateShouldSyncEcapris({
-      variables: {
-        projectId: noteProjectId,
-        shouldSync: !shouldSyncFromEcapris,
-      },
-    });
-    setShouldSyncFromEcapris(!shouldSyncFromEcapris);
-  };
 
   return (
     <CardContent>
