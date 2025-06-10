@@ -174,7 +174,7 @@ const ProjectNotes = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
-  const [shouldSyncFromEcapris, setShouldSyncFromEcapris] = useState(
+  const [shouldSyncFromECapris, setShouldSyncFromECapris] = useState(
     projectData.moped_project[0].should_sync_ecapris_statuses
   );
 
@@ -244,7 +244,7 @@ const ProjectNotes = ({
     },
   });
 
-  const [updateShouldSyncEcapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
 
   const submitNewNote = () => {
     setNoteAddLoading(true);
@@ -325,14 +325,14 @@ const ProjectNotes = ({
     setDeleteConfirmationId(id);
   };
 
-  const handleEcaprisSwitch = () => {
-    updateShouldSyncEcapris({
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
       variables: {
         projectId: noteProjectId,
-        shouldSync: !shouldSyncFromEcapris,
+        shouldSync: !shouldSyncFromECapris,
       },
     });
-    setShouldSyncFromEcapris(!shouldSyncFromEcapris);
+    setShouldSyncFromECapris(!shouldSyncFromECapris);
   };
 
   if (error) {
@@ -418,9 +418,9 @@ const ProjectNotes = ({
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={shouldSyncFromEcapris}
+                      checked={shouldSyncFromECapris}
                       disabled={!hasECaprisId}
-                      onChange={handleEcaprisSwitch}
+                      onChange={handleECaprisSwitch}
                     />
                   }
                   label="Sync from eCapris"
