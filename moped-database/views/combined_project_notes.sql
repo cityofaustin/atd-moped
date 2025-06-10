@@ -1,7 +1,7 @@
 -- Most recent migration: moped-database/migrations/default/1748534889272_create_notes_view/up.sql
 
 CREATE OR REPLACE VIEW combined_project_notes AS SELECT
-    'M'::text || moped_proj_notes.project_note_id AS id,
+    'moped_'::text || moped_proj_notes.project_note_id AS id,
     moped_proj_notes.project_note_id AS original_id,
     moped_proj_notes.project_note,
     moped_proj_notes.created_at,
@@ -23,7 +23,7 @@ LEFT JOIN moped_phases ON moped_proj_notes.phase_id = moped_phases.phase_id
 WHERE moped_proj_notes.is_deleted = false
 UNION ALL
 SELECT
-    'E'::text || ecapris_subproject_statuses.id AS id,
+    'ecapris_'::text || ecapris_subproject_statuses.id AS id,
     ecapris_subproject_statuses.id AS original_id,
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
@@ -33,7 +33,7 @@ SELECT
         (moped_users.first_name || ' '::text) || moped_users.last_name,
         CASE
             WHEN ecapris_subproject_statuses.reviewed_by_name ~~ '%,%'::text THEN (TRIM(BOTH FROM SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ','::text, 2)) || ' '::text) || TRIM(BOTH FROM SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ','::text, 1))
-            ELSE LOWER(ecapris_subproject_statuses.reviewed_by_email)
+            ELSE LOWER(ecapris_subproject_statuses.reviewed_by_name)
         END
     ) AS author,
     moped_note_types.name AS note_type_name,
