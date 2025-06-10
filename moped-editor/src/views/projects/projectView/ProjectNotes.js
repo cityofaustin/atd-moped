@@ -318,7 +318,6 @@ const ProjectNotes = ({
         handleSnackbar(true, "Error deleting note/status", "error", error)
       );
   };
-  console.log(shouldSyncFromEcapris, "should sync");
 
   const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
 
