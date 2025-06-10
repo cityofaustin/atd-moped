@@ -51,7 +51,6 @@ import {
 } from "src/utils/dateAndTime";
 import { getUserFullName } from "src/utils/userNames";
 import { agolValidation } from "src/constants/projects";
-import { shouldRenderAutocompleteInput } from "src/components/GridTable/helpers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
