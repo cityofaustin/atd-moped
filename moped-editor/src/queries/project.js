@@ -827,7 +827,10 @@ export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: $eCapris }
+      _set: {
+        ecapris_subproject_id: $eCapris
+        should_sync_ecapris_statuses: true
+      }
     ) {
       affected_rows
     }
@@ -838,7 +841,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECaprisClear($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: null }
+      _set: { ecapris_subproject_id: null, should_sync_ecapris_statuses: false }
     ) {
       affected_rows
     }
