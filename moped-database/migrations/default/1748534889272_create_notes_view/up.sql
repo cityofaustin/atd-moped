@@ -12,7 +12,7 @@ COMMENT ON COLUMN moped_note_types.source IS 'Source of the note type, e.g., Mop
 -- Create the combined_project_notes view for the project notes tab and status update in summary view
 CREATE OR REPLACE VIEW combined_project_notes AS
 SELECT
-    ('M' || moped_proj_notes.project_note_id) AS id,
+    ('moped_' || moped_proj_notes.project_note_id) AS id,
     moped_proj_notes.project_note_id AS original_id,
     moped_proj_notes.project_note,
     moped_proj_notes.created_at,
@@ -35,18 +35,20 @@ LEFT JOIN moped_phases ON moped_proj_notes.phase_id = moped_phases.phase_id
 WHERE moped_proj_notes.is_deleted = FALSE
 UNION ALL
 SELECT
-    ('E' || ecapris_subproject_statuses.id) AS id,
+    ('ecapris_' || ecapris_subproject_statuses.id) AS id,
     ecapris_subproject_statuses.id AS original_id,
     ecapris_subproject_statuses.sub_project_status_desc AS project_note,
     ecapris_subproject_statuses.review_timestamp AS created_at,
     ecapris_subproject_statuses.created_by_user_id,
     NULL AS project_id,
+    -- Author uses the matched Moped user full name if there was a match on insert.
+    -- If not, the reviewed_by_name is used, formatted as "First Last" if it contains a comma.
     COALESCE(
         (moped_users.first_name || ' ' || moped_users.last_name),
         CASE
             WHEN ecapris_subproject_statuses.reviewed_by_name LIKE '%,%' 
                 THEN TRIM(SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ',', 2)) || ' ' || TRIM(SPLIT_PART(ecapris_subproject_statuses.reviewed_by_name, ',', 1))
-            ELSE LOWER(ecapris_subproject_statuses.reviewed_by_email)
+            ELSE LOWER(ecapris_subproject_statuses.reviewed_by_name)
         END
     ) AS author,
     moped_note_types.name AS note_type_name,
