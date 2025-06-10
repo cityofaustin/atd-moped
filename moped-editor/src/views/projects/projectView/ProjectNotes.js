@@ -418,7 +418,7 @@ const ProjectNotes = ({
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={!!shouldSyncFromEcapris}
+                      checked={shouldSyncFromEcapris}
                       disabled={!hasECaprisId}
                       onChange={handleEcaprisSwitch}
                     />
