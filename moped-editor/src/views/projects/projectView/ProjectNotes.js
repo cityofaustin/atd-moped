@@ -16,6 +16,7 @@ import {
   Typography,
   FormControlLabel,
   Switch,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/DeleteOutlined";
 import EditIcon from "@mui/icons-material/EditOutlined";
@@ -155,6 +156,7 @@ const ProjectNotes = ({
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
+  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
     isStatusEditModal
@@ -405,18 +407,25 @@ const ProjectNotes = ({
               ))}
             </Grid>
             <Grid item>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={!!shouldSyncFromEcapris}
-                    disabled={
-                      !projectData.moped_project[0].ecapris_subproject_id
-                    }
-                    onChange={handleEcaprisSwitch}
-                  />
+              <Tooltip
+                placement="top"
+                title={
+                  hasECaprisId
+                    ? "Statuses are synced from eCapris every 30 minutes"
+                    : "Add eCapris subproject ID to sync from eCapris"
                 }
-                label="Sync from eCapris"
-              />
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={!!shouldSyncFromEcapris}
+                      disabled={!hasECaprisId}
+                      onChange={handleEcaprisSwitch}
+                    />
+                  }
+                  label="Sync from eCapris"
+                />
+              </Tooltip>
             </Grid>
           </Grid>
         )}
