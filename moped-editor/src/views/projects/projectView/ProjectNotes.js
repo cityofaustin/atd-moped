@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Alert,
   Avatar,
@@ -178,6 +178,13 @@ const ProjectNotes = ({
     projectData.moped_project[0].should_sync_ecapris_statuses
   );
 
+  // Keeps this state in sync with props
+  useEffect(() => {
+    setShouldSyncFromECapris(
+      projectData.moped_project[0].should_sync_ecapris_statuses
+    );
+  }, [projectData.moped_project]);
+
   const isStatusUpdate =
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
     (isEditingNote && editingNoteType === noteTypesIDLookup["status_update"]);
@@ -331,7 +338,18 @@ const ProjectNotes = ({
         projectId: noteProjectId,
         shouldSync: !shouldSyncFromECapris,
       },
-    });
+    })
+      .then(() => {
+        handleSnackbar(true, "ECAPRIS sync status updated", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
     setShouldSyncFromECapris(!shouldSyncFromECapris);
   };
 
@@ -411,8 +429,8 @@ const ProjectNotes = ({
                 placement="top"
                 title={
                   hasECaprisId
-                    ? "Statuses are synced from eCapris every 30 minutes"
-                    : "Add eCapris subproject ID to sync from eCapris"
+                    ? "Statuses are synced from eCAPRIS every 30 minutes"
+                    : "Add eCapris subproject ID to sync from eCAPRIS"
                 }
               >
                 <FormControlLabel
@@ -423,7 +441,7 @@ const ProjectNotes = ({
                       onChange={handleECaprisSwitch}
                     />
                   }
-                  label="Sync from eCapris"
+                  label="Sync from eCAPRIS"
                 />
               </Tooltip>
             </Grid>
