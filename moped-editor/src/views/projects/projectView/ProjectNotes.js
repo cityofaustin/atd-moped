@@ -131,6 +131,7 @@ const useFilterNotes = (notes, filterNoteType) =>
  * @param {function} closeModalDialog - Function to close the modal dialog
  * @param {function} refetchProjectSummary - Function to refetch the project summary data
  * @param {string} projectId - The project ID if rendered in the ProjectSummaryStatusUpdate modal
+ * @param {string} eCaprisSubprojectId - The eCAPRIS subproject ID if present
  * @returns JSX.Element
  */
 const ProjectNotes = ({
@@ -141,6 +142,7 @@ const ProjectNotes = ({
   closeModalDialog,
   refetch: refetchProjectSummary,
   projectId,
+  eCaprisSubprojectId = null,
 }) => {
   // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
   // otherwise use data passed from ProjectView
@@ -179,12 +181,24 @@ const ProjectNotes = ({
   // get project id from props instead of url params
   const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
 
-  const queryVariables = {
-    projectNoteConditions: {
-      project_id: { _eq: Number(noteProjectId) },
-      is_deleted: { _eq: false },
-    },
-  };
+  const queryVariables = eCaprisSubprojectId
+    ? {
+        projectNoteConditions: {
+          _or: [
+            { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
+            { project_id: { _eq: Number(noteProjectId) } },
+          ],
+          _and: { is_deleted: { _eq: false } },
+        },
+        order_by: { created_at: "desc" },
+      }
+    : {
+        projectNoteConditions: {
+          project_id: { _eq: Number(noteProjectId) },
+          is_deleted: { _eq: false },
+        },
+        order_by: { created_at: "desc" },
+      };
 
   const { loading, error, data, refetch } = useQuery(COMBINED_NOTES_QUERY, {
     variables: queryVariables,

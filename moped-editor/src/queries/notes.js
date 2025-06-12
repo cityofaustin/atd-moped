@@ -19,7 +19,6 @@ export const COMBINED_NOTES_QUERY = gql`
       project_id
       project_note
       created_by_user_id
-      is_deleted
       original_id
       phase_key
       phase_name

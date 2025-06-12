@@ -571,6 +571,9 @@ const ProjectView = () => {
                             parentProjectId={
                               data.moped_project[0].parent_project_id
                             }
+                            eCaprisSubprojectId={
+                              data.moped_project[0].ecapris_subproject_id
+                            }
                             onCloseTab={onCloseTab}
                             listViewQuery={queryContext.listViewQuery}
                             handleSnackbar={handleSnackbar}
