@@ -94,6 +94,7 @@ const validationSchema = yup.object().shape({
 
 const validator = (value) => yupValidator(value, validationSchema);
 
+// TODO: Update these two hooks to handle Moped source and eCAPRIS source note types
 // reshape the array of note types into an object with key slug, value id
 export const useNoteTypeObject = (noteTypes) =>
   useMemo(
@@ -369,6 +370,7 @@ const ProjectNotes = ({
               noteTypeId={null}
               label="All"
             />
+            {/* TODO: Filter to only moped source types so we don't show a radio to create eCAPRIS statuses */}
             {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}
@@ -394,6 +396,8 @@ const ProjectNotes = ({
                   isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                   setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
                 >
+                  {/* TODO: Update render to show Moped source notes and eCAPRIS source notes - reusable component? */}
+                  {/* TODO: For eCAPRIS, need to handle author (prep author in Moped records?) and "Synced from eCAPRIS" text,  */}
                   {displayNotes.map((item, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
                     const phaseKey = item.moped_phase?.phase_key;
@@ -401,6 +405,8 @@ const ProjectNotes = ({
                     /**
                      * Only allow the user who wrote the status to edit it
                      */
+                    // TODO: Update to use is_editable column in combined_notes_view in addition to checking created_by_user_id
+                    // TODO: Add comment about business logic here: users can only edit their own notes
                     const editableNote =
                       userSessionData.user_id === item.created_by_user_id;
                     return (
