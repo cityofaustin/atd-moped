@@ -37,7 +37,7 @@ import { yupValidator } from "src/utils/validation";
 import "src/views/projects/projectView/ProjectNotes/ProjectNotes.css";
 
 import {
-  NOTES_QUERY,
+  COMBINED_NOTES_QUERY,
   ADD_PROJECT_NOTE,
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
@@ -46,7 +46,6 @@ import {
   makeHourAndMinutesFromTimeStampTZ,
   makeUSExpandedFormDateFromTimeStampTZ,
 } from "src/utils/dateAndTime";
-import { getUserFullName } from "src/utils/userNames";
 import { agolValidation } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
@@ -180,17 +179,19 @@ const ProjectNotes = ({
   // get project id from props instead of url params
   const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
 
-  const { loading, error, data, refetch } = useQuery(NOTES_QUERY, {
-    variables: {
-      projectNoteConditions: {
-        project_id: { _eq: Number(noteProjectId) },
-        is_deleted: { _eq: false },
-      },
+  const queryVariables = {
+    projectNoteConditions: {
+      project_id: { _eq: Number(noteProjectId) },
+      is_deleted: { _eq: false },
     },
+  };
+
+  const { loading, error, data, refetch } = useQuery(COMBINED_NOTES_QUERY, {
+    variables: queryVariables,
     fetchPolicy: "no-cache",
   });
 
-  const mopedProjNotes = data?.moped_proj_notes;
+  const mopedProjNotes = data?.combined_project_notes || [];
 
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
@@ -261,10 +262,10 @@ const ProjectNotes = ({
   };
 
   const editNote = (index, item) => {
-    setEditingNoteType(item.project_note_type);
+    setEditingNoteType(noteTypesIDLookup[item.note_type_slug]);
     setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
-    setEditingNoteId(item.project_note_id);
+    setEditingNoteId(item.original_id);
   };
 
   const cancelNoteEdit = () => {
@@ -311,6 +312,7 @@ const ProjectNotes = ({
   };
 
   const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
+  console.log("displayNotes", displayNotes);
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
@@ -397,20 +399,22 @@ const ProjectNotes = ({
                   setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
                 >
                   {/* TODO: Update render to show Moped source notes and eCAPRIS source notes - reusable component? */}
-                  {/* TODO: For eCAPRIS, need to handle author (prep author in Moped records?) and "Synced from eCAPRIS" text,  */}
+                  {/* TODO: For eCAPRIS, add "Synced from eCAPRIS" text  */}
                   {displayNotes.map((item, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
-                    const phaseKey = item.moped_phase?.phase_key;
-                    const phaseName = item.moped_phase?.phase_name;
+                    const phaseKey = item.phase_key;
+                    const phaseName = item.phase_name;
                     /**
-                     * Only allow the user who wrote the status to edit it
+                     * Only allow the user who wrote the status to edit it - if it is editable
                      */
-                    // TODO: Update to use is_editable column in combined_notes_view in addition to checking created_by_user_id
-                    // TODO: Add comment about business logic here: users can only edit their own notes
                     const editableNote =
-                      userSessionData.user_id === item.created_by_user_id;
+                      userSessionData.user_id === item.created_by_user_id ||
+                      item.is_editable;
+
+                    const shouldShowNoteInput =
+                      editingNoteId === item.original_id;
                     return (
-                      <React.Fragment key={item.project_note_id}>
+                      <React.Fragment key={item.id}>
                         <ListItem alignItems="flex-start">
                           <ListItemAvatar>
                             <Avatar />
@@ -426,7 +430,7 @@ const ProjectNotes = ({
                                   component={"span"}
                                   className={classes.authorText}
                                 >
-                                  {getUserFullName(item.moped_user)}
+                                  {item.author}
                                 </Typography>
                                 <Typography
                                   component={"span"}
@@ -442,7 +446,7 @@ const ProjectNotes = ({
                                   component={"span"}
                                   className={classes.filterNoteType}
                                 >
-                                  {item.moped_note_type?.name}
+                                  {item.note_type_name}
                                 </Typography>
                                 <Typography component={"span"}>
                                   {/* only show note's status badge if the note has a phase_id */}
@@ -458,7 +462,7 @@ const ProjectNotes = ({
                               </>
                             }
                             secondary={
-                              editingNoteId === item.project_note_id ? (
+                              shouldShowNoteInput ? (
                                 <NoteInput
                                   noteText={noteText}
                                   setNoteText={setNoteText}

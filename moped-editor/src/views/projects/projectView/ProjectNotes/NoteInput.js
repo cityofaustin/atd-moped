@@ -27,7 +27,7 @@ import { LinkNode } from "@lexical/link";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { ListNode, ListItemNode } from "@lexical/list";
 import EditorTheme from "src/views/projects/projectView/EditorTheme";
-import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons"
+import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
