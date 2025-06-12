@@ -372,7 +372,6 @@ const ProjectNotes = ({
               noteTypeId={null}
               label="All"
             />
-            {/* TODO: Filter to only moped source types so we don't show a radio to create eCAPRIS statuses */}
             {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
                 showButtonItemStyle={classes.showButtonItem}

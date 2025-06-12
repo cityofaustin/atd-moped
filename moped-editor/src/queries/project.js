@@ -109,6 +109,7 @@ export const SUMMARY_QUERY = gql`
       id
       name
       slug
+      source
     }
     moped_public_process_statuses(order_by: { id: asc }) {
       id
