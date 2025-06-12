@@ -1,23 +1,15 @@
 import React, { useState, useMemo } from "react";
 import {
   Alert,
-  Avatar,
   Card,
   CardContent,
   CircularProgress,
   Divider,
   Grid,
-  IconButton,
   List,
-  ListItem,
-  ListItemAvatar,
-  ListItemSecondaryAction,
-  ListItemText,
   Typography,
   FormControlLabel,
 } from "@mui/material";
-import DeleteIcon from "@mui/icons-material/DeleteOutlined";
-import EditIcon from "@mui/icons-material/EditOutlined";
 
 import makeStyles from "@mui/styles/makeStyles";
 import { getSessionDatabaseData } from "src/auth/user";
@@ -29,7 +21,7 @@ import DOMPurify from "dompurify";
 import NoteInput from "src/views/projects/projectView/ProjectNotes/NoteInput";
 import NoteTypeButton from "src/views/projects/projectView/ProjectNotes/NoteTypeButton";
 import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
-import ProjectStatusBadge from "src/views/projects/projectView/ProjectStatusBadge";
+import ProjectNote from "src/views/projects/projectView/ProjectNotes/ProjectNote";
 
 import * as yup from "yup";
 import { yupValidator } from "src/utils/validation";
@@ -42,10 +34,6 @@ import {
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
 } from "../../../queries/notes";
-import {
-  makeHourAndMinutesFromTimeStampTZ,
-  makeUSExpandedFormDateFromTimeStampTZ,
-} from "src/utils/dateAndTime";
 import { agolValidation } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
@@ -90,11 +78,8 @@ const useStyles = makeStyles((theme) => ({
 const validationSchema = yup.object().shape({
   projectStatusUpdate: agolValidation.projectStatusUpdate,
 });
-
 const validator = (value) => yupValidator(value, validationSchema);
 
-// TODO: Update these two hooks to handle Moped source and eCAPRIS source note types
-// reshape the array of note types into an object with key slug, value id
 export const useNoteTypeObject = (noteTypes) =>
   useMemo(
     () =>
@@ -411,133 +396,52 @@ const ProjectNotes = ({
                   isDeleteConfirmationOpen={isDeleteConfirmationOpen}
                   setIsDeleteConfirmationOpen={setIsDeleteConfirmationOpen}
                 >
-                  {/* TODO: Update render to show Moped source notes and eCAPRIS source notes - reusable component? */}
-                  {/* TODO: For eCAPRIS, add "Synced from eCAPRIS" text  */}
-                  {displayNotes.map((item, i) => {
+                  {displayNotes.map((note, i) => {
                     const isNotLastItem = i < displayNotes.length - 1;
-                    const phaseKey = item.phase_key;
-                    const phaseName = item.phase_name;
+
                     /**
                      * Only allow the user who wrote the status to edit it - if it is editable
                      */
-                    const editableNote =
-                      userSessionData.user_id === item.created_by_user_id ||
-                      item.is_editable;
-
-                    const shouldShowNoteInput =
-                      editingNoteId === item.original_id;
+                    const isNoteEditable =
+                      userSessionData.user_id === note.created_by_user_id ||
+                      note.is_editable;
+                    const isEditingNote = editingNoteId === note.original_id;
                     return (
-                      <React.Fragment key={item.id}>
-                        <ListItem alignItems="flex-start">
-                          <ListItemAvatar>
-                            <Avatar />
-                          </ListItemAvatar>
-                          <ListItemText
-                            className={editableNote ? classes.editableNote : ""}
-                            secondaryTypographyProps={{
-                              className: classes.editButtons,
-                            }}
-                            primary={
-                              <>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.authorText}
-                                >
-                                  {item.author}
-                                </Typography>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.noteDate}
-                                >
-                                  {` - ${makeUSExpandedFormDateFromTimeStampTZ(
-                                    item.created_at
-                                  )} ${makeHourAndMinutesFromTimeStampTZ(
-                                    item.created_at
-                                  )}`}
-                                </Typography>
-                                <Typography
-                                  component={"span"}
-                                  className={classes.filterNoteType}
-                                >
-                                  {item.note_type_name}
-                                </Typography>
-                                <Typography component={"span"}>
-                                  {/* only show note's status badge if the note has a phase_id */}
-                                  {phaseKey && phaseName && (
-                                    <ProjectStatusBadge
-                                      phaseKey={phaseKey}
-                                      phaseName={phaseName}
-                                      condensed
-                                      leftMargin
-                                    />
-                                  )}
-                                </Typography>
-                              </>
-                            }
-                            secondary={
-                              shouldShowNoteInput ? (
-                                <NoteInput
-                                  noteText={noteText}
-                                  setNoteText={setNoteText}
-                                  isEditingNote={isEditingNote}
-                                  noteAddLoading={noteAddLoading}
-                                  noteAddSuccess={noteAddSuccess}
-                                  submitNewNote={submitNewNote}
-                                  submitEditNote={submitEditNote}
-                                  cancelNoteEdit={cancelNoteEdit}
-                                  editingNoteType={editingNoteType}
-                                  setEditingNoteType={setEditingNoteType}
-                                  isStatusEditModal={isStatusEditModal}
-                                  noteTypes={
-                                    projectData?.moped_note_types ?? []
-                                  }
-                                  validator={isStatusUpdate ? validator : null}
-                                />
-                              ) : (
-                                <Typography
-                                  component={"span"}
-                                  className={"noteBody"}
-                                >
-                                  {parse(item.project_note)}
-                                </Typography>
-                              )
-                            }
-                          />
-                          {
-                            // show edit/delete icons if note authored by logged in user
-                            // or user is admin
-                            editableNote && (
-                              <ListItemSecondaryAction
-                                className={classes.editControls}
+                      <React.Fragment key={note.id}>
+                        <ProjectNote
+                          note={note}
+                          noteIndex={i}
+                          isNoteEditable={isNoteEditable}
+                          isEditingNote={isEditingNote}
+                          handleDeleteOpen={handleDeleteOpen}
+                          handleEditClick={editNote}
+                          secondary={
+                            isEditingNote ? (
+                              <NoteInput
+                                noteText={noteText}
+                                setNoteText={setNoteText}
+                                isEditingNote={isEditingNote}
+                                noteAddLoading={noteAddLoading}
+                                noteAddSuccess={noteAddSuccess}
+                                submitNewNote={submitNewNote}
+                                submitEditNote={submitEditNote}
+                                cancelNoteEdit={cancelNoteEdit}
+                                editingNoteType={editingNoteType}
+                                setEditingNoteType={setEditingNoteType}
+                                isStatusEditModal={isStatusEditModal}
+                                noteTypes={projectData?.moped_note_types ?? []}
+                                validator={isStatusUpdate ? validator : null}
+                              />
+                            ) : (
+                              <Typography
+                                component={"span"}
+                                className={"noteBody"}
                               >
-                                {editingNoteId !== item.project_note_id && (
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="edit"
-                                    onClick={() => editNote(i, item)}
-                                    size="large"
-                                  >
-                                    <EditIcon className={classes.editButtons} />
-                                  </IconButton>
-                                )}
-                                {!isEditingNote && (
-                                  <IconButton
-                                    edge="end"
-                                    aria-label="delete"
-                                    onClick={() =>
-                                      handleDeleteOpen(item.project_note_id)
-                                    }
-                                    size="large"
-                                  >
-                                    <DeleteIcon
-                                      className={classes.editButtons}
-                                    />
-                                  </IconButton>
-                                )}
-                              </ListItemSecondaryAction>
+                                {parse(note.project_note)}
+                              </Typography>
                             )
                           }
-                        </ListItem>
+                        />
                         {isNotLastItem && <Divider component="li" />}
                       </React.Fragment>
                     );
