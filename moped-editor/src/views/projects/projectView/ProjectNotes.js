@@ -37,41 +37,8 @@ import {
 import { agolValidation } from "src/constants/projects";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
-  authorText: {
-    display: "inline",
-    fontWeight: 500,
-  },
-  noteDate: {
-    display: "inline",
-    fontSize: ".875rem",
-  },
-  editableNote: {
-    marginRight: "30px",
-  },
-  filterNoteType: {
-    display: "inline",
-    marginLeft: "12px",
-    color: theme.palette.primary.main,
-    textTransform: "uppercase",
-    fontSize: ".875rem",
-    fontWeight: 500,
-  },
-  emptyState: {
-    margin: theme.spacing(3),
-  },
   showButtonItem: {
     margin: theme.spacing(2),
-  },
-  editControls: {
-    top: "0%",
-    marginTop: "25px",
-  },
-  editButtons: {
-    color: theme.palette.text.primary,
   },
 }));
 
@@ -389,7 +356,11 @@ const ProjectNotes = ({
             {loading || !displayNotes ? (
               <CircularProgress />
             ) : displayNotes.length > 0 ? (
-              <List className={classes.root}>
+              <List
+                sx={{
+                  width: "100%",
+                }}
+              >
                 <DeleteConfirmationModal
                   type="note"
                   submitDelete={() => submitDeleteNote(deleteConfirmationId)}
@@ -449,7 +420,11 @@ const ProjectNotes = ({
                 </DeleteConfirmationModal>
               </List>
             ) : (
-              <Typography className={classes.emptyState}>
+              <Typography
+                sx={{
+                  margin: 3,
+                }}
+              >
                 No notes to display
               </Typography>
             )}
