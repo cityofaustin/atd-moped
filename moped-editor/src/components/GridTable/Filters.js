@@ -96,6 +96,8 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} resetSimpleSearch - Function to reset the simple search
  * @param {Object} searchParams - The URL search params
  * @param {Function} setSearchParams - Function to set the URL search params
+ * @param {string} searchFieldValue - The current search field value
+ * @param {Function} setSearchFieldValue - Function to set the search field value
  * @return {JSX.Element}
  * @constructor
  */
@@ -108,6 +110,8 @@ const Filters = ({
   setIsOr,
   searchParams,
   setSearchParams,
+  searchFieldValue,
+  setSearchFieldValue,
 }) => {
   /**
    * The styling of the search bar
@@ -278,6 +282,9 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
+    if (searchFieldValue) {
+      setSearchFieldValue(searchFieldValue.trim());
+    }
     if (filterParameters.length > 0) {
       /* If we have advanced filters, set query state values and update search params */
       setSearchParams((prevSearchParams) => {
