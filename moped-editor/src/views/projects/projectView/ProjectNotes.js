@@ -35,11 +35,17 @@ import {
 } from "../../../queries/notes";
 import { agolValidation } from "src/constants/projects";
 
+/* Validation for note input (create or edit) */
 const validationSchema = yup.object().shape({
   projectStatusUpdate: agolValidation.projectStatusUpdate,
 });
 const validator = (value) => yupValidator(value, validationSchema);
 
+/**
+ * Hook to create an object mapping note type slugs to their IDs
+ * @param {Array} noteTypes - Array of note types from moped_note_types query
+ * @returns
+ */
 export const useNoteTypeObject = (noteTypes) =>
   useMemo(
     () =>
@@ -53,6 +59,13 @@ export const useNoteTypeObject = (noteTypes) =>
     [noteTypes]
   );
 
+/**
+ * Hook to filter notes based on the selected note type
+ * @param {Array} notes - Array of notes to filter
+ * @param {Number} filterNoteType - The ID of the note type to filter by
+ * @param {Object} noteTypesIDLookup - Object mapping note type slugs to their IDs
+ * @returns
+ */
 const useFilterNotes = (notes, filterNoteType, noteTypesIDLookup) =>
   useMemo(() => {
     if (!filterNoteType) {
@@ -67,7 +80,7 @@ const useFilterNotes = (notes, filterNoteType, noteTypesIDLookup) =>
         : [];
       return filteredNotes;
     }
-  }, [notes, filterNoteType]);
+  }, [notes, filterNoteType, noteTypesIDLookup]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -91,27 +104,39 @@ const ProjectNotes = ({
   projectId,
   eCaprisSubprojectId = null,
 }) => {
-  // use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
-  // otherwise use data passed from ProjectView
+  /* User details for create and update mutations */
+  const userSessionData = getSessionDatabaseData();
+
+  /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
+   * If component is being used in edit modal from dashboard get project id from props instead of url params.
+   */
+  let { projectId: projectIdFromParam } = useParams();
+  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
+
+  /* Use currentPhaseId if passed down from ProjectSummaryStatusUpdate component,
+  otherwise use data passed from ProjectView */
   const noteCurrentPhaseId = isStatusEditModal
     ? currentPhaseId
     : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
-  let { projectId: projectIdFromParam } = useParams();
-  const userSessionData = getSessionDatabaseData();
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
   const [noteText, setNoteText] = useState("");
+
+  /* New note */
   const [newNoteType, setNewNoteType] = useState(
     isStatusEditModal
       ? noteTypesIDLookup["status_update"]
       : noteTypesIDLookup["internal_note"]
   );
-  const [editingNoteType, setEditingNoteType] = useState(null);
   const [noteAddLoading, setNoteAddLoading] = useState(false);
   const [noteAddSuccess, setNoteAddSuccess] = useState(false);
+
+  /* Edit existing note */
+  const [editingNoteType, setEditingNoteType] = useState(null);
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
+
   const [filterNoteType, setFilterNoteType] = useState(
     isStatusEditModal ? noteTypesIDLookup["status_update"] : null
   );
@@ -123,10 +148,7 @@ const ProjectNotes = ({
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
     (isEditingNote && editingNoteType === noteTypesIDLookup["status_update"]);
 
-  // if component is being used in edit modal from dashboard
-  // get project id from props instead of url params
-  const noteProjectId = isStatusEditModal ? projectId : projectIdFromParam;
-
+  /* Query Moped and eCAPRIS notes with matching filters */
   const queryVariables = eCaprisSubprojectId
     ? {
         projectNoteConditions: {
@@ -150,7 +172,13 @@ const ProjectNotes = ({
   });
 
   const combinedNotes = data?.combined_project_notes || [];
+  const displayNotes = useFilterNotes(
+    combinedNotes,
+    filterNoteType,
+    noteTypesIDLookup
+  );
 
+  /* Add, edit, and delete mutations */
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
       setNoteText("");
@@ -197,6 +225,7 @@ const ProjectNotes = ({
     },
   });
 
+  /* Handlers */
   const submitNewNote = () => {
     setNoteAddLoading(true);
     addNewNote({
@@ -268,12 +297,6 @@ const ProjectNotes = ({
         handleSnackbar(true, "Error deleting note/status", "error", error)
       );
   };
-
-  const displayNotes = useFilterNotes(
-    combinedNotes,
-    filterNoteType,
-    noteTypesIDLookup
-  );
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
