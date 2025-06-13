@@ -16,11 +16,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "start",
   },
-  filtersText: {
-    fontFamily: "Roboto",
-    fontSize: ".9rem",
-    color: theme.palette.text.secondary,
-  },
 }));
 
 /**
