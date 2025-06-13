@@ -20,10 +20,7 @@ const NoteTypeButton = ({
     color="primary"
     sx={{ margin: 2 }}
     variant={filterNoteType === noteTypeId ? "contained" : "outlined"}
-    onClick={() => {
-      setFilterNoteType(noteTypeId);
-      console.log(noteTypeId);
-    }}
+    onClick={() => setFilterNoteType(noteTypeId)}
   >
     {label}
   </Button>

@@ -53,7 +53,7 @@ export const useNoteTypeObject = (noteTypes) =>
     [noteTypes]
   );
 
-const useFilterNotes = (notes, filterNoteType) =>
+const useFilterNotes = (notes, filterNoteType, noteTypesIDLookup) =>
   useMemo(() => {
     if (!filterNoteType) {
       // show all the notes
@@ -61,7 +61,9 @@ const useFilterNotes = (notes, filterNoteType) =>
     } else {
       // Check to see if array exists before trying to filter
       const filteredNotes = notes
-        ? notes.filter((n) => n.project_note_type === filterNoteType)
+        ? notes.filter(
+            (n) => noteTypesIDLookup[n.note_type_slug] === filterNoteType
+          )
         : [];
       return filteredNotes;
     }
@@ -134,22 +136,20 @@ const ProjectNotes = ({
           ],
           _and: { is_deleted: { _eq: false } },
         },
-        order_by: { created_at: "desc" },
       }
     : {
         projectNoteConditions: {
           project_id: { _eq: Number(noteProjectId) },
           is_deleted: { _eq: false },
         },
-        order_by: { created_at: "desc" },
       };
 
   const { loading, error, data, refetch } = useQuery(COMBINED_NOTES_QUERY, {
-    variables: queryVariables,
+    variables: { ...queryVariables, order_by: { created_at: "desc" } },
     fetchPolicy: "no-cache",
   });
 
-  const mopedProjNotes = data?.combined_project_notes || [];
+  const combinedNotes = data?.combined_project_notes || [];
 
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
@@ -269,7 +269,11 @@ const ProjectNotes = ({
       );
   };
 
-  const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
+  const displayNotes = useFilterNotes(
+    combinedNotes,
+    filterNoteType,
+    noteTypesIDLookup
+  );
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
