@@ -11,7 +11,6 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-import makeStyles from "@mui/styles/makeStyles";
 import { getSessionDatabaseData } from "src/auth/user";
 import { useQuery, useMutation } from "@apollo/client";
 import { useParams } from "react-router-dom";
@@ -35,12 +34,6 @@ import {
   DELETE_PROJECT_NOTE,
 } from "../../../queries/notes";
 import { agolValidation } from "src/constants/projects";
-
-const useStyles = makeStyles((theme) => ({
-  showButtonItem: {
-    margin: theme.spacing(2),
-  },
-}));
 
 const validationSchema = yup.object().shape({
   projectStatusUpdate: agolValidation.projectStatusUpdate,
@@ -102,7 +95,6 @@ const ProjectNotes = ({
     ? currentPhaseId
     : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
   let { projectId: projectIdFromParam } = useParams();
-  const classes = useStyles();
   const userSessionData = getSessionDatabaseData();
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
@@ -278,7 +270,6 @@ const ProjectNotes = ({
   };
 
   const displayNotes = useFilterNotes(mopedProjNotes, filterNoteType);
-  console.log("displayNotes", displayNotes);
 
   const handleDeleteOpen = (id) => {
     setIsDeleteConfirmationOpen(true);
@@ -327,12 +318,11 @@ const ProjectNotes = ({
         {!isStatusEditModal && (
           <Grid item xs={12}>
             <FormControlLabel
-              className={classes.showButtonItem}
+              sx={{ margin: 2 }}
               label="Show"
               control={<span />}
             />
             <NoteTypeButton
-              showButtonItemStyle={classes.showButtonItem}
               filterNoteType={filterNoteType}
               setFilterNoteType={setFilterNoteType}
               noteTypeId={null}
@@ -340,7 +330,6 @@ const ProjectNotes = ({
             />
             {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
-                showButtonItemStyle={classes.showButtonItem}
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
                 noteTypeId={type.id}
@@ -404,10 +393,7 @@ const ProjectNotes = ({
                                 validator={isStatusUpdate ? validator : null}
                               />
                             ) : (
-                              <Typography
-                                component={"span"}
-                                className={"noteBody"}
-                              >
+                              <Typography component={"span"}>
                                 {parse(note.project_note)}
                               </Typography>
                             )
