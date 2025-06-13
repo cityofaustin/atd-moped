@@ -174,16 +174,9 @@ const ProjectNotes = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
-  const [shouldSyncFromECapris, setShouldSyncFromECapris] = useState(
-    projectData.moped_project[0].should_sync_ecapris_statuses
-  );
 
-  // Keeps this state in sync with props
-  useEffect(() => {
-    setShouldSyncFromECapris(
-      projectData.moped_project[0].should_sync_ecapris_statuses
-    );
-  }, [projectData.moped_project]);
+  const shouldSyncFromECAPRIS =
+    projectData.moped_project[0].should_sync_ecapris_statuses;
 
   const isStatusUpdate =
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
@@ -336,7 +329,7 @@ const ProjectNotes = ({
     updateShouldSyncECapris({
       variables: {
         projectId: noteProjectId,
-        shouldSync: !shouldSyncFromECapris,
+        shouldSync: !shouldSyncFromECAPRIS,
       },
     })
       .then(() => {
@@ -350,7 +343,7 @@ const ProjectNotes = ({
           error
         )
       );
-    setShouldSyncFromECapris(!shouldSyncFromECapris);
+    refetchProjectSummary();
   };
 
   if (error) {
@@ -436,7 +429,7 @@ const ProjectNotes = ({
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={shouldSyncFromECapris}
+                      checked={shouldSyncFromECAPRIS}
                       disabled={!hasECaprisId}
                       onChange={handleECaprisSwitch}
                     />
