@@ -156,7 +156,6 @@ const ProjectNotes = ({
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
-  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
   const [noteText, setNoteText] = useState("");
   const [newNoteType, setNewNoteType] = useState(
     isStatusEditModal
@@ -175,6 +174,7 @@ const ProjectNotes = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
+  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
   const shouldSyncFromECAPRIS =
     projectData.moped_project[0].should_sync_ecapris_statuses;
 
