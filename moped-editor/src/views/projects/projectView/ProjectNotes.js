@@ -32,7 +32,7 @@ import {
   ADD_PROJECT_NOTE,
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
-} from "../../../queries/notes";
+} from "src/queries/notes";
 import { agolValidation } from "src/constants/projects";
 
 /* Validation for note input (create or edit) */
@@ -390,7 +390,7 @@ const ProjectNotes = ({
                      * Only allow the user who wrote the status to edit it - if it is editable
                      */
                     const isNoteEditable =
-                      userSessionData.user_id === note.created_by_user_id ||
+                      userSessionData.user_id === note.created_by_user_id &&
                       note.is_editable;
                     const isEditingNote = editingNoteId === note.original_id;
                     return (

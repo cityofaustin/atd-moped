@@ -1,6 +1,7 @@
 import {
   Avatar,
   IconButton,
+  Grid,
   ListItem,
   ListItemAvatar,
   ListItemSecondaryAction,
@@ -116,28 +117,34 @@ const ProjectNotes = ({
       {isNoteEditable && (
         <ListItemSecondaryAction
           sx={{
-            top: "0%",
-            marginTop: "25px",
+            top: 0,
+            marginTop: 3,
           }}
         >
-          <IconButton
-            edge="end"
-            aria-label="edit"
-            onClick={() => handleEditClick(noteIndex, note)}
-            size="large"
-          >
-            <EditIcon sx={editButtonStyles} />
-          </IconButton>
-          {!isEditingNote && (
-            <IconButton
-              edge="end"
-              aria-label="delete"
-              onClick={() => handleDeleteOpen(note.project_note_id)}
-              size="large"
-            >
-              <DeleteIcon sx={editButtonStyles} />
-            </IconButton>
-          )}
+          <Grid container spacing={0.5}>
+            <Grid item>
+              <IconButton
+                edge="end"
+                aria-label="edit"
+                onClick={() => handleEditClick(noteIndex, note)}
+                size="small"
+              >
+                <EditIcon sx={editButtonStyles} />
+              </IconButton>
+            </Grid>
+            <Grid item>
+              {!isEditingNote && (
+                <IconButton
+                  edge="end"
+                  aria-label="delete"
+                  onClick={() => handleDeleteOpen(note.project_note_id)}
+                  size="small"
+                >
+                  <DeleteIcon sx={editButtonStyles} />
+                </IconButton>
+              )}
+            </Grid>
+          </Grid>
         </ListItemSecondaryAction>
       )}
     </ListItem>
