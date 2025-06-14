@@ -112,11 +112,7 @@ const ProjectSummaryProjectECapris = ({
     )
       .then(() => {
         setEditMode(false);
-        handleSnackbar(
-          true,
-          "eCAPRIS Subproject ID updated",
-          "success"
-        );
+        handleSnackbar(true, "eCAPRIS Subproject ID updated", "success");
       })
       .then(() => refetch())
       .catch((error) => {
