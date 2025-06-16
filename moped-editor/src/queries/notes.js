@@ -2,9 +2,9 @@ import { gql } from "@apollo/client";
 
 export const COMBINED_NOTES_QUERY = gql`
   query GetCombinedProjectNotes(
-    $projectNoteConditions: combined_project_notes_bool_exp!
+    $projectNoteConditions: combined_project_notes_view_bool_exp!
   ) {
-    combined_project_notes(
+    combined_project_notes_view(
       where: $projectNoteConditions
       order_by: { created_at: desc }
     ) {

@@ -156,13 +156,11 @@ const ProjectNotes = ({
             { ecapris_subproject_id: { _eq: eCaprisSubprojectId } },
             { project_id: { _eq: Number(noteProjectId) } },
           ],
-          _and: { is_deleted: { _eq: false } },
         },
       }
     : {
         projectNoteConditions: {
           project_id: { _eq: Number(noteProjectId) },
-          is_deleted: { _eq: false },
         },
       };
 
@@ -171,7 +169,7 @@ const ProjectNotes = ({
     fetchPolicy: "no-cache",
   });
 
-  const combinedNotes = data?.combined_project_notes || [];
+  const combinedNotes = data?.combined_project_notes_view || [];
   const displayNotes = useFilterNotes(
     combinedNotes,
     filterNoteType,
