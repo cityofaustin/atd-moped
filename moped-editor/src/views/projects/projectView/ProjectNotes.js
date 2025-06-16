@@ -333,7 +333,7 @@ const ProjectNotes = ({
       },
     })
       .then(() => {
-        handleSnackbar(true, "ECAPRIS sync status updated", "success");
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
       })
       .catch((error) =>
         handleSnackbar(
@@ -423,7 +423,7 @@ const ProjectNotes = ({
                 title={
                   hasECaprisId
                     ? "Statuses are synced from eCAPRIS every 30 minutes"
-                    : "Add eCapris subproject ID to sync from eCAPRIS"
+                    : "Add eCAPRIS subproject ID to sync from eCAPRIS"
                 }
               >
                 <FormControlLabel
