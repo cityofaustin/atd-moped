@@ -15,6 +15,7 @@ export const COMBINED_NOTES_QUERY = gql`
       is_editable
       note_type_name
       note_type_slug
+      note_type_id
       phase_id
       project_id
       project_note

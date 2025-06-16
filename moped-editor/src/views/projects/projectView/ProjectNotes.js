@@ -63,10 +63,9 @@ export const useNoteTypeObject = (noteTypes) =>
  * Hook to filter notes based on the selected note type
  * @param {Array} notes - Array of notes to filter
  * @param {Number} filterNoteType - The ID of the note type to filter by
- * @param {Object} noteTypesIDLookup - Object mapping note type slugs to their IDs
  * @returns
  */
-const useFilterNotes = (notes, filterNoteType, noteTypesIDLookup) =>
+const useFilterNotes = (notes, filterNoteType) =>
   useMemo(() => {
     if (!filterNoteType) {
       // show all the notes
@@ -74,13 +73,11 @@ const useFilterNotes = (notes, filterNoteType, noteTypesIDLookup) =>
     } else {
       // Check to see if array exists before trying to filter
       const filteredNotes = notes
-        ? notes.filter(
-            (n) => noteTypesIDLookup[n.note_type_slug] === filterNoteType
-          )
+        ? notes.filter((n) => n.note_type_id === filterNoteType)
         : [];
       return filteredNotes;
     }
-  }, [notes, filterNoteType, noteTypesIDLookup]);
+  }, [notes, filterNoteType]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -170,11 +167,7 @@ const ProjectNotes = ({
   });
 
   const combinedNotes = data?.combined_project_notes_view || [];
-  const displayNotes = useFilterNotes(
-    combinedNotes,
-    filterNoteType,
-    noteTypesIDLookup
-  );
+  const displayNotes = useFilterNotes(combinedNotes, filterNoteType);
 
   /* Add, edit, and delete mutations */
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
@@ -247,7 +240,7 @@ const ProjectNotes = ({
   };
 
   const editNote = (index, item) => {
-    setEditingNoteType(noteTypesIDLookup[item.note_type_slug]);
+    setEditingNoteType(item.note_type_id);
     setIsEditingNote(true);
     setNoteText(displayNotes[index].project_note);
     setEditingNoteId(item.original_id);
