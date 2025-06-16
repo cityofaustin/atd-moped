@@ -9,8 +9,8 @@ VALUES
 
 COMMENT ON COLUMN moped_note_types.source IS 'Source of the note type, e.g., Moped or eCapris applications';
 
--- Create the combined_project_notes view for the project notes tab and status update in summary view
-CREATE OR REPLACE VIEW combined_project_notes AS
+-- Create the combined_project_notes_view for the project notes tab and status update in summary view
+CREATE OR REPLACE VIEW combined_project_notes_view AS
 SELECT
     ('moped_' || moped_proj_notes.project_note_id) AS id,
     moped_proj_notes.project_note_id AS original_id,
@@ -21,11 +21,13 @@ SELECT
     (moped_users.first_name || ' ' || moped_users.last_name) AS author,
     moped_note_types.name AS note_type_name,
     moped_note_types.slug AS note_type_slug,
+    moped_note_types.id AS note_type_id,
+    moped_note_types.source AS note_type_source,
     moped_phases.phase_name AS phase_name,
     moped_phases.phase_key AS phase_key,
-    moped_proj_notes.is_deleted,
     moped_proj_notes.phase_id,
     TRUE AS is_editable,
+    moped_note_types.slug = 'status_update' AS is_status_update,
     NULL AS ecapris_subproject_id
 FROM
     moped_proj_notes
@@ -53,11 +55,13 @@ SELECT
     ) AS author,
     moped_note_types.name AS note_type_name,
     moped_note_types.slug AS note_type_slug,
+    moped_note_types.id AS note_type_id,
+    moped_note_types.source AS note_type_source,
     NULL AS phase_name,
     NULL AS phase_key,
-    FALSE AS is_deleted,
     NULL AS phase_id,
     FALSE AS is_editable,
+    TRUE AS is_status_update,
     ecapris_subproject_statuses.ecapris_subproject_id
 FROM
     ecapris_subproject_statuses
@@ -353,15 +357,14 @@ LEFT JOIN min_estimated_phase_dates AS mepd ON mp.project_id = mepd.project_id
 LEFT JOIN project_component_work_types AS pcwt ON mp.project_id = pcwt.project_id
 LEFT JOIN LATERAL (
     SELECT
-        combined_project_notes.project_note,
-        combined_project_notes.created_at AS date_created
-    FROM combined_project_notes
-    WHERE (combined_project_notes.project_id = mp.project_id OR (
+        combined_project_notes_view.project_note,
+        combined_project_notes_view.created_at AS date_created
+    FROM combined_project_notes_view
+    WHERE (combined_project_notes_view.project_id = mp.project_id OR (
         mp.should_sync_ecapris_statuses = TRUE AND mp.ecapris_subproject_id IS NOT NULL
-        AND combined_project_notes.ecapris_subproject_id = mp.ecapris_subproject_id
-    )) AND (combined_project_notes.note_type_name IN ('Status Update', 'eCapris Status Update'
-    ) AND combined_project_notes.is_deleted = FALSE)
-    ORDER BY combined_project_notes.created_at DESC
+        AND combined_project_notes_view.ecapris_subproject_id = mp.ecapris_subproject_id
+    )) AND (combined_project_notes_view.is_status_update = TRUE)
+    ORDER BY combined_project_notes_view.created_at DESC
     LIMIT 1
 ) AS proj_status_update ON TRUE
 WHERE mp.is_deleted = FALSE
