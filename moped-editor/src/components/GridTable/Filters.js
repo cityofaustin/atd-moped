@@ -99,7 +99,7 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} setSearchParams - Function to set the URL search params
  * @param {string} searchFieldValue - The current search field value
  * @param {Function} setSearchFieldValue - Function to set the search field value
- * @param {string} setSearchTerm - Function to set the search term
+ * @param {Function} setSearchTerm - Function to set the search term
  * @return {JSX.Element}
  * @constructor
  */
