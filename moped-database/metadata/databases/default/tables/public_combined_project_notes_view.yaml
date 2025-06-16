@@ -1,5 +1,5 @@
 table:
-  name: combined_project_notes
+  name: combined_project_notes_view
   schema: public
 select_permissions:
   - role: moped-admin
@@ -10,10 +10,12 @@ select_permissions:
         - created_by_user_id
         - ecapris_subproject_id
         - id
-        - is_deleted
         - is_editable
+        - is_status_update
+        - note_type_id
         - note_type_name
         - note_type_slug
+        - note_type_source
         - original_id
         - phase_id
         - phase_key
@@ -30,10 +32,12 @@ select_permissions:
         - created_by_user_id
         - ecapris_subproject_id
         - id
-        - is_deleted
         - is_editable
+        - is_status_update
+        - note_type_id
         - note_type_name
         - note_type_slug
+        - note_type_source
         - original_id
         - phase_id
         - phase_key
@@ -50,10 +54,12 @@ select_permissions:
         - created_by_user_id
         - ecapris_subproject_id
         - id
-        - is_deleted
         - is_editable
+        - is_status_update
+        - note_type_id
         - note_type_name
         - note_type_slug
+        - note_type_source
         - original_id
         - phase_id
         - phase_key

@@ -1,4 +1,4 @@
-DROP VIEW IF EXISTS combined_project_notes;
+DROP VIEW IF EXISTS combined_project_notes_view;
 
 DELETE FROM moped_note_types
 WHERE slug = 'ecapris_status';

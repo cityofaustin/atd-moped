@@ -1,6 +1,6 @@
 - "!include deprecated_moped_project_types.yaml"
 - "!include deprecated_moped_types.yaml"
-- "!include public_combined_project_notes.yaml"
+- "!include public_combined_project_notes_view.yaml"
 - "!include public_component_arcgis_online_view.yaml"
 - "!include public_current_phase_view.yaml"
 - "!include public_ecapris_subproject_statuses.yaml"
