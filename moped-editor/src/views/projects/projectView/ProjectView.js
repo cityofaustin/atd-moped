@@ -227,7 +227,7 @@ const ProjectView = () => {
           state: locationState, // Preserve the location state when changing tabs
         }
       );
-      refetch();
+      if (newTab === 0) refetch();
     },
     [refetch, setSearchParams, locationState]
   );
