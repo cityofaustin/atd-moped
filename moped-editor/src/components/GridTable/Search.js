@@ -130,18 +130,25 @@ const Search = ({
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = (event) => {
+    const trimmedSearchFieldValue = searchFieldValue.trim();
+
     // Stop if we don't have any value entered in the search field
-    if (searchFieldValue.length === 0) {
+    if (trimmedSearchFieldValue.length === 0) {
+      // If the user only entered whitespace, clear the search input
+      if (searchFieldValue.length > 0) {
+        resetSimpleSearch();
+      }
       return;
     }
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
-    // Update state to trigger search and set simple search param
-    setSearchTerm(searchFieldValue);
+    // Update the search field and search term with the trimmed value
+    setSearchFieldValue(trimmedSearchFieldValue);
+    setSearchTerm(trimmedSearchFieldValue);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(simpleSearchParamName, searchFieldValue);
+      prevSearchParams.set(simpleSearchParamName, trimmedSearchFieldValue);
 
       return prevSearchParams;
     });
@@ -254,6 +261,8 @@ const Search = ({
               setIsOr={setIsOr}
               setSearchParams={setSearchParams}
               searchParams={searchParams}
+              searchFieldValue={searchFieldValue}
+              setSearchFieldValue={setSearchFieldValue}
             />
           </Paper>
         </ClickAwayListener>
