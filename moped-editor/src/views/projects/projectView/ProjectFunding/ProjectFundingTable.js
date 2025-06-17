@@ -13,48 +13,33 @@ import {
   gridColumnFieldsSelector,
 } from "@mui/x-data-grid-pro";
 import { v4 as uuidv4 } from "uuid";
-import { currencyFormatter } from "../../../../utils/numberFormatters";
+import { currencyFormatter } from "src/utils/numberFormatters";
 
-import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
 import {
   FUNDING_QUERY,
   UPDATE_PROJECT_FUNDING,
   ADD_PROJECT_FUNDING,
   DELETE_PROJECT_FUNDING,
-} from "../../../../queries/funding";
+} from "src/queries/funding";
 import { useSocrataJson } from "src/utils/socrataHelpers";
 
-import DollarAmountIntegerField from "./DollarAmountIntegerField";
+import DollarAmountIntegerField from "src/views/projects/projectView/ProjectFunding/DollarAmountIntegerField";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
-import SubprojectFundingModal from "./SubprojectFundingModal";
-import ProjectFundingToolbar from "./ProjectFundingToolbar";
-import LookupSelectComponent from "../../../../components/LookupSelectComponent";
+import SubprojectFundingModal from "src/views/projects/projectView/ProjectFunding/SubprojectFundingModal";
+import ProjectFundingToolbar from "src/views/projects/projectView/ProjectFunding/ProjectFundingToolbar";
+import LookupSelectComponent from "src/components/LookupSelectComponent";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
-import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import { getLookupValueByID } from "src/components/DataGridPro/utils/helpers";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     margin: theme.spacing(2),
-  },
-  linkIcon: {
-    fontSize: "1rem",
-  },
-  editIconFunding: {
-    cursor: "pointer",
-    margin: "0.5rem",
-    fontSize: "1.5rem",
-  },
-  editIconContainer: {
-    minWidth: "8rem",
-    marginLeft: "8px",
-  },
-  editIconButton: {
-    margin: "8px 0",
-    padding: "8px",
   },
   editIconConfirm: {
     cursor: "pointer",
@@ -291,7 +276,7 @@ const useColumns = ({
     deptUnitData,
   ]);
 
-const ProjectFundingTable = ({ handleSnackbar }) => {
+const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -584,6 +569,7 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
           getRowId={(row) => row.proj_funding_id}
           editMode="row"
           rowModesModel={rowModesModel}
+          onRowEditStop={handleRowEditStop}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}
           onProcessRowUpdateError={(error) => console.error(error)}
@@ -604,7 +590,10 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
               projectId: projectId,
               eCaprisID: eCaprisID,
               data: data,
-              refetch: refetch,
+              refetch: () => {
+                refetch();
+                refetchProjectSummary();
+              },
               handleSnackbar: handleSnackbar,
               classes: classes,
               noWrapper: true,

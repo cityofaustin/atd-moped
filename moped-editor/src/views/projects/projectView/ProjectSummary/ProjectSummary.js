@@ -1,27 +1,27 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-import ProjectSummaryMap from "./ProjectSummaryMap";
-import ProjectSummaryStatusUpdate from "./ProjectSummaryStatusUpdate";
+import ProjectSummaryMap from "src/views/projects/projectView/ProjectSummary/ProjectSummaryMap";
+import ProjectSummaryStatusUpdate from "src/views/projects/projectView/ProjectSummary/ProjectSummaryStatusUpdate";
 
 import { Grid, CardContent, CircularProgress } from "@mui/material";
-import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
 
 import makeStyles from "@mui/styles/makeStyles";
-import ProjectSummaryProjectWebsite from "./ProjectSummaryProjectWebsite";
-import ProjectSummaryProjectDescription from "./ProjectSummaryProjectDescription";
-import ProjectSummaryParentProjectLink from "./ProjectSummaryParentProjectLink";
-import ProjectSummaryProjectECapris from "./ProjectSummaryProjectECapris";
-import ProjectSummaryDataTrackerSignals from "./ProjectSummaryDataTrackerSignals";
-import ProjectSummaryWorkOrders from "./ProjectSummaryWorkOrders";
-import ProjectSummaryInterimID from "./ProjectSummaryInterimID";
-import ProjectSummaryAutocomplete from "./ProjectSummaryAutocomplete";
-import ProjectSummaryProjectPartners from "./ProjectSummaryProjectPartners";
-import ProjectSummaryCouncilDistricts from "./ProjectSummaryCouncilDistricts";
-import ProjectSummaryComponentWorkTypes from "./ProjectSummaryComponentWorkTypes";
+import ProjectSummaryProjectWebsite from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectWebsite";
+import ProjectSummaryProjectDescription from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectDescription";
+import ProjectSummaryParentProjectLink from "src/views/projects/projectView/ProjectSummary/ProjectSummaryParentProjectLink";
+import ProjectSummaryProjectECapris from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectECapris";
+import ProjectSummaryDataTrackerSignals from "src/views/projects/projectView/ProjectSummary/ProjectSummaryDataTrackerSignals";
+import ProjectSummaryWorkOrders from "src/views/projects/projectView/ProjectSummary/ProjectSummaryWorkOrders";
+import ProjectSummaryInterimID from "src/views/projects/projectView/ProjectSummary/ProjectSummaryInterimID";
+import ProjectSummaryAutocomplete from "src/views/projects/projectView/ProjectSummary/ProjectSummaryAutocomplete";
+import ProjectSummaryProjectPartners from "src/views/projects/projectView/ProjectSummary/ProjectSummaryProjectPartners";
+import ProjectSummaryCouncilDistricts from "src/views/projects/projectView/ProjectSummary/ProjectSummaryCouncilDistricts";
+import ProjectSummaryComponentWorkTypes from "src/views/projects/projectView/ProjectSummary/ProjectSummaryComponentWorkTypes";
 
-import SubprojectsTable from "./SubprojectsTable";
-import TagsSection from "./TagsSection";
+import SubprojectsTable from "src/views/projects/projectView/ProjectSummary/SubprojectsTable";
+import TagsSection from "src/views/projects/projectView/ProjectSummary/TagsSection";
 
 import {
   PROJECT_UPDATE_SPONSOR,
@@ -32,17 +32,6 @@ import {
 const useStyles = makeStyles((theme) => ({
   fieldGridItem: {
     marginBottom: theme.spacing(3),
-  },
-  linkIcon: {
-    fontSize: "1rem",
-  },
-  syncLinkIcon: {
-    fontSize: "1.2rem",
-  },
-  editIcon: {
-    cursor: "pointer",
-    margin: "0 .5rem",
-    fontSize: "20px",
   },
   editIconConfirm: {
     cursor: "pointer",
@@ -81,17 +70,8 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(0.5),
     overflowWrap: "break-word",
   },
-  knackFieldLabelText: {
-    width: "calc(100% - 2rem)",
-    cursor: "pointer",
-  },
   fieldLabelTextSpanNoBorder: {
     borderBottom: "inherit",
-  },
-  fieldLabelLink: {
-    width: "calc(100% - 2rem)",
-    overflow: "hidden",
-    whiteSpace: "nowrap",
   },
   fieldBox: {
     width: "100%",

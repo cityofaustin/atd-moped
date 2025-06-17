@@ -24,6 +24,7 @@ import DeleteConfirmationModal from "../DeleteConfirmationModal";
 import ViewOnlyTextField from "src/components/DataGridPro/ViewOnlyTextField";
 import LookupAutocompleteComponent from "src/components/DataGridPro/LookupAutocompleteComponent";
 import { mopedUserAutocompleteProps } from "./utils";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles((theme) => ({
   infoIcon: {
@@ -236,6 +237,77 @@ const useColumns = ({
     existingTeamMembers,
   ]);
 
+/**
+ * Construct a moped_project_personnel object that can be passed to an insert mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
+ */
+
+const getNewPersonnelPayload = ({
+  newData: {
+    moped_user: { user_id },
+    notes,
+    moped_proj_personnel_roles,
+  },
+  projectId: project_id,
+}) => {
+  const payload = { notes, project_id, user_id };
+  const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
+    project_role_id: roles.project_role_id,
+  }));
+
+  payload.moped_proj_personnel_roles = { data: personnelRoles };
+  return payload;
+};
+
+/**
+ * Construct a moped_project_personnel object that can be passed to an update mutation
+ * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
+ * @param {integer} projectId - the project ID
+ * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
+ *  is handled separately
+ */
+const getEditPersonnelPayload = (newData) => {
+  const {
+    moped_user: { user_id },
+    notes,
+  } = newData;
+  return { user_id, notes };
+};
+
+/**
+ * Constructs payload objects for adding and removing moped_proj_personnel_roles
+ * @param {Object} newData - a table row object with the new values
+ * @param {Object} oldData - a table row object with the old values
+ * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
+ *  personnel role objects to delete
+ */
+const getEditRolesPayload = (newData, oldData) => {
+  const { project_personnel_id } = oldData;
+
+  // get an array of moped_proj_personnel_roles IDs to delete
+  const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
+    .filter((projRole) => {
+      const roleId = projRole.moped_project_role.project_role_id;
+      return !newData.roleIds.includes(roleId);
+    })
+    .map((projRole) => projRole.id);
+
+  // construct an array of new moped_proj_personnel_roles objects
+  const existingRoleIds = oldData.moped_proj_personnel_roles.map(
+    ({ moped_project_role }) => moped_project_role.project_role_id
+  );
+  const roleIdsToAdd = newData.roleIds.filter(
+    (roleId) => !existingRoleIds.includes(roleId)
+  );
+  const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
+    project_personnel_id,
+    project_role_id: newRoleId,
+  }));
+  return [rolesToAddPayload, projRoleIdsToDelete];
+};
+
 const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
@@ -274,77 +346,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   const workgroupLookup = useWorkgroupLookup(data);
 
   const existingTeamMembers = useExistingTeamMembers(data);
-
-  /**
-   * Construct a moped_project_personnel object that can be passed to an insert mutation
-   * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
-   * @param {integer} projectId - the project ID
-   * @return {Object} a moped_project_personnel object: { user_id, notes, moped_proj_personnel_roles: { project_role_id } }
-   */
-
-  const getNewPersonnelPayload = ({
-    newData: {
-      moped_user: { user_id },
-      notes,
-      moped_proj_personnel_roles,
-    },
-    projectId: project_id,
-  }) => {
-    const payload = { notes, project_id, user_id };
-    const personnelRoles = moped_proj_personnel_roles.map((roles) => ({
-      project_role_id: roles.project_role_id,
-    }));
-
-    payload.moped_proj_personnel_roles = { data: personnelRoles };
-    return payload;
-  };
-
-  /**
-   * Construct a moped_project_personnel object that can be passed to an update mutation
-   * @param {Object} newData - a table row object with { moped_user, notes, roleIds }
-   * @param {integer} projectId - the project ID
-   * @return {Object} a moped_project_personnel object: { user_id, notes } <- observe that `moped_proj_personnel_roles`
-   *  is handled separately
-   */
-  const getEditPersonnelPayload = (newData) => {
-    const {
-      moped_user: { user_id },
-      notes,
-    } = newData;
-    return { user_id, notes };
-  };
-
-  /**
-   * Constructs payload objects for adding and removing moped_proj_personnel_roles
-   * @param {Object} newData - a table row object with the new values
-   * @param {Object} oldData - a table row object with the old values
-   * @return {[[Object], [Int]]} - an array of new personnel role objects, and an array of existing
-   *  personnel role objects to delete
-   */
-  const getEditRolesPayload = (newData, oldData) => {
-    const { project_personnel_id } = oldData;
-
-    // get an array of moped_proj_personnel_roles IDs to delete
-    const projRoleIdsToDelete = oldData.moped_proj_personnel_roles
-      .filter((projRole) => {
-        const roleId = projRole.moped_project_role.project_role_id;
-        return !newData.roleIds.includes(roleId);
-      })
-      .map((projRole) => projRole.id);
-
-    // construct an array of new moped_proj_personnel_roles objects
-    const existingRoleIds = oldData.moped_proj_personnel_roles.map(
-      ({ moped_project_role }) => moped_project_role.project_role_id
-    );
-    const roleIdsToAdd = newData.roleIds.filter(
-      (roleId) => !existingRoleIds.includes(roleId)
-    );
-    const rolesToAddPayload = roleIdsToAdd.map((newRoleId) => ({
-      project_personnel_id,
-      project_role_id: newRoleId,
-    }));
-    return [rolesToAddPayload, projRoleIdsToDelete];
-  };
 
   const onClickAddTeamMember = () => {
     const id = uuidv4();
@@ -405,7 +406,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
   );
 
   const processRowUpdate = useCallback(
-    (updatedRow, originalRow, params, data) => {
+    (updatedRow, originalRow) => {
       let userId;
 
       const userObject = data.moped_users.find((user) => {
@@ -422,7 +423,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         userId = userObject.user_id;
         updatedRow.moped_user = userObject; // Update with full user object
       } else {
-        console.error("Invalid user data:", updatedRow.moped_user);
+        console.error(
+          "Invalid user data, user not found:",
+          updatedRow.moped_user
+        );
         throw new Error("Invalid user data");
       }
 
@@ -469,6 +473,7 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error adding team member", "error", error);
+            throw error;
           });
       } else {
         // Ensure project_personnel_id is an integer
@@ -516,12 +521,14 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
           .then(() => updatedRow)
           .catch((error) => {
             handleSnackbar(true, "Error updating team member", "error", error);
+            throw error;
           });
       }
     },
     [
-      updateProjectPersonnel,
+      data,
       insertProjectPersonnel,
+      updateProjectPersonnel,
       projectId,
       refetch,
       handleSnackbar,
@@ -541,12 +548,6 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     existingTeamMembers,
   });
 
-  const processRowUpdateMemoized = useCallback(
-    (updatedRow, originalRow, params) =>
-      processRowUpdate(updatedRow, originalRow, params, data),
-    [processRowUpdate, data]
-  );
-
   const getRowIdMemoized = useCallback((row) => row.project_personnel_id, []);
 
   if (loading || !data) return <CircularProgress />;
@@ -555,6 +556,10 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
     if (params.cellMode === GridRowModes.Edit && event.key === "Tab") {
       setUsingShiftKey(event.shiftKey);
     }
+  };
+
+  const handleRowModesModelChange = (newRowModesModel) => {
+    setRowModesModel(newRowModesModel);
   };
 
   return (
@@ -569,8 +574,12 @@ const ProjectTeamTable = ({ projectId, handleSnackbar }) => {
         getRowId={getRowIdMemoized}
         editMode="row"
         rowModesModel={rowModesModel}
-        onRowModesModelChange={setRowModesModel}
-        processRowUpdate={processRowUpdateMemoized}
+        onRowModesModelChange={handleRowModesModelChange}
+        onRowEditStop={handleRowEditStop}
+        onProcessRowUpdateError={(error) => {
+          console.error("Unexpected error in processRowUpdate:", error);
+        }}
+        processRowUpdate={processRowUpdate}
         onCellKeyDown={checkIfShiftKey}
         disableRowSelectionOnClick
         toolbar

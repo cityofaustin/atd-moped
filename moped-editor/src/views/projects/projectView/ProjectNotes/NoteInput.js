@@ -30,10 +30,6 @@ import EditorTheme from "src/views/projects/projectView/EditorTheme";
 import NoteTypeRadioButtons from "src/views/projects/projectView/ProjectNotes/NoteTypeRadioButtons";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: "100%",
-    backgroundColor: theme.palette.background.paper,
-  },
   cancelButton: {
     margin: theme.spacing(1),
     position: "relative",

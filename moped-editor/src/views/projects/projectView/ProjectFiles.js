@@ -14,33 +14,28 @@ import {
 import dataGridProStyleOverrides from "src/styles/dataGridProStylesOverrides";
 import { useMutation, useQuery } from "@apollo/client";
 
-import humanReadableFileSize from "../../../utils/humanReadableFileSize";
-import ApolloErrorHandler from "../../../components/ApolloErrorHandler";
-import ExternalLink from "../../../components/ExternalLink";
-import FileUploadDialogSingle from "../../../components/FileUpload/FileUploadDialogSingle";
+import humanReadableFileSize from "src/utils/humanReadableFileSize";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import ExternalLink from "src/components/ExternalLink";
+import FileUploadDialogSingle from "src/components/FileUpload/FileUploadDialogSingle";
 import {
   PROJECT_FILE_ATTACHMENTS,
   PROJECT_FILE_ATTACHMENTS_DELETE,
   PROJECT_FILE_ATTACHMENTS_UPDATE,
   PROJECT_FILE_ATTACHMENTS_CREATE,
-} from "../../../queries/project";
-import { getJwt, useUser } from "../../../auth/user";
-import downloadFileAttachment from "../../../utils/downloadFileAttachment";
+} from "src/queries/project";
+import { getJwt, useUser } from "src/auth/user";
+import downloadFileAttachment from "src/utils/downloadFileAttachment";
 import { FormattedDateString } from "src/utils/dateAndTime";
 import { isValidUrl } from "src/utils/urls";
-import ProjectFilesToolbar from "./ProjectFilesToolbar";
+import ProjectFilesToolbar from "src/views/projects/projectView/ProjectFilesToolbar";
 import DataGridTextField from "src/components/DataGridPro/DataGridTextField";
-import ProjectFilesTypeSelect from "./ProjectFilesTypeSelect";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import ProjectFilesTypeSelect from "src/views/projects/projectView/ProjectFilesTypeSelect";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import DataGridActions from "src/components/DataGridPro/DataGridActions";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const useStyles = makeStyles(() => ({
-  title: {
-    padding: "0rem 0 2rem 0",
-  },
-  uploadFileButton: {
-    float: "right",
-  },
   ellipsisOverflow: {
     cursor: "pointer",
     overflow: "hidden",
@@ -62,7 +57,7 @@ const useStyles = makeStyles(() => ({
 export const useFileTypeObject = (fileTypes) =>
   useMemo(
     () =>
-     fileTypes.reduce(
+      fileTypes.reduce(
         (obj, item) =>
           Object.assign(obj, {
             [item.id]: item.name,
@@ -88,7 +83,7 @@ const useColumns = ({
   handleDeleteOpen,
   validateFileInput,
   fileTypesLookup,
-  fileTypesObject
+  fileTypesObject,
 }) =>
   useMemo(() => {
     return [
@@ -334,7 +329,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
   });
 
   const fileTypesLookup = data?.moped_file_types;
-  const fileTypesObject = useFileTypeObject(data?.moped_file_types || [])
+  const fileTypesObject = useFileTypeObject(data?.moped_file_types || []);
 
   useEffect(() => {
     if (data && data.moped_project_files.length > 0) {
@@ -460,7 +455,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
     handleEditClick,
     validateFileInput,
     fileTypesLookup,
-    fileTypesObject
+    fileTypesObject,
   });
 
   // If no data or loading show progress circle
@@ -478,6 +473,7 @@ const ProjectFiles = ({ handleSnackbar }) => {
           rows={rows}
           getRowId={(row) => row.project_file_id}
           editMode="row"
+          onRowEditStop={handleRowEditStop}
           rowModesModel={rowModesModel}
           onRowModesModelChange={handleRowModesModelChange}
           processRowUpdate={processRowUpdate}

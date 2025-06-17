@@ -19,6 +19,7 @@ import {
   UPDATE_PROJECT_SUBPROJECT,
   DELETE_PROJECT_SUBPROJECT,
 } from "../../../../queries/subprojects";
+import { handleRowEditStop } from "src/utils/dataGridHelpers";
 
 const requiredFields = ["project_name_full"];
 
@@ -287,6 +288,7 @@ const SubprojectsTable = ({
         slotProps={{ toolbar: { onClick: handleAddSubprojectClick } }}
         editMode="row"
         processRowUpdate={processRowUpdate}
+        onRowEditStop={handleRowEditStop}
         hideFooter
         disableRowSelectionOnClick
         localeText={{ noRowsLabel: "No subprojects to display" }}

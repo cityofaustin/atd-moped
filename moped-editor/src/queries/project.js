@@ -34,6 +34,7 @@ export const SUMMARY_QUERY = gql`
       parent_project_id
       interim_project_id
       is_deleted
+      should_sync_ecapris_statuses
       moped_project {
         project_name
         project_name_full
@@ -827,7 +828,10 @@ export const PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECapris($projectId: Int!, $eCapris: String!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: $eCapris }
+      _set: {
+        ecapris_subproject_id: $eCapris
+        should_sync_ecapris_statuses: true
+      }
     ) {
       affected_rows
     }
@@ -838,7 +842,7 @@ export const PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID = gql`
   mutation UpdateProjectECaprisClear($projectId: Int!) {
     update_moped_project(
       where: { project_id: { _eq: $projectId } }
-      _set: { ecapris_subproject_id: null }
+      _set: { ecapris_subproject_id: null, should_sync_ecapris_statuses: false }
     ) {
       affected_rows
     }
@@ -895,6 +899,17 @@ export const UPDATE_PROJECT_TASK_ORDER = gql`
         task_order
         project_id
       }
+    }
+  }
+`;
+
+export const PROJECT_UPDATE_ECAPRIS_SYNC = gql`
+  mutation UpdateProjectECaprisSync($projectId: Int!, $shouldSync: Boolean!) {
+    update_moped_project(
+      where: { project_id: { _eq: $projectId } }
+      _set: { should_sync_ecapris_statuses: $shouldSync }
+    ) {
+      affected_rows
     }
   }
 `;

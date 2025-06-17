@@ -21,7 +21,7 @@ import makeStyles from "@mui/styles/makeStyles";
 
 import { Autocomplete } from "@mui/material";
 import BackspaceOutlinedIcon from "@mui/icons-material/BackspaceOutlined";
-import { LOOKUP_TABLES_QUERY } from "../../queries/project";
+import { LOOKUP_TABLES_QUERY } from "src/queries/project";
 import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
@@ -37,7 +37,7 @@ import {
   useMakeFilterState,
   useCreateAutocompleteOptions,
 } from "./helpers";
-import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
+import { FILTERS_COMMON_OPERATORS } from "src/components/GridTable/FiltersCommonOperators";
 
 /**
  * The styling for the filter components
@@ -45,16 +45,9 @@ import { FILTERS_COMMON_OPERATORS } from "./FiltersCommonOperators";
  * @constant
  */
 const useStyles = makeStyles((theme) => ({
-  root: {},
-  filterAlert: {
-    margin: theme.spacing(1),
-  },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
   },
   deleteButton: {
     marginTop: theme.spacing(1),
