@@ -263,6 +263,7 @@ const Search = ({
               searchParams={searchParams}
               searchFieldValue={searchFieldValue}
               setSearchFieldValue={setSearchFieldValue}
+              setSearchTerm={setSearchTerm}
             />
           </Paper>
         </ClickAwayListener>
