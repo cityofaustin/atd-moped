@@ -118,7 +118,7 @@ export const initializeUserDBObject = (userObject) => {
 };
 
 // Create a "controller" component that will calculate all the data that we need to give to our
-// components bellow via the `UserContext.Provider` component. This is where the Amplify will be
+// components below via the `UserContext.Provider` component. This is where the Amplify will be
 // mapped to a different interface, the one that we are going to expose to the rest of the app.
 export const UserProvider = ({ children }) => {
   /**
