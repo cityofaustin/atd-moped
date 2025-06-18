@@ -30,3 +30,12 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 ### auth_current_user2()
 {{API_SERVER}}/auth/current_user2
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### Users listing
+{{API_SERVER}}/users
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### user_get_user()
+# The USER_ID is the "Username" key from the previous request 👆
+{{API_SERVER}}/users/{{USER_ID}}
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
