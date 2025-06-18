@@ -1,0 +1,21 @@
+# This file contains example HTTP calls and it it also the configuration
+# file for the VSCode plugin "REST Client" https://open-vsx.org/extension/humao/rest-client. 
+
+# Add the following into the .vscode/settings.json file to use the environment 
+# variables in this file:
+
+# {
+#     "rest-client.environmentVariables": {
+#         "$shared": {
+#             "version": "v1",
+#         },
+#     }
+# }
+
+# TODO, move some of this config into a readme or something
+
+#
+# Health Check
+#
+http://localhost:5000/
+
