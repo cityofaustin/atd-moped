@@ -26,7 +26,7 @@ from users.helpers import (
 users_blueprint = Blueprint("users_blueprint", __name__)
 
 USER_POOL = api_config["COGNITO_USERPOOL_ID"]
-AWS_REGION = api_config.get("AWS_REGION", "us-east-1")
+boto3.setup_default_session(region_name=api_config.get("AWS_REGION", "us-east-1"))
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -37,7 +37,7 @@ def user_list_users() -> (Response, int):
     :return Response, int:
     """
     if is_valid_user(current_cognito_jwt):
-        cognito_client = boto3.client("cognito-idp", region_name=AWS_REGION)
+        cognito_client = boto3.client("cognito-idp")
 
         user_list_paginator = cognito_client.get_paginator("list_users")
         user_list_pages = user_list_paginator.paginate(UserPoolId=USER_POOL)
