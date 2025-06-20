@@ -26,6 +26,7 @@ import {
   advancedSearchFilterParamName,
   advancedSearchIsOrParamName,
 } from "src/views/projects/projectsListView/useProjectListViewQuery/useAdvancedSearch";
+import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import {
   areAllFiltersComplete,
   checkIsValidInput,
@@ -96,6 +97,9 @@ const useStyles = makeStyles((theme) => ({
  * @param {Function} resetSimpleSearch - Function to reset the simple search
  * @param {Object} searchParams - The URL search params
  * @param {Function} setSearchParams - Function to set the URL search params
+ * @param {string} searchFieldValue - The current search field value
+ * @param {Function} setSearchFieldValue - Function to set the search field value
+ * @param {Function} setSearchTerm - Function to set the search term
  * @return {JSX.Element}
  * @constructor
  */
@@ -108,6 +112,9 @@ const Filters = ({
   setIsOr,
   searchParams,
   setSearchParams,
+  searchFieldValue,
+  setSearchFieldValue,
+  setSearchTerm,
 }) => {
   /**
    * The styling of the search bar
@@ -278,6 +285,10 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
+    const trimmedSearchFieldValue = searchFieldValue.trim();
+    setSearchFieldValue(trimmedSearchFieldValue);
+    setSearchTerm(trimmedSearchFieldValue);
+
     if (filterParameters.length > 0) {
       /* If we have advanced filters, set query state values and update search params */
       setSearchParams((prevSearchParams) => {
@@ -285,6 +296,11 @@ const Filters = ({
 
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
+        if (trimmedSearchFieldValue) {
+          prevSearchParams.set(simpleSearchParamName, trimmedSearchFieldValue);
+        } else {
+          prevSearchParams.delete(simpleSearchParamName);
+        }
         return prevSearchParams;
       });
 
@@ -295,7 +311,11 @@ const Filters = ({
       setSearchParams((prevSearchParams) => {
         prevSearchParams.delete(advancedSearchFilterParamName);
         prevSearchParams.delete(advancedSearchIsOrParamName);
-
+        if (trimmedSearchFieldValue) {
+          prevSearchParams.set(simpleSearchParamName, trimmedSearchFieldValue);
+        } else {
+          prevSearchParams.delete(simpleSearchParamName);
+        }
         return prevSearchParams;
       });
       /* If we have no advanced filters, reset query state */
