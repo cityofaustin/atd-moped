@@ -16,18 +16,13 @@ import Icon from "@mui/material/Icon";
 import Switch from "@mui/material/Switch";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import Filters from "src/components/GridTable/Filters";
-import SearchBar from "./SearchBar";
+import SearchBar from "src/components/GridTable/SearchBar";
 import makeStyles from "@mui/styles/makeStyles";
 import { simpleSearchParamName } from "src/views/projects/projectsListView/useProjectListViewQuery/useSearch";
 import { mapSearchParamName } from "src/views/projects/projectsListView/ProjectsListViewTable";
 import theme from "src/theme";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
   downloadButtonGrid: {
     // match the existing padding set in gridSearchPadding
     padding: "12px",
@@ -35,9 +30,6 @@ const useStyles = makeStyles((theme) => ({
       paddingTop: 0,
     },
     alignContent: "top",
-  },
-  tabStyle: {
-    margin: ".5rem",
   },
   searchBarContainer: {
     padding: "2px",
@@ -97,7 +89,7 @@ const Search = ({
   loading,
   showMapView,
   setShowMapView,
-  handleSnackbar
+  handleSnackbar,
 }) => {
   const classes = useStyles();
   const divRef = React.useRef();
@@ -138,18 +130,25 @@ const Search = ({
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = (event) => {
+    const trimmedSearchFieldValue = searchFieldValue.trim();
+
     // Stop if we don't have any value entered in the search field
-    if (searchFieldValue.length === 0) {
+    if (trimmedSearchFieldValue.length === 0) {
+      // If the user only entered whitespace, clear the search input
+      if (searchFieldValue.length > 0) {
+        resetSimpleSearch();
+      }
       return;
     }
 
     // Prevent default behavior on any event
     if (event) event.preventDefault();
 
-    // Update state to trigger search and set simple search param
-    setSearchTerm(searchFieldValue);
+    // Update the search field and search term with the trimmed value
+    setSearchFieldValue(trimmedSearchFieldValue);
+    setSearchTerm(trimmedSearchFieldValue);
     setSearchParams((prevSearchParams) => {
-      prevSearchParams.set(simpleSearchParamName, searchFieldValue);
+      prevSearchParams.set(simpleSearchParamName, trimmedSearchFieldValue);
 
       return prevSearchParams;
     });
@@ -262,6 +261,9 @@ const Search = ({
               setIsOr={setIsOr}
               setSearchParams={setSearchParams}
               searchParams={searchParams}
+              searchFieldValue={searchFieldValue}
+              setSearchFieldValue={setSearchFieldValue}
+              setSearchTerm={setSearchTerm}
             />
           </Paper>
         </ClickAwayListener>

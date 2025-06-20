@@ -2,26 +2,15 @@ import React from "react";
 
 import { Box, Button, Card } from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import makeStyles from "@mui/styles/makeStyles";
 
 import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    fontSize: "0.875rem",
-    fontWeight: 500,
-  },
   card: {
     minHeight: "12rem",
     textAlign: "center",
     padding: "2rem",
-  },
-  mapIcon: {
-    maxWidth: "9rem",
-    padding: "1rem",
-  },
-  paragraphGroup: {
-    margin: "1rem 0",
   },
   mapPlaceholder: {
     color: theme.palette.text.secondary,
@@ -35,9 +24,6 @@ const useStyles = makeStyles((theme) => ({
   },
   button: {
     margin: "1rem",
-  },
-  mapErrorTitle: {
-    fontSize: "24px",
   },
 }));
 

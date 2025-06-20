@@ -16,8 +16,8 @@ import {
 import makeStyles from "@mui/styles/makeStyles";
 import AddCircle from "@mui/icons-material/AddCircle";
 import Autocomplete from "@mui/material/Autocomplete";
-import ApolloErrorHandler from "../../../../components/ApolloErrorHandler";
-import DeleteConfirmationModal from "../DeleteConfirmationModal";
+import ApolloErrorHandler from "src/components/ApolloErrorHandler";
+import DeleteConfirmationModal from "src/views/projects/projectView/DeleteConfirmationModal";
 import Grid from "@mui/material/Grid";
 import theme from "src/theme";
 
@@ -25,7 +25,7 @@ import {
   TAGS_QUERY,
   DELETE_PROJECT_TAG,
   ADD_PROJECT_TAGS,
-} from "../../../../queries/tags";
+} from "src/queries/tags";
 
 const useStyles = makeStyles((theme) => ({
   paperTags: {
@@ -45,11 +45,6 @@ const useStyles = makeStyles((theme) => ({
   },
   tagAutocomplete: {
     minWidth: "250px",
-  },
-  editIconFunding: {
-    cursor: "pointer",
-    margin: "0.5rem",
-    fontSize: "1.5rem",
   },
   editIconContainer: {
     minWidth: "8rem",
