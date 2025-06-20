@@ -3,7 +3,7 @@ import { gql } from "@apollo/client";
 export const FUNDING_QUERY = gql`
   query ProjectFunding($projectId: Int) {
     moped_proj_funding(
-      order_by: {proj_funding_id: asc}
+      order_by: { proj_funding_id: asc }
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
     ) {
       proj_funding_id
