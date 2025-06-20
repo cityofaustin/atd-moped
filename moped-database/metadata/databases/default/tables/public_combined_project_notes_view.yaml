@@ -1,0 +1,70 @@
+table:
+  name: combined_project_notes_view
+  schema: public
+select_permissions:
+  - role: moped-admin
+    permission:
+      columns:
+        - author
+        - created_at
+        - created_by_user_id
+        - ecapris_subproject_id
+        - id
+        - is_editable
+        - is_status_update
+        - note_type_id
+        - note_type_name
+        - note_type_slug
+        - note_type_source
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
+        - project_note
+      filter: {}
+    comment: ""
+  - role: moped-editor
+    permission:
+      columns:
+        - author
+        - created_at
+        - created_by_user_id
+        - ecapris_subproject_id
+        - id
+        - is_editable
+        - is_status_update
+        - note_type_id
+        - note_type_name
+        - note_type_slug
+        - note_type_source
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
+        - project_note
+      filter: {}
+    comment: ""
+  - role: moped-viewer
+    permission:
+      columns:
+        - author
+        - created_at
+        - created_by_user_id
+        - ecapris_subproject_id
+        - id
+        - is_editable
+        - is_status_update
+        - note_type_id
+        - note_type_name
+        - note_type_slug
+        - note_type_source
+        - original_id
+        - phase_id
+        - phase_key
+        - phase_name
+        - project_id
+        - project_note
+      filter: {}
+    comment: ""
