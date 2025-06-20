@@ -276,7 +276,7 @@ const useColumns = ({
     deptUnitData,
   ]);
 
-const ProjectFundingTable = ({ handleSnackbar }) => {
+const ProjectFundingTable = ({ handleSnackbar, refetchProjectSummary }) => {
   const apiRef = useGridApiRef();
   const classes = useStyles();
 
@@ -590,7 +590,10 @@ const ProjectFundingTable = ({ handleSnackbar }) => {
               projectId: projectId,
               eCaprisID: eCaprisID,
               data: data,
-              refetch: refetch,
+              refetch: () => {
+                refetch();
+                refetchProjectSummary();
+              },
               handleSnackbar: handleSnackbar,
               classes: classes,
               noWrapper: true,
