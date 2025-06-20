@@ -39,3 +39,87 @@ Authorization: Bearer {{AUTH_BEARER_TOKEN}}
 # The USER_ID is the "Username" key from the previous request 👆
 {{API_SERVER}}/users/{{USER_ID}}
 Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### user_create_user()
+# Creates a new user. The payload is based on USER_VALIDATION_SCHEMA.
+# The password must be at least 12 characters and contain at least one uppercase letter,
+# one lowercase letter, one number, and one special character.
+POST {{API_SERVER}}/users
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+Content-Type: application/json
+
+{
+    "email": "test.user@austintexas.gov",
+    "first_name": "FirstName",
+    "last_name": "LastName",
+    "is_coa_staff": true,
+    "title": "This is a job title",
+    "workgroup_id": 1,
+    "password": "c3st-ne-p@s-un-MOT-de-passe",
+    "roles": [
+        "moped-viewer"
+    ],
+    "is_user_group_member": false,
+    "note": "Optional note."
+}
+
+### user_update_user()
+# Updates a user. The USER_ID is the Cognito user ID.
+# The payload is similar to the create user payload.
+# A password is not required unless you want to change it.
+
+#This hardcoded value is a test user created in our staging environment
+PUT {{API_SERVER}}/users/{{USER_ID}}
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+Content-Type: application/json
+
+{
+    "email": "test.user@austintexas.gov",
+    "first_name": "UpdatedFirstName",
+    "last_name": "UpdatedLastName",
+    "is_coa_staff": true,
+    "title": "This is an updated job title",
+    "workgroup_id": 1,
+    "roles": [
+        "moped-editor"
+    ],
+    "is_user_group_member": true,
+    "note": "This is an updated note."
+}
+
+### user_activate_user()
+# Activates a user that exists in the database but not in Cognito.
+PUT {{API_SERVER}}/users/activate/
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+Content-Type: application/json
+
+{
+    "email": "some.user.in.the.database@austintexas.gov",
+    "password": "c3st-ne-p@s-un-MOT-de-passe",
+    "roles": ["moped-viewer"]
+}
+
+### user_delete_user()
+# Deletes a user. The USER_ID is the Cognito user ID.
+DELETE {{API_SERVER}}/users/{{USER_ID}}
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### user_update_password()
+# Updates a user's password. The USER_ID is the Cognito user ID.
+PUT {{API_SERVER}}/users/{{USER_ID}}
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+Content-Type: application/json
+
+{
+  "first_name": "FirstName",
+  "last_name": "LastName    ",
+  "title": "Fake person",
+  "email": "some.user.in.the.database@austintexas.gov",
+  "password": "c3st-ne-p@s-un-MOT-de-passe",
+  "roles": [
+    "moped-admin"
+  ],
+  "workgroup_id": 3,
+  "is_user_group_member": false,
+  "note": null
+}
