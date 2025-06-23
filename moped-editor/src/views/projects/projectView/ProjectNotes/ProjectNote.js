@@ -137,7 +137,7 @@ const ProjectNotes = ({
                 <IconButton
                   edge="end"
                   aria-label="delete"
-                  onClick={() => handleDeleteOpen(note.project_note_id)}
+                  onClick={() => handleDeleteOpen(note.original_id)}
                   size="small"
                 >
                   <DeleteIcon sx={editButtonStyles} />
