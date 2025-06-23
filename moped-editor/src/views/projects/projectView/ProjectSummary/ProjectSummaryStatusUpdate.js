@@ -31,6 +31,7 @@ const ProjectSummaryStatusUpdate = ({
   const dateCreated = formatRelativeDate(
     data.project_list_view[0]?.project_status_update_date_created
   );
+  const eCaprisSubprojectId = data.moped_project[0]?.ecapris_subproject_id;
 
   return (
     <Grid item xs={12} className={classes.fieldGridItem}>
@@ -44,6 +45,7 @@ const ProjectSummaryStatusUpdate = ({
       >
         <DashboardStatusModal
           projectId={projectId}
+          eCaprisSubprojectId={eCaprisSubprojectId}
           projectName={projectName}
           currentPhaseId={currentPhaseId}
           modalParent="summary"

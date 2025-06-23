@@ -63,24 +63,42 @@ export const useNoteTypeObject = (noteTypes) =>
   );
 
 /**
- * Hook to filter notes based on the selected note type
+ * Hook to filter notes based on the selected note type and if eCAPRIS status syncing is enabled
  * @param {Array} notes - Array of notes to filter
  * @param {Number} filterNoteType - The ID of the note type to filter by
+ * @param {Boolean} shouldSyncEcaprisStatuses - Whether to sync eCAPRIS statuses / show eCAPRIS statuses
+ * @param {Boolean} isStatusEditModal - we only show status updates in the ProjectSummaryStatusUpdate modal
  * @returns
  */
-const useFilterNotes = (notes, filterNoteType) =>
+const useFilterNotes = (
+  notes,
+  filterNoteType,
+  shouldSyncEcaprisStatuses,
+  isStatusEditModal
+) =>
   useMemo(() => {
-    if (!filterNoteType) {
-      // show all the notes
-      return notes;
-    } else {
-      // Check to see if array exists before trying to filter
-      const filteredNotes = notes
-        ? notes.filter((n) => n.note_type_id === filterNoteType)
-        : [];
-      return filteredNotes;
+    let displayNotes = notes ? [...notes] : [];
+
+    /* If eCAPRIS status syncing is not enabled, filter out eCAPRIS status updates */
+    if (!shouldSyncEcaprisStatuses) {
+      displayNotes = displayNotes.filter(
+        (note) => note.note_type_slug !== "ecapris_status_update"
+      );
     }
-  }, [notes, filterNoteType]);
+
+    /* If the component is being used in the status edit modal, only show status updates
+     * Otherwise, show all notes or filter by note type if specified
+     */
+    if (isStatusEditModal) {
+      return displayNotes.filter((note) => note.is_status_update);
+    } else {
+      if (!filterNoteType) {
+        return displayNotes;
+      } else {
+        return displayNotes.filter((n) => n.note_type_id === filterNoteType);
+      }
+    }
+  }, [notes, filterNoteType, shouldSyncEcaprisStatuses, isStatusEditModal]);
 
 /**
  * ProjectNotes component that is rendered in the ProjectView and ProjectSummaryStatusUpdate
@@ -137,9 +155,7 @@ const ProjectNotes = ({
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [editingNoteId, setEditingNoteId] = useState(null);
 
-  const [filterNoteType, setFilterNoteType] = useState(
-    isStatusEditModal ? noteTypesIDLookup["status_update"] : null
-  );
+  const [filterNoteType, setFilterNoteType] = useState(null);
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
@@ -169,12 +185,17 @@ const ProjectNotes = ({
     fetchPolicy: "no-cache",
   });
 
-  const combinedNotes = data?.combined_project_notes_view || [];
-  const displayNotes = useFilterNotes(combinedNotes, filterNoteType);
-
   const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
   const shouldSyncFromECAPRIS =
     projectData.moped_project[0].should_sync_ecapris_statuses;
+
+  const combinedNotes = data?.combined_project_notes_view || [];
+  const displayNotes = useFilterNotes(
+    combinedNotes,
+    filterNoteType,
+    shouldSyncFromECAPRIS,
+    isStatusEditModal
+  );
 
   /* Add, edit, and delete mutations */
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
@@ -335,8 +356,6 @@ const ProjectNotes = ({
       </Grid>
     );
   }
-
-  // TODO: Don't show eCapris status updates when switch is off
 
   return (
     <CardContent>

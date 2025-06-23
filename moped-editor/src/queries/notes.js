@@ -23,6 +23,7 @@ export const COMBINED_NOTES_QUERY = gql`
       original_id
       phase_key
       phase_name
+      is_status_update
     }
   }
 `;

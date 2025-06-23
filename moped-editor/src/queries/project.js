@@ -51,18 +51,6 @@ export const SUMMARY_QUERY = gql`
           id
         }
       }
-      moped_proj_notes(
-        where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-        order_by: { created_at: desc }
-      ) {
-        project_note_id
-        project_note
-        moped_user {
-          first_name
-          last_name
-        }
-        created_at
-      }
       moped_entity {
         entity_name
         entity_id
