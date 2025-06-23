@@ -9,6 +9,8 @@ import {
   List,
   Typography,
   FormControlLabel,
+  Switch,
+  Tooltip,
 } from "@mui/material";
 
 import { getSessionDatabaseData } from "src/auth/user";
@@ -33,6 +35,7 @@ import {
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
 } from "src/queries/notes";
+import { PROJECT_UPDATE_ECAPRIS_SYNC } from "src/queries/project";
 import { agolValidation } from "src/constants/projects";
 
 /* Validation for note input (create or edit) */
@@ -169,6 +172,10 @@ const ProjectNotes = ({
   const combinedNotes = data?.combined_project_notes_view || [];
   const displayNotes = useFilterNotes(combinedNotes, filterNoteType);
 
+  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
+  const shouldSyncFromECAPRIS =
+    projectData.moped_project[0].should_sync_ecapris_statuses;
+
   /* Add, edit, and delete mutations */
   const [addNewNote] = useMutation(ADD_PROJECT_NOTE, {
     onCompleted() {
@@ -215,6 +222,8 @@ const ProjectNotes = ({
       }
     },
   });
+
+  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
 
   /* Handlers */
   const submitNewNote = () => {
@@ -294,6 +303,27 @@ const ProjectNotes = ({
     setDeleteConfirmationId(id);
   };
 
+  const handleECaprisSwitch = () => {
+    updateShouldSyncECapris({
+      variables: {
+        projectId: noteProjectId,
+        shouldSync: !shouldSyncFromECAPRIS,
+      },
+    })
+      .then(() => {
+        handleSnackbar(true, "eCAPRIS sync status updated", "success");
+      })
+      .catch((error) =>
+        handleSnackbar(
+          true,
+          "Error updating eCAPRIS sync status",
+          "error",
+          error
+        )
+      );
+    refetchProjectSummary();
+  };
+
   if (error) {
     return (
       <Grid container spacing={2}>
@@ -334,27 +364,56 @@ const ProjectNotes = ({
         {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
-          <Grid item xs={12}>
-            <FormControlLabel
-              sx={{ margin: 2 }}
-              label="Show"
-              control={<span />}
-            />
-            <NoteTypeButton
-              filterNoteType={filterNoteType}
-              setFilterNoteType={setFilterNoteType}
-              noteTypeId={null}
-              label="All"
-            />
-            {projectData?.moped_note_types.map((type) => (
+          <Grid
+            container
+            item
+            xs={12}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+            <Grid item>
+              <FormControlLabel
+                sx={{ margin: 2 }}
+                label="Show"
+                control={<span />}
+              />
               <NoteTypeButton
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
-                noteTypeId={type.id}
-                label={type.name}
-                key={type.slug}
+                noteTypeId={null}
+                label="All"
               />
-            ))}
+              {projectData?.moped_note_types.map((type) => (
+                <NoteTypeButton
+                  filterNoteType={filterNoteType}
+                  setFilterNoteType={setFilterNoteType}
+                  noteTypeId={type.id}
+                  label={type.name}
+                  key={type.slug}
+                />
+              ))}
+            </Grid>
+            <Grid item>
+              <Tooltip
+                placement="top"
+                title={
+                  hasECaprisId
+                    ? "Statuses are synced from eCAPRIS every 30 minutes"
+                    : "Add eCAPRIS subproject ID to sync from eCAPRIS"
+                }
+              >
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={shouldSyncFromECAPRIS}
+                      disabled={!hasECaprisId}
+                      onChange={handleECaprisSwitch}
+                    />
+                  }
+                  label="Sync from eCAPRIS"
+                />
+              </Tooltip>
+            </Grid>
           </Grid>
         )}
         {/*Now the notes*/}
