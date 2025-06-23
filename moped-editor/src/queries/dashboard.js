@@ -13,6 +13,7 @@ export const DASHBOARD_QUERY = gql`
       user_id
       project {
         project_id
+        ecapris_subproject_id
         project_name
         project_name_full
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
@@ -37,6 +38,9 @@ export const DASHBOARD_QUERY = gql`
           project_note_type
           project_note
         }
+        project_list_view {
+          project_status_update
+        }
       }
     }
     moped_user_followed_projects(
@@ -47,6 +51,7 @@ export const DASHBOARD_QUERY = gql`
     ) {
       project {
         project_id
+        ecapris_subproject_id
         project_name
         project_name_full
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
@@ -66,6 +71,9 @@ export const DASHBOARD_QUERY = gql`
         ) {
           project_note_type
           project_note
+        }
+        project_list_view {
+          project_status_update
         }
       }
     }

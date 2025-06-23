@@ -178,24 +178,31 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
         field: "moped_proj_notes",
         editable: false,
         sortable: false,
-        renderCell: ({ row }) => (
+        renderCell: ({ row }) => {
           // Display status update (from Project details page), i.e., most recent note
-          <div className={classes.tableRowDiv}>
-            <DashboardStatusModal
-              projectId={row.project_id}
-              projectName={row.project_name_full}
-              currentPhaseId={row.moped_proj_phases?.[0]?.moped_phase.phase_id}
-              modalParent="dashboard"
-              statusUpdate={row.moped_proj_notes?.[0]?.project_note ?? ""}
-              queryRefetch={refetch}
-              handleSnackbar={handleSnackbar}
-              classes={classes}
-              data={data}
-            >
-              {parse(String(row.moped_proj_notes?.[0]?.project_note)) ?? ""}
-            </DashboardStatusModal>
-          </div>
-        ),
+          const statusUpdate = row.moped_proj_notes?.[0]?.project_note ?? "";
+
+          return (
+            <div className={classes.tableRowDiv}>
+              <DashboardStatusModal
+                projectId={row.project_id}
+                eCaprisSubprojectId={row.ecapris_subproject_id}
+                projectName={row.project_name_full}
+                currentPhaseId={
+                  row.moped_proj_phases?.[0]?.moped_phase.phase_id
+                }
+                modalParent="dashboard"
+                statusUpdate={statusUpdate}
+                queryRefetch={refetch}
+                handleSnackbar={handleSnackbar}
+                classes={classes}
+                data={row}
+              >
+                {parse(String(statusUpdate))}
+              </DashboardStatusModal>
+            </div>
+          );
+        },
         flex: 4,
       },
       {
@@ -252,7 +259,6 @@ const DashboardView = () => {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
-  console.log(data);
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();

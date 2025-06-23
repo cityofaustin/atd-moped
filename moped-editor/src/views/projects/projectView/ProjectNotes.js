@@ -97,7 +97,7 @@ const useFilterNotes = (notes, filterNoteType) =>
 const ProjectNotes = ({
   modal: isStatusEditModal,
   currentPhaseId,
-  data: projectData,
+  projectData,
   handleSnackbar,
   closeModalDialog,
   refetch: refetchProjectSummary,
@@ -117,7 +117,7 @@ const ProjectNotes = ({
   otherwise use data passed from ProjectView */
   const noteCurrentPhaseId = isStatusEditModal
     ? currentPhaseId
-    : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
+    : projectData?.moped_proj_phases[0]?.moped_phase.phase_id;
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
@@ -144,9 +144,8 @@ const ProjectNotes = ({
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
 
-  const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
-  const shouldSyncFromECAPRIS =
-    projectData.moped_project[0].should_sync_ecapris_statuses;
+  const hasECaprisId = !!projectData.ecapris_subproject_id;
+  const shouldSyncFromECAPRIS = projectData.should_sync_ecapris_statuses;
 
   const isStatusUpdate =
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
