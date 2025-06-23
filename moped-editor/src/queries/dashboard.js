@@ -16,6 +16,7 @@ export const DASHBOARD_QUERY = gql`
         ecapris_subproject_id
         project_name
         project_name_full
+        should_sync_ecapris_statuses
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
@@ -43,6 +44,7 @@ export const DASHBOARD_QUERY = gql`
         ecapris_subproject_id
         project_name
         project_name_full
+        should_sync_ecapris_statuses
         moped_proj_phases(where: { is_current_phase: { _eq: true } }) {
           moped_phase {
             phase_name
