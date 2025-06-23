@@ -26,6 +26,7 @@ from users.helpers import (
 users_blueprint = Blueprint("users_blueprint", __name__)
 
 USER_POOL = api_config["COGNITO_USERPOOL_ID"]
+boto3.setup_default_session(region_name=api_config.get("AWS_REGION", "us-east-1"))
 
 
 @users_blueprint.route("/", methods=["GET"])
@@ -486,7 +487,7 @@ def user_delete_user(id: str, claims: list) -> (Response, int):
 @users_blueprint.route("/<id>/password", methods=["PUT"])
 @cognito_auth_required
 @normalize_claims
-def user_update_password(id: str) -> (Response, int):
+def user_update_password(id: str, claims: list) -> (Response, int):
     """
     Returns updated password details
     :return Response, int:
