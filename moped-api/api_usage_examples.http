@@ -124,4 +124,37 @@ Content-Type: application/json
   "note": null
 }
 
+###
+# ------------------------------------------------------------------------------
+# Files Endpoint
+# ------------------------------------------------------------------------------
 
+
+### Files Health Check
+{{API_SERVER}}/files/
+
+
+### files_request_signature() for a project
+# Requests a pre-signed URL to upload a file to S3 for a specific project.
+# The file name should be a valid file name.
+# The project_id associates the file with a project.
+# The type is optional, it can be 'private' or 'public'. Defaults to 'private'.
+{{API_SERVER}}/files/request-signature?file=test-project-file.jpg&project_id=1&type=public
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### files_request_signature() for a user
+# Requests a pre-signed URL to upload a file to S3 associated with the user.
+# The file name should be a valid file name.
+# No project_id is provided.
+{{API_SERVER}}/files/request-signature?file=test-user-file.png&type=private
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
+
+### file_download()
+# Retrieves a pre-signed URL to download a file from S3.
+# The path is the S3 key of the file.
+# This path is returned from the files_request_signature endpoint in the `filename` field.
+# You would need to replace {{FILE_S3_KEY}} with a real file key from a previous request.
+# Example path: private/user/1/some-file.txt
+@FILE_S3_KEY = private/city-of-austin-logo.png
+GET {{API_SERVER}}/files/download/{{FILE_S3_KEY}}
+Authorization: Bearer {{AUTH_BEARER_TOKEN}}
