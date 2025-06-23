@@ -196,7 +196,8 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
                 queryRefetch={refetch}
                 handleSnackbar={handleSnackbar}
                 classes={classes}
-                data={row}
+                // ProjectNotes will expect data to be passed in this shape
+                data={{ moped_project: [row] }}
               >
                 {parse(String(statusUpdate))}
               </DashboardStatusModal>

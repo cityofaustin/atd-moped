@@ -9,8 +9,6 @@ import {
   List,
   Typography,
   FormControlLabel,
-  Switch,
-  Tooltip,
 } from "@mui/material";
 
 import { getSessionDatabaseData } from "src/auth/user";
@@ -34,8 +32,7 @@ import {
   ADD_PROJECT_NOTE,
   UPDATE_PROJECT_NOTE,
   DELETE_PROJECT_NOTE,
-} from "../../../queries/notes";
-import { PROJECT_UPDATE_ECAPRIS_SYNC } from "src/queries/project";
+} from "src/queries/notes";
 import { agolValidation } from "src/constants/projects";
 
 /* Validation for note input (create or edit) */
@@ -97,7 +94,7 @@ const useFilterNotes = (notes, filterNoteType) =>
 const ProjectNotes = ({
   modal: isStatusEditModal,
   currentPhaseId,
-  projectData,
+  data: projectData,
   handleSnackbar,
   closeModalDialog,
   refetch: refetchProjectSummary,
@@ -117,7 +114,7 @@ const ProjectNotes = ({
   otherwise use data passed from ProjectView */
   const noteCurrentPhaseId = isStatusEditModal
     ? currentPhaseId
-    : projectData?.moped_proj_phases[0]?.moped_phase.phase_id;
+    : projectData?.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
   const noteTypesIDLookup = useNoteTypeObject(
     projectData?.moped_note_types || []
   );
@@ -143,9 +140,6 @@ const ProjectNotes = ({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
   const [deleteConfirmationId, setDeleteConfirmationId] = useState(null);
-
-  const hasECaprisId = !!projectData.ecapris_subproject_id;
-  const shouldSyncFromECAPRIS = projectData.should_sync_ecapris_statuses;
 
   const isStatusUpdate =
     (!isEditingNote && newNoteType === noteTypesIDLookup["status_update"]) ||
@@ -222,8 +216,7 @@ const ProjectNotes = ({
     },
   });
 
-  const [updateShouldSyncECapris] = useMutation(PROJECT_UPDATE_ECAPRIS_SYNC);
-
+  /* Handlers */
   const submitNewNote = () => {
     setNoteAddLoading(true);
     addNewNote({
@@ -301,27 +294,6 @@ const ProjectNotes = ({
     setDeleteConfirmationId(id);
   };
 
-  const handleECaprisSwitch = () => {
-    updateShouldSyncECapris({
-      variables: {
-        projectId: noteProjectId,
-        shouldSync: !shouldSyncFromECAPRIS,
-      },
-    })
-      .then(() => {
-        handleSnackbar(true, "eCAPRIS sync status updated", "success");
-      })
-      .catch((error) =>
-        handleSnackbar(
-          true,
-          "Error updating eCAPRIS sync status",
-          "error",
-          error
-        )
-      );
-    refetchProjectSummary();
-  };
-
   if (error) {
     return (
       <Grid container spacing={2}>
@@ -362,57 +334,27 @@ const ProjectNotes = ({
         {/* Visible note types can only be filtered on the Notes Tab.
           The status edit modal only shows statuses, and does not show internal notes */}
         {!isStatusEditModal && (
-          <Grid
-            container
-            item
-            xs={12}
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Grid item>
-              <FormControlLabel
-                sx={{ margin: 2 }}
-                label="Show"
-                control={<span />}
-              />
+          <Grid item xs={12}>
+            <FormControlLabel
+              sx={{ margin: 2 }}
+              label="Show"
+              control={<span />}
+            />
+            <NoteTypeButton
+              filterNoteType={filterNoteType}
+              setFilterNoteType={setFilterNoteType}
+              noteTypeId={null}
+              label="All"
+            />
+            {projectData?.moped_note_types.map((type) => (
               <NoteTypeButton
                 filterNoteType={filterNoteType}
                 setFilterNoteType={setFilterNoteType}
-                noteTypeId={null}
-                label="All"
+                noteTypeId={type.id}
+                label={type.name}
+                key={type.slug}
               />
-              {projectData?.moped_note_types.map((type) => (
-                <NoteTypeButton
-                  sx={{ margin: 2 }}
-                  filterNoteType={filterNoteType}
-                  setFilterNoteType={setFilterNoteType}
-                  noteTypeId={type.id}
-                  label={type.name}
-                  key={type.slug}
-                />
-              ))}
-            </Grid>
-            <Grid item>
-              <Tooltip
-                placement="top"
-                title={
-                  hasECaprisId
-                    ? "Statuses are synced from eCAPRIS every 30 minutes"
-                    : "Add eCAPRIS subproject ID to sync from eCAPRIS"
-                }
-              >
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={shouldSyncFromECAPRIS}
-                      disabled={!hasECaprisId}
-                      onChange={handleECaprisSwitch}
-                    />
-                  }
-                  label="Sync from eCAPRIS"
-                />
-              </Tooltip>
-            </Grid>
+            ))}
           </Grid>
         )}
         {/*Now the notes*/}
