@@ -97,7 +97,7 @@ const DashboardStatusModal = ({
             currentPhaseId={currentPhaseId}
             closeModalDialog={handleDialogClose}
             handleSnackbar={handleSnackbar}
-            projectData={data}
+            data={data}
           />
         </DialogContent>
       </Dialog>

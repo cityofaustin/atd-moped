@@ -27,17 +27,6 @@ export const DASHBOARD_QUERY = gql`
           project_id
           completed
         }
-        moped_proj_notes(
-          where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-          order_by: { created_at: desc }
-        ) {
-          moped_user {
-            first_name
-            last_name
-          }
-          project_note_type
-          project_note
-        }
         project_list_view {
           project_status_update
         }
@@ -64,13 +53,6 @@ export const DASHBOARD_QUERY = gql`
         moped_proj_milestones(where: { is_deleted: { _eq: false } }) {
           project_id
           completed
-        }
-        moped_proj_notes(
-          where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-          order_by: { created_at: desc }
-        ) {
-          project_note_type
-          project_note
         }
         project_list_view {
           project_status_update

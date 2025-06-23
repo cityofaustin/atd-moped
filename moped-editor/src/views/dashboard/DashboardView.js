@@ -180,7 +180,8 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
         sortable: false,
         renderCell: ({ row }) => {
           // Display status update (from Project details page), i.e., most recent note
-          const statusUpdate = row.moped_proj_notes?.[0]?.project_note ?? "";
+          const statusUpdate =
+            row.project_list_view?.project_status_update ?? "";
 
           return (
             <div className={classes.tableRowDiv}>
@@ -196,8 +197,11 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
                 queryRefetch={refetch}
                 handleSnackbar={handleSnackbar}
                 classes={classes}
-                // ProjectNotes will expect data to be passed in this shape
-                data={{ moped_project: [row] }}
+                // ProjectNotes will expect data to be passed in this shape with note type lookups
+                data={{
+                  moped_project: [row],
+                  moped_note_types: data.moped_note_types,
+                }}
               >
                 {parse(String(statusUpdate))}
               </DashboardStatusModal>
