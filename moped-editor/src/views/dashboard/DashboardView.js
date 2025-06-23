@@ -37,6 +37,8 @@ import { getSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
 
+// TODO: Fix cursor to turn to pointer when hovering status update
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -242,10 +244,15 @@ const DashboardView = () => {
   const userId = userSessionData?.user_id;
   const userName = userSessionData?.first_name;
 
+  // TODO: Update DASHBOARD_QUERY to get status update from project_list_view and render in Status update column above
+  // TODO: Update DashboardStatusModal to receive project_id and ecapris_subproject_id as props
+  // TODO: Update DashboardStatusModal to fetch status updates from project_list_view instead of moped_proj_notes
+  // TODO: Update project_list_view to include status update author and created date
   const { loading, error, data, refetch } = useQuery(DASHBOARD_QUERY, {
     variables: { userId },
     fetchPolicy: "no-cache",
   });
+  console.log(data);
 
   const { snackbarState, handleSnackbar, handleSnackbarClose } =
     useFeedbackSnackbar();
