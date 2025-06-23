@@ -1,3 +1,6 @@
+-- Update name of eCAPRIS status update note type since it is rendered in the UI
+UPDATE moped_note_types SET name = 'Synced from eCAPRIS' WHERE slug = 'ecapris_status_update';
+
 -- Update project_list_view to include author of latest project status update
 DROP VIEW IF EXISTS exploded_component_arcgis_online_view;
 DROP VIEW IF EXISTS component_arcgis_online_view;

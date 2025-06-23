@@ -37,8 +37,6 @@ import { getSessionDatabaseData } from "src/auth/user";
 
 import parse from "html-react-parser";
 
-// TODO: Fix cursor to turn to pointer when hovering status update
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
