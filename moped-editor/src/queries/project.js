@@ -150,6 +150,9 @@ export const SUMMARY_QUERY = gql`
     project_list_view(where: { project_id: { _eq: $projectId } }) {
       component_work_type_names
       project_id
+      project_status_update
+      project_status_update_date_created
+      project_status_update_author
     }
   }
 `;

@@ -171,7 +171,6 @@ const ProjectNotes = ({
 
   const combinedNotes = data?.combined_project_notes_view || [];
   const displayNotes = useFilterNotes(combinedNotes, filterNoteType);
-  console.log("displayNotes", displayNotes, filterNoteType);
 
   const hasECaprisId = !!projectData.moped_project[0].ecapris_subproject_id;
   const shouldSyncFromECAPRIS =
