@@ -68,6 +68,9 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
   tableRowDiv: {
     display: "flex",
     alignItems: "center",
