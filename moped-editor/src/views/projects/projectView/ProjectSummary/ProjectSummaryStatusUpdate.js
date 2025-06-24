@@ -24,7 +24,7 @@ const ProjectSummaryStatusUpdate = ({
 }) => {
   const statusUpdate = data.project_list_view[0]?.project_status_update;
   const projectName = data.moped_project[0].project_name;
-  const addByUser = data.project_list_view[0]?.project_status_update_author;
+  const author = data.project_list_view[0]?.project_status_update_author;
   const currentPhaseId =
     data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id;
 
@@ -59,7 +59,7 @@ const ProjectSummaryStatusUpdate = ({
             <div>
               <div>{parse(String(statusUpdate))}</div>
               <span className={classes.fieldLabelSmall}>
-                {addByUser} - {dateCreated}
+                {author} - {dateCreated}
               </span>
             </div>
           )}
