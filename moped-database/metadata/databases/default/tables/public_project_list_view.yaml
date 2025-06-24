@@ -39,6 +39,7 @@ select_permissions:
         - project_partners
         - project_sponsor
         - project_status_update
+        - project_status_update_author
         - project_status_update_date_created
         - project_tags
         - project_team_members
@@ -91,6 +92,7 @@ select_permissions:
         - project_partners
         - project_sponsor
         - project_status_update
+        - project_status_update_author
         - project_status_update_date_created
         - project_tags
         - project_team_members
@@ -143,6 +145,7 @@ select_permissions:
         - project_partners
         - project_sponsor
         - project_status_update
+        - project_status_update_author
         - project_status_update_date_created
         - project_tags
         - project_team_members

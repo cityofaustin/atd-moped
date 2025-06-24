@@ -51,18 +51,6 @@ export const SUMMARY_QUERY = gql`
           id
         }
       }
-      moped_proj_notes(
-        where: { project_note_type: { _eq: 2 }, is_deleted: { _eq: false } }
-        order_by: { created_at: desc }
-      ) {
-        project_note_id
-        project_note
-        moped_user {
-          first_name
-          last_name
-        }
-        created_at
-      }
       moped_entity {
         entity_name
         entity_id
@@ -110,6 +98,7 @@ export const SUMMARY_QUERY = gql`
       id
       name
       slug
+      source
     }
     moped_public_process_statuses(order_by: { id: asc }) {
       id
@@ -149,6 +138,9 @@ export const SUMMARY_QUERY = gql`
     project_list_view(where: { project_id: { _eq: $projectId } }) {
       component_work_type_names
       project_id
+      project_status_update
+      project_status_update_date_created
+      project_status_update_author
     }
   }
 `;

@@ -66,6 +66,9 @@ const useStyles = makeStyles((theme) => ({
   date: {
     paddingTop: "4px",
   },
+  statusUpdateText: {
+    cursor: "pointer",
+  },
   tableRowDiv: {
     display: "flex",
     alignItems: "center",
@@ -176,24 +179,36 @@ const useColumns = ({ data, refetch, handleSnackbar, classes }) =>
         field: "moped_proj_notes",
         editable: false,
         sortable: false,
-        renderCell: ({ row }) => (
+        renderCell: ({ row }) => {
           // Display status update (from Project details page), i.e., most recent note
-          <div className={classes.tableRowDiv}>
-            <DashboardStatusModal
-              projectId={row.project_id}
-              projectName={row.project_name_full}
-              currentPhaseId={row.moped_proj_phases?.[0]?.moped_phase.phase_id}
-              modalParent="dashboard"
-              statusUpdate={row.moped_proj_notes?.[0]?.project_note ?? ""}
-              queryRefetch={refetch}
-              handleSnackbar={handleSnackbar}
-              classes={classes}
-              data={data}
-            >
-              {parse(String(row.moped_proj_notes?.[0]?.project_note)) ?? ""}
-            </DashboardStatusModal>
-          </div>
-        ),
+          const statusUpdate =
+            row.project_list_view?.project_status_update ?? "";
+
+          return (
+            <div className={classes.tableRowDiv}>
+              <DashboardStatusModal
+                projectId={row.project_id}
+                eCaprisSubprojectId={row.ecapris_subproject_id}
+                projectName={row.project_name_full}
+                currentPhaseId={
+                  row.moped_proj_phases?.[0]?.moped_phase.phase_id
+                }
+                modalParent="dashboard"
+                statusUpdate={statusUpdate}
+                queryRefetch={refetch}
+                handleSnackbar={handleSnackbar}
+                classes={classes}
+                // ProjectNotes will expect data to be passed in this shape with note type lookups
+                data={{
+                  moped_project: [row],
+                  moped_note_types: data.moped_note_types,
+                }}
+              >
+                {parse(String(statusUpdate))}
+              </DashboardStatusModal>
+            </div>
+          );
+        },
         flex: 4,
       },
       {

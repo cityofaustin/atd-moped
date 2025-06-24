@@ -26,6 +26,15 @@ object_relationships:
   - name: moped_user
     using:
       foreign_key_constraint_on: added_by
+  - name: project_list_view
+    using:
+      manual_configuration:
+        column_mapping:
+          project_id: project_id
+        insertion_order: null
+        remote_table:
+          name: project_list_view
+          schema: public
 array_relationships:
   - name: geography
     using:
