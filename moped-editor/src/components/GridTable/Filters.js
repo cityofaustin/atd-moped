@@ -285,7 +285,6 @@ const Filters = ({
    * Applies the current local state and updates the parent's state
    */
   const handleApplyButtonClick = () => {
-    console.log(searchFieldValue, "search field val");
     const trimmedSearchFieldValue = searchFieldValue.trim();
     setSearchFieldValue(trimmedSearchFieldValue);
     setSearchTerm(trimmedSearchFieldValue);
@@ -298,7 +297,6 @@ const Filters = ({
       /* If we have advanced filters, set query state values and update search params */
       setSearchParams((prevSearchParams) => {
         const jsonParamString = JSON.stringify(filterParameters);
-        console.log(jsonParamString, "json");
         prevSearchParams.set(advancedSearchFilterParamName, jsonParamString);
         prevSearchParams.set(advancedSearchIsOrParamName, isOrToggleValue);
         if (trimmedSearchFieldValue) {
