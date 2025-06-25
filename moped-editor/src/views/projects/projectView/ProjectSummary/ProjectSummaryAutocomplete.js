@@ -34,6 +34,7 @@ const ProjectSummaryAutocomplete = ({
   refetch,
   classes,
   handleSnackbar,
+  loading,
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);
@@ -102,25 +103,19 @@ const ProjectSummaryAutocomplete = ({
               )}
               openOnFocus={true}
             ></Autocomplete>
-            {/* <Icon className={classes.editIconConfirm} onClick={handleFieldSave}>
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleFieldClose}
-            >
-              close
-            </Icon> */}
             <IconButton
               size="large"
-              // disabled={!isDirty || loading}
-              type="submit"
+              disabled={
+                fieldValue?.[idColumn] === initialValue?.[idColumn] || loading
+              }
+              onClick={handleFieldSave}
             >
               <Icon>check</Icon>
             </IconButton>
-            <IconButton size="large" 
-              // disabled={loading}
-              // onClick={handleCancel}
+            <IconButton
+              size="large"
+              disabled={loading}
+              onClick={handleFieldClose}
             >
               <Icon>close</Icon>
             </IconButton>
