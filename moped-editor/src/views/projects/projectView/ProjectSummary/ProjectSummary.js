@@ -188,6 +188,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectPartners
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}

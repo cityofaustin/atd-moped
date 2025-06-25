@@ -4,6 +4,7 @@ import {
   Checkbox,
   Grid,
   Icon,
+  IconButton,
   Input,
   ListItemText,
   MenuItem,
@@ -27,6 +28,7 @@ import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
  */
 const ProjectSummaryProjectPartners = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -156,18 +158,23 @@ const ProjectSummaryProjectPartners = ({
                 </MenuItem>
               ))}
             </Select>
-            <Icon
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={
+                JSON.stringify(originalEntities) ===
+                  JSON.stringify(selectedEntities) || loading
+              }
               onClick={handleProjectPartnersSave}
             >
-              check
-            </Icon>
-            <Icon
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={loading}
               onClick={handleProjectPartnersClose}
             >
-              close
-            </Icon>
+              <Icon>close</Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (

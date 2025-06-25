@@ -104,7 +104,7 @@ const ProjectSummaryAutocomplete = ({
               openOnFocus={true}
             ></Autocomplete>
             <IconButton
-              size="large"
+              className={classes.editIconConfirm}
               disabled={
                 fieldValue?.[idColumn] === initialValue?.[idColumn] || loading
               }
@@ -113,7 +113,7 @@ const ProjectSummaryAutocomplete = ({
               <Icon>check</Icon>
             </IconButton>
             <IconButton
-              size="large"
+              className={classes.editIconConfirm}
               disabled={loading}
               onClick={handleFieldClose}
             >
