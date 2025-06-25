@@ -224,6 +224,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectWebsite
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -233,6 +234,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryInterimID
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
@@ -242,6 +244,7 @@ const ProjectSummary = ({
               <Grid item xs={12}>
                 <ProjectSummaryProjectECapris
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}

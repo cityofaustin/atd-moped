@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Icon,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
 import {
@@ -24,6 +31,7 @@ import { useMutation } from "@apollo/client";
  */
 const ProjectSummaryInterimID = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -35,6 +43,8 @@ const ProjectSummaryInterimID = ({
   const [interimId, setInterimId] = useState(originalValue);
   const [updateProjectInterimId] = useMutation(PROJECT_UPDATE_INTERIM_ID);
   const [clearProjectInterimId] = useMutation(PROJECT_CLEAR_INTERIM_ID);
+  console.log(originalValue);
+  console.log(interimId);
 
   /**
    * Resets the project interim ID to original value
@@ -115,18 +125,22 @@ const ProjectSummaryInterimID = ({
               onChange={handleProjectInterimIdChange}
               value={interimId ?? ""}
             />
-            <Icon
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={
+                parseInt(originalValue) === parseInt(interimId) || loading
+              }
               onClick={handleProjectInterimIdSave}
             >
-              check
-            </Icon>
-            <Icon
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={loading}
               onClick={handleProjectInterimIdClose}
             >
-              close
-            </Icon>
+              <Icon>close</Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (

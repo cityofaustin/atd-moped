@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
+import { Box, Grid, Icon, IconButton, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
@@ -47,6 +47,7 @@ const WrapperComponent = ({ children, noWrapper, classes }) =>
  */
 const ProjectSummaryProjectECapris = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -112,11 +113,7 @@ const ProjectSummaryProjectECapris = ({
     )
       .then(() => {
         setEditMode(false);
-        handleSnackbar(
-          true,
-          "eCAPRIS Subproject ID updated",
-          "success"
-        );
+        handleSnackbar(true, "eCAPRIS Subproject ID updated", "success");
       })
       .then(() => refetch())
       .catch((error) => {
@@ -158,18 +155,20 @@ const ProjectSummaryProjectECapris = ({
               onChange={handleProjectECaprisChange}
               value={eCapris}
             />
-            <Icon
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={originalValue === eCapris || loading}
               onClick={handleProjectECaprisSave}
             >
-              check
-            </Icon>
-            <Icon
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={loading}
               onClick={handleProjectECaprisClose}
             >
-              close
-            </Icon>
+              <Icon>close</Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (

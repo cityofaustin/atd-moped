@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  Icon,
+  IconButton,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
@@ -20,6 +27,7 @@ import { isValidUrl, makeUrlValid } from "src/utils/urls";
  */
 const ProjectSummaryProjectWebsite = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -101,22 +109,26 @@ const ProjectSummaryProjectWebsite = ({
               error={!isWebsiteValid}
               helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
             />
-            <Icon
+            <IconButton
               className={
                 isWebsiteValid
                   ? classes.editIconConfirm
                   : classes.editIconConfirmDisabled
               }
+              disabled={
+                website === originalWebsite || !isWebsiteValid || loading
+              }
               onClick={handleProjectWebsiteSave}
             >
-              check
-            </Icon>
-            <Icon
+              <Icon>check</Icon>
+            </IconButton>
+            <IconButton
               className={classes.editIconConfirm}
+              disabled={loading}
               onClick={handleProjectWebsiteClose}
             >
-              close
-            </Icon>
+              <Icon>close</Icon>
+            </IconButton>
           </>
         )}
         {!editMode && (
