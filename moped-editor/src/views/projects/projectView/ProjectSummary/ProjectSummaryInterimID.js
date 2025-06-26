@@ -43,8 +43,6 @@ const ProjectSummaryInterimID = ({
   const [interimId, setInterimId] = useState(originalValue);
   const [updateProjectInterimId] = useMutation(PROJECT_UPDATE_INTERIM_ID);
   const [clearProjectInterimId] = useMutation(PROJECT_CLEAR_INTERIM_ID);
-  console.log(originalValue);
-  console.log(interimId);
 
   /**
    * Resets the project interim ID to original value

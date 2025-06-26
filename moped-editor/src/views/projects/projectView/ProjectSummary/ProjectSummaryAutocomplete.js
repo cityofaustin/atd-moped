@@ -31,10 +31,10 @@ const ProjectSummaryAutocomplete = ({
   updateMutation,
   tooltipText,
   projectId,
+  loading,
   refetch,
   classes,
   handleSnackbar,
-  loading,
 }) => {
   const [editMode, setEditMode] = useState(false);
   const [fieldValue, setFieldValue] = useState(initialValue);

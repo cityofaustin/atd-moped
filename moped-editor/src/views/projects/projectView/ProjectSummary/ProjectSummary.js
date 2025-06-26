@@ -161,11 +161,11 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_LEAD}
                   tooltipText="Division, department, or organization responsible for successful project implementation"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   handleSnackbar={handleSnackbar}
-                  loading={loading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -178,11 +178,11 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_SPONSOR}
                   tooltipText="Division, department, or organization who is the main contributor of funds for the project"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   handleSnackbar={handleSnackbar}
-                  loading={loading}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -214,11 +214,11 @@ const ProjectSummary = ({
                   updateMutation={PROJECT_UPDATE_PUBLIC_PROCESS}
                   tooltipText="Current public phase of a project"
                   projectId={projectId}
+                  loading={loading}
                   data={data}
                   refetch={refetch}
                   classes={classes}
                   handleSnackbar={handleSnackbar}
-                  loading={loading}
                 />
               </Grid>
               <Grid item xs={12}>
