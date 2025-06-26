@@ -143,23 +143,43 @@ const usePrepareActivityData = (activityData) =>
           const newData = outputEvent.record_data.event.data.new;
           const oldData = outputEvent.record_data.event.data.old;
           let changedField = "";
+          let changedFields = [];
+
           Object.keys(newData).forEach((key) => {
             if (!!newData[key] && typeof newData[key] === "object") {
               if (!isEqual(newData[key], oldData[key])) {
-                changedField = key;
+                changedFields.push(key);
+                if (!changedField) changedField = key;
               }
             } else if (
               newData[key] !== oldData[key] &&
               !CHANGE_FIELDS_TO_IGNORE.includes(key)
             ) {
-              changedField = key;
+              changedFields.push(key);
+              if (!changedField) changedField = key;
             }
           });
+
+          // Special handling for eCAPRIS fields - if both changed, prioritize the combination
+          const ecaprisFields = [
+            "should_sync_ecapris_statuses",
+            "ecapris_subproject_id",
+          ];
+          const ecaprisFieldsChanged = ecaprisFields.filter((field) =>
+            changedFields.includes(field)
+          );
+
+          if (ecaprisFieldsChanged.length > 1) {
+            // Both eCAPRIS fields changed, use a special field name to indicate this
+            changedField = "ecapris_sync_and_id";
+          }
+
           outputEvent.description = [
             {
               new: newData,
               old: oldData,
               field: changedField,
+              changedFields: changedFields, // Add all changed fields for reference
             },
           ];
         }

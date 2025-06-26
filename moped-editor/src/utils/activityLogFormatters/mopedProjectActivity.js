@@ -1,4 +1,6 @@
 import BeenhereOutlinedIcon from "@mui/icons-material/BeenhereOutlined";
+import SyncIcon from "@mui/icons-material/Sync";
+import SyncDisabledIcon from "@mui/icons-material/SyncDisabled";
 import { ProjectActivityLogTableMaps } from "../../views/projects/projectView/ProjectActivityLogTableMaps";
 import { isEqual } from "lodash";
 
@@ -75,6 +77,128 @@ export const formatProjectActivity = (change, lookupList) => {
       changeIcon,
       changeText: [{ text: "Project updated", style: null }],
     };
+  }
+
+  // Special handling for eCAPRIS sync changes
+  if (changedField === "should_sync_ecapris_statuses") {
+    const newSyncValue = changeData.new.should_sync_ecapris_statuses;
+    const oldSyncValue = changeData.old.should_sync_ecapris_statuses;
+    const newEcaprisId = changeData.new.ecapris_subproject_id;
+    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+
+    // Sync enabled
+    const isSyncEnabled = newSyncValue === true && oldSyncValue === false;
+    if (isSyncEnabled) {
+      changeIcon = <SyncIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Enabled eCAPRIS subproject status sync for ",
+            style: null,
+          },
+          { text: newEcaprisId, style: "boldText" },
+        ],
+      };
+    }
+
+    // Sync disabled
+    const isSyncDisabled = newSyncValue === false && oldSyncValue === true;
+    if (isSyncDisabled) {
+      changeIcon = <SyncDisabledIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Disabled eCAPRIS subproject status sync for ",
+            style: null,
+          },
+          { text: oldEcaprisId, style: "boldText" },
+        ],
+      };
+    }
+  }
+
+  // Special handling for eCAPRIS subproject ID changes when sync is enabled
+  if (changedField === "ecapris_subproject_id") {
+    const syncEnabled = changeData.new.should_sync_ecapris_statuses;
+    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+    const newEcaprisId = changeData.new.ecapris_subproject_id;
+
+    // eCAPRIS ID changed while sync is enabled
+    if (
+      syncEnabled === true &&
+      oldEcaprisId &&
+      newEcaprisId &&
+      oldEcaprisId !== newEcaprisId
+    ) {
+      changeIcon = <SyncIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Updated eCAPRIS subproject statuses sync for ",
+            style: null,
+          },
+          { text: oldEcaprisId, style: "boldText" },
+          { text: " to ", style: null },
+          { text: newEcaprisId, style: "boldText" },
+        ],
+      };
+    }
+  }
+
+  // Handle cases where both fields are changed in the same update
+  // Check if both should_sync_ecapris_statuses and ecapris_subproject_id changed
+  const syncChanged =
+    changeData.new.should_sync_ecapris_statuses !==
+    changeData.old.should_sync_ecapris_statuses;
+  const ecaprisIdChanged =
+    changeData.new.ecapris_subproject_id !==
+    changeData.old.ecapris_subproject_id;
+
+  if (syncChanged && ecaprisIdChanged) {
+    const newSyncValue = changeData.new.should_sync_ecapris_statuses;
+    const newEcaprisId = changeData.new.ecapris_subproject_id;
+    const oldEcaprisId = changeData.old.ecapris_subproject_id;
+
+    // Both sync enabled and eCAPRIS ID set
+    if (newSyncValue === true && newEcaprisId) {
+      changeIcon = <SyncIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Set eCAPRIS subproject ID to  ",
+            style: null,
+          },
+          { text: newEcaprisId, style: "boldText" },
+          {
+            text: " and enabled status sync ",
+            style: null,
+          },
+        ],
+      };
+    }
+
+    // Both sync disabled and eCAPRIS ID removed
+    if (newSyncValue === false && !newEcaprisId && oldEcaprisId) {
+      changeIcon = <SyncDisabledIcon />;
+      return {
+        changeIcon,
+        changeText: [
+          {
+            text: "Removed eCAPRIS subproject ID ",
+            style: null,
+          },
+          { text: oldEcaprisId, style: "boldText" },
+          {
+            text: " and disabled status sync ",
+            style: null,
+          },
+        ],
+      };
+    }
   }
 
   // need to use a lookup table
@@ -194,7 +318,7 @@ export const formatProjectActivity = (change, lookupList) => {
     const changeValue =
       // check truthiness to prevent rendering String(null) as "null"
       !!changeData.new[changedField] &&
-        String(changeData.new[changedField]).length > 0
+      String(changeData.new[changedField]).length > 0
         ? changeData.new[changedField]
         : "(none)";
     return {
