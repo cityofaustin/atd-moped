@@ -80,8 +80,13 @@ export const formatProjectActivity = (change, lookupList) => {
     };
   }
 
-  // Special handling for eCAPRIS sync changes
-  if (changedField === "should_sync_ecapris_statuses") {
+  // Check for eCAPRIS-related field changes using the fields array
+  const hasEcaprisSyncChange = fields.includes("should_sync_ecapris_statuses");
+  const hasEcaprisIdChange = fields.includes("ecapris_subproject_id");
+  const hasEcaprisSyncAndIdChanges = hasEcaprisSyncChange && hasEcaprisIdChange;
+
+  // Handle eCAPRIS sync changes (only sync field changed)
+  if (hasEcaprisSyncChange && !hasEcaprisIdChange) {
     const newSyncValue = changeData.new.should_sync_ecapris_statuses;
     const oldSyncValue = changeData.old.should_sync_ecapris_statuses;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
@@ -120,8 +125,8 @@ export const formatProjectActivity = (change, lookupList) => {
     }
   }
 
-  // Special handling for eCAPRIS subproject ID changes when sync is enabled
-  if (changedField === "ecapris_subproject_id") {
+  // Handle eCAPRIS ID changes when sync is enabled (only ID field changed)
+  if (hasEcaprisIdChange && !hasEcaprisSyncChange) {
     const syncEnabled = changeData.new.should_sync_ecapris_statuses;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
@@ -149,16 +154,8 @@ export const formatProjectActivity = (change, lookupList) => {
     }
   }
 
-  // Handle cases where both fields are changed in the same update
-  // Check if both should_sync_ecapris_statuses and ecapris_subproject_id changed
-  const syncChanged =
-    changeData.new.should_sync_ecapris_statuses !==
-    changeData.old.should_sync_ecapris_statuses;
-  const ecaprisIdChanged =
-    changeData.new.ecapris_subproject_id !==
-    changeData.old.ecapris_subproject_id;
-
-  if (syncChanged && ecaprisIdChanged) {
+  // Handle cases where both eCAPRIS fields changed in the same update
+  if (hasEcaprisSyncAndIdChanges) {
     const newSyncValue = changeData.new.should_sync_ecapris_statuses;
     const newEcaprisId = changeData.new.ecapris_subproject_id;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
