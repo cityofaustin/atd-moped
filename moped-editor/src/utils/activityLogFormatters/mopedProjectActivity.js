@@ -145,7 +145,7 @@ export const formatProjectActivity = (change, lookupList) => {
         changeIcon,
         changeText: [
           {
-            text: "Updated eCAPRIS subproject statuses sync for ",
+            text: "Updated eCAPRIS subproject ID and statuses sync from ",
             style: null,
           },
           { text: oldEcaprisId, style: "boldText" },
