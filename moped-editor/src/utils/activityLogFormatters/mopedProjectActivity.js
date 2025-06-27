@@ -69,8 +69,9 @@ export const formatProjectActivity = (change, lookupList) => {
   // is if the primary and secondary names have both been updated
   const updatedFullName = changes.length > 1;
 
-  // the field that was changed in the activity
-  const changedField = change.description[0].field;
+  // Get the changed fields from the description
+  const fields = change.description[0]?.fields || [];
+  const changedField = fields[0];
 
   if (!changedField) {
     return {
