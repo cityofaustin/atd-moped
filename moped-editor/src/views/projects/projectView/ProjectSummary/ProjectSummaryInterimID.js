@@ -1,14 +1,8 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import {
   removeDecimalsAndTrailingNumbers,
   removeNonIntegers,
@@ -123,20 +117,14 @@ const ProjectSummaryInterimID = ({
               onChange={handleProjectInterimIdChange}
               value={interimId ?? ""}
             />
-            <IconButton
-              disabled={
-                parseInt(originalValue) === parseInt(interimId) || loading
+            <ProjectSummaryIconButtons
+              handleSave={handleProjectInterimIdSave}
+              handleClose={handleProjectInterimIdClose}
+              disabledCondition={
+                parseInt(originalValue) === parseInt(interimId)
               }
-              onClick={handleProjectInterimIdSave}
-            >
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton
-              disabled={loading}
-              onClick={handleProjectInterimIdClose}
-            >
-              <Icon>close</Icon>
-            </IconButton>
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Icon, IconButton, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
@@ -155,18 +156,12 @@ const ProjectSummaryProjectECapris = ({
               onChange={handleProjectECaprisChange}
               value={eCapris}
             />
-            <IconButton
-              disabled={originalValue === eCapris || loading}
-              onClick={handleProjectECaprisSave}
-            >
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton
-              disabled={loading}
-              onClick={handleProjectECaprisClose}
-            >
-              <Icon>close</Icon>
-            </IconButton>
+            <ProjectSummaryIconButtons
+              handleSave={handleProjectECaprisSave}
+              handleClose={handleProjectECaprisClose}
+              disabledCondition={originalValue === eCapris}
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (

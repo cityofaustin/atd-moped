@@ -1,15 +1,9 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Grid,
-  Icon,
-  IconButton,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 
 import { PROJECT_UPDATE_WEBSITE } from "../../../../queries/project";
 import { useMutation } from "@apollo/client";
@@ -109,20 +103,12 @@ const ProjectSummaryProjectWebsite = ({
               error={!isWebsiteValid}
               helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
             />
-            <IconButton
-              disabled={
-                website === originalWebsite || !isWebsiteValid || loading
-              }
-              onClick={handleProjectWebsiteSave}
-            >
-              <Icon>check</Icon>
-            </IconButton>
-            <IconButton
-              disabled={loading}
-              onClick={handleProjectWebsiteClose}
-            >
-              <Icon>close</Icon>
-            </IconButton>
+            <ProjectSummaryIconButtons
+              handleSave={handleProjectWebsiteSave}
+              handleClose={handleProjectWebsiteClose}
+              disabledCondition={website === originalWebsite || !isWebsiteValid}
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (
