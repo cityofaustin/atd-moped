@@ -124,7 +124,6 @@ const ProjectSummaryInterimID = ({
               value={interimId ?? ""}
             />
             <IconButton
-              className={classes.editIconConfirm}
               disabled={
                 parseInt(originalValue) === parseInt(interimId) || loading
               }
@@ -133,7 +132,6 @@ const ProjectSummaryInterimID = ({
               <Icon>check</Icon>
             </IconButton>
             <IconButton
-              className={classes.editIconConfirm}
               disabled={loading}
               onClick={handleProjectInterimIdClose}
             >

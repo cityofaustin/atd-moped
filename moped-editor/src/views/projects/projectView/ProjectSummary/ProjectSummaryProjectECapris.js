@@ -156,14 +156,12 @@ const ProjectSummaryProjectECapris = ({
               value={eCapris}
             />
             <IconButton
-              className={classes.editIconConfirm}
               disabled={originalValue === eCapris || loading}
               onClick={handleProjectECaprisSave}
             >
               <Icon>check</Icon>
             </IconButton>
             <IconButton
-              className={classes.editIconConfirm}
               disabled={loading}
               onClick={handleProjectECaprisClose}
             >

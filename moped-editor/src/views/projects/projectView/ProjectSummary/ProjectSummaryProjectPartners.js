@@ -159,7 +159,6 @@ const ProjectSummaryProjectPartners = ({
               ))}
             </Select>
             <IconButton
-              className={classes.editIconConfirm}
               disabled={
                 JSON.stringify(originalEntities) ===
                   JSON.stringify(selectedEntities) || loading
@@ -169,7 +168,6 @@ const ProjectSummaryProjectPartners = ({
               <Icon>check</Icon>
             </IconButton>
             <IconButton
-              className={classes.editIconConfirm}
               disabled={loading}
               onClick={handleProjectPartnersClose}
             >

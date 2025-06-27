@@ -110,11 +110,6 @@ const ProjectSummaryProjectWebsite = ({
               helperText={!isWebsiteValid ? "Website is not a valid URL" : null}
             />
             <IconButton
-              className={
-                isWebsiteValid
-                  ? classes.editIconConfirm
-                  : classes.editIconConfirmDisabled
-              }
               disabled={
                 website === originalWebsite || !isWebsiteValid || loading
               }
@@ -123,7 +118,6 @@ const ProjectSummaryProjectWebsite = ({
               <Icon>check</Icon>
             </IconButton>
             <IconButton
-              className={classes.editIconConfirm}
               disabled={loading}
               onClick={handleProjectWebsiteClose}
             >
