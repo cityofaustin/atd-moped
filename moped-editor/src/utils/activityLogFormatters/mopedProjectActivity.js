@@ -70,8 +70,8 @@ export const formatProjectActivity = (change, lookupList) => {
   const updatedFullName = changes.length > 1;
 
   // Get the changed fields from the description
-  const fields = change.description[0]?.fields || [];
-  const changedField = fields[0];
+  const changedFields = change.description[0]?.fields || [];
+  const changedField = changedFields[0];
 
   if (!changedField) {
     return {
@@ -81,8 +81,10 @@ export const formatProjectActivity = (change, lookupList) => {
   }
 
   // Check for eCAPRIS-related field changes using the fields array
-  const hasEcaprisSyncChange = fields.includes("should_sync_ecapris_statuses");
-  const hasEcaprisIdChange = fields.includes("ecapris_subproject_id");
+  const hasEcaprisSyncChange = changedFields.includes(
+    "should_sync_ecapris_statuses"
+  );
+  const hasEcaprisIdChange = changedFields.includes("ecapris_subproject_id");
   const hasEcaprisSyncAndIdChanges = hasEcaprisSyncChange && hasEcaprisIdChange;
 
   // Handle eCAPRIS sync changes (only sync field changed)
