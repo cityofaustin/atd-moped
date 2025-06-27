@@ -11,6 +11,9 @@ export const ProjectActivityLogTableMaps = {
       ecapris_subproject_id: {
         label: "eCAPRIS subproject ID",
       },
+      should_sync_ecapris_statuses: {
+        label: "eCAPRIS status sync",
+      },
       current_status: {
         label: "current status",
       },
@@ -72,11 +75,11 @@ export const ProjectActivityLogTableMaps = {
         label: "is retired",
       },
       project_name_secondary: {
-        label: "secondary project name"
+        label: "secondary project name",
       },
       project_name_full: {
-        label: "full project name"
-      }
+        label: "full project name",
+      },
     },
   },
   moped_proj_entities: {
@@ -336,11 +339,11 @@ export const ProjectActivityLogTableMaps = {
         label: "subphase",
       },
       is_phase_start_confirmed: {
-        label: "start date confirmation"
+        label: "start date confirmation",
       },
       is_phase_end_confirmed: {
-        label: "end date confirmation"
-      }
+        label: "end date confirmation",
+      },
     },
   },
   moped_proj_components: {
@@ -378,17 +381,17 @@ export const ProjectActivityLogTableMaps = {
       },
       // we don't render these audit fields in the activity log UI
       created_at: {
-        label: "creation date"
+        label: "creation date",
       },
       created_by_user_id: {
-        label: "created by user"
+        label: "created by user",
       },
       updated_at: {
-        label: "update date"
+        label: "update date",
       },
       updated_by_user_id: {
-        label: "updated by user"
-      }
+        label: "updated by user",
+      },
     },
   },
   moped_project_files: {
@@ -480,12 +483,11 @@ export const ProjectActivityLogTableMaps = {
       project_id: {
         label: "project ID",
       },
-      
 
-      // The following two pairs fields represent the same conceptual idea, however, 
+      // The following two pairs fields represent the same conceptual idea, however,
       // the first pair were the original names of the fields and the second pair
       // are names we later migrated to for these columns. Both need to be defined
-      // as part of this object to support activity log records which contain the 
+      // as part of this object to support activity log records which contain the
       // older field names.
 
       // original field names
@@ -503,7 +505,6 @@ export const ProjectActivityLogTableMaps = {
       created_by_user_id: {
         label: "added by",
       },
-      
 
       funding_source_id: {
         label: "source",

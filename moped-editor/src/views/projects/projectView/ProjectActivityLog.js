@@ -142,24 +142,26 @@ const usePrepareActivityData = (activityData) =>
           // otherwise compare the old record to the new record to find the field that was updated
           const newData = outputEvent.record_data.event.data.new;
           const oldData = outputEvent.record_data.event.data.old;
-          let changedField = "";
+          let changedFields = [];
+
           Object.keys(newData).forEach((key) => {
             if (!!newData[key] && typeof newData[key] === "object") {
               if (!isEqual(newData[key], oldData[key])) {
-                changedField = key;
+                changedFields.push(key);
               }
             } else if (
               newData[key] !== oldData[key] &&
               !CHANGE_FIELDS_TO_IGNORE.includes(key)
             ) {
-              changedField = key;
+              changedFields.push(key);
             }
           });
+
           outputEvent.description = [
             {
               new: newData,
               old: oldData,
-              field: changedField,
+              fields: changedFields, // Use fields array
             },
           ];
         }
