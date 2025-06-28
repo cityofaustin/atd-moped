@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { Grid, Box, Typography, Icon, TextField } from "@mui/material";
+import { Grid, Box, Typography, TextField } from "@mui/material";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { Autocomplete } from "@mui/material";
 
 import { useMutation } from "@apollo/client";
@@ -31,6 +32,7 @@ const ProjectSummaryAutocomplete = ({
   updateMutation,
   tooltipText,
   projectId,
+  loading,
   refetch,
   classes,
   handleSnackbar,
@@ -102,15 +104,12 @@ const ProjectSummaryAutocomplete = ({
               )}
               openOnFocus={true}
             ></Autocomplete>
-            <Icon className={classes.editIconConfirm} onClick={handleFieldSave}>
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleFieldClose}
-            >
-              close
-            </Icon>
+            <ProjectSummaryIconButtons
+              handleSave={handleFieldSave}
+              handleClose={handleFieldClose}
+              disabledCondition={fieldValue?.[idColumn] === initialValue?.[idColumn]}
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Box, Grid, Icon, TextField, Typography } from "@mui/material";
+import { Box, Grid, TextField, Typography } from "@mui/material";
 
 import ExternalLink from "src/components/ExternalLink";
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 
 import {
   PROJECT_UPDATE_ECAPRIS_SUBPROJECT_ID,
@@ -47,6 +48,7 @@ const WrapperComponent = ({ children, noWrapper, classes }) =>
  */
 const ProjectSummaryProjectECapris = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -88,15 +90,6 @@ const ProjectSummaryProjectECapris = ({
   const handleProjectECaprisSave = () => {
     const isEmpty = (eCapris ?? "").length === 0;
 
-    if (!isEmpty && !isValidECaprisId(eCapris)) {
-      handleSnackbar(
-        true,
-        `Invalid eCapris value: ${eCapris} must not contain letters and have exactly three digits after the decimal place. E.g., 12680.010.`,
-        "error"
-      );
-      return;
-    }
-
     (isEmpty
       ? clearProjectECapris({
           variables: {
@@ -112,11 +105,7 @@ const ProjectSummaryProjectECapris = ({
     )
       .then(() => {
         setEditMode(false);
-        handleSnackbar(
-          true,
-          "eCAPRIS Subproject ID updated",
-          "success"
-        );
+        handleSnackbar(true, "eCAPRIS Subproject ID updated", "success");
       })
       .then(() => refetch())
       .catch((error) => {
@@ -157,19 +146,21 @@ const ProjectSummaryProjectECapris = ({
               label={null}
               onChange={handleProjectECaprisChange}
               value={eCapris}
+              error={!isValidECaprisId(eCapris)}
+              helperText={
+                !isValidECaprisId(eCapris)
+                  ? `eCapris value must contain no letters and have exactly three digits after the decimal place. E.g., 12680.010.`
+                  : null
+              }
             />
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectECaprisSave}
-            >
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectECaprisClose}
-            >
-              close
-            </Icon>
+            <ProjectSummaryIconButtons
+              handleSave={handleProjectECaprisSave}
+              handleClose={handleProjectECaprisClose}
+              disabledCondition={
+                originalValue === eCapris || !isValidECaprisId(eCapris)
+              }
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (
