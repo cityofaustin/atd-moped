@@ -90,15 +90,6 @@ const ProjectSummaryProjectECapris = ({
   const handleProjectECaprisSave = () => {
     const isEmpty = (eCapris ?? "").length === 0;
 
-    if (!isEmpty && !isValidECaprisId(eCapris)) {
-      handleSnackbar(
-        true,
-        `Invalid eCapris value: ${eCapris} must not contain letters and have exactly three digits after the decimal place. E.g., 12680.010.`,
-        "error"
-      );
-      return;
-    }
-
     (isEmpty
       ? clearProjectECapris({
           variables: {
@@ -155,11 +146,19 @@ const ProjectSummaryProjectECapris = ({
               label={null}
               onChange={handleProjectECaprisChange}
               value={eCapris}
+              error={!isValidECaprisId(eCapris)}
+              helperText={
+                !isValidECaprisId(eCapris)
+                  ? `eCapris value must contain no letters and have exactly three digits after the decimal place. E.g., 12680.010.`
+                  : null
+              }
             />
             <ProjectSummaryIconButtons
               handleSave={handleProjectECaprisSave}
               handleClose={handleProjectECaprisClose}
-              disabledCondition={originalValue === eCapris}
+              disabledCondition={
+                originalValue === eCapris || !isValidECaprisId(eCapris)
+              }
               loading={loading}
             />
           </>
