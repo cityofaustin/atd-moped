@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Tooltip } from "@mui/material";
 
 /**
  * Defines the NoteTypeButton with a toggle style-change behavior.
@@ -15,15 +15,29 @@ const NoteTypeButton = ({
   setFilterNoteType,
   filterNoteType,
   label,
-}) => (
-  <Button
-    color="primary"
-    sx={{ margin: 2 }}
-    variant={filterNoteType === noteTypeId ? "contained" : "outlined"}
-    onClick={() => setFilterNoteType(noteTypeId)}
-  >
-    {label}
-  </Button>
-);
+  disableEcapris,
+}) => {
+  return (
+    <Tooltip
+      title={
+        disableEcapris
+          ? "Enable eCAPRIS syncing to filter to eCAPRIS statuses"
+          : ""
+      }
+    >
+      <span>
+        <Button
+          color="primary"
+          sx={{ margin: 2 }}
+          variant={filterNoteType === noteTypeId ? "contained" : "outlined"}
+          onClick={() => setFilterNoteType(noteTypeId)}
+          disabled={disableEcapris}
+        >
+          {label}
+        </Button>
+      </span>
+    </Tooltip>
+  );
+};
 
 export default NoteTypeButton;
