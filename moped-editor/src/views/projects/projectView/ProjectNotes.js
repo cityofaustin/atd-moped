@@ -411,6 +411,10 @@ const ProjectNotes = ({
                   noteTypeId={type.id}
                   label={type.name}
                   key={type.slug}
+                  disableEcapris={
+                    type.slug === "ecapris_status_update" &&
+                    (!hasECaprisId || !shouldSyncFromECAPRIS)
+                  }
                 />
               ))}
             </Grid>
