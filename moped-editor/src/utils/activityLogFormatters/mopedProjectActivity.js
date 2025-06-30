@@ -94,6 +94,12 @@ export const formatProjectActivity = (change, lookupList) => {
     const newEcaprisId = changeData.new.ecapris_subproject_id;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
 
+    // If there is no eCAPRIS subproject ID set and syncing is enabled or disabled,
+    // return no icon or text so no activity row renders in ProjectActivityLog.
+    if (!newEcaprisId && !oldEcaprisId) {
+      return { changeIcon: null, changeText: null };
+    }
+
     // Sync enabled
     const isSyncEnabled = newSyncValue === true && oldSyncValue === false;
     if (isSyncEnabled) {
