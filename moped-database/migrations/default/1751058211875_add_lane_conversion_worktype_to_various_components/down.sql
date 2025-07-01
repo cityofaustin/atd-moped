@@ -1,2 +1,9 @@
-DELETE FROM public.moped_component_work_types WHERE component_id = 0 AND work_type_id = 4;
-DELETE FROM public.moped_component_work_types WHERE component_id BETWEEN 52 AND 55 AND work_type_id = 4;
+DELETE FROM public.moped_component_work_types
+WHERE work_type_id = (
+        SELECT id FROM moped_work_types WHERE key = 'lane_conversion'
+    )
+    AND component_id IN (
+        SELECT component_id
+        FROM moped_components
+        WHERE component_name_full IN ('Project Extent - Generic (linear)', 'Transit - Lane', 'Transit - Managed Lane Access Point', 'Transit - Transit/Bike Lane', 'Transit - Transit Queue Jump')
+    );
