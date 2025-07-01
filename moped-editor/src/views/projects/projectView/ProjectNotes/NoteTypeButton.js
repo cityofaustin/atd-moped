@@ -7,6 +7,8 @@ import { Button, Tooltip } from "@mui/material";
  * @param {function} setFilterNoteType - function to set the filter note type state
  * @param {string} filterNoteType - id for toggled note type
  * @param {string} label - button label
+ * @param {boolean} isDisabled - should the button be disabled
+ * @param {string} disabledMessage - message to render in tooltip if button is disabled
  * @return {JSX.Element}
  * @constructor
  */
@@ -15,23 +17,18 @@ const NoteTypeButton = ({
   setFilterNoteType,
   filterNoteType,
   label,
-  disableEcapris,
+  isDisabled,
+  disabledMessage,
 }) => {
   return (
-    <Tooltip
-      title={
-        disableEcapris
-          ? "Enable eCAPRIS syncing to filter to eCAPRIS statuses"
-          : ""
-      }
-    >
+    <Tooltip title={isDisabled ? disabledMessage : ""}>
       <span>
         <Button
           color="primary"
           sx={{ margin: 2 }}
           variant={filterNoteType === noteTypeId ? "contained" : "outlined"}
           onClick={() => setFilterNoteType(noteTypeId)}
-          disabled={disableEcapris}
+          disabled={isDisabled}
         >
           {label}
         </Button>
