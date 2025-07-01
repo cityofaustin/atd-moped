@@ -75,7 +75,12 @@ const ProjectSummaryProjectECapris = ({
     PROJECT_CLEAR_ECAPRIS_SUBPROJECT_ID
   );
 
-  const isValidECaprisId = (num) => /^[\d]*\.[0-9]{3}$/.test(num);
+  /**
+   * Validates the eCapris ID format or checks if it is empty so it can be cleared.
+   * The format should be a number with exactly three digits after the decimal point.
+   */
+  const isValidECaprisId = (num) =>
+    /^[\d]*\.[0-9]{3}$/.test(num) || !num?.length;
   /**
    * Resets the project website to original value
    */
