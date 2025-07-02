@@ -64,7 +64,7 @@ Before you begin, make sure you have the following installed on your system:
 
      ```bash
      ./hasura_cluster start_only
-     ./run_migrations
+     hasura migrate apply
      ./hasura-cluster start
 
      ```
