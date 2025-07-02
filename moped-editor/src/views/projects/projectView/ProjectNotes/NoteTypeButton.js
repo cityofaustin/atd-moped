@@ -3,7 +3,7 @@ import { Button, Tooltip } from "@mui/material";
 /**
  * Defines the NoteTypeButton with a toggle style-change behavior.
  * @param {Object} props
- * @param {number} noteTypeId - id of note type for button
+ * @param {number} noteTypeId - id of note type for buttClickon
  * @param {function} setFilterNoteType - function to set the filter note type state
  * @param {string} filterNoteType - id for toggled note type
  * @param {string} label - button label
@@ -21,6 +21,8 @@ const NoteTypeButton = ({
   disabledMessage,
 }) => {
   return (
+    // Disabled buttons dont trigger user interactions so the tooltip
+    // wont show unless button is wrapped in a span https://v5.mui.com/material-ui/react-tooltip/#disabled-elements
     <Tooltip title={isDisabled ? disabledMessage : ""}>
       <span>
         <Button
