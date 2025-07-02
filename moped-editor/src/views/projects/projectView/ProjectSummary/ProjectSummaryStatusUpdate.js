@@ -22,14 +22,16 @@ const ProjectSummaryStatusUpdate = ({
   handleSnackbar,
   classes,
 }) => {
-  const statusUpdate = data.project_list_view[0]?.project_status_update;
-  const projectName = data.moped_project[0].project_name;
-  const author = data.project_list_view[0]?.project_status_update_author;
+  const statusUpdate =
+    data.moped_project[0]?.project_list_view?.project_status_update;
+  const projectName = data.moped_project[0]?.project_name;
+  const author =
+    data.moped_project[0]?.project_list_view?.project_status_update_author;
   const currentPhaseId =
-    data.moped_project[0].moped_proj_phases[0]?.moped_phase.phase_id;
+    data.moped_project[0]?.moped_proj_phases[0]?.moped_phase.phase_id;
 
   const dateCreated = formatRelativeDate(
-    data.project_list_view[0]?.project_status_update_date_created
+    data.moped_project[0]?.project_list_view?.project_status_update_date_created
   );
   const eCaprisSubprojectId = data.moped_project[0]?.ecapris_subproject_id;
 

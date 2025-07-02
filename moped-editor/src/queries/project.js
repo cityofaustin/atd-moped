@@ -70,6 +70,13 @@ export const SUMMARY_QUERY = gql`
         id
         name
       }
+      project_list_view {
+        component_work_type_names
+        project_id
+        project_status_update
+        project_status_update_date_created
+        project_status_update_author
+      }
     }
     moped_proj_partners(
       where: { project_id: { _eq: $projectId }, is_deleted: { _eq: false } }
@@ -134,13 +141,6 @@ export const SUMMARY_QUERY = gql`
       moped_proj_components(where: { is_deleted: { _eq: false } }) {
         ...projectComponentFields
       }
-    }
-    project_list_view(where: { project_id: { _eq: $projectId } }) {
-      component_work_type_names
-      project_id
-      project_status_update
-      project_status_update_date_created
-      project_status_update_author
     }
   }
 `;

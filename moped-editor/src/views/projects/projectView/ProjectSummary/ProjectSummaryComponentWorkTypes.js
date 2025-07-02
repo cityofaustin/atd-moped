@@ -11,7 +11,7 @@ import ProjectSummaryLabel from "src/views/projects/projectView/ProjectSummary/P
  */
 const ProjectSummaryComponentWorkTypes = ({ classes, data }) => {
   const componentWorkTypes =
-    data?.project_list_view?.[0]?.component_work_type_names;
+    data?.moped_project[0]?.project_list_view?.component_work_type_names;
   /* component_work_type_names is a comma-separated list in the database view */
   const componentWorkTypesArray = componentWorkTypes?.split(", ") ?? [];
 
