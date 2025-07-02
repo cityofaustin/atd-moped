@@ -1,22 +1,57 @@
 """
 Helper methods to update the database via GraphQL
 """
+
 import copy
 from cerberus import Validator
-from graphql import run_query
+
+try:
+    from graphql import run_query
+except Exception as e:
+    print(f"USERS/HELPERS.PY: ERROR importing graphql: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 # Types
 from typing import List
 
 # Helpers
-from claims import is_coa_staff, generate_iso_timestamp
-from users.queries import (
-    GRAPHQL_CREATE_USER,
-    GRAPHQL_UPDATE_USER,
-    GRAPHQL_DEACTIVATE_USER,
-    GRAPHQL_ACTIVATE_USER,
-)
-from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
+try:
+    from claims import is_coa_staff, generate_iso_timestamp
+except Exception as e:
+    print(
+        f"USERS/HELPERS.PY: ERROR importing from claims: {type(e).__name__}: {str(e)}"
+    )
+    import traceback
+
+    traceback.print_exc()
+    raise
+
+try:
+    from users.queries import (
+        GRAPHQL_CREATE_USER,
+        GRAPHQL_UPDATE_USER,
+        GRAPHQL_DEACTIVATE_USER,
+        GRAPHQL_ACTIVATE_USER,
+    )
+
+except Exception as e:
+    print(f"USERS/HELPERS.PY: ERROR importing queries: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
+
+try:
+    from users.validation import USER_VALIDATION_SCHEMA, PASSWORD_VALIDATION_SCHEMA
+except Exception as e:
+    print(f"USERS/HELPERS.PY: ERROR importing validation: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 
 def generate_user_profile(cognito_id: str, json_data: dict) -> dict:

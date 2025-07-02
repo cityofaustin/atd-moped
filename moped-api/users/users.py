@@ -1,32 +1,71 @@
 import boto3
-
 from botocore.exceptions import ClientError
 from flask import Blueprint, jsonify, abort, Response
 from flask_cognito import cognito_auth_required, current_cognito_jwt, request
-from config import api_config
+
+try:
+    from config import api_config
+
+except Exception as e:
+    print(f"USERS/USERS.PY: ERROR importing api_config: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 # Import our custom code
-from claims import *
+try:
+    from claims import *
 
-from users.helpers import (
-    generate_user_profile,
-    generate_cognito_attributes,
-    get_user_email_from_attr,
-    get_user_database_ids,
-    is_valid_user_password,
-    is_users_password,
-    is_valid_user_profile,
-    db_create_user,
-    db_update_user,
-    db_activate_user,
-    db_deactivate_user,
-    cognito_user_exists,
-)
+except Exception as e:
+    print(f"USERS/USERS.PY: ERROR importing claims: {type(e).__name__}: {str(e)}")
+    import traceback
+
+    traceback.print_exc()
+    raise
+
+try:
+    from users.helpers import (
+        generate_user_profile,
+        generate_cognito_attributes,
+        get_user_email_from_attr,
+        get_user_database_ids,
+        is_valid_user_password,
+        is_users_password,
+        is_valid_user_profile,
+        db_create_user,
+        db_update_user,
+        db_activate_user,
+        db_deactivate_user,
+        cognito_user_exists,
+    )
+
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR importing users.helpers: {type(e).__name__}: {str(e)}"
+    )
+    import traceback
+
+    traceback.print_exc()
+    raise
 
 users_blueprint = Blueprint("users_blueprint", __name__)
 
-USER_POOL = api_config["COGNITO_USERPOOL_ID"]
-boto3.setup_default_session(region_name=api_config.get("AWS_REGION", "us-east-1"))
+try:
+    USER_POOL = api_config["COGNITO_USERPOOL_ID"]
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR getting COGNITO_USERPOOL_ID: {type(e).__name__}: {str(e)}"
+    )
+    raise
+
+try:
+    boto3.setup_default_session(region_name=api_config.get("AWS_REGION", "us-east-1"))
+except Exception as e:
+    print(
+        f"USERS/USERS.PY: ERROR setting up boto3 session: {type(e).__name__}: {str(e)}"
+    )
+    raise
 
 
 @users_blueprint.route("/", methods=["GET"])
