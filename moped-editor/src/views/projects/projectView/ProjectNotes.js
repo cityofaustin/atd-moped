@@ -411,6 +411,11 @@ const ProjectNotes = ({
                   noteTypeId={type.id}
                   label={type.name}
                   key={type.slug}
+                  isDisabled={
+                    type.slug === "ecapris_status_update" &&
+                    (!hasECaprisId || !shouldSyncFromECAPRIS)
+                  }
+                  disabledMessage="Enable eCAPRIS syncing to filter to eCAPRIS statuses"
                 />
               ))}
             </Grid>
