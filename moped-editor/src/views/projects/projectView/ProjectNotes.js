@@ -11,6 +11,7 @@ import {
   FormControlLabel,
   Switch,
   Tooltip,
+  FormHelperText,
 } from "@mui/material";
 
 import { getSessionDatabaseData } from "src/auth/user";
@@ -123,7 +124,7 @@ const ProjectNotes = ({
   eCaprisSubprojectId = null,
 }) => {
   /* User details for create and update mutations */
-  const userSessionData = getSessionDatabaseData();
+  const userSessionData = useMemo(() => getSessionDatabaseData(), []);
 
   /** Get projectId from URL params if not passed down from ProjectSummaryStatusUpdate component
    * If component is being used in edit modal from dashboard get project id from props instead of url params.
@@ -423,9 +424,9 @@ const ProjectNotes = ({
               <Tooltip
                 placement="top"
                 title={
-                  hasECaprisId
-                    ? "Statuses are synced from eCAPRIS every 30 minutes"
-                    : "Add eCAPRIS subproject ID to sync from eCAPRIS"
+                  !hasECaprisId
+                    ? "Add eCAPRIS subproject ID to enable syncing"
+                    : null
                 }
               >
                 <FormControlLabel
@@ -438,6 +439,11 @@ const ProjectNotes = ({
                   }
                   label="Sync from eCAPRIS"
                 />
+                {hasECaprisId ? (
+                  <FormHelperText>
+                    Statuses are synced every 30 minutes
+                  </FormHelperText>
+                ) : null}
               </Tooltip>
             </Grid>
           </Grid>
@@ -525,3 +531,8 @@ const ProjectNotes = ({
 };
 
 export default ProjectNotes;
+
+// TODO: Update
+// TODO: Show Statuses are synced every 30 minutes text in FromHelperText only when eCAPRIS sync is enabled
+// TODO: When no eCAPRIS ID and sync is disabled, show tooltip message that is existing
+// TODO: When eCAPRIS ID is present and enabled,
