@@ -531,8 +531,3 @@ const ProjectNotes = ({
 };
 
 export default ProjectNotes;
-
-// TODO: Update
-// TODO: Show Statuses are synced every 30 minutes text in FromHelperText only when eCAPRIS sync is enabled
-// TODO: When no eCAPRIS ID and sync is disabled, show tooltip message that is existing
-// TODO: When eCAPRIS ID is present and enabled,
