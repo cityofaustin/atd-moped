@@ -94,6 +94,13 @@ export const formatProjectActivity = (change, lookupList) => {
     const newEcaprisId = changeData.new.ecapris_subproject_id;
     const oldEcaprisId = changeData.old.ecapris_subproject_id;
 
+    // Skip rendering activity row when syncing state changes but no eCAPRIS ID is set.
+    // This edge case should only occur through direct database updates since the UI
+    // prevents updating should_sync_ecapris_statuses without an eCAPRIS ID.
+    if (!newEcaprisId && !oldEcaprisId) {
+      return { changeIcon: null, changeText: null };
+    }
+
     // Sync enabled
     const isSyncEnabled = newSyncValue === true && oldSyncValue === false;
     if (isSyncEnabled) {
