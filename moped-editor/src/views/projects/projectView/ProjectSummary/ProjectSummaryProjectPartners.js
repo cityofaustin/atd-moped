@@ -3,7 +3,6 @@ import {
   Box,
   Checkbox,
   Grid,
-  Icon,
   Input,
   ListItemText,
   MenuItem,
@@ -12,6 +11,7 @@ import {
 } from "@mui/material";
 
 import ProjectSummaryLabel from "./ProjectSummaryLabel";
+import ProjectSummaryIconButtons from "./ProjectSummaryIconButtons";
 import { useMutation } from "@apollo/client";
 import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
 
@@ -27,6 +27,7 @@ import { PROJECT_UPDATE_PARTNERS } from "../../../../queries/project";
  */
 const ProjectSummaryProjectPartners = ({
   projectId,
+  loading,
   data,
   refetch,
   classes,
@@ -156,18 +157,15 @@ const ProjectSummaryProjectPartners = ({
                 </MenuItem>
               ))}
             </Select>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectPartnersSave}
-            >
-              check
-            </Icon>
-            <Icon
-              className={classes.editIconConfirm}
-              onClick={handleProjectPartnersClose}
-            >
-              close
-            </Icon>
+            <ProjectSummaryIconButtons
+              handleSave={handleProjectPartnersSave}
+              handleClose={handleProjectPartnersClose}
+              disabledCondition={
+                JSON.stringify(originalEntities) ===
+                JSON.stringify(selectedEntities)
+              }
+              loading={loading}
+            />
           </>
         )}
         {!editMode && (
