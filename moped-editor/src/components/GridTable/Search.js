@@ -130,7 +130,7 @@ const Search = ({
    * @param {Object} e - The event object
    */
   const handleSearchSubmission = (event) => {
-    const trimmedSearchFieldValue = searchFieldValue.trim();
+    const trimmedSearchFieldValue = searchFieldValue?.trim();
 
     // Stop if we don't have any value entered in the search field
     if (trimmedSearchFieldValue.length === 0) {
